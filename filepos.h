@@ -8,6 +8,12 @@
 
 #include "cssc.h"
 
+// SunOS requires <unistd.h> for SEEK_SET, for some bizarre reason.
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+
 #ifdef HAVE_FSETPOS
 
 class FilePosSaver		// with fsetpos()...
@@ -56,7 +62,7 @@ FilePosSaver::FilePosSaver(FILE *fp) : f(fp)
 
 FilePosSaver::~FilePosSaver()
 {
-  if (fseek(f, offset, 0) != 0)
+  if (fseek(f, offset, SEEK_SET) != 0)
     quit(errno, "fseek() failed!");
 }
 
