@@ -34,7 +34,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.17 1997/10/25 16:48:49 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.18 1997/10/27 19:26:32 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -414,8 +414,10 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
    Returns true if an error occurs. */
 
 int
-sccs_file::write_subst(const char *start, struct subst_parms *parms) const {
-	struct delta const &delta = parms->delta;
+sccs_file::write_subst(const char *start,
+		       struct subst_parms *parms,
+		       struct delta const& delta) const {
+  //	struct delta const &delta = parms->delta;
 	FILE *out = parms->out;
 
 	const char *percent = strchr(start, '%');
@@ -534,7 +536,7 @@ sccs_file::write_subst(const char *start, struct subst_parms *parms) const {
 					/* protect against recursion */
 					parms->wstring = NULL; 
 				}
-				err = write_subst(s, parms);
+				err = write_subst(s, parms, delta);
 				if (parms->wstring == NULL) {
 					parms->wstring = s;
 				}
@@ -542,7 +544,8 @@ sccs_file::write_subst(const char *start, struct subst_parms *parms) const {
 
 			case 'A':
 				err = write_subst("%Z""%%Y""% %M""% %I"
-						  "%%Z""%", parms);
+						  "%%Z""%",
+						  parms, delta);
 				break;
 
 			default:
@@ -583,7 +586,13 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	prepare_seqstate(state, delta->seq);
 	prepare_seqstate(state, include, exclude, cutoff_date);
 
-	struct subst_parms parms(out, wstring, *delta, 0, sccs_date::now());
+	// The subst_parms here may not be the Whole Truth since
+	// the cutoff date may affect which version is actually
+	// gotten.  That's taken care of; the correct delta is
+	// passed as a parameter to the substitution function.
+	// (eugh...)
+	struct subst_parms parms(out, wstring, *delta,
+				 0, sccs_date::now());
 
 #ifdef __GNUC__
     if (keywords)
@@ -609,11 +618,11 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	    show_sid, show_module, debug);
         }
 #endif
-
-	if (!parms.found_id)
+    // only issue a warning about there being no keywords
+    // substituted, IF keyword substitution was being done.
+	if (keywords && !parms.found_id)
 	  {
-	    fprintf(stderr, "%s: Warning: No id keywords.\n",
-		    (const char *) name);
+	    no_id_keywords(name);
 	  }
 				     
 	/* Set the return status. */
