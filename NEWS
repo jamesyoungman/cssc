@@ -1,3 +1,23 @@
+New in CSSC-0.11alpha-pl0
+
+	* Note that this is an ALPHA release.  If you want a BETA
+          release, use 0.10beta.pl1 instead.
+
+ 	* Rewrote the delta inclusion/exclusion code to correctly
+          support getting deltas which include previous revisions of
+          which they are not a descendant.  This kind of thing is
+          normally only perpetrated by other programs, real people 
+          don't usually do this by hand.
+
+  	* As a side-effect, delta now correctly use the ignored and
+          excluded lists of deltas from the p-file (these are put
+          there by "get -e -x -i").
+
+New in CSSC-0.10beta-pl1
+
+	* Eliminated some compiler warnings for bsd/sccs.c; addd
+          CREDITS.short.txt.  No other significant user-visible changes.
+
 New in CSSC-0.10beta-pl0
 
 	* Support for C++ compilers other than GNU C++.
