@@ -186,6 +186,7 @@ docommand g7 "test -f tfile" 1 "" ""
 docommand g8 "test -f foo"   0 "" ""
 docommand g9 "test -w foo"   0 "" ""
 
+
 #
 # unedit 
 #
@@ -193,10 +194,38 @@ docommand h1 "${sccs} unedit foo" 0 \
  "1.1\n1 lines\n         foo: removed\n" ""
 # That's 9 spaces.
 
-# the g-file should have been removed.
-# actually we don't pass this test, see docs/BUGS.
-# FIXME TODO
-#docommand h2 "test -f foo" 1 IGNORE IGNORE
+# the g-file should have been removed and replaced with a 
+# read-only version obtained with "get".
+docommand h2 "test -w foo" 1 IGNORE IGNORE
+
+# Make sure we got the file out again (read-only)
+docommand h3 "test -f foo" 0 IGNORE IGNORE
+
+
+# 
+# unedit (with pathnames)
+#
+here=`pwd`
+case $here in 
+    /*) true ;;
+     *) miscarry "pwd does not return absolute path: $here" ;;
+esac
+#
+# Edit the file, make sure it is writable.  Then unedit it (by the full
+# path name of the s-file) and make sure that sccs got a read-only copy
+# after eleting the working file.
+#
+docommand h4 "${sccs} edit ${here}/SCCS/s.foo" 0 \
+				    "1.1\nnew delta 1.2\n1 lines\n" ""
+docommand h5 "test -w foo" 0 IGNORE IGNORE
+docommand h6 "${sccs} unedit ${here}/SCCS/s.foo" 0 \
+ "1.1\n1 lines\n         foo: removed\n" ""
+docommand h7 "test -w foo" 1 IGNORE IGNORE
+docommand h8 "test -f foo" 0 IGNORE IGNORE
+
+
+
+
 
 #
 # info
@@ -216,7 +245,8 @@ docommand j4 "${sccs} unedit $g" 0 IGNORE IGNORE
 
 
 
-remove {expected,got}.std{out,err} last.command 
+remove got.stdout got.stderr
+remove expected.stdout expected.stderr last.command 
 remove $s $p $g $x $z
 success
 
@@ -232,24 +262,6 @@ success
 # print, info
 
 	    
-docommand B6 "${get} -e $s" 0 \
-    "1.3\nnew delta 1.4\n2 lines\n"                 IGNORE
-cp test/passwd.4 passwd
-docommand B7 "${delta} -y'' $s" 0 \
-    "1.4\n1 inserted\n1 deleted\n1 unchanged\n"     IGNORE
-docommand B8 "${get} -e $s" 0 \
-    "1.4\nnew delta 1.5\n2 lines\n"                 IGNORE
-cp test/passwd.5 passwd
-docommand B9 "${delta} -y'' $s" 0 \
-    "1.5\n1 inserted\n1 deleted\n1 unchanged\n"     IGNORE
-docommand B10 "${get} -e -r1.3 $s" 0 \
-    "1.3\nnew delta 1.3.1.1\n2 lines\n"             IGNORE
-cp test/passwd.6 passwd
-docommand B11 "${delta} -y'' $s" 0 \
-    "1.3.1.1\n1 inserted\n1 deleted\n1 unchanged\n" IGNORE
 
-rm -rf test
-remove passwd command.log $s $g $x $z $p SCCS
-rm -rf SCCS
-success
+
 
