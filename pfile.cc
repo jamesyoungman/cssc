@@ -30,7 +30,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.7 1997/11/18 23:22:25 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.8 1997/12/26 18:33:50 james Exp $";
 #endif
 
 NORETURN
@@ -62,16 +62,16 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 			     pname.c_str());
 		}
 	} else {
-		class _linebuf linebuf;
+		cssc_linebuf linebuf;
 
 		int lineno = 0;
 		while(!linebuf.read_line(pf)) {
-			linebuf[strlen(linebuf) - 1] = '\0';
+			linebuf[strlen(linebuf.c_str()) - 1] = '\0';
 			lineno++;
 
 			char *args[7];
 
-			int argc = split(linebuf, args, 7, ' ');
+			int argc = linebuf.split(0, args, 7, ' ');
 
 			if (argc < 5) {
 				corrupt(lineno, "Expected 5-7 args");

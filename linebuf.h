@@ -22,7 +22,7 @@
  * placed in the Public Domain.
  *
  *
- * Defines the class _linebuf.
+ * Defines the class cssc_linebuf.
  *
  * @(#) CSSC linebuf.h 1.1 93/11/09 17:17:47
  *
@@ -37,25 +37,30 @@
 
 /* This class is used to read lines of unlimited length from a file. */
 
-class _linebuf {
+class cssc_linebuf {
 	char *buf;
 	int buflen;
 
 public:
-	_linebuf(): buf((char *) xmalloc(CONFIG_LINEBUF_CHUNK_SIZE)),
-	           buflen(CONFIG_LINEBUF_CHUNK_SIZE) {}
+	cssc_linebuf()
+	  : buf((char *) xmalloc(CONFIG_LINEBUF_CHUNK_SIZE)),
+	    buflen(CONFIG_LINEBUF_CHUNK_SIZE)
+    {
+    }
 
 	int read_line(FILE *f);
 
-	operator char *() const { return buf; }
-  	const char *c_str() const { return buf; }
+  const char *c_str() const { return buf; }
+  const char *c_str() { return buf; }
+  int split(int offset, char **args, int len, char c);
+  
 	char &operator [](int index) const { return buf[index]; }
 
 #ifdef __GNUC__
 	char *operator +(int index) const { return buf + index; }
 #endif
 
-	~_linebuf() { free(buf); }
+  ~cssc_linebuf() { free(buf); }
 };
 
 #endif /* __LINEBUF_H__ */
