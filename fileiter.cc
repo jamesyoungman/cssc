@@ -36,7 +36,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.15 1998/05/09 16:10:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.16 1998/06/15 21:47:47 james Exp $";
 #endif
 
 #if 0
@@ -179,13 +179,13 @@ sccs_file_iterator::next() {
 	switch(source) {
 	case STDIN:
 	  {
-	    static cssc_linebuf linebuf; // FIXME: static!
+	    cssc_linebuf linebuf;
 
 	    if (linebuf.read_line(stdin)) {
 	      return 0;
 	    }
-
-	    name = linebuf.c_str();
+	    mystring s (linebuf.c_str());
+	    name = s.substr(0, s.length()-1u); // chop off the newline.
 	    return 1;
 	  }
 	
