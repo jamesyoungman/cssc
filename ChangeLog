@@ -1,3 +1,25 @@
+1998-01-10  James Youngman  <jay@gnu.org>
+
+	* Added documentation for "sact" to cssc.texi.
+
+	* An improved sccsdiff (thanks to Richard Polton) and a test
+	script for it.
+
+	* Renamed "list.h" to "mylist.h" to avoid possible conflicts or
+	misunderstandings relating to STL, and to prepare the way for
+	perhaps actually using the STL headers in the future.
+
+1997-12-26  James Youngman  <jay@gnu.org>
+
+	* linebuf.h: Renamed _linebuf to cssc_linebuf.
+
+	* sf-get2.cc, sf-get3.cc: Added assertions that the delta_table
+	member of sccs_file is not NULL.
+
+1997-12-11  James Youngman  <jay@gnu.org>
+
+	* sf-admin.cc: Add users in the correct order for "admin -a".
+
 Sun Nov 30 14:10:45 1997  James Youngman  <jay@gnu.org>
 
 	* my-getopt.h: Renamed getopt.h because it conflicts with the Unix
