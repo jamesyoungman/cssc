@@ -24,47 +24,69 @@ static const char sccs_id[] = "@(#) MySC sf-get2.c 1.3 93/12/31 15:16:23";
 
 bool
 sccs_file::find_requested_sid(sid requested, sid &found) const {
-	if (requested.is_null()) {
-		requested = flags.default_sid;
-	}
-
+	if (requested.is_null())
+	  {
+	    requested = flags.default_sid;
+	  }
+	
 	sid best;
 	bool got_best = false;
-	
+
 	/* Find the delta with the highest SID that matches the
 	   requested SID */
 
 	delta_iterator iter(delta_table);
 
-	while(iter.next()) {
+	/* if requested.is_null(), this means that no SID was specified
+	 * on the command line and no default SID is set in the file.
+	 * Hence we return the highest release and level on the trunk.
+	 */
+	if (requested.is_null())
+	  {
+	    best = sid("1.1");	// First SID on the trunk.
+	    while(iter.next())
+	      {
 		sid const &id = iter->id;
-		if (id == requested) {
-			/* Found an exact match. */
-			found = requested;
-			return true;
-		}
-
-		if ( !got_best && requested.is_null() )
+		if (best.is_trunk_successor(id))
 		  {
+		    // If ID is on the trunk and is after BEST, we
+		    // have a new BEST.
 		    best = id;
 		    got_best = true;
-		  }		
-		else if (requested.partial_match(id) && id > best)
+		  }
+	      }
+	    if (got_best)
+	      {
+		found = best;
+		return true;
+	      }
+	  }
+
+	while(iter.next())
+	  {
+	    sid const &id = iter->id;
+	    if (id == requested)
+	      {
+		/* Found an exact match. */
+		found = requested;
+		return true;
+	      }
+	    else if ( requested.partial_match(id) )
+	      {
+		if (id > best )
 		  {
 		    best = id;
 		    got_best = true;
 		  }
-	}
-	if (got_best)
+	      }
+	  }
+	
+	if (got_best || !requested.release_only())
 	  {
+	    // JAY TODO: if !got_best,
+	    // should we return best at all?
 	    found = best;
 	    return true;
-	  }
-	else if (!requested.release_only())
-	  {
-	    // JAY TODO: if !requested.release_only(),
-	    // should we return best at all?
-	    return best;
 	  }
 
 	/* If a match wasn't found above and the requested SID
@@ -78,8 +100,10 @@ sccs_file::find_requested_sid(sid requested, sid &found) const {
 	while(iter.next()) {
 		sid const &id = iter->id;
 		if (!got_best) {
+		  got_best = true;
 		  best = id;
 		} else if (id > best && id < requested) {
+		  got_best = true;
 		  best = id;
 		}
 	}
