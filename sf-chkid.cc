@@ -1,5 +1,5 @@
 /*
- * sf-chkid.c: Part of GNU CSSC.
+ * sf-chkid.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -28,8 +28,14 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-chkid.cc,v 1.4 1997/07/02 18:04:57 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-chkid.cc,v 1.5 1998/01/24 14:09:06 james Exp $";
 #endif
+
+bool
+is_id_keyword_letter(char ch)
+{
+  return strchr("MIRLBSDHTEGUYFPQCZWA", ch) != NULL;
+}
 
 
 /* Returns true if the string contains a valid SCCS id keyword. */
@@ -39,7 +45,7 @@ sccs_file::check_id_keywords(const char *s) {
 	s = strchr(s, '%');
 	while(s != NULL) {
 		if (s[1] != '\0' 
-		    && strchr("MIRLBSDHTEGUYFPQCZWA", s[1]) != NULL 
+		    && is_id_keyword_letter(s[1])
 		    && s[2] == '%') {
 			return 1;
 		}
