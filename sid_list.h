@@ -393,7 +393,7 @@ void prompt()
 int
 main()
 {
-  class _linebuf linebuf;
+  cssc_linebuf linebuf;
 
   // create & destroy a sid_list first.
   if (1)
