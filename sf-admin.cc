@@ -36,7 +36,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.9 1997/07/02 18:04:46 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.10 1997/10/27 19:26:55 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -299,16 +299,7 @@ sccs_file::create(release first_release, const char *iname,
     
     if (!found_id)
       {
-	if (flags.no_id_keywords_is_fatal)
-	  {
-	    fprintf(stderr, "%s: Error: No id keywords.\n",
-		    (const char *) name);
-	  }
-	else
-	  {
-	    fprintf(stderr, "%s: Warning: No id keywords.\n",
-		    (const char *) name);
-	  }
+	no_id_keywords(name);
       }
   }
 	

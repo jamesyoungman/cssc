@@ -246,7 +246,8 @@ private:
 	void prepare_seqstate(seq_state &state, seq_no seq);
 
 	typedef int (sccs_file::*subst_fn_t)(const char *,
-					     struct subst_parms *) const;
+					     struct subst_parms *,
+					     struct delta const&) const;
 
 	void get(mystring name, class seq_state &state,
 		 struct subst_parms &parms,
@@ -259,7 +260,9 @@ private:
 		 int show_sid = 0, int show_module = 0, int debug = 0);
 
 	/* sf-get2.c */
-	int write_subst(const char *start, struct subst_parms *parms) const;
+	int write_subst(const char *start,
+			struct subst_parms *parms,
+			struct delta const& gotten_delta) const;
 
 public:
 	struct get_status {
@@ -343,6 +346,9 @@ private:
 	void print_delta(FILE *out, const char *format,
 			 struct delta const &delta);
 
+  /* sf-kw.cc */
+  void no_id_keywords(const char name[]) const;
+  
 public:
 	enum when { EARLIER, SIDONLY, LATER };
   struct cutoff

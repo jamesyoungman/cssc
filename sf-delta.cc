@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.10 1997/07/07 21:24:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.11 1997/10/27 19:26:50 james Exp $";
 #endif
 
 class diff_state {
@@ -292,15 +292,7 @@ sccs_file::check_keywords_in_file(const char *name) {
 			return;
 		}
 	}
-
-	if (flags.no_id_keywords_is_fatal)
-	  {
-	    quit(-1, "%s: No id keywords.", name);
-	  }
-	else
-	  {
-	    fprintf(stderr, "%s: Warning: No id keywords.\n", name);
-	  }
+	no_id_keywords(name);
 	fclose(f);
 }
 
