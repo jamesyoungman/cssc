@@ -68,9 +68,10 @@
 #endif
 
 #include "my-getopt.h"
+#include "cssc.h" // basically, just for the declaration of quit().
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.9 2002/03/18 20:55:44 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.10 2002/03/25 00:05:46 james_youngman Exp $";
 #endif
 
 int
@@ -110,6 +111,7 @@ CSSC_Options::next()
       if (opterr)		// set opterr for verbose error returns.
 	{
 	  fprintf(stderr, "Unrecognized option '%c'.\n", c);
+	  usage();
 	  exit(opterr);
 	}
       arg = cindex - 1;
@@ -164,6 +166,7 @@ CSSC_Options::next()
 	      if (opterr)
 		{
 		  fprintf(stderr, "Option '%c' requires an argument.\n", c);
+		  usage();
 		  exit(opterr);
 		}
 	      arg = cindex - 1;
