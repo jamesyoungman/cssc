@@ -58,12 +58,12 @@ private:
 			return 1;
 		}
 
-		if (it.include != NULL
+		if (!it.include.empty()
 		    && ((fputs(" -i", out) == EOF || it.include.print(out)))) {
 			return 1;
 		}
 
-		if (it.exclude != NULL
+		if (!it.exclude.empty()
 		    && ((fputs(" -x", out) == EOF || it.exclude.print(out)))) {
 			return 1;
 		}
