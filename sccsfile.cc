@@ -15,7 +15,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.5 1997/05/10 14:49:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.6 1997/05/31 10:22:24 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -492,11 +492,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 			break;
 
 		case 'i':
-			if (arg == NULL) {
-				flags.id_keywords = "";
-			} else {
-				flags.id_keywords = arg;
-			}
+			flags.no_id_keywords_is_fatal = 1;
 			break;
 
 		case 'b':

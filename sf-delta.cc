@@ -21,7 +21,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.5 1997/05/10 14:49:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.6 1997/05/31 10:25:08 james Exp $";
 #endif
 
 class diff_state {
@@ -268,17 +268,6 @@ sccs_file::check_keywords_in_file(const char *name) {
 		quit(errno, "%s: Can't open file for reading.", name);
 	}
 
-	if ( flags.id_keywords && *(const char *)flags.id_keywords != '\0') {
-		while(!read_line_param(f)) {
-			if (strstr(linebuf, flags.id_keywords) != NULL) {
-				fclose(f);
-				return;
-			}
-		}
-		quit(-1, "%s: Required keywords \"%s\" missing.",
-		     name, (const char *) flags.id_keywords);
-	}
-
 	while(!read_line_param(f)) {
 		if (check_id_keywords(linebuf)) {
 			fclose(f);
@@ -286,11 +275,14 @@ sccs_file::check_keywords_in_file(const char *name) {
 		}
 	}
 
-	if (flags.id_keywords) {
-		quit(-1, "%s: No id keywords.", name);
-	}
-
-	fprintf(stderr, "%s: Warning: No id keywords.\n", name);
+	if (flags.no_id_keywords_is_fatal)
+	  {
+	    quit(-1, "%s: No id keywords.", name);
+	  }
+	else
+	  {
+	    fprintf(stderr, "%s: Warning: No id keywords.\n", name);
+	  }
 	fclose(f);
 }
 

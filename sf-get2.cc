@@ -16,7 +16,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.9 1997/05/10 14:49:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.10 1997/05/31 10:19:06 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -447,17 +447,11 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff,
         }
 #endif
 
-	if (!parms.found_id) {
-		if (flags.id_keywords != NULL
-		    && *(const char *)flags.id_keywords != '\0') {
-			fprintf(stderr, "%s: Warning: Required keywords \"%s\""
-				        " missing.",
-				(const char *) name,
-				(const char *) flags.id_keywords);
-		}
-		fprintf(stderr, "%s: Warning: No id keywords.\n",
-			(const char *) name);
-	}
+	if (!parms.found_id)
+	  {
+	    fprintf(stderr, "%s: Warning: No id keywords.\n",
+		    (const char *) name);
+	  }
 				     
 	/* Set the return status. */
 	struct get_status status;

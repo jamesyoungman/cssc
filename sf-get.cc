@@ -22,7 +22,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.5 1997/05/10 14:49:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.6 1997/05/31 10:24:44 james Exp $";
 #endif
 
 void
@@ -63,11 +63,6 @@ sccs_file::get(mystring gname, class seq_state &state, struct subst_parms &parms
 	       int show_sid, int show_module, int debug) {
 	assert(mode != CREATE);
 	
-	const char *req_idkey = flags.id_keywords;
-	if (req_idkey != NULL && req_idkey[0] == '\0') {
-		req_idkey = NULL;
-	}
-
 	seek_to_body();
 
 	/* The following statement is not correct. */
@@ -127,18 +122,12 @@ sccs_file::get(mystring gname, class seq_state &state, struct subst_parms &parms
 				err = (this->*subst_fn)(linebuf, &parms);
 			} else {
 				err = fputs(linebuf, out) == EOF;
-				if (req_idkey == NULL && !parms.found_id 
+				if (!parms.found_id 
 				    && check_id_keywords(linebuf)) {
 					parms.found_id = 1;
 				}
 			} 
 
-			if (!parms.found_id && req_idkey != NULL
-			    && strstr(linebuf, req_idkey) != NULL) {
-				parms.found_id = 1;
-				req_idkey = NULL;
-			}
-				
 			if (err || fputc('\n', out) == EOF) {
 				quit(errno, "%s: Write error.",
 				     (const char *) gname);

@@ -12,7 +12,7 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.5 1997/05/20 23:54:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.6 1997/05/31 10:22:02 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -161,17 +161,8 @@ sccs_file::write(FILE *out) const {
 		return 1;
 	}
 
-	s = flags.id_keywords;
-	if (s != NULL) {
-		if (fputs("\001f i", out) == EOF) {
-			return 1;
-		}
-		if (s[0] != '\0') {
-			if (fprintf(out, " %s", s) == EOF) {
-				return 1;
-			}
-		}
-		if (putc('\n', out) == EOF) {
+	if (flags.no_id_keywords_is_fatal) {
+		if (fputs("\001f i\n", out) == EOF) {
 			return 1;
 		}
 	}
