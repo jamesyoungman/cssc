@@ -14,7 +14,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.6 1997/05/20 23:57:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.7 1997/05/22 23:09:34 james Exp $";
 #endif
 
 inline void
@@ -414,7 +414,12 @@ sccs_file::print_delta(FILE *out, const char *format,
 			break;
 
 		case KEY2('F','D'):
-			print_string_list(out, comments);
+		  // The genuine article prints '(none)' of there
+		  // is no description.
+		  	if (0 == comments.length())
+			  fputs("(none)\n", out);
+			else
+			  print_string_list(out, comments);
 			break;
 
 		case KEY2('B','D'):
