@@ -142,4 +142,4 @@ fi
 
 dnl What about saved setuid?
 AC_CONFIG_SUBDIRS(lndir)
-AC_OUTPUT(Makefile sccsdiff.sh tests/Makefile docs/Makefile shorter/Makefile)
+AC_OUTPUT(Makefile sccsdiff.sh tests/Makefile docs/Makefile shorter/Makefile pwd/Makefile)
