@@ -1,17 +1,43 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-02-11 08:12:12 james>
+Time-stamp: <1998-02-19 21:52:03 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
 
+Thu Feb 19 21:50:35 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl0.  Unfixed. 
+ The option order seems to differ with SCCS and CSSC.  We have
+ a number of tools which issue the command 'get file -Gfile'
+ which works correctly with SCCS, but for CSSC I need to issue 
+ the command 'get -Gfile file' instead...
+
+Thu Feb 19 21:50:39 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl0.  Unfixed. 
+ Trying to run tests/admin/i-option.sh with the CSSC files on
+ the sun machine [Solaris; SunOS 5.5] causes the test I3 to fail with
+ ../../admin: fgetpos() failed!
+ 29 - Illegal seek
+
+Thu Feb 19 21:50:44 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl0.  Unfixed. 
+ The %I% %G% etc tags aren't substituted correctly (they are
+ substituted with the version and date of the file at the time the
+ tags were first checked in).  I have provided a patch 
+ to the tests/get/subst.sh file below.  Also included is a replacement
+ for the keywords.uue file to go along with the 
+ patch.
+
+Thu Feb 19 21:50:49 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl0.  Unfixed. 
+ The -t option is missing from get.   BSD's sccs.c uses it.
+
+Thu Feb 19 21:50:54 1998: Dave Bodenstab <imdave@mcs.net>
+In version 0.06-pl0.  Unfixed. 
+ The operation of the "admin" command for s.foo will silently destroy
+ any files matching [xz].foo.  The manual does not mention this.
 
 Mon Feb  9 23:41:03 1998: Lars Hecking <lhecking@nmrc.ucc.ie>
 In version 0.05-pl0.  Unfixed.
- I have downloaded and compiled CSSC 0.05alpha-pl0 on Solaris 2.5.1
- with egcs-1.0.1 and gcc-2.8.0. All goes well, except for the sccsdiff
- tests 
- [this bug is now fixed -- jay]
-
  Then, Irix 6.3. I have installed gcc-2.8.0, which supports 6.3/32-bit
  API proper. I get tons of warnings like these at linking stage:
 
@@ -67,13 +93,14 @@ M=&5D(#DW+S`W+S(Q(#$P.C4U.C(T(&)Y(&QH96-K:6YG"@%E"@%U"@%5"@%T
 end
 
 
-Mon Jul 7 22:17:59 1997 
-On systems with no working fork() or spawn(), we have to use system()
-to execute commands.  The return value of system() is
-implementation-defined unless its argument is NULL.  Hence we cannot
-place any interpretation on the return value.  This means that we will
-be unaware of any return value from the command and (for example) MR
-validation will not happen reliably.
+Mon Jul 7 22:17:59 1997: James Youngman <jay@gnu.org>
+In version [all]: Unfixed.
+ On systems with no working fork() or spawn(), we have to use system()
+ to execute commands.  The return value of system() is
+ implementation-defined unless its argument is NULL.  Hence we cannot
+ place any interpretation on the return value.  This means that we will
+ be unaware of any return value from the command and (for example) MR
+ validation will not happen reliably.
 
 Local Variables:
 mode: Text
