@@ -1,2 +1,10 @@
 The "lndir" program in this directory is required only to run the test
 suites.  It is not part of the CSSC suite as installed.
+
+None of the programs in this directory will be installed as part of
+the CSSC package; many of them are used only by hte test suites.  Some
+of them are not even used by the test suite.  "last-time.c", for
+example, is provided to help you figure out when your C library's
+time(2) function gives out.  Mine (GNU glibc, currently at version
+2.0.5, over Linux 2.0.31 running on an Intel 486) gives out at Tue Jan
+19 03:14:07 2038.
