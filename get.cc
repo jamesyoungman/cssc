@@ -48,7 +48,7 @@ void
 usage() {
 	fprintf(stderr,
 "usage: %s [-begkmnpstV] [-c date] [-r SID] [-i range] [-w string]\n"
-"\t[-x range] file ...\n",
+"\t[-x range] [-G gfile] file ...\n",
                 prg_name);
 }
 
@@ -68,6 +68,8 @@ main(int argc, char **argv) {
 	int show_sid = 0;		/* -m */
 	int show_module = 0;		/* -n */
 	int debug = 0;			/* -D */
+	mystring gname;		        /* -G */
+	int got_gname = 0;              /* -G */
 #if 0
 	int seq_no = 0;			/* -a */
 #endif
@@ -78,7 +80,7 @@ main(int argc, char **argv) {
 		set_prg_name("get");
 	}
 
-	class getopt opts(argc, argv, "r:c:i:x:ebklpsmngtw:a:DV");
+	class getopt opts(argc, argv, "r:c:i:x:ebklpsmngtw:a:DVG:");
 	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
 		switch (c) {
 		default:
@@ -130,6 +132,7 @@ main(int argc, char **argv) {
 
 		case 'p':
 			use_stdout = 1;
+			got_gname = 0;
 			break;
 
 		case 's':
@@ -163,6 +166,12 @@ main(int argc, char **argv) {
 			break;
 #endif
 
+		case 'G':
+		  	got_gname = 1;
+			use_stdout = 0;
+			gname = opts.getarg();
+			break;
+			
 		case 'D':
 			debug = 1;
 			break;
@@ -176,7 +185,6 @@ main(int argc, char **argv) {
 	FILE *out = stdin;	/* The output file.  It's initialized with
 				   stdin so if it's accidently used before
 				   being set it will quickly cause an error. */
-	mystring gname;
 
 	if (use_stdout) {
 		gname = "-";
@@ -191,6 +199,7 @@ main(int argc, char **argv) {
 		if (use_stdout) {
 			fclose(out);
 		}
+		got_gname = 0;
 		gname = "null";
 		out = open_null();
 	}
@@ -224,7 +233,15 @@ main(int argc, char **argv) {
 		if (!use_stdout && !no_output) {
 			assert(name.valid());
 
-			gname = name.gfile();
+			/* got_gname is specified if we had -G g-file
+			 * on the command line.   This only works for the
+			 * first file on the command line (or else we'd
+			 * be overwriting easrlier data.
+			 */
+			if (!got_gname)
+			  gname = name.gfile();
+			got_gname = 0;
+			
 			int mode = CREATE_AS_REAL_USER | CREATE_FOR_GET;
 			if (!keywords) {
 				mode |= CREATE_READ_ONLY;
