@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.41 2001/12/01 21:57:58 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.42 2002/03/26 20:30:46 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -140,23 +140,30 @@ main(int argc, char **argv)
           break;
           
         case 'i':
-          include = sid_list(opts.getarg());
-          if (!include.valid())
-            {
-              errormsg("Invalid inclusion list: '%s'",
-                       opts.getarg());
-              return 2;
-            }
+                {
+                    sid_list include_arg(opts.getarg());
+                    if (!include_arg.valid())
+                    {
+                        errormsg("Invalid inclusion list: '%s'",
+                                 opts.getarg());
+                        return 2;
+                    }
+                    include = include_arg;
+                }
           break;
           
-        case 'x':
-          exclude = sid_list(opts.getarg());
-          if (!exclude.valid())
-            {
-              errormsg("Invalid exclusion list: '%s'",
-                       opts.getarg());
-              return 2;
-            }
+            case 'x':
+                {
+                    sid_list exclude_arg(opts.getarg());
+                    if (!exclude_arg.valid())
+                    {
+                        errormsg("Invalid exclusion list: '%s'",
+                                 opts.getarg());
+                        return 2;
+                    }
+                    exclude = exclude_arg;
+                }
+                
           break;
           
         case 'e':
@@ -405,25 +412,25 @@ main(int argc, char **argv)
               }
               else
               {
-		/* The g-file was created with the real uid,
-		 * and so if we want to change its mode, we 
-		 * will have to temporarily set EUID=RUID.
-		 */
-		give_up_privileges();
-		if (!set_gfile_mode(gname, 0444))
-		  retval = 1;
-		restore_privileges();
-		
-		maybe_clear_archive_bit(gname);
+                /* The g-file was created with the real uid,
+                 * and so if we want to change its mode, we 
+                 * will have to temporarily set EUID=RUID.
+                 */
+                give_up_privileges();
+                if (!set_gfile_mode(gname, 0444))
+                  retval = 1;
+                restore_privileges();
+                
+                maybe_clear_archive_bit(gname);
               }
             }
           
           if (retval || !status.success) // get failed.
             {
               retval = 1;
-	      give_up_privileges();
+              give_up_privileges();
               remove(gname.c_str());
-	      restore_privileges();
+              restore_privileges();
               continue;
             }
           
@@ -449,11 +456,11 @@ main(int argc, char **argv)
                 {
                   // Failed to add the lock to the p-file.
                   if (real_file)
-		    {
-		      give_up_privileges();
-		      remove(gname.c_str());
-		      restore_privileges();
-		    }
+                    {
+                      give_up_privileges();
+                      remove(gname.c_str());
+                      restore_privileges();
+                    }
                   retval = 1;   // remember the failure.
                 }
               delete pfile;

@@ -5,7 +5,6 @@ general
 admin
 =====
 	usage error
-	no argv[0]
 	unsupported option letter
 	-b specified with binary file support disabled (env var)
 	invalid initial release for admin -n -r.
@@ -46,7 +45,6 @@ get
 	Operation on directory names containing trailing slashes
 	Unsupported option character
 	Invalid SID used for -r
-	Invalid SID used for -i
 	Invalid SID used for -x
 	Invalid cutoff date for -c
 	Use of -w option
@@ -247,6 +245,7 @@ Too difficult for now
 	delta: Over-long line in the file we are checking in.
 	   - Would need to find out if we are running SCCS or CSSC
 	   - Then choose an appropriate line length for SCCS.  Bletch.
+	admin: no argv[0]
 
 
 Interactive tests required
