@@ -1,4 +1,141 @@
+1998-09-04  James Youngman  <jay@gnu.org>
+
+	* Released 0.09alpha.pl0.
+	
+	* README: Fixed typo.
+
+1998-09-03  James Youngman  <jay@gnu.org>
+
+	* except.h: Declarations of exceptions.
+
+	* Makefile.am: Added except.h.
+
+	* tests/prt/exists.sh:
+	Added tests that check for correct behabiour when the s-file is
+	absent.
+
+	* sact.cc: Catch exceptions in main().
+
+	* shorter/rmdel.cs, shorter/sact.cs, shorter/unget.cs, shorter/what.cs, shorter/README, shorter/admin.cs, shorter/cdc.cs, shorter/delta.cs, shorter/get.cs, shorter/prs.cs, shorter/Makefile.in:
+	We have not been keeping these files up to date and haven't used
+	them at all, and we planned not to have to use them.  So they're
+	obsolete.
+
+	* tests/get/create.sh:
+	Make the test suite miscarry if the test files can not be created.
+
+	* tests/initial/root.sh, tests/Makefile.am:
+	Make sure we start the test suite by making sure that we're not
+	running as root.
+
+1998-09-02  James Youngman  <jay@gnu.org>
+
+	* tests/common/not-root:
+	If the code inside the subshell exits with a nonzero exit status, make
+	sure that the "outer" shell does too -- so that the miscarry() takes
+	effect.
+
+	* tests/bsd-sccs/driver-basic.sh:
+	Remove the SCCS directory too, when the test is finished.
+
+	* sid_list.h, unget.cc, sf-write.cc, sf-prs.cc, sf-get2.cc, sf-kw.cc, sf-get.cc, sf-delta.cc, sf-admin.cc, sccsfile.h, sccsfile.cc, run.cc, quit.h, rel_list.cc, rmdel.cc, prt.cc, quit.cc, pf-add.cc, pfile.cc, prs.cc, filepos.h, get.cc, file.cc, fileiter.cc, delta.cc, configure.in, delta-table.cc, bodyio.cc, cdc.cc, acconfig.h, admin.cc:
+	On systems that support exceptions, handle errors by throwing
+	exceptions.  On systems that don't support exceptions, handle some
+	errors by returning back up the calling sequence, and some by calling
+	exit() in quit().  This means that only systems with exceptions will
+	allow the second file to be processed if the first fails.
+
+	* docs/cssc.texi:
+	"admin -h" is actually unimplemented, rather than just untested.
+
+	* tests/rmdel/exists.sh, tests/unget/exists.sh, tests/prs/exists.sh, tests/prs/keywords.sh:
+	Added tests that check for correct behaviour when the s-file does
+	not exist.
+
+1998-08-22  James Youngman  <jay@gnu.org>
+
+	* sf-write.cc: Eliminate unused-parameter warning.
+
+1998-08-15  James Youngman  <jay@gnu.org>
+
+	* docs/TODO: We now use getpwuid() instead of getlogin().
+
+1998-08-14  James Youngman  <jay@gnu.org>
+
+	* unget.cc, sf-write.cc, sid_list.h, sf-prs.cc, sf-get3.cc, sf-kw.cc, sf-get2.cc, sf-get.cc, sf-delta.cc, sccsfile.h, rel_list.cc, fileiter.cc, filepos.h, get.cc, file.cc, file.h, delta.cc, admin.cc:
+	Use errormsg() or errormsg_with_errno() more, instead of quit().
+
+1998-08-13  James Youngman  <jay@gnu.org>
+
+	* auxfiles/CSSC.spec, configure.in: Bumped to 0.09alpha.pl0.
+
+	* README: Indicate how to generate all the neccesary files after a "cvs
+	checkout".
+
+	* bodyio.h, bodyio.cc, sf-delta.cc, sf-admin.cc:
+	Handle I/O errors without calling quit().
+
+	* sf-get2.cc:
+	Added reminder to check if we handle the %W% keyword correctly.
+
+	* sf-get.cc, l-split.cc, delta.cc:
+	Cosmetic changes to the code formatting.
+
+	* sf-prt.cc:
+	Use errormsg_with_errno(), not quit(), and return a failure status
+	intead of exiting on the spot when there is a problem (so that we can
+	continue to process the next file).
+
+	* sf-prs.cc: Cosmetic changes to the code formatting.
+
+	* pfile.cc:
+	Added ctor_quit(), a synonym for quit(), which indicates that it is
+	being called from a constructor.  These are the failure points that
+	can't be replaced with a "return false", but only with an exception.
+
+	* fileiter.cc: Cosmetic changes to the code formatting.
+
+	* cssc.h: Don't need to worry about getlogin() any more.
+
+	* unget.cc: Return a failure status if pfile.update() had failed.
+
+	* sid.cc:
+	Use assert(), not quit(), to detect logic errors in the program.
+
+	* sf-write.cc, sf-delta.cc:
+	Use errormsg_with_errno(), not quit(), and return a failure status
+	intead of exiting on the spot when there is a problem (so that we can
+	continue to process the next file).
+
+	* sccsfile.cc:
+	Use errormsg_with_errno(), not quit(), and return a failure status
+	intead of exiting on the spot when there is a problem (so that we can
+	continue to process the next file).
+
+	Added ctor_quit(), a synonym for quit(), which indicates that it is
+	being called from a constructor.  These are the failure points that
+	can't be replaced with a "return false", but only with an exception.
+
+	* quit.h, quit.cc:
+	Added ctor_quit(), a synonym for quit(), which indicates that it is
+	being called from a constructor.  These are the failure points that
+	can't be replaced with a "return false", but only with an exception.
+
+	* pf-del.cc:
+	Use errormsg_with_errno(), not quit(), and return a failure status
+	intead of exiting on the spot when there is a problem (so that we can
+	continue to process the next file).
+
+	* file.cc: Use getpwuid(), not getlogin(), for get_user_name().
+
+1998-08-12  James Youngman  <jay@gnu.org>
+
+	* pfile.h: Make update() return a boolean indication of success.
+
 1998-06-19  James Youngman  <jay@gnu.org>
+
+	* NEWS, ChangeLog:
+	Normal prerelease modifications to ChangeLog, NEWS, etc.
 
 	* configure.in, auxfiles/CSSC.spec: Bumped the patchlevel.
 
