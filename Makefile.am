@@ -19,7 +19,7 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
 	sysnerr.h version.h xalloc.h ioerr.h err_no.h delta-table.h delta.h \
-	delta-iterator.h
+	delta-iterator.h bodyio.h
 
 # Sources required by everybody.
 common_SOURCES = my-getopt.cc version.cc
@@ -72,8 +72,8 @@ cdc_SOURCES = cdc.cc sf-cdc.cc \
 	$(moddelta_SOURCES) \
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
 
-admin_SOURCES = admin.cc sf-admin.cc \
-	rl-merge.cc \
+admin_SOURCES = admin.cc sf-admin.cc bodyio.cc \
+	rl-merge.cc encoding.cc \
 	$(moddelta_SOURCES) $(newdelta_SOURCES)\
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
 

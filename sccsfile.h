@@ -41,6 +41,7 @@
 class sccs_pfile;	/* pfile.h */
 class seq_state;	/* seqstate.h */
 class cssc_linebuf;
+class FilePosSaver;		// filepos.h
 
 struct delta;
 class cssc_delta_table;
@@ -79,9 +80,10 @@ private:
     int all_locked;
     mystring *user_def;
     mystring *reserved;
+    
     int encoded;
   } flags;
-  
+
   list<mystring> comments;
 
   static FILE *open_sccs_file(const char *name, enum _mode mode,
@@ -190,15 +192,14 @@ public:
 			int show_sid = 0, int show_module = 0,
 			int debug = 0);
 
+  /* sf-chkid.c */
+  static int check_id_keywords(const char *s);
+
 
   /* sf-get3.c */
 private:
   void prepare_seqstate(seq_state &state, sid_list include,
 			sid_list exclude, sccs_date cutoff_date);
-
-  /* sf-chkid.c */
-
-  static int check_id_keywords(const char *s);
 
   /* sf-write.c */
 private:
@@ -207,6 +208,7 @@ private:
   int write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
   void end_update(FILE *out) const;
+  int rehack_encoded_flag(FILE *out, unsigned *sum) const;
 
 public:
   static void update_checksum(const char *name);
@@ -249,11 +251,12 @@ public:
   
   /* sf-admin.c */
   void admin(const char *file_comment,
+	     bool force_binary,
 	     list<mystring> set_flags, list<mystring> unset_flags,
 	     list<mystring> add_users, list<mystring> erase_users);
   void create(release first_release, const char *iname,
 	      list<mystring> mrs, list<mystring> comments,
-	      int suppress_comments);
+	      int suppress_comments, bool force_binary);
 
   /* sf-prs.c */
 private:

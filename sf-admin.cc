@@ -1,8 +1,8 @@
 /*
- * sf-admin.c: Part of GNU CSSC.
+ * sf-admin.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -32,14 +32,11 @@
 #include "sl-merge.h"
 #include "delta.h"
 #include "linebuf.h"
+#include "bodyio.h"
 
-// We use @LIBOBJS@ instead now.
-// #ifndef HAVE_STRSTR
-// #include "strstr.cc"
-// #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.18 1997/12/26 18:37:06 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.19 1998/01/25 22:33:04 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -47,10 +44,12 @@ static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.18 1997/12/26 18:37:06 j
 
 void
 sccs_file::admin(const char *file_comment,
+		 bool force_binary,
 		 list<mystring> set_flags, list<mystring> unset_flags,
 		 list<mystring> add_users, list<mystring> erase_users) {
-	int i;
-	int len;
+	
+	if (force_binary)
+	  flags.encoded = 1;
 
 	if (file_comment != NULL) {
 		comments = NULL;
@@ -72,6 +71,9 @@ sccs_file::admin(const char *file_comment,
 		}
 	}
 
+	int i;
+
+	int len;
 	len = set_flags.length();
 	for(i = 0; i < len; i++) {
 		const char *s = set_flags[i].c_str();
@@ -125,6 +127,10 @@ sccs_file::admin(const char *file_comment,
 			}
 			break;
 
+		case 'm':
+		  set_module_flag(s);
+		  break;
+
 		case 'n':
 			flags.null_deltas = 1;
 			break;
@@ -152,6 +158,7 @@ sccs_file::admin(const char *file_comment,
 		}
 	}
 	      
+	
 	len = unset_flags.length();
 	for(i = 0; i < len; i++) {
 		const char *s = unset_flags[i].c_str();
@@ -237,7 +244,7 @@ sccs_file::admin(const char *file_comment,
 void
 sccs_file::create(release first_release, const char *iname,
 		  list<mystring> mrs, list<mystring> comments,
-		  int suppress_comments)
+		  int suppress_comments, bool force_binary)
 {
 
   sccs_date now = sccs_date::now();
@@ -278,44 +285,30 @@ sccs_file::create(release first_release, const char *iname,
 	}
       }
 
-    int found_id = 0;
+    bool binary = false;
+    bool found_id = false;
+    unsigned long int lines = 0uL;
 
-		
-    while(!read_line_param(in))
-      {
-	new_delta.inserted++;
-	if (fputs_failed(fputs(plinebuf->c_str(), out)) ||
-	    putc_failed(putc('\n', out)))
-	  {
-	    mystring zname = name.zfile();
-	    quit(errno, "%s: Write error.", zname.c_str());
-	  }
-	if (!found_id)
-	  {
-	    if (check_id_keywords(plinebuf->c_str()))
-	      {
-		found_id = 1;
-	      }
-	  }
-      }
-
-    if (ferror(in))
-      {
-	quit(errno, "%s: Read error.", iname);
-      }
+    // Insert the body...
+    body_insert(&binary,
+		iname,		// input file name
+		name.xfile().c_str(), // output file name
+		in, out,
+		&lines, &found_id);
+    if (binary)
+      flags.encoded = true;	// fixup file in sccs_file::end_update()
+    
     if (in != stdin)
-      {
-	fclose(in);
-      }
+      fclose(in);
     
     if (!found_id)
-      {
-	no_id_keywords(name.c_str());
-      }
+      no_id_keywords(name.c_str());
   }
 	
   fprintf(out, "\001E 1\n");
-  
+
+  // if the "encoded" flag needs to be changed,
+  // end_update() will change it.
   end_update(out, new_delta);
 }
 

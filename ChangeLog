@@ -1,36 +1,252 @@
+1998-01-24  James Youngman  <jay@gnu.org>
+
+	* tests/admin/flags.sh: Since we now emit a couple of error
+	messages relating to the "-b" flag, we need to IGNORE some of the
+	stderr output in the tests, otherwise we procude unwarranted test
+	failures.
+
+	* tests/sccsdiff/rap.sh: We can't count on the precise form of the
+	output, but we can count on the exit status of the command.  Tests
+	amended for compatibility with SCCS.  SCCS now passes :-)
+
+	* tests/get/branch.sh: Since we now emit a couple of error
+	messages relating to the "-b" flag, we need to IGNORE some of the
+	stderr output in the tests, otherwise we procude unwarranted test
+	failures.
+
+	* sccsdiff.sh.in: SCCS compatibility fix -- When "get" fails, exit
+	with value 1, not 2.
+
+	* get.cc: Added warnings for when -b flag is ignored because the b
+	(branch-enable) flag is not set, and for when -b is used without
+	-e (which does not make sense and is otherwise ignored).
+
+	* _chmod.cc: Removed double leading underscore for #define used to
+	prevent multiple inclusion.
+
+	* sf-get2.cc: Fixed assertion failure for "get -e -r1.1.1 s.foo.c"
+	when there is a revision 1.1.1.1.  Probably needs tidying (or at
+	least re-generalising).
+
+	* sf-chkid.cc: Export the function is_keyword_letter() so that our
+	later support for binary as well as text files can be simplified.
+
+	* sccsfile.h, sccsfile.cc: Added sccs_file::branches_allowed().
+
+1998-01-20  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi: Added documentation on when and how branches are
+	made.
+
+1998-01-19  James Youngman  <jay@gnu.org>
+
+	* tests/get/branch.sh: Added tests for the correct handling of the
+	"-b" flag.
+
+1998-01-18  James Youngman  <jay@gnu.org>
+
+	* encoding.cc: New file.  First show at the uuencode/uudecode
+	methods for the support of binary files.
+
 1998-01-17  James Youngman  <jay@gnu.org>
 
-	* my-getopt.cc: Emit a message if a ":" is found in a getopt
-	argument description string, end exit fatally.
-
-	* *.cc: Removed all the ":" option qualifiers from all the programs in
-	the suite, for better compatibility with real SCCS.
+	* unget.cc, what.cc, rmdel.cc, prs.cc, get.cc, my-getopt.cc,
+	delta.cc, ChangeLog, admin.cc: Removed all colons from getopt()
+	option descriptors.  Instead we replace them with "!", which tells
+	our custom version of getopt() to parse the options in the SCCS
+	style (arguments must follow keyletters and may not be in the next
+	argv[] element).
 
 	* cssc.h: Only include <config.h> if HAVE_CONFIG_H is defined.
 
-	* cdc: Documented it, wrote test scripts for it, and debugged it.
+	* configure.in: Updated the version number.
+
+	* testutils/user.c: Added this file (which is broadly the
+	equivalent of the standard Unix command "id").
+
+	* NEWS: Changes for version 0.05 (changes in Dec 19997 and Jan 1998).
+
+	* ChangeLog:
+	Updated for version 0.05 (changes in Dec 19997 and Jan 1998).
+
+	* docs/CREDITS: Added paragraph for Richard Polton, and
+	de-emphasised the role of MySC.
+
+	* docs/FIXED: Moved a bug report (99999 cap on nu,bers of lines in
+	SCCS files) from BUGS to FIXED after fixing it.
+
+	* docs/BUGS: Moved a bug report to the FIXED file after fixing it.
+
+	* docs/missing.txt: Indicate that sccs-val and sccs-comb have not
+	been implemented.
+
+	* docs/TODO: *** empty log message ***
+
+	* docs/TESTING:
+	Indicated that Richard Polton wrote the first contributed test
+	suite.
+
+	* docs/Platforms:
+	Added indication that CSSC has been tested under Red Hat version
+	5.0.
+
+1998-01-16  James Youngman  <jay@gnu.org>
+
+	* docs/get-spec.txt:
+	Updated to reflect the fact that the makefile no longer has a
+	"make gtest" target.
+
+1998-01-15  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi: Documented sact, cdc, rmdel, prt.
+
+	* tests/Makefile.am: Added the test-cdc target.
+
+	* tests/common/test-common:
+	The expected stdout/stderr arguments are quoted when they are
+	output to temporary files, to prevent any wildcard characters iin
+	them being expanded!
+
+	* mystring.h: typo in comment
+
+	* fileiter.h:
+	Provide using_stdin(), which indicates if stdin is already in use
+	for reading a list of files to operate on.
+
+	* prompt.cc:
+	The prompt should not be issued if stdin is not a terminal.
+
+	* sf-cdc.cc, cdc.cc: Using the new test cases, fixed many bugs!
+
+	* tests/cdc/4order.sh, tests/cdc/2comment.sh, tests/cdc/3MRs.sh,
+	tests/cdc/1general.sh: 
+	Wrote a fairly comlete set of test cases for 'cdc'.
 
 1998-01-10  James Youngman  <jay@gnu.org>
 
-	* Added documentation for "sact" to cssc.texi.
+	* tests/Makefile.am: Added tests for "sccsdiff".
 
-	* An improved sccsdiff (thanks to Richard Polton) and a test
-	script for it.
+	* tests/sccsdiff/rap.sh: Export $get so that "sccsdiff" can call
+	the correct "get" program.
 
-	* Renamed "list.h" to "mylist.h" to avoid possible conflicts or
-	misunderstandings relating to STL, and to prepare the way for
-	perhaps actually using the STL headers in the future.
+	* Makefile.am: Renamed list.h to mylist.h.
+
+	* sccsfile.h, sid_list.cc, run.cc, run.h, pipe.cc, rel_list.h,
+	l-split.cc, pfile.h, fileiter.h, mylist.h, list.h: Renamed
+	"list.h" to "mylist.h".
 
 1997-12-26  James Youngman  <jay@gnu.org>
 
-	* linebuf.h: Renamed _linebuf to cssc_linebuf.
+	* testutils/realpwd.cc: Minor corrections to a comment.
 
-	* sf-get2.cc, sf-get3.cc: Added assertions that the delta_table
-	member of sccs_file is not NULL.
+	* testutils/Makefile.am: Added "user.c" which compiles to "user",
+	a utility somewhat similar to "id".
+
+	* tests/admin/users.sh: Added a couple of extra test cases wich
+	run prs to make sure that the list of authorised users is
+	correctly understood.
+
+	* tests/Makefile.am: Added "large"; another subdirectory
+	containing test suites.
+
+	* split.cc: Commented everything out with #if 0; the split()
+	function is now a member function of cssc_linebuf.
+
+	* sf-write.cc, sccsfile.h: Changed the linebuf member from
+	"cssc_linebuf" to "cssc_linebuf*".
+
+	* sid_list.h: Renamed class _linebuf to cssc_linebuf.  Only
+	affects the test code for this module.
+
+	* sf-get.cc, sf-delta.cc: Changed the linebuf member from
+	"cssc_linebuf" to "cssc_linebuf*".
+
+	* sf-admin.cc: Modified the order in which users are added and
+	deleted from the authorisation list for strict compatibility with
+	"real" SCCS (fixes bug reported by Richard Polton
+	<richardp@scopic.com>).
+
+	* sccsfile.cc: Changed the linebuf member from "cssc_linebuf" to
+	"cssc_linebuf*".  Also that class has been changed to much reduce
+	the requirement for casts.
+
+	* pfile.cc: Renamed class _linebuf to cssc_linebuf.  Also removed
+	the necessity for some casts.
+
+	* sf-rmdel.cc: Renamed class _linebuf to cssc_linebuf.
+
+	* list.h: Code reformatting (whitespace changes only).
+
+	* linebuf.h: Renamed class _linebuf to cssc_linebuf.  Also removed
+	the necessity for some casts.
+
+	* linebuf.cc: Renamed class _linebuf to cssc_linebuf and put the
+	split() parsing utility function into this class (instead of it
+	being a global function).
+
+	* fileiter.cc: Renamed class _linebuf to cssc_linebuf.
+
+	* delta-table.cc: Added some instances of ASSERT(0 != this).
+
+	* sf-prs.cc: Changed the linebuf member from "cssc_linebuf" to
+	"cssc_linebuf*".
+
+	* delta-iterator.cc: Added assertions that the dtbl member is not
+	NULL.
+
+	* cssc.h: Removed declaration of split() (it's now a member
+	function of cssc_linebuf).
+
+	* sf-get2.cc, sf-get3.cc: Added assertions that the delta table is
+	not NULL.
+
+	* show-disp.sh: Show disposition of the CVS-controlled files...
+
+1997-12-19  James Youngman  <jay@gnu.org>
+
+	* sccsdiff.sh.in: Modified version of sccsdiff arrived from
+	Richard Polton; took the ideas onboard for a rewrite of sccsdiff.
+
+	* tests/sccsdiff/rap.sh: Added test code for sccsdiff from Richard
+	Polton "The Rubber Buccaneer" <richardp@scopic.com>
+
+1997-12-12  James Youngman  <jay@gnu.org>
+
+	* tests/large/admin.sh: Check that we can create SCCS files for
+	extremely long G-files.
+
+	* tests/admin/users.sh: *** empty log message ***
 
 1997-12-11  James Youngman  <jay@gnu.org>
 
-	* sf-admin.cc: Add users in the correct order for "admin -a".
+	* sf-admin.cc: Fixed bug where "admin -a" adds users in exactly
+	the opposite order to that required.
+
+1997-11-30  James Youngman  <jay@gnu.org>
+
+	* dtbl-prepend.cc, sccs-delta.cc:
+	Code split out of sccsfile.h and sccsfile.cc.
+
+	* delta.h, delta-table.cc, delta-table.h, delta-iterator.cc,
+	delta-iterator.h: Split delta-iterator.cc delta-iterator.h
+	delta-table.cc delta-table.h delta.h out of sccsfile.h.
+
+	* sf-write.cc, sf-rmdel.cc, sf-prt.cc, sf-prs.cc, sf-get3.cc,
+	sf-get.cc, sf-get2.cc, sf-delta.cc, sf-cdc.cc, sf-add.cc,
+	sf-admin.cc, sccsfile.h, sccsfile.cc, prt.cc, rmdel.cc, prs.cc,
+	delta.cc, get.cc, configure.in, cdc.cc, Makefile.am, admin.cc:
+	Split delta.h, delta-table.h, and delta-iterator.h out of
+	sccsfile.h to compartmentalise the dependencies.
+
+	* what.cc: Added retuen statement after call to fail() so that the
+	compiler stops warning about missing return statements.
+
+	* what.cc, unget.cc, prt.cc, rmdel.cc, my-getopt.h, prs.cc,
+	my-getopt.cc, getopt.cc, getopt.h, get.cc, cdc.cc, delta.cc,
+	Makefile.am, admin.cc, ChangeLog: Renamed getopt.* to my-getopt.*
+	to avoid conflict with systemhader of the same name.
+
+
 
 Sun Nov 30 14:10:45 1997  James Youngman  <jay@gnu.org>
 
@@ -835,10 +1051,9 @@ Sun May  4 17:01:36 1997  James Youngman  <jay@gnu.org>
 
 Sun May  4 12:11:02 1997  James Youngman  <jay@gnu.org>
 
-	* sf-get2.cc:
-	Bugfix for behaviour with "-e -r2" when latest trunk revision was
-	1.x.  Used to get a delta from 1.x, now it creates the new delta 2.1,
-	as does "real" SCCS.
+	* sf-get2.cc: Bugfix for behaviour with "-e -r2" when latest trunk
+	revision was 1.x.  This used to get a delta from 1.x, now it
+	creates the new delta 2.1, as does "real" SCCS.
 
 Sat May  3 22:42:55 1997  James Youngman  <jay@gnu.org>
 
@@ -874,7 +1089,7 @@ Sat May  3 11:51:53 1997  James Youngman  <jay@gnu.org>
 
 Tue Apr 29 01:42:14 1997  James Youngman  <jay@gnu.org>
 
-	* Decided to consider supporting setuid execution via BSD's
+	*: Decided to consider supporting setuid execution via BSD's
  	sccs(1) command.
 
 Sun Apr 20 22:38:13 1997  James Youngman  <jay@gnu.org>

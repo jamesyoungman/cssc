@@ -33,39 +33,25 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.17 1998/01/24 14:13:52 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.18 1998/01/25 22:33:01 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
 static void
-print_id_list(const char *s, list<sid> const &list) {
-	int i, len;
+print_id_list(const char *s, list<sid> const &list)
+{
+  int i, len;
 	
-	len = list.length();
-	if (len > 0) {
-#if 0
-		/* Printing out the IDs all on one line instead of
-                 *  one per line should make the output more clear
-	         * ... but for the moment we'll go for compatibilty. 
-		 * In the long run we'll use an environment variable.
-		 * -- JAY
-		 */
-	     
-		printf("%s:", s);
-		for(i = 0; i < len; i++) {
-			putchar(' ');
-			list[i].print(stdout);
-		}
-		putchar('\n');
-#else
-		/* Compatible output */
-		printf("%s:\n", s);
-		for(i = 0; i < len; i++) {
-			list[i].print(stdout);
-			putchar('\n');
-		}
-#endif
+  len = list.length();
+  if (len > 0)
+    {
+      printf("%s:\n", s);
+      for(i = 0; i < len; i++)
+	{
+	  list[i].print(stdout);
+	  putchar('\n');
 	}
+    }
 }
 
 void

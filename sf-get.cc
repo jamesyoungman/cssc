@@ -1,5 +1,5 @@
 /*
- * sf-get.c: Part of GNU CSSC.
+ * sf-get.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -44,7 +44,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.13 1997/12/26 18:38:53 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.14 1998/01/25 22:33:04 james Exp $";
 #endif
 
 void

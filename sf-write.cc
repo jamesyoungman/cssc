@@ -1,8 +1,8 @@
 /*
- * sf-write.c: Part of GNU CSSC.
+ * sf-write.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -31,9 +31,10 @@
 #include "delta.h"
 #include "delta-iterator.h"
 #include "linebuf.h"
+#include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.11 1997/12/26 18:41:47 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.12 1998/01/25 22:33:08 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -147,161 +148,264 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
    if an error occurs. */
 
 int
-sccs_file::write(FILE *out) const {
-	int len;
-	int i;
-	const char *s;
+sccs_file::write(FILE *out) const
+{
+  int len;
+  int i;
+  const char *s;
 
-	delta_iterator iter(delta_table);
-	while(iter.next(1)) {
-	  if (write_delta(out, *iter.operator->())) {
-	    return 1;
-	  }
-	}
+  delta_iterator iter(delta_table);
+  while(iter.next(1)) {
+    if (write_delta(out, *iter.operator->())) {
+      return 1;
+    }
+  }
 
-	if (fputs_failed(fputs("\001u\n", out))) {
-		return 1;
-	}
+  if (fputs_failed(fputs("\001u\n", out))) {
+    return 1;
+  }
 
-	len = users.length();
-	for(i = 0; i < len; i++) {
-		s = users[i].c_str();
-		ASSERT(s[0] != '\001');
-		if (printf_failed(fprintf(out, "%s\n", s))) {
-			return 1;
-		}
-	}
+  len = users.length();
+  for(i = 0; i < len; i++) {
+    s = users[i].c_str();
+    ASSERT(s[0] != '\001');
+    if (printf_failed(fprintf(out, "%s\n", s))) {
+      return 1;
+    }
+  }
 
-	if (fputs_failed(fputs("\001U\n", out))) {
-		return 1;
-	}
+  if (fputs_failed(fputs("\001U\n", out))) {
+    return 1;
+  }
 
-	if (flags.type)
-	  {
-	    if (printf_failed(fprintf(out, "\001f t %s\n",
-				      flags.type->c_str())))
-	      {
-		return 1;
-	      }
-	  }
-	
-	if (flags.mr_checker)
-	  {
-	    if (printf_failed(fprintf(out, "\001f v %s\n",
-				      flags.mr_checker->c_str())))
-	      return 1;
-	  }
-	
-	if (flags.no_id_keywords_is_fatal) {
-		if (fputs_failed(fputs("\001f i\n", out))) {
-			return 1;
-		}
-	}
+  // Beginning of flags...
 
-	if (flags.branch && fputs_failed(fputs("\001f b\n", out))) {
-		return 1;
-	}
+  // b branch
+  if (flags.branch && fputs_failed(fputs("\001f b\n", out))) {
+    return 1;
+  }
 		
-	if (flags.module)
-	  {
-	    if (printf_failed(fprintf(out, "\001f m %s\n",
-				      flags.module->c_str()))) {
-	      return 1;
-	    }
-	  }
-	
-	if (flags.floor.valid())
-	  {
-	    if (fputs_failed(fputs("\001f f ", out))
-		|| flags.floor.print(out)
-		|| putc_failed(putc('\n', out)))
-	      {
-		return 1;
-	      }
-	  }
-	
-	if (flags.ceiling.valid())
-	  {
-	    if(fputs_failed(fputs("\001f c ", out))
-	       || flags.ceiling.print(out)
-	       || putc_failed(putc('\n', out)))
-	      {
-		return 1;
-	      }
-	  }
-	
-	if (flags.null_deltas)
-	  {
-	    if (fputs_failed(fputs("\001f n\n", out)))
-	      return 1;
-	  }
-
-	if (flags.joint_edit)
-	  {
-	    if (fputs_failed(fputs("\001f j\n", out)))
-	      return 1;
-	  }
-
-	if (flags.all_locked) {
-		if (fputs_failed(fputs("\001f l a\n", out))) {
-		  return 1;
-		}
-	} else if (!flags.locked.empty()
-		   && (fputs_failed(fputs("\001f l ", out))
-		       || flags.locked.print(out)
-		       || putc_failed(putc('\n', out)))) {
-		return 1;
+  // c ceiling
+  if (flags.ceiling.valid())
+    {
+      if(fputs_failed(fputs("\001f c ", out))
+	 || flags.ceiling.print(out)
+	 || putc_failed(putc('\n', out)))
+	{
+	  return 1;
 	}
-
-	if (flags.user_def)
-	  {
-	    const char *p = flags.user_def->c_str();
-	    if (printf_failed(fprintf(out, "\001f q %s\n", p)))
-	      {
-		return 1;
-	      }
-	  }
+    }
 	
-	/* Flag 'e': encoded flag -- boolean.
-	 * Some versions of SCCS produce "\001 f a 0" if the file
-	 * is not encoded, and some do not.  We shall not so as not
-	 * to upset broken implementations, for example our own for the 
-	 * time being.
-	 */
-	if (flags.encoded)
-	  {
-	    if (printf_failed(fprintf(out, "\001f e 1")))
-	      return 1;
-	  }
-	
-	if (flags.reserved)
-	  {
-	    if (printf_failed(fprintf(out, "\001f z %s\n",
-				      flags.reserved->c_str()))) {
-	      return 1;
-	    }
-	  }
-	
-	if (fputs_failed(fputs("\001t\n", out)))
-	  {
-	    return 1;
-	  }
-
-	len = comments.length();
-	for(i = 0; i < len; i++) {
-		s = comments[i].c_str();
-		ASSERT(s[0] != '\001');
-		if (printf_failed(fprintf(out, "%s\n", s))) {
-			return 1;
-		}
+  // d default SID
+  if (flags.default_sid.valid())
+    {
+      if (fputs_failed(fputs("\001f d ", out))
+	  || flags.default_sid.print(out)
+	  || putc_failed(putc('\n', out)))
+	{
+	  return 1;
 	}
+    }
+	
+  // f floor
+  if (flags.floor.valid())
+    {
+      if (fputs_failed(fputs("\001f f ", out))
+	  || flags.floor.print(out)
+	  || putc_failed(putc('\n', out)))
+	{
+	  return 1;
+	}
+    }
+	
+  // i no id kw is error
+  if (flags.no_id_keywords_is_fatal) {
+    if (fputs_failed(fputs("\001f i\n", out))) {
+      return 1;
+    }
+  }
 
-	if (fputs_failed(fputs("\001T\n", out)))
-	  {
-	    return 1;
-	  }
+  // j joint-edit
+  if (flags.joint_edit)
+    {
+      if (fputs_failed(fputs("\001f j\n", out)))
+	return 1;
+    }
 
-	return 0;
+  // l locked-releases
+  if (flags.all_locked) {
+    if (fputs_failed(fputs("\001f l a\n", out))) {
+      return 1;
+    }
+  } else if (!flags.locked.empty()
+	     && (fputs_failed(fputs("\001f l ", out))
+		 || flags.locked.print(out)
+		 || putc_failed(putc('\n', out)))) {
+    return 1;
+  }
+
+  // m Module flag
+  if (flags.module)
+    {
+      const char *p = flags.module->c_str();
+      if (printf_failed(fprintf(out, "\001f m %s\n", p)))
+	{
+	  return 1;
+	}
+    }
+	
+  // n Create empty deltas
+  if (flags.null_deltas)
+    {
+      if (fputs_failed(fputs("\001f n\n", out)))
+	return 1;
+    }
+
+  // q %Q% subst value (user flag)
+  if (flags.user_def)
+    {
+      const char *p = flags.user_def->c_str();
+      if (printf_failed(fprintf(out, "\001f q %s\n", p)))
+	{
+	  return 1;
+	}
+    }
+	
+  // t %Y% subst value
+  if (flags.type)
+    {
+      if (printf_failed(fprintf(out, "\001f t %s\n",
+				flags.type->c_str())))
+	{
+	  return 1;
+	}
+    }
+	
+  // v MR-validation program.
+  if (flags.mr_checker)
+    {
+      if (printf_failed(fprintf(out, "\001f v %s\n",
+				flags.mr_checker->c_str())))
+	return 1;
+    }
+
+  /* "admin -i" does not know if the input file is binary until
+   *  the body is copied into the x-file by bodyio.cc.  Hence if
+   *  it finds the file is binary, it must have a way of setting
+   *  the "e" (encoded) flag.  We do this by using a
+   *  FilePosSaver flag.  (we rewind back to this point and
+   *  rewrite the flag (is this a hack or a kludge then?)
+   *
+   * An alternative would have been to modify end_update(),
+   * telling it that it needs to update the "encoded" flag
+   * as well as the checksum.  However, the checksum calculation
+   * there is done by open_sccs_file(), and we'd have to figure 
+   * out the effect on the checksum of changing the "encoded"
+   * flag as well.   Not nice.   This will do for now.
+   *
+   * TODO: consider implementing the above fix.
+   */
+	
+  // Write the prefix for the "encoded" flag.
+  if (printf_failed(fprintf(out, "\001f e ")))
+    return 1;
+
+  if (flags.encoded)
+    {
+      if (putc_failed(putc('1', out)))
+	return 1;
+    }
+  else			// not encoded.
+    {
+      //      encoded_flag_pos_saver = new FilePosSaver(out);
+	
+      if (putc_failed(putc('0', out)))
+	return 1;
+    }
+	
+  if (printf_failed(fprintf(out, "\n")))
+    return 1;
+	
+  if (flags.reserved)
+    {
+      if (printf_failed(fprintf(out, "\001f z %s\n",
+				flags.reserved->c_str()))) {
+	return 1;
+      }
+    }
+	
+  // end of flags.
+
+  if (fputs_failed(fputs("\001t\n", out)))
+    {
+      return 1;
+    }
+
+  len = comments.length();
+  for(i = 0; i < len; i++) {
+    s = comments[i].c_str();
+    ASSERT(s[0] != '\001');
+    if (printf_failed(fprintf(out, "%s\n", s))) {
+      return 1;
+    }
+  }
+
+  if (fputs_failed(fputs("\001T\n", out)))
+    {
+      return 1;
+    }
+
+  return 0;
+}
+
+
+
+int
+sccs_file::rehack_encoded_flag(FILE *f, unsigned *sum) const
+{
+  // Find the encoded flag.  Maybe change it.
+  // "f" must be opened for update.
+  char ch, last;
+  last = '\n';
+  const char match[] = "\001f e ";
+  const int nmatch = strlen(match);
+  int n;
+  
+  while ( EOF != (ch=getc(f)) )
+    {
+      if ('\n' == last)
+	{
+	  n = 0;
+	  while (match[n] == ch)
+	    {
+	      if (nmatch-1 == n)
+		{
+		  // success; now we might change the flag.
+		  FilePosSaver *pos = new FilePosSaver(f);
+		  ch = getc(f);
+		  if ('0' == ch)
+		    {
+		      delete pos; // rewind file 1 char.
+		      putc('1', f);
+		      const int d =  ('1' - '0'); // change to checksum.
+		      *sum = (*sum + d) & 0xFFFF; // adjust checksum.
+		      return 0;
+		    }
+		  else
+		    {
+		      pos->disarm();
+		      delete pos;
+		      return 0;	// flag was already set.
+		    }
+		}
+	      ++n;		// advance match.
+	      ch = getc(f);
+	    }
+	  // match failed.
+	}
+      last = ch;
+    }
+  return 1;			// failed!
 }
 
 
@@ -318,15 +422,29 @@ sccs_file::end_update(FILE *out) const {
 
 		xfile_error("Write error.");
 	}
-	rewind(out);
 
 	unsigned sum;
 	mystring xname = name.xfile();
-	if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ, &sum))))
-	  {
-	    xfile_error("Error closing file.");
-	  }
 
+	// Open the file (obtaining the checksum) and immediately close it.
+	if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ, &sum))))
+	  xfile_error("Error closing file.");
+	
+	// For "admin -i", we may need to change the "encoded" flag
+	// from 0 to 1, if we found out that the input file was
+	// binary, but the "-b" command line option had not been
+	// given.  The checksum is adjusted if required.
+	if (flags.encoded)
+	  {
+	    rewind(out);
+	    if (rehack_encoded_flag(out, &sum))
+	      {
+		xfile_error("Write error.");
+	      }
+	  }
+	
+
+	rewind(out);
 	if (printf_failed(fprintf(out, "\001h%05u", sum))
 	    || fclose_failed(fclose(out)))
 	  {

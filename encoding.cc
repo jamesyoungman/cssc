@@ -25,8 +25,11 @@
  * 
  * Compile on its own, defining TEST_CODE, to compile a test program.
  */
-#include <stdio.h>
-#include <stddef.h>
+
+#ifndef TEST_CODE
+// Various #include statements not required by the test code.
+#endif
+
 
 // This system (uuencoding) will not work on non-ascii machines,
 // because it assumed that there is a block of printable characters
@@ -39,7 +42,7 @@
 #define UUENC(c)        (((c) & 077) + 040)
 
 static inline void
-encode(char in[3], char out[4])
+encode(const char in[3], char out[4])
 {
   // Notice that the bitmasks always add up to 077.
   out[0] = UUENC(((in[0] >> 2)));
@@ -49,7 +52,7 @@ encode(char in[3], char out[4])
 }
 
 static inline void 
-decode(char in[4], char out[3])
+decode(const char in[4], char out[3])
 {
   // Only the bottom six bits of t0,t1,t2,t3 are ever set,
   // but we use ints for their speed not their size.
@@ -80,8 +83,8 @@ decode(char in[4], char out[3])
 
 
 // decode a line, returning the number of characters in it.
-static inline int
-decode_line(char in[], char out[])
+int
+decode_line(const char in[], char out[])
 {
   int len = UUDEC(in[0]);
   if (len <= 0)
@@ -101,8 +104,8 @@ decode_line(char in[], char out[])
 
 
 // encode a line, returning the number of characters in it.
-static inline void
-encode_line(char in[], char out[], int len)
+void
+encode_line(const char in[], char out[], int len)
 {
   *out++ = UUENC(len);
   
@@ -120,6 +123,8 @@ encode_line(char in[], char out[], int len)
 
 #ifdef TEST_CODE
 
+#include <stdio.h>
+#include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -168,7 +173,7 @@ int test_all(void)
       if ( 0x7FFFF == (i & 0x7FFFF) )
 	{
 	  double completed = (100.0 * i) / dmaxval;
-	  printf("%06lx (%2.0f%%)...\n", i, completed);
+	  printf("%06lx %3.0f%%...\n", i, completed);
 	}
       
       
@@ -197,18 +202,32 @@ int test_all(void)
   return 0;
 }
 
-char *options[] = { "--encode", "--decode", "--all" };
-int (*actions[])(void) = { test_encode, test_decode, test_all };
+const char *options[] = { "--encode", "--decode", "--all" };
+const int (*actions[])(void) = { test_encode, test_decode, test_all };
 
 #define NELEM(array)   (sizeof(array)/sizeof(array[0]))
 
-int main(int argc, char *argv[])
+
+static void
+usage(const char *prog)
 {
-  if (argc == 2)
+  fprintf(stderr, "Usage: %s [", prog);
+  for (size_t i=0; i<NELEM(options); ++i)
+    {
+      fprintf(stderr, "%s %s", (i>0) ? " |" : "", options[i]);
+    }
+  fprintf(stderr, " ]\n");
+}
+
+int
+main(int argc, char *argv[])
+{
+  if (2 == argc)
     for (size_t i=0; i<NELEM(options); ++i)
       if (0 == strcmp(options[i], argv[1]))
 	return (actions[i])();
-  fprintf(stderr, "Test code usage error; see source code.\n");
+  
+  usage(argv[0] ? argv[0] : "encoding-test");
   return 1;
 }
 

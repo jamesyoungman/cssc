@@ -22,7 +22,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.12 1997/11/30 21:05:57 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.13 1998/01/25 22:33:07 james Exp $";
 #endif
 
 static void
@@ -405,8 +405,20 @@ sccs_file::prt(FILE *out,
       print_string_list(out, users, "\t", "\n", "everyone");
       putc('\n', out);
     }
+  
   if (print_flags)
     {
+      // PROBLEM: 
+      //
+      // Those SCCS flags that have no "value" field, that is, those
+      // which are either on or off, have a tab printed immediately
+      // before their newlines...
+      //
+      // Except the "encoded" flag, which doesn't have a newline
+      // printed after it, for some reason.
+      //
+      // But we emlate even that bug :-)
+      //
       int flag_count = 0;
       fprintf(out, "\nFlags --\n");
       if (flags.branch)
@@ -418,15 +430,24 @@ sccs_file::prt(FILE *out,
       
       print_flag(out, "\tceiling\t", flags.ceiling, flag_count);
       print_flag(out, "\tdefault SID\t", flags.default_sid, flag_count);
+
+      // No newline after this one;  odd, but it's what "real"
+      // SCCS does.
+      if (flags.encoded)
+	{
+	  fprintf(out, "\tencoded");
+	  ++flag_count;
+	}
+      
       print_flag(out, "\tfloor\t", flags.floor, flag_count);
       if (flags.no_id_keywords_is_fatal)
 	{
-	  fprintf(out, "\tid_keywd err/warn\n");
+	  fprintf(out, "\tid_keywd err/warn\t\n");
 	  ++flag_count;
 	}
       if (flags.joint_edit)
 	{
-	  fprintf(out, "\tjoint edit\n");
+	  fprintf(out, "\tjoint edit\t\n");
 	  ++flag_count;
 	}
       if (flags.all_locked)
@@ -440,7 +461,7 @@ sccs_file::prt(FILE *out,
 	  putc('\n', out);
 	}
       print_flag(out, "\tmodule\t%s\n", flags.module, flag_count);
-      print_flag(out, "\tnull delta\n", flags.null_deltas, flag_count);
+      print_flag(out, "\tnull delta\t\n", flags.null_deltas, flag_count);
       print_flag(out, "\tcsect name\t%s\n", flags.user_def, flag_count);
       print_flag(out, "\ttype\t%s\n", flags.type, flag_count);
       print_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count);

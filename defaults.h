@@ -101,7 +101,11 @@
 #endif
 
 #ifndef CONFIG_EOL_CHARACTER
-#define CONFIG_EOL_CHARACTER '\n'
+#define CONFIG_EOL_CHARACTER ('\n')
+#endif
+
+#ifndef CONFIG_CONTROL_CHARACTER
+#define CONFIG_CONTROL_CHARACTER ('\001')
 #endif
 
 #ifndef CONFIG_WHAT_BUFFER_SIZE

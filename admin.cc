@@ -35,7 +35,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.18 1998/01/17 11:42:38 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.19 1998/01/25 22:32:58 james Exp $";
 
 void
 usage() {
@@ -50,6 +50,7 @@ main(int argc, char **argv) {
 	int c;
 	release first_release = NULL;		/* -r */
 	int new_sccs_file = 0;			/* -n */
+	bool force_binary = false;              /* -b */
 	const char *iname = NULL;		/* -i -I */
 	const char *file_comment = NULL;	/* -t */
 	list<mystring> set_flags, unset_flags;	/* -f, -d */
@@ -67,7 +68,7 @@ main(int argc, char **argv) {
 		set_prg_name("admin");
 	}
 
-	class getopt opts(argc, argv, "ni!r!t!f!d!a!e!m!y!hzV");
+	class getopt opts(argc, argv, "bni!r!t!f!d!a!e!m!y!hzV");
 	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
 		switch (c) {
 		default:
@@ -75,6 +76,10 @@ main(int argc, char **argv) {
 
 		case 'n':
 			new_sccs_file = 1;
+			break;
+
+		case 'b':
+			force_binary = true;
 			break;
 
 		case 'i':
@@ -183,7 +188,9 @@ main(int argc, char **argv) {
 		}
 #endif
 
-		file.admin(file_comment, set_flags, unset_flags,
+		
+		file.admin(file_comment,
+			   force_binary, set_flags, unset_flags,
 			   add_users, erase_users);
 
 		if (new_sccs_file) {
@@ -192,25 +199,18 @@ main(int argc, char **argv) {
 					 " multiple files.");
 			}
 
-			if (first) {
-			  // The real thing does not prompt the user here.
-			  // Hence we don't either.
-#if 0
-				if (stdin_is_a_tty()) {
-					if (!suppress_mrs && mrs == NULL
-					    && file.mr_required()) {
-						mrs = prompt_user("MRs? ");
-					}
-				}
-#endif
-				if (!file.mr_required() && !mrs.empty())
-				  quit(-1, "MRs not enabled with 'v' flag, "
-				       "can't use 'm' keyword.");
-				
-				mr_list = split_mrs(mrs);
-				comment_list = split_comments(comments);
-				first = 0;
-			}
+			if (first)
+			  {
+			    // The real thing does not prompt the user here.
+			    // Hence we don't either.
+			    if (!file.mr_required() && !mrs.empty())
+			      quit(-1, "MRs not enabled with 'v' flag, "
+				   "can't use 'm' keyword.");
+			    
+			    mr_list = split_mrs(mrs);
+			    comment_list = split_comments(comments);
+			    first = 0;
+			  }
 
 			if (file.mr_required()) {
 				if (!suppress_mrs && mr_list.length() == 0) {
@@ -225,7 +225,7 @@ main(int argc, char **argv) {
 
 			file.create(first_release, iname,
 				    mr_list, comment_list,
-				    suppress_comments);
+				    suppress_comments, force_binary);
 		} else {
 			file.update();
 		}		

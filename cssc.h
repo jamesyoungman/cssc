@@ -3,7 +3,7 @@
  *
  * Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.12 1998/01/17 11:20:15 james Exp $
+ * $Id: cssc.h,v 1.13 1998/01/25 22:32:59 james Exp $
  *
  */
 
@@ -115,6 +115,7 @@ mystring prompt_user(const char *prompt);
 typedef unsigned short seq_no;
 
 unsigned long cap5(unsigned long);
+bool is_id_keyword_letter(char ch);
 
 #endif
 

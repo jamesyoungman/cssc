@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.17 1998/01/24 14:06:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.18 1998/01/25 22:33:02 james Exp $";
 #endif
 
 
@@ -48,63 +48,62 @@ static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.17 1998/01/24 14:06:37 j
 /* Static member for opening a SCCS file and then calculating its checksum. */
 
 FILE *
-sccs_file::open_sccs_file(const char *name, enum _mode mode, unsigned *sump) {
-	FILE *f;
+sccs_file::open_sccs_file(const char *name, enum _mode mode, unsigned *sump)
+{
+  FILE *f;
 
 #ifdef CONFIG_BINARY_FILE
-	f = fopen(name, "rb");
+  f = fopen(name, "rb");
 #else
-	if (mode == UPDATE) {
-		f = fopen(name, "r+");
-	} else {
-		f = fopen(name, "r");
-	}
+  if (mode == UPDATE)
+    f = fopen(name, "r+");
+  else
+    f = fopen(name, "r");
 #endif
-
-	if (f == NULL) {
-		quit(errno, "%s: Can't open SCCS file for reading.", name);
-	}
-
-	if (getc(f) != '\001' || getc(f) != 'h') {
-		quit(-1, "%s: Bad magic number", name);
-	}
-
-	int c = getc(f);
-	while(c != CONFIG_EOL_CHARACTER) {
-		if (c == EOF) {
-			quit(errno, "%s: Unexpected EOF.", name);
-		}
-		c = getc(f);
-	}
-
-	unsigned sum = 0;
-	c = getc(f);
-	while(c != EOF) {
-		sum += (unsigned char) c;
-		c = getc(f);
-	}
-
-	if (ferror(f)) {
-		quit(errno, "%s: Read error.", name);
-	}
-
-	*sump = sum & 0xFFFF;
-
+  
+  if (f == NULL)
+    {
+      quit(errno,
+	   "%s: Can't open SCCS file for %s.",
+	   name,
+	   (mode == UPDATE) ? "update" : "reading");
+    }
+  
+  if (getc(f) != '\001' || getc(f) != 'h')
+    quit(-1, "%s: Bad magic number", name);
+  
+  int c;
+  while ( (c=getc(f)) != CONFIG_EOL_CHARACTER)
+    {
+      if (EOF == c)
+	quit(errno, "%s: Unexpected EOF.", name);
+    }
+  
+  unsigned sum = 0u;
+  
+  while( (c=getc(f)) != EOF)
+    sum += (unsigned char) c;
+  
+  if (ferror(f))
+    quit(errno, "%s: Read error.", name);
+  
+  *sump = sum & 0xFFFF;
+  
 #ifdef CONFIG_BINARY_FILE
-	fclose(f);
-	if (mode == UPDATE) {
-		f = fopen(name, "r+");
-	} else {
-		f = fopen(name, "r");
-	}
-	if (f == NULL) {
-		quit(errno, "%s: Can't open SCCS file for reading.", name);
-	}
+  fclose(f);
+  if (mode == UPDATE)
+    f = fopen(name, "r+");
+  else
+    f = fopen(name, "r");
+  
+  if (f == NULL)
+    quit(errno, "%s: Can't open SCCS file for %s.",
+	 name,
+	 (mode == UPDATE) ? "update" : "reading");
 #else
-	rewind(f);
+  rewind(f);
 #endif
-
-	return f;
+  return f;
 }
 
 
@@ -373,7 +372,7 @@ sccs_file::get_module_name() const
    locked if it isn't only being read.  */
 
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
-	: name(n), mode(m), lineno(0)
+  : name(n), mode(m), lineno(0)
 {
   delta_table = new cssc_delta_table;
   plinebuf     = new cssc_linebuf;

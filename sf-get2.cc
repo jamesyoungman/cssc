@@ -36,119 +36,11 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.23 1998/01/24 14:10:46 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.24 1998/01/25 22:33:05 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
    requested SID. */
-
-#if 0
-bool
-sccs_file::find_requested_sid(sid requested, sid &found) const
-{
-  if (requested.is_null())
-    {
-      requested = flags.default_sid;
-    }
-  
-  sid best;
-  bool got_best = false;
-
-  /* Find the delta with the highest SID that matches the
-     requested SID */
-
-  delta_iterator iter(delta_table);
-
-  /* if requested.is_null(), this means that no SID was specified
-   * on the command line and no default SID is set in the file.
-   * Hence we return the highest release and level on the trunk.
-   */
-  if (requested.is_null())
-    {
-      best = sid("1.1");	// First SID on the trunk.
-      while(iter.next())
-	{
-	  sid const &id = iter->id;
-	  if ((best == id) || best.is_trunk_successor(id))
-	    {
-	      // If ID is on the trunk and is either after BEST, or
-	      // the same as BEST, we have a new BEST.
-	      best = id;
-	      got_best = true;
-	    }
-	}
-      ASSERT(got_best);
-      found = best;
-      return true;
-    }
-  else				/* A SID was specified on the command line. */
-    {
-      while(iter.next())
-	{
-	  sid const &id = iter->id;
-	  if (id == requested)
-	    {
-	      /* Found an exact match. */
-	      found = requested;
-	      return true;
-	    }
-	  else if ( requested.partial_match(id) )
-	    {
-	      if (best.is_null() || id > best )
-		{
-		  best = id;
-		  got_best = true;
-		}
-	    }
-	}
-      if ( got_best )
-	{
-	  ASSERT(!best.is_null());
-	  found = best;
-	  return true;
-	}
-      else if ( !requested.release_only() )
-	{
-	  found = best;
-	  return false;
-	}
-
-      /* If a match wasn't found above and the requested SID
-	 only mentions a release then look for the delta with 
-	 the highest SID that's lower than the requested SID. */
-
-      sid root("1.1");
-      best = sid();
-      got_best = false;
-	
-      iter.rewind();
-      while (iter.next())
-	{
-	  sid const &id = iter->id;
-	  if (!got_best && (root.is_trunk_successor(id) || root == id) )
-	    {
-	      got_best = true;
-	      best = id;
-	    }
-	  else if (id > best && id < requested)
-	    {
-	      got_best = true;
-	      best = id;
-	    }
-	}
-      if (got_best)
-	{
-	  found = best;
-	  return true;
-	}
-      else
-	{
-	  return false;		// TODO: what???
-	}
-    }
-	
-}
-#else
 bool
 sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) const
 {
@@ -237,7 +129,6 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
   return got_best;
 }
 
-#endif
 
 bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
 {
@@ -252,62 +143,6 @@ bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
 
 
 /* Returns the SID of the new delta to be created. */
-#if 0
-sid
-sccs_file::find_next_sid(sid requested, sid got, int branch,
-			 sccs_pfile &pfile) const
-{
-  branch = branch && flags.branch;
-
-  if (!branch)
-    {
-      /* Not sure what the point of the test whose result is succ is.
-       */
-      int succ = got.is_trunk_successor(highest_delta_release());
-      if (!succ)
-	{
-	  if (requested > highest_delta_release())
-	    {
-	      ASSERT(requested.release_only());
-	      return requested.successor();
-	    }
-		
-	  sid next = got.successor();
-		
-	  if (!pfile.is_to_be_created(next) && find_delta(next) == 0)
-	    {
-	      return next;
-	    }
-	}
-    }
-	
-  sid highest = got;
-
-  delta_iterator iter(delta_table);
-  while(iter.next())
-    {
-      sid const &id = iter->id;
-
-      if (id.branch_greater_than(highest))
-	{
-	  highest = id;
-	}
-    }
-	
-  pfile.rewind();
-  while(pfile.next())
-    {
-      sid const &id = pfile->delta;
-		
-      if (id.branch_greater_than(highest))
-	{
-	  highest = id;
-	}
-    }
-	
-  return highest.next_branch();
-}
-#else
 sid
 sccs_file::find_next_sid(sid requested, sid got,
 			 int want_branch,
@@ -376,8 +211,6 @@ sccs_file::find_next_sid(sid requested, sid got,
   ASSERT(!sid_in_use(next, pfile));
   return next;
 }
-
-#endif
 
 /* Quits if the user isn't authorized to make deltas, if the release
    requested is locked or if the requested SID has an edit lock and

@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.13 1997/12/26 18:26:51 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.14 1998/01/25 22:33:07 james Exp $";
 #endif
 
 inline void
@@ -77,13 +77,14 @@ print_string_list(FILE *out, list<mystring> const &list) {
 }
 
 
-/* Prints a boolean flag with its name.
+/* Prints a boolean flag with its name.   Simply, if the 
+ * flag is unset, its name is not printed.
  */
 static void
 print_flag2(FILE *out, const char *s, int it)
 {
   if (it)
-    fprintf(out, "%s: yes\n", s);
+    fprintf(out, "%s\n", s);
 }
 
 
@@ -93,7 +94,7 @@ template <class TYPE>
 void
 print_flag2(FILE *out, const char *s, TYPE it) {
 	if (it.valid()) {
-		fprintf(out, "%s: ", s);
+		fprintf(out, "%s\t", s);
 		it.print(out);
 		putc('\n', out);
 	}
@@ -113,46 +114,53 @@ static inline void
 print_flag2(FILE *out, const char *name, mystring *s)
 {
   if (s)
-    fprintf(out, "%s: %s\n", name, s->c_str());
+    fprintf(out, "%s\t%s\n", name, s->c_str());
 }
 
 static inline void
 print_flag2(FILE *out, const char *name, const char *s)
 {
   if (s)
-    fprintf(out, "%s: %s\n", name, s);
+    fprintf(out, "%s\t%s\n", name, s);
 }
 
+static inline void
+print_flag2(FILE *out, const char *name, char *s)
+{
+  if (s)
+    fprintf(out, "%s\t%s\n", name, s);
+}
 
 /* Prints all the flags of an SCCS file. */
 
+
 void
-sccs_file::print_flags(FILE *out) const {
-	print_flag2(out, (const char *) "Module Type", flags.type);
-	print_flag2(out, (const char *) "MR Validation",
-		    (flags.mr_checker ? flags.mr_checker->c_str() : ""));
-	print_flag2(out, (const char *) "Keyword Validation",
-		    flags.no_id_keywords_is_fatal);
-	print_flag2(out, (const char *) "Branch", flags.branch);
-	print_flag2(out, (const char *) "Module Name",
-		    (flags.module ? flags.module->c_str() : "") );
-	print_flag2(out, (const char *) "Floor", flags.floor);
-	print_flag2(out, (const char *) "Ceiling", flags.ceiling);
-	print_flag2(out, (const char *) "Default SID", flags.default_sid);
-	print_flag2(out, (const char *) "Null Deltas", flags.null_deltas);
-	print_flag2(out, (const char *) "Joint Editing", flags.joint_edit);
-	
-	if (flags.all_locked)
-	  {
-	    fputs("Locked Releases: a\n", out);
-	  }
-	else
-	  {
-	    print_flag2(out, "Locked Releases: ", flags.locked);
-	  }
-	print_flag2(out, (const char *) "User Keyword", flags.user_def);
-	if (flags.encoded)
-	  fputs("encoded\n", out);
+sccs_file::print_flags(FILE *out) const
+{
+  print_flag2(out, (const char *) "branch", flags.branch);
+  print_flag2(out, (const char *) "ceiling", flags.ceiling);
+  print_flag2(out, (const char *) "default SID", flags.default_sid);
+  if (flags.encoded) fputs("encoded\n", out);
+  print_flag2(out, (const char *) "floor", flags.floor);
+  print_flag2(out, (const char *) "id keywd err/warn",
+	      flags.no_id_keywords_is_fatal);
+  print_flag2(out, (const char *) "joint edit", flags.joint_edit);
+
+  const char *locked = "locked releases";
+  if (flags.all_locked)
+    print_flag2(out, locked, "a");
+  else
+    print_flag2(out, locked, flags.locked);
+  
+  print_flag2(out, (const char *) "module",
+	      (flags.module ? flags.module->c_str()
+	       : (const char*)0) );
+  print_flag2(out, (const char *) "null delta", flags.null_deltas);
+  print_flag2(out, (const char *) "csect name", flags.user_def);
+  print_flag2(out, (const char *) "type", flags.type);
+  print_flag2(out, (const char *) "validate MRs",
+	      (flags.mr_checker ? flags.mr_checker->c_str()
+	       : (const char*) 0));
 }
 
 

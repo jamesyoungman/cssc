@@ -6,10 +6,10 @@
 
 
 
-#include "cssc.h"
-
 #ifndef CSSC__FILEPOS_H
-#define CSSC__FILEPOS_H
+#define CSSC__FILEPOS_H "$Id: filepos.h,v 1.4 1998/01/25 22:33:01 james Exp $"
+
+#include "cssc.h"
 
 // SunOS requires <unistd.h> for SEEK_SET, for some bizarre reason.
 #ifdef HAVE_UNISTD_H
@@ -17,59 +17,55 @@
 #endif
 
 
-#ifdef HAVE_FSETPOS
 
 class FilePosSaver		// with fsetpos()...
 {
-public:  
-  FilePosSaver(FILE*);		// save the position on this FILE...
-  ~FilePosSaver();		// and restore it in the destructor.
-private:
-
-  fpos_t pos;
   FILE *f;
-};
+  int disarmed;
 
-FilePosSaver::FilePosSaver(FILE *fp) : f(fp)
-{
-  if (0 != fgetpos(f, &pos))
-    quit(errno, "fgetpos() failed!"); // better, later; throw exception.
-}
+#ifdef HAVE_FSETPOS
+  fpos_t pos;
+  
+ public:
+  FilePosSaver(FILE *fp) : f(fp), disarmed(0)
+    {
+      if (0 != fgetpos(f, &pos))
+	quit(errno, "fgetpos() failed!"); // better, later; throw exception.
+    }
 
-FilePosSaver::~FilePosSaver()
-{
-  if (0 != fsetpos(f, &pos))
-    quit(errno, "fsetpos() failed!");
-}
+  ~FilePosSaver()		// and restore it in the destructor.
+    {
+      if (!disarmed)
+	if (0 != fsetpos(f, &pos))
+	  quit(errno, "fsetpos() failed!");
+    }
 
 #else
-
-class FilePosSaver		// no fsetpos()...
-{
-public:  
-  FilePosSaver(FILE*);		// save the position on this FILE...
-  ~FilePosSaver();		// and restore it in the destructor.
-private:
-
   long   offset;
-  FILE   *f;
-};
 
+ public:
+  FilePosSaver(FILE *fp) : f(fp), disarmed(0)
+    {
+      if (-1L == (offset = ftell(f)) )
+	quit(errno, "ftell() failed."); // better, later; throw exception.
+    }
 
-FilePosSaver::FilePosSaver(FILE *fp) : f(fp)
-{
-  offset = ftell(f);
-  if (offset == -1L)
-    quit(errno, "ftell() failed.");
-}
-
-FilePosSaver::~FilePosSaver()
-{
-  if (fseek(f, offset, SEEK_SET) != 0)
-    quit(errno, "fseek() failed!");
-}
-
+  ~FilePosSaver()		// and restore it in the destructor.
+    {
+      if (!disarmed)
+	if (0 != fseek(f, offset, SEEK_SET))
+	  quit(errno, "fseek() failed!");
+    }
 
 #endif
+  
+ public:  
+  
+  void disarm()			// turn off the restore at the destructor.
+  {
+    disarmed = 1;
+  }
+};
+
 
 #endif

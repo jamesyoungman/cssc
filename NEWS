@@ -1,3 +1,13 @@
+New in CSSC-0.05alpha-pl1
+
+	* When get ignores the "-b" flag, the user is warned.
+
+	* "get -e -r1.1.1" now works (previously this produced an	
+	  assertion failure).
+
+	* Added manual section explaining when and how branches are
+	  made.
+
 New in CSSC-0.05alpha-pl0
 
         * cdc has now beed debugged using new test cases.  
