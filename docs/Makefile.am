@@ -5,7 +5,8 @@ cssc_TEXINFOS = gpl.texi
 
 EXTRA_DIST = BUGS FIXED TODO CREDITS TESTING \
 	get-spec.txt missing.txt patches.txt \
-	Platforms .ispell_english
+	Platforms mailing-list.txt \
+	.ispell_english
 
 # The .ispell_english file is included in the distribution because it
 # is useful for the list of correct spellings in this document to
