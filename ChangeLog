@@ -1,3 +1,10 @@
+1998-02-24  James Youngman  <jay@gnu.org>
+
+	* auxfiles/CSSC.spec: Updated the version.
+
+	* tests/binary/char255.uue:
+	This file contains one character (uuencoded), the ASCII code 255.
+
 1998-02-23  James Youngman  <jay@gnu.org>
 
 	* configure.in: Bumped version to 0.06alpha.pl2
@@ -22,10 +29,11 @@
 	* testutils/Makefile.am:
 	Added seeker.c, which tests for a particular bug in GNU libc 2.0.6.
 
-	* unget.cc, what.cc, rmdel.cc, sact.cc, prt.cc, my-getopt.h, prs.cc, get.cc, my-getopt.cc, fileiter.h, delta.cc, fileiter.cc, admin.cc, cdc.cc:
-	Renamed class getopt to class CSSC_Options, to avoid conflict with
-	getopt(3) on systems such as netbsd-1.2 (as installed on
-	melange.gnu.org)
+	* unget.cc, what.cc, rmdel.cc, sact.cc, prt.cc, my-getopt.h,
+	prs.cc, get.cc, my-getopt.cc, fileiter.h, delta.cc, fileiter.cc,
+	admin.cc, cdc.cc: Renamed class getopt to class CSSC_Options, to
+	avoid conflict with getopt(3) on systems such as netbsd-1.2 (as
+	installed on melange.gnu.org)
 
 	* testutils/seeker.c:
 	Test program which determines if fgetpos() works correctly on stdin.
