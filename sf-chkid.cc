@@ -26,9 +26,14 @@
 
 #include "cssc.h"
 #include "sccsfile.h"
+#include "linebuf.h"
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-chkid.cc,v 1.5 1998/01/24 14:09:06 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-chkid.cc,v 1.6 1998/02/01 16:52:49 james Exp $";
 #endif
 
 bool
@@ -38,21 +43,67 @@ is_id_keyword_letter(char ch)
 }
 
 
-/* Returns true if the string contains a valid SCCS id keyword. */
+/* check_id_keywords():
+ *
+ * Returns true if the string contains a valid SCCS id keyword.  This
+ * version is 8-bit-clean.  We use memchr() if available.  No harm
+ * done if it is not.
+ *
+ * memchr() is probably not a great deal faster than the while loop we
+ * use below, so it's not worth bothering with it inside the loop.
+ * However, it provides a quick way of eliminating the majority of
+ * cases.
+ *
+ * If we know s[2] is a % then s[1] cannot be the start of a keyword,
+ * because "%%%" is not a valid keyword.  This optimisation probably
+ * isn't worth the extra opaqueness of the resulting code.  It might
+ * even be slower.  So we don't use it.
+ *
+ * We need three characters to contain an ID.  subtracting two at the
+ * start allows us to test against (>) zero for the loop.
+ */
+bool
+check_id_keywords(const char *s, size_t len)
+{
+  if (len < 3)		
+    return false;		// anything shorter cannot contain an ID.
 
-int
-sccs_file::check_id_keywords(const char *s) {
-	s = strchr(s, '%');
-	while(s != NULL) {
-		if (s[1] != '\0' 
-		    && is_id_keyword_letter(s[1])
-		    && s[2] == '%') {
-			return 1;
-		}
-		s = strchr(s + 1, '%');
-	}
-	return 0;
+#ifdef HAVE_MEMCHR      
+  const void *pv = memchr(s, '%', len);
+  if (0 == pv)
+    {
+      return false;		// no %, hence no keywords.
+    }
+  else			// skip forward to first percent sign.
+    {
+      const char *pc = (const char *)pv;
+      len -= (pc - s);
+      s = pc;
+
+      // Having adjusted len, we need to retest it.
+      if (len < 3)		
+	return false;
+    }
+#endif
+      
+  len -= 2u;
+  
+  while (len-- > 0)
+    {
+      // test the % characters first to avoid some unneccesary function calls.
+      if ('%' == s[0] && '%' == s[2] && is_id_keyword_letter(s[1]))
+	return true;
+      ++s;
+    }
+  return false;
 }
+
+int cssc_linebuf::check_id_keywords() const
+{
+  return ::check_id_keywords(buf, strlen(buf));	// TODO: make NUL-safe!
+}
+
+
 
 /* Local variables: */
 /* mode: c++ */
