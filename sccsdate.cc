@@ -38,7 +38,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.11 1998/03/14 13:43:38 james Stab $";
+static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.12 2000/03/19 12:54:27 james Exp $";
 #endif
 
 // The MySC code used to just check for (year % 4) and (year == 0).
@@ -230,6 +230,27 @@ sccs_date::sccs_date(const char *s)
 // Construct a date as specified in an SCCS file.
 sccs_date::sccs_date(const char *date, const char *time)
 {
+  char buf[10];
+
+  // Peter Kjellerstedt writes:-
+  // 
+  // This is a gross hack to handle that some old implementation of SCCS
+  // has a Y2K bug that results in that dates are written incorrectly as
+  // :0/01/01 instead of 00/01/01 (the colon is of course the next
+  // character after '9' in the ASCII table). The following should handle
+  // this correctly for years up to 2069 (after which the time format
+  // used is not valid anyway).
+  strncpy(buf, date, 10);
+  if (buf[0] >= ':' && buf[0] <= '@')
+    {
+      errormsg("Warning: date in SCCS file contains character '%c': "
+	       "a version of SCCS which is not Year 2000 compliant "
+	       "has probably been used on this file.\n",
+	       buf[0]);
+      
+      buf[0] -= 10;
+    }
+  date = buf;
   
   // The "1" in the if() is just there to make Emacs align the columns.
   if (1
