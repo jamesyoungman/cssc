@@ -49,6 +49,41 @@ except that this permission notice may be stated in a translation approved
 by the Foundation.
 @end ifinfo
 
+@ifhtml
+
+@html
+<H1>CSSC: Compatibly Stupid Source Control</H1>
+<H2>Edition @value{EDITION}, for CSSC Version @value{VERSION}</H2>
+@value{UPDATED}
+@end html
+
+This web page documents the the GNU @code{cssc} package for working with
+@sc{sccs} files.
+
+Copyright (C) 1997,1998,1999,2000,2001 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifhtml
+
 @titlepage
 @title CSSC
 @subtitle Compatibly Stupid Source Control
@@ -80,6 +115,9 @@ by the Foundation.
 @ifinfo
 This file documents the the GNU @code{CSSC} package, which is 
 a work-alike for the traditional Unix SCCS suite.
+
+This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
+
 @end ifinfo
 
 @menu
