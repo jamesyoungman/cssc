@@ -6,7 +6,7 @@
  *
  * Defines the class Pipe.
  *
- * @(#) MySC pipe.h 1.1 93/12/30 17:33:40
+ * @(#) CSSC pipe.h 1.1 93/12/30 17:33:40
  *
  */
 

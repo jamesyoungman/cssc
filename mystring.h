@@ -6,7 +6,7 @@
  *
  * Defines the class mystring.
  *
- * @(#) MySC mystring.h 1.1 93/11/09 17:24:42
+ * @(#) CSSC mystring.h 1.1 93/11/09 17:24:42
  *
  */
 

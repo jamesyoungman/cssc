@@ -6,7 +6,7 @@
  *
  * Definition of the class sccs_file.
  *
- * @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
+ * @(#) CSSC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
  

@@ -7,7 +7,7 @@
  * Defines a simple template that implements a stack for types without
  * constructors and destructors. 
  *
- * @(#) MySC stack.h 1.2 93/11/13 00:12:55
+ * @(#) CSSC stack.h 1.2 93/11/13 00:12:55
  *
  */
 

@@ -6,7 +6,7 @@
  *
  * Defines the template range_list.
  *
- * @(#) MySC sid_list.h 1.1 93/11/09 17:17:51
+ * @(#) CSSC sid_list.h 1.1 93/11/09 17:17:51
  *
  */
 

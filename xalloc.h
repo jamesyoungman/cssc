@@ -6,7 +6,7 @@
  *
  * Declarations of safe versions of the standard memory allocation routines.
  *
- * @(#) MySC xalloc.h 1.1 93/11/09 17:30:45
+ * @(#) CSSC xalloc.h 1.1 93/11/09 17:30:45
  *
  */
 

@@ -6,7 +6,7 @@
  *
  * Includes system dependent header files.
  *
- * @(#) MySC sysdep.h 1.2 93/11/10 04:48:37
+ * @(#) CSSC sysdep.h 1.2 93/11/10 04:48:37
  *
  */
 
