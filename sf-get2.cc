@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.22 1997/12/26 17:00:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.23 1998/01/24 14:10:46 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -122,7 +122,7 @@ sccs_file::find_requested_sid(sid requested, sid &found) const
       got_best = false;
 	
       iter.rewind();
-      while(iter.next())
+      while (iter.next())
 	{
 	  sid const &id = iter->id;
 	  if (!got_best && (root.is_trunk_successor(id) || root == id) )
@@ -183,7 +183,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
       // find highest SID of any level, which is less than or equal to
       // the requested one.  If include_branches is true, they don't
       // have to be on the trunk.
-      while(iter.next())
+      while (iter.next())
 	{
 	  if ( (release)iter->id > (release)requested )
 	    continue;
@@ -196,9 +196,30 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
 	    }
 	}
     }
+  else if (3 == ncomponents)
+    {
+      while (iter.next())
+	{
+	  const sid &s = iter->id;
+	  const int nc = s.components();
+	  
+	  // We ignore anything that is not on a branch.
+	  if (nc >= ncomponents)
+	    {
+	      if ( (release)s == (release)requested )
+		{
+		  if (!got_best || s >= best)
+		    {
+		      best = s;
+		      got_best = true;
+		    }
+		}
+	    }
+	}
+    }
   else
     {
-      while(iter.next())
+      while (iter.next())
 	{
 	  if (iter->id.matches(requested, ncomponents))
 	    {
@@ -299,10 +320,21 @@ sccs_file::find_next_sid(sid requested, sid got,
   bool forced_branch = false;
 
   sid next = requested;
-  if (next.release_only())
-    next.next_level();
+  
+  if (requested.release_only())
+    {
+      next.next_level();
+    }
+  else if (requested.partial_sid())
+    {
+      next = got;
+      ++next;
+    }
   else
-    ++next;
+    {
+      ++next;
+    }
+  
   
   if (want_branch)
     {
