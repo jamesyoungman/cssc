@@ -94,7 +94,15 @@ fmt_text () {
 }
 
 fmt_html () {
+NOW="$(date)"
+
 cat<<EOF    
+<html>
+<head>Test Suite Coverage Summary</head>
+<body>
+<h1>Test Suite Coverage Summary</h1>
+These tests were run at $NOW
+<br>
 <table border="1">
 <tr><th> Misses </th><th> Hits </th><th> Filename </th></tr>
 
@@ -107,6 +115,8 @@ EOF
 
 cat <<EOF
 </table>
+</body>
+</html>
 EOF
 }
 
