@@ -16,7 +16,7 @@
 #include "sf-chkmr.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.5 1997/05/17 12:17:39 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.6 1997/05/20 23:58:56 james Exp $";
 
 void
 usage() {
@@ -36,14 +36,16 @@ main(int argc, char **argv) {
 #endif
 	mystring mrs;		/* -m -M */
 	mystring comments;	/* -y -Y */
-	
+	int suppress_mrs = 0;	// if -m given with no arg.
+	int suppress_comments = 0; // if -y given with no arg.
+
 	if (argc > 0) {
 		set_prg_name(argv[0]);
 	} else {
 		set_prg_name("delta");
 	}
 
-	class getopt opts(argc, argv, "r:sng:m:My:YpV");
+	class getopt opts(argc, argv, "r:sng:m!My!YpV");
 	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
 		switch (c) {
 		default:
@@ -65,18 +67,22 @@ main(int argc, char **argv) {
 
 		case 'm':
 			mrs = opts.getarg();
+			suppress_mrs = (mrs == "");
 			break;
 
 		case 'M':
 			mrs = "";
+			suppress_mrs = 1;
 			break;
 
 		case 'y':
 			comments = opts.getarg();
+			suppress_comments = (comments == "");
 			break;
 
 		case 'Y':
 			comments = "";
+			suppress_comments = 1;
 			break;
 
 		case 'V':
@@ -99,19 +105,23 @@ main(int argc, char **argv) {
 		sccs_file file(name, sccs_file::UPDATE);
 		sccs_pfile pfile(name, sccs_pfile::UPDATE);
 		
-		if (first) {
-			if (stdin_is_a_tty()) {
-				if (mrs == NULL && file.mr_required()) {
-					mrs = prompt_user("MRs? ");
-				}
-				if (comments == NULL) {
-					comments = prompt_user("comments? ");
-				}
-			}
-			mr_list = split_mrs(mrs);
-			comment_list = split_comments(comments);
-			first = 0;
-		}
+		if (first)
+		  {
+		    if (stdin_is_a_tty())
+		      {
+			if (!suppress_mrs && mrs == NULL && file.mr_required())
+			  {
+			    mrs = prompt_user("MRs? ");
+			  }
+			if (!suppress_mrs && comments == NULL)
+			  {
+			    comments = prompt_user("comments? ");
+			  }
+		      }
+		    mr_list = split_mrs(mrs);
+		    comment_list = split_comments(comments);
+		    first = 0;
+		  }
 
 		switch(pfile.find_sid(rid)) {
 		case sccs_pfile::FOUND:
@@ -140,7 +150,7 @@ main(int argc, char **argv) {
 			abort();
 		}
 
-		if (file.mr_required())
+		if (!suppress_mrs && file.mr_required())
 		  {
 		    if (mr_list.length() == 0)
 		      {
