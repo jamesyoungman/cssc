@@ -1,5 +1,16 @@
 1999-03-20  James Youngman  <jay@gnu.org>
 
+	* Released 0.10beta.pl0.
+	
+	* docs/cssc.texi: Updated version number.
+
+	* bsd/sccs.c, docs/cssc.texi, delta.cc, configure.in:
+	Updated copyright messages of those files edited so far in 1999.
+
+	* tests/prs/keywords.sh: Use "echo_nonl" instead of "echo -n".
+
+	* configure.in, ChangeLog, NEWS: Go to 0.10beta-pl0 from 0.09alpha-pl4.
+
 	* docs/cssc.texi:
 	Cosmetic changes to make texinfo-3.12f happy about my use of @xref.
 	(in this case, by adding punctuation after each use).
