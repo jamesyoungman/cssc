@@ -68,11 +68,17 @@ remove base $g test/[xzps].passwd
 echo passed
 
 
+## Find a binary file 
+BINARY_FILE=../prt/all.expected.Z
+
 # Make sure we have some real binary input!
 echo_nonl prepare2...
 if test -r ${DIFF}; then cat ${DIFF} >> test/$g.4; fi
-if test -r /bin/rm; then cat /bin/rm >> test/$g.5; fi
-if test -r /bin/sh; then cat /bin/sh >> test/$g.6; fi
+if test -r ${BINARY_FILE}; then cat ${BINARY_FILE} >> test/$g.5; fi
+for f in /bin/sh*
+do
+    if test -r $f; then cat $f >> test/$g.6; fi
+done
 echo passed
 
 #
