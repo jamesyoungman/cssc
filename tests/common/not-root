@@ -25,15 +25,11 @@ then
 	if test -w $f
 	then
 		miscarry "Please do not run the suite as root" 
-		# should not reach this point.
-		exit 1
 	fi
 else
 	miscarry "Could not create $f (or buggy test(1))"
-	# should not reach this point.
-	exit 1
 fi
 unset f
-)
+) || exit $?
 
 
