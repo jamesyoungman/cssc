@@ -68,11 +68,11 @@ except that this permission notice may be stated in a translation approved
 by the Foundation.
 @end titlepage
 
-@node Top, , , (dir)
+@node Top, Overview, , (dir)
 
 @ifinfo
 This file documents the the GNU @code{CSSC} package, which is 
-a workalike for the traditional Unix SCCS suite.
+a work-alike for the traditional Unix SCCS suite.
 @end ifinfo
 
 @menu
@@ -80,13 +80,14 @@ a workalike for the traditional Unix SCCS suite.
 * Interface::		How to use the suite.
 * Invoking Programs::	How to run the individual CSSC programs.
 * Incomplete::		Missing Features.
+* Year 2000 Issues::    Status of CSSC with regard to the Millennium.
 * Testing::             How to run the test suite and write new cases.
 * Problems::		Reporting bugs.
 * Copying::		How you can copy and share @code{CSSC}.
 * Concept Index::	Index of concepts.
 @end menu
 
-@node Overview, Interface, , Top
+@node Overview, Interface, Top, Top
 @chapter Overview
 @cindex overview
 
@@ -179,7 +180,7 @@ To create an @sc{sccs} archive of a source file @file{foo.c}, do
 @example
 admin -ifoo.c s.foo.c
 @end example
-This creates the archive file @file{s.foo.c} and initialises it
+This creates the archive file @file{s.foo.c} and initializes it
 with the current contents of your source file, @file{foo.c}.  If you use
 Emacs as your editor, you can just use @kbd{C-x v i} instead.
 
@@ -192,7 +193,7 @@ example @samp{^A}, the character whose code is 1.
 @table @samp
 
 @item -a @var{xxx}
-Add user or group @var{xxx} the the list of those authorised 
+Add user or group @var{xxx} the the list of those authorized 
 to check revisions in or out.  Untested.
 @c TODO: Write the test cases.
 
@@ -205,7 +206,7 @@ Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
 
 
 @item -e @var{xxx}
-Erase the specified user or group from the list of those authorised to
+Erase the specified user or group from the list of those authorized to
 check revisions in or out.  Untested.
 @c TODO: Write the test cases.
 
@@ -219,7 +220,7 @@ Check the @sc{sccs} file's checksum.  Untested.
 @c TODO: Write the test cases.
 
 @item -i@var{foo}
-Initialise the @sc{sccs} file with the contents of the file @var{foo}.
+Initialize the @sc{sccs} file with the contents of the file @var{foo}.
 If no argument is given, read from standard input.  This implies the
 @samp{-n} option.
 
@@ -229,7 +230,7 @@ release, that denotes ``all releases''.  Untested.
 @c TODO: Write the test cases.
 
 @item -m@var{MR-list}
-When initialising a file, add the specified list of @sc{mr} numbers
+When initializing a file, add the specified list of @sc{mr} numbers
 (@pxref{Modification Request numbers}) to the delta commentary for the
 initial version.  This list can be empty.  The specified @sc{mr}s are
 validated according to the setting of the @var{v} flag, which should be
@@ -256,11 +257,11 @@ Display version information.  Untested.
 @c TODO: Write the test cases (how?)
 
 @item -y@var{adayada}
-When initialising a file, set the comment for that delta to
+When initializing a file, set the comment for that delta to
 @samp{@var{adayada}}.  If the option is given just as @samp{-y}, the
 comment is recorded as empty.  The following word in the argument list
-is not used as the comment.  @emph{Note that this behaviour is different
-to most Unix programs, but is the same as the behaviour of traditional
+is not used as the comment.  @emph{Note that this behavior is different
+to most Unix programs, but is the same as the behavior of traditional
 @sc{sccs}}.
 
 @item -z
@@ -302,7 +303,7 @@ Set the release floor.  Releases lower then the release floor cannot be
 checked out.
 @item d
 Set the default delta which is used when the @code{get} command is given
-without the @samp{-r} option.   The default behaviour for @code{get} is
+without the @samp{-r} option.   The default behavior for @code{get} is
 defined in @ref{get}.
 @item l
 Set the locked release list.  These releases cannot be checked out with
@@ -550,14 +551,18 @@ with the @samp{-e} option.
 @item -c@i{when}
 @cindex Year 2000
 Get the version that was current at the time specified by @i{when}.  The
-format of the argument is yy[mm[dd[hh[mm[ss]]]]].  Any fields omitted
-assume their maximum possible values so that if you specify @samp{-c92},
-you get the latest version which was available in the year 1992.  This
-option is obviously not Year-2000-proof.
+format of the argument is [cc]yy[mm[dd[hh[mm[ss]]]]].  Any fields
+omitted assume their maximum possible values so that if you specify
+@samp{-c92}, you get the latest version which was available in the year
+1992.  It is possible to give four digits for the year as a
+@sc{cssc}-specific extension, but if only two digits are used and the
+resulting value is less than 69, the year is assumed to be in the
+twenty-first century (@pxref{prs options}).
+
 
 @item -D
 Turns on debugging output, indicating what is going on as the @sc{sccs}
-file is read.  This option may go away or have its behaviour change in
+file is read.  This option may go away or have its behavior change in
 the near future.
 
 @item -e
@@ -788,17 +793,31 @@ that have been created since last week.
 Include even removed deltas in the output.  Removed deltas have a type
 "R", as output by the :DT: keyword.
 
-@item -c@var{YYMMDDHHMMSS}
+@item -c@var{[cc]YYMMDDHHMMSS}
 @cindex Year 2000
 Specifies the time of the ``cutoff''.  When this option is given, the
 delta selected by @code{prs} is the last one checked in before the
 cutoff.  The format of the cutoff is yymmddhhmmss.  As usual, any fields
 left unspecified in the cutoff are given the maximum legal value (for
-example, the seconds field defaults to 59).  This option is not
-Year-2000 proof.
+example, the seconds field defaults to 59).  The fields can be separated
+by any non-numeric character, for example @samp{-c97/11/02-11:25:42}.
+
+As an extension specific to @sc{cssc}, if the argument contains more
+than twelve (12) digits, and the first four characters are all digits,
+it is assumed that a four-digit year form has been used.  This means
+that you can say @samp{-c1997/11/02-11:25:42} to mean the same as the
+above.
+
+In line with the X/Open CAE Specification, Commands and Utilities
+(version 2, September 1994, pages 588 and 361), if the century field is
+@emph{not} given and the year is less than 69, it is assumed to be a
+year in the twenty-first century.  The X/Open document does not mandate
+a four-digit year specifier, but it would not make sense to apply this
+rule if a four-digit year is specified.
 
 
-This behaviour is usually not the one required, and hence the @samp{-e}
+
+This behavior is usually not the one required, and hence the @samp{-e}
 or @samp{-l} options are specified too.
 
 @item -d@var{format}
@@ -810,7 +829,7 @@ the various keywords that can be used.  Any characters in the data
 format which are not part of a keyword are output as well.
 
 If one specifies the @samp{-d} option, @code{prs} by default only gives
-information about the latest delta.  To restore the default behaviour of
+information about the latest delta.  To restore the default behavior of
 showing all the deltas, use the @samp{-e} option as well.
 
 @item -e
@@ -895,7 +914,7 @@ The value of the (user-defined) Q flag (arbitrary one-line text).
 The full path name of the @sc{sccs} file.       
 
 @item :UN:
-List of users authorised to make deltas to this file (one per line).
+List of users authorized to make deltas to this file (one per line).
 
 @item :Y:
 Value of the module-type flag.
@@ -1153,7 +1172,7 @@ is that sometimes compilers or lint-pickers complain that the variable
 @var{sccs_id} is unused, and defining @code{CONFIG_NO_SCCS_IDS} will
 remove these @sc{id}s and thus silence the warnings.
 
-@node Incomplete, Testing, Invoking Programs, Top
+@node Incomplete, Year 2000 Issues, Invoking Programs, Top
 @chapter Missing Features
 @cindex missing features
 
@@ -1176,7 +1195,7 @@ exceptions is poor in current versions of the GNU C++ compiler; once
 this improves, the relevant code will be added, and @sc{cssc} will
 recover properly from this situation.  This problem does not manifest
 when only one file is specified on the command line because in that case
-the current behaviour (immediate exit) and correct behaviour (process
+the current behavior (immediate exit) and correct behavior (process
 all files on the command line and then exit with the appropriate status)
 are identical.
 
@@ -1232,7 +1251,78 @@ horrible kludge, this has not been done.  It is not expected that this
 will cause a problem for any users; if this is a problem for you, let
 the maintainer know and it will be fixed.
 
-@node Testing, Problems, Incomplete, Top
+@node Year 2000 Issues, Testing, Incomplete, Top
+@chapter Year 2000 Issues
+@cindex Year 2000
+
+  Primordial (but not current) versions of the genuine @sc{sccs} suite
+fail to work correctly in and after the year 2000.  The commands
+affected are @code{get} and @code{prs}.  Unix vendors have ensured that
+the version of @sc{sccs} that they currently ship works correctly in the
+year 2000.  Sun Microsystems, for example, state in their Year 2000 FAQ
+(@url{http://www.sun.com/y2000/faq.html})
+
+@quotation
+
+@bullet{}
+@strong{Does Sun see any problems with the source code control system
+(@sc{sccs})?}
+@c @* causes a line break.
+@*
+No, Sun has adopted the X/Open Commands and Utilities Issue 5 
+standard, the year 2000 compliant version of @sc{sccs} will 
+not be affected by the end of century transition.  The X/Open 
+standard states that old dates held in ("yy/mm/dd") format does 
+not change in ``s.'' files, but the values ``yy'' which range 
+from 69 -- 99 are to be interpreted as 1969 -- 1999 respectively. 
+Values of ``yy'' which range from 00 -- 68 are to be interpreted 
+as 2000 -- 2068 respectively.  This interpretation ensures that 
+the year 2000 compliant version of @sc{sccs} will work at least 
+to the year 2068.  By implementing X/Open's standard, Sun has 
+ensured @sc{SCCS} user's compatibility with other providers of
+the @sc{SCCS} utility.  For more information please refer to: 
+@url{http://www.xopen.org/public/tech/base/year2000.html}
+
+@sp 2
+Copyright @copyright{} 1994 -- 1997 Sun Microsystems, Inc.,
+901 San Antonio Road, Palo Alto, CA 94303 USA.
+All rights reserved.
+
+@end quotation
+
+
+@sc{cssc} itself also implements exactly the same strategy.  Two-digit
+years are a problem in two places: firstly, within the actual @sc{sccs}
+files, and secondly within command-line options.
+
+The two-digit year fields in the @sc{sccs} files are correctly dealt
+with according to the strategy mandated by X/Open.  The command-line
+options are also dealt with similarly.
+
+@sc{cssc} provides an additional feature for your convenience.  If the
+argument to the @samp{-c} option of @code{get} or @code{prs} contains
+more than twelve digits, the first two are understood to be the century
+part of the year.  For example, @samp{971120193000} and
+@samp{19971120193000} both represent exactly the same time (7:30 p.m. on
+November 20, 1997).  The fields of a date can be separated with other
+(non-digit) characters, and so @samp{1997/11/20-19:30:00} also denotes
+the same time (but @samp{1997/11/20} is an error because there are fewer
+than twelve digits).
+
+Now that you know that whatever version of @sc{sccs} you are using has
+probably been fixed by the vendor, and that @sc{cssc} is Year-2000
+compliant even if your vendor's @sc{sccs} implementation cannot be
+updated for some reason, I'd like you to remember the conversion effort
+that this has saved you.  I'd also like to urge to to actually use that
+effort to convert your existing projects from @sc{sccs} to a more modern
+version control system, for example GNU @sc{cvs}.  There are other
+considerations besides year 2000 compliance, after all.  @sc{cssc} is
+not called ``Compatibly Stupid Source Control'' for nothing.
+
+
+
+
+@node Testing, Problems, Year 2000 Issues, Top
 @chapter The Test Suite
 @cindex test suite
 
@@ -1347,7 +1437,7 @@ using.
 @end itemize
 
 
-If you just want to run some of the tests, there are rules in the
+If you want to run just some of the tests, there are rules in the
 makefile for just running some of them.  For example, the tests in the
 directory @code{tests/admin} can be run with @code{make test-admin}.
 Each test directory is named after one of the @sc{cssc} programs.  This
@@ -1404,6 +1494,22 @@ and @code{grep} are not described.
 * miscarry::    When a test case cannot be run.
 @end menu
 
+
+The best approach for writing new test scripts or just individual new
+test cases is to first think of some aspect that needs better test
+coverage, and then to write the test script, basing it on an existing
+script.  At this stage the best strategy is to test the test script
+itself by running against a genuine edition of @sc{sccs}, if you have
+one available (before running @code{make check}, set the environment
+variable @samp{dir} to point to the directory containing the programs to
+be tested; this should usually be @w{@file{/usr/lib/sccs}}).  When you
+are sure that the test script is expecting the correct behavior from
+programs under test, you can then run it against @sc{cssc}.  After all,
+if you're going to set out writing your test by assuming that @sc{cssc}
+is correct in the area under test, of what value is the test?
+
+
+
 @node docommand, remove, ,          Writing new test cases
 @subsection docommand
 @cindex docommand
@@ -1419,7 +1525,7 @@ docommand [--silent] @var{label} @var{command} @var{retval} @var{stdout} @var{st
 
 The @code{docommand} function normally prints the label to indicate what
 stage the current test script has reached, followed by ``done'' when it
-has finished.  The @var{--silent} option turns off this behaviour, so
+has finished.  The @var{--silent} option turns off this behavior, so
 that if nothing goes wrong, no progress message is printed.  This is
 occasionally used for commands that have already been tested by a script
 and are known to work, but which must be repeated several times in order
@@ -1533,7 +1639,7 @@ fail "$label: $1: Expected return value $2, got return value $rv"
 
 The @code{echo_nonl} function outputs its argument, without a following
 newline.  Escape codes as for @code{echo(1)} are understood.  Depending
-on the actual flavour of system that the test suite is running on, this
+on the actual flavor of system that the test suite is running on, this
 might internally use @code{echo -n} or @code{echo -e .....\c}.  
 
 Please do not use either the @samp{-n} or @samp{-e} options for
