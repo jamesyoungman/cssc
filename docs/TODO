@@ -1,11 +1,15 @@
+Wed Jul  9 18:22:56 1997  James Youngman  <JYoungman@vggas.com>
+
+	* Migrate from <cstdio> to <iostream> (any nay-sayers?)
+
 Sat Jun 28 12:25:12 1997  James Youngman  <JYoungman@vggas.com>
 
-	* Allow the utilities to be built with a shared library for at
-	least $(SFILE_OBJS) and $(COMMON_OBJS).  May have to provide two
-	version numbers, one for the library and one for each app.  I
-	don't expect to need/want to support user code linking against the
-	library, the intent is just to conserve disk space and perhaps
-	system memory too.
+	* Allow the utilities to be built with a shared library containing
+ 	at least $(SFILE_OBJS) and $(COMMON_OBJS).  May have to provide
+ 	two version numbers, one for the library and one for each app.  I
+ 	don't expect to need/want to support user code linking against the
+ 	library, the intent is just to conserve disk space and perhaps
+ 	system memory too.
 
 Fri Jun 27 19:40:22 1997  James Youngman  <JYoungman@vggas.com>
 
@@ -13,26 +17,13 @@ Fri Jun 27 19:40:22 1997  James Youngman  <JYoungman@vggas.com>
 
 Mon May 26 14:56:52 1997  James Youngman  <JYoungman@vggas.com>
 
-	* Write tests for cdc, comb, prt (and implement it), rmdel, sact,
- 	sccsdiff, val.
+	* Write tests for cdc, comb, rmdel, sact, sccsdiff, val.
 
 Sun May 25 16:27:05 1997  James Youngman  <JYoungman@vggas.com>
 
 	* Add "installdocs" target and "install" target.
 
 	* Complete the test cases in admin/flags.sh.
-
-	* Fix unget so that test unget/output.sh/e7 passes.
-
-Sat May 10 16:27:45 1997  James Youngman  <james@bugalugs.no.where>
-
-	* Support "make install" and "make installdocs".
-
-Thu May  8 00:37:46 1997  James Youngman  <james@bugalugs.no.where>
-
-	* Try out the test scripts on a "real" version and either allow
- 	for any output differences or -- better yet -- change CSSC to be
- 	the same.
 
 Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
 
