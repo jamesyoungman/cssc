@@ -6,7 +6,7 @@
  *
  * Sets the default values of configuration macros left undefined. 
  *
- * @(#) MySC defaults.h 1.1 93/11/09 17:17:46
+ * @(#) CSSC defaults.h 1.1 93/11/09 17:17:46
  *
  */
 
@@ -14,7 +14,7 @@
 #define __DEFAULTS_H__
 
 #ifndef LIDENT
-#define LIDENT(ident) mysc_##ident
+#define LIDENT(ident) cssc_##ident
 #endif
 
 #ifndef NORETURN
