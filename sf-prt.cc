@@ -12,9 +12,10 @@
 #include "cssc.h"
 #include "sccsfile.h"
 #include "seqstate.h"
+#include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.5 1997/06/28 14:39:06 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.6 1997/07/02 06:47:10 james Exp $";
 #endif
 
 static void
@@ -192,11 +193,9 @@ sccs_file::cutoff::cutoff()
 static bool 
 do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 {
-  fpos_t saved_pos;
+  // When pos_saver goes out of scope the file position on "fp" is restored.
+  FilePosSaver pos_saver(fp);
 
-  if (0 != fgetpos(fp, &saved_pos))
-    quit(errno, "%s: fgetpos() failed!", name);
-  
   if (0 != fseek(fp, body_offset, SEEK_SET))
     quit(errno, "%s: fseek() failed!", name);
   
@@ -254,8 +253,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 	    }
 	}
     }
-  if (0 != fsetpos(fp, &saved_pos))
-    quit(errno, "%s: fsetpos() failed!", name);
+  // When pos_saver goes out of scope the file position is restored.
   return ret;
 }
 
