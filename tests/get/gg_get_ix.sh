@@ -22,28 +22,10 @@ remove [zxsp].$g $g
 
 remove $g
 
-## These tests currently work find on Digital Unix but 
+## These tests currently work fine on Digital Unix but 
 ## Excl_1 fails on Solaris.  Hence it's commented out.
 ## TODO: make sense of this situation.
 
-if $TESTING_CSSC
-then
-    echo 
-    echo 
-    echo "These tests are currently known to fail on CSSC,"
-    echo "so they are disabled.  This is a known bug and we're"
-    echo "working on it (you probably checked this version of the"
-    echo "test suite out of CVS - we don't expect to make a release"
-    echo "before this bug is fixed)."
-
-    echo 
-    echo "SOME TESTS OMITTED in $0"
-
-    sleep 2
-    # exit 0
-
-    echo "We appear to be continuing anyway...."
-fi
 
 echo "%M%" > $g
 
