@@ -11,7 +11,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.1 1997/05/31 10:22:32 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.2 1997/05/31 19:08:38 james Exp $";
 
 void
 usage()
@@ -22,6 +22,10 @@ usage()
 }
 
 
+/* 
+ * The effects of the options on sccs-prt are quite complex; for
+ * example, -y affects the output mode as well.
+ */
 int
 main(int argc, char **argv)
 {
@@ -33,9 +37,7 @@ main(int argc, char **argv)
   int first_line_only = 0;	// -f
   int print_desc = 0;		// -t
   int print_users = 0;		// -u
-  sccs_date cutoff_date;	// -c, -r
-  sid       cutoff_sid;		// -y
-  sccs_file::when cutoff_sense = sccs_file::SIDONLY;
+  sccs_file::cutoff exclude;
   int last_cutoff_type = 0;
   int do_default = 1;
   
@@ -90,45 +92,61 @@ main(int argc, char **argv)
 	  version();
 	  break;
 
-	  cutoff_date = sccs_date(opts.getarg());
-	  if (!cutoff_date.valid())
-	    quit(-2, "Invalid cutoff date: '%s'", opts.getarg());
+	case 'y':
+	  exclude.enabled = true;
+	  if (strlen(opts.getarg()))
+	    {
+	      exclude.cutoff_sid = sid(opts.getarg());
+	      exclude.most_recent_sid_only = false;
+	      if (!exclude.cutoff_sid.valid()
+		  || exclude.cutoff_sid.partial_sid())
+		{
+		  quit(-2, "Invaild SID: '%s'", opts.getarg());
+		}
+	    }
+	  else			// empty -y arg.
+	    {
+	      exclude.most_recent_sid_only = true;
+	    }
 	  break;
-
+	  
 	case 'c':		// -c and -r
 	case 'r':		// are exclusive.
+	  exclude.enabled = true;
 	  if (0 != last_cutoff_type && c != last_cutoff_type)
 	    quit(-2, "Options -c and -r are exclusive.\n");
 	  last_cutoff_type = (int)c;
 	  
-	  if (c == 'r')
-	    cutoff_sense = sccs_file::LATER;
-	  else
-	    cutoff_sense = sccs_file::EARLIER;
-	  
-	  cutoff_date = sccs_date(opts.getarg());
-	  if (!cutoff_date.valid())
+	  sccs_date date = sccs_date(opts.getarg());
+	  if (!date.valid())
 	    quit(-2, "Invalid cutoff date: '%s'", opts.getarg());
+	  
+	  if (c == 'r')
+	    exclude.last_accepted = date;
+	  else
+	    exclude.first_accepted = date;
 	  break;
 	}
 
     }
   if (do_default)		// none of -uftb specified...
     print_delta_table = 1;	// ...so assume -d.
-  
+
   sccs_file_iterator iter(argc, argv, opts.get_index());
 
+  // exclude.print(stdout);
+  
   while(iter.next())
     {
       sccs_name &name = iter.get_name();
-      fprintf(stdout, "\n%s:\n", (const char*)name);
+
+      if (!first_line_only)
+	fprintf(stdout, "\n%s:\n", (const char*)name);
       
       sccs_file file(name, sccs_file::READ);
 
       file.prt(stdout,
-	       cutoff_sid,	  // -y
-	       cutoff_date,	  // -c or -r
-	       cutoff_sense,	  // distinguishes -c & -r
+	       exclude,		  // -y, -c, -r
 	       all_deltas,	  // -a
 	       print_body,	  // -b
 	       print_delta_table, // -d
