@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.48 2002/03/25 00:07:09 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.49 2002/04/04 19:33:46 james_youngman Exp $";
 #endif
 
 
@@ -244,8 +244,8 @@ sccs_file::strict_atoul(const char *s) const
     }
   if (n > limit)
     {
-      errormsg("%s: line %d: Warning: number field exceeds %lu.", 
-	       name.c_str(), lineno, limit);
+      warning("%s: line %d: number field exceeds %lu.", 
+	      name.c_str(), lineno, limit);
     }
   
   return n;
@@ -321,11 +321,11 @@ sccs_file::read_delta() {
 			const char *url = 
 			  "http://cssc.sourceforge.net/"
 			  "documentation/incl_excl.shtml";
-			errormsg("Warning: feature not fully tested: "
-				 "excluded delta in SID %s "
-				 "(see %s for more details)",
-				 tmp.id.as_string().c_str(),
-				 url);
+			warning("feature not fully tested: "
+				"excluded delta in SID %s "
+				"(see %s for more details)",
+				tmp.id.as_string().c_str(),
+				url);
 			tmp.have_excludes = true;
 		      }
 		      break;
@@ -557,9 +557,9 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	    }
 	  else
 	    {
-	      errormsg("%s: Warning: bad checksum "
-		       "(expected=%d, calculated %d).\n",
-		       name.c_str(), given_sum, sum);
+	      warning("%s: bad checksum "
+		      "(expected=%d, calculated %d).\n",
+		      name.c_str(), given_sum, sum);
 	    }
 	}
     }

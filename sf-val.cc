@@ -31,7 +31,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.4 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.5 2002/04/04 19:32:05 james_youngman Exp $";
 #endif
 
 const mystring
@@ -247,7 +247,7 @@ sccs_file::validate() const
 	  if (ancestor.date > iter->date)
 	    {
 	      // Time has apparently gone backward...
-	      errormsg("%s: WARNING: date for version %s"
+	      warning("%s: date for version %s"
 		       " is later than the date for version %s",
 		       name.c_str(),
 		       ancestor.id.as_string().c_str(),

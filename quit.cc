@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.28 2002/03/25 00:00:01 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.29 2002/04/04 19:32:04 james_youngman Exp $";
 #endif
 
 const char *prg_name = NULL;
@@ -65,6 +65,16 @@ void errormsg(const char *fmt, ...)
   va_list ap;
   va_start(ap, fmt);
   v_errormsg(fmt, ap);
+  va_end(ap);
+  putc('\n', stderr);
+}
+
+void warning (const char *fmt, ...)
+{
+  va_list ap;
+  va_start(ap, fmt);
+  fprintf(stderr, "%s: warning: ", prg_name);
+  vfprintf(stderr, fmt, ap);
   va_end(ap);
   putc('\n', stderr);
 }

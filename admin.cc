@@ -40,7 +40,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.37 2001/09/29 19:39:41 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.38 2002/04/04 19:32:04 james_youngman Exp $";
 
 
 static bool
@@ -158,7 +158,7 @@ main(int argc, char **argv)
 	    // which the SCCS manpages don't state is supported, but in fact
 	    // some implementations do support this.
 	    
-	    errormsg("Warning: some SCCS implementations allow only "
+	    warning("some SCCS implementations allow only "
 		     "a release number for the -r option.\n");
 
 	    first_sid = sid(rel_str);

@@ -39,7 +39,7 @@ no_id_keywords(const char name[]) const
     {
       // TODO: Just what does "fatal" mean for no_id_keywords_is_fatal ?
 #ifdef HAVE_EXCEPTIONS
-      errormsg("%s: Warning: No id keywords.", name);
+      warning("%s: No id keywords.", name);
       throw CsscNoKeywordsException();
 #else
       fatal_quit(-1, "%s: Warning: No id keywords.", name);
@@ -47,7 +47,7 @@ no_id_keywords(const char name[]) const
     }
   else
     {
-      errormsg("%s: Warning: No id keywords.", name);
+      warning("%s: No id keywords.", name);
     }
 }
 

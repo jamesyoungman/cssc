@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.31 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.32 2002/04/04 19:32:05 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -73,12 +73,12 @@ sccs_file::start_update() {
             mystring newname(xname + ".bak");
             if (0 == rename(xns, newname.c_str()))
               {
-                errormsg("Warning: %s renamed to %s\n",
-                         xns, newname.c_str());
+                warning("%s renamed to %s\n",
+			xns, newname.c_str());
               }
             else
               {
-                errormsg("Warning: %s over-written!\n", xns);
+                warning("%s over-written!\n", xns);
               }
           }
         

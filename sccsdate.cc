@@ -38,7 +38,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.15 2002/03/10 17:54:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.16 2002/04/04 19:32:05 james_youngman Exp $";
 #endif
 
 // The MySC code used to just check for (year % 4) and (year == 0).
@@ -254,10 +254,10 @@ sccs_date::sccs_date(const char *date, const char *time)
       && is_digit(buf[3])
       && ('/' == buf[4]))
   {
-      errormsg("Warning: this file has been written by a version of SCCS"
-               " which uses four-digit years, which is contrary to the"
-               " common SCCS file format (though it might have been a "
-               " good idea in the first place)\n");
+      warning("this file has been written by a version of SCCS"
+	      " which uses four-digit years, which is contrary to the"
+	      " common SCCS file format (though it might have been a "
+	      " good idea in the first place)\n");
       century = get_two_digits(&buf[0]);
       date = buf + 2;
   }
@@ -271,10 +271,10 @@ sccs_date::sccs_date(const char *date, const char *time)
   
   if (buf[0] >= ':' && buf[0] <= '@')
     {
-      errormsg("Warning: date in SCCS file contains character '%c': "
-               "a version of SCCS which is not Year 2000 compliant "
-               "has probably been used on this file.\n",
-               buf[0]);
+      warning("date in SCCS file contains character '%c': "
+	      "a version of SCCS which is not Year 2000 compliant "
+	      "has probably been used on this file.\n",
+	      buf[0]);
       
       buf[0] -= 10;
     }
