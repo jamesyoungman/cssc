@@ -1,5 +1,7 @@
 New in CSSC-0.16alpha-pl0
 
+	* On Red Hat Linux, info files live in /usr/share/info not /usr/info.
+
 	* Recognise BitKeeper files and don't emit spurious warnings when 
 	  we see its extensions to the file format.  However, we do emit 
           a warning if we see an "extension" we don't recognise.
