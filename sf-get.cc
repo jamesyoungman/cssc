@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.29 2000/03/19 11:18:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.30 2000/11/19 22:43:07 james_youngman Exp $";
 #endif
 
 bool
@@ -114,12 +114,17 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
 		    {
 		      fprintf(stderr, "seq %lu includes seq %lu\n", seq, s);
 		    }
-		  state.set_included(s);
+		  state.set_included(s, true); 
 		  ASSERT(state.is_included(s));
 		}
 	    } 		
-	  
-	  state.set_included(d.prev_seq);
+
+	  // If this seq was explicitly included, don't recurse for it 
+	  // (this fixes SourceForge bug number 111140).
+	  if (0 || state.is_recursive(seq))
+	    {
+	      state.set_included(d.prev_seq);
+	    }
 	  
 	  len = d.excluded.length();
 	  for(i = 0; i < len; i++)

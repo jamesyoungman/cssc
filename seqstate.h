@@ -24,7 +24,7 @@
  *
  * Defines the class seqstate.  
  *
- * $Id: seqstate.h,v 1.15 2000/03/19 11:18:41 james Exp $
+ * $Id: seqstate.h,v 1.16 2000/11/19 22:43:07 james_youngman Exp $
  *
  */
 
@@ -48,6 +48,7 @@ class seq_state
   
   unsigned char * pIncluded;
   unsigned char * pExcluded;
+  unsigned char * pNonrecursive;
   unsigned char * pExplicit;
   
   unsigned char * pActive;
@@ -75,14 +76,16 @@ public:
   seq_state(const seq_state& s);
   ~seq_state();
   
-  bool is_included(seq_no) const;
+  bool is_included(seq_no n) const;
   bool is_excluded(seq_no) const;
 
   bool is_explicitly_tagged(seq_no) const;
+  bool is_nonrecursive(seq_no n) const;
+  bool is_recursive(seq_no n) const;
 
   void set_explicitly_included(seq_no);
   void set_explicitly_excluded(seq_no);
-  void set_included(seq_no);
+  void set_included(seq_no n, bool bNonRecursive=false);
   void set_excluded(seq_no);
   
   // stuff for use when reading the body of the s-file.

@@ -35,6 +35,7 @@ seq_state::seq_state(seq_no l) :
   pIncluded = new unsigned char[l + 1];
   pExcluded = new unsigned char[l + 1];
   pExplicit = new unsigned char[l + 1];
+  pNonrecursive = new unsigned char[l + 1];
   pActive   = new unsigned char[l + 1];
   pCommand  = new          char[l + 1];
   
@@ -43,6 +44,7 @@ seq_state::seq_state(seq_no l) :
       pIncluded[i] = 0;
       pExcluded[i] = 0;
       pExplicit[i] = 0;
+      pNonrecursive[i] = 0;
       pActive[i]   = 0;
       pCommand[i]  = 0;
     }
@@ -59,6 +61,7 @@ seq_state::seq_state(const seq_state& s) :
   pIncluded = new unsigned char[last + 1];
   pExcluded = new unsigned char[last + 1];
   pExplicit = new unsigned char[last + 1];
+  pNonrecursive = new unsigned char[last + 1];
   pActive   = new unsigned char[last + 1];
   pCommand  = new          char[last + 1];
   
@@ -67,6 +70,7 @@ seq_state::seq_state(const seq_state& s) :
       pIncluded[i] = s.pIncluded[i];
       pExcluded[i] = s.pExcluded[i];
       pExplicit[i] = s.pExplicit[i];
+      pNonrecursive[i] = s.pNonrecursive[i];
       pActive[i]   = s.pActive[i];
       pCommand[i]  = s.pCommand[i];
     }
@@ -88,8 +92,11 @@ bool seq_state::is_excluded(seq_no n) const
 
 void seq_state::set_explicitly_included(seq_no n)
 {
-  set_included(n);
-  pExplicit[n] = 1;
+  if (0 == pIncluded[n])	// if not already included...
+    {
+      set_included(n);
+      pExplicit[n] = 1;
+    }
 }
 
 void seq_state::set_explicitly_excluded(seq_no n)
@@ -98,10 +105,11 @@ void seq_state::set_explicitly_excluded(seq_no n)
   pExplicit[n] = 1;
 }
 
-void seq_state::set_included(seq_no n)
+void seq_state::set_included(seq_no n, bool bNonRecursive /*=false*/)
 {
   pIncluded[n] = 1;
   pExcluded[n] = 0;
+  pNonrecursive[n] = bNonRecursive;
 }
 
 void seq_state::set_excluded(seq_no n)
@@ -115,16 +123,27 @@ bool seq_state::is_explicitly_tagged(seq_no n) const
   return pExplicit[n];
 }
 
+bool seq_state::is_nonrecursive(seq_no n) const
+{
+  return pNonrecursive[n];
+}
+
+bool seq_state::is_recursive(seq_no n) const
+{
+  return !is_nonrecursive(n);
+}
+
 
 seq_state::~seq_state()
 {
   delete[] pIncluded;
   delete[] pExcluded;
   delete[] pExplicit;
+  delete[] pNonrecursive;
   delete[] pActive;
   delete[] pCommand;
   
-  pIncluded = pExcluded = pExplicit = pActive = 0;
+  pIncluded = pExcluded = pExplicit = pNonrecursive = pActive = 0;
   pCommand = 0;
 }
 
