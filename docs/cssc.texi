@@ -12,9 +12,9 @@
 @setchapternewpage odd
 @c %**end of header
 
-@set EDITION 1.03
-@set VERSION 0.13alpha-pl0
-@set UPDATED Sat Jul 14 13:51:00 2001
+@set EDITION 1.04
+@set VERSION 0.14alpha-pl0
+@set UPDATED Mon Mar  4 00:13:48 2002
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -25,7 +25,7 @@
 This file documents the the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
-Copyright (C) 1997,1998,1999,2000,2001 Free Software Foundation, Inc.
+Copyright (C) 1997,1998,1999,2000,2001,2002 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -60,7 +60,7 @@ by the Foundation.
 This web page documents the the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
-Copyright (C) 1997,1998,1999,2000,2001 Free Software Foundation, Inc.
+Copyright (C) 1997,1998,1999,2000,2001,2002 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -93,7 +93,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1997,1998,1999,2000,2001 Free Software Foundation, Inc.
+Copyright @copyright{} 1997,1998,1999,2000,2001,2002 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -134,6 +134,7 @@ This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
 * Problems::		Reporting bugs.
 * Copying::		How you can copy and share @code{CSSC}.
 * BSD Code::		Parts of the code are from BSD.
+* Glossary::	        Definition of some terms relating to CSSC.
 * Concept Index::	Index of concepts.
 @end menu
 
@@ -233,13 +234,13 @@ Ordered by the frequency with which I use them, they are:-
 @cindex admin
 @cindex sccs-admin
 @cindex creating @sc{sccs} files
-@cindex initializing SCCS history files
+@cindex initialising SCCS history files
 
 To create an @sc{sccs} archive of a source file @file{foo.c}, do
 @example
 admin -ifoo.c s.foo.c
 @end example
-This creates the archive file @file{s.foo.c} and initializes it
+This creates the archive file @file{s.foo.c} and initialises it
 with the current contents of your source file, @file{foo.c}.  If you use
 Emacs as your editor, you can just use @kbd{C-x v i} instead.
 
@@ -252,7 +253,7 @@ example @samp{^A}, the character whose code is 1.
 @table @samp
 @cindex Restricting access to history files
 @item -a @var{xxx}
-Add user or group @var{xxx} to the list of those authorized to check
+Add user or group @var{xxx} to the list of those authorised to check
 revisions in.  Users must be specified by name and groups by numeric
 @sc{id}.
 
@@ -266,14 +267,14 @@ Ensure that the file is encoded as a binary file.  This option only
 works in conjunction with the @code{-n} or @code{-i} options.  
 
 This option is not available if binary file support is turned off
-(@pxref{Interoperability}) though this can be re-enabled if neccessary
+(@pxref{Interoperability}) though this can be re-enabled if necessary
 with an environment variable (@pxref{Environment}).
 
 @item -d@var{F}
 Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
 
 @item -e @var{xxx}
-Erase the specified user or group from the list of those authorized to
+Erase the specified user or group from the list of those authorised to
 check revisions in or out.  
 
 @item -fF [@var{xxx}]
@@ -296,7 +297,7 @@ specified @sc{sccs} files will not be modified by @code{admin} if the
 @samp{-h} flag is used.
 
 @item -i@var{foo}
-Initialize the @sc{sccs} file with the contents of the file @var{foo}.
+Initialise the @sc{sccs} file with the contents of the file @var{foo}.
 If no argument is given, read from standard input.  This implies the
 @samp{-n} option.
 
@@ -307,7 +308,7 @@ If no argument is given, read from standard input.  This implies the
 @c @c TODO: Write the test cases.
 
 @item -m@var{MR-list}
-When initializing a file, add the specified list of @sc{mr} numbers
+When initialising a file, add the specified list of @sc{mr} numbers
 (@pxref{Modification Request Numbers}) to the delta commentary for the
 initial version.  This list can be empty.  The specified @sc{mr}s are
 validated according to the setting of the @var{v} flag, which should be
@@ -338,11 +339,11 @@ description (this is illegal if @samp{-i} or @samp{-n} is used).
 Display version information.
 
 @item -y@var{adayada}
-When initializing a file, set the comment for that delta to
+When initialising a file, set the comment for that delta to
 @samp{@var{adayada}}.  If the option is given just as @samp{-y}, the
 comment is recorded as empty.  The following word in the argument list
-is not used as the comment.  @emph{Note that this behavior is different
-to most Unix programs, but is the same as the behavior of traditional
+is not used as the comment.  @emph{Note that this behaviour is different
+to most Unix programs, but is the same as the behaviour of traditional
 @sc{sccs}}.
 
 @item -z
@@ -400,7 +401,7 @@ Set the release floor.  Releases lower then the release floor cannot be
 checked out.
 @item d
 Set the default delta which is used when the @code{get} command is given
-without the @samp{-r} option.   The default behavior for @code{get} is
+without the @samp{-r} option.   The default behaviour for @code{get} is
 defined in @ref{get}.
 @item l
 Set the locked release list.  These releases cannot be checked out with
@@ -748,7 +749,7 @@ than 69, the year is assumed to be in the twenty-first century
 
 @item -D
 Turns on debugging output, indicating what is going on as the @sc{sccs}
-file is read.  This option may go away or have its behavior change in
+file is read.  This option may go away or have its behaviour change in
 the near future.
 
 @item -e
@@ -805,9 +806,9 @@ Retrieve version @var{X}, rather than the default.
 Run silently.
 
 @item -t
-Get the ``top'' delta for the indicated release.  The default behavior
+Get the ``top'' delta for the indicated release.  The default behaviour
 of @code{get} is to get the highest revision on the trunk.  The
-@samp{-t} option only modifies this behavior in the situation where the
+@samp{-t} option only modifies this behaviour in the situation where the
 topmost trunk revision is a branch point.  In this case, the @samp{-t}
 option causes the topmost revision on this branch to be retrieved.  In
 other words, the @samp{-t} option removes the restriction that the
@@ -1064,7 +1065,7 @@ rule if a four-digit year is specified.  @xref{Year 2000 Issues}.
 
 
 
-This behavior is usually not the one required, and hence the @samp{-e}
+This behaviour is usually not the one required, and hence the @samp{-e}
 or @samp{-l} options are specified too.
 
 @item -d@var{format}
@@ -1163,7 +1164,7 @@ The value of the (user-defined) Q flag (arbitrary one-line text).
 The full path name of the @sc{sccs} file.       
 
 @item :UN:
-List of users authorized to make deltas to this file (one per line).
+List of users authorised to make deltas to this file (one per line).
 
 @item :Y:
 Value of the module-type flag.
@@ -1304,7 +1305,7 @@ may expand to strings containing newlines.
 @cindex Summary of changes to a history file
 The @code{prt} command provides information about an @sc{sccs} file
 without modifying it.  There are many options, though the default
-behavior is usually appropriate.  It is possible to select what
+behaviour is usually appropriate.  It is possible to select what
 revisions to print information on, by @sc{sid} or by date.
 
 @menu
@@ -1362,8 +1363,8 @@ Keywords}.
 
 @item -d
 Print information about the deltas in the file, as opposed to
-information about the @sc{sccs} file itself (for example the authorized
-users).  This is the default behavior.  The default behavior is turned
+information about the @sc{sccs} file itself (for example the authorised
+users).  This is the default behaviour.  The default behaviour is turned
 off by the @samp{-b}, @samp{-f}, @samp{-t} and @samp{-u} flags, but
 specifying @samp{-d} on the command line again will ensure that the
 delta information is printed.
@@ -1417,7 +1418,7 @@ Print the text description of the @sc{sccs} file, as set by @code{admin
 -t} (@pxref{admin}).
 
 @item -u
-Print the list of users and group IDs authorized to make deltas, one per
+Print the list of users and group IDs authorised to make deltas, one per
 line.
 
 @item -y@var{SID}
@@ -1500,7 +1501,7 @@ Once information has been printed for each of the selected deltas, the
 global information is printed.   This consists of 
 
   @itemize @bullet
-  @item List of authorized users and group IDs (if the list is blank,
+  @item List of authorised users and group IDs (if the list is blank,
         @samp{everyone} is printed)
   @item The @sc{sccs} file flags (@pxref{Flags}) are printed.
   @item The description of the @sc{sccs} file is printed (this 
@@ -1775,7 +1776,7 @@ The history file itself.
 @item p.
 The file containing the list of edit locks.
 @item z.
-The lockfile used to arbitrate access to the history file.  The running
+The lock file used to arbitrate access to the history file.  The running
 @sc{cssc} (or @sc{sccs}) program puts its PID into this file.  Some
 versions of @sc{sccs} (but @emph{not} @sc{cssc}) will break the lock
 after 60 seconds if the specified PID is not running on the local
@@ -1827,7 +1828,7 @@ header contains information about both the file as a whole and also
 information about each version stored in the file.  After this comes the
 body itself, which is a stream of fragments from the controlled file
 interspersed with control information which indicates which versions
-these framents appear in.
+these fragments appear in.
 
 Most of the control information for @sc{sccs} files appears on lines
 which are marked as special by the character whose value is 1 (ASCII
@@ -1893,7 +1894,7 @@ The three numbers represent the numbers of lines inserted, deleted and
 unchanged in this version (with respect to its predecessor).  For the
 oldest version in the history file, the numbers of lines deleted and
 unchanged should be zero and the number of lines inserted is the number
-of lines in the intial version of the working file.  These numbers are
+of lines in the initial version of the working file.  These numbers are
 always five digits long.  If the true count of inserted, deleted or
 unchanged lines is greater than 99999, then the fields will still only
 contain 99999.   
@@ -1913,7 +1914,7 @@ two or four fields separated by a decimal point (ASCII code 46 decimal).
 A @sc{sid} with only two fields (release and level) is said to be on the
 trunk of the revision tree.  A @sc{sid} with the full four fields (the
 last two are the branch number and the sequence number) is said to be a
-``branch revisison''.  Each field in the @sc{sid}, if present, must
+``branch revision''.  Each field in the @sc{sid}, if present, must
 contain a positive integer no larger than 9999.  This means that
 @samp{1.0} would not be a valid version number, for example.
 
@@ -1983,10 +1984,10 @@ or many lines, each introduced with @samp{^Ac}, like this:-
 ^Ac as we know it
 @end example
 
-If there is no comment for a particular delta, because it was supressed
+If there is no comment for a particular delta, because it was suppressed
 with the @code{-y} option to @code{delta} or @code{cdc}, or because the
 user was presented with a prompt for comments but just typed the return
-key, an empty @samp{^Ac} contol line will appear at this point.  The
+key, an empty @samp{^Ac} control line will appear at this point.  The
 comment block, and in fact the whole delta table entry, is terminated by
 a control line of the form
 
@@ -2137,7 +2138,7 @@ I was here
 
 I currently have no clear understanding of the interaction of excluded,
 included or excluded revisions with the normal check-in processing.
-Hence I can't thouroughly explain the precise meaning of the @samp{^AI},
+Hence I can't thoroughly explain the precise meaning of the @samp{^AI},
 @samp{^AE} and @samp{^AD} control lines.  This section will be completed
 at a future date.  If you have an understanding of these issues, please
 let me (@email{jay@@gnu.org}) know.
@@ -2291,7 +2292,7 @@ happen if it is running set-user-id or set-group-id.
 @subsection LD_LIBRARY_PATH
 
 None of the programs in the @sc{cssc} suite take any specific action
-regargind the @env{LD_LIBRARY_PATH} environment variable, but your
+regarding the @env{LD_LIBRARY_PATH} environment variable, but your
 system libraries may take notice of it (or decide not to do so, for
 example when a program is running set-user-id or set-group-id).  
 
@@ -2321,15 +2322,19 @@ is running set-user-id or set-group-id.
 @node Interoperability, Incomplete, Environment, Top
 @chapter Interoperability
 
-In order to interoperate better with other implementations of @sc{sccs}, 
-the @sc{cssc} suite can be configured to turn off several features which 
-provide flexibility beyond that which is available in some other
-implementations of @sc{sccs}.
+In order to interoperate better with other implementations of
+@sc{sccs}, the @sc{cssc} suite can be configured to turn off several
+features which provide flexibility beyond that which is available in
+some other implementations of @sc{sccs}.  Some other interoperability
+features of @sc{cssc} exist to maintain compatibility but do not need
+to be turned off.
 
 @menu
 * Binary file support:: Enabling or disabling support for binary files.
 * Maximum line length:: Limiting the length of lines in the SCCS file.
 * Configuration::       Viewing the current configuration.
+* Bug-for-Bug::         We go to great lengths to be compatible
+* Incompatibilities::   Sometimes we cannot be fully compatible
 @end menu
 
 @node Binary file support, Maximum line length, , Interoperability
@@ -2374,7 +2379,7 @@ This setting can be overridden with the environment variable
 @env{CSSC_MAX_LINE_LENGTH}; for a description of how to use this
 environment variable, see @ref{Environment}.
 
-@node Configuration,, Maximum line length, Interoperability
+@node Configuration, Bug-for-Bug, Maximum line length, Interoperability
 @section Checking the Current Configuration
 To discover how a particular installation of @sc{cssc} is configured,
 pass the @code{-V} option to any of the @sc{cssc} tools.  The
@@ -2386,6 +2391,73 @@ enabled or not when running ``configure''.
 @c are as below :-
 @c 
 @c @include config-info.texi
+
+@node Bug-for-Bug, Incompatibilities, Configuration, Interoperability
+@section Bug-for-Bug Compatibility
+
+Some other implementations of @sc{sccs} have bugs, too.  Where we know
+about these and can work around them, we do this.  Please not that
+these bugs only affect @emph{some} other versions of @sc{sccs} - if
+they affected all versions, they'd be the correct behaviour of
+@sc{cssc} too!
+
+@itemize @bullet
+@item
+Some versions of @sc{sccs} had a Y2K-related problem where the tens
+digit in the year fields within the delta table of the SCCS file
+contains a colon (`:') rather than a digit.  When reading files,
+@sc{cssc} correctly understands this to be a zero and issues a warning
+message.  The fault is corrected if the SCCS file is being modified.
+@xref{Year 2000 Issues}.
+
+@item
+Some versions of the Data General implementation were changed to use
+four-digit years in the p-file instead of two-digit years, apparently
+as part of a Y2K-fix.  While arguably this in fact might have been the
+right way to fix the problem, none of the other @sc{sccs}
+implementations went along with the idea. @xref{Year 2000 Issues}.  If
+the file is being modified, the year is written back out as a
+two-digit field.  
+
+@item
+Although it is unusual for SCCS files to have ``^A m'' lines after
+``^A c'' lines, this does sometimes occur.  CSSC accepts either
+order, but always emits the MR numbers before the comments for each
+delta.
+
+@item
+CSSC accepts ``^A m'' lines with no argument, although this is
+unusual.   This may in fact not actually be a bug.
+
+@item 
+Some versions of @sc{sccs} (allegedly some versions of the Sun Code Manager
+product) emit lines of the form ``^AU 0'' instead of ``^A U''.  CSSC
+accepts either but only produces the latter.  Similar situations
+exist for lines of the form ``^At 0'' and ``^A T 0''.
+@end itemize
+
+@node Incompatibilities,, Bug-for-Bug, Interoperability
+
+There are some features of @sc{sccs} implementations with which
+@sc{cssc} cannot maintain compatibility.  
+
+@itemize @bullet
+@item
+The @sc{cssc} behaviour of correcting the problems mentioned above may
+not be compatible with those versions of @sc{sccs} which actually
+exhibit those problems (then again, some of them are not able to read
+their own output in these circumstances, either).
+
+@item
+The BitSCCS product, part of the BitKeeper suite, uses special comment
+lines in the delta table, of the form ``^Ac_'' where ``_'' is some
+character other than a space.  When @sc{cssc} sees these, it will
+avoid changing the SCCS file (though it will still work for read-only
+operations, even though the significance of the special comment is
+ignored).
+@end itemize
+
+
 
 @node Incomplete, Year 2000 Issues, Interoperability, Top
 @chapter Missing Features and other Problems
@@ -2408,15 +2480,15 @@ Documentation is incomplete or missing.  That includes this document.
 Some programs are missing, that is, some programs are present in the
 @sc{sccs} suite and absent from this one.
 
-@c I think this bug has been fixed -- JAY, Sun Nov 22 17:46:55 1998.
-@c @item 
-@c @cindex Multiple-file processing bug
-@c When processing a list of @sc{sccs} files, @sc{cssc} will often make a
-@c fatal exit on encountering an error, whereas the original @sc{sccs}
-@c would issue an error message and continue on with the next file.  This
-@c is currently being corrected.  Many of the common cases of this have
-@c already been fixed.  To find cases where it has not been fixed, just
-@c grep the source for calls to the function @code{quit()}.
+@item 
+@cindex Failures during multiple-file processing 
+On platforms where the C++ compiler used to compile CSSC does not
+support exceptions, the normal mechanism for recovering from an error
+in the processing of an SCCS file is unavailable.  This means that if
+such an error occurs, the program will immediately make a fatal exit,
+as opposed to carrying on with the next file.  In order to fix this
+problem, please either CSSC with a compiler which has working support
+for exceptions, or process just one file at a time. 
 
 @item 
 @cindex Warning messages
@@ -2625,17 +2697,28 @@ digits).
 
 Some versions of SCCS are not year 2000 compliant and write incorrect
 timestamps into SCCS files.  @sc{cssc} correctly understands the
-intended date, and will fix this problem when re-writing the file. 
+intended date, and will fix this problem when re-writing the file
+(@pxref{Bug-for-Bug,,Bug-for-Bug Compatibility}). 
 
-@sc{cssc} represents dates internally in a way that works for Gregorian
-dates up to at least the year 32767 AD on all systems.  Some countries
-didn't recognize the Gregorian calendar system until the early twentieth
-century but this of course is not really a problem now.  The useful life
-of @sc{sccs} is from 1969 until 2068.  Years are stored in two-digit
-form in @sc{sccs} files and so although @sc{cssc} has no such limits
-internally, it's not possible to indicate a year outside this range in
-an @sc{sccs} file.  All the @sc{cssc} programs will successfully work
-with any date in this range, all the way up to 2068, on all systems.
+@sc{cssc} represents dates internally in a way that works for
+Gregorian dates up to at least the year 32767 AD on all systems.  Some
+countries didn't recognise the Gregorian calendar system until the
+early twentieth century but this of course is not really a problem
+now.  The useful life of @sc{sccs} is from 1969 until 2068.  Years are
+stored in two-digit form in @sc{sccs} files and so although @sc{cssc}
+has no such limits internally, it's not possible to indicate a year
+outside this range in an @sc{sccs} file if you want to retain
+compatibility with other implementations of @sc{sccs}.  All the
+@sc{cssc} programs will successfully work with any date in this range,
+all the way up to 2068, on all systems.
+
+In this future, years after 2068 may be represented as four-digit
+fields, but @sc{cssc} doesn't do this yet.  
+
+The @sc{cssc} test suite (@pxref{Testing,,The Test Suite}) contains
+some test files which may be useful in determining the date range with
+which your usual @sc{sccs} implementation will cope.  These are in the
+directory @file{tests/year-2000}.
 
 @node The Bad News, Year 2000 Summary, The Good News,  Year 2000 Issues
 @section The Bad News
@@ -2658,7 +2741,7 @@ produced by @code{admin} when an @sc{sccs} file is created.
 @node Year 2000 Summary, , The Bad News,  Year 2000 Issues
 @section Summary
 
-To summarize, all reporting activities of @sc{cssc} will work correctly
+To summarise, all reporting activities of @sc{cssc} will work correctly
 throughout the range of time representable in an @sc{sccs} file (that
 is, from 1969 to 2068 inclusive).  However, commands which modify
 @sc{sccs} files and need to add dates may fail earlier than this (but
@@ -2860,7 +2943,7 @@ itself by running against a genuine edition of @sc{sccs}, if you have
 one available (before running @code{make check}, set the environment
 variable @samp{dir} to point to the directory containing the programs to
 be tested; this should usually be @w{@file{/usr/sccs}}).  When you
-are sure that the test script is expecting the correct behavior from
+are sure that the test script is expecting the correct behaviour from
 programs under test, you can then run it against @sc{cssc}.  After all,
 if you're going to set out writing your test by assuming that @sc{cssc}
 is correct in the area under test, of what value is the test?
@@ -2882,7 +2965,7 @@ docommand [--silent] @var{label} @var{command} @var{retval} @var{stdout} @var{st
 
 The @code{docommand} function normally prints the label to indicate what
 stage the current test script has reached, followed by ``done'' when it
-has finished.  The @code{--silent} option turns off this behavior, so
+has finished.  The @code{--silent} option turns off this behaviour, so
 that if nothing goes wrong, no progress message is printed.  This is
 occasionally used for commands that have already been tested by a script
 and are known to work, but which must be repeated several times in order
@@ -2997,7 +3080,7 @@ fail "$label: $1: Expected return value $2, got return value $rv"
 @cindex ekko
 The @code{echo_nonl} function outputs its argument, without a following
 newline.  Escape codes as for @code{echo(1)} are understood.  Depending
-on the actual flavor of system that the test suite is running on, this
+on the actual flavour of system that the test suite is running on, this
 might internally use @code{echo -n} or @code{echo -e .....\c}.  
 
 Please do not use either the @samp{-n} or @samp{-e} options for
@@ -3041,11 +3124,20 @@ test `cat foo` = '%M%' || miscarry cannot create file foo.
 
 If you find a bug in GNU @code{CSSC}, please report this via the
 @sc{cssc} bug tracking system at @url{http://sourceforge.net/projects/CSSC}.
-Pleass include the version number, which you can find by giving the
+Please include the version number, which you can find by giving the
 option @w{@samp{--version}} to any @code{CSSC} command.  Also include in
 your message the output that the program produced and the output you
 expected.  An @file{s.} file and instructions for reproducing the error
-are almost essential unless the bug is very trivial.@refill
+are almost essential unless the bug is very trivial.  If you are
+unable to send the actual s-file itself due to confidentiality
+concerns, you can mask the contents by using the script
+@file{mogrify.awk}, which removes the contents of an SCCS file while
+preserving its structure.  You will need to use @code{admin -z} on the
+result in order to correct the checksum of the transformed version of
+the file.  If you do this, please make sure that you
+check that the problem still occurs with the transformed version of
+the file.  
+@refill
 
 You may also find it helpful to join the mailing list.  See the file
 @file{docs/mailing-list.txt} for information about the mailing list.
@@ -3062,7 +3154,7 @@ If you have other questions, comments or suggestions about GNU
 @include gpl.texi
 @c @end ignore
 
-@node BSD Code, Concept Index, Copying, Top
+@node BSD Code, Glossary, Copying, Top
 @unnumbered BSD Code
 @cindex BSD
 @cindex FreeBSD
@@ -3160,7 +3252,155 @@ University of California, Berkeley
 This change has been made to the file @file{COPYING.bsd} which
 accompanies the BSD-derived code.  
 
-@node Concept Index, , BSD Code, Top
+@node Glossary, Concept Index, BSD Code, Top
+@unnumbered Glossary
+
+@table @asis
+
+@item archive 
+In the context of @sc{sccs} and @sc{cssc}, This means the same as
+``history file''.
+
+@item branch
+Notionally, a branch is a parallel or forked stream of changes.  See
+``branching''.
+
+@item body
+The actual data within the version-controlled file is called the
+``body'', though this is also sometimes used to refer to that part of
+the @sc{sccs} history file that contains data from the body of the
+controlled file (that is, information @emph{from} the file as opposed
+to information @emph{about} the file).
+
+@item branching
+
+Multiple lines of development are called branches; a branch is created
+by editing a version of a file which already has a derived version
+(e.g. editing version 1.2 when version 1.3 already exists).
+
+@item checkin comment
+The @code{delta} program asks for a checkin comment; this is a comment
+which summarised the nature of the change which has just been made to
+the file. 
+
+@item controlled file
+This is the (working copy of a) file which is version-controlled with
+an @sc{sccs} history file (that is, a file which is managed by
+@sc{sccs} or @sc{cssc}).
+
+@item d-file
+@xref{Filenames}.
+
+@item delta
+Each revision of a controlled file, as recorded in an @sc{sccs} file
+is called a @emph{delta}.  This is also the name of the program used
+to check in such changes to the file.
+
+@item delta table
+This is the section of the @sc{sccs} file which records information
+about each change that has been made (other than the actual contents
+of the file at that version).
+
+@item excluded delta
+An excluded delta is one which was specified with the @code{-x} option
+to @code{get}.  See @xref{get options,,Options for @code{get}}.
+
+@item g-file
+See @emph{gotten file}.
+
+@item gotten file
+This is the working copy of the file; this is read-only unless the
+file has been checked out for editing. 
+
+@item history file
+Also known as an @sc{sccs} archive or ``s-file''.  When @sc{sccs} or @sc{cssc}
+is used to keep a historical record of previous versions of the
+contents of a file, the file in which this historical information is
+recorded is called the ``history file''.  Sometimes there are known as
+``s-files'' or ``archives'' (though ``archive'' is more often used in
+relation to the @code{ar} and @code{tar} utilities).
+
+@item ignored delta
+An ignored delta is one which was specified with the @code{-g} option
+to @code{delta}.  @xref{delta options,,Options for @code{delta}}.
+
+@item included delta
+An included delta is one which was specified with the @code{-i} option
+to @code{get}.  See @xref{get options,,Options for @code{get}}.
+
+@item keyword
+It is sometimes useful to include information in the gotten file about
+what its version number is and so on.  Since this information changes
+with each revision of the file, it makes sense for @sc{sccs} (or
+@sc{cssc}) to keep track of this information and place it in the gotten
+file accordingly.  If a file is checked out for editing, placeholders
+can be edited into the file which; these are later expanded when the
+file is checked out read-only.  See @xref{Keyword Substitution}.  The
+same name is also sometimes used for the argument following the @code{-d}
+option for @code{prs}.  See @xref{Data Keywords,,
+Data Keywords for the @samp{-d} option of @code{prs}}.
+
+
+@item level
+The second component of the @emph{SID}. 
+
+@item MR number
+Modification Request numbers; if the @samp{v} flag is set in the
+@sc{sccs} file, you will be prompted for ``MR numbers'' when you check
+in a new revision.  These are not used internally by @sc{cssc} but may
+be used to link changes to external things (for example bug report
+numbers).  @xref{delta options,,Options for @code{delta}}.
+
+@item p-file
+@xref{Filenames}.
+
+@item q-file
+@xref{Filenames}.
+
+@item release
+The first component of the @emph{SID}.
+
+@item revision
+A @emph{revision} is a specific version of a file which is controlled
+with an @sc{sccs} history file.  
+
+@item sequence number
+The ``sequence number'' is a decimal number used within the @sc{sccs}
+history file to identify a particular revision (or delta) of the
+file.  These numbers are normally not user-visible (except in the
+output of @code{prt} and @code{prs}).  These are sometimes referred to
+as a ``seqno'' in order to distinguish them from the fourth component
+of a SID.
+
+@item s-file
+The @sc{sccs} history file is sometimes referred to as the
+@emph{s-file}.  See also @xref{Filenames}.
+
+@item SID
+Each revision of a file controlled with an @sc{sccs} history file is
+identified by a ``SID''.  This is a series of numbers separated by
+dots.  A complete SID always has either two components (for revisions
+which lie on the trunk) or four components (for revisions that lie on
+a branch).  Examples are 1.1, 1.2 (which both lie on the trunk),
+1.3.1.1, 1.3.1.2 (which both lie on a branch) and 1.3.2.1 (which lies
+on a different branch).  The four components of the SID are, left to
+right, the @emph{release}, the @emph{level}, the @emph{branch} and the
+@emph{sequence number}.  See also @emph{sequence number}, above.
+
+@item trunk
+The trunk consists of those deltas within a history file which do not
+lie on branches; trunk revisions have only two components in their
+SID.  Normally these are the main sequence of changes to the file.
+
+
+@item x-file
+@xref{Filenames}.
+
+@item z-file
+@xref{Filenames}.
+@end table
+
+@node Concept Index, , Glossary, Top
 @unnumbered Concept Index
 
 @printindex cp
