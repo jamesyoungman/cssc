@@ -443,6 +443,11 @@ any comments, separating lines with backslash-newline pairs.  An
 unescaped newline terminates the comment, allowing operation to
 continue.
 
+Sometimes, running @code{delta} results in the creation of a branch in
+the @sc{sccs} file; this is controlled by the @code{get} command at the
+time the file is checked out for editing (@pxref{branches}).
+
+
 @menu
 * Basic Usage: delta usage.         Frequently-used @samp{delta} commands
 * Options: delta options.           Full list of options
@@ -553,7 +558,8 @@ revision so that a modified version can be checked in later using
 
 @menu
 * Basic Usage: get usage.           Frequently-used @samp{get} commands
-* Options: get options.             Full list of options
+* Options: get options.             Full list of options.
+* Branches: branches.               How branches are made.  
 * Keywords: Keyword Substitution.   Keyword Substitution
 @end menu
 
@@ -583,7 +589,8 @@ Get the most recent trunk revision, and print it on standard output.
 The @samp{-r} option could also be used to specify some other revision.
 @end table
 
-@node get options, , get usage, get
+
+@node get options, branches, get usage, get
 @subsection Options for @code{get}
 @table @samp
 Full description of options
@@ -594,7 +601,11 @@ Retrieve the version corresponding to the delta sequence number
 
 @item -b
 Create a new branch when the resulting file is checked back in.  Used
-with the @samp{-e} option.
+with the @samp{-e} option.  If the @samp{-e} option is not given, or if
+the @samp{b} (branch) flag is not set in the @sc{sccs} file, this option
+has no effect; a branch is not made.  If the version to be checked out
+for editing has a successor, a branch is created whether or not the
+@samp{-b} flag is present (@pxref{branches,branches,Making Branches}).
 
 @cindex time travel
 @item -c@i{when}
@@ -685,7 +696,53 @@ specifying the @sc{sid} at which they arrived in the file.
 
 @end table
 
-@node Keyword Substitution, , , get
+
+@node branches, Keyword Substitution, get options, get
+@subsection Making Branches
+@cindex branches
+
+Normally, editing revision 1.1 of a file produces revision 1.2.  Editing
+that produces revision 1.3, and so on.   Sometimes, however, we need to
+make a change to an earlier version which has already been superseded.
+
+This might happen, for example, when a bug has been reported in a
+released version of a file; a rapid bug-fix is required, but you're in
+the middle of working towards a new release.   A viable strategy is to
+make a branch at the previously-released version, modify that to fix the
+bug (and release this bug-fix).  Meanwhile, development can be continued
+along the ``main trunk'', and the same bug-fix can be incorporated in
+this, ready for the next release later on.
+
+When you check out a version of a file for editing, @sc{cssc} tells you
+what the @sc{sid} of the new version will be.  For normal progress along
+the trunk, the @dfn{level number} is incremented.  This is the second
+numeric element of the @sc{sid}.  In general, a @sc{sid} is composed of
+four numbers @samp{R.L.B.S}, where ``R'' stands for ``Release'', ``L''
+stands for ``Level'', ``B'' stands for ``Branch'', and ``S'' stands for
+``Sequence number'' (not the same as the sequence numbers produced in
+the output of @code{prt}).
+
+Trunk revisions have only two components; you can think of the branch
+and sequence numbers as being zero.  Non-trunk revisions have four
+components.  When a branch is created from an existing @sc{sid}, the
+release and level numbers are copied, the branch number is set to the
+lowest unused value for that release and level, and the sequence number
+is set to one.  Hence the first branch from version 1.1 will be version
+1.1.1.1, and if a branch is made from that, its @sc{sid} will be
+1.1.2.1.
+
+Branches are made from any given version when that version already has a
+successor (for example, a @code{get -e} on version 1.1 will result in a
+branch (1.1.1.1) if version 1.2 exsts, and a @code{get -e} on version
+1.2.1.1 will result in a branch (1.2.2.1) if version 1.2.1.2 exists.
+
+If the ``enable branches'' flag is set, it is also possible to make
+branches for revisions that do not have successors.  This is done with
+the @samp{-b} flag of @code{get}.
+
+
+
+@node Keyword Substitution, , branches, get
 @subsection Keyword Substitution
 @cindex Keyword Substitution
 Keyword substitution is performed unless the @samp{-k} option or the
