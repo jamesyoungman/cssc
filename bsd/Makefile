@@ -1,0 +1,7 @@
+#	@(#)Makefile	8.1 (Berkeley) 6/6/93
+
+all: sccs
+
+sccs.o: sccs.c pathnames.h
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c sccs.c 
+
