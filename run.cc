@@ -2,7 +2,7 @@
  * run.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2002 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.26 2002/07/26 17:44:56 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.27 2002/07/26 17:46:34 james_youngman Exp $";
 #endif
 
 #if !defined(HAVE_FORK) && !defined(HAVE_SPAWN)
