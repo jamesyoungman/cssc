@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.22 1998/09/07 21:55:57 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.23 1998/10/21 06:04:13 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -366,10 +366,17 @@ user_is_group_member(int) {
  *	  call.
  */
 
-static long get_nlinks(int fd)
+
+/* WARNING: If you use fstat() on the fd to get the link count, the
+ * wrong value is returned for Linux 2.0.34 and glibc-2.0.7, the
+ * second time we perform the fstat().  Therefore we use stat(2)
+ * rather than fstat(2).
+ */
+static long get_nlinks(const char *name)
 {
   struct stat st;
-  if (0 == fstat(fd, &st))
+  st.st_nlink = -1;
+  if (0 == stat(name, &st))
     {
       return (long)st.st_nlink;
     }
@@ -400,7 +407,7 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
       int fd = open(lockstr, flags, perms);
       if (fd >= 0)
 	{
-	  if (1 == get_nlinks(fd))
+	  if (1 == get_nlinks(lockstr))
 	    {
 	      int link_errno = 0;
 	      errno = 0;
@@ -409,7 +416,7 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 
 	      /* ignore other responses */
 	      
-	      if (2 == get_nlinks(fd))
+	      if (2 == get_nlinks(lockstr))
 		{
 		  unlink(lockstr); 
 		  return fd;	/* success! */
