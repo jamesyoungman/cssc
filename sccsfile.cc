@@ -15,7 +15,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.6 1997/05/31 10:22:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.7 1997/05/31 19:11:38 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -382,7 +382,7 @@ sccs_file::read_delta() {
 /* Seeks on the SCCS file to the start of the body.  This function 
    may be rewritten as fseek() doesn't always work too well on
    text files. */
-
+// JAY: use fgetpos()/fsetpos() instead?
 void
 sccs_file::seek_to_body() {
 	if (fseek(f, body_offset, 0) != 0) {
@@ -628,6 +628,26 @@ sccs_file::find_most_recent_sid(sid id) const {
 		}
 	}
 	return found;
+}
+
+bool
+sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
+{
+  s = sid();
+  d = sccs_date();
+  bool found = false;
+  
+  delta_iterator iter(delta_table);
+  while(iter.next())
+    {
+      if (!found || iter->date > d)
+	{
+	  d = iter->date;
+	  s = iter->id;
+	  found = true;
+	}
+    }
+  return found;
 }
 
 
