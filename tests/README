@@ -1,0 +1,17 @@
+This directory contains rudimentary tests for the CSSC package.
+
+$(srcdir)/tests/Makefile is created in the compilation directory but
+basically the tests only work when run from the test directory below
+the source directory.   This should be improved.
+
+However for the tests themselves the environment variable "dir"
+selects where the programs to be tested are found, so if your 
+machine has "genuine" SCCS in (say) /usr/sccs, you can say
+export dir=/usr/sccs and run these tests on the genuine article.
+
+Most of these tests contain no checks of the contents of stderr.   
+Output to stdout is checked, as are return values.   However, CSSC
+produces more warning messages than genuine SCCS and also these
+messages are in a different (more helpful?) format.
+
+
