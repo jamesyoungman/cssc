@@ -1,3 +1,20 @@
+1998-01-25  James Youngman  <jay@gnu.org>
+
+	* get.cc: Implement -t option (Dave Bodenstab bug report)
+
+	* bodyio.cc: Test what happens if the text input ends with
+	  "%A", that is, the peeked character is EOF.  At the moment,
+	  we ungetc(EOF); is that valid?
+
+	* bodyio.cc: Test for sane behaviour if we get a disk-full
+	  condition while writing the body part of an SCCS file
+	  with admin -i.   Especially important for text files;
+	  we probably want to avoid retrying with binary encoding.
+
+	* Make sure get is 8-bit clean for "ASCII" files containing 
+	  ASCII NUL; make sure admin generates a binary file if this
+	  appears in the input.
+
 1998-01-11  James Youngman  <jay@gnu.org>
 
 	* Write documentation for sccsdiff in cssc.texi

@@ -1,5 +1,5 @@
-The Time-stamp: line indicated when this file was last modified.
-Time-stamp: <1998-01-11 16:40:45 james>
+The Time-stamp: line indicates when this file was last modified.
+Time-stamp: <1998-01-25 12:13:34 james>
 
 This file points out features of SCCS that are missing from CSSC, by
 accident or design, but are not currently listed in the TODO file.

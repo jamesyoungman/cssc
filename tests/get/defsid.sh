@@ -26,7 +26,7 @@ docommand d2 "$get -e $s" 0 "1.1\nnew delta 1.2\n1 lines\n" ""
 docommand d3 "$delta -yNoComment $s" 0 "1.2\n0 inserted\n0 deleted\n1 unchanged\n" ""
 
 # Make a branch at the same place, and check the resulting SID.
-docommand d4 "$get -e -b -r1.1 $s" 0 "1.1\nnew delta 1.1.1.1\n1 lines\n" ""
+docommand d4 "$get -e -r1.1 $s" 0 "1.1\nnew delta 1.1.1.1\n1 lines\n" ""
 docommand d5 "$delta -yNoComment $s" 0 "1.1.1.1\n0 inserted\n0 deleted\n1 unchanged\n" ""
 
 

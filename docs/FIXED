@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1997-12-12 20:43:04 james>
+Time-stamp: <1998-01-24 20:21:02 james>
 
 List of fixed bugs 
 
@@ -18,6 +18,13 @@ policy, let me know.  All bugfixes are listed in ChangeLog, in some
 fashion.
 
 
+Sat Jan 24 16:58:50 1998: James Youngman <jay@gnu.org>
+In version 0.05pl0.   
+ prs -d:FL: s.foo on an empty s-file produces
+     MR Validation: 
+     Module Name:
+ when neither of these flags is set.
+(This is now fixed.)
 
 
 Sun May  4 13:12:57 1997:
