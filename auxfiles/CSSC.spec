@@ -1,11 +1,11 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
-Version: 0.06alpha.pl4
+Version: 0.06alpha.pl5
 Release: 1
 Copyright: GPL
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
-Source: alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.06alpha.pl4.tar.gz 
+Source: alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.06alpha.pl5.tar.gz
 Requires: /usr/bin/diff
 
 %description
