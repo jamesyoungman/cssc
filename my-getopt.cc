@@ -36,7 +36,7 @@
  * the traditional Unix behaviour.  You can define
  * INCOMPATIBLE_OPTIONS if you wish to support a new option that has
  * the traditional Unix semantics rather than the normal SCCS
- * semantics, but I [jay@gnu.org]do not reccomend this.
+ * semantics, but I [jay@gnu.org] do not reccomend this.
  */
 #undef INCOMPATIBLE_OPTIONS
 
@@ -71,7 +71,7 @@
 #include "cssc.h" // basically, just for the declaration of quit().
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.11 2003/12/10 00:09:39 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.12 2004/10/03 10:37:57 james_youngman Exp $";
 #endif
 
 int

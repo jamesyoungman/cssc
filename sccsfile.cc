@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.55 2003/12/13 15:11:56 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.56 2004/10/03 10:37:57 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -684,6 +684,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   flags.joint_edit = 0;
   flags.all_locked = 0;
   flags.encoded = 0;
+  flags.executable = 0;
   flags.mr_checker = 0;
   flags.module = 0;
   flags.type = 0;
@@ -914,6 +915,13 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       case 'z':
 	set_reserved_flag(arg);
 	break;
+
+      case 'x':
+	// The 'x' flag is supported by SCO's version of SCCS.
+	// When this flag is set, the g-file is marked executable.
+	flags.executable = 1;
+	break;
+	
       case 'e':
 	if (got_arg && '1' == *arg)
 	  flags.encoded = 1;
@@ -1167,6 +1175,11 @@ char sccs_file::bufchar(int pos) const
 bool sccs_file::branches_allowed() const
 {
   return 0 != flags.branch;
+}
+
+bool sccs_file::executable_flag_set() const
+{
+  return 0 != flags.executable;
 }
 
 

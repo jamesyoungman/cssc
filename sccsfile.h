@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.52 2003/03/08 15:19:45 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.53 2004/10/03 10:37:57 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -87,6 +87,7 @@ private:
     mystring *reserved;
     
     int encoded;
+    int executable;
   } flags;
 
   mylist<mystring> comments;
@@ -264,7 +265,7 @@ public:
 
   /* Used by get.cc (implemented in sccsfile.cc) */
   bool branches_allowed() const;
-
+  bool executable_flag_set() const;
 
   /* val.cc */
   const mystring  get_module_type_flag();

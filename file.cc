@@ -45,7 +45,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.36 2003/12/08 21:10:08 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.37 2004/10/03 10:37:57 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -535,7 +535,7 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 /* CYGWIN seems to be unable to create a file for writing, with mode
  * 0444, so this code resets the mode after we have closed the g-file. 
  */
-bool set_file_mode(const mystring &gname, bool writable)
+bool set_file_mode(const mystring &gname, bool writable, bool executable)
 {
   const char *name = gname.c_str();
   struct stat statbuf;
@@ -556,6 +556,12 @@ bool set_file_mode(const mystring &gname, bool writable)
 	    mode |= 0200;
 	  else
 	    mode &= (~0200);
+	  
+	  if (executable)
+	    {
+	      // A SCO extension.
+	      mode |= 0111;
+	    }
 	  
 	  if (0 == fchmod(fd, mode))
 	    {
@@ -583,10 +589,10 @@ bool set_file_mode(const mystring &gname, bool writable)
  * the real user's files.  However, we need to do this (for example, 
  * for get -k).  This is SourceForge bug 451519.
  */
-bool set_gfile_writable(const mystring& gname, bool writable)
+bool set_gfile_writable(const mystring& gname, bool writable, bool executable)
 {
   give_up_privileges();
-  bool rv = set_file_mode(gname, writable);
+  bool rv = set_file_mode(gname, writable, executable);
   restore_privileges();
   return rv;
 }
@@ -701,6 +707,12 @@ create(mystring name, int mode) {
         }
 #endif 
 
+	if (mode & CREATE_EXECUTABLE)
+	  {
+	    // A SCO extension.
+	    perms |= 0111;
+	  }
+	  
         int fd;
 
         if (mode & CREATE_AS_REAL_USER)

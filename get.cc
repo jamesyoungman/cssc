@@ -40,7 +40,7 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.50 2003/12/08 21:10:08 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.51 2004/10/03 10:37:57 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -389,7 +389,12 @@ main(int argc, char **argv)
                 {
                   mode |= CREATE_READ_ONLY;
                 }
-              
+
+	      if (file.executable_flag_set())
+		{
+		  mode |= CREATE_EXECUTABLE;
+		}
+	      
               out = fcreate(gname, mode);
               real_file = true;
               
@@ -431,7 +436,8 @@ main(int argc, char **argv)
               fclose(out);
               if (suppress_keywords)
               {
-                  if (!set_gfile_writable(gname, true))
+                  if (!set_gfile_writable(gname, true,
+					  file.executable_flag_set()))
                       retval = 1;
 		  maybe_clear_archive_bit(gname);
               }
@@ -442,7 +448,8 @@ main(int argc, char **argv)
                  * will have to temporarily set EUID=RUID.
                  */
                 give_up_privileges();
-                if (!set_gfile_writable(gname, false))
+                if (!set_gfile_writable(gname, false,
+					file.executable_flag_set()))
                     status.success = false;
                 restore_privileges();
               }

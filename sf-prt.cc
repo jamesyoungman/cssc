@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.23 2001/11/25 12:59:52 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.24 2004/10/03 10:37:57 james_youngman Exp $";
 #endif
 
 static void
@@ -446,7 +446,7 @@ sccs_file::prt(FILE *out,
       // Except the "encoded" flag, which doesn't have a newline
       // printed after it, for some reason.
       //
-      // But we emlate even that bug :-)
+      // But we emulate even that bug :-)
       //
       int flag_count = 0;
       fprintf(out, "\nFlags --\n");
@@ -467,6 +467,9 @@ sccs_file::prt(FILE *out,
 	  fprintf(out, "\tencoded");
 	  ++flag_count;
 	}
+
+      // The 'x' flag is a SCO extension.
+      print_flag(out, "\texecutable\t", flags.executable, flag_count);
       
       print_flag(out, "\tfloor\t", flags.floor, flag_count);
       if (flags.no_id_keywords_is_fatal)

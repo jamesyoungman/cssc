@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.31 2001/11/25 12:59:52 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.32 2004/10/03 10:37:57 james_youngman Exp $";
 #endif
 
 
@@ -197,6 +197,11 @@ sccs_file::admin(const char *file_comment,
 	case 'v':
 	  set_mr_checker_flag(s);
 	  break;
+
+	case 'x':
+	  warning("The 'x' (executable) flag is a SCO extension and is not supported by other versions of SCCS.");
+	  flags.executable = 1;
+	  break;
 	  
 	default:
 	  // TODO: this will fail for every file, so should probably
@@ -278,6 +283,10 @@ sccs_file::admin(const char *file_comment,
 	case 'v':
 	  delete flags.mr_checker;
 	  flags.mr_checker = 0;
+	  break;
+	  
+	case 'x':
+	  flags.executable = 0;
 	  break;
 	  
 	default:

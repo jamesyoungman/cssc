@@ -397,7 +397,16 @@ this normally fails if another user already has the file locked.
 Setting the @samp{j} flag overrides this.
 @item n
 Create empty releases when the @option{-r} option to @code{get} is used to
-skip releases.   These empty releases can later serve as branch points.
+skip releases.   These empty releases can later serve as branch
+points.
+@item x
+Sets the executable bit on the g-file.   This flag is a SCO extension 
+and is not supported by other versions of @sc{sccs}.  Setting this
+flag with @code{admin -fx} generates a warning to this effect.
+If @sc{cssc} is simply processing a file which already has this flag
+set, no message will be generated.
+See @ref{Interoperability} for more information on compatibility between
+@sc{cssc} and other implementations of @sc{sccs}.
 @end table
 
 @unnumberedsubsubsec Other Flags 
@@ -2451,6 +2460,7 @@ but do not need to be turned off.
 
 @menu
 * Binary File Support::      Enabling or disabling support for binary files.
+* Executable File Support::  Support for a SCO extension. 
 * BitKeeper::                Limited support for Bitkeeper files exists.
 * Maximum Line Length::      Limiting the length of lines in the SCCS file.
 * Limitations of diff::      Diff has limits too, on many non-GNU systems.
@@ -2460,7 +2470,7 @@ but do not need to be turned off.
 * SCCS Version Differences:: Versions of @sc{sccs} behave inconsistently
 @end menu
 
-@node Binary File Support, BitKeeper, , Interoperability
+@node Binary File Support, Executable File Support, , Interoperability
 @section Binary File Support
 Binary file support can be turned off when you run ``configure'' by
 specifying the @code{--disable-binary} option.  This will cause
@@ -2478,7 +2488,27 @@ encoded files will still be handled; @sc{cssc} will just refuse to
 create a new one.  This provides as great a degree of interoperability
 with other implementations of @sc{sccs} as possible.
 
-@node BitKeeper, Maximum Line Length, Binary File Support, Interoperability
+@node Executable File Support, BitKeeper, Binary File Support, Interoperability
+@section Executable File Support
+The support that @sc{cssc} provides for binary files allows the
+controlled file to contain any sequence of bytes.  That doesn't 
+imply that the controlled file is used for any particular purpose.
+For example, JPEG files can contain non-ASCII acharacters.  
+
+This should be contrasted with support for @emph{executable} files,
+which have a specific Unix file mode bit set (see the manual page for 
+@code{chmod} for more details).  Unix executable files may or may not
+be binary files.  It's common to control shell scripts with
+@sc{cssc}, for example.  Shell scripts are normaly executable but not
+binary.  
+
+If the @code{x} flag is set, @sc{cssc} will generate a g-file whose
+execute bits are set.  This feature exists for compatibility with SCO
+@sc{sccs}.  Do not use this feature if you wish to interoperate with
+other implementations of @sc{sccs}.  Setting this flag with
+@code{admin -fx} generates a warning about this.
+
+@node BitKeeper, Maximum Line Length, Executable File Support, Interoperability
 @section BitKeeper
 
 Read-only support is provided for files produced by the BitKeeper
@@ -2713,6 +2743,12 @@ Most implementations of @sc{sccs} do not support the encoding of
 binary files, either automatically or by the use of the @option{-b}
 option to @code{admin}.  See @ref{Binary File Support}, for more
 information.
+
+@item Executable file support
+The SCO implementation of @sc{sccs} provides an @code{x} flag, which
+turns on the executable bits of the mode of the g-file when it is
+created.  Other versions of @sc{sccs} do not have this feature.  While
+@sc{csssc} provides this feature also, its use is not recommended.
 
 @item Initial delta
 The @option{-r} option is used to specify the release of the initial

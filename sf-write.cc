@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.35 2003/12/08 11:46:00 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.36 2004/10/03 10:37:57 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -83,7 +83,10 @@ sccs_file::start_update() {
           }
         
 
-        FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE);
+	// The 'x' flag is a SCO extension.
+	const int x = (flags.executable ? CREATE_EXECUTABLE : 0);
+
+        FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE | x);
 
         if (out == NULL)
           {
@@ -338,13 +341,19 @@ sccs_file::write(FILE *out) const
   // We have to write it even if the flag is unset, 
   // because "admin -i" goes back and updates that byte if the file 
   // turns out to have been binary.
-  if (printf_failed(fprintf(out, "\001f e %c",
+  if (printf_failed(fprintf(out, "\001f e %c\n",
                             (flags.encoded ? '1' : '0'))))
     return 1;
 
         
-  if (printf_failed(fprintf(out, "\n")))
-    return 1;
+  // x - executable flag (a SCO extension)
+  if (flags.executable)
+    {
+      if (printf_failed(fprintf(out, "\001f x\n")))
+        {
+          return 1;
+        }
+    }
         
   if (flags.reserved)
     {

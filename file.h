@@ -40,10 +40,11 @@ enum create_mode {
 	CREATE_FOR_UPDATE    =  010,
 	CREATE_FOR_GET       =  020,
 #ifdef CONFIG_SHARE_LOCKING
-	CREATE_WRITE_LOCK    =  040
+	CREATE_WRITE_LOCK    =  040,
 #else	
-	CREATE_NFS_ATOMIC    = 0100
+	CREATE_NFS_ATOMIC    = 0100,
 #endif
+	CREATE_EXECUTABLE    = 0200   // A SCO extension.
 };
 
 bool stdout_to_null();
@@ -56,8 +57,8 @@ const char *get_user_name();
 int user_is_group_member(gid_t gid);
 FILE *fcreate(mystring name, int mode);
 FILE *fopen_as_real_user(const char *name, const char *mode);
-bool set_file_mode(const mystring &gname, bool writable);
-bool set_gfile_writable(const mystring &gname, bool writable);
+bool set_file_mode(const mystring &gname, bool writable, bool executable);
+bool set_gfile_writable(const mystring &gname, bool writable, bool executable);
 bool unlink_gfile_if_present(const char *gfile_name);
 bool unlink_file_as_real_user(const char *gfile_name);
 

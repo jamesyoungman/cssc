@@ -48,7 +48,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.51 2002/04/02 17:20:02 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.52 2004/10/03 10:37:57 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -520,11 +520,14 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
    * ID.  I believe that using the flag O_EXCL as fcreate() does resolves
    * that problem. 
    */
-  FILE *get_out = fcreate(dname, CREATE_EXCLUSIVE);
+  FILE *get_out = fcreate(dname,
+			  CREATE_EXCLUSIVE |
+			  (flags.executable ? CREATE_EXECUTABLE : 0));
   if (NULL == get_out)
     {
       remove(dname.c_str());
-      get_out = fcreate(dname, CREATE_EXCLUSIVE);
+      get_out = fcreate(dname, CREATE_EXCLUSIVE | 
+			(flags.executable ? CREATE_EXECUTABLE : 0) );
     }
 
   if (NULL == get_out)
