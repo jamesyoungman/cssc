@@ -28,7 +28,9 @@ Andrew Bardsley <bardslea@cs.man.ac.uk>		[*] GNU Hurd
 James Youngman  <jay@gnu.org>    		    Dynix/ptx 4.2
 
 Mark Reynolds   <mark@aoainc.com>                   Ultrix 4.2  [SEE BELOW!]
-Brad Crittenden <bac@spoetzl.net>               [*] Mac OS X
+Brad Crittenden <bac@spoetzl.net>                   Mac OS X [SEE BELOW]
+Clement T. Cole <clemc@ccc.com>                     MS Services for Unix /
+                                                    Interix 3.0 SP-7.0.1701.1
 
 [*] These entries denote that CSSC compiled successfully but the test
 suite was not run.
@@ -142,8 +144,10 @@ optimisation).  The glibc bug is fixed in glibc 2.2.4.  CSSC compiles
 successfully under GCC version 3.01, with this workaround in place. 
 
 
-Windows NT
-----------
+Windows NT / Cygwin
+-------------------
+
+See also "Microsoft Services for Unix", below. 
 
 CSSC compiles under the CYGWIN environment for Windows NT.  CSSC
 support under the Cygwin environment is nearly up to the standard of
@@ -181,6 +185,26 @@ slightly different, and this changes the ordering.  For this reason,
 test "h1" currently fails, and is skipped for CYGWIN.
 
 
+Microsoft Services for Unix / Interix 3.0
+-----------------------------------------
+
+The following arguments were used for "configure": 
+	./configure CFLAGS=-D_ALL_SOURCE CXXFLAGS=-D_ALL_SOURCE \
+		--build=i386 --host=i386-pc-interix --disable-nls \
+		--enable-binary --prefix=/usr/local \
+		--libexecdir=/usr/local/bin
+         gmake csscutildir=/usr/local/bin
+
+In order for the test suite to run correctly, you need to use a copy
+of CSSC from the CVS repository, checked out after 18 May 2003
+(otherwise, the function "remove" in tests/common/test-common fails
+when it has no arguments).  One of the tests on the "sccs" binary
+fails on Cygwin as described in the section above, but works on SFU.
+
+Clement T. Cole reports that the above works with GNU GCC 2.93.x, but
+not with the default SFU compiler (2.72).
+
+
 Mac OS X
 --------
 
@@ -192,4 +216,10 @@ command "sudo gcc_select 3".  You may also find it helpful to read the
 Porting Guide at
 <http://developer.apple.com/techpubs/macosx/Darwin/GettingStarted/PortingUNIX/intro/index.html>.
 
+If you attempt to compile with GCC 3.1. you may see the following error :-
+g++ -DHAVE_CONFIG_H -I. -I. -I.     -g -O2 -c file.cc
+filelock.h:50: storage size of `_ZTI9file_lock' isn't known
+
+I don't know how to fix this error in any other way than to use GCC
+version 2.95 instead, as described above.
 
