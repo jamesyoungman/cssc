@@ -233,7 +233,8 @@ public:
 		list<sid> included, excluded;
 	};
 
-	bool find_requested_sid(sid requested, sid &found) const ;
+	bool find_requested_sid(sid requested, sid &found,
+				bool include_branches=false) const ;
 	sid find_next_sid(sid requested, sid got, int branch,
 			  sccs_pfile &pfile) const;
 	void test_locks(sid got, sccs_pfile &pfile) const;
