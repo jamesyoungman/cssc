@@ -1,5 +1,9 @@
 New in CSSC-0.13alpha-pl0
 
+	* CSSC should now build with GCC version 3.
+
+	* Preliminary support for CYGWIN
+
 	* It is now possible to turn binary file support off when 
 	  running "configure", to enforce compatibility with an 
 	  SCCS implementation which lacks binary file support.  It is 
