@@ -15,7 +15,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.8 1997/05/31 22:47:57 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.9 1997/06/03 20:21:12 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -229,7 +229,12 @@ main(int argc, char **argv) {
 		  quit(-1, "%s: Requested SID not found.",
 		       (const char *) name);
 		}
-		
+		if (!rid.valid() ||
+		    (rid.release_only() && release(rid) == release(retrieve)))
+		    {
+		      rid = retrieve;
+		    }
+
 		if (for_edit) {
 			file.test_locks(retrieve, *pfile);
 			new_delta = file.find_next_sid(rid, retrieve,
