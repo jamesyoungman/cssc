@@ -6,11 +6,12 @@
 
 g=testfile.txt
 s=s.$g
+d=d.$g
 z=z.$g
 x=x.$g
 p=p.$g
 
-remove command.log log log.stdout log.stderr $g $s $z $x $p
+remove command.log log log.stdout log.stderr $g $s $z $x $p $d
 
 remove $g
 echo "hello, this is a test file" > $g
@@ -33,7 +34,7 @@ docommand a5 "${get} -r1.1 -p $s" 0 "hello, this is a test file\n" IGNORE
 # Make sure that the revision we tried to remove is actually now absent.
 docommand a6 "${get} -r1.2 -p $s" 1 "" IGNORE
 
-remove command.log log log.stdout log.stderr $g $s $z $x $p
+remove command.log log log.stdout log.stderr $g $s $z $x $p $d
 success
 
 

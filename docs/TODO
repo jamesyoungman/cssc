@@ -1,3 +1,9 @@
+1999-04-05  James Youngman  <jay@gnu.org>
+
+	* If the user specifies a list of included deltas and one of the
+	manually-included deltas is NEWER than the supplied cutoff date,
+	do we get the delta, or not?
+
 1998-06-02  James Youngman  <jay@gnu.org>
 
 	* Determine if execv("foo", argv) under glibc2 on Linux will run a

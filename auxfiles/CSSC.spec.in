@@ -23,7 +23,7 @@ It aims for near-total compatibility with SCCS.  CSSC stands for
 %setup
 
 %build
-if test x"$RPM_BUILD_ROOT" != x/
+if test x"$RPM_BUILD_ROOT" = x/
 then
     exit 1
 fi

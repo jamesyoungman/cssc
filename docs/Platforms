@@ -3,8 +3,8 @@ Porting People
 The following people have helped ensure that CSSC has worked on
 these platforms (at some stage):
 
-James Youngman  <jay@gnu.org>    		    Red Hat Linux, version
-						    4.1, 4.2, 5.0, 5.1.
+James Youngman  <jay@gnu.org>    		    Red Hat Linux, versions
+						    4.1,4.2,5.0,5.1,5.2,5.9
 James Youngman  <jay@gnu.org>    		    HPUX 9
 Lars Hecking    <lhecking@nmrc.ucc.ie>              Solaris-2.5.1
 Malcolm Boff    <Malcolm_Boff@compuserve.com>       Solaris-2.5.1
@@ -17,6 +17,7 @@ Andy Sharp      <andy@accrue.com>		    FreeBSD-2.2.2-RELEASE
 Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] SunOS 4
 Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] AmigaOS (ixemul)
 Andrew Bardsley <bardslea@cs.man.ac.uk>		[*] GNU Hurd
+James Youngman  <jay@gnu.org>    		    Dynix/ptx 4.2
 
 [*] These entries denote that CSSC compiled successfully but the test
 suite was not run.
