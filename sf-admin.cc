@@ -18,7 +18,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.5 1997/05/10 14:49:55 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.6 1997/05/20 23:56:37 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -204,10 +204,11 @@ sccs_file::admin(const char *file_comment,
 
 void
 sccs_file::create(release first_release, const char *iname,
-		  list<mystring> mrs, list<mystring> comments) {
+		  list<mystring> mrs, list<mystring> comments,
+		  int suppress_comments) {
 
 	sccs_date now = sccs_date::now();
-	if (comments.length() == 0) {
+	if (!suppress_comments && comments.length() == 0) {
 		mystring one("date and time created ", now.as_string()),
 		       two(" by ", get_user_name());
 		mystring it(one, two);

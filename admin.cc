@@ -15,7 +15,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.7 1997/05/17 19:02:25 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.8 1997/05/20 23:58:11 james Exp $";
 
 void
 usage() {
@@ -217,7 +217,8 @@ main(int argc, char **argv) {
 			}
 
 			file.create(first_release, iname,
-				    mr_list, comment_list);
+				    mr_list, comment_list,
+				    suppress_comments);
 		} else {
 			file.update();
 		}		
