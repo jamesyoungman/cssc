@@ -102,6 +102,8 @@ NORETURN p_corrupt_quit(const char *fmt, ...)
 	__attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
 NORETURN s_corrupt_quit(const char *fmt, ...)
 	__attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
+NORETURN s_missing_quit(const char *fmt, ...)
+	__attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
 NORETURN ctor_fail(int err, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
 #else

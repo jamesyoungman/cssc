@@ -133,11 +133,8 @@ cssc_delta_table::update_highest(const delta &it)
 	{
 	  sid sid_using_this_seqno = delta_at_seq(seq).id;
 
-	  fprintf(stderr, "[<");
 	  sid_using_this_seqno.print(stderr);
-	  fprintf(stderr, " ## ");
 	  it.id.print(stderr);
-	  fprintf(stderr, ">]\n");
 
 	  if (it.id != sid_using_this_seqno)
 	    {

@@ -31,7 +31,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.2 1998/12/09 23:34:53 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.3 1998/12/12 15:09:13 james Exp $";
 #endif
 
 const mystring
@@ -47,42 +47,43 @@ sccs_file::get_module_type_flag()
 bool 
 sccs_file::validate_seq_lists(const delta_iterator& d) const
 {
+  const char *sz_sid = d->id.as_string().c_str();
   int i;
-  const char *what;
   seq_no s;
   
-  what = "included";
   for (i=0; i<d->included.length(); ++i)
     {
       s = d->included[i];
       if (s > delta_table->highest_seqno())
-	goto bad;
-    }
-  
-  what = "excluded";
-  for (i=0; i<d->excluded.length(); ++i)
-    {
-      s = d->excluded[i];
-      if (s > delta_table->highest_seqno())
-	goto bad;
+	{
+	  errormsg("%s: SID %s: included seqno %u does not exist\n",
+		   name.c_str(), sz_sid, (unsigned)s);
+	  return false;
+	}
     }
 
-  what = "ignored";
-  for (i=0; i<d->ignored.length(); ++i)
-    {
-      s = d->ignored[i];
-      if (s > delta_table->highest_seqno())
-	goto bad;
-    }
-  
-  return true;
-  
- bad:
-  fprintf(stderr, "%s: SID ", name.c_str());
-  d->id.print(stderr);
-  fprintf(stderr, ": %s seqno %u does not exist\n",
-	  what, (unsigned)s);
-  return false;
+   for (i=0; i<d->excluded.length(); ++i)
+     {
+       s = d->excluded[i];
+       if (s > delta_table->highest_seqno())
+	 {
+	   errormsg("%s: SID %s: excluded seqno %u does not exist\n",
+		    name.c_str(), sz_sid, (unsigned)s);
+	   return false;
+	 }
+     }
+
+   for (i=0; i<d->ignored.length(); ++i)
+     {
+       s = d->ignored[i];
+       if (s > delta_table->highest_seqno())
+	 {
+	   errormsg("%s: SID %s: ignored seqno %u does not exist\n",
+		    name.c_str(), sz_sid, (unsigned)s);
+	   return false;
+	 }
+     }
+   return true;
 }
 
 bool 
@@ -135,8 +136,7 @@ sccs_file::validate() const
 	  seen_in_ancestry[i] = 0;
 	}
   
-      const mystring sid_name(iter->id.as_string());
-      const char *sz_sid = sid_name.c_str();
+      const char *sz_sid = iter->id.as_string().c_str();
       
       // validate that the included/excluded/unchanged line counts are valid.
       // check that type is either R or D
@@ -147,8 +147,25 @@ sccs_file::validate() const
 	  retval = false;
 	}
 
-      // Check date is valid.
-      // check time is valid.
+      if (iter->inserted > 99999uL)
+	{
+	  errormsg("%s: SID %s: out-of-range inserted line count %lu",
+		   name.c_str(), sz_sid, iter->inserted);
+	  retval = false;
+	}
+      if (iter->deleted > 99999uL)
+	{
+	  errormsg("%s: SID %s: out-of-range deleted line count %lu",
+		   name.c_str(), sz_sid, iter->deleted);
+	  retval = false;
+	}
+      if (iter->unchanged > 99999uL)
+	{
+	  errormsg("%s: SID %s: out-of-range unchanged line count %lu",
+		   name.c_str(), sz_sid, iter->unchanged);
+	  retval = false;
+	}
+      
       if (!iter->date.valid())
 	{
 	  errormsg("%s: SID %s: invalid date", name.c_str(), sz_sid);
@@ -164,7 +181,8 @@ sccs_file::validate() const
       
       else if (iter->user.find_last_of(':') != mystring::npos)
 	{
-	  errormsg("%s: SID %s: invalid username", name.c_str(), sz_sid);
+	  errormsg("%s: SID %s: invalid username '%s'",
+		   name.c_str(), sz_sid, iter->user.c_str());
 	  retval = false;
 	}
 
@@ -220,20 +238,20 @@ sccs_file::validate() const
 	    }
 	}
       
-      // check time doesn't go backward (warning only, because this is possible
-      // if developers in different timezones are collaborating on the same 
-      // file).
+      // check time doesn't go backward (warning only, because this is
+      // possible if developers in different timezones are
+      // collaborating on the same file).
       if (0 != iter->prev_seq)
 	{
 	  const delta& ancestor(delta_table->delta_at_seq(iter->prev_seq));
 	  if (ancestor.date > iter->date)
 	    {
 	      // Time has apparently gone backward...
-	      fprintf(stderr, "%s: WARNING: date for version ", name.c_str());
-	      ancestor.id.print(stderr);
-	      fprintf(stderr, " is later than the date for version ");
-	      iter->id.print(stderr);
-	      fprintf(stderr, "\n");
+	      errormsg("%s: WARNING: date for version %s"
+		       " is later than the date for version %s",
+		       name.c_str(),
+		       ancestor.id.as_string().c_str(),
+		       iter->id.as_string().c_str());
 	    }
 	}
       
@@ -251,16 +269,29 @@ sccs_file::validate() const
       return false;
     }
   
+  // Check username list for invalid entries.
+  for (i=0; i<users.length(); ++i)
+    {
+      const mystring& username(users[i]);
+      
+      if (   (username.find_last_of(':')  != mystring::npos) 
+	  || (username.find_last_of(' ')  != mystring::npos)
+	  || (username.find_last_of('\t') != mystring::npos))
+	{
+	  errormsg("%s: invalid username '%s'",
+		   name.c_str(), username.c_str());
+	  retval = false;
+	}
+    }
+  
   
   // for the flags section:-
-  // check for unknown flags
-  // check for boolean flags with non-numeric value.
-  
-  // check user list (no spaces in usernames?)
+  // TODO: check for unknown flags
+  // TODO: check for boolean flags with non-numeric value.
 
-  // check the body (unclosed deltas, etc.)
+  // TODO: check the body (unclosed deltas, etc.)
   
-  return true;
+  return retval;
 }
 
 

@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.24 1998/11/21 08:53:35 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.25 1998/12/12 15:09:11 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -453,8 +453,8 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 	       */
 	      if ( (attempt > 4) && (attempt & 1) == (getpid() & 1) )
 		{
-		  fprintf(stderr,
-			  "Sleeping for one second while waiting for lock\n");
+		  errormsg("Sleeping for one second while "
+			   "waiting for lock\n");
 		  sleep(1);
 		}
 	      break;

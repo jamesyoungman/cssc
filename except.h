@@ -56,6 +56,11 @@ struct CsscSfileCorruptException : public CsscExitvalException
   CsscSfileCorruptException() : CsscExitvalException(1) { }
 };
 
+struct CsscSfileMissingException : public CsscExitvalException
+{
+  CsscSfileMissingException() : CsscExitvalException(1) { }
+};
+
 struct CsscPfileCorruptException : public CsscExitvalException
 {
   CsscPfileCorruptException() : CsscExitvalException(1) { }

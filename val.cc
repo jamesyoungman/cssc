@@ -30,7 +30,7 @@
 #include "except.h"
 #include "valcodes.h"
 
-const char main_rcs_id[] = "$Id: val.cc,v 1.1 1998/11/29 19:48:57 james Exp $";
+const char main_rcs_id[] = "$Id: val.cc,v 1.2 1998/12/12 15:09:14 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -146,7 +146,7 @@ main(int argc, char **argv)
 	  
 	  
 	  sccs_file file(name, sccs_file::READ);
-
+	      
 	  if (had_r_option)
 	    {
 	      if (NULL == file.find_delta(rid))
@@ -214,6 +214,11 @@ main(int argc, char **argv)
 	{
 	  if (e.exitval > retval)
 	    retval = e.exitval;
+	}
+
+      catch (CsscContstructorFailedException e)
+	{
+	  retval |= Val_CorruptFile;
 	}
 #endif		
     }

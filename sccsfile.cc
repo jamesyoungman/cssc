@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.36 1998/12/09 23:36:22 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.37 1998/12/12 15:09:12 james Exp $";
 #endif
 
 
@@ -67,14 +67,17 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   if (f == NULL)
     {
       const char *purpose = (mode == UPDATE) ? "update" : "reading";
-      errormsg_with_errno("cannot open %s for %s", name, purpose);
+      s_missing_quit("Cannot open SCCS file %s for %s.\n", name, purpose);
+      /*NOTEACHED*/
       return NULL;
     }
   
   if (getc(f) != '\001' || getc(f) != 'h')
     {
-      errormsg("%s: Bad magic number.  Did you specify the right file?", name);
-      fclose(f);
+      (void)fclose(f);
+      s_corrupt_quit("%s: No SCCS-file magic number.  "
+		     "Did you specify the right file?", name);
+      /*NOTEACHED*/
       return NULL;
     }
   
@@ -85,11 +88,18 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
     {
       if (EOF == c)
 	{
+	  const int saved_errno = errno;
+	  (void)fclose(f);
+	  errno = saved_errno;
 	  if (errno)
-	    perror(name);
+	    {
+	      perror(name);
+	    }
 	  else
-	    errormsg("%s: Unexpected EOF.", name);
-	  fclose(f);
+	    {
+	      s_corrupt_quit("%s: Unexpected EOF.", name);
+	      /*NOTEACHED*/
+	    }
 	  return NULL;
 	}
     }
@@ -102,6 +112,7 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   if (ferror(f))
     {
       perror(name);
+      (void)fclose(f);
       return NULL;
     }
   
@@ -115,7 +126,7 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   else
     f = fopen(name, "r");
   
-  if (f == NULL)
+  if (NULL == f)
     {
       perror(name);
       return NULL;
@@ -123,6 +134,12 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   
 #else
   rewind(f);
+  if (ferror(f))
+    {
+      perror(name);
+      (void)fclose(f);
+      return NULL;
+    }
 #endif
   return f;
 }
@@ -213,7 +230,7 @@ unsigned long
 sccs_file::strict_atoul(const char *s) const
 {
   unsigned long n = 0;
-  
+  const unsigned long limit = 99999uL;
   char c;
   while ( 0 != (c=*s++) )
     {
@@ -223,10 +240,10 @@ sccs_file::strict_atoul(const char *s) const
 	}
       n = n * 10 + (c - '0');
     }
-  if (n > 99999uL)
+  if (n > limit)
     {
-      fprintf(stderr, "%s: line %d: Warning: number field exceeds 99999.", 
-	      name.c_str(), lineno);
+      errormsg("%s: line %d: Warning: number field exceeds %lu.", 
+	       name.c_str(), lineno, limit);
     }
   
   return n;
@@ -460,9 +477,14 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   // the s-file read-only.
   signed int sum = 0;
   f = open_sccs_file(name.c_str(), READ, &sum);
+  
+  /* open_sccs_file() returns normally if everything went OK, or if 
+   * there was an IO error on an apparently valid file.  If this is 
+   * the case, perror() will already have been called.
+   */
   if (NULL == f)
     {
-      ctor_fail(-1, "Cannot open SCCS file.\n");
+      ctor_fail(-1, "%s: Cannot open SCCS file.\n", name.c_str());
     }
   
   int c = read_line();
@@ -473,9 +495,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   signed int given_sum = 0;
   if (1 != sscanf(plinebuf->c_str(), "%*ch%d", &given_sum))
     {
-      fprintf(stderr,
-	      "Expected checksum line, found line beginning '%.3s'\n",
-	      plinebuf->c_str());
+      errormsg("Expected checksum line, found line beginning '%.3s'\n",
+	       plinebuf->c_str());
       checksum_valid = false;
     }
   else
@@ -492,9 +513,9 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	    }
 	  else
 	    {
-	      fprintf(stderr, "%s: Warning: bad checksum "
-		      "(expected=%d, calculated %d).\n",
-		      name.c_str(), given_sum, sum);
+	      errormsg("%s: Warning: bad checksum "
+		       "(expected=%d, calculated %d).\n",
+		       name.c_str(), given_sum, sum);
 	    }
 	}
     }
@@ -702,7 +723,7 @@ sccs_file::find_most_recent_sid(sid id) const {
 	delta_iterator iter(delta_table);
 
 #if 0
-	fputs("find_most_recented_sid(", stderr);
+	fputs("find_most_recent_sid(", stderr);
 	id.dprint(stderr);
 	fputs(")\n", stderr);
 #endif

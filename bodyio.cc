@@ -84,10 +84,9 @@ body_insert_text(const char iname[], const char oname[],
       // check for ^A at start of line.
       if ('\n' == last && '\001' == ch)
 	{
-	  fprintf(stderr,
-		  "%s: control character at start of line, "
-		  "treating as binary.\n",
-		  iname);
+	  errormsg("%s: control character at start of line, "
+		   "treating as binary.\n",
+		   iname);
 	  ungetc(ch, in);	// push back the control character.
 	  *binary = true;
 	  return false;		// output file pointer implicitly rewound
@@ -130,8 +129,8 @@ body_insert_text(const char iname[], const char oname[],
   // Make sure the file ended with a newline.
   if ('\n' != last)
     {
-      fprintf(stderr, "%s: no newline at end of file, treating as binary\n",
-	      iname);
+      errormsg("%s: no newline at end of file, treating as binary\n",
+	       iname);
       *binary = true;
       return false;		// file pointers implicitly rewound
     }

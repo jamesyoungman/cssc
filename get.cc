@@ -35,7 +35,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.30 1998/10/20 17:27:24 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.31 1998/12/12 15:09:11 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -230,7 +230,7 @@ main(int argc, char **argv)
 
   if (branch && !for_edit)
     {
-      fprintf(stderr,
+      errormsg(
 	      "Warning: there is not a lot of point in using the "
 	      "-b option unless you want to check the file out for "
 	      "editing (using the -e option).\n");
@@ -311,7 +311,7 @@ main(int argc, char **argv)
 	    {
 	      if (branch && !file.branches_allowed())
 		{
-		  fprintf(stderr,
+		  errormsg(
 			  "%s: Warning: Branch-enable flag not set, "
 			  "option -b ignored.\n",
 			  name.c_str());

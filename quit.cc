@@ -40,7 +40,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.17 1998/09/02 21:03:27 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.18 1998/12/12 15:09:12 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -237,6 +237,25 @@ s_corrupt_quit(const char *fmt, ...) {
 	va_end(ap);
 	assert(0);		// not reached.
 }
+
+NORETURN
+s_missing_quit(const char *fmt, ...) {
+	va_list ap;
+
+
+	va_start(ap, fmt);
+#ifdef HAVE_EXCEPTIONS	
+	v_errormsg(fmt, ap);
+	putc('\n', stderr);
+	throw CsscSfileMissingException();
+#else
+	v_quit(-1, fmt, ap);
+#endif
+	/*NOTREACHED*/
+	va_end(ap);
+	assert(0);		// not reached.
+}
+
 
 NORETURN
 p_corrupt_quit(const char *fmt, ...) {
