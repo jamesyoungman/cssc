@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.13 1998/06/06 17:15:00 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.14 1998/06/06 17:46:07 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -497,12 +497,29 @@ set_prefix(const char *pfx)
 static void
 setuid_warn(void)
 {
-  const char *str =
-    "If you want to install this program set-user-id, you must compile it\n"
-    "with the SCCSDIR macro defined, in order to prevent abuse.  Even so,\n"
-    "abuse is probably not impossible.  This is not a reccomended mode of\n"
-    "operation for this program.\n";
+  const char *str = 
+    "If you want to install this program set-user-id or set-group-id, you\n"
+    "must compile it with the SCCSDIR macro defined, in order to\n"
+    "prevent abuse.  Even so, abuse is probably not impossible.  This\n"
+    "is not a reccomended mode of operation for this program.\n";
   fprintf(stderr, "%s", str);
+}
+
+
+static void
+drop_privs(void)
+{
+  if (0 != setuid (getuid ()))
+    {
+      perror("setuid");
+      exit(EX_NOPERM);
+    }
+  if (0 != setgid(getgid()))
+    {
+      perror("setgid");
+      exit(EX_NOPERM);
+    }
+  RealUser++;
 }
 
 static void 
@@ -522,7 +539,7 @@ main (int argc, char **argv)
   
   &copyright;			/* prevent warning about unused variable. */
 
-  if (getuid() != geteuid())
+  if ( (getuid() != geteuid()) || (getgid() != getegid()))
     {
       TrustEnvironment = 0;	/* running setuid, ignore $PATH etc. */
 #ifndef SCCSDIR
@@ -651,8 +668,7 @@ main (int argc, char **argv)
 	      break;		/* Otherwise, process the remaining options. */
 	      
 	    case 'r':		/* run as real user */
-	      setuid (getuid ());
-	      RealUser++;
+	      drop_privs();
 	      break;
 
 #ifndef SCCSDIR
@@ -1076,7 +1092,7 @@ command (char *argv[], bool forkflag, const char *arg0)
 
     case DODIFF:		/* internal diff call */
       {
-	setuid (getuid ());
+	drop_privs();
 	for (np = ap; *np != NULL; np++)
 	  {
 	    if ((*np)[0] == '-' && (*np)[1] == 'C')
@@ -1320,7 +1336,7 @@ callprog (const char *progpath,
   /* set protection as appropriate */
   if (bitset (REALUSER, flags))
     {
-      setuid (getuid ());
+      drop_privs();
       RealUser = 1;
 #ifdef DEBUG
       if (Debug)
@@ -2213,7 +2229,7 @@ username (void)
     {
       syserr ("Who are you?\n"
 	      "You don't seem to have an entry in the user database "
-	      "(/etc/passwd) (uid=%d)", getuid ());
+	      "(/etc/passwd) (uid=%d)", (int)getuid ());
       exit (EX_OSERR);
     }
   return (pw->pw_name);
