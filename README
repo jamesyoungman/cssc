@@ -9,15 +9,39 @@ see docs/FIXED.
 			Quick Start
 ------------------------------------------------------------------------------
 1.	Compiling
+
+ The default installation directory for the binaries is 
+ /usr/local/libexec/cssc, except for the sccs comand, which gets
+ installed in /usr/local/bin.  
+
+ If you want to change this, you will need to read the file INSTALL.
+
+ If, for example, you want to install the files in /usr/libexec/cssc
+ and so on rather thatn in /usr/local/..., you just need to pass the 
+ argument "prefix=/usr" to make.    
+
+ If, on the other hand, all you wanted to do was to install the binaries
+ in a normal binary directory, you can do this with the argument
+ "csscutildir=/usr/local/bin" to make. 
+
+ The program "sccs" (from the subdirectory bsd) is sensitive to the
+ setting of $(csscutildir) at compile time, because it compiles in the
+ calue of that option as the default place to find the various
+ subprograms.
+
  mkdir work
  cd work
  ../configure
  make
 
 2.	Testing 
+
+ The tests can be run with "make check".   This short script runs the
+ test suite, and reports any problems to me:-
+
  if make check 2>&1 | tee make.log 
  then
-	uname -a | mail -s "CSSC success" jay@gnu.org
+	(uname -a ; ./admin -V) | mail -s "CSSC success" jay@gnu.org
  else
 	echo FAILED, please send full details to 'jay@gnu.org.'
 	(uname -a ; cat make.log) | mail -s "CSSC failure" jay@gnu.org 
