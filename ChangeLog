@@ -1,4 +1,156 @@
-2002-04-03  james_youngman  <james_youngman@periwinkle>
+2002-11-02  James Youngman <jay@gnu.org>
+
+	* seqstate.cc, seqstate.h, sf-get2.cc, sf-get.cc:
+	support for ignored deltas
+
+	* tests/get/excl_ig_2.sh: added new test script
+
+	* tests/get/excl_ig_1.sh: enabled test xg6
+
+	* docs/cssc.texi:
+	Added section on included, excluded and ignored deltas.
+
+	* tests/get/middle-fail.sh:
+	Tut - use ${admin} not "admin" as a command name - make sure we are
+	testing the correct instance!
+
+	* tests/bsd-sccs/sf595594.sh:
+	Tut - use ${sccs} not sccs as a command name - make sure we are
+	testing the correct instance!
+
+	* delta.cc:
+	Indicate the presence of the -p option in the usage message.
+
+	* configure.ac:
+	Fixed SF bug 623164: you need to include <ctype.h> to use isdigit().
+
+	* cssc.h:
+	SF bug 623164: you need to include <ctype.h> to use isdigit().
+
+	* get.cc: Updated copyright year.
+
+	* autogen.sh: Recurse into subdirectories where appropriate.
+
+	* tests/common/command-names:
+	Corrected bug where more than one argument is passed to test (which
+	now justifiably complains when you do this).
+
+2002-10-04  James Youngman <jay@gnu.org>
+
+	* auxfiles/CSSC.spec.in:
+	Change references to sccs.1 to sccs.1* because RPM v4 compresses all manpages.
+
+2002-09-27  James Youngman <jay@gnu.org>
+
+	* docs/cssc.texi:
+	Changed all instances of @url to @uref, except where that would
+	produce a broken link.
+
+	* docs/cssc.texi: Updated the update timestamp.
+
+	* docs/cssc.texi:
+	Applied changes suggested by Timothy Bedding (SourceForge bug ID
+	589542).
+
+2002-09-20  James Youngman <jay@gnu.org>
+
+	* docs/cssc.texi: Updated the "last update" time.
+
+	* docs/cssc.texi: Corrected typo.
+
+	* docs/cssc.texi: Re-ordered some paragraphs for clarity.
+
+	* docs/cssc.texi:
+	Explain that the line length limits apply only to lines which will end
+	up in the histry file - and that over-length lines already in the
+	history file will be correctly coped with by "get".
+
+	* docs/cssc.texi: Corrected cross-reference.
+
+	* docs/cssc.texi: Explain how to figure out which diff command is used.
+
+	* docs/cssc.texi:
+	Expanded the discussion of the (lack of) line length limits in CSSC.
+
+2002-08-16  James Youngman <jay@gnu.org>
+
+	* get.cc:
+	If we fail to set the mode on the g-file correctly, delete it and propagate the failure information
+
+	* tests/bsd-sccs/driver-basic.sh, tests/common/command-names, get.cc:
+	SourceForge bug 595594 - all g-files processed after a failing file are deleted
+
+	* tests/get/middle-fail.sh:
+	SourceForge bug 595594 fixed - if we failed to get a previous file, all g-files processed later are deleted even if they were successful
+
+	* tests/bsd-sccs/sf595594.sh: Initial version of test.
+
+2002-07-26  James Youngman <jay@gnu.org>
+
+	* run.cc: Updated copyright year.
+
+	* run.cc:
+	Fixed inappropriate boolean inversion on systems where HAVE_FORK is not defined
+
+	* testutils/configure.in, configure.in:
+	Removed old configure.in files - replaced by configure.ac
+
+	* testutils/COPYING, testutils/ChangeLog, testutils/INSTALL, testutils/NEWS, testutils/configure.ac, testutils/ekko.c, testutils/lndir.c, testutils/realpwd.cc, testutils/seeker.c, testutils/user.c, testutils/yammer.c, testutils/yes.c, README, configure.ac, run.cc, testutils/AUTHORS:
+	Updated configure.in to configure.ac - we can now use autoconf version 2.53
+
+2002-04-07  James Youngman <jay@gnu.org>
+
+	* tests/delta/p-option.sh:
+	Some initial tests for the "-p" option of delta.
+
+	* NEWS: New check of link count when opening SCCS file
+
+	* docs/cssc.texi, tests/admin/hardlinks.sh, configure.in, sccsfile.cc:
+	It is not allowed to have hard links to an SCCS file (that is, the link count may not be greater than 1).  Violating this rule now results in CSSC refusing to open that SCCS file
+
+	* scripts/rev-freq.sh: Corrected a shell syntax error
+
+2002-04-05  James Youngman <jay@gnu.org>
+
+	* tests/admin/locks.sh, tests/admin/users.sh, tests/binary/auto.sh, tests/binary/seeking.sh, tests/common/need-prt, tests/prt/all-512.sh, tests/prt/default.sh, tests/prt/exists.sh, tests/prt/nodel.sh, tests/prt/reportmr.sh, NEWS, README, docs/cssc.texi, sf-prs.cc:
+	Added support for running the test suite against versions of SCCS that lack a prt program
+
+2002-04-04  James Youngman <jay@gnu.org>
+
+	* docs/cssc.texi:
+	get -a now has test cases, so we no longer need to indicate that it is untested.
+
+	* get.cc, sccsfile.h, sf-get2.cc: support for the -a option of get
+
+	* sccsfile.cc, quit.h, sccsdate.cc, sf-kw.cc, sf-val.cc, sf-write.cc, admin.cc, quit.cc:
+	Added global function 'warning' so that we don't have to issue warnings by calling 'errormsg'
+
+	* tests/get/gg_get_ix.sh:
+	Removed redundant comment about tests that used to fail with CSSC (but
+	no longer do so).
+
+	* tests/get/optorder.sh: Fixed typo
+
+	* tests/common/test-common:
+	minor changes for the formatting of labels at the start of the lines of output of the tests - to preserve whitespace
+
+	* tests/get/a-option.sh: Tests for the "-a" option of "get".
+
+2002-04-03  James Youngman <jay@gnu.org>
+
+	* configure.in:
+	Updated the version number to indicate that any version someone checks
+	out of CVS is from CVS (we use the suffix CVSDEVEL).
+
+	* configure.in:
+	Up-date version number to 0.14alpha.pl0, prior to making the release
+
+	* Makefile.am: Added file myset.h to the distribution
+
+	* testutils/Makefile.am:
+	Added some files missing from the distribution (notably mogrify.awk).
+
+	* ChangeLog: updated from log entries on other files
 
 	* docs/cssc.texi: enhancements to the sections on interoperability
 
@@ -18,9 +170,9 @@
 	Invalid options produce a return value of 1 (on Solaris 2.6) not 2
 
 	* testutils/compare_gets.sh:
-	Do not compare removed deltas - so do not pass -a to prs
+	Do not compare removes deltas - so do not pass -a to prs
 
-2002-04-02  james_youngman  <james_youngman@periwinkle>
+2002-04-02  James Youngman <jay@gnu.org>
 
 	* NEWS: Corrected typos.
 
@@ -37,7 +189,7 @@
 
 	* tests/get/create.sh: Extra checks as we go along.
 
-2002-03-28  james_youngman  <james_youngman@periwinkle>
+2002-03-28  James Youngman <jay@gnu.org>
 
 	* NEWS: Updated with the latest info
 
@@ -48,7 +200,7 @@
 
 	* tests/get/gg_get_ix.sh: new test script from Gerry Green
 
-2002-03-26  james_youngman  <james_youngman@periwinkle>
+2002-03-26  James Youngman <jay@gnu.org>
 
 	* tests/get/errorcases.sh, docs/tests-todo.txt, get.cc:
 	gcov fixes - invalid SIDs for get -i and get -x
@@ -70,7 +222,7 @@
 
 	* docs/cssc.texi: Comments about authorised user list
 
-2002-03-25  james_youngman  <james_youngman@periwinkle>
+2002-03-25  James Youngman <jay@gnu.org>
 
 	* tests/delta/errorcase.sh:
 	Extra test cases for the authorised user list.
@@ -125,7 +277,7 @@
 
 	* quit.cc, quit.h: Don't export v_errormsg as a global function
 
-2002-03-24  james_youngman  <james_youngman@periwinkle>
+2002-03-24  James Youngman <jay@gnu.org>
 
 	* testutils/gcov-util.sh: Put the title in <title>...</title>.
 
@@ -145,7 +297,7 @@
 
 	* NEWS: Brought the NEWS fie up to date with the ChangeLog file.
 
-2002-03-23  james_youngman  <james_youngman@periwinkle>
+2002-03-23  James Youngman <jay@gnu.org>
 
 	* docs/cssc.texi: Use @option for options, not @samp.
 
@@ -157,7 +309,7 @@
 	* docs/cssc.texi:
 	Documented val.  Included information about differences between the various SCCS versions
 
-2002-03-22  james_youngman  <james_youngman@periwinkle>
+2002-03-22  James Youngman <jay@gnu.org>
 
 	* tests/prs/keywords.sh: Re-enabled all the tests...
 
@@ -165,7 +317,7 @@
 	Added test cases for having more than one SID in the included or
 	excluded SID list.
 
-2002-03-21  james_youngman  <james_youngman@periwinkle>
+2002-03-21  James Youngman <jay@gnu.org>
 
 	* sf-prs.cc:
 	Backed out of the change made for previous revision - they should be
@@ -181,11 +333,11 @@
 
 	* tests/prs/keywords.sh: Added tests for more keywords.
 
-2002-03-20  james_youngman  <james_youngman@periwinkle>
+2002-03-20  James Youngman <jay@gnu.org>
 
 	* ChangeLog: Brought up to date with new log entries.
 
-2002-03-19  james_youngman  <james_youngman@periwinkle>
+2002-03-19  James Youngman <jay@gnu.org>
 
 	* val.cc:
 	Various fixes for the value returned in all sorts of validation-faulure cases
