@@ -121,22 +121,22 @@ This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
 @end ifinfo
 
 @menu
-* Overview::		Preliminary information.
-* Interface::		How to use the suite.
-* Invoking Programs::	How to run the individual CSSC programs.
-* Filenames::		Names of files used by CSSC.
+* Overview::		   Preliminary information.
+* Interface::		   How to use the suite.
+* Invoking CSSC Programs:: How to run the individual CSSC programs.
+* Filenames::		   Names of files used by CSSC.
 @c add chapter on branches and included/excluded deltas?
-* File Format::         Description of the @sc{sccs} file format
-* Interoperability::    Interoperating with other versions of @sc{sccs}.
-* Environment::         How environment variables affect CSSC.
-* Incomplete::		Missing Features.
-* Year 2000 Issues::    Status of CSSC with regard to the Millennium.
-* Testing::             How to run the test suite and write new cases.
-* Problems::		Reporting bugs.
-* Copying::		How you can copy and share @code{CSSC}.
-* BSD Code::		Parts of the code are from BSD.
-* Glossary::	        Definition of some terms relating to CSSC.
-* Concept Index::	Index of concepts.
+* File Format::            Description of the @sc{sccs} file format
+* Interoperability::       Interoperating with other versions of @sc{sccs}.
+* Environment::            How environment variables affect CSSC.
+* Incomplete::		   Missing Features.
+* Year 2000 Issues::       Status of CSSC with regard to the Millennium.
+* Testing::                How to run the test suite and write new cases.
+* Problems::		   Reporting bugs.
+* Copying::		   How you can copy and share @code{CSSC}.
+* BSD Code::		   Parts of the code are from BSD.
+* Glossary::	           Definition of some terms relating to CSSC.
+* Concept Index::	   Index of concepts.
 @end menu
 
 @node Overview, Interface, Top, Top
@@ -175,7 +175,7 @@ covered by the BSD license (@pxref{BSD Code}).
 
 
 
-@node Interface, Invoking Programs, Overview, Top
+@node Interface, Invoking CSSC Programs, Overview, Top
 @chapter How to use the suite
 @cindex interface
 @cindex Emacs
@@ -192,7 +192,7 @@ interface to the @sc{sccs} suite (and hence @sc{cssc}).
 Other than that, you will need to use each of the programs in the suite
 individually.
 
-@node Invoking Programs, Filenames, Interface, Top
+@node Invoking CSSC Programs, Filenames, Interface, Top
 @chapter Invoking CSSC programs
 @cindex invoking
 
@@ -227,7 +227,7 @@ Ordered by the frequency with which I use them, they are:-
 * val::           Validating an SCCS file for integrity.
 @end menu
 
-@node admin, cdc, , Invoking Programs
+@node admin, cdc, , Invoking CSSC Programs
 @section @code{admin}
 @cindex admin
 @cindex sccs-admin
@@ -267,7 +267,7 @@ works in conjunction with the @code{-n} or @code{-i} options.
 
 This option is not available if binary file support is turned off
 (@pxref{Interoperability}) though this can be re-enabled if necessary
-with an environment variable (@pxref{Environment}).
+with an environment variable (@pxref{Environment,,Environment Variables}).
 
 @item -dF
 Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
@@ -366,7 +366,7 @@ BitKeeper files.  Use this option with @emph{extreme} care.
 
 
 @node Flags, Modification Request Numbers, ,admin
-@subsection SCCS file flags
+@subsection Flags
 @cindex Flags
 
 Flags are set and cleared with the @code{admin} program.  @xref{admin}.
@@ -504,7 +504,7 @@ thing, you must use a more advanced system, for example GNU CVS.
 
 
 
-@node cdc, comb, admin, Invoking Programs
+@node cdc, comb, admin, Invoking CSSC Programs
 @section @code{cdc}
 @cindex cdc
 @cindex sccs-cdc
@@ -559,7 +559,7 @@ If the @option{-y} option is not given, the user is prompted for comments.
 @end table 
 
 
-@node comb, delta, cdc, Invoking Programs
+@node comb, delta, cdc, Invoking CSSC Programs
 @section @code{comb}
 @cindex comb
 @cindex sccs-comb
@@ -570,7 +570,7 @@ so it will eventually be implemented.
 @c TODO: write the code, write the test cases, and document it.
 
 
-@node delta, get, comb, Invoking Programs
+@node delta, get, comb, Invoking CSSC Programs
 @section @code{delta}
 @cindex delta
 @cindex checking in changes
@@ -604,7 +604,7 @@ continue.
 
 Sometimes, running @code{delta} results in the creation of a branch in
 the @sc{sccs} file; this is controlled by the @code{get} command at the
-time the file is checked out for editing (@pxref{branches}).
+time the file is checked out for editing (@pxref{branches,,Making Branches}).
 
 The @code{delta} program checks to see if you are authorised to check
 in a delta to this file.  The list of authorised users can be
@@ -709,7 +709,7 @@ on the command line, @code{delta} will prompt the user for a comment.
 @end table
 
 
-@node get, help, delta, Invoking Programs
+@node get, help, delta, Invoking CSSC Programs
 @section @code{get}
 @cindex get
 @cindex sccs-get
@@ -1001,7 +1001,7 @@ to be expanded, but the @samp{%A%} keyword is still fully expanded,
 even though it is defined in terms of @samp{%I%}.
 
 @node Included Excluded and Ignored deltas, , Keyword Substitution, get
-@section Included, Excluded and Ignored deltas
+@section Included Excluded and Ignored deltas
 
 This section describes how included, excluded and ignored deltas are
 handled by @sc{cssc}.  Little documentation is available on how
@@ -1011,7 +1011,7 @@ handled by @sc{cssc}.  Little documentation is available on how
 
 If you spot a defect in this section (or of course any other section)
 of the @sc{cssc} manual, please report this as a bug
-(@pxref{Problems}).
+(@pxref{Problems,,Reporting Bugs}).
 
 
 @subsection The Usual Case
@@ -1054,7 +1054,7 @@ the gotten file.  Conversely, lines deleted by an ignored delta will
 still appear in the gotten file. 
 
 
-@node help, prs, get, Invoking Programs
+@node help, prs, get, Invoking CSSC Programs
 @section @code{help}
 @cindex help program
 @cindex sccs-help
@@ -1072,7 +1072,7 @@ this manual, and so no @code{sccs-help} program is provided or planned.
 
 
 
-@node prs, prt, help, Invoking Programs
+@node prs, prt, help, Invoking CSSC Programs
 @section @code{prs}
 @cindex prs
 @cindex sccs-prs
@@ -1409,7 +1409,7 @@ may expand to strings containing newlines.
 
 
 
-@node prt, rmdel, prs, Invoking Programs
+@node prt, rmdel, prs, Invoking CSSC Programs
 @section @code{prt}
 @cindex prt
 @cindex sccs-prt
@@ -1637,7 +1637,7 @@ global information is printed.   This consists of
 @end enumerate
 
 
-@node rmdel, sact, prt, Invoking Programs
+@node rmdel, sact, prt, Invoking CSSC Programs
 @section @code{rmdel}
 @cindex rmdel
 @cindex sccs-rmdel
@@ -1671,7 +1671,7 @@ be operated on should be read from standard input.  If an argument is a
 directory, the @sc{rmdel} command is applied to all @sc{sccs} files in
 that directory.
 
-@node sact, sccs, rmdel, Invoking Programs
+@node sact, sccs, rmdel, Invoking CSSC Programs
 @section @code{sact}
 @cindex sact
 @cindex sccs-sact
@@ -1710,7 +1710,7 @@ editing.
 @c TODO: Write the test cases.
 
 
-@node sccs, sccsdiff, sact, Invoking Programs
+@node sccs, sccsdiff, sact, Invoking CSSC Programs
 @section @code{sccs}
 @cindex sccs
 @cindex front-end tools
@@ -1741,7 +1741,7 @@ on BSD mirrors, for example @uref{ftp://ftp.freebsd.org/}.
 
 @c Write the test cases.
 
-@node sccsdiff, unget, sccs, Invoking Programs
+@node sccsdiff, unget, sccs, Invoking CSSC Programs
 @section @code{sccsdiff}
 @cindex sccsdiff
 @cindex sccs-sccsdiff
@@ -1784,7 +1784,7 @@ program.  All the non-option arguments will be processed in turn as
 
 
 
-@node unget, val, sccsdiff, Invoking Programs
+@node unget, val, sccsdiff, Invoking CSSC Programs
 @section @code{unget}
 @cindex unget
 @cindex sccs-unget
@@ -1811,7 +1811,7 @@ indicate which edit is to be aborted.
 @end table
 
 
-@node val, what, unget, Invoking Programs
+@node val, what, unget, Invoking CSSC Programs
 @section @code{val}
 @cindex val
 @cindex sccs-val
@@ -2019,7 +2019,7 @@ chance of data corruption yet further.
 
 
 
-@node what, , val, Invoking Programs
+@node what, , val, Invoking CSSC Programs
 @section @code{what}
 @cindex what
 @cindex @@(#)
@@ -2080,7 +2080,7 @@ is that sometimes compilers or lint-pickers complain that the variable
 remove these @sc{id}s and thus silence the warnings.
 
 
-@node Filenames, File Format, Invoking Programs, Top
+@node Filenames, File Format, Invoking CSSC Programs, Top
 @chapter Filenames
 
 Temporary files are used during normal operation of @sc{cssc} (and
@@ -2549,7 +2549,7 @@ file could not safely be stored in the normal @sc{sccs} file format.
 
 This setting can be overridden with the environment variable 
 @env{CSSC_BINARY_SUPPORT}; for a description of how to use this
-environment variable, see @ref{Environment}.
+environment variable, see @ref{Environment,,Environment Variables}.
 
 If you use @sc{cssc} with support for encoded SCCS files turned off,
 encoded files will still be handled; @sc{cssc} will just refuse to
@@ -2627,9 +2627,9 @@ sets the limit to the specified value.
 
 This setting can be overridden with the environment variable
 @env{CSSC_MAX_LINE_LENGTH}; for a description of how to use this
-environment variable, see @ref{Environment}.  To determine the current
-setting of the line length limit, run @code{admin -V} and read the
-output.
+environment variable, see @ref{Environment,,Environment Variables}.
+To determine the current setting of the line length limit, run
+@code{admin -V} and read the output.
 
 If (and only if) you have configured CSSC with such a maximum line
 length limitation, the lengths of input lines are checked as they are
@@ -2708,7 +2708,7 @@ enabled or not when running ``configure''.
 @section Bug-for-Bug Compatibility
 
 Some other implementations of @sc{sccs} have bugs, too.  Where we know
-about these and can work around them, we do this.  Please not that
+about these and can work around them, we do this.  Please note that
 these bugs only affect @emph{some} other versions of @sc{sccs} - if
 they affected all versions, they'd be the correct behaviour of
 @sc{cssc} too!
@@ -2939,14 +2939,14 @@ tools within the @sc{cssc} suite do not invoke each other.  For
 example, @code{delta} does not invoke @code{get}.  This behaviour is
 different to the traditional architecture of @sc{sccs} and might
 introduce subtle differences of behaviour.  Any such differences are
-bugs; see @ref{Problems, Reporting Bugs}.
+bugs; see @ref{Problems,,Reporting Bugs}.
 
 @item Environment
 Some environment variables are specific to @sc{cssc}.
-@xref{Environment,Environment Variables}.
+@xref{Environment,,Environment Variables}.
 @end table
 
-See also @ref{Incomplete,Missing Features and other Problems}.
+See also @ref{Incomplete,,Missing Features and other Problems}.
 
 @node Environment, Incomplete, Interoperability, Top
 @chapter Environment Variables
@@ -3158,7 +3158,7 @@ for exceptions, or process just one file at a time.
 Some programs behave subtly differently to their original counterparts.
 Error messages are different, and also extra warnings are provided in
 some circumstances.  All other differences are also bugs.  Please report
-them (@pxref{Problems}).
+them (@pxref{Problems,,Reporting Bugs}).
 
 
 @item 
@@ -3229,7 +3229,7 @@ the program specified as the @sc{mr} validation program.   Some
 @sc{cssc} programs (for example @code{sccsdiff}) invoke others.   This
 is done without ``cleaning up'' the environment, and so this is another
 reason not to use the set-user-id bit for @sc{cssc} programs.
-@xref{Environment}. 
+@xref{Environment,,Environment Variables}. 
 @end enumerate
 
 Please refer to the section of the GNU General Public License entitled
@@ -3416,7 +3416,7 @@ with the commentary-change message of @code{cdc} and the default comment
 produced by @code{admin} when an @sc{sccs} file is created.
 
 @node Year 2000 Summary, , The Bad News,  Year 2000 Issues
-@section Summary
+@section Year 2000 Summary
 
 To summarise, all reporting activities of @sc{cssc} will work correctly
 throughout the range of time representable in an @sc{sccs} file (that
@@ -3533,7 +3533,7 @@ The thing to remember is that when you run @code{make check}, the
 
 
 If the test suite does indicate that the tests have failed, please
-submit a bug report (@pxref{Problems}).  Please include in your bug
+submit a bug report (@pxref{Problems,,Reporting Bugs}).  Please include in your bug
 report 
 
 @itemize @bullet
@@ -3584,8 +3584,8 @@ any temporary files but it can't remove the file ``foo'' (because the
 current directory was made read-only to force the test to miscarry, in
 this contrived case).  When the test suite miscarries like this and
 you can't find the problem, please follow the bug-reporting procedure
-(@pxref{Problems}), but please indicate that it is a miscarriage in
-the test suite rather than a concrete test failure.
+(@pxref{Problems,,Reporting Bugs}), but please indicate that it is a
+miscarriage in the test suite rather than a concrete test failure.
 
 
 @node Writing new test cases, , Running the tests, Testing
