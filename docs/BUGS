@@ -1,9 +1,16 @@
 The Time-stamp: line indicated when this file was last modified.
-Time-stamp: <97/05/07 20:45:55 james>
+Time-stamp: <97/07/07 22:21:20 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is valid but unlikely for there to be nothing below this line)
 
 
+Mon Jul 7 22:17:59 1997 
+On systems with no working fork() or spawn(), we have to use system()
+to execute commands.  The return value of system() is
+implementation-defined unless its argument is NULL.  Hence we cannot
+place any interpretation on the return value.  This means that we will
+be unaware of any return value from the command and (for example) MR
+validation will not happen reliably.
 
 Local Variables:
 mode: Text
