@@ -1,0 +1,18 @@
+The Time-stamp: line indicates when this file was last modified.
+Time-stamp: <97/05/07 20:43:33 james>
+
+List of fixed bugs 
+
+Sun May  4 13:12:57 1997:
+./get -r2 -e s.foo doesn't create a new release, it just gets the most
+recent delta on the trunk, if release 2 doesn't exist.
+
+Sun May  4 18:03:20 1997: (fixed in version 1.4 of sf-get.cc)
+Selection of the correct SID to get is still wrong in get.  For
+example if you specify -r1 you should get the last 1.x release, but
+you don't.
+
+
+Local Variables:
+Mode: text
+End:

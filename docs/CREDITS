@@ -1,0 +1,13 @@
+The Time-stamp: line indicates when this file was last modified.
+Time-stamp: <97/05/07 20:45:33 james>
+
+The MySC package provides the bulk of the functionality of this
+package, compiled under GCC 2.4.5, and was written by Ross Ridge.
+
+This package was updated for modern C++ compilers, fixed, enhanced,
+and sparingly documented by James Youngman, <JYoungman@vggas.com>.
+
+
+Local Variables:
+mode: Text
+End:

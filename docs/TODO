@@ -1,0 +1,27 @@
+Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
+
+	* Check the interaction between any -r option to get and the
+	release floors and ceilings.
+
+	* Use standard string class rather than mystring?
+
+	* sccsfile.h: get, delta and sccs-diff must use the "encoding" flag.
+
+	* sf-admin.cc: Test setting & removing the 'e' flag.
+
+	* Write a shell script for converting SCCS files to RCS files; use
+	the Bourne shell, since not everybody has the C shell [suggested
+	by RMS].
+
+	* Consider using the BSD sccs(1) code.
+
+	* sccs-val is not yet provided.   Useful for testing.
+
+	* When the Makefile is updated using configure, under control of
+ 	make, the CXXFLAGS macro grows to contain multiple copies of
+ 	$(CXXFLAGS), presumably because it is exported to configure by
+ 	make.  Refer to some other autoconf-using program to see how this
+ 	stuff should be done.
+
+
+
