@@ -14,7 +14,7 @@
 #include "pfile.h"
 #include "getopt.h"
 
-const char main_sccs_id[] = "@(#) MySC get.c 1.1 93/11/09 17:17:54";
+const char main_sccs_id[] = "$Id: get.cc,v 1.5 1997/05/10 12:35:50 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -24,9 +24,14 @@ print_id_list(const char *s, list<sid> const &list) {
 	
 	len = list.length();
 	if (len > 0) {
-#if 1
+#if 0
 		/* Printing out the IDs all on one line instead of
-                   one per line should make the output more clear */
+                 *  one per line should make the output more clear
+	         * ... but for the moment we'll go for compatibilty. 
+		 * In the long run we'll use an environment variable.
+		 * -- JAY
+		 */
+	     
 		printf("%s:", s);
 		for(i = 0; i < len; i++) {
 			putchar(' ');
@@ -35,7 +40,7 @@ print_id_list(const char *s, list<sid> const &list) {
 		putchar('\n');
 #else
 		/* Compatible output */
-		puts(s);
+		printf("%s:\n", s);
 		for(i = 0; i < len; i++) {
 			list[i].print(stdout);
 			putchar('\n');
@@ -269,10 +274,14 @@ main(int argc, char **argv) {
 			}
 #endif
 		}
-
-		putchar('\n');
-		puts(name);
-
+		
+		// Print the name of the SCCS file unless exactly one was specified.
+		//const int ix = opts.get_index();
+		if ((argc-1) != opts.get_index())
+		  {
+		    fprintf(stdout, "\n%s:\n", (const char*)name);
+		  }
+		
 		print_id_list("Included", status.included);
 		print_id_list("Excluded", status.excluded);
 		retrieve.print(stdout);
