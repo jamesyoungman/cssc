@@ -24,6 +24,10 @@ true
 # We want to prevent setlocale(LC_ALL, "") failing:
 unset LANG
 
+# We assume that all the files we want to work on are in the 
+# current directory.
+unset PROJECTDIR
+
 
 remove command.log log log.stdout log.stderr SCCS
 mkdir SCCS 2>/dev/null
