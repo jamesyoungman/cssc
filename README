@@ -57,6 +57,13 @@ STOP PRESS!
 	(uname -a ; cat make.log) | mail -s "CSSC failure" jay@gnu.org 
  fi
 
+ Note that this test process accepts several environment variables
+ which allow you to point it at a particular installation of the
+ tools.  If you have used these variables for something else, the test
+ will fail.  These variables are :-
+
+ $dir, $get, $admin, $cdc, $prs, $prt, $delta, $sact, $sccsdiff,
+ $unget, $what, $rmdel, $sccs
 
  If the tests failed, I'll definitely need some more information and
  so it would be best to keep the test outputs in case I need them in
@@ -72,13 +79,12 @@ STOP PRESS!
 ==============================================================================
 
 SCCS commands implemented this package are: admin, cdc, delta, get,
-prs, prt, sccsdiff, rmdel, sact, unget and what.  Not all options and
-capabilities of the commands have been implemented yet, and the comb,
-val and vc commands are not provided at all.  Features soon to be
-provided but not yet available are the BSD sccs-driver command "sccs",
-and a Bourne shell script for converting SCCS files to RCS files (a
-csh script exists for this purpose [sccs2rcs.csh] but not everybody
-has csh).
+prs, prt, sccsdiff, rmdel, sact, sccs, unget, val and what.  Not all
+options and capabilities of the commands have been implemented yet,
+and the comb and vc commands are not provided at all.  Features
+planned but not yet available include a Bourne shell script for
+converting SCCS files to RCS files (a csh script exists for this
+purpose [sccs2rcs.csh] but not everybody has csh).
 
 Unimplemented features include consistency checking (admin -h),
 ignored deltas (delta -g), l-files (get -l), and getting a delta by
