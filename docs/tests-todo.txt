@@ -86,14 +86,6 @@ get
 
 delta
 =====
-	Deletion of some lines in the file! ("right start line [case 1]")
-	Deletion of some lines in the file when lines were also deleted in
-	previous change
-	Use of delta without previous get -e (i.e. missing p-file)
-	Use of delta when p-file exists but specified SID is not in it
-	Use of delta without -r when two edits are outstanding
-	Use of delta -r specifying SID which is not being edited
-	Failure to supply MR numbers
 	No ID keywords when this is a fatal error (see file flags)
 	Authorised groups
 	Use of delta when a q-file already exists.
@@ -126,15 +118,9 @@ prs
 	Use of -e or -l without -c
 	No sccs files named on command line
 	Failure of sccs_file::prs
-	Included/excluded seq list
-	Printing the module flag (when set)
-	Data keywords :Dy: :Dm: :Dd: :Th: :Tm: :Ts: :Dx: Dg:
-	Data keywords :Y: :KF: :ND: :W: :A: :F:
-	Data keyword :LK: when there are locked deltas
+	Data keywords :Dy: :Dm: :Dd: :Th: :Tm: :Ts: 
+	Data keywords :ND: :W: :A: :F:
 	Data keyword :FB: when there is a floor 
-	data keywords :DI: where there are included deltas
-	Data keyword :Q: when there is a user_def flag set
-	Data keyword :M: when there is a module flag set
 	Using -e or -l with -r and not finding the specified SID.
 	Using -e and finding SIDs in the file earlier than the cutoff date
 	Using -l and finding SIDs in the file later than the cutoff date
@@ -228,7 +214,6 @@ Generic
 	Attempt to provide a SID which starts with a dot.
 	Attempt to provide a SID which contains a non-digit non-dot
 	character
-	SID Trailing garbage ("1.1.1.1.1" or "1.1.1a")
 
 
 Various kinds of corrupt SCCS file
@@ -284,8 +269,6 @@ Weird Stuff
 
 Obsolete features
 =================
-	delta -M
-	delta -Y
 	get -D
 	prs -D
 	prs -R
