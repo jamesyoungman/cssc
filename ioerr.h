@@ -28,10 +28,14 @@
 #define CSSC__IOERR_H__
 
 
-#define fclose_failed(n) (EOF == n)
-#define printf_failed(n) (n < 0)
-#define  fputc_failed(n) (EOF == n)
-#define   putc_failed(n) (EOF == n)
-#define  fputs_failed(n) (EOF == n)
+#define  fclose_failed(n) (EOF == n)
+#define   fputc_failed(n) (EOF == n)
+#define    putc_failed(n) (EOF == n)
+#define   fputs_failed(n) (EOF == n)
+#define  fflush_failed(n) (EOF == n)
+	 
+#define  printf_failed(n) (n < 0)
+#define fprintf_failed(n) (n < 0)
+
 
 #endif 
