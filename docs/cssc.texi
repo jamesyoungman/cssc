@@ -255,8 +255,8 @@ example @samp{^A}, the character whose code is 1.
 @cindex Authorisation
 @item -a@var{xxx}
 Add user or group @var{xxx} to the list of those authorised to check
-revisions in.  Users must be specified by name and groups by numeric
-@sc{id}.
+revisions in (that is, use @code{get -e} and @code{delta}).  Users
+must be specified by name and groups by numeric @sc{id}.
 
 This feature is often used in conjunction with a setuid installation of
 the @code{sccs} driver program (@pxref{sccs}). This is not a good idea
@@ -566,6 +566,11 @@ Sometimes, running @code{delta} results in the creation of a branch in
 the @sc{sccs} file; this is controlled by the @code{get} command at the
 time the file is checked out for editing (@pxref{branches}).
 
+The @code{delta} program checks to see if you are authorised to check
+in a delta to this file.  The list of authorised users can be
+maintained with the @code{admin} program (@pxref{admin}).  If the
+MR-validation flag (@pxref{Flags}) is set, you must also supply a
+valid MR-number in order to be able to check in your change.
 
 @menu
 * Basic Usage: delta usage.         Frequently-used @code{delta} commands
@@ -705,7 +710,6 @@ Get a version from @file{s.foo.c}, into @file{bar} rather than the
 default @file{foo.c}.  The file produced by @code{get} is often referred
 to as the ``g-file''.
 
-
 @item get -r1.3 s.foo.c
 Get revision 1.3 from @file{s.foo.c} into @file{foo.c}.  The @option{-G}
 option can be used to set the name of the gotten file.
@@ -757,13 +761,15 @@ the near future.
 
 @item -e
 @cindex p-file
-Indicates that the retrieved version is for editing.  When checked back
-in the resulting file will have a new revision number.  The retrieved
-file is writable, and keyword substitution does not take place.  A
-@dfn{p-file} is created; this file contains information about what
-versions of the s-file are being edited, and by whom.  Unless the
-@samp{j} flag is set (@pxref{Flags}), @code{get -e} will fail if someone
-else already has the file locked.
+Indicates that the retrieved version is for editing.  When checked
+back in the resulting file will have a new revision number.  The
+retrieved file is writable, and keyword substitution does not take
+place.  A @dfn{p-file} is created; this file contains information
+about what versions of the s-file are being edited, and by whom.
+Unless the @samp{j} flag is set (@pxref{Flags}), @code{get -e} will
+fail if someone else already has the file locked.  If the list of
+authorised users in the @sc{sccs} file is not empty, you must be in
+that list in order to use this option.
 
 
 @item -g
