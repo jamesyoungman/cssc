@@ -32,7 +32,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.12 1998/05/09 16:10:59 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.13 1998/08/13 18:13:52 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an
@@ -45,7 +45,7 @@ static int
 get_comp(const char *&s) {
 	int n = 0;
 	char c = *s;
-	while(c != '\0') {
+	while (c != '\0') {
 		if (c == '.') {
 			if (n == 0) {
 				return -1;
@@ -268,7 +268,7 @@ sid::printf(FILE *out, char c, int force_zero /*=0*/) const {
 
 	short n;
 
-	switch(c) {
+	switch (c) {
 	case 'R':
 		n = rel;
 		break;
@@ -292,7 +292,7 @@ sid::printf(FILE *out, char c, int force_zero /*=0*/) const {
 		break;
 
 	default:
-		quit(-1, "sid::printf: Invalid format.");
+	  assert(0);
 	}
 	return printf_failed(fprintf(out, "%d", n));
 }
