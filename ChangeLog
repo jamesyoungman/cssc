@@ -1,3 +1,44 @@
+2001-11-25  james_youngman  <james_youngman@periwinkle.no.where>
+
+	* /cvsroot/cssc/gnu/CSSC/sccsdiff.sh.in:
+	fixed Debian  Bug#120080: sccs sccsdiff doesn't work (sccsdiff assumes /usr/sccs symlink exists)
+
+	* /cvsroot/cssc/gnu/CSSC/bsd/sccs.c, /cvsroot/cssc/gnu/CSSC/tests/admin/comment.sh, /cvsroot/cssc/gnu/CSSC/tests/admin/init-mr.sh, /cvsroot/cssc/gnu/CSSC/tests/admin/locks.sh, /cvsroot/cssc/gnu/CSSC/tests/admin/t-option.sh, /cvsroot/cssc/gnu/CSSC/tests/admin/users.sh, /cvsroot/cssc/gnu/CSSC/tests/prs/exists.sh, /cvsroot/cssc/gnu/CSSC/tests/prs/keywords.sh, /cvsroot/cssc/gnu/CSSC/tests/prt/all-512.sh, /cvsroot/cssc/gnu/CSSC/tests/prt/all.expected.Z, /cvsroot/cssc/gnu/CSSC/tests/prt/expected/nodel.-u, /cvsroot/cssc/gnu/CSSC/tests/prt/expected/nodel.-u-f, /cvsroot/cssc/gnu/CSSC/tests/prt/expected/nodel.-u-f-t-b, /cvsroot/cssc/gnu/CSSC/configure.in, /cvsroot/cssc/gnu/CSSC/NEWS, /cvsroot/cssc/gnu/CSSC/sf-admin.cc, /cvsroot/cssc/gnu/CSSC/sf-prs.cc, /cvsroot/cssc/gnu/CSSC/sf-prt.cc:
+	Brought test suite - and code - into line with Solaris 2.6 behaviour; largely changes for formatting of prt/prs output, but also a change to the behaviour of admin -fl
+
+2001-11-23  james_youngman  <james_youngman@periwinkle.no.where>
+
+	* /cvsroot/cssc/gnu/CSSC/tests/prs/format.sh:
+	Initial version - qworks on Solaris SCCS, not on CSSC.
+
+2001-09-29  james_youngman  <james_youngman@periwinkle.no.where>
+
+	* /cvsroot/cssc/gnu/CSSC/testutils/last-time.c, /cvsroot/cssc/gnu/CSSC/testutils/realpwd.cc, /cvsroot/cssc/gnu/CSSC/testutils/seeker.c, /cvsroot/cssc/gnu/CSSC/testutils/user.c, /cvsroot/cssc/gnu/CSSC/testutils/uu_decode.c, /cvsroot/cssc/gnu/CSSC/testutils/yammer.c, /cvsroot/cssc/gnu/CSSC/testutils/yes.c, /cvsroot/cssc/gnu/CSSC/unused/_chmod.cc, /cvsroot/cssc/gnu/CSSC/unused/dosfile.cc, /cvsroot/cssc/gnu/CSSC/unused/dummy.cc, /cvsroot/cssc/gnu/CSSC/unused/ffsync.cc, /cvsroot/cssc/gnu/CSSC/unused/fsync.cc, /cvsroot/cssc/gnu/CSSC/unused/pipe.cc, /cvsroot/cssc/gnu/CSSC/unused/pipe.h, /cvsroot/cssc/gnu/CSSC/unused/sid_list.cc, /cvsroot/cssc/gnu/CSSC/admin.cc, /cvsroot/cssc/gnu/CSSC/autogen.sh, /cvsroot/cssc/gnu/CSSC/bodyio.cc, /cvsroot/cssc/gnu/CSSC/bodyio.h, /cvsroot/cssc/gnu/CSSC/bsd/sccs.c, /cvsroot/cssc/gnu/CSSC/canonify.cc, /cvsroot/cssc/gnu/CSSC/cap.cc, /cvsroot/cssc/gnu/CSSC/cdc.cc, /cvsroot/cssc/gnu/CSSC/configure.in, /cvsroot/cssc/gnu/CSSC/cssc.h, /cvsroot/cssc/gnu/CSSC/defaults.h, /cvsroot/cssc/gnu/CSSC/delta.cc, /cvsroot/cssc/gnu/CSSC/delta.h, /cvsroot/cssc/gnu/CSSC/delta-iterator.cc, /cvsroot/cssc/gnu/CSSC/delta-iterator.h, /cvsroot/cssc/gnu/CSSC/delta-table.cc, /cvsroot/cssc/gnu/CSSC/delta-table.h, /cvsroot/cssc/gnu/CSSC/docs/gpl.texi, /cvsroot/cssc/gnu/CSSC/dtbl-prepend.cc, /cvsroot/cssc/gnu/CSSC/encoding.cc, /cvsroot/cssc/gnu/CSSC/environment.cc, /cvsroot/cssc/gnu/CSSC/err_no.h, /cvsroot/cssc/gnu/CSSC/except.h, /cvsroot/cssc/gnu/CSSC/fatalsig.cc, /cvsroot/cssc/gnu/CSSC/fdclosed.cc, /cvsroot/cssc/gnu/CSSC/file.cc, /cvsroot/cssc/gnu/CSSC/filediff.cc, /cvsroot/cssc/gnu/CSSC/filediff.h, /cvsroot/cssc/gnu/CSSC/file.h, /cvsroot/cssc/gnu/CSSC/fileiter.cc, /cvsroot/cssc/gnu/CSSC/fileiter.h, /cvsroot/cssc/gnu/CSSC/filelock.h, /cvsroot/cssc/gnu/CSSC/filepos.h, /cvsroot/cssc/gnu/CSSC/fnsplit.cc, /cvsroot/cssc/gnu/CSSC/get.cc, /cvsroot/cssc/gnu/CSSC/ioerr.h, /cvsroot/cssc/gnu/CSSC/linebuf.cc, /cvsroot/cssc/gnu/CSSC/linebuf.h, /cvsroot/cssc/gnu/CSSC/list.cc, /cvsroot/cssc/gnu/CSSC/l-split.cc, /cvsroot/cssc/gnu/CSSC/my-getopt.cc, /cvsroot/cssc/gnu/CSSC/my-getopt.h, /cvsroot/cssc/gnu/CSSC/mylist.h, /cvsroot/cssc/gnu/CSSC/mystring.cc, /cvsroot/cssc/gnu/CSSC/mystring.h, /cvsroot/cssc/gnu/CSSC/pf-add.cc, /cvsroot/cssc/gnu/CSSC/pf-del.cc, /cvsroot/cssc/gnu/CSSC/pfile.cc, /cvsroot/cssc/gnu/CSSC/pfile.h, /cvsroot/cssc/gnu/CSSC/prompt.cc, /cvsroot/cssc/gnu/CSSC/prs.cc, /cvsroot/cssc/gnu/CSSC/prt.cc, /cvsroot/cssc/gnu/CSSC/quit.cc, /cvsroot/cssc/gnu/CSSC/quit.h, /cvsroot/cssc/gnu/CSSC/release.h, /cvsroot/cssc/gnu/CSSC/rel_list.cc, /cvsroot/cssc/gnu/CSSC/rel_list.h, /cvsroot/cssc/gnu/CSSC/relvbr.h, /cvsroot/cssc/gnu/CSSC/rl-merge.cc, /cvsroot/cssc/gnu/CSSC/rmdel.cc, /cvsroot/cssc/gnu/CSSC/run.cc, /cvsroot/cssc/gnu/CSSC/run.h, /cvsroot/cssc/gnu/CSSC/sact.cc, /cvsroot/cssc/gnu/CSSC/sccsdate.cc, /cvsroot/cssc/gnu/CSSC/sccsdate.h, /cvsroot/cssc/gnu/CSSC/sccs-delta.cc, /cvsroot/cssc/gnu/CSSC/sccsfile.cc, /cvsroot/cssc/gnu/CSSC/sccsfile.h, /cvsroot/cssc/gnu/CSSC/sccsname.cc, /cvsroot/cssc/gnu/CSSC/sccsname.h, /cvsroot/cssc/gnu/CSSC/seqstate.cc, /cvsroot/cssc/gnu/CSSC/seqstate.h, /cvsroot/cssc/gnu/CSSC/sf-add.cc, /cvsroot/cssc/gnu/CSSC/sf-admin.cc, /cvsroot/cssc/gnu/CSSC/sf-cdc.cc, /cvsroot/cssc/gnu/CSSC/sf-chkid.cc, /cvsroot/cssc/gnu/CSSC/sf-chkmr.h, /cvsroot/cssc/gnu/CSSC/sf-delta.cc, /cvsroot/cssc/gnu/CSSC/sf-get2.cc, /cvsroot/cssc/gnu/CSSC/sf-get3.cc, /cvsroot/cssc/gnu/CSSC/sf-get.cc, /cvsroot/cssc/gnu/CSSC/sf-kw.cc, /cvsroot/cssc/gnu/CSSC/sf-prs.cc, /cvsroot/cssc/gnu/CSSC/sf-prt.cc, /cvsroot/cssc/gnu/CSSC/sf-rmdel.cc, /cvsroot/cssc/gnu/CSSC/sf-val.cc, /cvsroot/cssc/gnu/CSSC/sf-write.cc, /cvsroot/cssc/gnu/CSSC/showconfig.cc, /cvsroot/cssc/gnu/CSSC/show-disp.sh, /cvsroot/cssc/gnu/CSSC/sid.cc, /cvsroot/cssc/gnu/CSSC/sid.h, /cvsroot/cssc/gnu/CSSC/sid_list.h, /cvsroot/cssc/gnu/CSSC/sl-merge.h, /cvsroot/cssc/gnu/CSSC/split.cc, /cvsroot/cssc/gnu/CSSC/stack.h, /cvsroot/cssc/gnu/CSSC/strstr.c, /cvsroot/cssc/gnu/CSSC/sysdep.h, /cvsroot/cssc/gnu/CSSC/unget.cc, /cvsroot/cssc/gnu/CSSC/val.cc, /cvsroot/cssc/gnu/CSSC/valcodes.h, /cvsroot/cssc/gnu/CSSC/version.h, /cvsroot/cssc/gnu/CSSC/what.cc, /cvsroot/cssc/gnu/CSSC/writesubst.cc:
+	Updated copyright year and FSF address
+
+2001-09-23  james_youngman  <james_youngman@periwinkle.no.where>
+
+	* /cvsroot/cssc/gnu/CSSC/configure.in:
+	Updated version number (to identify versions checked out from the CVS
+	repository).
+
+	* /cvsroot/cssc/gnu/CSSC/configure.in:
+	removed CVSDEVEL tag prior to release
+
+	* /cvsroot/cssc/gnu/CSSC/ChangeLog: updated from checkin messages
+
+	* /cvsroot/cssc/gnu/CSSC/NEWS: Brought up to date with recent changes.
+
+	* /cvsroot/cssc/gnu/CSSC/get.cc:
+	Give up privileges while manipulating the g-file, because the g-file
+	is owned by the euid of the process which invoked "get", not by the
+	set-user-id ownfer of the "get" file.  This is related to Sourceforge
+	bug ID 458485.
+
+	* /cvsroot/cssc/gnu/CSSC/file.cc:
+	Minor correction to error message in set_file_mode() (don't have a
+	newline in the middle of it).
+
 2001-09-23  james_youngman  <james_youngman@periwinkle>
 
 	* /cvsroot/cssc/gnu/CSSC/get.cc:
