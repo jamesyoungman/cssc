@@ -41,7 +41,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.28 1998/09/06 09:25:30 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.29 1998/09/06 20:22:56 james Exp $";
 #endif
 
 class diff_state
@@ -440,7 +440,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   
   mystring dname(name.sub_file('d'));
   
-  FILE *get_out = fopen(dname.c_str(), "wt");
+//FILE *get_out = fopen(dname.c_str(), "wt");
+  FILE *get_out = fcreate(dname, CREATE_EXCLUSIVE);
   if (NULL == get_out)
     {
       errormsg_with_errno("Cannot open file %s", dname.c_str());

@@ -32,7 +32,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.10 1998/09/06 09:25:27 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.11 1998/09/06 20:22:55 james Exp $";
 #endif
 
 /* enum */ sccs_pfile::find_status
@@ -69,7 +69,8 @@ sccs_pfile::update()
   const mystring q_name(name.qfile());
   const char* qname = q_name.c_str();
 
-  FILE *pf = fopen(qname, "w");	// TODO:XXX:SECURITY: should be O_CREAT|O_EXCL
+// FILE *pf = fopen(qname, "w"); //TODO:XXX:SECURITY: should be O_CREAT|O_EXCL
+  FILE *pf = fcreate(qname, CREATE_EXCLUSIVE);
   if (pf == NULL)
     {
       errormsg_with_errno("%s: Can't create temporary file.", qname);

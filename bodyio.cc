@@ -347,7 +347,8 @@ encode_file(const char *nin, const char *nout)
       return -1;
     }
   
-  FILE *fout = fopen(nout, "w"); // text
+//  FILE *fout = fopen(nout, "w"); // text
+  FILE *fout = fcreate(nout, CREATE_EXCLUSIVE); // text
 
   if (0 == fout)
     {
