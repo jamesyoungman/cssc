@@ -1,4 +1,7 @@
-New in CSSC-0.06alpha-pl6 (unreleased)
+New in CSSC-0.06alpha-pl6
+
+	* Included the BSD sccs.c program for the first time.
+          It has not been tested.  It's work-in-progress.
 
 	* The "-t" option of the "get" command is now implemented. 
 
