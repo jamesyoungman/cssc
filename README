@@ -46,12 +46,11 @@ and a Bourne shell script for converting SCCS files to RCS files (a
 csh script exists for this purpose [sccs2rcs.csh] but not everybody
 has csh).
 
-Unimplemented features include support for binary files, consistency
-checking (admin -h), ignored deltas (delta -g), printing the
-differences after a delta (delta -p), l-files (get -l), and getting a
-delta by sequence number (get -a).  Some features like including and
-excluding deltas (get -i -x) have been implemented but not extensively
-tested.
+Unimplemented features include consistency checking (admin -h),
+ignored deltas (delta -g), printing the differences after a delta
+(delta -p), l-files (get -l), and getting a delta by sequence number
+(get -a).  Some features like including and excluding deltas (get -i
+-x) have been implemented but not extensively tested.
 
 See the file INSTALL for information on how to compile this package.
 Send any questions or bug reports by e-mail to the current maintainer,
