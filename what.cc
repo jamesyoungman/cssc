@@ -45,7 +45,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.9 1997/11/30 14:35:13 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.10 1997/11/30 16:11:25 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -127,6 +127,7 @@ xgetc(XFILE f)
     {
       fprintf(stderr, "Read error (%s)\n", strerror(errno));
       fail();
+      return EOF;
     }
   else if (ret == 0)
     {
