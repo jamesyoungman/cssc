@@ -21,7 +21,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.6 1997/05/31 10:25:08 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.7 1997/06/23 22:59:15 james Exp $";
 #endif
 
 class diff_state {
@@ -299,11 +299,27 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	check_keywords_in_file(gname);
 
 	seq_state sstate(delta_table.highest_seqno());
-	struct delta const *got_delta = delta_table.find(pfile->got);
-	if (got_delta == NULL) {
-		quit(-1, "Locked delta doesn't exist!");
-	}
-	prepare_seqstate(sstate, got_delta->seq);
+	const struct delta *got_delta = delta_table.find(pfile->got);
+	if (got_delta == NULL)
+	  {
+	    quit(-1, "Locked delta doesn't exist!");
+	  }
+
+	// Remember seq number that will be the predecessor of the 
+	// one for the delta.
+	seq_no predecessor_seq = got_delta->seq;
+#if 0
+	fprintf(stderr, "l> predecessor_seq=%u; highest=%u; got_seq=%u\n",
+		(unsigned)predecessor_seq,
+		(unsigned)delta_table.highest_seqno(),
+		(unsigned)got_delta->seq);
+	
+	fprintf(stderr, "l> about to prepare_seqstate (pred=%u)\n",
+		(unsigned)predecessor_seq);
+#endif	
+
+	// TODO: problem just here if we made null deltas.
+	prepare_seqstate(sstate, predecessor_seq);
 	prepare_seqstate(sstate, pfile->include, pfile->exclude,
 			 sccs_date(NULL));
 
@@ -368,17 +384,110 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		}
 	}
 
-	struct delta new_delta('D', pfile->delta,
-			       sccs_date::now(), get_user_name(),
-			       delta_table.highest_seqno() + 1, got_delta->seq,
+	list<struct delta> deltas_to_add;
+	
+	// Create any required null deltas if required.
+	if (flags.null_deltas)
+	  {
+#if 0
+	    fprintf(stderr, "l> null deltas enabled\n");
+#endif
+	    // figure out how many null deltas to make to fill the gap
+	    // between the highest current trunk release and the one
+	    // belonging to the new delta.
+
+	    // use our own comment.
+	    list <mystring> auto_comment;
+	    auto_comment.add(mystring("AUTO NULL DELTA"));
+	    
+	    release last_auto_rel = release(pfile->delta);
+	    // --last_auto_rel;
+	    
+	    sid id(got_delta->id);
+	    release null_rel = release(id);
+	    ++null_rel;
+	    
+	    assert(id.valid());
+	    
+	    int infinite_loop_escape = 10000;
+#if 0
+	    fprintf(stderr,
+		    "l> before loop; null_rel=%lu, last_auto_rel=%lu\n",
+		    (unsigned long)null_rel, (unsigned long)last_auto_rel);
+#endif
+	    while (null_rel < last_auto_rel)
+	      {
+		assert(id.valid());
+#if 0		
+		fprintf(stderr, "l> top of loop; last_auto_rel=\n");
+		last_auto_rel.print(stderr);
+		fprintf(stderr, ", id=");
+		id.print(stderr);
+		fprintf(stderr, ", null_rel=");
+		null_rel.print(stderr);
+		fprintf(stderr, "\n");
+#endif
+		// add a new automatic "null" release.  Use the same
+		// MRs as for the actual delta (is that right?) but
+		seq_no new_seq = predecessor_seq;
+		++new_seq;
+		
+		// Set up for adding the next release.
+		id = release(null_rel);
+		id.next_level();
+#if 0		
+		fprintf(stderr, "l> adding delta (seq %u, pred %u) id ",
+			(unsigned)new_seq, (unsigned)predecessor_seq);
+		id.print(stderr);
+		fprintf(stderr, "\n");
+#endif		
+		
+		//		prepare_seqstate(sstate, predecessor_seq);
+		
+		
+		struct delta null_delta('D', id, sccs_date::now(),
+					get_user_name(), new_seq, predecessor_seq,
+					mrs, auto_comment);
+		null_delta.inserted = 0;
+		null_delta.deleted = 0;
+		null_delta.unchanged = 0;
+
+		deltas_to_add.add(null_delta);
+		
+		predecessor_seq = new_seq;
+
+		++null_rel;
+
+		--infinite_loop_escape;
+		assert(infinite_loop_escape > 0);
+	      }
+	  }
+	seq_no new_seq = predecessor_seq;
+	++new_seq;
+	struct delta new_delta('D', pfile->delta, sccs_date::now(),
+			       get_user_name(), new_seq, predecessor_seq,
 			       included, excluded, mrs, comments);
 	new_delta.inserted = 0;
 	new_delta.deleted = 0;
 	new_delta.unchanged = 0;
 
+	deltas_to_add.add(new_delta);
 
-	FILE *out = start_update(new_delta);
+	// Begin the update by writing out the new delta.
+	FILE *out = start_update();
 
+	for (int i=deltas_to_add.length(); i>0; --i)
+	  {
+	    // There is nothing actually in the null deltas...
+	    if (write_delta(out, deltas_to_add[i-1]))
+	      {
+		xfile_error("Write error.");
+	      }
+	  }
+	if (write(out))
+	  xfile_error("Write error.");
+
+	
 #undef DEBUG_FILE
 #ifdef DEBUG_FILE
 	FILE *df = fopen("delta.dbg", "w");
