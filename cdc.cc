@@ -33,7 +33,7 @@
 #include "delta.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.18 1998/10/20 17:27:21 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.19 1998/11/12 23:54:57 james Exp $";
 
 void
 usage()
@@ -128,9 +128,10 @@ main(int argc, char *argv[])
 	   * specified on the command line, so
 	   * that's an error.
 	   */
-	  errormsg("You can't use standard input for argument list "
-		   "without using the \"-y\" option,\n"
-		   "because these two uses of stdin are mutually "
+	  errormsg("You can't use standard input for the argument list "
+		   "without\n"
+		   "using the \"-y\" option, because these two uses of "
+		   "stdin are mutually\n"
 		   "exclusive, sorry.");
 	  return 1;
 	}
