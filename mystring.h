@@ -66,7 +66,9 @@ public:
 	mystring(const char *s) { create(s); }
 	mystring(const char *s1, const char *s2) { create(s1, s2); }
         mystring(const char *s, size_t len);
-
+        mystring(mystring &s1, mystring &s2) { create(s1.str, s2.str); }
+        mystring(char *s) { create(s); }
+        mystring(char *s1, char *s2) { create(s1, s2); }
 	mystring(mystring const &s) {
 		copy(s);
 	}
@@ -87,6 +89,13 @@ public:
 #ifdef __GNUC__
 	operator void *() const {
 		return str;
+	}
+  // I am informaed that this next function is required to compile
+  // CSSC with the latest snapshots of GCC (as of 970811).  However,
+  // I don't have access to these to really fix the ACTUAL problem
+  // so the following aberration persists... XXX please fix me!
+	operator char *() const { // TODO: remove me 
+		return str;	  // and fix the calling code!
 	}
 #endif
 
