@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.21 1998/02/23 21:01:12 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.22 1998/03/10 00:24:12 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -66,6 +66,7 @@ int
 main(int argc, char **argv) {
 	int c;
 	sid rid = NULL;			/* -r */
+	sid org_rid = NULL;
 	int for_edit = 0;		/* -e */
 	int branch = 0;			/* -b */
 	int suppress_keywords = 0;      /* -k */
@@ -99,8 +100,8 @@ main(int argc, char **argv) {
 			quit(-2, "Unsupported option: '%c'", c);
 
 		case 'r':
-			rid = sid(opts.getarg());
-			if (!rid.valid()) {
+			org_rid = sid(opts.getarg());
+			if (!org_rid.valid()) {
 				quit(-2, "Invaild SID: '%s'", opts.getarg());
 			}
 			break;
@@ -242,6 +243,7 @@ main(int argc, char **argv) {
 		
 		sid retrieve;
 
+		rid = org_rid;
 		if (!file.find_requested_sid(rid, retrieve))
 		  {
 		    quit(-1, "%s: Requested SID not found.", name.c_str());
@@ -309,9 +311,9 @@ main(int argc, char **argv) {
 #endif
 		}
 		
-		// Print the name of the SCCS file unless exactly one was specified.
-		//const int ix = opts.get_index();
-		if ((argc-1) != opts.get_index())
+		// Print the name of the SCCS file unless exactly one
+		// was specified.
+		if (!iter.unique())
 		  {
 		    fprintf(stdout, "\n%s:\n", name.c_str());
 		  }
