@@ -1,5 +1,7 @@
 bin_PROGRAMS = sccs
-EXTRA_DIST = sccs.me COPYING.bsd .ispell_english
+# "itbm" stands for "include the blasted manual pages".
+itbm = sccs.1
+EXTRA_DIST = sccs.me COPYING.bsd .ispell_english $(itbm)
 man_MANS = sccs.1
 
 # The .ispell_english file is included in the distribution because it
