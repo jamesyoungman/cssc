@@ -45,12 +45,12 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.20 1998/06/15 20:50:03 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.21 1998/08/13 18:17:35 james Exp $";
 #endif
 
 void
 sccs_file::prepare_seqstate(seq_state &state, seq_no seq) {
-	while(seq != 0) {
+	while (seq != 0) {
 		if (state.is_predecessor(seq)) {
 			quit(-1, "%s: Loop in deltas.", name.c_str());
 		}
@@ -208,7 +208,7 @@ sccs_file::get(mystring gname, class seq_state &state,
 
     const char *msg = NULL;
 
-    switch(c) {
+    switch (c) {
     case 'E':
       msg = state.end(seq);
       break;

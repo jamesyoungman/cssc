@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.17 1998/06/15 20:50:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.18 1998/08/13 18:16:24 james Exp $";
 #endif
 
 inline bool
@@ -320,7 +320,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 	  continue;
 	}
 
-      switch(key)
+      switch (key)
 	{
 	default:
 	  s = back_to;
@@ -528,7 +528,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 
 	case KEY2('B','D'):
 	  seek_to_body();
-	  while(read_line() != -1)
+	  while (read_line() != -1)
 	    {
 	      fputs(plinebuf->c_str(), out);
 	      putc('\n', out);
@@ -589,7 +589,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
   delta_iterator iter(delta_table);
   while (iter.next(all_deltas))
     {
-      switch(when)
+      switch (when)
 	{
 	case EARLIER:
 	  if (iter->date > cutoff_date)

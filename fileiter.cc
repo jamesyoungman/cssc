@@ -36,7 +36,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.16 1998/06/15 21:47:47 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.17 1998/08/13 18:15:53 james Exp $";
 #endif
 
 #if 0
@@ -78,7 +78,7 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 			mystring dirname(mystring(first) + mystring(slash));
 
 			struct dirent *dent = readdir(dir);
-			while(dent != NULL) {
+			while (dent != NULL) {
 				mystring name = mystring(dirname) + mystring(dent->d_name, NAMLEN(dent));
 				
 				if (sccs_name::valid_filename(name.c_str())
@@ -142,7 +142,7 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 			mystring dirname(mystring(first) + mystring(slash));
 
 			struct dirent *dent = readdir(dir);
-			while(dent != NULL) {
+			while (dent != NULL) {
 				mystring name = mystring(dirname) + mystring(dent->d_name, NAMLEN(dent));
 				
 				if (sccs_name::valid_filename(name.c_str())
@@ -176,7 +176,7 @@ sccs_file_iterator::unique() const
 
 int
 sccs_file_iterator::next() {
-	switch(source) {
+	switch (source) {
 	case STDIN:
 	  {
 	    cssc_linebuf linebuf;

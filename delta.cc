@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.19 1998/06/15 20:49:58 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.20 1998/08/13 18:17:02 james Exp $";
 
 void
 usage() {
@@ -132,7 +132,7 @@ main(int argc, char **argv) {
 
 	int retval = 0;
 	
-	while(iter.next()) {
+	while (iter.next()) {
 		sccs_name &name = iter.get_name();
 		sccs_file file(name, sccs_file::UPDATE);
 		sccs_pfile pfile(name, sccs_pfile::UPDATE);
@@ -157,7 +157,7 @@ main(int argc, char **argv) {
 		    first = 0;
 		  }
 
-		switch(pfile.find_sid(rid)) {
+		switch (pfile.find_sid(rid)) {
 		case sccs_pfile::FOUND:
 			break;
 
