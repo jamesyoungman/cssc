@@ -15,7 +15,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.8 1997/05/31 23:30:27 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.9 1997/06/01 15:55:07 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -35,6 +35,11 @@ sccs_file::delta::operator =(struct delta const &it) {
 	mrs = it.mrs;
 	comments = it.comments;
 	return *this;
+}
+
+bool sccs_file::delta::removed() const
+{
+  return 'R' == type;
 }
 
 
@@ -62,42 +67,48 @@ sccs_file::_delta_table::build_seq_table() {
 
 
 void
-sccs_file::_delta_table::update_highest(struct delta const &it) {
-	seq_no seq = it.seq;
-	if (seq > high_seqno) {
-		if (seq_table != NULL) {
-			seq_table = (int *) xrealloc(seq_table, 
-						     (seq + 1) * sizeof(int));
-			int i;
-			for(i = high_seqno + 1; i < seq + 1; i++) {
-				seq_table[i] = -1;
-			}
-		}
-		high_seqno = it.seq;
+sccs_file::_delta_table::update_highest(struct delta const &it) 
+{
+  seq_no seq = it.seq;
+  if (seq > high_seqno) 
+    {
+      if (seq_table != NULL) 
+	{
+	  seq_table = (int *) xrealloc(seq_table, 
+				       (seq + 1) * sizeof(int));
+	  int i;
+	  for(i = high_seqno + 1; i < seq + 1; i++) 
+	    {
+	      seq_table[i] = -1;
+	    }
 	}
+      high_seqno = it.seq;
+    }
 
-	/* high_release is initialised to {0} so 
-	 * any greater-than comparison always fails since 
-	 * operator> decides it's not comparable with it.id.
-	 */
-	if (high_release.is_null())
-	  {
-	    int on_trunk = sid("1.1").is_trunk_successor(it.id);
-	    if (on_trunk)
-	      high_release = it.id;
-	  }
-	else if (it.id > high_release)
-	  {
-	    high_release = it.id;
-	  }
+  /* high_release is initialised to {0} so 
+   * any greater-than comparison always fails since 
+   * operator> decides it's not comparable with it.id.
+   */
+  if (high_release.is_null())
+    {
+      int on_trunk = sid("1.1").is_trunk_successor(it.id);
+      if (on_trunk)
+	high_release = it.id;
+    }
+  else if (it.id > high_release)
+    {
+      high_release = it.id;
+    }
 
-	if (seq_table != NULL) {
-		if (seq_table[seq] != -1) {
-			quit(-1, "Sequence number %u is duplicated"
-			         " in delta table.", seq);
-		}
-		seq_table[seq] = length() - 1;
+  if (seq_table != NULL) 
+    {
+      if (seq_table[seq] != -1) 
+	{
+	  quit(-1, "Sequence number %u is duplicated"
+	       " in delta table.", seq);
 	}
+      seq_table[seq] = length() - 1;
+    }
 }
 
 

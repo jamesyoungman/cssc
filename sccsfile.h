@@ -52,7 +52,7 @@ private:
 			  mrs(ms), comments(cs) {}
 
 		struct delta &operator =(struct delta const &);
-
+		bool removed() const;
 	private:
 		delta(struct delta const &); /* undefined */
 	};
