@@ -28,6 +28,8 @@
 
 #ifndef TEST_CODE
 // Various #include statements not required by the test code.
+#include "cssc.h"
+
 #endif
 
 
@@ -120,6 +122,23 @@ encode_line(const char in[], char out[], int len)
   *out++ = '\0';
 }
 
+int
+encode_stream(FILE *fin, FILE *fout)
+{
+  char inbuf[80], outbuf[80];
+  int len;
+  
+  do
+    {
+      len = fread(inbuf, 1, 45, fin);
+      encode_line(inbuf, outbuf, len);
+      fprintf(fout, "%s", outbuf);
+    }
+  while (len);
+  
+  return ferror(fin) || ferror(fout);
+}
+
 
 #ifdef TEST_CODE
 
@@ -128,23 +147,14 @@ encode_line(const char in[], char out[], int len)
 #include <string.h>
 #include <stdlib.h>
 
-int test_encode(void)
+int
+test_encode(void)
 {
-  char inbuf[80], outbuf[80];
-  int len;
-  
-  do
-    {
-      len = fread(inbuf, 1, 45, stdin);
-      encode_line(inbuf, outbuf, len);
-      printf("%s", outbuf);
-    }
-  while (len);
-  
-  return ferror(stdin) || ferror(stdout);
+  return encode_stream(stdin, stdout);
 }
 
-int test_decode(void)
+int
+test_decode(void)
 {
   char inbuf[80], outbuf[80];
   while ( 0 != fgets(inbuf, sizeof(inbuf)-1, stdin) )

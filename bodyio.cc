@@ -166,6 +166,12 @@ body_insert_binary(const char iname[], const char oname[],
       
       ++nl;
     }
+  // A space character indicates a count of zero bytes and hence
+  // the end of the encoded file.
+  if (fputs_failed(fputs(" \n", out)))
+    quit(errno, "%s: Write error.", oname);
+  ++nl;
+      
   
   if (ferror(in))
     quit(errno, "%s: Read error.", iname);
@@ -208,3 +214,27 @@ int output_body_line_binary(FILE *fp, const cssc_linebuf* plb)
   return fwrite_failed(fwrite(outbuf, sizeof(char), n, fp), n);
 }
 
+
+int 
+encode_file(const char *nin, const char *nout)
+{
+  FILE *fin = fopen(nin, "rb");	// binary
+  if (0 == fin)
+    quit(errno, "Failed to open \"%s\" for reading.\n", nin);
+  
+  FILE *fout = fopen(nout, "w"); // text
+  if (0 == fout)
+    quit(errno, "Failed to open \"%s\" for writing.\n", nout);
+  
+  
+  encode_stream(fin, fout);
+
+  
+  if (ferror(fin) || fclose_failed(fclose(fin)))
+    quit(errno, "%s: Read error.\n", nin);
+  
+  if (ferror(fout) || fclose_failed(fclose(fout)))
+    quit(errno, "%s: Write error.\n", nout);
+
+  return 0;
+}
