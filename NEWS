@@ -1,3 +1,24 @@
+New in CSSC-0.05alpha-pl0
+
+        * cdc has now beed debugged using new test cases.  
+	
+	* The sact, cdc, rmdel and prt commands have now been
+	  documented in the manual.
+
+	* sccsdiff has been improved by Richard Polton
+	  <rap@scopic.com>, (the code was rewritten my myself).
+
+	* Initial support for extremely long (>99999 line) files.
+	  Also, test scripts for these.
+
+	* Small bugs relating to exact emulation of "real" SCCS 
+	  fixed in admin (-a and -e simultaneously of the same user 
+	  now does the right thing, and -a adds users in the right 
+	  order).
+	
+	* Significant code reorganisation
+
+
 New in CSSC-0.04alpha-pl0
 
 	* Fixes for year-2000 compliance.  While previous versions
