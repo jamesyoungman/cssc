@@ -75,7 +75,7 @@ get
 	get -e when user is NOT member of a group in the authorised user list
 	get -e when user is member of the FORBIDDEN user list
 	get -e when user is member of a group in the FORBIDDEN user list
-	Use of %Y%, %Q%, %Z% 
+	Use of %Q%
 	Use of %W%
 	Use of %W% with the w flag set
 	Use of %_% where _ is not a valid flag char (just output it)
