@@ -1,0 +1,23 @@
+This file lists those files which are part of the CSSC distribution
+but which are copied from elsewhere (and may need to be updated to
+track the originals).  Filenames are relative to the top level source
+directory.
+
+
+COPYING		   GPL version 2
+install-sh	   From the autoconf distribution (last update 2.13)
+missing		   From the automake distribution (last update 1.4a)
+mkinstalldirs      From the automake distribution (last update 1.4a)
+docs/texinfo.tex   From the automake distribution (last update 1.4a)
+
+
+The following files are either forked from their original
+counterparts, or I can't find/recall the original source or version:-
+
+
+testutils/lndir.c     X11R6 (Modified for use with Automake rather than xmkmf)
+testutils/lndir.man   X11R6 (Accompanies lndir.c but is unmodified)
+bsd/*		      From one of the *BSD FTP sites (version??)
+docs/gpl.texi	      Texinfo version of GPL version 2 (source unknown!)
+ekko.c		      From GNU shellutils (local changes to use config.h)
+unused/move-if-change GCC version 2.7.2.1
