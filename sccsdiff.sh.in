@@ -7,8 +7,11 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.7 1998/03/10 00:22:00 james Stab $
+# $Id: sccsdiff.sh.in,v 1.8 2001/11/25 14:27:54 james_youngman Exp $
 # LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.8  2001/11/25 14:27:54  james_youngman
+# LOG   fixed Debian  Bug#120080: sccs sccsdiff doesn't work (sccsdiff assumes /usr/sccs symlink exists)
+# LOG
 # LOG   Revision 1.7  1998/03/10 00:22:00  james
 # LOG   Support for filenames containing spaces.
 # LOG
@@ -38,17 +41,19 @@
 pr=@PR@			   # The location of the   pr(1) command:
 diff=@CONFIG_DIFF_COMMAND@ # The location of the diff(1) command:
 
+# Find the "get" command.  The last value tested is "get", and 
+# that's what we use if we can't find get in any other location.
 if test x$get = x
 then
-    if [ -f /usr/sccs/get ]
+    # The CSSC Makefile performs a sed substitution on the next line.
+    for get in "__csscutildir__/get" /usr/sccs/get get
+    if [ -x "$get" ]
     then
-	get=/usr/sccs/get
-    else
-	get=get
+	break
     fi
 fi
 
-version='$Revision: 1.7 $ $State: Stab $'
+version='$Revision: 1.8 $ $State: Exp $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
