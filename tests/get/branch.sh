@@ -25,6 +25,9 @@ remove $g
 docommand B2 "$get -e -b $s" 0 "1.1\nnew delta 1.2\n1 lines\n" IGNORE
 # When the -b flag is ignored, CSSC emits a warning but SCCS is silent.
 
+# I *think* it's possible that not all versions of SCCS emit anything 
+# to stdout for "unget".   At least, that's what I gather from an email
+# from Maurice O' Donnell <mod@tfn.com>.
 docommand B3 "$unget $s" 0 "1.2\n" ""
 
 # Set the branch flag and make sure everything still works,
