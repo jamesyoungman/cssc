@@ -1683,18 +1683,12 @@ Some programs are missing, that is, some programs are present in the
 
 @item 
 @cindex Multiple-file processing bug
-When processing a list of @sc{sccs} files, @sc{cssc} will make a fatal
-exit on encountering an error, for example an @sc{sccs} file with a bad magic
-number, whereas the original @sc{sccs} would issue an error message and
-continue on with the next file.  It is planned that @sc{cssc} will
-recover from errors of this kind using C++ exceptions.  Support for
-exceptions is poor in current versions of the GNU C++ compiler; once
-this improves, the relevant code will be added, and @sc{cssc} will
-recover properly from this situation.  This problem does not manifest
-when only one file is specified on the command line because in that case
-the current behavior (immediate exit) and correct behavior (process
-all files on the command line and then exit with the appropriate status)
-are identical.
+When processing a list of @sc{sccs} files, @sc{cssc} will often make a
+fatal exit on encountering an error, whereas the original @sc{sccs}
+would issue an error message and continue on with the next file.  This
+is currently being corrected.  Many of the common cases of this have
+already been fixed.  To find cases where it has not been fixed, just
+grep the source for calls to the function @code{quit()}.
 
 @item 
 @cindex Warning messages
