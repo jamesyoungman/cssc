@@ -81,54 +81,61 @@ private:
 
 
 template <class TYPE> range_list<TYPE>::range_list(const char *list)
-  : head(NULL), valid_flag(1)
+    : head(NULL), valid_flag(1)
 {
   const char *s = list;
   if (s == NULL || *s == '\0')
     {
       return;
     }
-
+  
   do
     {
       const char *comma = strchr(s, ',');
-
+      
       if (comma == NULL)
-	{
-	  comma = s + strlen(s);
-	}
-		
+        {
+          comma = s + strlen(s);
+        }
+      
       char buf[64];
       size_t len = comma - s;
       if (len > sizeof(buf) - 1)
-	{
-	  ctor_fail(-1, "Range in list too long: '%s'", list);
-	}
-
-      memcpy(buf, s, len);
-      buf[len] = '\0';
-
-      char *dash = strchr(buf, '-');
-      range<TYPE> *p = new range<TYPE>;
-
-      if (dash == NULL)
-	{
-	  p->to = p->from = TYPE(buf);
-	}
-      else
-	{
-	  *dash++ = '\0';
-	  p->from = TYPE(buf);
-	  p->to = TYPE(dash);
-	}
-
-      p->next = head;
-      head = p;
-
+        {
+          ctor_fail(-1, "Range in list too long: '%s'", list);
+        }
+      else if (len)
+        {
+          /* SourceForge bug number #438857:
+           * ranges like "1.1.1.2," cause an assertion 
+           * failure while SCCS just ignores the empty list item.
+           * Hence we introduce the conditional surrounding this 
+           * block.
+           */
+          memcpy(buf, s, len);
+          buf[len] = '\0';
+          
+          char *dash = strchr(buf, '-');
+          range<TYPE> *p = new range<TYPE>;
+          
+          if (dash == NULL)
+            {
+              p->to = p->from = TYPE(buf);
+            }
+          else
+            {
+              *dash++ = '\0';
+              p->from = TYPE(buf);
+              p->to = TYPE(dash);
+            }
+          
+          p->next = head;
+          head = p;
+        }
       s = comma;
     } while(*s++ != '\0');
-
-  if (clean())			// returns invalid flag.
+  
+  if (clean())                  // returns invalid flag.
     {
       destroy();
       head = NULL;
@@ -154,68 +161,68 @@ range_list<TYPE>::clean()
       range<TYPE> *next_sp = sp->next;
 
       if (sp->from <= sp->to)
-	{
-	  range<TYPE> *dp = new_head;
-	  range<TYPE> *pdp = NULL;
-	  
-	  TYPE sp_to_1 = sp->to;
-	  TYPE sp_from_1 = sp->from;
-	  ++sp_to_1;
-	  --sp_from_1;
+        {
+          range<TYPE> *dp = new_head;
+          range<TYPE> *pdp = NULL;
+          
+          TYPE sp_to_1 = sp->to;
+          TYPE sp_from_1 = sp->from;
+          ++sp_to_1;
+          --sp_from_1;
 
-	  while (dp != NULL && dp->to < sp_from_1)
-	    {
-	      pdp = dp;
-	      dp = dp->next;
-	    }
+          while (dp != NULL && dp->to < sp_from_1)
+            {
+              pdp = dp;
+              dp = dp->next;
+            }
 
-	  while (dp != NULL && dp->from <= sp_to_1)
-	    {
-	      /* While sp overlaps dp, merge dp into sp. */
-	      if (dp->to > sp->to)
-		{
-		  sp_to_1 = sp->to = dp->to;
-		  ++sp_to_1;
-		}
-	      if (dp->from < sp->from)
-		{
-		  sp->from = dp->from;
-		}
+          while (dp != NULL && dp->from <= sp_to_1)
+            {
+              /* While sp overlaps dp, merge dp into sp. */
+              if (dp->to > sp->to)
+                {
+                  sp_to_1 = sp->to = dp->to;
+                  ++sp_to_1;
+                }
+              if (dp->from < sp->from)
+                {
+                  sp->from = dp->from;
+                }
 
-	      range<TYPE> *next_dp = dp->next;
-	      delete dp;
-	      dp = next_dp;
-	      if (pdp == NULL)
-		{
-		  new_head = dp;
-		}
-	      else
-		{
-		  pdp->next = dp;
-		}
-	    }
-	  if (pdp == NULL)
-	    {
-	      sp->next = new_head; 
-	      new_head = sp;
-	    }
-	  else
-	    {
-	      sp->next = pdp->next;
-	      pdp->next = sp;
-	    }
-	}
+              range<TYPE> *next_dp = dp->next;
+              delete dp;
+              dp = next_dp;
+              if (pdp == NULL)
+                {
+                  new_head = dp;
+                }
+              else
+                {
+                  pdp->next = dp;
+                }
+            }
+          if (pdp == NULL)
+            {
+              sp->next = new_head; 
+              new_head = sp;
+            }
+          else
+            {
+              sp->next = pdp->next;
+              pdp->next = sp;
+            }
+        }
       else
-	{
-	  invalidate();
-	  delete sp;
-	}
+        {
+          invalidate();
+          delete sp;
+        }
       sp = next_sp;
     }
   head = new_head;
   return !valid_flag;
-}		
-				
+}               
+                                
 template <class TYPE>
 int
 range_list<TYPE>::member(TYPE id) const
@@ -225,12 +232,12 @@ range_list<TYPE>::member(TYPE id) const
   while (p)
     {
       if (p->from <= id && id <= p->to)
-	{
-	  return 1;		// yes
-	}
+        {
+          return 1;             // yes
+        }
       p = p->next;
     }
-  return 0;			// no
+  return 0;                     // no
 }
 
 template <class TYPE>
@@ -269,16 +276,16 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
       
       p = p->next;
       if (p == NULL)
-	{
-	  break;
-	}
+        {
+          break;
+        }
 
       np = np->next = new range<TYPE>;
     }
 
   np->next = NULL;
   return copy_head;
-}		
+}               
 
 template <class TYPE>
 range_list<TYPE>::range_list(range_list const &list)
@@ -287,7 +294,7 @@ range_list<TYPE>::range_list(range_list const &list)
   ASSERT(list.valid());
   head = do_copy_list(list.head);
   ASSERT(valid());
-}	
+}       
 
 template <class TYPE>
 range_list<TYPE> &
@@ -302,7 +309,7 @@ range_list<TYPE>::operator =(range_list<TYPE> const &list)
 
   ASSERT(valid());
   return *this;
-}	
+}       
 
 
 template <class TYPE>
@@ -352,26 +359,26 @@ range_list<TYPE>::print(FILE *out) const
   while (1)
     {
       if (p->from.print(out))
-	{
-	  return 1;
-	}
+        {
+          return 1;
+        }
       if (p->to != p->from
-	  && (putc('-', out) == EOF
-	      || p->to.print(out)))
-	{
-	  return 1;
-	}
+          && (putc('-', out) == EOF
+              || p->to.print(out)))
+        {
+          return 1;
+        }
 
       p = p->next;
       if (p == NULL)
-	{
-	  return 0;
-	}
+        {
+          return 0;
+        }
 
       if (putc(',', out) == EOF)
-	{
-	  return 1;
-	}
+        {
+          return 1;
+        }
     }
 }
 
@@ -440,15 +447,15 @@ main()
 //template class range_list<release>;
 
 #endif
-			
+                        
 
-		
+                
 /* Local variables: */
 /* mode: c++ */
 /* End: */
 
 #endif /* __SID_LIST_H__ */
-	
+        
 /* Local variables: */
 /* mode: c++ */
 /* End: */
