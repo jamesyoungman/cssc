@@ -68,8 +68,16 @@ cdc_LDADD = @LIBOBJS@
 rmdel_LDADD = @LIBOBJS@
 prt_LDADD = @LIBOBJS@
 
+# $(testcode) is test code that isn't normally used.
+testcode = list.cc 
 
-EXTRA_DIST = ChangeLog 
+# rainyday_src is code that we don't currently need, and would be
+# in the "unused" directory but might be needed for a port (e.g. 
+# to DOS or something).
+rainyday_src = dummy.cc fsync.cc _chmod.cc sid_list.cc \
+	move-if-change 
+
+EXTRA_DIST = ChangeLog $(testcode) $(rainyday_src)
 
 
 sccsdiff: sccsdiff.sh
