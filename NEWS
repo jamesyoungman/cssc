@@ -2,7 +2,7 @@ New in CSSC-0.14alpha-pl0
 
 	* Added Richard Kettlewell's sccs.cgi CGI script.
 
-	* Enhancements to the manual: added a Glossary, document "val".
+	* Enhancements to the manual: added a Glossary, documented "val".
 
 	* Include a section in the manual explaining in more detail some of 
 	  the differences in between other SCCS versions (and which 
@@ -25,7 +25,7 @@ New in CSSC-0.14alpha-pl0
 	  usual bug reporting route, please.
 
 	* The options -Y and -M for "delta" have been removed (since they 
-          aren't in normal SCCS and can be replaced by -y"" and -m")".
+          aren't in normal SCCS and can be replaced by -y"" and -m"").
 	
  	* "sccs help" and "sccs comb" now issue more helpful error
           messages explaining why the relevant program is missing.
