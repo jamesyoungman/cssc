@@ -257,13 +257,28 @@ the
 .Fl e ,
 .Fl f ,
 .Fl h ,
+.Fl u ,
+.Fl n ,
+.Fl w ,
 and
 .Fl b
 options are passed to
-.if n \{\
-.	br
-.\}
 .Nm diff .
+The 
+.Fl a , 
+.Fl B , 
+.Fl d , 
+.Fl H , 
+.Fl p , 
+.Fl q , 
+.Fl s ,
+.Fl v ,
+and
+.Fl y 
+options are passed to 
+.Nm diff
+but these options are (usually) specific to GNU diff, and so may not
+be supported on systems other than GNU.
 The
 .Fl C
 flag is passed to
