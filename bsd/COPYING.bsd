@@ -15,6 +15,16 @@ copyright holders, can license my modifications as they choose, I'd
 prefer them to retain the BSD license for the contents of this
 directory.
 
+Please note that this copyright notice is not the same as the
+"original" BSD copyright notice.  Specifically, the provision number 3
+advertising condition has been removed.  This change is described in
+the letter which is available on the BSD FTP site in the file
+`README.Impt.License.Change'.  The provision which used to be numbered
+4 has now been renumbered to 3.
+
+
+
+
 
 Copyright (C) 1998
 	Free Software Foundation, Inc.  All rights reserved.
@@ -30,11 +40,7 @@ are met:
 2. Redistributions in binary form must reproduce the above copyright
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
-3. All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-	This product includes software developed by the University of
-	California, Berkeley and its contributors.
-4. Neither the name of the University nor the names of its contributors
+3. Neither the name of the University nor the names of its contributors
    may be used to endorse or promote products derived from this software
    without specific prior written permission.
 
