@@ -1,3 +1,20 @@
+New in CSSC-0.09alpha-pl1
+
+	* sccsdiff is now documented.
+
+	* We now correctly return an exit status of 1 when we run out
+          of disk space in get or prs.
+
+	* We no longer coredump when no SCCS file is specified on the
+          command line.
+
+	* We now allow some new features of Larry McVoy's BitSCCS
+	  (BitKeeper).  We don't use them, we just let them pass.
+
+	* We don't require the "nl" utility in order to run the test
+	  suite.
+
+
 New in CSSC-0.09alpha-pl0
 	
 	* We now handle failures in a different way; quit() will 	
@@ -5,7 +22,7 @@ New in CSSC-0.09alpha-pl0
 
 New in CSSC-0.08alpha-pl1
 
-	* Documented the possible exit valus in the manpage for sccs.
+	* Documented the possible exit values in the manpage for sccs.
 
 	* Re-fixed bug in mystring.cc.    Sigh.
 
@@ -13,11 +30,11 @@ New in CSSC-0.08alpha-pl1
 
 New in CSSC-0.08alpha-pl0
 
-	* The program now works on systems with no <string> header file.
-	  Previously existing support for this situation had a bug that
-	  resulted in CSSC being unable to open files named filenames
-	  containing more than one slash.  Apologies to Achim Hoffmann
-	  for this bug.
+	* The program now works on systems with no <string> header
+	  file.  Previously existing support for this situation had a
+	  bug that resulted in CSSC being unable to open files whose
+	  filenames contain more than one slash.  Apologies to Achim
+	  Hoffmann for this bug.
 
 	* Using "-" as a command line argument now works correctly
 	  again; a list of files to process is read from stdin.
