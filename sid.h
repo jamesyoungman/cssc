@@ -20,7 +20,8 @@
 
 #include "sid_list.h"
 
-class release;
+#include "release.h"
+
 
 class sid {
 	short rel, level, branch, sequence;
@@ -171,60 +172,9 @@ public:
 	}
 };
 
-class release {
-	friend sid::operator release() const;
-	friend sid::sid(release);
 
-	short rel;
-
-	release(short r, sid const *): rel(r) {}
-
-public:
-	release(): rel(-1) {}
-	release(const char *s);
-
-	int valid() const { return rel > 0; }
-
-	operator void const *() const {
-		if (rel == 0) {
-			return NULL;
-		} else {
-			return (void const *) this;
-		}
-	}
-
-	release &operator++() { rel++; return *this; }
-	release &operator--() { rel--; return *this; }
-
-	friend int operator <(release r1, release r2) {
-		return r1.rel < r2.rel;
-	}
-
-	friend int operator >(release r1, release r2) {
-		return r1.rel > r2.rel;
-	}
-
-	friend int operator <=(release r1, release r2) {
-		return r1.rel <= r2.rel;
-	}
-
-	friend int operator >=(release r1, release r2) {
-		return r1.rel >= r2.rel;
-	}
-
-	friend int operator ==(release r1, release r2) {
-		return r1.rel == r2.rel;
-	}
-
-	friend int operator !=(release r1, release r2) {
-		return r1.rel != r2.rel;
-	}
-
-	int print(FILE *out) const { return fprintf(out, "%d", rel); }
-};
-
-inline sid::sid(release r): rel(r.rel), level(0), branch(0), sequence(0) {}
-inline sid::operator release() const { return release(rel, this); }
+inline sid::sid(release r): rel(r), level(0), branch(0), sequence(0) {}
+inline sid::operator release() const { return release(rel); }
 
 #if 1
 
@@ -245,7 +195,7 @@ inline int operator !=(sid const &i1, release i2) { return release(i1) != i2; }
 #endif
 
 #pragma warn -inl
-typedef range_list<release> release_list;
+//typedef range_list<release> release_list;
 typedef range_list<sid> sid_list;
 #pragma warn .inl
 
