@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.57 2003/12/07 20:37:21 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.58 2004/10/17 12:24:20 james_youngman Exp $";
 #endif
 
 
@@ -238,7 +238,19 @@ sccs_file::find_next_sid(sid requested, sid got,
             }
           else
             {
-              branch_again = false;
+	      // SourceForge bug 865422: if pnext is listed in the
+	      // pfile, it counts as being in use.
+	      if (sid_in_use(next, pfile) && flags.joint_edit)
+		{
+                  warning("%s: creating a branch "
+                          "due to concurrent edit",
+                          name.c_str());
+		  branch_again = true;
+		}
+	      else
+		{
+		  branch_again = false;
+		}
             }
         }
       else
