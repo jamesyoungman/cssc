@@ -1,3 +1,28 @@
+New in CSSC-0.08alpha-pl0
+
+	* The program now works on systems with no <string> header file.
+	  Previously existing support for this situation had a bug that
+	  resulted in CSSC being unable to open files named filenames
+	  containing more than one slash.  Apologies to Achim Hoffmann
+	  for this bug.
+
+	* Using "-" as a command line argument now works correctly
+	  again; a list of files to process is read from stdin.
+
+	* "prs -r" with no argument for the -r now works correctly,
+           rather than failing.
+
+	* Work correctly even when invoked with one or more of the 
+	  standard file descriptors closed (rather than corrupting an
+          output file).
+
+	* Preliminary support for continuing to process the argument list
+          even if one of the files named early on the command line fails.
+	  This support is incomplete, though the current situation is better
+	  than before.  There may be a few cases where the program
+	  eventually exits with the wrong error level.  There may even
+	  be cases where the program now continues when it should not.
+
 New in CSSC-0.07alpha-pl3
 
 	* Corrected RPM spec file.
