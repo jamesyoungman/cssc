@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.51 2003/02/13 13:58:56 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.52 2003/03/01 15:38:26 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -373,7 +373,8 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
                sid_list include, sid_list exclude,
                int keywords, const char *wstring,
-               int show_sid, int show_module, int debug)
+               int show_sid, int show_module, int debug,
+	       bool for_edit)
 {
   
   /* Set the return status. */
@@ -388,6 +389,13 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   
   ASSERT(0 != delta_table);
 
+  if (!edit_mode_ok(for_edit))	// "get -e" on BK files is not allowed
+    {
+      status.success = false;
+      return status;
+    }
+  
+  
   if (!prepare_seqstate(state, d->seq,
                         include, exclude, cutoff_date))
     {

@@ -39,7 +39,7 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.47 2002/11/02 12:12:48 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.48 2003/03/01 15:38:25 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -410,7 +410,7 @@ main(int argc, char **argv)
 #endif    
           status = file.get(out, gname, retrieve, cutoff_date,
                             include, exclude, keywords, wstring,
-                            show_sid, show_module, debug);
+                            show_sid, show_module, debug, for_edit);
 #ifdef HAVE_EXCEPTIONS
             }
           catch (CsscException)

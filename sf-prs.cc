@@ -35,14 +35,17 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.35 2002/04/05 23:18:08 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.36 2003/03/01 15:38:26 james_youngman Exp $";
 #endif
 
 inline bool
-sccs_file::get(FILE *out, mystring name, seq_no seq)
+sccs_file::get(FILE *out, mystring name, seq_no seq, bool for_edit)
 {
   sid_list no_includes, no_excludes;
   sccs_date no_cutoff;
+
+  if (!edit_mode_ok(for_edit))
+    return false;
   
   struct subst_parms parms(out, NULL, delta(), 0,
                            sccs_date());  // XXX: was sccs_date(NULL) (bad!)
@@ -577,7 +580,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY2('G','B'):
-          get(out, "-", d.seq); // TODO: check return value?
+          get(out, "-", d.seq, false); // TODO: check return value?
           break;
 
         case KEY1('W'):

@@ -352,11 +352,12 @@ to most Unix programs, but is the same as the behaviour of traditional
 @sc{sccs}}.
 
 @item -z
-Fix the checksum information.  The @sc{sccs} file is still validated by
-CSSC; apart from possibly having an incorrect checksum, the s-file must
-be valid.  If you use this option on an @sc{sccs} file which really is
-invalid, then the attempt may fail or @emph{silently write out a valid
-but incorrect file}.  Use this option with @emph{extreme} care.
+Fix the checksum information.  The @sc{sccs} file is still validated
+by CSSC; apart from possibly having an incorrect checksum, the s-file
+must be valid.  If you use this option on an @sc{sccs} file which
+really is invalid, then the attempt may fail or @emph{silently write
+out a valid but incorrect file}.  This option does not work on
+BitKeeper files.  Use this option with @emph{extreme} care.
 @c TODO: Write the test cases.
 @end table
 
@@ -381,6 +382,10 @@ This flag can only be set with the @option{-b} option of @code{admin} at
 the time the file is created (or if admin takes it upon itself to set
 this flag automatically), and cannot be unset.  The circumstances under
 which this can happen are discussed in @ref{Interoperability}.
+@item f
+This flag is specific to the @emph{BitKeeper} suite, and is only
+supported if @sc{cssc} has recognised the file as a BitKeeper file.
+@sc{cssc} does not understand the significance of this flag.
 @item i
 Make @code{get} and @code{delta} exit unsuccessfully when the
 @samp{Warning: No id keywords} message is issued.
@@ -1857,7 +1862,8 @@ This message is displayed when a ``c'' control line is seen in the
 body of the @sc{sccs} file in which the initial ``c'' is not followed
 immediately by a space.  Lines of this type are used as an extension
 mechanism by some other SCCS implementations, notably the
-@emph{BitKeeper} suite.   
+@emph{BitKeeper} suite, and @sc{cssc} knows about this, but if it sees
+a construction it doesn't recognise, this warning is issued.
 @end table
 
 @node Return Value, Paranoia, Validation Warnings, val
@@ -2136,6 +2142,10 @@ characters appear to be considered negative.  This seems to mean that
 these two types of machines will not agree on the correctness of an
 @sc{sccs} file's checksum.
 
+The @emph{BitKeeper} suite uses @samp{^AH} to introduce its checksum
+line rather than @samp{^Ah}, but the checksum is computed in the same
+way.
+
 @node Delta Table, Authorised User List, Checksum Line, The Header
 @subsection The Delta Table
 The checksum is followed by the delta table.  Each entry describes one
@@ -2228,8 +2238,8 @@ of the creation of this delta, one or more lines of the form
 ^Am mr4
 @end example
 
-These lines constitute a list of Modification Request Numbers, one on
-each line.
+may occur.  These lines constitute a list of Modification Request
+Numbers, one on each line.
 
 The next part of the delta table entry is the the delta commentary.
 This comment is intended to contain a description of the changes made in
@@ -2244,18 +2254,38 @@ or many lines, each introduced with @samp{^Ac}, like this:-
 If there is no comment for a particular delta, because it was suppressed
 with the @code{-y} option to @code{delta} or @code{cdc}, or because the
 user was presented with a prompt for comments but just typed the return
-key, an empty @samp{^Ac} control line will appear at this point.  The
-comment block, and in fact the whole delta table entry, is terminated by
-a control line of the form
-
-@example
-^Ae
-@end example
+key, an empty @samp{^Ac} control line will appear at this point.  
 
 CSSC is currently slightly incorrect in this area.  If the comment is
 suppressed with the @code{-y} option, it emits no @samp{^Ac} lines at
 all.
 
+The @emph{BitKeeper} suite uses comment lines of the form @samp{^AcX}
+(where @samp{X} is a non-blank character) to store data which is
+specific to BitKeeper.  This data is ignored by @sc{cssc}, which
+provides read-only support for BitKeeper files.  These special lines
+are distinguished from normal comment lines by the fact that there is
+no space after the @samp{c}:-
+
+@example
+^AcHathlon.transmeta.com
+^AcK09043
+^AcParch/arm/boot/Makefile
+^AcRe1f91d8bfa21c521
+^AcV4
+^AcX0x821
+^AcZ-08:00
+@end example
+
+Some @sc{sccs} files contain an MR list which follows rather than
+precedes the comments for a delta, but this is unusual.
+
+The comment block, and in fact the whole delta table entry, is
+terminated by a control line of the form
+
+@example
+^Ae
+@end example
 
 To illustrate this further, here are two more delta table entries from
 an @sc{sccs} file:-
@@ -2273,7 +2303,7 @@ an @sc{sccs} file:-
 
 @node Authorised User List, Global Flags Section, Delta Table, The Header
 @subsection Authorised User List
-Next, there is the list of authorised users, intorduced by a @samp{^Au}
+Next, there is the list of authorised users, introduced by a @samp{^Au}
 line.  Only users in the authorised users list can modify the @sc{sccs}
 file.  This list always appears (though many implementations will not
 complain if you remove it with an editor) but is often empty.  One user
@@ -2421,6 +2451,7 @@ but do not need to be turned off.
 
 @menu
 * Binary File Support::      Enabling or disabling support for binary files.
+* BitKeeper::                Limited support for Bitkeeper files exists.
 * Maximum Line Length::      Limiting the length of lines in the SCCS file.
 * Limitations of diff::      Diff has limits too, on many non-GNU systems.
 * Configuration::            Viewing the current configuration.
@@ -2429,7 +2460,7 @@ but do not need to be turned off.
 * SCCS Version Differences:: Versions of @sc{sccs} behave inconsistently
 @end menu
 
-@node Binary File Support, Maximum Line Length, , Interoperability
+@node Binary File Support, BitKeeper, , Interoperability
 @section Binary File Support
 Binary file support can be turned off when you run ``configure'' by
 specifying the @code{--disable-binary} option.  This will cause
@@ -2447,7 +2478,30 @@ encoded files will still be handled; @sc{cssc} will just refuse to
 create a new one.  This provides as great a degree of interoperability
 with other implementations of @sc{sccs} as possible.
 
-@node Maximum Line Length, Limitations of diff, Binary File Support, Interoperability
+@node BitKeeper, Maximum Line Length, Binary File Support, Interoperability
+@section BitKeeper
+
+Read-only support is provided for files produced by the BitKeeper
+suite.  Flags and information which are specific to BitKeeper is
+ignored by @sc{cssc}.  At the moment, it is not possible to turn off
+support for BitKeeper files, but a warning message is issued when one
+is encountered.
+
+Actions on BitKeeper files that @sc{cssc} will not perform include 
+@itemize @bullet
+@item get -e
+@item delta
+@item cdc
+@item rmdel
+@item Some options to admin
+@end itemize
+
+@sc{cssc} does not prevent the use of @code{unget} on BitKeeper files,
+because @code{unget} does not examine the @sc{sccs} file header (and
+therefore has no way to determine if the file is a BitKeeper file or
+not).
+
+@node Maximum Line Length, Limitations of diff, BitKeeper, Interoperability
 @section Maximum Line Length
 
 By default, CSSC enforces no line length limits.  The @sc{cssc} tools
@@ -2611,7 +2665,8 @@ lines in the delta table, of the form ``^Ac_'' where ``_'' is some
 character other than a space.  When @sc{cssc} sees these, it will
 avoid changing the SCCS file (though it will still work for read-only
 operations, even though the significance of the special comment is
-ignored).
+ignored).  File flags which are specific to BitKeeper are also treated
+in this way.
 @end itemize
 
 @node SCCS Version Differences,, Incompatibilities, Interoperability

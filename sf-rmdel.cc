@@ -34,7 +34,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.15 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.16 2003/03/01 15:38:26 james_youngman Exp $";
 #endif
 
 static int
@@ -83,6 +83,9 @@ next_state(update_state& current, // this arg is MODIFIED!
 bool
 sccs_file::rmdel(sid id)
 {
+  if (!edit_mode_ok(true))
+    return false;
+  
   delta *d = find_delta(id);
   if (0 == d)
     {

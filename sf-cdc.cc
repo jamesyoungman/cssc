@@ -33,7 +33,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.12 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.13 2003/03/01 15:38:26 james_youngman Exp $";
 #endif
 
 /* Adds new MRs and comments to the specified delta. */
@@ -88,6 +88,9 @@ process_mrs(mylist<mystring>& current,
 bool
 sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
 {
+  if (!edit_mode_ok(true))
+    return false;
+  
   delta *p = find_delta(id);
   if (!p)
     {

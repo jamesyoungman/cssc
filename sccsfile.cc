@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.52 2003/03/01 14:16:16 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.53 2003/03/01 15:38:25 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -559,6 +559,26 @@ sccs_file::check_bk_flag(char flagchar) const
 }
 
 
+/* Find out if it is OK to change the file - called by cdc, rmdel, get -e
+ */
+bool
+sccs_file::edit_mode_ok(bool editing) const
+{
+  if (editing && is_bk_file)
+    {
+      errormsg("%s: This is a BitKeeper file.  Checking BitKeeper files out "
+	       "for editing (or otherwise modifying them) is not supported "
+	       "at the moment, sorry.\n",
+	       name.c_str());
+      return false;
+    }
+  else
+    {
+      return true;
+    }
+}
+
+
 /* Check for BK comments */
 void
 sccs_file::check_bk_comment(char ch, char arg) const
@@ -681,6 +701,16 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   // the s-file read-only.
   signed int sum = 0;
   f = open_sccs_file(name.c_str(), READ, &sum, &is_bk_file);
+  
+  if (mode != READ)
+    {
+      if (!edit_mode_ok(true))
+	{
+	  ctor_fail(-1,
+		    "%s: Editing is not supported for BitKeeper files.\n",
+		    name.c_str());
+	}
+    }
   
   /* open_sccs_file() returns normally if everything went OK, or if 
    * there was an IO error on an apparently valid file.  If this is 

@@ -1,3 +1,12 @@
+New in CSSC-0.16alpha-pl0
+
+	* Recognise BitKeeper files and don't emit spurious warnings when 
+	  we see its extensions to the file format.  However, we do emit 
+          a warning if we see an "extension" we don't recognise.
+          Support for BitKeeper files is read-only.
+	
+	* Fixed SourceForge bug 664900 by applying a fix from Darren Warner.
+	
 New in CSSC-0.15alpha-pl0
 	
 	* Reduced the number of lines of code not tested by the test suite to 

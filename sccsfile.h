@@ -2,7 +2,7 @@
  * sccsfile.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001,2002 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997-2003 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.49 2003/03/01 14:15:33 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.51 2003/03/01 15:38:25 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -108,6 +108,7 @@ private:
   /* Support for BitKeeper files */
   void check_bk_flag(char flagchar) const;
   void check_bk_comment(char ch, char arg) const;
+  bool edit_mode_ok(bool editing) const;
   
 public:
 
@@ -167,7 +168,7 @@ private:
            struct subst_parms &parms,
            bool do_kw_subst,
            int show_sid = 0, int show_module = 0, int debug = 0,
-           bool no_decode = false);
+           bool no_decode = false, bool for_edit = false);
   enum { GET_NO_DECODE = true };
   
   /* sf-get2.c */
@@ -196,7 +197,7 @@ public:
                         sid_list exclude = sid_list(""),
                         int keywords = 0, const char *wstring = NULL,
                         int show_sid = 0, int show_module = 0,
-                        int debug = 0);
+                        int debug = 0, bool for_edit = false);
 
 private:
   
@@ -278,7 +279,7 @@ public:
 
   /* sf-prs.c */
 private:
-  bool get(FILE *out, mystring name, seq_no seq);
+  bool get(FILE *out, mystring name, seq_no seq, bool for_edit);
   void print_flags(FILE *out) const;
   void print_delta(FILE *out, const char *format,
                    struct delta const &delta);

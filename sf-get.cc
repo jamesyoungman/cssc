@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.36 2002/11/02 12:33:19 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.37 2003/03/01 15:38:26 james_youngman Exp $";
 #endif
 
 bool
@@ -312,17 +312,20 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
   return true;
 }
 
-
 bool
 sccs_file::get(mystring gname, class seq_state &state,
                struct subst_parms &parms,
                bool do_kw_subst,
                int show_sid, int show_module, int debug,
-               bool no_decode /* = false */)
+               bool no_decode /* = false */,
+	       bool for_edit /* = false */)
 {
   ASSERT(mode != CREATE);
   ASSERT(mode != FIX_CHECKSUM);
 
+  if (!edit_mode_ok(for_edit))	// "get -e" on BK files is not allowed
+    return false;
+  
   int (*outputfn)(FILE*,const cssc_linebuf*);
   if (flags.encoded && false == no_decode)
     outputfn = output_body_line_binary;
