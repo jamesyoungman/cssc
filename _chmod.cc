@@ -1,5 +1,5 @@
 /*
- * _chmod.c: Part of GNU CSSC.
+ * _chmod.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
@@ -20,12 +20,12 @@
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
  *
- * $Id: _chmod.cc,v 1.5 1997/07/02 18:17:30 james Exp $
+ * $Id: _chmod.cc,v 1.6 1998/01/24 14:11:39 james Exp $
  *
  */
 
-#ifndef ___CHMOD_C__
-#define ___CHMOD_C__
+#ifndef CSSC___CHMOD_C__
+#define CSSC___CHMOD_C__
 
 #define _chmod LIDENT(_chmod)
 
@@ -87,7 +87,7 @@ _chmod(const char *name, int fl, int attr = 0) {
 
 #endif /* CONFIG_DJGPP */
 
-#endif /* ___CHMOD_C__ */
+#endif /* CSSC___CHMOD_C__ */
 
 /* Local variables: */
 /* mode: c++ */
