@@ -31,10 +31,6 @@ extern "C" char * CDECL strlwr(char *);
 
 const char *prg_name = NULL;
 
-#ifdef CONFIG_DECLARE_STRERROR
-extern "C" char * CDECL strerror(int err);
-#endif
-
 void
 set_prg_name(const char *name) {
 #ifdef CONFIG_BORLANDC
