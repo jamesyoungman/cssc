@@ -1,5 +1,5 @@
 /*
- * sl-merge.c: Part of GNU CSSC.
+ * sl-merge.h: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -31,8 +31,8 @@
 #include "sid.h"
 #include "sid_list.h"
 
-#ifndef __SL_MERGE_C__
-#define __SL_MERGE_C__
+#ifndef CSSC__SL_MERGE_H__
+#define CSSC__SL_MERGE_H__
 
 template <class TYPE>
 range_list<TYPE> &
