@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.5 1997/11/18 23:22:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.6 1997/11/23 11:52:47 james Exp $";
 #endif
 
 #ifdef CONFIG_MSDOS_FILES 
@@ -93,13 +93,21 @@ sccs_name::create()
   
   name_front = dirname;
 
-  // name_rear does not contain the "s" 
-  // of the "s." but does contain the dot itself.
-  name_rear.assign(basename, 1);
+  if (basename.length() >= 2)
+    {
+      // name_rear does not contain the "s" 
+      // of the "s." but does contain the dot itself.
+      name_rear.assign(basename, 1);
 
-  // The gname does not include the directory part,
-  // or the leading "s.".
-  gname.assign(basename, 2);
+      // The gname does not include the directory part,
+      // or the leading "s.".
+      gname.assign(basename, 2);
+    }
+  else
+    {
+      name_rear = basename;
+      gname = mystring("");
+    }
 }
 
 // I don't think we EVER need this function.
