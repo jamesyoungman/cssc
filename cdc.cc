@@ -33,7 +33,7 @@
 #include "delta.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.21 1999/04/18 17:39:40 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.22 2000/03/19 13:08:05 james Exp $";
 
 void
 usage()
@@ -149,12 +149,6 @@ main(int argc, char *argv[])
       try
 	{
 #endif	  
-	  if (tossed_privileges)
-	    {
-	      restore_privileges();
-	      tossed_privileges = 0;
-	    }
-
 	  sccs_name &name = iter.get_name();
 	  sccs_file file(name, sccs_file::UPDATE);
 
@@ -233,10 +227,21 @@ main(int argc, char *argv[])
 	    {
 	      retval = 1;
 	    }
+
+	  if (tossed_privileges)
+	    {
+	      restore_privileges();
+	      tossed_privileges = 0;
+	    }
 #ifdef HAVE_EXCEPTIONS
 	}
       catch (CsscExitvalException e)
 	{
+	  if (tossed_privileges)
+	    {
+	      restore_privileges();
+	      tossed_privileges = 0;
+	    }
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
