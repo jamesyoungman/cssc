@@ -1,0 +1,6 @@
+Wed May 28 20:48:12 1997  James Youngman  <JYoungman@vggas.com>
+
+	* Check that doing both -s and -i is diagnosed.
+
+	
+
