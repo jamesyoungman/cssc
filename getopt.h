@@ -57,14 +57,14 @@ public:
 public:
   getopt(int ac, char **av, const char *s, int err = 1)
     : argc(ac), argv(av), index(1),
-      cindex(NULL), opts(s), opterr(err) {}
+      cindex(0), opts(s), opterr(err) {}
   int next(void);
   
   int get_index(void) const;
   char *getarg (void) const;
 };
 
-#endif /* __GETOPT_H__ */
+#endif /* CSSC__GETOPT_H__ */
 
 /* Local variables: */
 /* mode: c++ */
