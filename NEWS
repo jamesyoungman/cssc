@@ -16,6 +16,14 @@ New in CSSC-0.14alpha-pl0
 	* Bug-fixes for "val" (mainly corrections to the precise 
 	  value returned when validation fails)
 
+	* delta now checks that the caller is actually allowed to make
+	  deltas to he SCCS history file (previously this check was made only
+	  by "get -e")
+
+	* The "!44" syntax for the authorised user list is not compatible 
+	  with SCCS and hence has been disabled.  Any complaints via the 
+	  usual bug reporting route, please.
+
 	* The options -Y and -M for "delta" have been removed (since they 
           aren't in normal SCCS and can be replaced by -y"" and -m")".
 	
