@@ -89,7 +89,7 @@ the "info" documentation with either the GNU "info" program, or Emacs.
 To regenerate all the machine-generated files from their ultimate
 sources (for example, after checking the controlled sources out of a
 CVS repository), use
-	clocal && autoheader && automake && autoconf 
+	aclocal && autoheader && automake && autoconf 
 followed by the usual invocation of "configure" and "make".
 
 
