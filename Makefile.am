@@ -120,6 +120,6 @@ sccsdiff: sccsdiff.sh
 	cp sccsdiff.sh $@
 	chmod a+x $@
 
-testsplit: fnsplit.cc mystring.o quit.o
-	$(CXXCOMPILE) -DTEST_FNSPLIT -o testsplit \
-		$(srcdir)/fnsplit.cc mystring.o quit.o
+testsplit$(EXEEXT): fnsplit.cc mystring.$(OBJEXT) quit.$(OBJEXT)
+	$(CXXCOMPILE) -DTEST_FNSPLIT -o testsplit$(EXEEXT) \
+		$(srcdir)/fnsplit.cc mystring.$(OBJEXT) quit.$(OBJEXT)

@@ -98,4 +98,20 @@
  */
 #undef HAVE_EXCEPTIONS
 
+/* Define HAVE_STD_NAMESPACE if your C++ compiler likes constructions like
+ * "std::string s".  A conforming C++ compiler should like that sort of stuff.
+ * In fact, a conforming C++ compiler should insist on your saying 
+ * "using std;" before using a naked "string s" declaration.   Anyway, if we 
+ * can say "std::string s", define this HAVE_STD_NAMESPACE.
+ */
+#undef HAVE_STD_NAMESPACE
+
+/* We also define the macro STD_NAMESPACE.  This is used where one would
+ * ordinarily put "std::" if one was talking to a proper C++ compiler.  
+ * However, we arrange for it to expand to nothing when we are talking 
+ * to a compiler which doesn't understand the "std::" in "std::string". 
+ */
+#undef STD_NAMESPACE
+
+
 /* Bottom of my file (stop). */

@@ -24,7 +24,7 @@
  *
  * Defines the class mystring.
  *
- * $Id: mystring.h,v 1.15 1999/04/18 17:39:40 james Exp $
+ * $Id: mystring.h,v 1.16 2001/08/25 16:41:41 james_youngman Exp $
  *
  */
 
@@ -41,7 +41,7 @@
 #ifdef USE_STANDARD_STRING
 
 #include <string>
-typedef string mystring;
+typedef STD_NAMESPACE string mystring;
 
 
 #else /* Use our own "mystring". */
@@ -59,9 +59,9 @@ typedef string mystring;
 
 class mystring
 {
-  class MyStrRep;		// nested class.
+  class MyStrRep;               // nested class.
   class ModifiableReference;
-  friend class MyStrRep;		// nested class.
+  friend class MyStrRep;                // nested class.
   friend class ModifiableReference;
   
   MyStrRep *rep;

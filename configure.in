@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl 
-dnl $Id: configure.in,v 1.69 2001/07/15 15:08:40 james_youngman Exp $
+dnl $Id: configure.in,v 1.70 2001/08/25 16:41:41 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -137,6 +137,47 @@ dnl AM_PROG_INSTALL
 AC_PROG_RANLIB
 
 
+dnl Determine if we need to work around the bogus printf macro in
+dnl glibc 2.2.3, with GCC versions 2.97 and above. 
+dnl 
+dnl We cannot do this test with AC_EGREP_CPP because the configure 
+dnl script does not pass the correct -O option to the compiler (well, 
+dnl the preprocessor)
+dnl 
+AC_MSG_CHECKING([if you are using a broken version of glibc with a version of GCC (>=2.97) that doesn't like it])
+AC_TRY_COMPILE([
+#include <stdio.h>
+class foo { int printf(const char *fmt, ...); }
+],
+[/* no function body*/],
+AC_MSG_RESULT(no),
+AC_MSG_RESULT(yes)
+
+oldCFLAGS="$CFLAGS"
+oldCXXFLAGS="$CXXFLAGS"
+if echo "$CFLAGS" | grep -e "-O" >/dev/null
+then
+	CFLAGS="-g"
+	CXXFLAGS="-g"
+[
+echo 
+echo WARNING It seems that you are using a version of GNU lilbc 
+echo WARNING that has a broken printf macro in /usr/include/bits/stdio.h.
+echo WARNING I have changed CFLAGS and CXXFLAGS to turn optimisation off 
+echo WARNING in order to work around the problem.   
+echo WARNING
+echo WARNING Other possible workarounds would be to use GCC 2.96 or
+echo WARNING earlier, or a version of glibc which does not have this
+echo WARNING bug.
+echo WARNING
+echo WARNING CFLAGS   has been changed from "$oldCFLAGS"   to "$CFLAGS"
+echo WARNING CXXFLAGS has been changed from "$oldCXXFLAGS" to "$CXXFLAGS"
+echo 
+]
+fi 
+)
+
+	 
 dnl Support for the Windows platform that automake 
 dnl wants (I do not expect CSSC to actually work on
 dnl Windows but at least this is a start)
@@ -163,7 +204,13 @@ dnl Checks for libraries.
 dnl Checks for header files.
 
 dnl Standard C header files:-
+dnl We check these with language set to C only, otherwise autoconf-2.13 will 
+dnl attempt to make the check with the C++ compiler.  It will then moan about
+dnl an undeclared "exit" library function. 
+AC_LANG_C
 AC_HEADER_STDC
+
+AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(stdarg.h stdlib.h string.h stdio.h errno.h locale.h limits.h)
 
 dnl Posix/Unix header files:-
@@ -179,7 +226,7 @@ AC_CHECK_HEADERS(string)
 dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Do not use AC_C_CONST, because the tests for a fully working C "const"
-dnl break when you usie a standard-conforming C++ compiler.
+dnl break when you use a standard-conforming C++ compiler.
 dnl AC_C_CONST
 
 AC_TYPE_SIZE_T
@@ -194,6 +241,23 @@ AC_TRY_COMPILE( ,
 	AC_DEFINE_UNQUOTED(HAVE_EXCEPTIONS)
 	AC_MSG_RESULT(yes),
 	AC_MSG_RESULT(no))
+
+dnl Does the compiler support the "std" namespace?
+dnl GCC version 3 not only supports this but insists on it, 
+dnl so if this feature is supported, we always use it. 
+AC_MSG_CHECKING([for support for C++ "std" namespace])
+AC_TRY_COMPILE(
+#ifdef HAVE_STRING
+#include <string>
+#endif
+,
+	[std::string s;],
+	AC_DEFINE_UNQUOTED(HAVE_STD_NAMESPACE)
+	AC_DEFINE(STD_NAMESPACE,std::)
+	AC_MSG_RESULT(yes),
+	AC_DEFINE(STD_NAMESPACE,/*nothing*/)
+	AC_MSG_RESULT(no))
+
 
 dnl AC_CHECK_DECL_IN_HEADER(IDENTIFIER, HEADERS)
 AC_DEFUN(AC_CHECK_DECL_IN_HEADER,
