@@ -8,7 +8,7 @@ else
 fi
 
 common_files=`ls ${srcdir}/common` 
-echo "common files = " ${common_files}
+#echo "common files = " ${common_files}
 
 
 for d in * 
@@ -21,9 +21,7 @@ do
 			*~) 
 			;;
 			*) 
-			set -x
 			( cd $d; rm -f $i; ln -s ../${srcdir}/common/$i $i ) 
-			set +x
 			;;
 			esac
 		done 
