@@ -26,7 +26,7 @@ cvs status "$@" 2>&1 |
  sed \
 	-e 's/^File: no file/File:/'  | 
  sed -n -e 's/^File: \([^ 	]*\).*Status: \(.*\)$/\1:\2/p' \
-	-e '/^cvs/p' | awk --posix --lint '
+	-e '/^cvs/p' | awk '
 
 BEGIN { FS=":"; dir=""; }
 
