@@ -18,6 +18,7 @@
 #include "sccsdate.h"
 #include "list.h"
 #include "linebuf.h"
+#include "rel_list.h"
 
 class sccs_pfile;	/* pfile.h */
 class seq_state;	/* seqstate.h */
@@ -137,10 +138,10 @@ private:
 
 	class _delta_table delta_table;
 	list<mystring> users;
-	struct {
+	struct sccs_file_flags {
 		mystring type;
 		mystring mr_checker;
-		mystring id_keywords;
+	  	int no_id_keywords_is_fatal;
 		int branch;
 		mystring module;
 		release floor;
@@ -312,6 +313,13 @@ public:
 	void prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
 	         enum when when, int all_deltas);
 
+  void prt(FILE *out, sid cutoff_sid, sccs_date cutoff_date,
+	   enum when when, int all_deltas,
+	   //
+	   int print_body, int print_delta_table, int print_flags,
+	   int incl_excl_ignore, int first_line_only, int print_desc,
+	   int print_users) const;
+  
 	/* sf-cdc.c */
 
 	void cdc(sid id, list<mystring> mrs, list<mystring> comments);
