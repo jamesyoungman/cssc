@@ -42,11 +42,10 @@
 
 #include "err_no.h"
 #include "defaults.h"
-#include "quit.h"
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.7 1997/11/18 23:22:49 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.8 1997/11/23 18:48:50 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -54,7 +53,7 @@ const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.7 1997/11/18 23:22:49 james Ex
 
 typedef FILE *XFILE;
 
-const XFILE XOPEN_FAILURE = NULL;
+const XFILE XOPEN_FAILURE = 0;
 
 inline XFILE
 xopen(const char *name) {
@@ -113,25 +112,42 @@ xread(XFILE f, char *buf, int len) {
 	return read(f, buf, len);
 }
 
+static inline void
+fail()
+{
+  exit(1);
+}
+
 inline int
-xgetc(XFILE f) {
-	char c;
-	int ret = read(f, &c, 1);
-	if (ret == -1) {
-		quit(errno, "Read error.");
-	}
-	if (ret == 0) {
-		return EOF;
-	}
-	return c;
+xgetc(XFILE f)
+{
+  char c;
+  int ret = read(f, &c, 1);
+  if (ret == -1)
+    {
+      fprintf(stderr, "Read error (%s)\n", strerror(errno));
+      fail();
+    }
+  else if (ret == 0)
+    {
+      return EOF;
+    }
+  else 
+    {
+      return c;
+    }
 }
 	
 #endif /* CONFIG_WHAT_USE_STDIO */
 
+static char *what_prg_name = "what";
+
 void
-usage() {
-	fprintf(stderr, "usage: %s [-sV] file ...\n", prg_name);
+usage(void)
+{
+  fprintf(stderr, "usage: %s [-sV] file ...\n", what_prg_name);
 }
+
 
 
 /* Print what's found after a "@(#)" in a file */
@@ -140,7 +156,7 @@ inline char *
 print_what(char *s, char *end, XFILE f) {
 	putchar('\t');
 	
-	while(s < end) {
+	while (s < end) {
 		char c = *s;
 		switch (c) {
 		case '"':
@@ -158,7 +174,7 @@ print_what(char *s, char *end, XFILE f) {
 	}
 
 	char c = xgetc(f);
-	while(c != EOF) {
+	while (c != EOF) {
 		switch (c) {
 		case '"':
 		case '>':
@@ -174,83 +190,95 @@ print_what(char *s, char *end, XFILE f) {
 		c = xgetc(f);
 	}
 
-	return NULL;
+	return 0;
 }
 
 int
-main(int argc, char **argv) {
-	int one_match = 0;
+main(int argc, char **argv)
+{
+  int one_match = 0;
 
-	if (argc > 0) {
-		set_prg_name(argv[0]);
-	} else {
-		set_prg_name("what");
+  if (argc > 0)
+    what_prg_name = argv[0];
+
+  
+  int c;
+  class getopt opts(argc, argv, "r:snV");
+  for (c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next())
+    {
+      switch (c)
+	{
+	case 's':
+	  one_match = 1;
+	  break;
+	  
+	case 'V':
+	  version();
 	}
+    }
 
-	int c;
-	class getopt opts(argc, argv, "r:snV");
-	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
-		switch (c) {
-		case 's':
-			one_match = 1;
-			break;
-
-		case 'V':
-			version();
-		}
+  int arg;
+  for (arg = opts.get_index(); arg < argc; arg++)
+    {
+      XFILE f = xopen(argv[arg]);
+      if (f == XOPEN_FAILURE)
+	{
+	  fprintf(stderr, "%s: Can't open file (%s)\n",
+		  argv[arg], strerror(errno));
+	  fail();
 	}
-
-	int arg;
-	for(arg = opts.get_index(); arg < argc; arg++) {
-		XFILE f = xopen(argv[arg]);
-		if (f == XOPEN_FAILURE) {
-			quit(errno, "%s: Can't open file.", argv[arg]);
-		}
-		
-		printf("%s:\n", argv[arg]);
-
-		static char buf[CONFIG_WHAT_BUFFER_SIZE + 3];
-		buf[0] = buf[1] = buf[2] = '\0';
-
-		int read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
-		while(read_len > 0) {
-			int done = 0;
-			char *end = buf + read_len;
-			char *at = (char *) memchr(buf, '@', read_len);
-			while(at != NULL) {
-				if (at[1] == '(' && at[2] == '#'
-				    && at[3] == ')') {
-					at = print_what(at+4, end + 3, f);
-					putchar('\n');
-					if (at == NULL || one_match) {
-						done = 1;
-						break;
-					}
-				}
-				at++;
-				if (at >= end) {
-					break;
-				}
-				at = (char *) memchr(at, '@', end - at);
-			}
-			if (done) {
-				break;
-			}
-			buf[0] = end[0];
-			buf[1] = end[1];
-			buf[2] = end[2];
-			read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
-		}
-		if (read_len == -1) {
-			quit(errno, "%s: Read error.", argv[arg]);
-		}
-#if 0
+      
+      printf("%s:\n", argv[arg]);
+      
+      static char buf[CONFIG_WHAT_BUFFER_SIZE + 3];
+      buf[0] = buf[1] = buf[2] = '\0';
+      
+      int read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
+      while (read_len > 0)
+	{
+	  int done = 0;
+	  char *end = buf + read_len;
+	  char *at = (char *) memchr(buf, '@', read_len);
+	  while (at)
+	    {
+	    if (at[1] == '(' && at[2] == '#' && at[3] == ')')
+	      {
+		at = print_what(at+4, end + 3, f);
 		putchar('\n');
-#endif
-		xclose(f);
+		if (0 == at || one_match)
+		  {
+		    done = 1;
+		    break;
+		  }
+	      }
+	    at++;
+	    if (at >= end)
+	      {
+		break;
+	      }
+	    at = (char *) memchr(at, '@', end - at);
+	  }
+	  if (done)
+	    {
+	      break;
+	    }
+	  buf[0] = end[0];
+	  buf[1] = end[1];
+	  buf[2] = end[2];
+	  read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
 	}
-
-	return 0;
+      if (read_len == -1)
+	{
+	  fprintf(stderr, "%s: Read error (%s)\n",
+		  argv[arg], strerror(errno));
+	  fail();
+	}
+#if 0
+      putchar('\n');
+#endif
+      xclose(f);
+    }
+  return 0;
 }
 
 /* Local variables: */
