@@ -2,6 +2,32 @@
 # Common function definitions.
 . ../common/command-names
 
+
+## First, find out how to echo without appending a newline,
+## and so on.  We end up with three variables:-
+#
+# ac_n		Leading argument for echo to suppress newline.
+# ac_c          Trailing arg for suppressing newline.
+# ac_t          (don't know -- I stole this code from Autoconf...)
+#
+if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
+  # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
+  if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
+    ac_n= ac_c='
+' ac_t='	'
+  else
+    ac_n=-n ac_c= ac_t=
+  fi
+else
+  ac_n= ac_c='\c' ac_t=
+fi
+
+# Function for echoing without a newline.
+echo_nonl () {
+echo $ac_n "$@" $ac_c ;
+}
+
+
 expect_fail=false
 
 # Call fail when a test failed.
@@ -13,7 +39,7 @@ then
 	# but don't exit...
 else
 	echo FAIL $name $* ; exit 2; 
-fi
+fi ;
 }
 
 
@@ -25,14 +51,14 @@ then
 	echo XPASS $name: $* ; exit 0; 
 else
 	echo PASS $name:  $* ; exit 0; 
-fi
+fi ;
 }
 
 # Call miscarry wen a test could not be completed.
-miscarry () { echo `basename $0`: Test could not be completed; exit 1; }
+miscarry () { echo `basename $0`: Test could not be completed; exit 1 ; }
 
 
-remove () { rm -rf $* || miscarry Could not remove $* }
+remove () { rm -rf $* || miscarry Could not remove $* ; }
 
 ##############
 docommand () {
@@ -50,11 +76,11 @@ case $1 in
 --silent) silent=true ; shift ; label=$1 ;;
        *) silent=false  ;;
 esac
-eval "$silent" || echo -n "$label..."
+eval "$silent" || echo_nonl "$label..."
 
 shift
 
-echo -ne $4 > expected.stderr
+echo_nonl -e $4 > expected.stderr
 echo $1 > last.command
 
 echo $1 >> command.log
@@ -68,7 +94,7 @@ fi
 
 if ! test "$3" = "IGNORE"
 then
-    echo -ne $3 > expected.stdout
+    echo_nonl -e $3 > expected.stdout
     # diff can fail if the file does not end in newline.
     echo        >>expected.stdout
     echo        >>     got.stdout
@@ -77,7 +103,7 @@ fi
 
 if ! test "$4" = "IGNORE"
 then
-    echo -ne $4 > expected.stderr
+    echo_nonl -e $4 > expected.stderr
     # diff can fail if the file does not end in newline.
     echo        >>expected.stderr
     echo        >>     got.stderr
@@ -86,7 +112,7 @@ fi
 
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
 eval "$silent" || echo "passed "
-true
+true ;
 }
 
 #######################
@@ -98,10 +124,10 @@ do_output () {
 # $5 is what to expect on stderr.
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
 label=$1
-echo -n "$label..."
+echo_nonl "$label..."
 shift
 
-echo -ne $4 > expected.stderr
+echo_nonl -e $4 > expected.stderr
 echo $1 > last.command
 
 echo $1 >> command.log
@@ -120,7 +146,7 @@ fi
 
 if ! test "$4" = "IGNORE"
 then
-    echo -ne $4 > expected.stderr
+    echo_nonl -e $4 > expected.stderr
     # diff can fail if the file does not end in newline.
     echo        >>expected.stderr
     echo        >>     got.stderr
@@ -129,5 +155,5 @@ fi
 
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
 echo "passed "
-true
+true ;
 }
