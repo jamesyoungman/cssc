@@ -15,8 +15,10 @@
 #include "mysc.h"
 #include "sysdep.h"
 
+
+
 #ifdef CONFIG_SCCS_IDS
-char static const sccs_id[] = "@(#) MySC file.c 1.1 93/11/09 17:17:53";
+static const char sccs_id[] = "@(#) MySC file.c 1.1 93/11/09 17:17:53";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -151,7 +153,7 @@ file_exists(const char *name) {
 #if defined(CONFIG_SYNC_BEFORE_REOPEN) || defined(CONFIG_SHARE_LOCKING)
 
 #ifdef CONFIG_NO_FSYNC
-#include "fsync.c"
+#include "fsync.cc"
 #endif
 
 #if !defined(fileno) && defined(__BORLANDC__)
@@ -173,7 +175,7 @@ ffsync(FILE *f) {
 
 #ifdef CONFIG_NO__CHMOD
 
-#include "_chmod.c"
+#include "_chmod.cc"
 
 #ifndef FA_ARCH
 #define FA_ARCH 0x20
@@ -215,10 +217,11 @@ test_archive_bit(const char *name) {
 
 static int unprivileged = 0;
 
-#ifdef CONFIG_SAVED_SETUID
+#ifdef SAVED_IDS_OK
 
-static int old_euid;
+static uid_t old_euid;
 
+// Set-user-id is saved.  TODO: What about setuid-root binaries?
 void
 give_up_privileges() {
 	if (unprivileged++ == 0) {
@@ -233,7 +236,8 @@ give_up_privileges() {
 void
 restore_privileges() {
 	if (--unprivileged == 0) {
-		if (setuid(euid) == -1) {
+	  // XXX TODO: shouldn't this be setuid(old_euid) ?
+		if (setuid(old_euid) == -1) { 
 			quit(errno, "setuid(%d) failed", old_euid);
 		}
 		assert(geteuid() == old_euid);
@@ -241,9 +245,12 @@ restore_privileges() {
 	assert(unprivileged >= 0);
 }
 
-#elif defined(CONFIG_SETREUID)
+#elif defined(HAVE_SETREUID)
 
-static int old_ruid, old_euid;
+// POSIX saved IDs not provided or not always provided; use
+// setreuid() instead.
+
+static uid_t old_ruid, old_euid;
 
 void
 give_up_privileges() {
@@ -272,8 +279,10 @@ restore_privileges() {
 }
 
 
-#else /* defined(CONFIG_SETREUID) */
+#else /* defined(HAVE_SETREUID) */
 
+// Processes do not have a saved set-user-id,
+// and setreuid() is not available.
 void
 give_up_privileges() {
 	++unprivileged;
@@ -288,7 +297,7 @@ restore_privileges() {
 	assert(unprivileged >= 0);
 }
 
-#endif /* defined(CONFIG_SETREUID) */
+#endif /* defined(HAVE_SETREUID) */
 
 inline int
 open_as_real_user(const char *name, int mode, int perm) {
@@ -484,17 +493,17 @@ file_lock::~file_lock() {
 #endif /* defined(CONFIG_PID_LOCKING) */
 
 
-#ifdef CONFIG_NO_REMOVE
+#ifndef HAVE_REMOVE
 
 int
 remove(const char *name) {
 	return unlink(name);
 }
 
-#endif /* CONFIG_NO_REMOVE */
+#endif /* HAVE_REMOVE */
 
 
-#ifdef CONFIG_NO_RENAME
+#ifndef HAVE_RENAME
 
 int
 rename(const char *from, const char *to) {
@@ -504,7 +513,7 @@ rename(const char *from, const char *to) {
 	return 0;
 }
 
-#endif /* CONFIG_NO_RENAME */
+#endif /* HAVE_RENAME */
 
 /* Local variables: */
 /* mode: c++ */
