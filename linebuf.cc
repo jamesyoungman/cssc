@@ -21,7 +21,7 @@
  * placed in the Public Domain.
  *
  *
- * Members of the class _linebuf.
+ * Members of the class cssc_linebuf.
  *
  */
 
@@ -33,11 +33,11 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.6 1997/07/02 18:18:14 james Exp $";
+static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.7 1997/12/26 18:30:20 james Exp $";
 #endif
 
 int
-_linebuf::read_line(FILE *f) {
+cssc_linebuf::read_line(FILE *f) {
 	buf[buflen - 2] = '\0';
 
 	char *s = fgets(buf, buflen, f);
@@ -64,6 +64,32 @@ _linebuf::read_line(FILE *f) {
 	}
 
 	return 1;
+}
+
+
+
+int
+cssc_linebuf::split(int offset, char **args, int len, char c)
+{
+  char *start = buf + offset;
+  char *end = strchr(start, c);
+  int i;
+
+  for (i = 0; i < len; i++)
+    {
+      args[i] = start;
+      if (0 == end)
+	{
+	  if (start[0] != '\0')
+	    i++;
+	  return i;		// no more delimiters.
+	}
+      *end++ = '\0';
+      start = end;
+      end = strchr(start, c);
+    }
+
+  return i;
 }
 
 /* Local variables: */
