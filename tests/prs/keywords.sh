@@ -32,29 +32,27 @@ docommand P4 "${delta} -y s.1" 0 "1.2\n1 inserted\n0 deleted\n0 unchanged\n" ""
 expands_to z1 :PN:      `../../testutils/realpwd`"/s.1\n"
 
 
-#tmp# expands_to X1  :I:      "1.1\n"
-#tmp# expands_to X1r :R:      "1\n"
-#tmp# expands_to X1l :L:      "1\n"
-#tmp# expands_to X1b :B:      "\n"
-#tmp# expands_to X1s :S:      "\n"
-#tmp# expands_to X2  :BF:     "no\n"
-#tmp# expands_to X3  :DI:     "\n"
-#tmp# expands_to X4  :DL:     "00000/00000/00000\n"
-#tmp# expands_to X5  :DT:     "D\n"
-#tmp# expands_to X7  :J:      "no\n"
-#tmp# expands_to X8  :LK:     "none\n"
-#tmp# expands_to X9  :MF:     "no\n"
-#tmp# expands_to X10 :MP:     "none\n"
-#tmp# expands_to X11 :MR:     "\n"
-#tmp# expands_to X12 :Z:      '@(#)\n'
-#tmp# expands_to X13 'x\\ny'  "x\ny\n"
-#tmp# expands_to X14 ':Q:'    '\n'
-#tmp# expands_to X15 'x\ty'   'x\ty\n'
-#tmp# expands_to X16 'x\\ty'   'x\ty\n'
-#tmp# expands_to X17 'x\\ny'   'x\ny\n'
-#tmp# expands_to X18 ':FD:'   'Descriptive Text\n\n'
-
-
+expands_to X1  :I:      "1.1\n"
+expands_to X1r :R:      "1\n"
+expands_to X1l :L:      "1\n"
+expands_to X1b :B:      "\n"
+expands_to X1s :S:      "\n"
+expands_to X2  :BF:     "no\n"
+expands_to X3  :DI:     "\n"
+expands_to X4  :DL:     "00000/00000/00000\n"
+expands_to X5  :DT:     "D\n"
+expands_to X7  :J:      "no\n"
+expands_to X8  :LK:     "none\n"
+expands_to X9  :MF:     "no\n"
+expands_to X10 :MP:     "none\n"
+expands_to X11 :MR:     "\n"
+expands_to X12 :Z:      '@(#)\n'
+expands_to X13 'x\\ny'  "x\ny\n"
+expands_to X14 ':Q:'    '\n'
+expands_to X15 'x\ty'   'x\ty\n'
+expands_to X16 'x\\ty'   'x\ty\n'
+expands_to X17 'x\\ny'   'x\ny\n'
+expands_to X18 ':FD:'   'Descriptive Text\n\n'
 
 remove got.stdout expected.stdout
 echo_nonl Z1...
@@ -100,24 +98,24 @@ docommand _6 "${admin} -asanta s.1" 0 IGNORE IGNORE
 sid=1.5
 
 
-#tmp# # Excluded deltas
-#tmp# expands_to K8 ':Dx:'   '2 1\n'
-#tmp# 
-#tmp# # Ignored deltas
-#tmp# # expands_to K9 ':Dg:'   '2\n'
-#tmp# expands_to K9 ':Dg:'   '\n'
-#tmp# 
-#tmp# # Authorised user list
-#tmp# expands_to K10 ':UN:'   'santa\n\n'
-#tmp# 
-#tmp# # Module type (t) flag
-#tmp# expands_to K11 ':Y:'   'MODULE_TYPE\n'
-#tmp# 
-#tmp# # KF - keyword warning flag
-#tmp# expands_to K12 ':KF:'   'yes\n'
-#tmp# 
-#tmp# expands_to K13 ':LK:'   '1\n'
-#tmp# expands_to K14 ':Q:'   'QFLAG\n'
+# Excluded deltas
+expands_to K8 ':Dx:'   '2 1\n'
+
+# Ignored deltas
+# expands_to K9 ':Dg:'   '2\n'
+expands_to K9 ':Dg:'   '\n'
+
+# Authorised user list
+expands_to K10 ':UN:'   'santa\n\n'
+
+# Module type (t) flag
+expands_to K11 ':Y:'   'MODULE_TYPE\n'
+
+# KF - keyword warning flag
+expands_to K12 ':KF:'   'yes\n'
+
+expands_to K13 ':LK:'   '1\n'
+expands_to K14 ':Q:'   'QFLAG\n'
 
 
 expands_to K15 ':DI:'   '/2 1\n'
@@ -128,6 +126,5 @@ expands_to K16 ':DI:'   '3/2 1\n'
 
 ## 
 ## 
-
 remove s.1 p.1 z.1 1 command.log
 success
