@@ -5,6 +5,9 @@ New in CSSC-0.14alpha-pl1
 	
 	* Support for the "-a" option of "get"
 
+	* We detect the situation if an SCCS file has a link count
+          greater than 1, and we refuse to open the affected file.
+
 New in CSSC-0.14alpha-pl0
 
 	* Added Richard Kettlewell's sccs.cgi CGI script.
