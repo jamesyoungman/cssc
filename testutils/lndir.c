@@ -54,14 +54,22 @@ in this Software without prior written authorization from the X Consortium.
    	%  lndir ../X
 */
 
-#ifdef STDC_HEADERS
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_STDARG_H
 #include <stdarg.h>
+#endif
+#ifdef HAVE_STRING_H
 #include <string.h>
 #endif
 
+#ifdef HAVE_STDIO_H
 #include <stdio.h>
+#endif
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#endif
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
