@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-01-25 12:13:34 james>
+Time-stamp: <1998-02-12 21:48:52 james>
 
 This file points out features of SCCS that are missing from CSSC, by
 accident or design, but are not currently listed in the TODO file.
@@ -11,8 +11,5 @@ important.
 sccs-comb is not implemented.
 
 sccs-val is not implemented.
-
-Binary files are not handled (support for ^A f e 0 -- files with the
-encoded flag whose value is 0, is present).
 
 sccs-help is not implemented.  It won't be, either (see the manual).
