@@ -45,7 +45,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.14 1998/05/27 20:33:05 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.15 1998/12/09 23:38:40 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -174,7 +174,7 @@ print_what(char *s, char *end, XFILE f) {
 		s++;
 	}
 
-	char c = xgetc(f);
+	int c = xgetc(f);
 	while (c != EOF) {
 		switch (c) {
 		case '"':
