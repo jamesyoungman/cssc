@@ -1,3 +1,36 @@
+Sun Nov 23 12:05:32 1997  James Youngman  <jay@gnu.org>
+
+	* getopt.cc: small changes to eliminate unruseful dependence on
+ 	quit.h.
+
+	* what.cc: no longer needs quit.h (and in fact what no longer
+	needs quit.o).
+
+	* tests/year-2000: added test scripts for Year-2000 compliance.
+	They also cover the whole life of SCCS (1969 -- 2038).
+
+	* sccsdate.cc: We now handle dates without using time_t, so that
+	everything works with dates right up to 2068.  sccs_date::now()
+	still fails when time_t runs out (Tue Jan 19 03:14:07 2038 on my
+	system).
+
+	* mktime.c: removed this obsolete file.
+
+	* configure.in: no longer need mktime() or "timezone".
+
+	* sccsname.cc: Fixed bug with 1-character filenames.
+
+	* mystring.h: Use the standard string class from <string>, if it
+	is available.
+
+Thu Nov 20 21:03:24 1997  James Youngman  <jay@gnu.org>
+
+	* sccsdate.cc: Added changes mandated by X/Open for year
+	2000 compliance, and fixed year-2019 bug. 
+
+	* docs/cssc.texi: Added chapter covering Year 2000 issues to the
+ 	manual.
+
 Wed Nov 12 00:13:01 1997  James Youngman  <jay@gnu.org>
 
 	* docs/cssc.texi: added TODO comments for text that still needs to
