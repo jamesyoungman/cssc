@@ -1,7 +1,7 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
 Version: @VERSION@
-Release: 1
+Release: 2
 URL: http://cssc.sourceforge.net/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: James Youngman <jay@gnu.org>
@@ -64,6 +64,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
+* Fri Oct  4 2002 James Youngman <jay@gnu.org>
+Change reference to sccs.1 to sccs.1* because RPM version 4
+compresses all the manual pages.
+
 * Sat Jul 14 2001 James Youngman <jay@gnu.org>
 Pass the --enable-binary flag to enable binary file support.
 This was previously the default, but it is now mandatory to 
@@ -107,4 +111,4 @@ First RPMed version (0.05alpha-pl0)
 %attr(755, root, root) /usr/libexec/cssc
 %attr(-, root, root) /usr/sccs
 %attr(-, root, root) /usr/bin/sccs
-%attr(-, root, root) /usr/man/man1/sccs.1
+%attr(-, root, root) /usr/man/man1/sccs.1*
