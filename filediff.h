@@ -42,7 +42,7 @@ class FileDiff
   ~FileDiff();
   
   FILE * start();
-  void finish();
+  bool finish();
 
  private:
   FILE *fp;
