@@ -6,7 +6,7 @@
  *
  * Declares system dependent routines for accessing files.
  *
- * @(#) MySC file.h 1.1 93/11/09 17:17:46
+ * @(#) CSSC file.h 1.1 93/11/09 17:17:46
  *
  */
 
