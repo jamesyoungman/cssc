@@ -1,3 +1,20 @@
+New in CSSC-0.07alpha-pl0
+
+	* "get -e" should now (again) re-use deltas that have been
+           removed with rmdel.
+
+	* Tests for sccs(1) in the test suite.
+	
+	* Modifications to string handling (fixes for possible bugs)
+          in sccs(1).
+
+	* sccs(1) should now compile on Linux under libc version 5 
+          (as well as libc version 6, under which it already did 
+          compile).
+
+	* Added options --cssc, --prefix, --version and -V to sccs(1)
+          and documented them in its manual page.
+	
 New in CSSC-0.06alpha-pl8
 	
 	* Fixed some compilation warnings.
