@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 dnl 
-dnl $Id: configure.in,v 1.78 2001/12/01 22:00:54 james_youngman Exp $
+dnl $Id: configure.in,v 1.79 2002/03/23 15:28:28 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -87,7 +87,7 @@ AC_ARG_ENABLE(max-line-length,
     This setting is overridden by the environment variable 
     CSSC_MAX_LINE_LENGTH.
 
---disable-binary-max-line-length
+--disable-max-line-length
 
     This is equivalent to --enable-max-line-length=0 (which is the default).
 ],
