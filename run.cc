@@ -32,7 +32,7 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.12 1998/02/28 14:49:39 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.13 1998/06/14 15:26:58 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -130,9 +130,10 @@ run(const char *prg, list<const char *> const &args) {
 
 	int ret;
 	pid_t r = wait(&ret);
-	while(r != pid) {
+	while (r != pid) {
 		if (r == -1 && errno != EINTR) {
-			quit(errno, "wait() failed.");
+		  perror("wait()"); // probably ECHILD.
+		  break;
 		}
 		r = wait(&ret);
 	}

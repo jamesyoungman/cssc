@@ -36,7 +36,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.25 1998/03/14 13:43:36 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.26 1998/06/14 15:26:50 james Exp $";
 
 
 static bool
@@ -66,6 +66,7 @@ usage() {
 int
 main(int argc, char **argv) {
 	int c;
+	Cleaner arbitrary_name;
 	release first_release = NULL;		/* -r */
 	int new_sccs_file = 0;			/* -n */
 	bool force_binary = false;              /* -b */
@@ -79,7 +80,8 @@ main(int argc, char **argv) {
 	int suppress_mrs = 0;	                /* -m (no arg) */
 	int suppress_comments = 0;              /* -y (no arg) */
 	int empty_t_option = 0;	                /* -t (no arg) */
-
+	int retval;
+	
 
 	// If we use the "-i" option, we read the initial body from the 
 	// named file, or stdin if no file is named.  In this case, we use
@@ -99,13 +101,16 @@ main(int argc, char **argv) {
 		set_prg_name("admin");
 	}
 
+	retval = 0;
+	
 	class CSSC_Options opts(argc, argv, "bni!r!t!f!d!a!e!m!y!hzV");
 	for(c = opts.next();
 	    c != CSSC_Options::END_OF_ARGUMENTS;
 	    c = opts.next()) {
 		switch (c) {
 		default:
-			quit(-2, "Unsupported option: '%c'", c);
+			errormsg("Unsupported option: '%c'", c);
+			return 2;
 
 		case 'n':
 			new_sccs_file = 1;
@@ -129,7 +134,8 @@ main(int argc, char **argv) {
 			  first_release = release(rel);
 			  if (!first_release.valid())
 			    {
-			      quit(-1, "Invaild release: '%s'", rel);
+			      errormsg("Invaild release: '%s'", rel);
+			      return 1;
 			    }
 			  break;
 			}
@@ -184,21 +190,23 @@ main(int argc, char **argv) {
 
 	if (empty_t_option && new_sccs_file)
 	  {
-	    quit(-1,
-		 "The -t option must have an argument if -n or -i is used.");
+	    errormsg("The -t option must have an argument "
+		     "if -n or -i is used.");
+	    return 1;
 	  }
 	
 	list<mystring> mr_list, comment_list;
 	int first = 1;
 	sccs_file_iterator iter(opts);
 
-	while(iter.next()) {
+	while (iter.next()) {
 		sccs_name &name = iter.get_name();
 
 		if (reset_checksum && !check) {
 			if (!name.valid()) {
-				quit(-1, "%s: Not a SCCS file.",
-				     name.c_str());
+			  errormsg("%s: Not a SCCS file.", name.c_str());
+			  retval = 1;
+			  continue; // with next file
 			}
 			sccs_file::update_checksum(name.c_str());
 			continue;
@@ -206,9 +214,11 @@ main(int argc, char **argv) {
 
 		if (!well_formed_sccsname(name))
 		  {
-		    quit(-1, "%s is an invalid name."
-			 "  SCCS file names must begin `s.'\n",
-			 name.c_str());
+		    errormsg("%s is an invalid name."
+			     "  SCCS file names must begin `s.'\n",
+			     name.c_str());
+		    retval = 1;
+		    continue;	// with next file
 		  }
 		
 		/* enum */ sccs_file::_mode mode = sccs_file::UPDATE;
@@ -237,8 +247,9 @@ main(int argc, char **argv) {
 
 		if (new_sccs_file) {
 			if (iname != NULL && !first) {
-				quit(-1, "The 'i' keyletter can't be used with"
+				errormsg("The 'i' keyletter can't be used with"
 					 " multiple files.");
+				return 1;
 			}
 
 			if (first)
@@ -246,8 +257,12 @@ main(int argc, char **argv) {
 			    // The real thing does not prompt the user here.
 			    // Hence we don't either.
 			    if (!file.mr_required() && !mrs.empty())
-			      quit(-1, "MRs not enabled with 'v' flag, "
-				   "can't use 'm' keyword.");
+			      {
+				errormsg("MRs not enabled with 'v' flag, "
+					 "can't use 'm' keyword.");
+				retval = 1;
+				continue; // with next file
+			      }
 			    
 			    mr_list = split_mrs(mrs);
 			    comment_list = split_comments(comments);
@@ -256,12 +271,17 @@ main(int argc, char **argv) {
 
 			if (file.mr_required()) {
 				if (!suppress_mrs && mr_list.length() == 0) {
-					quit(-1, "%s: MR number(s) must be "
+					errormsg("%s: MR number(s) must be "
 						 " supplied.", name.c_str());
+					retval = 1;
+					continue; // with next file
+					  
 				}
 				if (file.check_mrs(mr_list)) {
-					quit(-1, "%s: Invalid MR number(s).",
-					     name.c_str());
+					errormsg("%s: Invalid MR number(s).",
+						 name.c_str());
+					retval = 1;
+					continue; // with next file
 				}
 			}
 
@@ -274,7 +294,7 @@ main(int argc, char **argv) {
 		first = 0;
 	}
 
-	return 0;
+	return retval;
 }
 
 // Explicit template instantiations.

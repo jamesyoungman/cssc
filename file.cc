@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.15 1998/05/09 16:10:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.16 1998/06/14 15:26:52 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -141,12 +141,12 @@ stdin_is_a_tty() {
 /* Opens a stream to write to the "null" file (eg. /dev/null). */
 
 FILE *
-open_null() {
-	FILE *f = fopen(CONFIG_NULL_FILENAME, "w");
-	if (f == NULL) {
-		quit(errno, CONFIG_NULL_FILENAME ": Can't open for writing.");
-	}
-	return f;
+open_null()
+{
+  FILE *f = fopen(CONFIG_NULL_FILENAME, "w");
+  if (NULL == f)
+    perror(CONFIG_NULL_FILENAME);
+  return f;
 }
 
 
@@ -202,63 +202,6 @@ file_exists(const char *name) {
 }
 
 
-#if defined(CONFIG_SYNC_BEFORE_REOPEN) || defined(CONFIG_SHARE_LOCKING)
-
-#ifdef CONFIG_NO_FSYNC
-#include "fsync.cc"
-#endif
-
-#if !defined(fileno) && defined(__BORLANDC__)
-#define fileno(f) (f->fd)
-#endif
-
-int
-ffsync(FILE *f) {
-	if (fsync(fileno(f)) == -1) {
-		return EOF;
-	}
-	return 0;
-}
-
-#endif /* defined(CONFIG_SYNC_BEFORE_REOPEN) || ... */
-
-
-#ifdef CONFIG_USE_ARCHIVE_BIT
-
-#ifdef CONFIG_NO__CHMOD
-
-#include "_chmod.cc"
-
-#ifndef FA_ARCH
-#define FA_ARCH 0x20
-#endif
-
-#endif /* CONFIG_NO__CHMOD */
-
-
-/* Clears the archive file attribute bit of a file. */
-
-void
-clear_archive_bit(const char *name) {
-	int attribs = _chmod(name, 0);
-	if (attribs == -1 || _chmod(name, 1, attribs & ~FA_ARCH) == -1) {
-		quit(errno, "%s: Can't clear archive file attribute.", name);
-	}
-}
-
-
-/* Returns true if the archive file attribute bit of a file is set. */
-
-inline int
-test_archive_bit(const char *name) {
-	int attribs = _chmod(name, 0);
-	if (attribs == -1) {
-		quit(errno, "%s: Can't test archive file attribute.", name);
-	}
-	return (attribs & FA_ARCH) == FA_ARCH;
-}
-
-#endif /* CONFIG_USE_ARCHIVE_BIT */
 		
 
 #ifdef CONFIG_UIDS
@@ -491,35 +434,7 @@ fcreate(mystring name, int mode) {
 
 #ifdef CONFIG_SHARE_LOCKING
 
-file_lock::file_lock(mystring zname): locked(0), name(zname) {
-	f = fcreate(zname, CREATE_WRITE_LOCK | CREATE_EXCLUSIVE);
-	if (f == NULL) {
-		struct DOSERROR err;
-
-		if (errno == EEXIST
-		    || (dosexterr(&err) == EACCES
-			&& err.de_class == 2 /* temporary situation */)) {
-			return;
-		}
-		quit(errno, "%s: Can't create lock file.", 
-		     zname.c_str());
-	}
-	if (fprintf(f, "%s\n", get_user_name()) < 0
-	    || fflush_failed(fflush(f)) || ffsync(f) == EOF) {
-		quit(errno, "%s: Write error.", zname.c_str());
-	}
-
-	locked = 1;
-	return;
-}
-
-file_lock::~file_lock() {
-	if (locked) {
-		locked = 0;
-		fclose(f);
-		unlink(name);
-	}
-}
+// this code now in dosfile.cc.
 
 #elif defined(CONFIG_PID_LOCKING) || defined(CONFIG_DUMB_LOCKING)
 

@@ -28,10 +28,10 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.8 1998/05/09 16:10:55 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.9 1998/06/14 15:26:54 james Exp $";
 #endif
 
-void
+bool
 sccs_pfile::add_lock(sid got, sid delta, 
 		     sid_list &included, sid_list &excluded) {
 	ASSERT(mode == APPEND);
@@ -54,7 +54,8 @@ sccs_pfile::add_lock(sid got, sid delta,
 	    pf = fcreate(pname, CREATE_EXCLUSIVE);
 	    if (pf == NULL)
 	      {
-		quit(errno, "%s: Can't create.", pname.c_str());
+		perror(pname.c_str());
+		return false;
 	      }
 	  }
 	else
@@ -62,14 +63,17 @@ sccs_pfile::add_lock(sid got, sid delta,
 	    pf = fopen(pname.c_str(), "a");
 	    if (pf == NULL)
 	      {
-		quit(errno, "%s: Can't open for append.", pname.c_str());
+		perror(pname.c_str());
+		return false;
 	      }
 	  }
 
-	if (write_edit_lock(pf, new_lock)
-	    || fclose_failed(fclose(pf))) {
-		quit(errno, "%s: Write error.", pname.c_str());
-	}
+	if (write_edit_lock(pf, new_lock) || fclose_failed(fclose(pf)))
+	  {
+	    perror(pname.c_str());
+	    return false;
+	  }
+	return true;
 }
 
 /* Local variables: */

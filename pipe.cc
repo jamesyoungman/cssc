@@ -38,152 +38,26 @@ class Pipe;
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.13 1998/05/09 16:10:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.14 1998/06/14 15:26:55 james Exp $";
 #endif
 
 extern int create(mystring name, int mode);
 
-#ifndef USE_PIPE
 
-/* Deletes the temporary file if the programme quits prematurely. */
-
-void 
-Pipe::do_cleanup()
-{
-  if (!name.empty())
-    {
-      if (fd != -1)
-	{
-	  if (f != NULL)
-	    {
-	      fclose(f);
-	    }
-	  else
-	    {
-	      close(fd);
-	    }
-	  remove(name.c_str());
-	}
-    }
-}
-
-/* Constructor for class Pipe.  Creates a temporary file to emulate
-   a pipe. */
-
-Pipe::Pipe() {
-#ifdef CONFIG_TEMP_DIRECTORY
-	const char *s = tempnam(CONFIG_TEMP_DIRECTORY, "cssc");
-	name = s;
-	if (s == NULL) {
-		quit(-1, "tempnam() failed.");
-	}
-	free(s);		// s was allocated by tempnam().
-#else
-	const char *s = tmpnam(NULL);
-	if (NULL == s)
-	  {
-	    quit(-1, "tmpnam() failed.");
-	  }
-	else
-	  {
-	    name = s;
-	  }
-#endif
-
-	fd = create(name, CREATE_EXCLUSIVE | CREATE_READ_ONLY);
-	if (fd == -1) {
-		quit(errno, "%s: Can't create temporary file.",
-		     name.c_str());
-	}
-	f = fdopen(fd, "w");
-	if (f == NULL) {
-		quit(errno, "fdopen() failed.");
-	}
-}
+/*
+ * The old no-fork-provided implementation has been removed.
+ * This may be a problem for AmigaOS, which has no working
+ * fork().    Deal with that with temporary files, and new
+ * code.  Likewise Win32.
+ *
+ * If you want a copy of the old code, mail me -- jay@gnu.org
+ */
 
 
-/* Returns the stream to use to read from the Pipe. */
-
-FILE *
-Pipe::read_stream() {
-	fd = open(name.c_str(), O_RDONLY);
-	if (fd == -1) {
-		quit(errno, "%s: Can't reopen temporary file.",
-		     name.c_str());
-	}
-	f = fdopen(fd, "r");
-	if (f == NULL) {
-		quit(errno, "fdopen() failed.");
-	}
-	return f;
-}
-
-
-/* Closes the read stream and deletes the temporary file. */
-
-int
-Pipe::read_close()
-{
-  fclose(f);
-  f = NULL;
-  fd = -1;
-  const char *s = name.c_str();
-  if (remove(s) == -1)
-    quit(errno, "%s: Can't remove temporary file.", s);
-  return 0;
-}
-
-/* Runs the diff command with a one pipe as stdin and another pipe
-   as stdout. */
-
-int	
-run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out) {
-	int old_stdin = dup(0);
-	if (old_stdin == -1) {
-		quit(errno, "dup(0) failed.");
-	}
-	int old_stdout = dup(1);
-	if (old_stdout == -1) {
-		quit(errno, "dup(1) failed.");
-	}
-
-	pipe_in.read_stream();
-
-	close(0);
-	if (dup(pipe_in.fd) != 0) {
-		quit(errno, "dup() != 0");
-	}
-
-	close(1);
-	if (dup(pipe_out.fd) != 1) {
-		quit(errno, "dup() != 1");
-	}
-
-	list<const char *> args;
-
-#ifdef CONFIG_DIFF_SWITCHES
-	args.add(CONFIG_DIFF_SWITCHES);
-#endif
-	args.add("-");
-	args.add(gname);
-
-	int ret = run(CONFIG_DIFF_COMMAND, args);
-
-	close(0);
-	close(1);
-	if (dup(old_stdin) != 0 || dup(old_stdout) != 1) {
-		quit(errno, "dup() failed.");
-	}
-	close(old_stdin);
-	close(old_stdout);
-
-	return ret;
-}
-
-
-#else /* USE_PIPE */
+#ifdef USE_PIPE
 
 /* Using pipes requires both fork() and pipe(). */
+
 #ifndef HAVE_FORK
 #error "HAVE_FORK must be defined if USE_PIPE is defined."
 #endif
@@ -235,7 +109,7 @@ wait_pid::wait() {
 
 	int st;
 	pid_t r = ::wait(&st);
-	while(r != pid) {
+	while (r != pid) {
 		if (r != (pid_t)-1) {
 			class wait_pid *p = head;
 
@@ -249,7 +123,8 @@ wait_pid::wait() {
 				p = p->next;
 			}
 		} else if (errno != EINTR) {
-			quit(errno, "wait() failed.");
+		  perror("wait()"); // The wait call failed.
+		  return 0;	// unsure if this is the right value to return.
 		}
 		r = ::wait(&st);
 	}
@@ -273,35 +148,47 @@ Pipe::_exit(int ret) {
    the write end of the pipe to child process and the read end to the
    parent process. */
 
-Pipe::Pipe() {
-	int fds[2];
-
-	if (::pipe(fds) == -1) {
-		quit(errno, "pipe() failed.");
+Pipe::Pipe()
+{
+  int fds[2];
+  
+  if (::pipe(fds) == -1)
+    {
+      quit(errno, "pipe() failed.");
+    }
+  else
+    {
+      pid = fork();
+      if (pid == (pid_t)-1)
+	{
+	  quit(errno, "fork() failed.");
 	}
-
-	pid = fork();
-	if (pid == (pid_t)-1) {
-		quit(errno, "fork() failed.");
+      else
+	{
+	  if (pid == 0)
+	    {
+	      child = 1;
+	      cleanup::set_in_child();
+	      close(fds[0]);
+	      fd = fds[1];
+	      f = fdopen(fds[1], "w");
+	    }
+	  else
+	    {
+	      child = 0;
+	      close(fds[1]);
+	      fd = fds[0];
+	      f = fdopen(fds[0], "r");
+	    }
+	  
+	  if (f == NULL)
+	    {
+	      quit(errno, "fdopen() failed.");
+	    }
 	}
-
-	if (pid == 0) {
-		child = 1;
-		cleanup::set_in_child();
-		close(fds[0]);
-		fd = fds[1];
-		f = fdopen(fds[1], "w");
-	} else {
-		child = 0;
-		close(fds[1]);
-		fd = fds[0];
-		f = fdopen(fds[0], "r");
-	}
-
-	if (f == NULL) {
-		quit(errno, "fdopen() failed.");
-	}
+    }
 }
+
 
 
 /* Runs the diff command with a one pipe as stdin and another pipe
@@ -336,6 +223,7 @@ run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out)
 }
 
 #endif /* USE_PIPE */
+
 
 /* Local variables: */
 /* mode: c++ */

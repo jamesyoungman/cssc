@@ -32,7 +32,7 @@
 #include "version.h"
 #include "my-getopt.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.9 1998/02/23 21:01:15 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.10 1998/06/14 15:26:59 james Exp $";
 
 void
 usage() {
@@ -44,6 +44,7 @@ usage() {
 int
 main(int argc, char **argv)
 {
+  Cleaner arbitrary_name;
   if (argc > 0)
     set_prg_name(argv[0]);
   else

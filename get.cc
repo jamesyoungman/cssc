@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.23 1998/03/15 17:16:48 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.24 1998/06/14 15:26:53 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -64,6 +64,8 @@ usage() {
 
 int
 main(int argc, char **argv) {
+	Cleaner arbitrary_name;
+  	int retval = 0;
 	int c;
 	sid rid = NULL;			/* -r */
 	sid org_rid = NULL;
@@ -98,36 +100,41 @@ main(int argc, char **argv) {
 	    c = opts.next()) {
 		switch (c) {
 		default:
-			quit(-2, "Unsupported option: '%c'", c);
+		  errormsg("Unsupported option: '%c'", c);
+		  return 2;
 
 		case 'r':
 			org_rid = sid(opts.getarg());
 			if (!org_rid.valid()) {
-				quit(-2, "Invaild SID: '%s'", opts.getarg());
+				errormsg("Invaild SID: '%s'", opts.getarg());
+				return 2;
 			}
 			break;
 
 		case 'c':
 			cutoff_date = sccs_date(opts.getarg());
 			if (!cutoff_date.valid()) {
-				quit(-2, "Invalid cutoff date: '%s'",
-				     opts.getarg());
+				errormsg("Invalid cutoff date: '%s'",
+					 opts.getarg());
+				return 2;
 			}
 			break;
 
 		case 'i':
 			include = sid_list(opts.getarg());
 			if (!include.valid()) {
-				quit(-2, "Invalid inclusion list: '%s'",
-				     opts.getarg());
+				errormsg("Invalid inclusion list: '%s'",
+					 opts.getarg());
+				return 2;
 			}
 			break;
 
 		case 'x':
 			exclude = sid_list(opts.getarg());
 			if (!exclude.valid()) {
-				quit(-2, "Invalid exclusion list: '%s'",
-				     opts.getarg());
+				errormsg("Invalid exclusion list: '%s'",
+					 opts.getarg());
+				return 2;
 			}
 			break;
 
@@ -173,8 +180,9 @@ main(int argc, char **argv) {
 		case 'a':
 			int i = atoi(opts.getarg());
 			if (i < 1) {
-				quit(-2, "Invalid sequence number: '%s'",
+				errormsg("Invalid sequence number: '%s'",
 				     optarg);
+				return 2;
 			}
 			seq_no = i;
 			break;
@@ -229,12 +237,13 @@ main(int argc, char **argv) {
 		}
 		got_gname = 0;
 		gname = "null";
-		out = open_null();
+		if (NULL == (out = open_null()))
+		  return 1;
 	}
 
 	sccs_file_iterator iter(opts);
 
-	while(iter.next()) {
+	while (iter.next()) {
 		sccs_name &name = iter.get_name();
 
 		sccs_pfile *pfile = NULL;
@@ -252,7 +261,9 @@ main(int argc, char **argv) {
 		rid = org_rid;
 		if (!file.find_requested_sid(rid, retrieve, include_branches))
 		  {
-		    quit(-1, "%s: Requested SID not found.", name.c_str());
+		    errormsg("%s: Requested SID not found.", name.c_str());
+		    retval = 1;
+		    continue;	// with next file....
 		  }
 		if (!rid.valid() ||
 		    (rid.release_only() && release(rid) == release(retrieve)))
@@ -295,11 +306,11 @@ main(int argc, char **argv) {
 
 			out = fcreate(gname, mode);
 
-			if (out == NULL)
+			if (NULL == out)
 			  {
-			    quit(errno, "%s: %s",
-				 gname.c_str(),
-				 "Can't open file for writing");
+			    perror(gname.c_str());
+			    retval = 1;
+			    continue;	// with next file....
 			  }
 		}
 		const int keywords = !suppress_keywords;
@@ -329,13 +340,19 @@ main(int argc, char **argv) {
 		retrieve.print(stdout);
 		putchar('\n');
 
-		if (for_edit) {
-			printf("new delta ");
-			new_delta.print(stdout);
-			putchar('\n');
+		if (for_edit)
+		  {
+		    printf("new delta ");
+		    new_delta.print(stdout);
+		    putchar('\n');
 
-			pfile->add_lock(retrieve, new_delta, include, exclude);
-			delete pfile;
+		    if (!pfile->add_lock(retrieve, new_delta,
+					 include, exclude))
+		      {
+			retval = 1;
+			// TODO: what else?
+		      }
+		    delete pfile;
 		}
 
 		if (!no_output) {
@@ -343,7 +360,7 @@ main(int argc, char **argv) {
 		}
 	}
 
-	return 0;
+	return retval;
 }
 
 

@@ -38,7 +38,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.12 1998/05/09 16:10:57 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.13 1998/06/14 15:26:57 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -73,47 +73,70 @@ set_prg_name(const char *name) {
 #endif /* CONFIG_BORLANDC */
 }
 
+static void
+v_errormsg(const char *fmt, va_list ap)
+{
+  putc('\n', stderr);
+	
+  if (prg_name != NULL)
+    fprintf(stderr, "%s: ", prg_name);
+
+  vfprintf(stderr, fmt, ap);
+
+  putc('\n', stderr);
+}
+
+void errormsg(const char *fmt, ...)
+{
+  va_list ap;
+  va_start(ap, fmt);
+  v_errormsg(fmt, ap);
+  va_end(ap);
+}
+
+static void print_err(int err)
+{
+#ifndef HAVE_STRERROR
+  if (err <= sys_nerr)
+    fprintf(stderr, "%d - %s\n", err, sys_errlist[err]);
+  else
+    fprintf(stderr, "%d - Unknown error\n", err);
+#else
+  fprintf(stderr, "%d - %s\n", err, strerror(err));
+#endif
+}
+
 NORETURN
 quit(int err, const char *fmt, ...) {
 	va_list ap;
 
-	va_start(ap, fmt);
 
 	fflush(stdout);
 	cleanup::run_cleanups();
 
 	fflush(stdout);
 
-	putc('\n', stderr);
 
 	if (err == -2) {
-		usage();
+	  putc('\n', stderr);
+	  usage();
 	}
-
-	// XXX TODO: remove this cast.
-	if (prg_name != NULL && err != 0) {
-		fprintf(stderr, "%s: ", (const char *) prg_name);
-	}
-
-	vfprintf(stderr, fmt, ap);
-
+	else
+	  {
+	    putc('\n', stderr);
+	  }
+	
+	va_start(ap, fmt);
+	v_errormsg(fmt, ap);
 	va_end(ap);
 
 	putc('\n', stderr);
 
 	if (err >= 1) {
-#ifndef HAVE_STRERROR
-		if (err <= sys_nerr) {
-			fprintf(stderr, "%d - %s\n", err, sys_errlist[err]);
-		} else {
-			fprintf(stderr, "%d - Unknown error\n", err);
-		}
-#else
-		fprintf(stderr, "%d - %s\n", err, strerror(err));
-#endif
+	  print_err(err);
 	}
 
-	fflush(stderr);
+	fflush(stderr); // probably not required, stderr is unbuffered.
 
 #ifdef HAVE_ABORT
 	if (err == -3) {
@@ -205,6 +228,19 @@ cleanup::run_cleanups() {
 	all_disabled++;
 	return;
 }
+
+
+Cleaner::~Cleaner()
+{
+  cleanup::run_cleanups();
+}
+
+Cleaner::Cleaner()
+{
+  // nothing to do...
+}
+
+
 
 /* Local variables: */
 /* mode: c++ */

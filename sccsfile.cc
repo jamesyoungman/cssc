@@ -32,15 +32,18 @@
 #include "delta-table.h"
 #include "delta-iterator.h"
 #include "linebuf.h"
+#include "quit.h"
 
+#ifdef HAVE_CTYPE_H
 #include <ctype.h>
+#endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>		// SEEK_SET on SunOS.
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.28 1998/06/09 20:01:14 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.29 1998/06/14 15:27:00 james Exp $";
 #endif
 
 
@@ -63,20 +66,35 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   
   if (f == NULL)
     {
-      quit(errno,
-	   "%s: Can't open SCCS file for %s.",
-	   name,
-	   (mode == UPDATE) ? "update" : "reading");
+      perror(name);
+      return NULL;
+      
+      // "%s: Can't open SCCS file for %s.",
+      // name,
+      // (mode == UPDATE) ? "update" : "reading");
     }
   
   if (getc(f) != '\001' || getc(f) != 'h')
-    quit(-1, "%s: Bad magic number.  Did you specify the right file?", name);
+    {
+      errormsg("%s: Bad magic number.  Did you specify the right file?", name);
+      fclose(f);
+      return NULL;
+    }
+  
   
   int c;
+  errno = 0;
   while ( (c=getc(f)) != CONFIG_EOL_CHARACTER)
     {
       if (EOF == c)
-	quit(errno, "%s: Unexpected EOF.", name);
+	{
+	  if (errno)
+	    perror(name);
+	  else
+	    errormsg("%s: Unexpected EOF.", name);
+	  fclose(f);
+	  return NULL;
+	}
     }
   
   int sum = 0u;
@@ -85,7 +103,11 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
     sum += (char) c;	// Yes, I mean plain char, not signed, not unsigned.
   
   if (ferror(f))
-    quit(errno, "%s: Read error.", name);
+    {
+      perror(name);
+      return NULL;
+    }
+  
   
   *sump = sum & 0xFFFFu;
   
@@ -97,9 +119,14 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
     f = fopen(name, "r");
   
   if (f == NULL)
-    quit(errno, "%s: Can't open SCCS file for %s.",
-	 name,
-	 (mode == UPDATE) ? "update" : "reading");
+    {
+      perror(name);
+      // quit(errno, "%s: Can't open SCCS file for %s.",
+      //  name,
+      // (mode == UPDATE) ? "update" : "reading");
+      return NULL;
+    }
+  
 #else
   rewind(f);
 #endif
@@ -415,6 +442,10 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   
   signed int sum = 0;
   f = open_sccs_file(name.c_str(), READ, &sum);
+  if (NULL == f)
+    {
+      quit(-1, "Cannot open SCCS file.\n");
+    }
   
   int c = read_line();
   ASSERT(c == 'h');

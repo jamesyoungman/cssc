@@ -33,6 +33,18 @@
 #pragma interface
 #endif
 
+
+// Cleaner is a class that you should have in scope in main;
+// it ensures that al; required cleanups are run even if you don't
+// call quit().
+class Cleaner
+{
+public:
+  Cleaner();
+  ~Cleaner();
+};
+
+
 class cleanup {
 	static class cleanup *head;
 	static int running;
@@ -66,6 +78,11 @@ public:
 extern const char *prg_name;
 
 void set_prg_name(const char *name);
+
+// errormsg(): emit an error message preceded by the program name.
+//             then return to the caller (don't exit).
+void errormsg(const char *fmt, ...);
+
 
 #ifdef __GNUC__
 NORETURN quit(int err, const char *fmt, ...)

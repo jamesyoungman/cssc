@@ -32,7 +32,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.15 1998/05/09 16:10:57 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.16 1998/06/14 15:26:55 james Exp $";
 
 void
 usage() {
@@ -43,6 +43,7 @@ usage() {
 
 int
 main(int argc, char **argv) {
+	Cleaner arbitrary_name;
 	int c;
 	mystring format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
 	sid rid = NULL;
@@ -63,7 +64,8 @@ main(int argc, char **argv) {
 	    c = opts.next()) {
 		switch (c) {
 		default:
-			quit(-2, "Unsupported option: '%c'", c);
+			errormsg("Unsupported option: '%c'", c);
+			return 2;
 
 		case 'd':
 			format = opts.getarg();
@@ -76,9 +78,11 @@ main(int argc, char **argv) {
 
 		case 'r':
 			rid = sid(opts.getarg());
-			if (!rid.valid() || rid.partial_sid()) {
-				quit(-2, "Invaild SID: '%s'", opts.getarg());
-			}
+			if (!rid.valid() || rid.partial_sid())
+			  {
+			    errormsg("Invaild SID: '%s'", opts.getarg());
+			    return 2;
+			  }
 			default_processing = 0;
 			break;
 
@@ -90,8 +94,9 @@ main(int argc, char **argv) {
 		case 'c':
 			cutoff_date = sccs_date(opts.getarg());
 			if (!cutoff_date.valid()) {
-				quit(-2, "Invalid cutoff date: '%s'",
-				     opts.getarg());
+				errormsg("Invalid cutoff date: '%s'",
+					 opts.getarg());
+				return 2;
 			}
 			break;
 
@@ -116,10 +121,12 @@ main(int argc, char **argv) {
 
 	}
 
-	if (selected == sccs_file::SIDONLY && cutoff_date.valid()) {
-		quit(-2, "Either the -e or -l switch must used with a"
-			 " cutoff date.");
-	}
+	if (selected == sccs_file::SIDONLY && cutoff_date.valid())
+	  {
+	    errormsg("Either the -e or -l switch must used with a"
+		     " cutoff date.");
+	    return 2;
+	  }
 
 	if (default_processing) {
 		selected = sccs_file::EARLIER;

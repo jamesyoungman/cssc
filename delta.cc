@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.17 1998/06/14 01:08:18 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.18 1998/06/14 15:26:51 james Exp $";
 
 void
 usage() {
@@ -45,6 +45,7 @@ usage() {
 
 int
 main(int argc, char **argv) {
+	Cleaner arbitrary_name;
 	int c;
 	sid rid = NULL;		/* -r */
 	int silent = 0;		/* -s */

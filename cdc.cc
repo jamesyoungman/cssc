@@ -32,7 +32,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.14 1998/05/09 16:10:52 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.15 1998/06/14 15:26:50 james Exp $";
 
 void
 usage()
@@ -54,13 +54,14 @@ plural(int n)
 int
 main(int argc, char *argv[])
 {
+  Cleaner arbitrary_name;
   int c;
-  int errflag = 0;
   sid rid = NULL;
   mystring mrs;
   int got_mrs = 0;
   mystring comments;
   int got_comments = 0;
+  int retval = 0;
   
   if (argc > 0)
     set_prg_name(argv[0]);
@@ -73,13 +74,15 @@ main(int argc, char *argv[])
       switch (c)
 	{
 	default:
-	  quit(-2, "Unsupported option: '%c'", c);
+	  errormsg("Unsupported option: '%c'", c);
+	  return 2;
 
 	case 'r':
 	  rid = sid(opts.getarg());
 	  if (!rid.valid())
 	    {
-	      quit(-2, "Invaild SID: '%s'", opts.getarg());
+	      errormsg("Invaild SID: '%s'", opts.getarg());
+	      return 2;
 	    }
 	  break;
 	  
@@ -101,7 +104,8 @@ main(int argc, char *argv[])
 
   if (!rid.valid())
     {
-      quit(-1, "A SID must be specified on the command line.");
+      errormsg("A SID must be specified on the command line.");
+      return 1;
     }
 
   sccs_file_iterator iter(opts);
@@ -118,10 +122,11 @@ main(int argc, char *argv[])
 	   * specified on the command line, so
 	   * that's an error.
 	   */
-	  quit(-1,
-	       "You can't use standard input for argument list "
-	       "without using the \"-y\" option,\n"
-	       "because these two uses of stdin are mutually exclusive, sorry.");
+	  errormsg("You can't use standard input for argument list "
+		   "without using the \"-y\" option,\n"
+		   "because these two uses of stdin are mutually "
+		   "exclusive, sorry.");
+	  return 1;
 	}
     }
   
@@ -156,10 +161,11 @@ main(int argc, char *argv[])
 		   * specified on the command line, so
 		   * that's an error.
 		   */
-		  quit(-1,
-		       "You can't use standard input for argument list "
-		       "without using the \"-y\" and \"-m\" options, because\n"
-		       "these two uses of stdin are mutually exclusive, sorry.");
+		  errormsg("You can't use standard input for argument list "
+			   "without using the \"-y\" and \"-m\" options, "
+			   "because\nthese two uses of stdin are mutually"
+			   " exclusive, sorry.");
+		  return 1;
 		}
 	      else
 		{
@@ -175,23 +181,31 @@ main(int argc, char *argv[])
 	    {
 	      if (file.check_mrs(mr_list))
 		{
-		  quit(-1, "%s: Invalid MR number%s -- validation failed..",
-		       plural(mr_list.length()), name.c_str());
+		  errormsg("%s: Invalid MR number%s -- validation failed..",
+			   plural(mr_list.length()), name.c_str());
+		  retval = 1;
+		  continue;	// with next file.
 		}
 	    }
 	  else 
 	    {
 	      /* No MRs required; it is in this case an error to provide them! */
-	      quit(-1,
-		   "%s: MRs are not allowed for this file "
-		   "(because its 'v' flag is not set).",
-		   name.c_str());
+	      errormsg("%s: MRs are not allowed for this file "
+		       "(because its 'v' flag is not set).",
+		       name.c_str());
+	      retval = 1;
+	      continue;		// with next file...
 	    }
 	}
       else
 	{
 	  if (file.mr_required())
-	    quit(-1, "%s: MRs required.", name.c_str());
+	    {
+	      errormsg("%s: MRs required.", name.c_str());
+	      retval = 1;
+	      continue;
+	    }
+	  
 	}
       
       
@@ -201,11 +215,11 @@ main(int argc, char *argv[])
 	  tossed_privileges = 1;
 	}
       
-      file.cdc(rid, mr_list, comment_list);
+      file.cdc(rid, mr_list, comment_list); // TODO: check success flag return
       file.update();
     }
   
-  return errflag;
+  return retval;
 }
 
 // Explicit template instantiations.

@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.12 1998/02/23 21:01:15 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.13 1998/06/14 15:26:58 james Exp $";
 
 void
 usage() {
@@ -43,75 +43,97 @@ usage() {
 		prg_name);
 }
 
+
+static int
+is_locked(sccs_name& name, sid rid)
+{
+  sccs_pfile pfile(name, sccs_pfile::READ);
+  
+  pfile.rewind();
+  while (pfile.next())
+    {
+      if (pfile->got == rid)
+	return 1;
+    }
+  return 0;
+}
+
+
 int
-main(int argc, char **argv) {
-	int c;
-	sid rid = NULL;
+main(int argc, char **argv)
+{
+  Cleaner arbitrary_name;
+  int c;
+  sid rid = NULL;
+  
+  if (argc > 0)
+    set_prg_name(argv[0]);
+  else
+    set_prg_name("rmdel");
 
-	if (argc > 0) {
-		set_prg_name(argv[0]);
-	} else {
-		set_prg_name("rmdel");
+
+  class CSSC_Options opts(argc, argv, "r!V");
+  for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS;
+       c = opts.next())
+    {
+      switch (c)
+	{
+	case 'r':
+	  rid = sid(opts.getarg());
+	  if (!rid.valid())
+	    {
+	      errormsg("Invaild SID: '%s'", opts.getarg());
+	      return 2;
+	    }
+	  break;
+
+	case 'V':
+	  version();
+	  break;
 	}
+    }
 
-	class CSSC_Options opts(argc, argv, "r!V");
-	for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS;
-	     c = opts.next()) {
-		switch (c) {
-#if 0		
-		default:
-			quit(-2, "Unsupported option: '%c'", c);
-#endif
+  if (!rid.valid())
+    {
+      errormsg("A SID must be specified on the command line.");
+      return 2;
+    }
 
-		case 'r':
-			rid = sid(opts.getarg());
-			if (!rid.valid()) {
-				quit(-2, "Invaild SID: '%s'", opts.getarg());
-			}
-			break;
-
-		case 'V':
-			version();
-			break;
-		}
+  sccs_file_iterator iter(opts);
+  
+  int tossed_privileges = 0;
+  int retval = 0;
+  
+  while (iter.next())
+    {
+      if (tossed_privileges)
+	{
+	  restore_privileges();
+	  tossed_privileges = 0;
 	}
+      
+      sccs_name &name = iter.get_name();
+      sccs_file file(name, sccs_file::UPDATE);
 
-	if (!rid.valid()) {
-		quit(-2, "A SID must be specified on the command line.");
+      if (is_locked(name, rid))
+	{
+	  errormsg("%s: Requested SID is locked for editing.",
+		   name.c_str());
+	  retval = 1;
 	}
-
-	sccs_file_iterator iter(opts);
-
-	int tossed_privileges = 0;
-
-	while(iter.next()) {
-		if (tossed_privileges) {
-			restore_privileges();
-			tossed_privileges = 0;
-		}
-
-		sccs_name &name = iter.get_name();
-		sccs_file file(name, sccs_file::UPDATE);
-		sccs_pfile pfile(name, sccs_pfile::READ);
-
-		pfile.rewind();
-		while(pfile.next()) {
-			if (pfile->got == rid) {
-				quit(-1, "%s: Requested SID is locked"
-				         " for editing.",
-				     name.c_str());
-			}
-		}
-		
-		if (!file.is_delta_creator(get_user_name(), rid)) {
-			give_up_privileges();
-			tossed_privileges = 1;
-		}
-
-		file.rmdel(rid);
+      else
+	{
+	  if (!file.is_delta_creator(get_user_name(), rid))
+	    {
+	      give_up_privileges();
+	      tossed_privileges = 1;
+	    }
+	  
+	  file.rmdel(rid);
 	}
-
-	return 0;
+    }
+  
+  return retval;
 }
 
 // Explicit template instantiations.

@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.10 1998/05/11 21:13:56 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.11 1998/06/14 15:26:56 james Exp $";
 
 void
 usage()
@@ -52,6 +52,7 @@ usage()
 int
 main(int argc, char **argv)
 {
+  Cleaner arbitrary_name;
   int all_deltas = 0;		// -a
   int print_body = 0;		// -b
   int print_delta_table = 0;	// -d
@@ -77,7 +78,8 @@ main(int argc, char **argv)
       switch (c)
 	{
 	default:
-	  quit(-2, "Unsupported option: '%c'", c);
+	  errormsg("Unsupported option: '%c'", c);
+	  return 2;
 
 	case 'a':
 	  all_deltas = 1;
@@ -126,7 +128,8 @@ main(int argc, char **argv)
 	      if (!exclude.cutoff_sid.valid()
 		  || exclude.cutoff_sid.partial_sid())
 		{
-		  quit(-2, "Invaild SID: '%s'", opts.getarg());
+		  errormsg("Invaild SID: '%s'", opts.getarg());
+		  return 2;
 		}
 	    }
 	  else			// empty -y arg.
@@ -139,12 +142,20 @@ main(int argc, char **argv)
 	case 'r':		// are exclusive.
 	  exclude.enabled = true;
 	  if (0 != last_cutoff_type && c != last_cutoff_type)
-	    quit(-2, "Options -c and -r are exclusive.\n");
+	    {
+	      errormsg("Options -c and -r are exclusive.\n");
+	      return 2;
+	    }
+	  
 	  last_cutoff_type = (int)c;
 	  
 	  sccs_date date = sccs_date(opts.getarg());
 	  if (!date.valid())
-	    quit(-2, "Invalid cutoff date: '%s'", opts.getarg());
+	    {
+	      errormsg("Invalid cutoff date: '%s'", opts.getarg());
+	      return 2;
+	    }
+	  
 	  
 	  if (c == 'r')
 	    exclude.last_accepted = date;

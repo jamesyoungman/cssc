@@ -126,7 +126,7 @@ public:
 
 	/* pf-add.c */
 
-	void add_lock(sid got, sid delta,
+	bool add_lock(sid got, sid delta,
 		      sid_list &included, sid_list &excluded);
 
 	/* pf-del.c */
