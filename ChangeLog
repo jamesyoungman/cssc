@@ -1,4 +1,43 @@
-2004-10-10  james_youngman  <james_youngman@orbital>
+2005-01-22  James Youngman  <jay@gnu.org>
+
+	* NEWS: Added latest news.
+
+	* docs/cssc.texi:
+	Ensured that the section names for cross-references which appear in
+	the printed output actually bear the correct title for the section
+	they refer to.
+
+2004-10-17  James Youngman  <jay@gnu.org>
+
+	* docs/Platforms: CSSC now builds under GCC-3.4.
+
+	* docs/cssc.texi: Updated edition/version.
+
+	* docs/cssc.texi:
+	Indicate that "admin -h" performs the same checks as "val" as well as
+	checking the checksum.
+
+	* Makefile.am, admin.cc:
+	Fixed SourceForge bug 1043880: admin -h should invoke val
+
+	* sf-get2.cc, tests/get/sf865422.sh:
+	Fixed SourceForge bug 865422: if a SID is listed in a pfile, that can force a branch
+
+	* sccsdiff.sh.in:
+	Fixed SourceForge bug 966010, sccs sccsdiff -r cannot have space
+	before revision number.   We still will have similar problems
+	elsewhere in the suite, I suspect.
+
+	* sf-prs.cc, sf-delta.cc:
+	Fixed SourceForge bug 1045768: CSSC does not compile with gcc 3.4
+
+2004-10-16  James Youngman  <jay@gnu.org>
+
+	* docs/CREDITS, docs/CREDITS.short.txt: Added Yann Dirson.
+
+2004-10-10  James Youngman  <jay@gnu.org>
+
+	* ChangeLog: Updated from CVS log messages.
 
 	* README: Fixed typo
 
@@ -6,8 +45,6 @@
 
 	* configure.ac:
 	Indicate that this is once again the CVS development version.
-
-	* CSSC 1.00 released.
 
 	* configure.ac: This is release 1.00.
 
@@ -39,7 +76,7 @@
 	* tests/admin/Makefile.am, tests/admin/hardlinks.sh, tests/admin/y-flag.sh, docs/cssc.texi, myset.h, sccsfile.cc, sccsfile.h, sf-admin.cc, sf-get.cc, sf-prs.cc, sf-prt.cc, sf-val.cc, sf-write.cc, writesubst.cc:
 	Added support for the SCCS 'y' flag - SF bug 1040827
 
-2004-10-03  james_youngman  <james_youngman@orbital>
+2004-10-03  James Youngman  <jay@gnu.org>
 
 	* NEWS: Updated with new news.
 
@@ -53,7 +90,7 @@
 	* docs/cssc.texi, file.cc, file.h, get.cc, my-getopt.cc, sccsfile.cc, sccsfile.h, sf-admin.cc, sf-delta.cc, sf-prt.cc, sf-write.cc:
 	Implemented SCO SCCS's x flag; Sourceforge bug ID 969833
 
-2004-04-25  james_youngman  <james_youngman@orbital>
+2004-04-25  James Youngman  <jay@gnu.org>
 
 	* tests/common/command-names:
 	Make sure we locate the "sccs" binary correctly now that $dir will
@@ -67,7 +104,7 @@
 
 	* depcomp: depcomp - new file required by automake
 
-2003-12-13  james_youngman  <james_youngman@orbital>
+2003-12-13  James Youngman  <jay@gnu.org>
 
 	* tests/what/whatbasic.sh:
 	Provide a more helpful error message when 'ekko' fails
@@ -75,14 +112,14 @@
 	* linebuf.cc, linebuf.h, sccsfile.cc:
 	Resolve the strchr() problem pointed out bin SourceForge patch 857193
 
-2003-12-10  james_youngman  <james_youngman@orbital>
+2003-12-10  James Youngman  <jay@gnu.org>
 
 	* NEWS, bsd/sccs.c, my-getopt.cc:
 	Some changes to eliminate compilation errors/warnings from Sun CC 5.5
 
 	* docs/CREDITS.short.txt, docs/CREDITS: Added Tom Duffy.
 
-2003-12-09  james_youngman  <james_youngman@orbital>
+2003-12-09  James Youngman  <jay@gnu.org>
 
 	* bsd/sccs.c, configure.ac, NEWS:
 	pass through more options to diff (be it GNU diff or vanilla diff)
@@ -98,7 +135,7 @@
 
 	* bsd/sccs.c: Support "sccs diffs -u".
 
-2003-12-08  james_youngman  <james_youngman@orbital>
+2003-12-08  James Youngman  <jay@gnu.org>
 
 	* auxfiles/CSSC.spec.in:
 	Handed over "Packager" status for Red Hat to Thomas Duffy.
@@ -117,7 +154,7 @@
 
 	* sf-write.cc: Fixed SF bug 856158, compilation error on CYGWIN
 
-2003-12-07  james_youngman  <james_youngman@orbital>
+2003-12-07  James Youngman  <jay@gnu.org>
 
 	* ChangeLog: Brought up to date (again).
 
@@ -165,7 +202,7 @@
 	* NEWS, sf-get2.cc, tests/get/defsid.sh:
 	Make "get -e" take account of the "d" flag.
 
-2003-05-29  james_youngman  <james_youngman@orbital>
+2003-05-29  James Youngman  <jay@gnu.org>
 
 	* sccsfile.cc: sccs_file::sccs_file(): Ensure that this->f is NULL when
 	we return for mode CREATE (previously it was uninitialised).
@@ -176,31 +213,31 @@
 	is not NULL).  On platforms other than CYGWIN, we don't close he file
 	anyway.
 
-2003-05-19  james_youngman  <james_youngman@orbital>
+2003-05-19  James Youngman  <jay@gnu.org>
 
 	* docs/Platforms: Corrected email address for Clement T. Cole.
 
-2003-05-18  james_youngman  <james_youngman@orbital>
+2003-05-18  James Youngman  <jay@gnu.org>
 
 	* tests/common/test-common:
 	Cope with the case where "remove" is called with no arguments.
 
-2003-05-16  james_youngman  <james_youngman@orbital>
+2003-05-16  James Youngman  <jay@gnu.org>
 
 	* Makefile.am: Also clean "sccsdiff" for "make clean".
 
-2003-05-05  james_youngman  <james_youngman@orbital>
+2003-05-05  James Youngman  <jay@gnu.org>
 
 	* sf-get2.cc:
 	"get -e" now takes notice of the default SID when deciding the SID of the new delta.
 
-2003-03-15  james_youngman  <james_youngman@orbital>
+2003-03-15  James Youngman  <jay@gnu.org>
 
 	* README: Added pointer to docs/Platforms.
 
 	* docs/Platforms: Added MacOS X porting tip from Brad Crittenden.
 
-2003-03-08  james_youngman  <james_youngman@orbital>
+2003-03-08  James Youngman  <jay@gnu.org>
 
 	* tests/get/excl_ig_2.sh: Don't cat the s-file at the end!
 
