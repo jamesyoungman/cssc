@@ -87,6 +87,7 @@ private:
 		struct delta const *find(sid id) const; 
 
 		seq_no highest_seqno() const { return high_seqno; }
+	  	seq_no next_seqno()    const;
 		sid highest_release() const { return high_release; }
 
 		~_delta_table() {
