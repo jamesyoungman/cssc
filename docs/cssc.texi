@@ -2315,6 +2315,10 @@ separated with other (non-digit) characters, and so
 @samp{1997/11/20} is an error because there are fewer than twelve
 digits).
 
+Some versions of SCCS are not year 2000 compliant and write incorrect
+timestamps into SCCS files.  @sc{cssc} correctly understands the
+intended date, and will fix this problem when re-writing the file. 
+
 @sc{cssc} represents dates internally in a way that works for Gregorian
 dates up to at least the year 32767 AD on all systems.  Some countries
 didn't recognize the Gregorian calendar system until the early twentieth
