@@ -59,6 +59,13 @@ test-unget: links
 		$(SHELL) $$i || exit 1; \
 	done'
 
+test-sact: links
+	$(SHELL) -ec 'cd sact && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
 test-large: links
 	$(SHELL) -ec 'cd large && for i in *.sh ; \
 	do \
@@ -105,7 +112,7 @@ test-bsd-sccs: links
 all-tests: 	test-initial \
 		test-rmdel \
 		test-admin test-delta test-get test-prs test-prt test-unget \
-		test-cdc  \
+		test-cdc  test-sact \
 		test-large test-sccsdiff test-binary test-bsd-sccs
 	echo Tests passed.
 

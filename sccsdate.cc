@@ -38,7 +38,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.13 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.14 2002/02/25 20:10:20 james_youngman Exp $";
 #endif
 
 // The MySC code used to just check for (year % 4) and (year == 0).
@@ -49,21 +49,21 @@ is_leapyear(int year)
 {
   if (year % 4)
     {
-      return 0;			// not a leapyear.
+      return 0;                 // not a leapyear.
     }
   else 
     {
       if (year % 100)
-	{
-	  return 1;		// non-century year
-	}
+        {
+          return 1;             // non-century year
+        }
       else
-	{
-	  if (year % 400)
-	    return 0;		// century years are not leap-years exceot
-	  else
-	    return 1;		// every fourth one, which IS a leap year.
-	}
+        {
+          if (year % 400)
+            return 0;           // century years are not leap-years exceot
+          else
+            return 1;           // every fourth one, which IS a leap year.
+        }
     }
 }
 
@@ -89,9 +89,9 @@ days_in_month(int mon, int year)
       
     case 2:
       if (is_leapyear(year))
-	return 29;
+        return 29;
       else
-	return 28;
+        return 28;
     }
   return -1;
 }
@@ -122,17 +122,17 @@ get_part(const char *&s, int def)
   while (c)
     {
       if (is_digit(c))
-	{
-	  s++;
-	  if (is_digit(*s))
-	    {
-	      return get_digit(c) * 10 + get_digit(*s++);
-	    }
-	  else
-	    {
-	      return get_digit(c);
-	    }
-	}
+        {
+          s++;
+          if (is_digit(*s))
+            {
+              return get_digit(c) * 10 + get_digit(*s++);
+            }
+          else
+            {
+              return get_digit(c);
+            }
+        }
       c = *++s;
     }
   return def;
@@ -146,7 +146,7 @@ count_digits(const char *s)
   for(count=0; *s; s++)
     {
       if (is_digit((unsigned char)*s))
-	count++;
+        count++;
     }
   return count;
 }
@@ -191,12 +191,12 @@ sccs_date::sccs_date(const char *s)
       // characters must be digits (we have already consumed the
       // first two).
       if (isdigit((unsigned char)s[0]) &&
-	  isdigit((unsigned char)s[1]))
-	{
-	  const int century_field_val = year;
-	  year =  (century_field_val * 100) + get_two_digits(&s[0]);
-	  s += 2;		// this consumes exactly two characters.
-	}
+          isdigit((unsigned char)s[1]))
+        {
+          const int century_field_val = year;
+          year =  (century_field_val * 100) + get_two_digits(&s[0]);
+          s += 2;               // this consumes exactly two characters.
+        }
     }
   else
     {
@@ -212,12 +212,12 @@ sccs_date::sccs_date(const char *s)
       // http://www.xopen.org/public/tech/base/year2000.html
       //
       if (year < 69)
-	year += 2000;
+        year += 2000;
       else
-	year += 1900;
+        year += 1900;
     }
 #endif
-			
+                        
   month     = get_part(s, 12);
   month_day = get_part(s, days_in_month(month, year));
   hour      = get_part(s, 23);
@@ -230,8 +230,9 @@ sccs_date::sccs_date(const char *s)
 // Construct a date as specified in an SCCS file.
 sccs_date::sccs_date(const char *date, const char *time)
 {
-  char buf[10];
-
+  char buf[11];
+  int century;
+  
   // Peter Kjellerstedt writes:-
   // 
   // This is a gross hack to handle that some old implementation of SCCS
@@ -240,17 +241,43 @@ sccs_date::sccs_date(const char *date, const char *time)
   // character after '9' in the ASCII table). The following should handle
   // this correctly for years up to 2069 (after which the time format
   // used is not valid anyway).
-  strncpy(buf, date, 10);
+  strncpy(buf, date, 11);
+
+  /* Check for the symtoms of SourceForge bug ID 513800, where 
+   * the Data General version of Unix puts a four-digit year
+   * into the p-file. 
+   */
+  if (strlen(buf) > 4
+      && is_digit(buf[0])
+      && is_digit(buf[1])
+      && is_digit(buf[2])
+      && is_digit(buf[3])
+      && ('/' == buf[4]))
+  {
+      errormsg("Warning: this file has been written by a version of SCCS"
+               " which uses four-digit years, which is contrary to the"
+               " common SCCS file format (though it might have been a "
+               " good idea in the first place)\n");
+      century = get_two_digits(&buf[0]);
+      date = buf + 2;
+  }
+  else
+  {
+      // this is a normal two-digit date.
+      century = 0;              // decide by windowing.
+      date = buf;
+  }
+  
+  
   if (buf[0] >= ':' && buf[0] <= '@')
     {
       errormsg("Warning: date in SCCS file contains character '%c': "
-	       "a version of SCCS which is not Year 2000 compliant "
-	       "has probably been used on this file.\n",
-	       buf[0]);
+               "a version of SCCS which is not Year 2000 compliant "
+               "has probably been used on this file.\n",
+               buf[0]);
       
       buf[0] -= 10;
     }
-  date = buf;
   
   // The "1" in the if() is just there to make Emacs align the columns.
   if (1
@@ -272,10 +299,20 @@ sccs_date::sccs_date(const char *date, const char *time)
       
       // Year 2000 fix (mandated by X/Open white paper, see above
       // for more details).
-      if (year < 69)
-	year += 2000;
+      if (century)
+      {
+          // SourceForge bug ID 513800 - Data General Unix uses 4-digit year
+          // in the p-file.
+          year = century * 100 + year;
+      }
       else
-	year += 1900;
+      {
+          
+          if (year < 69)
+              year += 2000;
+          else
+              year += 1900;
+      }
       
       update_yearday();
 
@@ -293,14 +330,14 @@ sccs_date::printf(FILE *f, char fmt) const
     {
     case 'D':
       return printf_failed(fprintf(f, "%02d/%02d/%02d",
-				   yy, month, month_day));
+                                   yy, month, month_day));
     case 'H':
       return printf_failed(fprintf(f, "%02d/%02d/%02d",
-				   month, month_day, yy));
+                                   month, month_day, yy));
 
     case 'T':
       return printf_failed(fprintf(f, "%02d:%02d:%02d",
-				   hour, minute, second));
+                                   hour, minute, second));
     }
 
   int value = 0;
@@ -313,7 +350,7 @@ sccs_date::printf(FILE *f, char fmt) const
     case 'o':
       value = month;
       break;
-		
+                
     case 'd':
       value = month_day;
       break;
@@ -354,14 +391,14 @@ sccs_date::as_string() const
   const int yy = year % 100;
   
   sprintf(buf, "%02d/%02d/%02d %02d:%02d:%02d",
-	  yy, month, month_day,
-	  hour, minute, second);
+          yy, month, month_day,
+          hour, minute, second);
   
   return mystring(buf);
 }
 
 sccs_date::sccs_date(int yr, int mth, int day,
-		     int hr, int min, int sec)
+                     int hr, int min, int sec)
   : year(yr), month(mth), month_day(day),
     hour(hr), minute(min), second(sec)
 {
@@ -376,14 +413,14 @@ sccs_date::sccs_date()
 
 
 sccs_date
-sccs_date::now()		// static member.
+sccs_date::now()                // static member.
 {
   time_t tt;
-  time(&tt);			// TODO: throw exception if this fails.
+  time(&tt);                    // TODO: throw exception if this fails.
   struct tm *ptm = localtime(&tt);
 
   return sccs_date(ptm->tm_year+1900, ptm->tm_mon+1, ptm->tm_mday,
-		   ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
+                   ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
 }
 
 void
