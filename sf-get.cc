@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.23 1998/09/02 21:03:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.24 1998/11/21 09:00:47 james Exp $";
 #endif
 
 bool
@@ -96,6 +96,7 @@ sccs_file::get(mystring gname, class seq_state &state,
 	       bool no_decode /* = false */)
 {
   ASSERT(mode != CREATE);
+  ASSERT(mode != FIX_CHECKSUM);
 
   int (*outputfn)(FILE*,const cssc_linebuf*);
   if (flags.encoded && false == no_decode)
