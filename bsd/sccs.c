@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.34 2002/03/19 18:03:00 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.35 2002/03/19 18:14:44 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -336,7 +336,7 @@ struct sccsprog
     short sccsoper;             /* opcode, see below */
     short sccsflags;            /* flags, see below */
     const char *sccspath;       /* pathname of binary implementing */
-    int   clean_mode;		/* mode for do_clean(). */
+    int   clean_mode;           /* mode for do_clean(). */
   };
 
 /* values for sccsoper */
@@ -378,7 +378,7 @@ const struct sccsprog SccsProg[] =
   {"admin", PROG, REALUSER, _PATH_SCCSADMIN, 0 },
   {"cdc", PROG, 0, _PATH_SCCSCDC, 0 },
   {"comb", PROG, WARN_MISSING, _PATH_SCCSCOMB, 0 },
-  {"delta", PROG, 0, _PATH_SCCSDELTA}, 0 ,
+  {"delta", PROG, 0, _PATH_SCCSDELTA, 0 },
   {"get", PROG, 0, _PATH_SCCSGET, 0 },
   {"unget", PROG, 0, _PATH_SCCSUNGET, 0 },
   {"help", PROG, NO_HELP_HERE | NO_SDOT, _PATH_SCCSHELP, 0 },
@@ -392,10 +392,10 @@ const struct sccsprog SccsProg[] =
   {"delget", CMACRO, NO_SDOT, "delta:mysrp/get:ixbeskcl -t", 0 },
   {"deledit", CMACRO, NO_SDOT, "delta:mysrp -n/get:ixbskcl -e -t -g", 0 },
   {"fix", FIX, NO_SDOT, NULL, 0 },
-  {"clean", CLEAN, REALUSER | NO_SDOT, (char *) NULL, CLEANC, 0 },
-  {"info", CLEAN, REALUSER | NO_SDOT, (char *) NULL, INFOC, 0 },
-  {"check", CLEAN, REALUSER | NO_SDOT, (char *) NULL, CHECKC, 0 },
-  {"tell", CLEAN, REALUSER | NO_SDOT, (char *) NULL, TELLC, 0 },
+  {"clean", CLEAN, REALUSER | NO_SDOT, (char *) NULL, CLEANC },
+  {"info", CLEAN, REALUSER | NO_SDOT, (char *) NULL, INFOC },
+  {"check", CLEAN, REALUSER | NO_SDOT, (char *) NULL, CHECKC },
+  {"tell", CLEAN, REALUSER | NO_SDOT, (char *) NULL, TELLC },
   {"unedit", UNEDIT, NO_SDOT, NULL, 0 },
   {"diffs", DIFFS, NO_SDOT | REALUSER, NULL, 0 },
   {"-diff", DODIFF, NO_SDOT | REALUSER, _PATH_SCCSBDIFF, 0 },
@@ -597,9 +597,9 @@ static void cleanup_environment(void)
   if (pfail)
     {
       fprintf(stderr, 
-	      "You should not set the %s environment variable when "
-	      "the sccs driver is running set-user-id or set-group-id.\n",
-	      pfail);
+              "You should not set the %s environment variable when "
+              "the sccs driver is running set-user-id or set-group-id.\n",
+              pfail);
       exit(CSSC_EX_NOPERM);
     }
 #endif
@@ -1071,26 +1071,26 @@ command (char *argv[], bool forkflag, const char *arg0)
           return (CSSC_EX_USAGE);
         }
       else
-	{
-	  if (cmd->sccsflags & WARN_MISSING)
-	    {
-	      fprintf(stderr,
-		      "Warning: the \"%s\" command is not yet implemented.\n",
-		      *ap);
-	      /* continue anyway just in case we did implement it, or 
-	       * (perhaps) there is a real SCCS around somewhere.
-	       */
-	    }
-	  if (cmd->sccsflags & NO_HELP_HERE)
-	    {
-	      fprintf(stderr,
-		      "GNU CSSC does not provide the \"%s\" command;\n"
-		      "please see the relevant entry in the GNU CSSC manual\n"
-		      "and the \"Missing Features and other Problems\" chapter\n"
-		      "in particular.\n\n",
-		      *ap);
-	    }
-	}
+        {
+          if (cmd->sccsflags & WARN_MISSING)
+            {
+              fprintf(stderr,
+                      "Warning: the \"%s\" command is not yet implemented.\n",
+                      *ap);
+              /* continue anyway just in case we did implement it, or 
+               * (perhaps) there is a real SCCS around somewhere.
+               */
+            }
+          if (cmd->sccsflags & NO_HELP_HERE)
+            {
+              fprintf(stderr,
+                      "GNU CSSC does not provide the \"%s\" command;\n"
+                      "please see the relevant entry in the GNU CSSC manual\n"
+                      "and the \"Missing Features and other Problems\" chapter\n"
+                      "in particular.\n\n",
+                      *ap);
+            }
+        }
       
 
       /*
