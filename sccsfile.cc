@@ -15,7 +15,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.7 1997/05/31 19:11:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.8 1997/05/31 23:30:27 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -328,6 +328,12 @@ sccs_file::read_delta() {
  	const char *start;
 	for(i = 0; i < 3; i++) {
 		if (c == "ixg"[i]) {
+		  if (linebuf[2] != ' ')
+		    {
+		      c = read_line(); // throw line away.
+		      continue;
+		    }
+		  	
 			check_arg();
 
 			start = linebuf + 3;
@@ -356,7 +362,7 @@ sccs_file::read_delta() {
 			c = read_line();
 		}
 	}
-
+	
 	while(c == 'm') {
 		check_arg();
 		tmp.mrs.add(linebuf + 3);
