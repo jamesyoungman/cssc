@@ -33,7 +33,7 @@
 #include "mystring.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.6 1997/07/02 18:18:20 james Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.7 1997/10/25 16:47:01 james Exp $";
 #endif
 
 
@@ -125,6 +125,13 @@ mystring::operator =(const char *s) {
 	create(s);
 	return *this;
 }
+
+const char&
+mystring::operator[](size_t n) const
+{
+  return str[n];
+}
+
 	
 /* Local variables: */
 /* mode: c++ */

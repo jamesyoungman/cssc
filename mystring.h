@@ -82,6 +82,8 @@ public:
 	operator const char *() const {
 		return str;
 	}
+  	const char& operator[](size_t n) const;
+  
   	operator bool() const   {
 	  return str ? true : false;
   	}
