@@ -1,3 +1,12 @@
+1998-04-08  James Youngman  <jay@gnu.org>
+
+	* Find out if SCO's "unget" produces any output.  We currently
+	  output a SID but it looks like SCO's does not.
+
+	* also, tests/prt/all-512.txt suffers from the fact that 
+	  SCO does not have "prt"!    No idea if it exists
+	  but lives in a funny place, etc.
+
 1998-02-08  James Youngman  <jay@gnu.org>
 
 	* Find out if genuine SCCS works when the s-file's name
