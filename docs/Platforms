@@ -136,7 +136,7 @@ this problem, you could apply the following sed command to
 FreeBSD
 -------
 
-You will nedd to build with GNU make. 
+You will need to build with GNU make. 
 
 
 GNU libc
@@ -153,6 +153,9 @@ Windows NT / Cygwin
 -------------------
 
 See also "Microsoft Services for Unix", below. 
+
+CSSC's history files and working files must be stored and used on a
+Cygwin filesystem mounted in 'binary mode' not 'text mode'.
 
 CSSC compiles under the CYGWIN environment for Windows NT.  CSSC
 support under the Cygwin environment is nearly up to the standard of
@@ -199,12 +202,6 @@ The following arguments were used for "configure":
 		--enable-binary --prefix=/usr/local \
 		--libexecdir=/usr/local/bin
          gmake csscutildir=/usr/local/bin
-
-In order for the test suite to run correctly, you need to use a copy
-of CSSC from the CVS repository, checked out after 18 May 2003
-(otherwise, the function "remove" in tests/common/test-common fails
-when it has no arguments).  One of the tests on the "sccs" binary
-fails on Cygwin as described in the section above, but works on SFU.
 
 Clement T. Cole reports that the above works with GNU GCC 2.93.x, but
 not with the default SFU compiler (2.72).
