@@ -24,7 +24,7 @@
  *
  * Defines the class mystring.
  *
- * $Id: mystring.h,v 1.12 1998/02/21 14:27:12 james Exp $
+ * $Id: mystring.h,v 1.13 1998/05/04 21:51:52 james Exp $
  *
  */
 
@@ -88,6 +88,12 @@ public:
   size_type length() const;
   
   // Data access
+
+  // IRIX's CC seems to be unable to cope with functions disambiguated only 
+  // by constness.   It says "error(3392): cannot overload functions 
+  // distinguished by return type alone".   It's remotely possible that 
+  // some Autoconf black magic has perpetrated #define const /*nothing*/
+  // and that's what's causing the problem.  If so, I shall be cross...:-)
   charT at(size_type) const;
   ModifiableReference at(size_type);
   
