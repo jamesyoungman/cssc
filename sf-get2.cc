@@ -34,7 +34,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.16 1997/07/02 18:05:13 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.17 1997/10/25 16:48:49 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -446,19 +446,19 @@ sccs_file::write_subst(const char *start, struct subst_parms *parms) const {
 				break;
 
 			case 'R':
-				err = delta.id.printf(out, 'R');
+				err = delta.id.printf(out, 'R', 1);
 				break;
 
 			case 'L':
-				err = delta.id.printf(out, 'L');
+				err = delta.id.printf(out, 'L', 1);
 				break;
 
 			case 'B':
-				err = delta.id.printf(out, 'B');
+				err = delta.id.printf(out, 'B', 1);
 				break;
 
 			case 'S':
-				err = delta.id.printf(out, 'S');
+				err = delta.id.printf(out, 'S', 1);
 				break;
 
 			case 'D':
@@ -498,7 +498,11 @@ sccs_file::write_subst(const char *start, struct subst_parms *parms) const {
 				break;
 
 			case 'P':
-				err = fputs(name, out) == EOF;
+			  	if (1) // introduce new scope...
+				  {
+				    mystring path(canonify_filename(name));
+				    err = fputs(path, out) == EOF;
+				  }
 				break;
 
 			case 'Q':
