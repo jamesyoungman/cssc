@@ -7,12 +7,16 @@
 @c %**end of header
 
 @set EDITION 1.0
-@set VERSION 0.01-devel
+@set VERSION 0.02-devel
 @set UPDATED Mon Oct 27 19:31:38 1997
+
+@macro authoraddr
+@w{@samp{jay@@gnu.org}}
+@end macro
 
 @ifinfo
 This file documents the the GNU @code{cssc} package for working with
-SCCS files.
+@sc{sccs} files.
 
 Copyright (C) 1997, Free Software Foundation, Inc.
 
@@ -76,6 +80,7 @@ a workalike for the traditional Unix SCCS suite.
 * Interface::		How to use the suite.
 * Invoking Programs::	How to run the individual CSSC programs.
 * Incomplete::		Missing Features.
+* Testing::             How to run the test suite and write new cases.
 * Problems::		Reporting bugs.
 * Copying::		How you can copy and share @code{CSSC}.
 * Concept Index::	Index of concepts.
@@ -85,18 +90,18 @@ a workalike for the traditional Unix SCCS suite.
 @chapter Overview
 @cindex overview
 
-The GNU @code{cssc} program is designed to be a compatible replacement
-for the traditional Unix SCCS suite.
+The GNU @sc{cssc} program is designed to be a compatible replacement for
+the traditional Unix @sc{sccs} suite.
 
 This documentation is horrendously incomplete since this package is
 still under development.
 
 While it is strongly suggested that new projects not use this package,
-sometimes existing projects require the use of SCCS files.  While
+sometimes existing projects require the use of @sc{sccs} files.  While
 conversion to other formats is possible, this is also sometimes
-impractical.   See the documentation for CVS and RCS. 
-@xref{What is CVS?, ,What is CVS?, cvs, The CVS Manual}.  See also the
-manual pages for RCS.
+impractical.  See the documentation for CVS and RCS.  @xref{What is
+CVS?, ,What is CVS?, cvs, The CVS Manual}.  See also the manual pages
+for RCS.
 
 GNU CSSC is published under the GNU General Public License, which is
 designed to protect your rights, as the user of this program.  You have
@@ -118,9 +123,9 @@ done by James Youngman.
 @cindex Emacs
 @cindex VC-mode
 
-By far the easiest way to use @code{CSSC} (or indeed @code{SCCS}) is 
-to use VC-mode in GNU Emacs.  @xref{Version Systems, ,Version
-Systems,emacs,The GNU Emacs manual}.
+By far the easiest way to use @sc{cssc} (or indeed @sc{sccs}) is to use
+VC-mode in GNU Emacs.  @xref{Version Systems, ,Version Systems,emacs,The
+GNU Emacs manual}.
 
 If you can't use VC-mode, the @sc{bsd} command @code{sccs} is a good
 interface to the @sc{sccs} suite (and hence @sc{cssc}).  However, it is
@@ -147,30 +152,30 @@ Ordered by the frequency with which I use them, they are:-
 @end iftex
 
 @menu
-* admin::         Creating and administering SCCS files
-* sccs::          A more helpful front-end from BSD
-* get::           Checking-out a version for compilation or editing
-* delta::         Checking-in a revised version
+* admin::         Creating and administering SCCS files.
+* sccs::          A more helpful front-end from BSD.
+* get::           Checking-out a version for compilation or editing.
+* delta::         Checking-in a revised version.
 * what::          Identifying versions of files.
-* sccsdiff::      Finding the changes between two revisions
-* unget::         When you don't want to edit the file after all
-* prs::           Displaying the revision history of a file
-* sact::          Show which SCCS files are being edited
-* rmdel::         Expunging changes or backing out of a check-in
-* cdc::           Changing revision comments after the fact
-* prt::           Printing the delta table of a file
-* comb::          Creating a shell archive of an SCCS file
-* help::          Unimplemented hints on obscure error messages
-* val::           Validating an SCCS file for integrity
+* sccsdiff::      Finding the changes between two revisions.
+* unget::         When it all goes horribly wrong...
+* prs::           Displaying the revision history of a file.
+* sact::          Show which SCCS files are being edited.
+* rmdel::         Expunging changes or backing out of a check-in.
+* cdc::           Changing revision comments after the fact.
+* prt::           Printing the delta table of a file.
+* comb::          Creating a shell archive of an SCCS file.
+* help::          Unimplemented hints on obscure error messages.
+* val::           Validating an SCCS file for integrity.
 @end menu
 
 @node admin, cdc, , Invoking Programs
 @section @code{admin}
 @cindex admin
 @cindex sccs-admin
-@cindex ctreating SCCS files
+@cindex creating @sc{sccs} files
 
-To create an SCCS archive of a source file @file{foo.c}, do
+To create an @sc{sccs} archive of a source file @file{foo.c}, do
 @example
 admin -ifoo.c s.foo.c
 @end example
@@ -181,73 +186,74 @@ Emacs as your editor, you can just use @kbd{C-x v i} instead.
 Another frequently-used option is @samp{-b}, which indicates that the
 file is to be treated as a binary file rather than as text.  You might
 want to do this because the file actually contains binary data, or just
-characters that have other meanings within an SCCS file, for example
-@samp{^A}, the character whose code is 1.
+characters that have other meanings within an @sc{sccs} file, for
+example @samp{^A}, the character whose code is 1.
 
 @table @samp
 
-@item -a xxx
-Add user or group @samp{xxx} the the list of those authorised 
+@item -a @var{xxx}
+Add user or group @var{xxx} the the list of those authorised 
 to check revisions in or out.  Untested.
 
 @item -b
-Ensure that the file is encoded as a binary file.   Unimplemenmted.
+Ensure that the file is encoded as a binary file.   Unimplemented.
 
-@item -dF
-Delete flag @samp{F} from the flags present in the file (@pxref{flags}).
+@item -d@var{F}
+Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
 
 
-@item -e xxx
+@item -e @var{xxx}
 Erase the specified user or group from the list of those authorised to
 check revisions in or out.  Untested.
 
-@item -fF [xxx]
-Add the flag @samp{F} (with optional value @samp{xxx}) to the file's 
-flags (@pxref{flags}).
+@item -fF @var{[xxx]}
+Add the flag @samp{F} (with optional value @var{xxx}) to the file's 
+flags (@pxref{Flags}).
 
 @cindex checksum
 @item -h
-Check the SCCS file's checksum.  Untested.
+Check the @sc{sccs} file's checksum.  Untested.
 
-@item -ifoo
-Initialise the SCCS file with the contents of @file{foo}.  If no
-argument is given, read from standard input.  This implies the @samp{-n}
-option.
+@item -i@var{foo}
+Initialise the @sc{sccs} file with the contents of the file @var{foo}.
+If no argument is given, read from standard input.  This implies the
+@samp{-n} option.
 
-@item -lrel1,rel2,...
+@item -l@var{rel1},@var{rel2},...
 Unlock the specified releases.   If @samp{a} is specified as the
 release, that denotes ``all releases''.  Untested.
 
-@item -mMR-list
+@item -m@var{MR-list}
 When initialising a file, add the specified list of @sc{mr} numbers
-(@pxref{mr-numbers}) to the delta commentary for the initial version.
-This list can be empty.  The specified @sc{mr}s are validated according
-to the setting of the @var{v} flag, which should be set (@pxref{flags}).
-If the @var{v} flag is set but has no value (i.e. is set to the empty
-string), validation silently succeeds.  If the @var{v} flag is not set,
-the @samp{-m} option causes @code{delta} to fail.
+(@pxref{Modification Request numbers}) to the delta commentary for the
+initial version.  This list can be empty.  The specified @sc{mr}s are
+validated according to the setting of the @var{v} flag, which should be
+set (@pxref{Flags}).  If the @var{v} flag is set but has no value
+(i.e. is set to the empty string), validation silently succeeds.  If the
+@var{v} flag is not set, the @samp{-m} option causes @code{delta} to
+fail.
 
 @item -n
-Create a new SCCS file.
+Create a new @sc{sccs} file.
 
-@item -rN
-Set the initial release number to @samp{N}.  The initial level within
+@item -r@var{N}
+Set the initial release number to @var{N}.  The initial level within
 that release is always 1.  Untested.
 
-@item -tdesc
-Read in descriptive text for this file from @file{desc}.  This replaces
+@item -t@var{desc}
+Read in descriptive text for this file from @file{@var{desc}}.  This replaces
 any existing description.  If no argument, remove any existing
 description (this is illegal if @samp{-i} or @samp{-n} is used).
 
 @item -V 
 Display version information.  Untested.
 
-@item -yadayada
-When intialising a file, set the comment for that delta to
-@samp{adayada}.  If the option is given just as @samp{-y}, the comment
-is recorded as empty.  The following word in the argument list is not
-used as the comment.  @emph{Note that this behaviour is different to
-most Unix programs, but is the same as the behaviour of traditional
+@item -y@var{adayada}
+When initialising a file, set the comment for that delta to
+@samp{@var{adayada}}.  If the option is given just as @samp{-y}, the
+comment is recorded as empty.  The following word in the argument list
+is not used as the comment.  @emph{Note that this behaviour is different
+to most Unix programs, but is the same as the behaviour of traditional
 @sc{sccs}}.
 
 @item -z
@@ -255,9 +261,9 @@ Fix the checksum information.  Untested.
 @end table
 
 
-@node flags, mr-numbers, ,admin
-@subsection SCCS file flags
-@cindex flags
+@node Flags, Modification Request numbers, ,admin
+@subsection @sc{sccs} file flags
+@cindex Flags
 
 Flags are set and cleared with the @code{admin} program.  @xref{admin}.
 
@@ -274,7 +280,7 @@ Enables concurrent updates: if you try to get a revision for editing,
 this normally fails if another user already has the file locked.
 Setting the @samp{j} flag overrides this.
 @item n
-Create empty relases when the @samp{-r} option to @code{get} is used to
+Create empty releases when the @samp{-r} option to @code{get} is used to
 skip releases.   These empty releases can later serve as branch points.
 @end table
 
@@ -295,23 +301,24 @@ Set the locked release list.  These releases cannot be checked out with
 @code{get -e}.   The special value @samp{a} denotes all releases.
 @item q
 Sets the value substituted for the @samp{%Q%} keyword as described in
-@ref{keyword substitution}.  This flag is referred to in the output of
-SCCS as @samp{csect name}, and is variously referred to here as that, or
-the "user flag" or the "Q flag".
+@ref{Keyword Substitution}.  This flag is referred to in the output of
+@sc{sccs} as @samp{csect name}, and is variously referred to here as
+that, or the "user flag" or the "Q flag".
 @item m
 Sets the overridden value for the @samp{%M%} keyword as described in
-@ref{keyword substitution}.
+@ref{Keyword Substitution}.
 @item t
-Sets the value for the @samp{%Y%} keyword as described in @ref{keyword
-substitution}.
+Sets the value for the @samp{%Y%} keyword as described in @ref{Keyword
+Substitution}.
 @item v
 Sets the name of the program used to validate @sc{mr} (modification
-request) numbers; @sc{mr}s are described in @ref{mr-numbers}.  This flag
-can be set to the empty string, in which case @sc{mr}s are allowed and
-the validation silently succeeds without any program being run.
+request) numbers; @sc{mr}s are described in @ref{Modification Request
+numbers}.  This flag can be set to the empty string, in which case
+@sc{mr}s are allowed and the validation silently succeeds without any
+program being run.
 @end table
 
-@node mr-numbers, , flags, admin
+@node Modification Request numbers, , Flags, admin
 @subsection Modification Request numbers
 @cindex mr-numbers
 @sc{mr}s are identifiers that can be specified when checking in a
@@ -348,8 +355,8 @@ Nothing here, sorry.
 @cindex sccs-delta
 @cindex checking in new revisions
 The @code{delta} command is used to add a new revision to the ones
-already stored in an SCCS file.  Before being able to do this you need
-to run @kbd{get -e} to check the file out for editing.
+already stored in an @sc{sccs} file.  Before being able to do this you
+need to run @kbd{get -e} to check the file out for editing.
 
 @cindex SID
 @cindex release
@@ -402,20 +409,21 @@ should now be checked in) is discovered from the contents of the p-file.
 @subsection Options for @code{delta}
 
 @table @samp
-@item -gSid-List
+@item -g@var{sid-List}
 The specified list of deltas are to be ignored when the version
 being checked in is retrieved using @code{get}.  The list is a list of
 @sc{sid}s separated by commas, or can contain ranges of @sc{sid}s (these
-are indiated by a dash).  Untested.
+are indicated by a dash).  Untested.
 
-@item -mMR-List
+@item -m@var{mr-list}
 Specify the indicated list of MR numbers (separated by spaces) for this
-change (@pxref{mr-numbers}).  If the @var{v} flag (@pxref{flags}) is
-set, @code{delta} will prompt for MR numbers if none are given on the
-command line.  If the @var{v} flag has a non-empty value, as opposed to
-just being set, then the supplied list of MR numbers will be verified
-using that program.  The requested delta will not be made if this
-validation fails (the validation program returns a nonzero exit status).
+change (@pxref{Modification Request numbers}).  If the @var{v} flag
+(@pxref{Flags}) is set, @code{delta} will prompt for MR numbers if none
+are given on the command line.  If the @var{v} flag has a non-empty
+value, as opposed to just being set, then the supplied list of MR
+numbers will be verified using that program.  The requested delta will
+not be made if this validation fails (the validation program returns a
+nonzero exit status).
 
 
 @item -n
@@ -444,7 +452,7 @@ new delta 3.2
 One identifies the version forming the basis of the change, and the
 other specifies the @sc{sid} that the new version will be assigned once
 it is checked in again.  Either of these two @sc{sid}s (in this case,
-3.1 or 3.2) can be used for the @code{-r} option of @code{delta}.
+3.1 or 3.2) can be used for the @samp{-r} option of @code{delta}.
 Untested.
 
 @item -s
@@ -467,15 +475,16 @@ on the command line, @code{delta} will prompt the user for a comment.
 @cindex retrieving previous revisions
 @cindex locking revisions for update
 @cindex new versions
-The @code{get} command is to retrieve previous revisions from an SCCS
-file.  With the @samp{-e} option, it also locks the gotten revision so
-that a modified version can be checked in later using @code{delta}.  
+The @code{get} command is to retrieve previous revisions from an
+@sc{sccs} file.  With the @samp{-e} option, it also locks the gotten
+revision so that a modified version can be checked in later using
+@code{delta}.
 
 
 @menu
 * Basic Usage: get usage.           Frequently-used @samp{get} commands
 * Options: get options.             Full list of options
-* Keywords: keyword substitution.   Keyword Substitution
+* Keywords: Keyword Substitution.   Keyword Substitution
 @end menu
 
 @node get usage, get options, , get
@@ -507,7 +516,7 @@ The @samp{-r} option could also be used to specify some other revision.
 @node get options, , get usage, get
 @subsection Options for @code{get}
 @table @samp
-Full decription of options
+Full description of options
 @item -a@i{N}
 Retrieve the version corresponding to the delta sequence number
 @i{N}.  Mainly for use by other programs in the suite.   Untested.
@@ -526,9 +535,9 @@ you get the latest version which was available in the year 1992.  This
 option is obviously not Year-2000-proof.
 
 @item -D
-Turns on debugging output, indicating what is going on as the SCCS file
-is read.  This option may go away or have its behaviour change in the
-near future.
+Turns on debugging output, indicating what is going on as the @sc{sccs}
+file is read.  This option may go away or have its behaviour change in
+the near future.
 
 @item -e
 @cindex p-file
@@ -536,21 +545,24 @@ Indicates that the gotten version is for editing.   When checked back in
 the resulting file will have a new revision number.  The gotten file is
 writable, and keyword substitution does not take place.  A @dfn{p-file}
 is created; this file contains information about what versions of the
-s-file are being edited, and by whom.
+s-file are being edited, and by whom.   Unless the @samp{j} flag is set
+(@pxref{Flags}), @code{get -e} will fail if someone else already has the
+file locked.
+
 
 @item -g
 Do a dry-run, showing what version would be gotten, but don't actually
 get the file.  This is sometimes done by scripts, just to test the exit
 status.  
 
-@item -G@i{foo}
-Name the gotten file @file{foo}, instead of the default name.
+@item -G@var{foo}
+Name the gotten file @file{@var{foo}}, instead of the default name.
 
-@item -i@i{list}
+@item -i@var{list}
 Include the deltas for the listed @sc{sid}s.  See also @samp{-x}.  Untested.
 
 @item -k
-Avoid doing keyword substitution (@pxref{keyword substitution}).  This
+Avoid doing keyword substitution (@pxref{Keyword Substitution}).  This
 is assumed when @samp{-e} is specified.
 
 @item -l
@@ -560,7 +572,7 @@ Unsupported.
 Unsupported.
 
 @item -m
-Prepend to each line of the result the @sc{sid} correspoding to the
+Prepend to each line of the result the @sc{sid} corresponding to the
 @samp{delta} which introduced this line to the file.
 
 @item -n
@@ -570,8 +582,8 @@ added with the @samp{-m} option.
 @item -p
 Write the result to the standard output, rather than to a file.  
 
-@item -r@i{X}
-Retrieve version X, rather than the default.
+@item -r@var{X}
+Retrieve version @var{X}, rather than the default.
 
 @item -s
 Run silently.
@@ -583,19 +595,20 @@ Get the ``top'' delta for the indicated release.   Used by @samp{comb}.
 @item -V
 Show version information.
 
-@item -w@i{XXX}
-When performing keyword substitution (@pxref{keyword substitution}), use
-XXX rather than @samp{%Z%%M% <@sc{tab}> %I%} as the substitution value for %W%.
+@item -w@var{XXX}
+When performing keyword substitution (@pxref{Keyword Substitution}), use
+@var{XXX} rather than @samp{%Z%%M% <@sc{tab}> %I%} as the substitution
+value for %W%.
 
-@item -x@i{list}
+@item -x@var{list}
 Exclude the indicated deltas from the result.  Deltas are indicated by
 specifying the @sc{sid} at which they arrived in the file.
 
 @end table
 
-@node keyword substitution, , , get
+@node Keyword Substitution, , , get
 @subsection Keyword Substitution
-@cindex keyword substitution
+@cindex Keyword Substitution
 Keyword substitution is performed unless the @samp{-k} option or the
 @samp{-e} option is given to @code{get}.
 
@@ -621,7 +634,7 @@ This keyword has a Year-2000 problem.
 The date that the newest delta in the gotten file was applied,
 @i{yy/mm/dd}.  This keyword has a Year-2000 problem.
 @item F
-Name of the SCCS file, for example @samp{s.foo.c}.
+Name of the @sc{sccs} file, for example @samp{s.foo.c}.
 @item G
 @cindex Year 2000
 As for %E%, but in the US format @i{mm/dd/yy}.  This keyword has a
@@ -637,12 +650,13 @@ gotten version.
 The level number of the gotten version.
 @item M
 Module name: the value of the @code{m} (module) flag, or the base name
-of the SCCS file with the @file{s.} removed if the module flag is unset.
+of the @sc{sccs} file with the @file{s.} removed if the module flag is
+unset.
 @item P
-Full name of the SCCS file.
+Full name of the @sc{sccs} file.
 @item Q
 Value of the @code{q} flag.  The @code{q} flag has no other purpose, and
-can be set with @samp{admin -fq@r{foo}}.   @xref{flags}.
+can be set with @samp{admin -fq@r{foo}}.   @xref{Flags}.
 @item R
 Release number of the gotten version.
 @item S
@@ -653,7 +667,7 @@ Current time (@i{hh:mm:ss}) when the file was gotten, see %D% and %H%.
 Expands to %Z% %M% <@sc{tab}> %I% or the argument for the @samp{-w}
 flag, if given.
 @item Y
-Value of the @code{t} (moudule type) flag.
+Value of the @code{t} (module type) flag.
 @item Z
 The literal string @code{@@(#)}.  @xref{what}.
 @end table
@@ -664,15 +678,15 @@ The literal string @code{@@(#)}.  @xref{what}.
 @cindex sccs-help
 This module is not implemented, and it probably will never be, because
 it exists to translate the sometimes obscure error messages produced by
-(genuine) SCCS.  These messages come with identifying codes (like
+(genuine) @sc{sccs}.  These messages come with identifying codes (like
 ``(ge4)''); one might type @samp{help ge4} to translate an obscure
 message into a more readable message detailing what has gone wrong.  The
 problem with this approach is that it results in a program called
 ``help'' on the user's path.  When a naive user types "help" they are
-probably not looking for an explanation of an obscure message from SCCS.
-In fact, @code{help} is in any case a shell builtin for GNU Bash.
-Explanations of any obscure or unusual error messages belong in this
-manual, and so no @code{sccs-help} program is provided or planned.
+probably not looking for an explanation of an obscure message from
+@sc{sccs}.  In fact, @code{help} is in any case a shell builtin for GNU
+Bash.  Explanations of any obscure or unusual error messages belong in
+this manual, and so no @code{sccs-help} program is provided or planned.
 
 
 
@@ -681,8 +695,8 @@ manual, and so no @code{sccs-help} program is provided or planned.
 @cindex prs
 @cindex sccs-prs
 @cindex revision summary
-@cindex Summary of SCCS file
-@cindex Dumping SCCS files
+@cindex Summary of @sc{sccs} file
+@cindex Dumping @sc{sccs} files
 
 The @code{prs} command (mnemonic: "print revision summary") prints
 information about an @sc{sccs} file in a user-defined format.  There are
@@ -702,8 +716,9 @@ a software release report, or for ISO 9000 documentation.
 
 @item 
 Discovering how a particular piece of code became broken, and deducing
-which change broke it (@code{get -m} is also useful for this, see
-@ref{get options}).
+which change broke it.  The @code{get -m} command is also useful for
+this, see @ref{get options,Options for @code{get},Options for
+@code{get}}.
 
 @item 
 Listing all changes made on Friday afternoons, as a preparation for
@@ -729,7 +744,8 @@ do.
 Show information about all the versions of myfile.c.
 
 @item prs SCCS
-Show information about all the SCCS files in the directory SCCS.
+Show information about all the @sc{sccs} files in the directory
+@file{SCCS}.
 
 @item prs -e -d:P: s.main.c | sort -u
 Show which users have made changes to main.c.
@@ -748,7 +764,7 @@ that have been created since last week.
 Include even removed deltas in the output.  Removed deltas have a type
 "R", as output by the :DT: keyword.
 
-@item -cYYMMDDHHMMSS
+@item -c@var{YYMMDDHHMMSS}
 @cindex Year 2000
 Specifies the time of the ``cutoff''.  When this option is given, the
 delta selected by @code{prs} is the last one checked in before the
@@ -759,9 +775,9 @@ Year-2000 proof.
 
 
 This behaviour is usually not the one required, and hence the @samp{-e}
-or @samp{-l} options are spefified too.
+or @samp{-l} options are specified too.
 
-@item -dFORMAT
+@item -d@var{format}
 This specifies the data format for the output.  Because the default
 output format is sensible, this is typically used either in a shell
 script which will process the output further, or by a human to retrieve
@@ -783,7 +799,7 @@ As the @samp{-e} option, but select only later deltas rather than
 earlier ones.
 
 
-@item -rSID
+@item -r@var{SID}
 Specifies the @sc{sid} for which information is provided.  If blank, the
 latest delta is selected.
 
@@ -796,7 +812,7 @@ latest delta is selected.
 @subsubsection Global Keywords
 
 These keywords expand to the same thing, no matter which version is
-being examined.  Many of these are @sc{sccs} file flags (@pxref{flags}).
+being examined.  Many of these are @sc{sccs} file flags (@pxref{Flags}).
 
 @table @code
 @item :BD: 
@@ -811,7 +827,7 @@ Indicates the setting (@samp{yes} or @samp{no}) of the branch flag.
 Indicates the value of the release number ceiling flag.
 
 @item :Ds:
-The default @sc{sid} to check out (See @ref{flags} and @ref{get}).
+The default @sc{sid} to check out (See @ref{Flags} and @ref{get}).
 
 @item :F:
 Name of the @sc{sccs} file.
@@ -962,13 +978,13 @@ output by the keywords :DI:, :Dn:, :Dx: and :Dg:.
 Time that this version was checked in (@samp{:Th:::Tm:::Ts:}).
 
 @item :Th:
-Hours component of checkin time (@samp{:T:}).
+Hours component of check-in time (@samp{:T:}).
 
 @item :Tm:
-Minutes  component of checkin time (@samp{:T:}).
+Minutes  component of check-in time (@samp{:T:}).
 
 @item :Ts:
-Seconds  component of checkin time (@samp{:T:}).
+Seconds  component of check-in time (@samp{:T:}).
 
 @item :W:
 Shorthand for @samp{:Z::M:<@sc{tab}>:I:}, suitable for @code{what}
@@ -1014,20 +1030,40 @@ Eventually, @code{sccs} will be integrated, though.
 @section @code{sccsdiff}
 @cindex sccsdiff
 @cindex sccs-sccsdiff
-@cindex dufferences between revisions
+@cindex differences between revisions
 Nothing here, sorry.
 
 @node unget, val, sccsdiff, Invoking Programs
 @section @code{unget}
 @cindex unget
 @cindex sccs-unget
-Nothing here, sorry.
+The @code{unget} command is used to reverse the effect of @code{get
+-e}.  Typically you might do this when you embark on an edit of a
+file. and it all goes horribly wrong.  Using @code{unget} allows you to
+revert to a previously-known state.  In fact, if you have exercised some
+care in checking in new revisions, perhaps using a test suite, then
+@code{unget} can be used to return you to the last working version.
+
+
+@subsection Options for @code{unget}
+
+@table @samp
+@item -n
+Do not delete the g-file which you were editing
+@item -s
+Operate silently
+@item -r@var{sid}
+When joint editing is enabled (@pxref{Flags}), several versions may be
+checked out for editing.  If this is the case, @var{sid} must be used to
+indicate which edit is to be aborted.
+@end table
+
 
 @node val, what, unget, Invoking Programs
 @section @code{val}
 @cindex val
 @cindex sccs-val
-@cindex validating SCCS files
+@cindex validating @sc{sccs} files
 This program is not yet implemented, and hence not yet documented here.
 
 @node what, , val, Invoking Programs
@@ -1086,7 +1122,7 @@ is that sometimes compilers or lint-pickers complain that the variable
 @var{sccs_id} is unused, and defining @code{CONFIG_NO_SCCS_IDS} will
 remove these @sc{id}s and thus silence the warnings.
 
-@node Incomplete, Problems, Invoking Programs, Top
+@node Incomplete, Testing, Invoking Programs, Top
 @chapter Missing Features
 @cindex missing features
 
@@ -1097,17 +1133,21 @@ Documentation is incomplete or missing.  That includes this document.
 
 @item
 Some programs are missing, that is, some programs are present in the
-SCCS suite and absent from this one.
+@sc{sccs} suite and absent from this one.
 
 @item 
 When processing a list of @sc{sccs} files, @sc{cssc} will make a fatal
-exit on encountering an error, for example an SCCS file with a bad magic
-number, whereas the original SCCS would issue an error message and
+exit on encountering an error, for example an @sc{sccs} file with a bad magic
+number, whereas the original @sc{sccs} would issue an error message and
 continue on with the next file.  It is planned that @sc{cssc} will
 recover from errors of this kind using C++ exceptions.  Support for
 exceptions is poor in current versions of the GNU C++ compiler; once
 this improves, the relevant code will be added, and @sc{cssc} will
-recover properly from this situation.
+recover properly from this situation.  This problem does not manifest
+when only one file is specified on the command line because in that case
+the current behaviour (immediate exit) and correct behaviour (process
+all files on the command line and then exit with the appropriate status)
+are identical.
 
 @item 
 Some programs behave subtly differently to their original counterparts.
@@ -1115,8 +1155,8 @@ There are two reasons for this:-
 
 @itemize --
 @item
-The procesing of command-line options is done in a way which is
-standard for GNU programs, and this is incompatible with the way SCCS
+The processing of command-line options is done in a way which is
+standard for GNU programs, and this is incompatible with the way @sc{sccs}
 processes its command-line options.  This is being changed, and so for
 the moment there will be some inconsistency.  You will be able to tell
 if this has been fixed in the version of @sc{cssc} you are using
@@ -1125,15 +1165,15 @@ because this paragraph will be missing.
 @item
 Error messages are different, and also extra warnings are provided in 
 some circumstances.
+@end itemize
 
-@item 
-If a bug is listed in @samp{docs/TODO} but has in fact been fixed, this
-is a bug in the bug list.  Please report this.
-
-@item
 All other differences are also bugs.  Please report them 
 (@pxref{Problems}).
-@end itemize
+
+
+@item 
+If a bug is listed in @file{docs/BUGS} or @file{docs/TODO} but has in
+fact been fixed, this is a bug in the bug list.  Please report this.
 
 @item
 Some programs are partially implemented.  Not all programs support all
@@ -1161,19 +1201,356 @@ horrible kludge, this has not been done.  It is not expected that this
 will cause a problem for any users; if this is a problem for you, let
 the maintainer know and it will be fixed.
 
-@node Problems, Copying, Incomplete, Top
+@node Testing, Problems, Incomplete, Top
+@chapter The Test Suite
+@cindex test suite
+
+
+The test suite is the most important single component of the @sc{cssc}
+suite.  It ensures that ports to new platforms are working correctly,
+and that changes in one part of the suite don't accidentally break
+anything else.
+
+The test suites cannot cover everything.  More are needed.  If you only
+ever contribute one thing to CSSC, make it a new test case.  This
+chapter explains how to run the test suite and also how to write new
+test cases.
+
+@menu
+* Running the tests::           Running the test cases.
+* Writing new test cases::      Writing new test cases.
+@end menu
+
+@node Running the tests, Writing new test cases, , Testing
+@section Running the tests
+@cindex testing
+
+  Running the test cases is quite simple.  Typically, you might do it
+after compiling but before installing @sc{cssc}.  After running
+``configure'', you might compile @sc{cssc} with
+
+@example
+make
+@end example
+
+and test it with
+
+@example
+make check
+@end example
+
+@noindent
+The full test suite takes just over five minutes to run on a 486 running
+Unix.  If everything works correctly, you will see messages like:-
+
+@smallexample
+cd tests && make all-tests
+make[1]: Entering directory `..../CSSC/compile-here/tests'
+cd ../lndir && make
+make[2]: Entering directory `..../CSSC/compile-here/lndir'
+make[2]: `lndir' is up to date.
+make[2]: Leaving directory `..../CSSC/compile-here/lndir'
+../lndir/lndir ../../Master-Source/tests 
+../../Master-Source/tests/get:
+command-names: .././common/command-names
+test-common: .././common/test-common
+
+@exdent ...more messages from lndir...
+
+/bin/sh -ec 'cd admin && for i in *.sh ; \
+do \
+	/bin/sh $i || break; \
+done'
+C1...passed 
+C2...passed
+@exdent .... more output ....
+C12...passed 
+C13...passed 
+PASS comment.sh:
+v1...passed 
+@exdent .... more output ....
+b11...passed 
+b12...passed 
+PASS flags.sh:
+@exdent .... more output ....
+Tests passed.
+make[1]: Leaving directory `..../CSSC/compile-here/tests'
+@end smallexample
+
+If something goes wrong you will see a ``FAIL'' message, which looks
+something like this:-
+
+@smallexample
+C1...FAIL comment.sh C1: ../../admin -ifoo s.new.txt: 
+Expected return value 0, got return value 1
+make[1]: *** [test-admin] Error 1
+make[1]: Leaving directory `..../CSSC/compile-here/tests'
+Tests failed.
+make: *** [all-tests] Error 2
+@end smallexample
+
+@noindent
+The thing to remember is that when you run @code{make check}, the
+@code{make} program will print on the last line a message saying
+``Error'' only if the tests have failed.
+
+
+If the test suite does indicate that the tests have failed, please
+submit a bug report (@pxref{Problems}).  Please include in your bug
+report 
+
+@itemize @bullet
+@item
+The output of the test suite (you may find the Unix @code{script}
+program invaluable for this)
+
+@item 
+The contents of the directory containing the test that failed (if you
+compiled with separate source and object directories, I just want the
+one in the ``object'' directory).
+
+@item
+As much information about your system as you think is useful, for
+example the names and versions of the OS and compiler that you are
+using.
+@end itemize
+
+
+If you just want to run some of the tests, there are rules in the
+makefile for just running some of them.  For example, the tests in the
+directory @code{tests/admin} can be run with @code{make test-admin}.
+Each test directory is named after one of the @sc{cssc} programs.  This
+indicates which program the tests concentrate on verifying.  Inevitably
+these tests will use more than just one @sc{cssc} program; for example,
+most of the tests involve using @code{admin} to create a @sc{sccs} file
+in the first place.  However, the directory indicates which tool those
+tests concentrate on.
+
+If is possible for a test to neither pass or fail, but just go wrong.
+This can happen when the test script comes upon something that prevents
+the test itself working correctly, for example, because it can't remove
+a temporary file or uudecode a built-in sample @sc{sccs} file.  When
+this happens you get output much like this:-
+
+@example
+$ sh flags.sh 
+rm: foo: Permission denied
+flags.sh: Test could not be completed
+@end example
+
+@noindent
+The part before the colon (@code{flags.sh}) indicates which script could
+not be completed.  No further tests will be attempted.  Diagnosing the
+problem may or may not be simple.  In this case, it's not hard; the
+problem is that the test suite is trying to clear away any temporary
+files but it can't remove the file ``foo'' (because the current
+directory was made read-only to force the test to miscarry, in this
+contrived case).  When the test suite miscarries like this and you can't
+find the problem, please follow the bug-reporting procedure
+(@pxref{Problems}), but please indicate that its a miscarriage in the
+test suite rather than a concrete test failure.
+
+
+@node Writing new test cases, , Running the tests, Testing
+@section Writing new test cases
+
+The test cases are really just shell scripts.  They are suitable for
+@code{/bin/sh} on most machines.  The procedure for running these is
+explained in @ref{Running the tests}.  These shell scripts read in some
+common function definitions (mostly from
+@code{tests/common/test-common}) and then proceed to conduct the tests.
+This section explains those commands used in the test scripts that are
+not simply normal shell commands.  Normal shell commands like @code{sed}
+and @code{grep} are not described.
+
+
+@menu
+* docommand::   Run a command, checking its return value and output.
+* remove::      Remove a file if it is present.
+* success::     Declare that a test has passed.
+* fail::        Declare that a test has failed.
+* echo_nonl::   Print a string without a following argument.
+* miscarry::    When a test case cannot be run.
+@end menu
+
+@node docommand, remove, ,          Writing new test cases
+@subsection docommand
+@cindex docommand
+
+  The @code{docommand} function runs a specified program, and checks its
+return value, standard output and error output against an expected
+version.  If any mismatch occurs, @code{fail} is called.  The
+@code{docommand} function is invoked with up to six arguments:-
+
+@example
+docommand [--silent] @var{label} @var{command} @var{retval} @var{stdout} @var{stderr}
+@end example
+
+The @code{docommand} function normally prints the label to indicate what
+stage the current test script has reached, followed by ``done'' when it
+has finished.  The @var{--silent} option turns off this behaviour, so
+that if nothing goes wrong, no progress message is printed.  This is
+occasionally used for commands that have already been tested by a script
+and are known to work, but which must be repeated several times in order
+to make some other kind of test, which is yet to come.  I recommend you
+try to avoid using this option.
+
+The other arguments to @code{docommand} are:-
+
+@table @var
+@item label
+This is what is printed to indicate what is going on when the test
+starts.  If all goes according to plan, it is followed by
+@samp{...done}.
+
+@item command
+This is the command to be executed, will all the required arguments.
+
+@item retval
+This is the expected return value.  If @var{command} exits returning any
+other value, @code{fail} will be called.  If the test should not care
+about the return value, use @samp{IGNORE} as @var{retval}.
+
+@item stdout
+This is the text expected on the standard output of @var{command}.  If
+the test should not care about the standard output, use @samp{IGNORE} as
+@var{stdout}.
+
+@item stderr
+This is the text expected on the error output of @var{command}.  If
+the test should not care about the error output, use @samp{IGNORE} as
+@var{stderr}.
+@end table
+
+This command will run @code{admin} with three arguments, and expect it
+to produce no output at all and return the value zero:-
+
+@example
+docommand C5 "$@{admin@} -ifoo -yMyComment $s" 0 "" ""
+@end example
+
+
+This command does something similar, but the command is expected to
+fail, returning 1 as its exit status:-
+@example
+# We should not be able to admin -i if the s-file already exists.
+docommand I7 "$@{admin@} -ifoo $s" 1 "" IGNORE
+@end example
+
+@noindent 
+In the example above, the error messages produced by @sc{sccs} and
+@sc{cssc} are different, but both indicate the same thing.  However,
+since the messages are different, @samp{IGNORE} is used.
+
+
+The @var{stdout} and @var{stderr} arguments are processed with the
+@code{echo_nonl} function, and so escape codes are valid and indeed
+heavily used:-
+
+@example
+# Test the -m (annotate SID) option with several deltas...
+docommand N4 "$get -p -m $s" 0 \
+    "1.1\tline1\n1.1\tline2\n1.2\tline3\n" \
+    IGNORE
+@end example
+
+
+@node remove, success, docommand,   Writing new test cases
+@subsection remove
+@cindex docommand function for test scripts
+  The @code{remove} function is for clearing up temporary files after
+tests have finished, and for making sure that no instance of a file that
+a test is supposed to create already exists before the test is made.
+Typical usage is this:-
+
+@example
+f=1test
+s=s.$f
+p=p.$f
+remove $f $s $p
+@end example
+
+@noindent
+The @code{remove} function is defined as:-
+@example
+remove () @{ rm -rf $* || miscarry Could not remove $* ; @}
+@end example
+
+@node success, fail, remove,   Writing new test cases
+@subsection success
+@cindex success function for test scripts
+The @code{success} function prints a message indicating that the current
+test script has passed, and exits successfully.   This is always done at
+the foot of a test script.   
+
+@node fail, echo_nonl, success, Writing new test cases
+@subsection fail
+If a test fails, it is usually because one of the @code{docommand} calls
+fails, and so direct calls to the @code{fail} function are rare.
+However, if you do want to call this function directly, you should
+supply as its argument a short description of what has gone wrong.  For
+example, the @code{docommand} function uses @code{fail} in the following
+way:-
+
+@example
+fail "$label: $1: Expected return value $2, got return value $rv"
+@end example
+
+
+@node echo_nonl, miscarry, fail, Writing new test cases
+@subsection echo_nonl
+
+The @code{echo_nonl} function outputs its argument, without a following
+newline.  Escape codes as for @code{echo(1)} are understood.  Depending
+on the actual flavour of system that the test suite is running on, this
+might internally use @code{echo -n} or @code{echo -e .....\c}.  
+
+Please do not use either the @samp{-n} or @samp{-e} options for
+@code{echo(1)} directly in test scripts, because they don't work in the
+same way on all machines.  The @code{echo_nonl} function is provided for
+this reason; therefore, please use it.  Please note also that while the
+@code{printf(1)} command may seem superior, it absolutely cannot be used
+because not all systems provide it.
+
+Typical usage of @code{echo_nonl} might be:-
+
+@example
+echo_nonl Please wait while I finish what I am doing...
+# ...
+echo done
+@end example
+
+
+@node miscarry, , echo_nonl, Writing new test cases
+@subsection miscarry
+
+The @code{miscarry} function is used to indicate that while the test
+suite has not found a problem with the programs being tested, there has
+been some other kind of problem that prevents further testing.   
+
+@noindent
+Typical usage might be:-
+
+@example
+remove foo
+echo '%M%' > foo
+test `cat foo` = '%M%' || miscarry cannot create file foo.
+@end example
+
+
+@node Problems, Copying, Testing, Top
 @chapter Reporting Bugs
 @cindex bugs
 @cindex problems
 @cindex maintainer
 
 If you find a bug in GNU @code{CSSC}, please send electronic mail to
-@w{@samp{jay@@gnu.ai.mit.edu}}.  Include the version number, which you
-can find by giving the option @w{@samp{--version}} to any @code{CSSC}
-command.  Also include in your message the output that the program
-produced and the output you expected.  An @code{s.} file and
-instructions for reproducing the error are almost essential unless the
-bug is very trivial.@refill
+@authoraddr .  Include the version number, which you can find
+by giving the option @w{@samp{--version}} to any @code{CSSC} command.
+Also include in your message the output that the program produced and
+the output you expected.  An @file{s.} file and instructions for
+reproducing the error are almost essential unless the bug is very
+trivial.@refill
 
 Because the author receives electronic mail on the other side of a
 Microsoft Mail gateway, @sc{mime}-encoded mail will be unintelligible by
@@ -1184,7 +1561,7 @@ Microsoft Corporation.@refill
 
 If you have other questions, comments or suggestions about GNU
 @code{CSSC}, contact the maintainer via electronic mail to
-@w{@samp{jay@@gnu.ai.mit.edu}}.
+@authoraddr .
 
 @node Copying, Concept Index, Problems, Top
 @c @ignore
