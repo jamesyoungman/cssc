@@ -1,0 +1,38 @@
+README.linux  modifications to MySC for Linux
+
+Isaac Clark
+irclark@nando.net
+
+I am not the author of MySC.  The author is Ross Ridge.  The notes in Ross's
+original README explicitly released MySC into the public domain.  The code
+contained in this patch has the same lack of copyright (the patch too is
+public domain)
+
+Ross posted the original sources to alt.source in late 1993.   The code
+was written in c++ and was written to compile with version 2.4.5 of g++.
+The code will not compile on versions 2.6 and higher of g++ because of
+changes in the compiler; in particular the changes in template instantiation
+have made life difficult for MySC.
+
+The patch included with this distribution allows MySC to compile using
+the template instantiation method supported by the -falt-external-templates
+option to g++.   To compile the code do the following:
+
+    1.  Apply the patch by executing 'patch < linux.diffs' in the source
+        directory.
+    2.  Type make.  
+
+The code will generate a number of warnings while compiling.  I am not
+sufficiently familiar with g++ to evaluate their significance but the compile
+time warnings appear to be harmless.  Under version 2.7.2 of g++, there are 
+a few suspicious looking link time warnings that I don't remember seeing 
+when I compiled it with version 2.6.3.  Probably time for some more tweaking.
+
+Nevertheless the compiled code appears to work correctly. It successfully 
+completes the 'make gtest' that Ross included.  I did some limited testing
+to verify that small files placed under version control with MySC could be 
+extracted with the get command of the real SCCS.
+
+I'd appreciate any feedback from anyone who successfully or unsuccessfully
+uses this code.  For anyone with a choice, I'd recommend using RCS instead
+of any version of SCCS.

@@ -1,0 +1,390 @@
+  install.txt
+
+  By Ross Ridge
+  Public Domain
+
+  Installation instructions for MySC.
+
+  @(#) MySC install.tx 1.1 93/11/09 17:25:15
+
+To compile the MySC utilities you'll need a C++ development system
+that supports templates.  If you don't have a C++ compiler, you can try
+installing the GNU C++ compiler on your system.  Versions 2.3.3 and
+earlier the GNU C++ compiler won't work, version 2.4.5 is recommended,
+and later versions should work as well.  You don't need libg++ but you
+might want it anyway as it includes wrappers to make your header files
+usable with C++.
+
+After you figure out what compiler to use you next need to create the
+"config.h".  To do this select one of the example configuration files,
+"cf-bcc.h", "cf-djgpp.h", "cf-sls.h", "cf-xenix.h" that closest
+matches your system and copy to "config.h".  Now edit the file so
+everything in it defined (or left undefined) as appropriate for your
+system.  Next copy one of the two sample makefiles, "mf-msdos.mak", or
+"mf-unix.mak" to "Makefile" and edit it to use your C++ compiler and
+any appropriate options.  The "mf-msdos.mak" requires Borland Make;
+you'll need to do a fair bit of fixing to get it to work with other
+make utilities.  Finally enter "make" and hope nothing goes wrong.
+
+You can also enter "make xgcc" this compiles the utilities using just
+one source file (that includes the other source files) per utilities.
+Depending on your development system, this can result in smaller
+executables.  With the GNU C++ compiler building the utilities, this
+cuts the executable size in half.  The executables built this way
+all have a ".x" extension (eg. "get.x"), you'll need to rename them
+before installing them.
+
+The MS-DOS sample makefile can be used to compile the utilities with
+either a standard MS-DOS compiler or by entering "make gcc" with the
+DJGPP port of the GNU C++ compiler.  Only "a.out" files are created by
+"make gcc", you'll need to run them using the extender GO32 or turn
+them into EXE file with AOUT2EXE.  DJGPP is only supported to help in
+development of the MySC utilities, because of limitations of the DJGPP
+development system and need to use an extender, it's recommended that
+you use a standard MS-DOS compiler instead.
+
+
+Configuration Macros
+====================
+
+CONFIG_NO_FORK
+
+	Define this if your system doesn't support the fork() and exec
+	system calls.
+
+CONFIG_NO_PIPE
+
+	Define this if your system doesn't support the pipe() and
+	fork() system calls.
+
+CONFIG_NO_SPAWN
+
+	Define this if your development system doesn't provide the
+	spawn library functions.  The standard C library function
+	system() will be used instead.  This macro is only meaningful
+	if CONFIG_NO_FORK is defined.
+
+CONFIG_NO_DIRECTORY
+
+	Define this if your development system doesn't provide
+	opendir(), readdir() and closedir() directory reading
+	functions.  If this is defined then the MySC utilities won't
+	accept directory names as command line arguments.
+
+CONFIG_NO_MKTIME
+
+	Define this if your development system doesn't support the
+	standard C mktime() library function.  The replacement
+	mktime() function requires that the traditional Unix
+	representation of time_t, a long counting the number of
+	seconds since January 1st 1970, 00:00 GMT, is used on your
+	system.  You might want to define this if even if you do have
+	mktime() as the replacement is likely to be much smaller and
+	quicker.
+
+CONFIG_NO_REMOVE
+
+	Define this if your development system doesn't support the
+	standard C remove() library function.  The unlink() system
+	call will be used instead.
+
+CONFIG_NO_RENAME
+
+	Define this if your development system doesn't support the
+	standard C rename() library function.  The link() and unlink()
+	system calls will be used instead.
+
+CONFIG_NO_STRERROR
+
+	Define this if your development system doesn't support the
+	standard C strerror() library function.  The sys_nerr and
+	sys_errlist external variables are used instead.
+
+CONFIG_NO_STRSTR
+
+	Define this if your development system doesn't support the
+	standard C strstr() library function.
+
+CONFIG_NO_TIMEZONE_VAR
+
+	Define this if your development system doesn't provide the
+	timezone external variable and the tzset() function needed to
+	set it.  This macro is only meaningful if CONFIG_NO_MKTIME is
+	defined.  If CONFIG_NO_TIMZONE_VAR and CONFIG_NO_MKTIME are
+	defined and gmttime() and localtime() give different time
+	values for the same time_t then MySC utilities will output
+	incorrect times.
+
+CONFIG_NO__CHMOD
+
+	Define this if your development system doesn't provide the
+	_chmod() system function call.  This macro is only meaningful
+	when CONFIG_USE_ATTRIBUTE_BIT is defined and should only be
+	defined on MS-DOS systems.  The replacement provides an
+	interface to the MS-DOS get and set file attribute services.
+
+CONFIG_NO_FSYNC
+
+	Define this if your development system doesn't provide the
+	fsync() system function call.  This macro is only meaningful
+	when CONFIG_SYNC_BEFORE_REOPEN is defined and should only be
+	defined on MS-DOS systems.  The replacement provides an
+	interface to the MS-DOS commit file service.
+
+CONFIG_USE_DIFFTIME
+
+	Define this if that standard C difftime() library function
+	should be use to compare time_t values rather than comparing
+	them directly.
+
+CONFIG_DECLARE_ERRNO
+
+	Define this if the external variable errno isn't declared in
+	<errno.h>.
+
+CONFIG_DECLARE_STRERROR
+
+	Define this if the standard C strerror() library function
+	isn't declared in <string.h>.
+
+CONFIG_DECLARE_MALLOC
+
+	Define this if the standard C malloc(), realloc(), calloc()
+	and free() library functions aren't declared in <stdlib.h>.
+
+CONFIG_DECLARE_STAT
+
+	Define this if the stat() system call isn't declared in
+	<sys/stat.h>.  This macro is only meaningful if CONFIG_UIDS is
+	defined.
+
+CONFIG_DECLARE_GETPWUID
+
+	Define this if the getpwuid() function isn't declared in
+	<pwd.h>.  This macro is only meaningful if CONFIG_UIDS is
+	defined.
+
+CONFIG_DECLARE_GETLOGIN
+
+	Define this if the getlogin() function isn't declared in any
+	included system header file.  This macro is only meaningful if
+	CONFIG_UIDS is defined.
+
+CONFIG_DECLARE_TIMEZONE
+
+	Define this if the timezone external variable isn't declared
+	in <time.h>.  This macro is only meaningful if
+	CONFIG_NO_MKTIME is defined.
+
+CONFIG_DECLARE_TZSET
+
+	Define this if the tzset() function isn't declared in
+	<time.h>.  This macro is only meaningful if CONFIG_NO_MKTIME
+	is defined.
+
+CONFIG_DECLARE_FDOPEN
+
+	Define this if the fdopen() function isn't declared in
+	<stdio.h>.
+
+CONFIG_INCLUDE_SYS_TYPES_H
+
+	Define this if any of the system header files included require
+	that <sys/types.h> be included first.
+
+CONFIG_INCLUDE_FCNTL_H
+
+	Define this if <fcntl.h> needs to be included to get
+	definitions of O_RDONLY, O_RDWR, etc...
+
+CONFIG_INCLUDE_SYS_FILE_H
+
+	Define this if <sys/file.h> needs to be included.
+
+CONFIG_INCLUDE_UNISTD_H
+
+	Define this if <unistd.h> declares useful function prototypes
+	and should be included.
+
+CONFIG_INCLUDE_PROTOTYPES_H
+
+	Define this if <prototypes.h> declares useful function
+	prototypes and should be included.
+
+CONFIG_INCLUDE_SYS_WAIT_H
+
+	Define this if <sys/wait.h> should be included.
+
+CONFIG_INCLUDE_IO_H
+
+	Define this if <io.h> declares useful function prototypes and
+	should be included.
+
+CONFIG_INCLUDE_PROCESS_H
+
+	Define this if <process.h> needs to be included to use the
+	spawn library functions.
+
+CONFIG_SAVED_SETUID
+
+	Define this if your system supports saved set-user-IDs.  This
+	macro is only meaningful if CONFIG_UIDS is defined.
+
+CONFIG_SETREUID
+
+	Define this if your system supports the setreuid() system
+	call.  This macro is only meaningful if CONFIG_UIDS is
+	defined.  If neither CONFIG_SAVED_SETUID nor CONFIG_SETREUID is
+	defined then the MySC utilities won't work if they are made
+	set-user-ID.
+
+CONFIG_DIFF_COMMAND
+
+	Define this as the filename of the diff command to use when
+	making deltas.  If CONFIG_NO_FORK is undefined then for
+	security reasons the path will not be searched for this
+	command and so this should be defined with an absolute
+	pathname.
+
+CONFIG_DIFF_SWITCHES
+
+	Define this if the diff command defined in CONFIG_DIFF_COMMAND
+	needs a special command line argument.  Normally this doesn't
+	need to be defined as the MySC delta utility processes
+	standard diff output.
+
+CONFIG_COMPLETE_TEMPLATES
+
+	Define this if a class template and all it's member functions
+	need to be completely defined even some of those member
+	functions aren't used.  This is true with the GNU C++
+	compiler, and it may be true with other compilers.
+
+CONFIG_UIDS
+
+	Define this your system supports Unix UIDs and GIDs and
+	related services.  If this isn't defined then the user's name taken
+	from the environment variable USER, and the user is considered to
+	be a member of no groups.
+	
+CONFIG_BINARY_FILE
+
+	Define this if your development system distinguishes between
+	files open in text and binary modes.
+
+CONFIG_MSDOS_FILES
+
+	Define this if your system uses MS-DOS style filenames and
+	file conventions, otherwise Unix style filenames and file
+	conventions are assumed.  Among other things this controls
+	whether SCCS files use a "$" suffix or a "s." prefix.
+
+CONFIG_SYNC_BEFORE_REOPEN
+
+	Define this if your system requires that fsync be called for a
+	file before it's reopened when it's already been opened for
+	writing.  This should be defined if your using MS-DOS.
+
+CONFIG_BORLANDC
+
+	Define this if you're using Borland C++.  This enables some
+	pretty printing of MS-DOS file names.  This may work with
+	other MS-DOS compilers so this macro will probably be renamed.
+
+CONFIG_DJGPP
+
+	Define this if you're using DJGPP.  This enables support for
+	some quirks in the DJGPP libraries.
+
+CONFIG_NO_ABORT
+
+	Define this if abort shouldn't be called when an assertion
+	fails as doing so doesn't do anything more than print a
+	redundant message.
+
+CONFIG_TEMP_DIRECTORY
+
+	Define this if tempnam() function call should be used instead
+	of the standard C tmpnam() library function.  If defined this
+	macro should be defined as the directory name to pass as the
+	first argument to the tempnam() function.  This macro is only
+	meaningful if CONFIG_NO_PIPE is defined.
+
+CONFIG_EOL_CHARACTER
+
+	Define this as the character that marks the end of a line when
+	opened in binary mode.  If your system uses a two (or more)
+	character sequence to mark the end of a line then you should
+	define this as the last character in sequence.  If undefined
+	this macro defaults to '\n' which work on both Unix and MS-DOS
+	systems.
+
+CONFIG_LINEBUF_CHUNK_SIZE
+
+	Define this buffer size to used when reading in a line from a
+	file.  If the line is longer than this then the buffer
+	expanded as needed in increments of this size.
+
+CONFIG_LIST_CHUNK_SIZE
+
+	Define this as the initial number of elements to allocate in
+	the array used in lists.  The array grows increments of this
+	amount as needed.
+
+CONFIG_FILE_NAME_GUESSING
+
+	Define this to enable support for RCS-like file name guessing.
+
+CONFIG_USE_ARCHIVE_BIT
+
+	Define this to enable support for using the archive file
+	attribute bit to detect when files shouldn't be overwritten.
+	This macro should only be used on MS-DOS systems.
+
+CONFIG_WHAT_USE_STDIO
+
+	Define this if the what utility should use stdio rather than
+	traditional Unix I/O routines.
+
+CONFIG_WHAT_BUFFER_SIZE
+
+	Define this as buffer size the what utility should use when
+	reading files.
+	
+CONFIG_NULL_FILENAME
+
+	Define this as the name of the "null" file.  If this macro is
+	left undefined then a default value is chosen according to
+	whether or not CONFIG_MSDOS_FILES is defined.
+
+CONFIG_PID_LOCKING
+
+	Define this to create lock files containing the PID of the
+	process updating an SCCS file.  The PID in an existing lock
+	file is ignored and so no attempt is made to detect stale lock
+	files.  This method of locking the SCCS file is compatible
+	with the standard SCCS utilities.
+
+CONFIG_DUMB_LOCKING
+
+	Define this to create lock files containing the name of the
+	user updating the SCCS file.  This type of locking is intended
+	for systems that don't have PID's and/or don't have the
+	standard SCCS commands to be compatible with.
+
+CONFIG_SHARE_LOCKING
+
+	Define this to create lock files as if CONFIG_DUMB_LOCKING had
+	been defined but additionally opens it as a MS-DOS shared
+	file.
+
+CONFIG_NO_LOCKING
+
+	Define this and no attempt will be made to lock SCCS files.
+
+
+/* Local variables: */
+/* mode: text */
+/* fill-prefix: "	" */
+/* End: */
+

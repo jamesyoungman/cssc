@@ -1,0 +1,1872 @@
+diff -c -N MySC-orig/admin.c MySC/admin.c
+*** MySC-orig/admin.c	Sat Apr 20 19:46:25 1996
+--- MySC/admin.c	Fri Apr 19 20:00:36 1996
+***************
+*** 8,13 ****
+--- 8,15 ----
+   *
+   */ 
+  
++ #pragma implementation "list.h"
++ 
+  #include "mysc.h"
+  #include "sccsfile.h"
+  #include "sf-chkmr.h"
+diff -c -N MySC-orig/cdc.c MySC/cdc.c
+*** MySC-orig/cdc.c	Sat Apr 20 19:46:25 1996
+--- MySC/cdc.c	Fri Apr 19 20:00:36 1996
+***************
+*** 71,77 ****
+  		}
+  	}
+  
+! 	if (rid == NULL) {
+  		quit(-2, "A SID must be specified on the command line.");
+  	}
+  
+--- 71,77 ----
+  		}
+  	}
+  
+! 	if (rid == (sid) NULL) {
+  		quit(-2, "A SID must be specified on the command line.");
+  	}
+  
+diff -c -N MySC-orig/config.h MySC/config.h
+*** MySC-orig/config.h	Wed Dec 31 19:00:00 1969
+--- MySC/config.h	Fri Apr 19 20:01:22 1996
+***************
+*** 0 ****
+--- 1,77 ----
++ /*
++  * cf-sls.h
++  *
++  * By Ross Ridge
++  * Public Domain
++  *
++  * Sample MySC configuration file for use with SLS (1.02) Linux.
++  * Other Linux distributions may differ.
++  *
++  * @(#) MySC cf-sls.h 1.2 93/11/10 04:48:36
++  *
++  */
++ 
++ #ifndef __CONFIG_H__
++ #define __CONFIG_H__
++ 
++ #undef  CONFIG_NO_FORK
++ #undef  CONFIG_NO_PIPE
++ #undef  CONFIG_NO_SPAWN
++ #undef  CONFIG_NO_DIRECTORY
++ #undef  CONFIG_NO_MKTIME
++ #undef  CONFIG_NO_REMOVE
++ #undef  CONFIG_NO_RENAME
++ #undef  CONFIG_NO_STRERROR
++ #undef  CONFIG_NO_STRSTR
++ #define CONFIG_NO_TIMEZONE_VAR
++ 
++ 
++ #undef  CONFIG_DECLARE_ERRNO
++ #undef  CONFIG_DECLARE_STRERROR
++ #undef  CONFIG_DECLARE_MALLOC
++ #undef  CONFIG_DECLARE_STAT
++ #undef  CONFIG_DECLARE_GETPWUID
++ #undef  CONFIG_DECLARE_GETLOGIN
++ #undef  CONFIG_DECLARE_TIMEZONE
++ #undef  CONFIG_DECLARE_TZSET
++ #undef  CONFIG_DECLARE_FDOPEN
++ 
++ #undef  CONFIG_INCLUDE_SYS_TYPES_H
++ #define CONFIG_INCLUDE_FCNTL_H
++ #undef  CONFIG_INCLUDE_SYS_FILE_H
++ #define CONFIG_INCLUDE_UNISTD_H
++ #define CONFIG_INCLUDE_SYS_WAIT_H
++ #undef  CONFIG_INCLUDE_PROTOTYPES_H
++ #undef  CONFIG_INCLUDE_IO_H
++ #undef  CONFIG_INCLUDE_PROCESS_H
++ 
++ #define CONFIG_WAIT_IS_A_USELESS_MACRO
++ 
++ #undef  CONFIG_SAVED_SETUID
++ #define CONFIG_SETREUID
++ 
++ #define CONFIG_DIFF_COMMAND	"/usr/bin/diff"
++ #undef  CONFIG_DIFF_SWITCHES
++ 
++ #define CONFIG_COMPLETE_TEMPLATES
++ 
++ #define CONFIG_UIDS
++ #undef	CONFIG_BINARY_FILE
++ #undef  CONFIG_MSDOS_FILES
++ #undef  CONFIG_BORLANDC
++ #define CONFIG_DJGPP
++ #undef  CONFIG_NO_ABORT
++ #define CONFIG_EOL_CHARACTER		'\n'
++ 
++ #define CONFIG_LINEBUF_CHUNK_SIZE	1024
++ #define CONFIG_LIST_CHUNK_SIZE		16
++ 
++ #define CONFIG_FILE_NAME_GUESSING
++ #undef  CONFIG_USE_ARCHIVE_BIT
++ 
++ #endif /* __CONFIG_H__ */
++ 
++ /* Local variables: */
++ /* mode: c++ */
++ /* End: */
++ 
+diff -c -N MySC-orig/delta.c MySC/delta.c
+*** MySC-orig/delta.c	Sat Apr 20 19:46:25 1996
+--- MySC/delta.c	Fri Apr 19 20:00:36 1996
+***************
+*** 117,123 ****
+  			break;
+  
+  		case sccs_pfile::NOT_FOUND:
+! 			if (rid == NULL) {
+  				quit(-1, "%s: You have no edits outstanding.",
+  				     (char const *) name);
+  			}
+--- 117,123 ----
+  			break;
+  
+  		case sccs_pfile::NOT_FOUND:
+! 			if (rid == (sid) NULL) {
+  				quit(-1, "%s: You have no edits outstanding.",
+  				     (char const *) name);
+  			}
+***************
+*** 127,133 ****
+  			break;
+  
+  		case sccs_pfile::AMBIGUOUS:
+! 			if (rid != NULL) {
+  				quit(-1, "%s: Specified SID is ambiguous.",
+  				     (char const *) name);
+  			}
+--- 127,133 ----
+  			break;
+  
+  		case sccs_pfile::AMBIGUOUS:
+! 			if (rid != (sid) NULL) {
+  				quit(-1, "%s: Specified SID is ambiguous.",
+  				     (char const *) name);
+  			}
+diff -c -N MySC-orig/file.c MySC/file.c
+*** MySC-orig/file.c	Sat Apr 20 19:46:26 1996
+--- MySC/file.c	Fri Apr 19 20:00:36 1996
+***************
+*** 309,315 ****
+  char const *
+  get_user_name() {
+  	static string name = getlogin();
+! 	if (name != NULL) {
+  		return name;
+  	}
+  	struct passwd *p = getpwuid(getuid());
+--- 309,315 ----
+  char const *
+  get_user_name() {
+  	static string name = getlogin();
+! 	if (!(name == NULL)) {
+  		return name;
+  	}
+  	struct passwd *p = getpwuid(getuid());
+diff -c -N MySC-orig/fileiter.c MySC/fileiter.c
+*** MySC-orig/fileiter.c	Sat Apr 20 19:46:26 1996
+--- MySC/fileiter.c	Fri Apr 19 20:00:36 1996
+***************
+*** 81,89 ****
+  
+  int
+  sccs_file_iterator::next() {
+  	switch(source) {
+  	case STDIN:
+- 		static class _linebuf linebuf;
+  
+  		if (linebuf.read_line(stdin)) {
+  			return 0;
+--- 81,90 ----
+  
+  int
+  sccs_file_iterator::next() {
++ 	static class _linebuf linebuf;
++ 
+  	switch(source) {
+  	case STDIN:
+  
+  		if (linebuf.read_line(stdin)) {
+  			return 0;
+diff -c -N MySC-orig/fileiter.h MySC/fileiter.h
+*** MySC-orig/fileiter.h	Sat Apr 20 19:47:06 1996
+--- MySC/fileiter.h	Fri Apr 19 20:00:37 1996
+***************
+*** 50,56 ****
+  	int next();
+  
+  	sccs_name &get_name() { return name; }
+! 	enum sources using() { return source; }	
+  };
+  
+  #endif /* __FILEITER_H__ */
+--- 50,56 ----
+  	int next();
+  
+  	sccs_name &get_name() { return name; }
+! //	enum sources using() { return source; }	
+  };
+  
+  #endif /* __FILEITER_H__ */
+diff -c -N MySC-orig/get.c MySC/get.c
+*** MySC-orig/get.c	Sat Apr 20 19:46:26 1996
+--- MySC/get.c	Fri Apr 19 20:00:37 1996
+***************
+*** 8,19 ****
+--- 8,23 ----
+   * 
+   */
+  
++ #pragma implementation "list.h"
++ #pragma implementation "stack.h"
++ 
+  #include "mysc.h"
+  #include "fileiter.h"
+  #include "sccsfile.h"
+  #include "pfile.h"
+  #include "getopt.h"
+  
++ 
+  char const main_sccs_id[] = "@(#) MySC get.c 1.1 93/11/09 17:17:54";
+  
+  /* Prints a list of included or excluded SIDs. */
+***************
+*** 209,215 ****
+  		sid retrieve = file.find_requested_sid(rid);
+  		sid new_delta;
+  
+! 		if (retrieve == NULL) {
+  			quit(-1, "%s: Requested SID not found.",
+  			     (char const *) name);
+  		}
+--- 213,219 ----
+  		sid retrieve = file.find_requested_sid(rid);
+  		sid new_delta;
+  
+! 		if (retrieve == (sid) NULL) {
+  			quit(-1, "%s: Requested SID not found.",
+  			     (char const *) name);
+  		}
+diff -c -N MySC-orig/l-split.c MySC/l-split.c
+*** MySC-orig/l-split.c	Sat Apr 20 19:46:27 1996
+--- MySC/l-split.c	Fri Apr 19 20:00:37 1996
+***************
+*** 20,26 ****
+  split_mrs(string mrs) {
+  	list<string> mr_list;
+  
+! 	if (mrs != NULL) {
+  		char *s = mrs.xstrdup();
+  
+  		s = strtok(s, " \t\n");
+--- 20,26 ----
+  split_mrs(string mrs) {
+  	list<string> mr_list;
+  
+! 	if (!(mrs == NULL)) {
+  		char *s = mrs.xstrdup();
+  
+  		s = strtok(s, " \t\n");
+***************
+*** 38,44 ****
+  split_comments(string comments) {
+  	list<string> comment_list;
+  
+! 	if (comments != NULL) {
+  		char *s = comments.xstrdup();
+  		char *start;
+  		char *end;
+--- 38,44 ----
+  split_comments(string comments) {
+  	list<string> comment_list;
+  
+! 	if (!(comments == NULL)) {
+  		char *s = comments.xstrdup();
+  		char *start;
+  		char *end;
+diff -c -N MySC-orig/list.h MySC/list.h
+*** MySC-orig/list.h	Sat Apr 20 19:47:08 1996
+--- MySC/list.h	Fri Apr 19 20:00:37 1996
+***************
+*** 13,18 ****
+--- 13,20 ----
+  #ifndef __LIST_H__
+  #define __LIST_H__
+  
++ #pragma interface
++ 
+  template <class TYPE>
+  class list {
+  protected:
+diff -c -N MySC-orig/makefile MySC/makefile
+*** MySC-orig/makefile	Wed Dec 31 19:00:00 1969
+--- MySC/makefile	Fri Apr 19 20:01:36 1996
+***************
+*** 0 ****
+--- 1,364 ----
++ #
++ # Makefile
++ #
++ # By Ross Ridge
++ # Public Domain
++ #
++ # Makefile for compiling the MySC utilities under Unix.
++ #
++ # @(#) MySC mf-unix.mm 1.6 93/12/30 19:48:48
++ # @(#) MySC mf-inc.mm 1.4 93/11/09 23:15:38
++ #
++ 
++ SHELL = /bin/sh
++ 
++ CC = gcc
++ CFLAGS = -Wall -Wpointer-arith -Wwrite-strings -Wmissing-prototypes\
++ 	 -Wconversion -Wcast-align -Wstrict-prototypes -Wnested-externs\
++ 	 -Winline -Wno-comment -x c++ -fno-omit-frame-pointer \
++ 	 -falt-external-templates
++ LFLAGS = 
++ LIBS =
++ 
++ CMDS = get admin what cdc rmdel delta unget sact prs 
++ XCMDS = get.x delta.x admin.x prs.x what.x unget.x sact.x cdc.x rmdel.x
++ 
++ GETOBJS = get.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-get.o \
++ 	sf-get2.o sf-get3.o sf-chkid.o pfile.o pf-add.o
++ DELTAOBJS = delta.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-delta.o \
++ 	sf-get.o sf-get3.o sf-chkid.o sf-write.o sf-add.o pfile.o pf-del.o \
++ 	pipe.o run.o l-split.o prompt.o
++ ADMINOBJS = admin.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-admin.o \
++ 	sf-chkid.o sf-write.o sf-add.o run.o l-split.o prompt.o
++ PRSOBJS = quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-prs.o \
++ 	sf-get.o sf-chkid.o prs.o 
++ WHATOBJS = what.o quit.o getopt.o
++ UNGETOBJS = unget.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o pfile.o pf-del.o
++ SACTOBJS = sact.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o pfile.o
++ CDCOBJS = cdc.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-cdc.o \
++ 	sf-write.o run.o l-split.o prompt.o
++ RMDELOBJS = rmdel.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-rmdel.o \
++ 	sf-write.o pfile.o
++ SRCS = admin.c cdc.c delta.c file.c fileiter.c get.c getopt.c l-split.c \
++ 	linebuf.c mystring.c pf-add.c pf-del.c pfile.c pipe.c prompt.c prs.c \
++ 	quit.c rmdel.c run.c sact.c sccsdate.c sccsfile.c sccsname.c \
++ 	sf-add.c sf-admin.c sf-cdc.c sf-chkid.c sf-delta.c sf-get.c \
++ 	sf-get2.c sf-get3.c sf-prs.c sf-rmdel.c sf-write.c sid.c split.c \
++ 	unget.c what.c xalloc.c
++ XSRCS = $(XCMDS:.x=.cs)
++ INCLUDES = defaults.h file.h fileiter.h filelock.h getopt.h linebuf.h \
++ 	list.h mysc.h mystring.h pfile.h pipe.h quit.h run.h sccsdate.h \
++ 	sccsfile.h sccsname.h seqstate.h sf-chkmr.h sid.h sid_list.h stack.h \
++ 	sysdep.h xalloc.h fsync.c _chmod.c strstr.c list.c sid_list.c \
++ 	sl-merge.c
++ 
++ .SUFFIXES: .x .cs
++ 
++ .c.o: 
++ 	$(CC) $(CFLAGS) -c $<
++ 
++ .c.s:
++ 	$(CC) $(CFLAGS) -S $<
++ 
++ .c.i:
++ 	$(CC) $(CFLAGS) -E $< > $@
++ 
++ .cs.x:
++ 	$(CC) $(CFLAGS) $(LFLAGS) -o $@ $< $(LIBS)
++ 
++ it: $(CMDS)
++ 
++ xgcc: $(XCMDS)
++ 
++ get: $(GETOBJS)
++ 	$(CC) $(LFLAGS) -o get $(GETOBJS) $(LIBS)
++ 
++ delta: $(DELTAOBJS)
++ 	$(CC) $(LFLAGS) -o delta $(DELTAOBJS) $(LIBS)
++ 
++ admin: $(ADMINOBJS)
++ 	$(CC) $(LFLAGS) -o admin $(ADMINOBJS) $(LIBS)
++ 
++ prs: $(PRSOBJS)
++ 	$(CC) $(LFLAGS) -o prs $(PRSOBJS) $(LIBS)
++ 
++ what: $(WHATOBJS)
++ 	$(CC) $(LFLAGS) -o what $(WHATOBJS) $(LIBS)
++ 
++ unget: $(UNGETOBJS)
++ 	$(CC) $(LFLAGS) -o unget $(UNGETOBJS) $(LIBS)
++ 
++ sact: $(SACTOBJS)
++ 	$(CC) $(LFLAGS) -o sact $(SACTOBJS) $(LIBS)
++ 
++ cdc: $(CDCOBJS)
++ 	$(CC) $(LFLAGS) -o cdc $(CDCOBJS) $(LIBS)
++ 
++ rmdel: $(RMDELOBJS)
++ 	$(CC) $(LFLAGS) -o rmdel $(RMDELOBJS) $(LIBS)
++ 
++ 
++ sl-test: sid.h sid.c sid_list.h sid_list.c
++ 	$(CC) $(CFLAGS) $(LFLAGS) -DTEST -o sl-test sid_list.c
++ 
++ gtest:
++ 	-rm -f test/[spx].passwd
++ 	./admin -itest/passwd.1 test/s.passwd
++ 	./get -e -g test/s.passwd
++ 	cp test/passwd.2 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -e -g test/s.passwd
++ 	cp test/passwd.3 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -e -g -x1.2 test/s.passwd
++ 	cp test/passwd.4 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -e -g test/s.passwd
++ 	cp test/passwd.5 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -e -g -r1.3 test/s.passwd
++ 	cp test/passwd.6 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -r1.1 -p test/s.passwd > test/passwd.m1
++ 	./get -r1.2 -p test/s.passwd > test/passwd.m2
++ 	./get -r1.3 -p test/s.passwd > test/passwd.m3
++ 	./get -r1.4 -p test/s.passwd > test/passwd.m4
++ 	./get -r1.5 -p test/s.passwd > test/passwd.m5
++ 	./get -r1.3.1.1 -p test/s.passwd > test/passwd.m6
++ 
++ depend: $(SRCS) $(XSRCS) $(INCLUDES) config.h
++ 	sed -e '/^# YOW.$$/p' -e '/^# YOW.$$/,$$d' Makefile > makefile.new
++ 	gcc $(CFLAGS) -MM $(SRCS) $(XSRCS) | sed -e "s/\.cs\.o/.x/" -e "s/ :/:/" -e "s/ cf-[^.]*\.h//" >> makefile.new
++ 
++ clean:
++ 	-rm -f $(CMDS) $(XCMDS) *.o 
++ 	-rm -f core
++ 
++ ## !DIST.
++ #
++ #D = .
++ #
++ #.mm.mak:
++ #	emacs -batch -l mymac -f mymac-batch-expand-files \
++ #		$< mf.tmp
++ #	sed -e '/^# !DIST\.$$/,/^# YOW\.$$/s/^/#/' -e 's/^## YOW\.$$/# YOW./' mf.tmp > $@
++ #	rm mf.tmp
++ #
++ #dist: mysc.tar.Z mysc.shar.01
++ #
++ #Dist.stamp: myscdist.zip
++ #	-rm -rf Dist
++ #	mkdir Dist
++ #	cd Dist; unzip -a -d ../myscdist.zip
++ #	mv Dist/readme.txt Dist/README
++ #	mv Dist/install.txt Dist/INSTALL
++ #	chmod 644 Dist/*
++ #	touch Dist.stamp
++ #
++ #mysc.tar.Z: Dist.stamp
++ #	cd Dist; tar cf ../mysc.tar README INSTALL mf-msdos.mak mf-unix.mak cf-bcc.h cf-djgpp.h cf-sls.h cf-xenix.h $(SRCS) $(INCLUDES) $(XSRCS)
++ #	-rm -f mysc.tar.Z
++ #	compress mysc.tar
++ #
++ #mysc.shar.01: Dist.stamp
++ #	cd Dist; shar -a -s "ross@utopia.druid.com" -n mysc -o ../mysc.shar -l 45 README INSTALL mf-msdos.mak mf-unix.mak cf-bcc.h cf-djgpp.h cf-sls.h cf-xenix.h $(SRCS) $(INCLUDES) $(XSRCS) 
++ #
++ #mf: makefile.new
++ #	$(MAKE) -f makefile.new MAKEFILE=Makefile Makefile
++ #
++ #MAKEFILE = GNU-make-botch
++ #
++ #$(MAKEFILE): makefile.new mf-deps.mak
++ #	cp Makefile Makefile.bak
++ #	cat makefile.new mf-deps.mak > Makefile
++ #
++ #mf-deps.mak: $(SRCS) $(XSRCS) $(INCLUDES)
++ #	gcc $(CFLAGS) -MM $(SRCS) $(XSRCS) | sed -e "s/\.cs\.o/.x/" -e "s/ :/:/" -e "s/ cf-[^.]*\.h//" > mf-deps.mak
++ #	
++ #$(XSRCS): make-cs.tmp
++ #
++ #make-cs.tmp: make-cs.mm mf-inc.mm
++ #	emacs -batch -l mymac -f mymac-batch-expand-files \
++ #		make-cs.mm make-cs.tmp
++ #
++ #makefile.new: mf-unix.mm mf-inc.mm
++ #	emacs -batch -l mymac -f mymac-batch-expand-files \
++ #		mf-unix.mm makefile.new
++ #
++ #mf-msdos.mak: mf-msdos.mm mf-inc.mm
++ #mf-unix.mak: mf-unix.mm mf-unix.mm
++ #
++ # YOW.
++ admin.o: admin.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h sid_list.c \
++  sl-merge.c sccsdate.h list.h list.c linebuf.h sf-chkmr.h run.h \
++  fileiter.h getopt.h
++ cdc.o: cdc.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h getopt.h fileiter.h list.h list.c sccsname.h \
++  sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h \
++  linebuf.h sf-chkmr.h run.h
++ delta.o: delta.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h getopt.h fileiter.h list.h list.c sccsname.h \
++  pfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h sccsfile.h \
++  linebuf.h sf-chkmr.h run.h
++ file.o: file.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h sysdep.h
++ fileiter.o: fileiter.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsname.h fileiter.h list.h list.c \
++  linebuf.h
++ get.o: get.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h sccsfile.h \
++  sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h linebuf.h pfile.h \
++  getopt.h
++ getopt.o: getopt.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h getopt.h
++ l-split.o: l-split.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h list.h list.c
++ linebuf.o: linebuf.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h linebuf.h
++ mystring.o: mystring.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h
++ pf-add.o: pf-add.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h pfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c
++ pf-del.o: pf-del.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h pfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c
++ pfile.o: pfile.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h linebuf.h pfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c
++ pipe.o: pipe.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h pipe.h run.h list.h list.c sysdep.h
++ prompt.o: prompt.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h
++ prs.o: prs.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h sccsfile.h \
++  sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h linebuf.h getopt.h
++ quit.o: quit.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h sysdep.h
++ rmdel.o: rmdel.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h sccsfile.h \
++  sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h linebuf.h pfile.h \
++  getopt.h
++ run.o: run.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h run.h list.h list.c sysdep.h
++ sact.o: sact.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h pfile.h sid.h \
++  sid_list.h sid_list.c sl-merge.c sccsdate.h
++ sccsdate.o: sccsdate.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsdate.h
++ sccsfile.o: sccsfile.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sccsname.o: sccsname.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsname.h
++ sf-add.o: sf-add.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-admin.o: sf-admin.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-cdc.o: sf-cdc.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-chkid.o: sf-chkid.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-delta.o: sf-delta.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h pfile.h \
++  seqstate.h stack.h pipe.h run.h
++ sf-get.o: sf-get.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h pfile.h \
++  seqstate.h stack.h
++ sf-get2.o: sf-get2.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h pfile.h \
++  seqstate.h stack.h
++ sf-get3.o: sf-get3.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h seqstate.h \
++  stack.h
++ sf-prs.o: sf-prs.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h seqstate.h \
++  stack.h
++ sf-rmdel.o: sf-rmdel.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-write.o: sf-write.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sid.o: sid.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h sid.h sid_list.h sid_list.c sl-merge.c
++ split.o: split.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h
++ unget.o: unget.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h pfile.h sid.h \
++  sid_list.h sid_list.c sl-merge.c sccsdate.h getopt.h
++ what.o: what.c mysc.h config.h defaults.h quit.h getopt.h sysdep.h
++ xalloc.o: xalloc.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h
++ get.x: get.cs get.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h fileiter.h list.h list.c sccsname.h \
++  sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h \
++  linebuf.h pfile.h getopt.h quit.c sysdep.h xalloc.c mystring.c \
++  sccsname.c sid.c sccsdate.c linebuf.c file.c split.c getopt.c \
++  fileiter.c sccsfile.c sf-get.c seqstate.h stack.h sf-get2.c sf-get3.c \
++  sf-chkid.c pfile.c pf-add.c
++ delta.x: delta.cs delta.c mysc.h config.h defaults.h quit.h \
++  xalloc.h mystring.h file.h filelock.h getopt.h fileiter.h list.h \
++  list.c sccsname.h pfile.h sid.h sid_list.h sid_list.c sl-merge.c \
++  sccsdate.h sccsfile.h linebuf.h sf-chkmr.h run.h quit.c sysdep.h \
++  xalloc.c mystring.c sccsname.c sid.c sccsdate.c linebuf.c file.c \
++  split.c getopt.c fileiter.c sccsfile.c sf-delta.c seqstate.h stack.h \
++  pipe.h sf-get.c sf-get3.c sf-chkid.c sf-write.c sf-add.c pfile.c \
++  pf-del.c pipe.c run.c l-split.c prompt.c
++ admin.x: admin.cs admin.c mysc.h config.h defaults.h quit.h \
++  xalloc.h mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h \
++  sid_list.h sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h \
++  sf-chkmr.h run.h fileiter.h getopt.h quit.c sysdep.h xalloc.c \
++  mystring.c sccsname.c sid.c sccsdate.c linebuf.c file.c split.c \
++  getopt.c fileiter.c sccsfile.c sf-admin.c sf-chkid.c sf-write.c \
++  sf-add.c run.c l-split.c prompt.c
++ prs.x: prs.cs prs.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h fileiter.h list.h list.c sccsname.h \
++  sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h \
++  linebuf.h getopt.h quit.c sysdep.h xalloc.c mystring.c sccsname.c \
++  sid.c sccsdate.c linebuf.c file.c split.c getopt.c fileiter.c \
++  sccsfile.c sf-prs.c seqstate.h stack.h sf-get.c pfile.h sf-chkid.c
++ what.x: what.cs what.c mysc.h config.h defaults.h quit.h getopt.h \
++  sysdep.h quit.c getopt.c
++ unget.x: unget.cs unget.c mysc.h config.h defaults.h quit.h \
++  xalloc.h mystring.h file.h filelock.h fileiter.h list.h list.c \
++  sccsname.h pfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h \
++  getopt.h quit.c sysdep.h xalloc.c mystring.c sccsname.c sid.c \
++  sccsdate.c linebuf.c linebuf.h file.c split.c getopt.c fileiter.c \
++  pfile.c pf-del.c
++ sact.x: sact.cs sact.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h fileiter.h list.h list.c sccsname.h \
++  pfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h quit.c \
++  sysdep.h xalloc.c mystring.c sccsname.c sid.c sccsdate.c linebuf.c \
++  linebuf.h file.c split.c getopt.c getopt.h fileiter.c pfile.c
++ cdc.x: cdc.cs cdc.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h getopt.h fileiter.h list.h list.c \
++  sccsname.h sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c \
++  sccsdate.h linebuf.h sf-chkmr.h run.h quit.c sysdep.h xalloc.c \
++  mystring.c sccsname.c sid.c sccsdate.c linebuf.c file.c split.c \
++  getopt.c fileiter.c sccsfile.c sf-cdc.c sf-write.c run.c l-split.c \
++  prompt.c
++ rmdel.x: rmdel.cs rmdel.c mysc.h config.h defaults.h quit.h \
++  xalloc.h mystring.h file.h filelock.h fileiter.h list.h list.c \
++  sccsname.h sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c \
++  sccsdate.h linebuf.h pfile.h getopt.h quit.c sysdep.h xalloc.c \
++  mystring.c sccsname.c sid.c sccsdate.c linebuf.c file.c split.c \
++  getopt.c fileiter.c sccsfile.c sf-rmdel.c sf-write.c pfile.c
+diff -c -N MySC-orig/mf-linux.mak MySC/mf-linux.mak
+*** MySC-orig/mf-linux.mak	Wed Dec 31 19:00:00 1969
+--- MySC/mf-linux.mak	Sat Jul 29 16:00:55 1995
+***************
+*** 0 ****
+--- 1,364 ----
++ #
++ # Makefile
++ #
++ # By Ross Ridge
++ # Public Domain
++ #
++ # Makefile for compiling the MySC utilities under Unix.
++ #
++ # @(#) MySC mf-unix.mm 1.6 93/12/30 19:48:48
++ # @(#) MySC mf-inc.mm 1.4 93/11/09 23:15:38
++ #
++ 
++ SHELL = /bin/sh
++ 
++ CC = gcc
++ CFLAGS = -Wall -Wpointer-arith -Wwrite-strings -Wmissing-prototypes\
++ 	 -Wconversion -Wcast-align -Wstrict-prototypes -Wnested-externs\
++ 	 -Winline -Wno-comment -x c++ -fno-omit-frame-pointer \
++ 	 -falt-external-templates
++ LFLAGS = 
++ LIBS =
++ 
++ CMDS = get admin what cdc rmdel delta unget sact prs 
++ XCMDS = get.x delta.x admin.x prs.x what.x unget.x sact.x cdc.x rmdel.x
++ 
++ GETOBJS = get.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-get.o \
++ 	sf-get2.o sf-get3.o sf-chkid.o pfile.o pf-add.o
++ DELTAOBJS = delta.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-delta.o \
++ 	sf-get.o sf-get3.o sf-chkid.o sf-write.o sf-add.o pfile.o pf-del.o \
++ 	pipe.o run.o l-split.o prompt.o
++ ADMINOBJS = admin.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-admin.o \
++ 	sf-chkid.o sf-write.o sf-add.o run.o l-split.o prompt.o
++ PRSOBJS = quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-prs.o \
++ 	sf-get.o sf-chkid.o prs.o 
++ WHATOBJS = what.o quit.o getopt.o
++ UNGETOBJS = unget.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o pfile.o pf-del.o
++ SACTOBJS = sact.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o pfile.o
++ CDCOBJS = cdc.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-cdc.o \
++ 	sf-write.o run.o l-split.o prompt.o
++ RMDELOBJS = rmdel.o quit.o xalloc.o mystring.o sccsname.o sid.o sccsdate.o \
++ 	linebuf.o file.o split.o getopt.o fileiter.o sccsfile.o sf-rmdel.o \
++ 	sf-write.o pfile.o
++ SRCS = admin.c cdc.c delta.c file.c fileiter.c get.c getopt.c l-split.c \
++ 	linebuf.c mystring.c pf-add.c pf-del.c pfile.c pipe.c prompt.c prs.c \
++ 	quit.c rmdel.c run.c sact.c sccsdate.c sccsfile.c sccsname.c \
++ 	sf-add.c sf-admin.c sf-cdc.c sf-chkid.c sf-delta.c sf-get.c \
++ 	sf-get2.c sf-get3.c sf-prs.c sf-rmdel.c sf-write.c sid.c split.c \
++ 	unget.c what.c xalloc.c
++ XSRCS = $(XCMDS:.x=.cs)
++ INCLUDES = defaults.h file.h fileiter.h filelock.h getopt.h linebuf.h \
++ 	list.h mysc.h mystring.h pfile.h pipe.h quit.h run.h sccsdate.h \
++ 	sccsfile.h sccsname.h seqstate.h sf-chkmr.h sid.h sid_list.h stack.h \
++ 	sysdep.h xalloc.h fsync.c _chmod.c strstr.c list.c sid_list.c \
++ 	sl-merge.c
++ 
++ .SUFFIXES: .x .cs
++ 
++ .c.o: 
++ 	$(CC) $(CFLAGS) -c $<
++ 
++ .c.s:
++ 	$(CC) $(CFLAGS) -S $<
++ 
++ .c.i:
++ 	$(CC) $(CFLAGS) -E $< > $@
++ 
++ .cs.x:
++ 	$(CC) $(CFLAGS) $(LFLAGS) -o $@ $< $(LIBS)
++ 
++ it: $(CMDS)
++ 
++ xgcc: $(XCMDS)
++ 
++ get: $(GETOBJS)
++ 	$(CC) $(LFLAGS) -o get $(GETOBJS) $(LIBS)
++ 
++ delta: $(DELTAOBJS)
++ 	$(CC) $(LFLAGS) -o delta $(DELTAOBJS) $(LIBS)
++ 
++ admin: $(ADMINOBJS)
++ 	$(CC) $(LFLAGS) -o admin $(ADMINOBJS) $(LIBS)
++ 
++ prs: $(PRSOBJS)
++ 	$(CC) $(LFLAGS) -o prs $(PRSOBJS) $(LIBS)
++ 
++ what: $(WHATOBJS)
++ 	$(CC) $(LFLAGS) -o what $(WHATOBJS) $(LIBS)
++ 
++ unget: $(UNGETOBJS)
++ 	$(CC) $(LFLAGS) -o unget $(UNGETOBJS) $(LIBS)
++ 
++ sact: $(SACTOBJS)
++ 	$(CC) $(LFLAGS) -o sact $(SACTOBJS) $(LIBS)
++ 
++ cdc: $(CDCOBJS)
++ 	$(CC) $(LFLAGS) -o cdc $(CDCOBJS) $(LIBS)
++ 
++ rmdel: $(RMDELOBJS)
++ 	$(CC) $(LFLAGS) -o rmdel $(RMDELOBJS) $(LIBS)
++ 
++ 
++ sl-test: sid.h sid.c sid_list.h sid_list.c
++ 	$(CC) $(CFLAGS) $(LFLAGS) -DTEST -o sl-test sid_list.c
++ 
++ gtest:
++ 	-rm -f test/[spx].passwd
++ 	./admin -itest/passwd.1 test/s.passwd
++ 	./get -e -g test/s.passwd
++ 	cp test/passwd.2 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -e -g test/s.passwd
++ 	cp test/passwd.3 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -e -g -x1.2 test/s.passwd
++ 	cp test/passwd.4 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -e -g test/s.passwd
++ 	cp test/passwd.5 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -e -g -r1.3 test/s.passwd
++ 	cp test/passwd.6 passwd
++ 	./delta -Y test/s.passwd
++ 	./get -r1.1 -p test/s.passwd > test/passwd.m1
++ 	./get -r1.2 -p test/s.passwd > test/passwd.m2
++ 	./get -r1.3 -p test/s.passwd > test/passwd.m3
++ 	./get -r1.4 -p test/s.passwd > test/passwd.m4
++ 	./get -r1.5 -p test/s.passwd > test/passwd.m5
++ 	./get -r1.3.1.1 -p test/s.passwd > test/passwd.m6
++ 
++ depend: $(SRCS) $(XSRCS) $(INCLUDES) config.h
++ 	sed -e '/^# YOW.$$/p' -e '/^# YOW.$$/,$$d' Makefile > makefile.new
++ 	gcc $(CFLAGS) -MM $(SRCS) $(XSRCS) | sed -e "s/\.cs\.o/.x/" -e "s/ :/:/" -e "s/ cf-[^.]*\.h//" >> makefile.new
++ 
++ clean:
++ 	-rm -f $(CMDS) $(XCMDS) *.o 
++ 	-rm -f core
++ 
++ ## !DIST.
++ #
++ #D = .
++ #
++ #.mm.mak:
++ #	emacs -batch -l mymac -f mymac-batch-expand-files \
++ #		$< mf.tmp
++ #	sed -e '/^# !DIST\.$$/,/^# YOW\.$$/s/^/#/' -e 's/^## YOW\.$$/# YOW./' mf.tmp > $@
++ #	rm mf.tmp
++ #
++ #dist: mysc.tar.Z mysc.shar.01
++ #
++ #Dist.stamp: myscdist.zip
++ #	-rm -rf Dist
++ #	mkdir Dist
++ #	cd Dist; unzip -a -d ../myscdist.zip
++ #	mv Dist/readme.txt Dist/README
++ #	mv Dist/install.txt Dist/INSTALL
++ #	chmod 644 Dist/*
++ #	touch Dist.stamp
++ #
++ #mysc.tar.Z: Dist.stamp
++ #	cd Dist; tar cf ../mysc.tar README INSTALL mf-msdos.mak mf-unix.mak cf-bcc.h cf-djgpp.h cf-sls.h cf-xenix.h $(SRCS) $(INCLUDES) $(XSRCS)
++ #	-rm -f mysc.tar.Z
++ #	compress mysc.tar
++ #
++ #mysc.shar.01: Dist.stamp
++ #	cd Dist; shar -a -s "ross@utopia.druid.com" -n mysc -o ../mysc.shar -l 45 README INSTALL mf-msdos.mak mf-unix.mak cf-bcc.h cf-djgpp.h cf-sls.h cf-xenix.h $(SRCS) $(INCLUDES) $(XSRCS) 
++ #
++ #mf: makefile.new
++ #	$(MAKE) -f makefile.new MAKEFILE=Makefile Makefile
++ #
++ #MAKEFILE = GNU-make-botch
++ #
++ #$(MAKEFILE): makefile.new mf-deps.mak
++ #	cp Makefile Makefile.bak
++ #	cat makefile.new mf-deps.mak > Makefile
++ #
++ #mf-deps.mak: $(SRCS) $(XSRCS) $(INCLUDES)
++ #	gcc $(CFLAGS) -MM $(SRCS) $(XSRCS) | sed -e "s/\.cs\.o/.x/" -e "s/ :/:/" -e "s/ cf-[^.]*\.h//" > mf-deps.mak
++ #	
++ #$(XSRCS): make-cs.tmp
++ #
++ #make-cs.tmp: make-cs.mm mf-inc.mm
++ #	emacs -batch -l mymac -f mymac-batch-expand-files \
++ #		make-cs.mm make-cs.tmp
++ #
++ #makefile.new: mf-unix.mm mf-inc.mm
++ #	emacs -batch -l mymac -f mymac-batch-expand-files \
++ #		mf-unix.mm makefile.new
++ #
++ #mf-msdos.mak: mf-msdos.mm mf-inc.mm
++ #mf-unix.mak: mf-unix.mm mf-unix.mm
++ #
++ # YOW.
++ admin.o: admin.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h sid_list.c \
++  sl-merge.c sccsdate.h list.h list.c linebuf.h sf-chkmr.h run.h \
++  fileiter.h getopt.h
++ cdc.o: cdc.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h getopt.h fileiter.h list.h list.c sccsname.h \
++  sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h \
++  linebuf.h sf-chkmr.h run.h
++ delta.o: delta.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h getopt.h fileiter.h list.h list.c sccsname.h \
++  pfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h sccsfile.h \
++  linebuf.h sf-chkmr.h run.h
++ file.o: file.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h sysdep.h
++ fileiter.o: fileiter.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsname.h fileiter.h list.h list.c \
++  linebuf.h
++ get.o: get.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h sccsfile.h \
++  sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h linebuf.h pfile.h \
++  getopt.h
++ getopt.o: getopt.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h getopt.h
++ l-split.o: l-split.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h list.h list.c
++ linebuf.o: linebuf.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h linebuf.h
++ mystring.o: mystring.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h
++ pf-add.o: pf-add.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h pfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c
++ pf-del.o: pf-del.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h pfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c
++ pfile.o: pfile.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h linebuf.h pfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c
++ pipe.o: pipe.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h pipe.h run.h list.h list.c sysdep.h
++ prompt.o: prompt.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h
++ prs.o: prs.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h sccsfile.h \
++  sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h linebuf.h getopt.h
++ quit.o: quit.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h sysdep.h
++ rmdel.o: rmdel.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h sccsfile.h \
++  sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h linebuf.h pfile.h \
++  getopt.h
++ run.o: run.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h run.h list.h list.c sysdep.h
++ sact.o: sact.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h pfile.h sid.h \
++  sid_list.h sid_list.c sl-merge.c sccsdate.h
++ sccsdate.o: sccsdate.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsdate.h
++ sccsfile.o: sccsfile.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sccsname.o: sccsname.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsname.h
++ sf-add.o: sf-add.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-admin.o: sf-admin.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-cdc.o: sf-cdc.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-chkid.o: sf-chkid.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-delta.o: sf-delta.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h pfile.h \
++  seqstate.h stack.h pipe.h run.h
++ sf-get.o: sf-get.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h pfile.h \
++  seqstate.h stack.h
++ sf-get2.o: sf-get2.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h pfile.h \
++  seqstate.h stack.h
++ sf-get3.o: sf-get3.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h seqstate.h \
++  stack.h
++ sf-prs.o: sf-prs.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h seqstate.h \
++  stack.h
++ sf-rmdel.o: sf-rmdel.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sf-write.o: sf-write.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h sid_list.h \
++  sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h
++ sid.o: sid.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h sid.h sid_list.h sid_list.c sl-merge.c
++ split.o: split.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h
++ unget.o: unget.c mysc.h config.h defaults.h quit.h xalloc.h mystring.h \
++  file.h filelock.h fileiter.h list.h list.c sccsname.h pfile.h sid.h \
++  sid_list.h sid_list.c sl-merge.c sccsdate.h getopt.h
++ what.o: what.c mysc.h config.h defaults.h quit.h getopt.h sysdep.h
++ xalloc.o: xalloc.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h
++ get.x: get.cs get.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h fileiter.h list.h list.c sccsname.h \
++  sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h \
++  linebuf.h pfile.h getopt.h quit.c sysdep.h xalloc.c mystring.c \
++  sccsname.c sid.c sccsdate.c linebuf.c file.c split.c getopt.c \
++  fileiter.c sccsfile.c sf-get.c seqstate.h stack.h sf-get2.c sf-get3.c \
++  sf-chkid.c pfile.c pf-add.c
++ delta.x: delta.cs delta.c mysc.h config.h defaults.h quit.h \
++  xalloc.h mystring.h file.h filelock.h getopt.h fileiter.h list.h \
++  list.c sccsname.h pfile.h sid.h sid_list.h sid_list.c sl-merge.c \
++  sccsdate.h sccsfile.h linebuf.h sf-chkmr.h run.h quit.c sysdep.h \
++  xalloc.c mystring.c sccsname.c sid.c sccsdate.c linebuf.c file.c \
++  split.c getopt.c fileiter.c sccsfile.c sf-delta.c seqstate.h stack.h \
++  pipe.h sf-get.c sf-get3.c sf-chkid.c sf-write.c sf-add.c pfile.c \
++  pf-del.c pipe.c run.c l-split.c prompt.c
++ admin.x: admin.cs admin.c mysc.h config.h defaults.h quit.h \
++  xalloc.h mystring.h file.h filelock.h sccsfile.h sccsname.h sid.h \
++  sid_list.h sid_list.c sl-merge.c sccsdate.h list.h list.c linebuf.h \
++  sf-chkmr.h run.h fileiter.h getopt.h quit.c sysdep.h xalloc.c \
++  mystring.c sccsname.c sid.c sccsdate.c linebuf.c file.c split.c \
++  getopt.c fileiter.c sccsfile.c sf-admin.c sf-chkid.c sf-write.c \
++  sf-add.c run.c l-split.c prompt.c
++ prs.x: prs.cs prs.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h fileiter.h list.h list.c sccsname.h \
++  sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h \
++  linebuf.h getopt.h quit.c sysdep.h xalloc.c mystring.c sccsname.c \
++  sid.c sccsdate.c linebuf.c file.c split.c getopt.c fileiter.c \
++  sccsfile.c sf-prs.c seqstate.h stack.h sf-get.c pfile.h sf-chkid.c
++ what.x: what.cs what.c mysc.h config.h defaults.h quit.h getopt.h \
++  sysdep.h quit.c getopt.c
++ unget.x: unget.cs unget.c mysc.h config.h defaults.h quit.h \
++  xalloc.h mystring.h file.h filelock.h fileiter.h list.h list.c \
++  sccsname.h pfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h \
++  getopt.h quit.c sysdep.h xalloc.c mystring.c sccsname.c sid.c \
++  sccsdate.c linebuf.c linebuf.h file.c split.c getopt.c fileiter.c \
++  pfile.c pf-del.c
++ sact.x: sact.cs sact.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h fileiter.h list.h list.c sccsname.h \
++  pfile.h sid.h sid_list.h sid_list.c sl-merge.c sccsdate.h quit.c \
++  sysdep.h xalloc.c mystring.c sccsname.c sid.c sccsdate.c linebuf.c \
++  linebuf.h file.c split.c getopt.c getopt.h fileiter.c pfile.c
++ cdc.x: cdc.cs cdc.c mysc.h config.h defaults.h quit.h xalloc.h \
++  mystring.h file.h filelock.h getopt.h fileiter.h list.h list.c \
++  sccsname.h sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c \
++  sccsdate.h linebuf.h sf-chkmr.h run.h quit.c sysdep.h xalloc.c \
++  mystring.c sccsname.c sid.c sccsdate.c linebuf.c file.c split.c \
++  getopt.c fileiter.c sccsfile.c sf-cdc.c sf-write.c run.c l-split.c \
++  prompt.c
++ rmdel.x: rmdel.cs rmdel.c mysc.h config.h defaults.h quit.h \
++  xalloc.h mystring.h file.h filelock.h fileiter.h list.h list.c \
++  sccsname.h sccsfile.h sid.h sid_list.h sid_list.c sl-merge.c \
++  sccsdate.h linebuf.h pfile.h getopt.h quit.c sysdep.h xalloc.c \
++  mystring.c sccsname.c sid.c sccsdate.c linebuf.c file.c split.c \
++  getopt.c fileiter.c sccsfile.c sf-rmdel.c sf-write.c pfile.c
+diff -c -N MySC-orig/pf-del.c MySC/pf-del.c
+*** MySC-orig/pf-del.c	Sat Apr 20 19:46:29 1996
+--- MySC/pf-del.c	Fri Apr 19 20:00:37 1996
+***************
+*** 27,33 ****
+  
+  	while(next()) {
+  		if (strcmp(user, it->user) == 0
+! 		    && (id == NULL || id == it->got || id == it->delta)) {
+  			if (found != -1) {
+  				return AMBIGUOUS;
+  			}
+--- 27,33 ----
+  
+  	while(next()) {
+  		if (strcmp(user, it->user) == 0
+! 		    && (id == (sid) NULL || id == it->got || id == it->delta)) {
+  			if (found != -1) {
+  				return AMBIGUOUS;
+  			}
+diff -c -N MySC-orig/pfile.h MySC/pfile.h
+*** MySC-orig/pfile.h	Sat Apr 20 19:47:08 1996
+--- MySC/pfile.h	Fri Apr 19 20:00:37 1996
+***************
+*** 80,86 ****
+  
+  	void rewind() { pos = -1; }
+  
+- #pragma warn -inl
+  
+  	int
+  	next() {
+--- 80,85 ----
+***************
+*** 92,98 ****
+  		return 0;
+  	}
+  
+- #pragma warn .inl
+  
+  	struct edit_lock const *
+  	operator ->() const {
+--- 91,96 ----
+diff -c -N MySC-orig/pipe.c MySC/pipe.c
+*** MySC-orig/pipe.c	Sat Apr 20 19:46:41 1996
+--- MySC/pipe.c	Fri Apr 19 20:00:38 1996
+***************
+*** 274,280 ****
+     as stdout. */
+  
+  int
+! run_diff(char const *gname, pipe &in, pipe &out) {
+  	if (out.write_stream() == NULL) {
+  		return 0;
+  	}
+--- 274,280 ----
+     as stdout. */
+  
+  int
+! run_diff (char const *gname, class pipe &in, class pipe &out) {
+  	if (out.write_stream() == NULL) {
+  		return 0;
+  	}
+diff -c -N MySC-orig/pipe.h MySC/pipe.h
+*** MySC-orig/pipe.h	Sat Apr 20 19:47:09 1996
+--- MySC/pipe.h	Fri Apr 19 20:00:38 1996
+***************
+*** 14,20 ****
+  #define __PIPE_H__
+  
+  #ifdef __GNUC__
+! #pragma interface
+  #endif
+  
+  /* One of two definitions of the class pipe are used depending if the
+--- 14,20 ----
+  #define __PIPE_H__
+  
+  #ifdef __GNUC__
+! // #pragma interface
+  #endif
+  
+  /* One of two definitions of the class pipe are used depending if the
+diff -c -N MySC-orig/prs.c MySC/prs.c
+*** MySC-orig/prs.c	Sat Apr 20 19:46:41 1996
+--- MySC/prs.c	Fri Apr 19 20:00:38 1996
+***************
+*** 8,13 ****
+--- 8,14 ----
+   *
+   */
+  
++ #include <stdio.h>
+  #include "mysc.h"
+  #include "fileiter.h"
+  #include "sccsfile.h"
+***************
+*** 27,33 ****
+  	int c;
+  	string format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
+  	sid rid = NULL;
+! 	/* enum */ sccs_file::when when = sccs_file::SIDONLY;
+  	int all_deltas = 0;
+  	sccs_date cutoff;
+  	int default_processing = 1;
+--- 28,34 ----
+  	int c;
+  	string format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
+  	sid rid = NULL;
+! 	/* enum */ sccs_file::when when1 = sccs_file::SIDONLY;
+  	int all_deltas = 0;
+  	sccs_date cutoff;
+  	int default_processing = 1;
+***************
+*** 75,86 ****
+  			break;
+  
+  		case 'e':
+! 			when = sccs_file::EARLIER;
+  			default_processing = 0;
+  			break;
+  
+  		case 'l':
+! 			when = sccs_file::LATER;
+  			default_processing = 0;
+  			break;
+  
+--- 76,87 ----
+  			break;
+  
+  		case 'e':
+! 			when1 = sccs_file::EARLIER;
+  			default_processing = 0;
+  			break;
+  
+  		case 'l':
+! 			when1 = sccs_file::LATER;
+  			default_processing = 0;
+  			break;
+  
+***************
+*** 95,107 ****
+  
+  	}
+  
+! 	if (when == sccs_file::SIDONLY && cutoff.valid()) {
+  		quit(-2, "Either the -e or -l switch must used with a"
+  			 " cutoff date.");
+  	}
+  
+  	if (default_processing) {
+! 		when = sccs_file::EARLIER;
+  	}
+  
+  	sccs_file_iterator iter(argc, argv, opts.get_index());
+--- 96,108 ----
+  
+  	}
+  
+! 	if (when1 == sccs_file::SIDONLY && cutoff.valid()) {
+  		quit(-2, "Either the -e or -l switch must used with a"
+  			 " cutoff date.");
+  	}
+  
+  	if (default_processing) {
+! 		when1 = sccs_file::EARLIER;
+  	}
+  
+  	sccs_file_iterator iter(argc, argv, opts.get_index());
+***************
+*** 113,119 ****
+  		if (default_processing) {
+  			printf("%s:\n\n", (char const *) name);
+  		}
+! 		file.prs(stdout, format, rid, cutoff, when, all_deltas);
+  	}
+  
+  	return 0;
+--- 114,120 ----
+  		if (default_processing) {
+  			printf("%s:\n\n", (char const *) name);
+  		}
+! 		file.prs(stdout, format, rid, cutoff, when1, all_deltas);
+  	}
+  
+  	return 0;
+diff -c -N MySC-orig/rmdel.c MySC/rmdel.c
+*** MySC-orig/rmdel.c	Sat Apr 20 19:46:42 1996
+--- MySC/rmdel.c	Fri Apr 19 20:00:38 1996
+***************
+*** 16,21 ****
+--- 16,24 ----
+  
+  char const main_sccs_id[] = "@(#) MySC rmdel.c 1.1 93/11/09 17:17:58";
+  
++ template sid &
++ range_list<sid>::operator =(range_list<sid> const &list);
++ 
+  void
+  usage() {
+  	fprintf(stderr,
+***************
+*** 55,61 ****
+  		}
+  	}
+  
+! 	if (rid == NULL) {
+  		quit(-2, "A SID must be specified on the command line.");
+  	}
+  
+--- 58,64 ----
+  		}
+  	}
+  
+! 	if (rid == (sid) NULL) {
+  		quit(-2, "A SID must be specified on the command line.");
+  	}
+  
+diff -c -N MySC-orig/run.c MySC/run.c
+*** MySC-orig/run.c	Sat Apr 20 19:46:42 1996
+--- MySC/run.c	Fri Apr 19 20:00:38 1996
+***************
+*** 8,13 ****
+--- 8,15 ----
+   *
+   */
+  
++ #pragma implementation "list.h"
++ 
+  #include "mysc.h"
+  #include "run.h"
+  #include "list.h"
+diff -c -N MySC-orig/sccsfile.c MySC/sccsfile.c
+*** MySC-orig/sccsfile.c	Sat Apr 20 19:46:43 1996
+--- MySC/sccsfile.c	Fri Apr 19 20:00:38 1996
+***************
+*** 596,602 ****
+  			iter->id.dprint(stderr);
+  			putc('\n', stderr);
+  #endif
+! 			if (found == NULL || newest < iter->date) {
+  				newest = iter->date;
+  				found = iter->id;
+  			}
+--- 596,602 ----
+  			iter->id.dprint(stderr);
+  			putc('\n', stderr);
+  #endif
+! 			if (found == (sid) NULL || newest < iter->date) {
+  				newest = iter->date;
+  				found = iter->id;
+  			}
+diff -c -N MySC-orig/sccsfile.h MySC/sccsfile.h
+*** MySC-orig/sccsfile.h	Sat Apr 20 19:47:10 1996
+--- MySC/sccsfile.h	Fri Apr 19 20:00:39 1996
+***************
+*** 9,15 ****
+   * @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
+   *
+   */
+-  
+  #ifndef __SCCSFILE_H__
+  #define __SCCSFILE_H__
+  
+--- 9,14 ----
+***************
+*** 103,109 ****
+  		delta_iterator(class _delta_table const &d)
+  			: dtbl(d), pos(-1) {}
+  
+- #pragma warn -inl
+  
+  		int
+  		next(int all = 0) {
+--- 102,107 ----
+***************
+*** 115,121 ****
+  			return 0;
+  		}
+  
+- #pragma warn .inl
+  
+  		int index() const { return pos; }
+  
+--- 113,118 ----
+***************
+*** 214,220 ****
+  	void get(string name, class seq_state &state,
+  		 struct subst_parms &parms,
+  #ifdef __GNUC__
+! 		 subst_fn_t subst_fn = NULL,
+  #else
+  		 int (sccs_file::*subst_fn)(char const *,
+  					    struct subst_parms *) const = NULL,
+--- 211,217 ----
+  	void get(string name, class seq_state &state,
+  		 struct subst_parms &parms,
+  #ifdef __GNUC__
+! 		 subst_fn_t subst_fn = subst_fn_t (NULL),
+  #else
+  		 int (sccs_file::*subst_fn)(char const *,
+  					    struct subst_parms *) const = NULL,
+***************
+*** 236,242 ****
+  	void test_locks(sid got, sccs_pfile &pfile) const;
+  
+  	struct get_status get(FILE *out, string name, sid id,
+! 			      sccs_date cutoff = NULL,
+  #ifdef __GNUC__
+  			      sid_list include = sid_list(NULL),
+  			      sid_list exclude = sid_list(NULL),
+--- 233,239 ----
+  	void test_locks(sid got, sccs_pfile &pfile) const;
+  
+  	struct get_status get(FILE *out, string name, sid id,
+! 			      sccs_date cutoff = (char *) NULL,
+  #ifdef __GNUC__
+  			      sid_list include = sid_list(NULL),
+  			      sid_list exclude = sid_list(NULL),
+***************
+*** 281,287 ****
+  public:
+  	int
+  	mr_required() const {
+! 		return flags.mr_checker != NULL;
+  	}
+  
+   	int check_mrs(list<string> mrs);
+--- 278,284 ----
+  public:
+  	int
+  	mr_required() const {
+! 		return !(flags.mr_checker == NULL);
+  	}
+  
+   	int check_mrs(list<string> mrs);
+diff -c -N MySC-orig/sf-admin.c MySC/sf-admin.c
+*** MySC-orig/sf-admin.c	Sat Apr 20 19:46:44 1996
+--- MySC/sf-admin.c	Fri Apr 19 20:00:39 1996
+***************
+*** 9,14 ****
+--- 9,16 ----
+   *
+   */
+  
++ #pragma implementation "list.h"
++ 
+  #include "mysc.h"
+  #include "sccsfile.h"
+  #include "sl-merge.c"
+***************
+*** 23,28 ****
+--- 25,31 ----
+  
+  /* Changes the file comment, flags, and/or the user authorization list
+     of the SCCS file. */
++ 
+  
+  void
+  sccs_file::admin(char const *file_comment,
+diff -c -N MySC-orig/sf-cdc.c MySC/sf-cdc.c
+*** MySC-orig/sf-cdc.c	Sat Apr 20 19:46:44 1996
+--- MySC/sf-cdc.c	Fri Apr 19 20:00:39 1996
+***************
+*** 9,14 ****
+--- 9,16 ----
+   *
+   */
+  
++ #pragma implementation "list.h"
++ 
+  #include "mysc.h"
+  #include "sccsfile.h"
+  
+diff -c -N MySC-orig/sf-delta.c MySC/sf-delta.c
+*** MySC-orig/sf-delta.c	Sat Apr 20 19:46:45 1996
+--- MySC/sf-delta.c	Fri Apr 19 20:00:39 1996
+***************
+*** 66,72 ****
+  /* Quit with an appropriate error message when a read operation
+     on the diff output fails. */
+  
+! void
+  diff_state::corrupt() {
+  	if (ferror(in)) {
+  		quit(errno, "(diff output): Read error.");
+--- 66,72 ----
+  /* Quit with an appropriate error message when a read operation
+     on the diff output fails. */
+  
+! NORETURN
+  diff_state::corrupt() {
+  	if (ferror(in)) {
+  		quit(errno, "(diff output): Read error.");
+***************
+*** 78,84 ****
+  /* Quit with a cryptic error message indicating that something
+     is wrong with the diff output. */
+  
+! void
+  diff_state::corrupt(char const *msg) {
+  	quit(-1, "Diff output corrupt. (%s)", msg);
+  }
+--- 78,84 ----
+  /* Quit with a cryptic error message indicating that something
+     is wrong with the diff output. */
+  
+! NORETURN
+  diff_state::corrupt(char const *msg) {
+  	quit(-1, "Diff output corrupt. (%s)", msg);
+  }
+***************
+*** 267,273 ****
+  		quit(errno, "%s: Can't open file for reading.", name);
+  	}
+  
+! 	if (flags.id_keywords && *(char const *)flags.id_keywords != '\0') {
+  		while(!read_line_param(f)) {
+  			if (strstr(linebuf, flags.id_keywords) != NULL) {
+  				fclose(f);
+--- 267,273 ----
+  		quit(errno, "%s: Can't open file for reading.", name);
+  	}
+  
+! 	if (!(flags.id_keywords == NULL) && *(char const *)flags.id_keywords != '\0') {
+  		while(!read_line_param(f)) {
+  			if (strstr(linebuf, flags.id_keywords) != NULL) {
+  				fclose(f);
+***************
+*** 285,291 ****
+  		}
+  	}
+  
+! 	if (flags.id_keywords) {
+  		quit(-1, "%s: No id keywords.", name);
+  	}
+  
+--- 285,291 ----
+  		}
+  	}
+  
+! 	if (!(flags.id_keywords == NULL)) {
+  		quit(-1, "%s: No id keywords.", name);
+  	}
+  
+diff -c -N MySC-orig/sf-get.c MySC/sf-get.c
+*** MySC-orig/sf-get.c	Sat Apr 20 19:46:45 1996
+--- MySC/sf-get.c	Fri Apr 19 20:00:39 1996
+***************
+*** 10,15 ****
+--- 10,16 ----
+  
+  #ifdef __GNUC__
+  #pragma implementation "seqstate.h"
++ #pragma implementation "stack.h"
+  #endif
+  
+  #include "mysc.h"
+diff -c -N MySC-orig/sf-get2.c MySC/sf-get2.c
+*** MySC-orig/sf-get2.c	Sat Apr 20 19:46:45 1996
+--- MySC/sf-get2.c	Fri Apr 19 20:00:40 1996
+***************
+*** 24,30 ****
+  
+  sid
+  sccs_file::find_requested_sid(sid requested) const {
+! 	if (requested == NULL) {
+  		requested = flags.default_sid;
+  	}
+  
+--- 24,30 ----
+  
+  sid
+  sccs_file::find_requested_sid(sid requested) const {
+! 	if (requested == (sid) NULL) {
+  		requested = flags.default_sid;
+  	}
+  
+***************
+*** 42,53 ****
+  			return requested;
+  		}
+  		if (requested.partial_match(id)
+! 		    && (id > best || best == NULL)) {
+  			best = id;
+  		}
+  	}
+  
+! 	if (best != NULL || !requested.release_only()) {
+  		return best;
+  	}
+  
+--- 42,53 ----
+  			return requested;
+  		}
+  		if (requested.partial_match(id)
+! 		    && (id > best || best == (sid) NULL)) {
+  			best = id;
+  		}
+  	}
+  
+! 	if (best != (sid) NULL || !requested.release_only()) {
+  		return best;
+  	}
+  
+***************
+*** 164,171 ****
+  	}
+  
+  	if (flags.all_locked 
+! 	    || (flags.floor != NULL && flags.floor > got)
+! 	    || (flags.ceiling != NULL && flags.ceiling < got)
+  	    || flags.locked.member(got)) {
+  		quit(-1, "%s: Requested release is locked.",
+  		     (char const *) name);
+--- 164,171 ----
+  	}
+  
+  	if (flags.all_locked 
+! 	    || (flags.floor != (release) NULL && flags.floor > got)
+! 	    || (flags.ceiling != (release) NULL && flags.ceiling < got)
+  	    || flags.locked.member(got)) {
+  		quit(-1, "%s: Requested release is locked.",
+  		     (char const *) name);
+***************
+*** 361,368 ****
+  	    show_sid, show_module, debug);
+  
+  	if (!parms.found_id) {
+! 		if (flags.id_keywords != NULL
+! 		    && *(char const *)flags.id_keywords != '\0') {
+  			fprintf(stderr, "%s: Warning: Required keywords \"%s\""
+  				        " missing.",
+  				(char const *) name,
+--- 361,368 ----
+  	    show_sid, show_module, debug);
+  
+  	if (!parms.found_id) {
+! 		if (!(flags.id_keywords == NULL)
+! 		    && !(*(char const *)flags.id_keywords == '\0')) {
+  			fprintf(stderr, "%s: Warning: Required keywords \"%s\""
+  				        " missing.",
+  				(char const *) name,
+diff -c -N MySC-orig/sf-prs.c MySC/sf-prs.c
+*** MySC-orig/sf-prs.c	Sat Apr 20 19:46:46 1996
+--- MySC/sf-prs.c	Fri Apr 19 20:00:40 1996
+***************
+*** 58,64 ****
+  
+  static void
+  print_flag2(FILE *out, char const *s, string it) {
+! 	if (it != NULL) {
+  		fprintf(out, "%s: %s\n", s, (char const *) it);
+  	}
+  }
+--- 58,64 ----
+  
+  static void
+  print_flag2(FILE *out, char const *s, string it) {
+! 	if (!(it == NULL)) {
+  		fprintf(out, "%s: %s\n", s, (char const *) it);
+  	}
+  }
+***************
+*** 79,85 ****
+  template <class TYPE>
+  void
+  print_flag2(FILE *out, char const *s, TYPE it) {
+! 	if (it != NULL) {
+  		fprintf(out, "%s: ", s);
+  		it.print(out);
+  		putc('\n', out);
+--- 79,85 ----
+  template <class TYPE>
+  void
+  print_flag2(FILE *out, char const *s, TYPE it) {
+! 	if (!(it == (TYPE) NULL)) {
+  		fprintf(out, "%s: ", s);
+  		it.print(out);
+  		putc('\n', out);
+***************
+*** 129,135 ****
+  template <class TYPE>
+  void
+  print_flag(FILE *out, TYPE it) {
+! 	if (it == NULL) {
+  		fputs("none", out);
+  	} else {
+  		it.print(out);
+--- 129,135 ----
+  template <class TYPE>
+  void
+  print_flag(FILE *out, TYPE it) {
+! 	if (it == (TYPE) NULL) {
+  		fputs("none", out);
+  	} else {
+  		it.print(out);
+***************
+*** 322,328 ****
+  			break;
+  			
+  		case KEY2('M','F'):
+! 			print_yesno(out, flags.mr_checker != NULL);
+  			break;
+  
+  		case KEY2('M','P'):
+--- 322,328 ----
+  			break;
+  			
+  		case KEY2('M','F'):
+! 			print_yesno(out, !(flags.mr_checker == NULL));
+  			break;
+  
+  		case KEY2('M','P'):
+***************
+*** 330,336 ****
+  			break;
+  			
+  		case KEY2('K','F'):
+! 			print_yesno(out, flags.id_keywords != NULL);
+  			break;
+  
+  		case KEY2('K','V'):
+--- 330,336 ----
+  			break;
+  			
+  		case KEY2('K','F'):
+! 			print_yesno(out, !(flags.id_keywords == NULL));
+  			break;
+  
+  		case KEY2('K','V'):
+***************
+*** 423,429 ****
+  void		
+  sccs_file::prs(FILE *out, string format, sid rid, sccs_date cutoff,
+  	       enum when when, int all_deltas) {
+! 	if (rid == NULL) {
+  		rid = find_most_recent_sid(rid);
+  	}
+  
+--- 423,429 ----
+  void		
+  sccs_file::prs(FILE *out, string format, sid rid, sccs_date cutoff,
+  	       enum when when, int all_deltas) {
+! 	if (rid == (sid) NULL) {
+  		rid = find_most_recent_sid(rid);
+  	}
+  
+diff -c -N MySC-orig/sf-write.c MySC/sf-write.c
+*** MySC-orig/sf-write.c	Sat Apr 20 19:47:04 1996
+--- MySC/sf-write.c	Fri Apr 19 20:00:40 1996
+***************
+*** 7,12 ****
+--- 7,14 ----
+   * Members of the class sccs_file used update the SCCS file.
+   *
+   */
++ 
++ #pragma implementation "list.h"
+   
+  #include "mysc.h"
+  #include "sccsfile.h"
+***************
+*** 185,198 ****
+  		return 1;
+  	}
+  
+! 	if (flags.floor != NULL 
+  	    && (fputs("\001f f ", out) == EOF
+  		|| flags.floor.print(out)
+  		|| putc('\n', out) == EOF)) {
+  		return 1;
+  	}
+  
+! 	if (flags.ceiling != NULL
+  	    && (fputs("\001f c ", out) == EOF
+  		|| flags.ceiling.print(out)
+  		|| putc('\n', out) == EOF)) {
+--- 187,200 ----
+  		return 1;
+  	}
+  
+! 	if (!(flags.floor == (sid) NULL) 
+  	    && (fputs("\001f f ", out) == EOF
+  		|| flags.floor.print(out)
+  		|| putc('\n', out) == EOF)) {
+  		return 1;
+  	}
+  
+! 	if (!(flags.ceiling == (sid) NULL)
+  	    && (fputs("\001f c ", out) == EOF
+  		|| flags.ceiling.print(out)
+  		|| putc('\n', out) == EOF)) {
+diff -c -N MySC-orig/sid.c MySC/sid.c
+*** MySC-orig/sid.c	Sat Apr 20 19:47:04 1996
+--- MySC/sid.c	Fri Apr 19 20:00:40 1996
+***************
+*** 172,178 ****
+  
+  sid
+  sid::successor() const {
+! 	if (*this == NULL) {
+  		return sid(1, 1, 0, 0);
+  	} else if (branch != 0) {
+  		return sid(rel, level, branch, sequence + 1);
+--- 172,178 ----
+  
+  sid
+  sid::successor() const {
+! 	if (*this == (sid) NULL) {
+  		return sid(1, 1, 0, 0);
+  	} else if (branch != 0) {
+  		return sid(rel, level, branch, sequence + 1);
+diff -c -N MySC-orig/sid.h MySC/sid.h
+*** MySC-orig/sid.h	Sat Apr 20 19:47:11 1996
+--- MySC/sid.h	Fri Apr 19 20:00:41 1996
+***************
+*** 242,251 ****
+  
+  #endif
+  
+- #pragma warn -inl
+  typedef range_list<release> release_list;
+  typedef range_list<sid> sid_list;
+- #pragma warn .inl
+  
+  #endif /* __SID_H__ */
+  	
+--- 242,249 ----
+diff -c -N MySC-orig/sid_list.c MySC/sid_list.c
+*** MySC-orig/sid_list.c	Sat Apr 20 19:47:13 1996
+--- MySC/sid_list.c	Fri Apr 19 20:00:41 1996
+***************
+*** 23,31 ****
+  #include "sid.c"
+  #endif
+  
+! #ifdef __GNUC__
+! #pragma not really interface
+! #endif
+  
+  template <class TYPE>
+  range_list<TYPE>::range_list(char const *list): head(NULL) {
+--- 23,29 ----
+  #include "sid.c"
+  #endif
+  
+! #pragma interface
+  
+  template <class TYPE>
+  range_list<TYPE>::range_list(char const *list): head(NULL) {
+diff -c -N MySC-orig/sid_list.h MySC/sid_list.h
+*** MySC-orig/sid_list.h	Sat Apr 20 19:47:11 1996
+--- MySC/sid_list.h	Fri Apr 19 20:00:41 1996
+***************
+*** 14,20 ****
+  #define __SID_LIST_H__
+  
+  #ifdef __GNUC__
+! #pragma this does not work with templates interface
+  #endif
+  
+  extern void *invalid_range;
+--- 14,20 ----
+  #define __SID_LIST_H__
+  
+  #ifdef __GNUC__
+! #pragma interface
+  #endif
+  
+  extern void *invalid_range;
+diff -c -N MySC-orig/stack.h MySC/stack.h
+*** MySC-orig/stack.h	Sat Apr 20 19:47:12 1996
+--- MySC/stack.h	Fri Apr 19 20:00:41 1996
+***************
+*** 14,19 ****
+--- 14,21 ----
+  #ifndef __STACK_H__
+  #define __STACK_H__
+  
++ #pragma interface
++ 
+  template <class TYPE>
+  class stack {
+  	TYPE *array;
+Common subdirectories: MySC-orig/test and MySC/test
+diff -c -N MySC-orig/unget.c MySC/unget.c
+*** MySC-orig/unget.c	Sat Apr 20 19:47:05 1996
+--- MySC/unget.c	Fri Apr 19 20:00:41 1996
+***************
+*** 77,83 ****
+  			break;
+  
+  		case sccs_pfile::NOT_FOUND:
+! 			if (rid == NULL) {
+  				quit(-1, "%s: You have no edits outstanding.",
+  				     (char const *) name);
+  			}
+--- 77,83 ----
+  			break;
+  
+  		case sccs_pfile::NOT_FOUND:
+! 			if (rid == (sid) NULL) {
+  				quit(-1, "%s: You have no edits outstanding.",
+  				     (char const *) name);
+  			}
+***************
+*** 87,93 ****
+  			break;
+  
+  		case sccs_pfile::AMBIGUOUS:
+! 			if (rid != NULL) {
+  				quit(-1, "%s: Specified SID is ambiguous.",
+  				     (char const *) name);
+  			}
+--- 87,93 ----
+  			break;
+  
+  		case sccs_pfile::AMBIGUOUS:
+! 			if (rid != (sid) NULL) {
+  				quit(-1, "%s: Specified SID is ambiguous.",
+  				     (char const *) name);
+  			}

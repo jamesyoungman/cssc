@@ -1,0 +1,156 @@
+/*
+ * pipe.h
+ *
+ * By Ross Ridge
+ * Public Domain
+ *
+ * Defines the class pipe.
+ *
+ * @(#) MySC pipe.h 1.1 93/12/30 17:33:40
+ *
+ */
+
+#ifndef __PIPE_H__
+#define __PIPE_H__
+
+#ifdef __GNUC__
+#pragma interface
+#endif
+
+/* One of two definitions of the class pipe are used depending if the
+   system supports pipes (and fork) or not.  If pipes are not supported
+   then a temporary file used to emulate one.  The members must be
+   called in order: constructor, write_stream(), write_close(),
+   read_stream(), read_close(), destructor. */
+
+#ifdef CONFIG_NO_PIPE
+
+class pipe: cleanup {
+	friend int run_diff(char const *gname, pipe &in, pipe &out);
+
+	FILE *f;
+	int fd;
+	string name;
+
+	void do_cleanup();
+
+public:
+	pipe();
+
+	FILE *write_stream() { return f; }
+	void write_close() { fclose(f); }
+	FILE *read_stream();
+	int read_close();
+	~pipe() { assert(f == NULL); }
+};
+
+#else /*  CONFIG_NO_PIPE */
+
+/* Definition of the class wait_pid.  It handles the problem of
+   other child processes exiting while waiting a for a specific
+   child process to exit. */
+
+class wait_pid {
+	int pid;
+	int reaped;
+	int status;
+	class wait_pid *next;
+	static class wait_pid *head;
+
+	void
+	link(int p) {
+		pid = p;
+		if (p != -1 && p != 0) {
+			reaped = 0;
+			next = head;
+			head = this;
+		}
+	}
+
+	void unlink();
+
+	void operator =(wait_pid const &);
+
+public:
+	wait_pid(): pid(-1) {};
+
+	wait_pid(int p) { link(p); }
+
+	int
+	operator =(int p) {
+		assert(pid == -1);
+		link(p);
+		return p;
+	}
+
+	operator int() {
+		return pid;
+	}
+
+	int wait();
+
+	~wait_pid() {
+		if (pid != -1 && pid != 0) {
+			unlink();
+		}
+	}
+};
+
+class pipe {
+	friend int run_diff(char const *gname, pipe &in, pipe &out);
+
+	int fd;
+	wait_pid pid;
+	int child;
+	FILE *f;
+
+	static NORETURN _exit(int);
+
+public:
+	pipe();
+
+	FILE *
+	write_stream() {
+		if (child) {
+			return f;
+		} else {
+			return NULL;
+		}
+	}
+
+	void
+	write_close() {
+		if (child) {
+			fclose(f);
+			_exit(0);
+		}
+	}
+
+	FILE *
+	read_stream() {
+		assert(!child);
+		return f;
+	}
+
+	int
+	read_close() {
+		assert(!child);
+		fclose(f);
+		f = NULL;
+		return pid.wait();
+	}
+
+
+	~pipe() {
+		assert(!child);
+		assert(f == NULL);
+	}
+};	
+
+#endif /* CONFIG_NO_PIPE */
+
+#endif /* __PIPE_H__ */
+
+/* Local variables: */
+/* mode: c++ */
+/* End: */

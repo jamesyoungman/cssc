@@ -1,0 +1,511 @@
+/*
+ * file.c
+ *
+ * By Ross Ridge
+ * Public Domain
+ *
+ * System dependent routines for accessing files.
+ *
+ */
+
+#ifdef __GNUC__
+#pragma implementation "filelock.h"
+#endif
+
+#include "mysc.h"
+#include "sysdep.h"
+
+#ifdef CONFIG_SCCS_IDS
+static char const sccs_id[] = "@(#) MySC file.c 1.1 93/11/09 17:17:53";
+#endif
+
+#ifdef CONFIG_UIDS
+
+#ifdef CONFIG_DECLARE_STAT
+extern "C" int CDECL stat(char const *, struct stat *);
+#endif
+
+
+/* Tests the accessability of file, but unlike access() uses the
+   effective uid and gid, not the real uid and gid. */
+
+static int
+eaccess(char const *name, int perm) {
+	struct stat st;
+
+	if (stat(name, &st) == -1) {
+		return -1;
+	}
+
+	perm &= 7;
+	if (perm == 0) {
+		return 0;
+	}
+
+	if (geteuid() == st.st_uid) {
+		st.st_mode >>= 6;
+	} else if (getegid() == st.st_gid) {
+		st.st_mode >>= 3;
+	}
+
+	if ((st.st_mode & perm) == perm) {
+		return 0;
+	}
+
+	return -1;
+}
+
+#else /* CONFIG_UIDS */
+
+inline int
+eaccess(char const *name, int perm) {
+	return access(name, perm);
+}
+
+#endif /* CONFIG_UIDS */
+
+
+/* Redirects stdout to a "null" file (eg. /dev/null). */
+		
+void
+stdout_to_null() {
+	if (freopen(CONFIG_NULL_FILENAME, "w", stdout)) {
+		quit(errno, "Can't redirect stdout to "
+		            CONFIG_NULL_FILENAME ".");
+	}
+}
+
+
+/* Redirects to stdout to stderr. */
+
+FILE *
+stdout_to_stderr() {
+	fflush(stdout);
+	fflush(stderr);
+
+	int out = dup(1);
+	if (out == -1) {
+		quit(errno, "dup(1) failed.");
+	}
+
+	if (close(1) == -1 || dup(2) != 1) {
+		quit(errno, "Can't redirect stdout to stderr.");
+	}
+
+	FILE *f = fdopen(out, "w");
+	if (f == NULL) {
+		quit(errno, "fdopen failed.");
+	}
+
+	return f;
+}
+
+/* Returns true if stdin is not a file. */
+
+int
+stdin_is_a_tty() {
+	return isatty(0);
+}
+
+
+/* Opens a stream to write to the "null" file (eg. /dev/null). */
+
+FILE *
+open_null() {
+	FILE *f = fopen(CONFIG_NULL_FILENAME, "w");
+	if (f == NULL) {
+		quit(errno, CONFIG_NULL_FILENAME ": Can't open for writing.");
+	}
+	return f;
+}
+
+
+/* Returns true if the file exists and is readable. */
+
+int
+is_readable(char const *name) {
+	return access(name, 04) != -1;
+}
+
+
+/* Returns true if the file exists and is writable. */
+
+inline int
+is_writable(char const *name, int as_real_user = 1) {
+	if (as_real_user) {
+		return access(name, 02) != -1;
+	} else {
+		return eaccess(name, 02) != -1;
+	}
+}
+
+
+/* Returns true if the file exists. */
+
+int
+file_exists(char const *name) {
+	return access(name, 0) != -1;
+}
+
+
+#if defined(CONFIG_SYNC_BEFORE_REOPEN) || defined(CONFIG_SHARE_LOCKING)
+
+#ifdef CONFIG_NO_FSYNC
+#include "fsync.c"
+#endif
+
+#if !defined(fileno) && defined(__BORLANDC__)
+#define fileno(f) (f->fd)
+#endif
+
+int
+ffsync(FILE *f) {
+	if (fsync(fileno(f)) == -1) {
+		return EOF;
+	}
+	return 0;
+}
+
+#endif /* defined(CONFIG_SYNC_BEFORE_REOPEN) || ... */
+
+
+#ifdef CONFIG_USE_ARCHIVE_BIT
+
+#ifdef CONFIG_NO__CHMOD
+
+#include "_chmod.c"
+
+#ifndef FA_ARCH
+#define FA_ARCH 0x20
+#endif
+
+#endif /* CONFIG_NO__CHMOD */
+
+
+/* Clears the archive file attribute bit of a file. */
+
+void
+clear_archive_bit(char const *name) {
+	int attribs = _chmod(name, 0);
+	if (attribs == -1 || _chmod(name, 1, attribs & ~FA_ARCH) == -1) {
+		quit(errno, "%s: Can't clear archive file attribute.", name);
+	}
+}
+
+
+/* Returns true if the archive file attribute bit of a file is set. */
+
+inline int
+test_archive_bit(char const *name) {
+	int attribs = _chmod(name, 0);
+	if (attribs == -1) {
+		quit(errno, "%s: Can't test archive file attribute.", name);
+	}
+	return (attribs & FA_ARCH) == FA_ARCH;
+}
+
+#endif /* CONFIG_USE_ARCHIVE_BIT */
+		
+
+#ifdef CONFIG_UIDS
+
+/* A flag to indicate whether or not the programme is an privileged
+   (effective UID != real UID) or unprivileged (effective UID == real
+   UID). */
+
+static int unprivileged = 0;
+
+#ifdef CONFIG_SAVED_SETUID
+
+static int old_euid;
+
+void
+give_up_privileges() {
+	if (unprivileged++ == 0) {
+		old_euid = geteuid();
+		if (setuid(getuid()) == -1) {
+			quit(errno, "setuid(%d) failed", getuid());
+		}
+		assert(getuid() == geteuid());
+	}
+}
+
+void
+restore_privileges() {
+	if (--unprivileged == 0) {
+		if (setuid(euid) == -1) {
+			quit(errno, "setuid(%d) failed", old_euid);
+		}
+		assert(geteuid() == old_euid);
+	}
+	assert(unprivileged >= 0);
+}
+
+#elif defined(CONFIG_SETREUID)
+
+static int old_ruid, old_euid;
+
+void
+give_up_privileges() {
+	if (unprivileged++ == 0) {
+		old_ruid = getuid();
+		old_euid = geteuid();
+
+		if (setreuid(old_euid, old_ruid) == -1) {
+			quit(errno, "setreuid(%d, %d) failed.",
+			     old_euid, old_ruid);
+		}
+		assert(geteuid() == old_ruid);
+	}
+}
+
+void
+restore_privileges() {
+	if (--unprivileged == 0) {
+		if (setreuid(old_ruid, old_euid) == -1) {
+			quit(errno, "setreuid(%d, %d) failed.", 
+			     old_ruid, old_euid);
+		}
+		assert(geteuid() == old_euid);
+	}
+	assert(unprivileged >= 0);
+}
+
+
+#else /* defined(CONFIG_SETREUID) */
+
+void
+give_up_privileges() {
+	++unprivileged;
+	if (geteuid() != getuid()) {
+		quit(-1, "Set UID not supported.");
+	}
+}
+
+void
+restore_privileges() {
+	--unprivileged;
+	assert(unprivileged >= 0);
+}
+
+#endif /* defined(CONFIG_SETREUID) */
+
+inline int
+open_as_real_user(char const *name, int mode, int perm) {
+	give_up_privileges();
+	int fd = open(name, mode, perm);
+	restore_privileges();
+	return fd;
+}
+
+#ifdef CONFIG_DECLARE_GETPWUID
+extern "C" struct passwd * CDECL getpwuid(int uid);
+#endif
+
+#ifdef CONFIG_DECLARE_GETLOGIN
+extern "C" char *getlogin(void);
+#endif
+
+char const *
+get_user_name() {
+	static string name = getlogin();
+	if (name != NULL) {
+		return name;
+	}
+	struct passwd *p = getpwuid(getuid());
+	if (p == NULL) {
+		quit(-1, "UID %d not found in password file.", getuid());
+	}
+	name = p->pw_name;
+	endpwent();
+	return name;
+}
+
+int
+user_is_group_member(int gid) {
+	return gid == getegid();
+}
+
+#else /* CONFIG_UIDS */
+
+char const *
+get_user_name() {
+	char const *s = getenv("USER");
+	if (s != NULL) {
+		return s;
+	}
+	return "unknown";
+}
+
+int
+user_is_group_member(int) {
+	return 0;
+}
+
+#endif /* CONFIG_UIDS */
+
+
+/* Returns a file descriptor open to a newly created file. */
+
+int
+create(string name, int mode) {
+	int flags = O_CREAT;
+
+	if (mode & CREATE_FOR_UPDATE) {
+		flags |= O_RDWR;
+	} else {
+		flags |= O_WRONLY;
+	}
+
+	if (mode & CREATE_EXCLUSIVE) {
+		flags |= O_EXCL;
+#ifdef CONFIG_USE_ARCHIVE_BIT
+	} else if ((mode & CREATE_FOR_GET)
+		   && file_exists(name) && test_archive_bit(name)) {
+		quit(-1, "%s: File exists and its archive attribute is set.",
+		     (char const *) name);
+#else
+	} else if ((mode & CREATE_FOR_GET)
+		   && is_writable(name, mode & CREATE_AS_REAL_USER)) {
+		quit(-1, "%s: File exists and is writable.",
+		     (char const *) name);
+#endif
+	} else if (file_exists(name) && unlink(name) == -1) {
+		return -1;
+	}
+
+#ifdef CONFIG_MSDOS_FILES
+	int perms = 0666;
+#else
+	int perms = 0644;
+	if (mode & CREATE_READ_ONLY) {
+		perms = 0444;
+	}
+#endif 
+
+	int fd;
+
+#ifdef CONFIG_UIDS
+	if (mode & CREATE_AS_REAL_USER) {
+		fd = open_as_real_user(name, flags, perms);
+	} else 
+#endif
+#ifdef CONFIG_SHARE_LOCKING
+	if (mode & CREATE_WRITE_LOCK) {
+		fd = sopen(name, flags, SH_DENYWR, perms);
+	} else
+#endif
+	{
+		fd = open(name, flags, perms);
+	}
+
+	return fd;
+}
+
+
+/* Returns a file stream open to a newly created file. */
+
+FILE *
+fcreate(string name, int mode) {
+	int fd = create(name, mode);
+	if (fd == -1) {
+		return NULL;
+	}
+	if (mode & CREATE_FOR_UPDATE) {
+		return fdopen(fd, "w+");
+	}
+	return fdopen(fd, "w");
+}
+
+#ifdef CONFIG_SHARE_LOCKING
+
+file_lock::file_lock(string zname): locked(0), name(zname) {
+	f = fcreate(zname, CREATE_WRITE_LOCK | CREATE_EXCLUSIVE);
+	if (f == NULL) {
+		struct DOSERROR err;
+
+		if (errno == EEXIST
+		    || (dosexterr(&err) == EACCES
+			&& err.de_class == 2 /* temporary situation */)) {
+			return;
+		}
+		quit(errno, "%s: Can't create lock file.", 
+		     (char const *) zname);
+	}
+	if (fprintf(f, "%s\n", get_user_name()) == EOF
+	    || fflush(f) == EOF || ffsync(f) == EOF) {
+		quit(errno, "%s: Write error.", (char const *) zname);
+	}
+
+	locked = 1;
+	return;
+}
+
+file_lock::~file_lock() {
+	if (locked) {
+		locked = 0;
+		fclose(f);
+		unlink(name);
+	}
+}
+
+#elif defined(CONFIG_PID_LOCKING) || defined(CONFIG_DUMB_LOCKING)
+
+file_lock::file_lock(string zname): locked(0), name(zname) {
+	FILE *f = fcreate(zname, CREATE_READ_ONLY | CREATE_EXCLUSIVE);
+	if (f == NULL) {
+		if (errno == EEXIST) {
+			return;
+		}
+		quit(errno, "%s: Can't create lock file.", 
+		     (char const *) zname);
+	}
+
+#ifdef CONFIG_DUMB_LOCKING
+	if (fprintf(f, "%s\n", get_user_name()) == EOF
+#else
+	if (putw(getpid(), f) == EOF
+#endif
+	    || fclose(f) == EOF) {
+		quit(errno, "%s: Write error.", (char const *) zname);
+	}
+
+	locked = 1;
+	return;
+}
+
+file_lock::~file_lock() {
+	if (locked) {
+		locked = 0;
+		unlink(name);
+	}
+}
+
+#endif /* defined(CONFIG_PID_LOCKING) */
+
+
+#ifdef CONFIG_NO_REMOVE
+
+int
+remove(char const *name) {
+	return unlink(name);
+}
+
+#endif /* CONFIG_NO_REMOVE */
+
+
+#ifdef CONFIG_NO_RENAME
+
+int
+rename(char const *from, char const *to) {
+	if (link(from, to) == -1 || unlink(from) == -1) {
+		return -1;
+	}
+	return 0;
+}
+
+#endif /* CONFIG_NO_RENAME */
+
+/* Local variables: */
+/* mode: c++ */
+/* End: */

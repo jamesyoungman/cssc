@@ -1,0 +1,70 @@
+/*
+ * cf-djgpp.h
+ *
+ * By Ross Ridge
+ * Public Domain
+ *
+ * Sample configuration file for use with DJGPP.
+ *
+ * @(#) MySC cf-djgpp.h 1.1 93/11/09 17:17:45
+ *
+ */
+
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
+
+#define CONFIG_NO_FORK
+#define CONFIG_NO_PIPE
+#define CONFIG_NO_SPAWN
+#define CONFIG_NO_DIRECTORY
+#define CONFIG_NO_MKTIME
+#define CONFIG_NO_REMOVE
+#undef  CONFIG_NO_RENAME
+#undef  CONFIG_NO_STRERROR
+#undef  CONFIG_NO_STRSTR
+#define CONFIG_NO_TIMEZONE_VAR
+#define CONFIG_NO_FSYNC
+#define CONFIG_NO__CHMOD
+ 
+#undef  CONFIG_DECLARE_ERRNO
+#define CONFIG_DECLARE_STRERROR
+#undef  CONFIG_DECLARE_MALLOC
+#undef  CONFIG_DECLARE_FDOPEN
+#undef  CONFIG_DECLARE_TIMEZONE
+#undef  CONFIG_DECLARE_TZSET
+
+#define CONFIG_INCLUDE_FCNTL_H
+#undef  CONFIG_INCLUDE_SYS_FILE_H
+#undef  CONFIG_INCLUDE_UNISTD_H
+#undef  CONFIG_INCLUDE_IO_H
+#undef  CONFIG_INCLUDE_PROCESS_H
+
+#undef  CONFIG_SAVED_SETUID
+#undef  CONFIG_SETREUID
+
+#define CONFIG_DIFF_COMMAND	"diff"
+#undef  CONFIG_DIFF_SWITCHES
+
+#define CONFIG_COMPLETE_TEMPLATES
+
+#define CONFIG_FILE_NAME_GUESSING
+#define CONFIG_USE_ARCHIVE_BIT
+
+#undef  CONFIG_UIDS
+#define	CONFIG_BINARY_FILE
+#define CONFIG_MSDOS_FILES
+#define CONFIG_SYNC_BEFORE_REOPEN
+#undef  CONFIG_BORLANDC
+#define CONFIG_DJGPP
+#define CONFIG_TEMP_DIRECTORY		"."
+#define CONFIG_EOL_CHARACTER		'\n'
+
+#define CONFIG_LINEBUF_CHUNK_SIZE	1024
+#define CONFIG_LIST_CHUNK_SIZE		16
+
+#endif /* __CONFIG_H__ */
+
+/* Local variables: */
+/* mode: c++ */
+/* End: */
+
