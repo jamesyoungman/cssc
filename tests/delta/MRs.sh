@@ -4,7 +4,9 @@
 # Import common functions & definitions.
 . ../common/test-common
 
+rm -rf test
 remove command.log log log.stdout log.stderr base
+remove passwd 
 mkdir test 2>/dev/null
 
 # Create the input files.
@@ -83,6 +85,14 @@ docommand M19 "${prs} -d:MP: test/s.passwd" 0 "\n" ""
 # Hence MRs should be accepted without checking.
 docommand M20 "${delta} -mmr.M20 -ycomment.M20 test/s.passwd" 0 \
 	"1.4\n0 inserted\n0 deleted\n2 unchanged\n"  ""
+
+# Check the file out again.
+docommand M21 "${get} -e test/s.passwd" 0 "1.4\nnew delta 1.5\n2 lines\n" ""
+
+# Check the file out again.  Require MRs.  Try to check in without MRs
+docommand M22 "${admin} -fvtrue test/s.passwd" 0 "" ""
+docommand M23 "${delta} -ycomment.M23 test/s.passwd </dev/null" 1 ""  IGNORE
+docommand M24 "test -f test/p.passwd" 0 "" ""
 
 rm -rf test
 remove command.log passwd 
