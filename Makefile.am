@@ -22,7 +22,7 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	delta-iterator.h bodyio.h filediff.h
 
 # Sources required by everybody.
-common_SOURCES = my-getopt.cc version.cc
+common_SOURCES = my-getopt.cc version.cc fdclosed.cc
 
 # Sources required by programs working with lists of SCCS files.
 sname_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc \
