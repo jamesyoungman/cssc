@@ -246,5 +246,6 @@ docommand B11 "${delta} -y'' $s" 0 \
 
 rm -rf test
 remove passwd command.log $s $g $x $z $p SCCS
+rm -rf SCCS
 success
 
