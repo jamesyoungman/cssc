@@ -19,9 +19,9 @@ see docs/FIXED.
  cd work/tests
  if make all-tests 
  then
-	uname -a | mail -s "CSSC success" JYoungman@vggas.com 
+	uname -a | mail -s "CSSC success" jay@gnu.ai.mit.edu 
  else
-	uname -a | mail -s "CSSC failure" JYoungman@vggas.com 
+	uname -a | mail -s "CSSC failure" jay@gnu.ai.mit.edu 
  fi
 
 
@@ -64,7 +64,7 @@ deltas (get -i -x) have been implemented but not extensively tested.
 
 See the file INSTALL for information on how to compile this package.
 Send any questions or bug reports by e-mail to the current maintainer,
-<JYoungman@vggas.com>.  After you have compiled CSSC, _PLEASE_ run the
+<jay@gnu.ai.mit.edu>.  After you have compiled CSSC, _PLEASE_ run the
 test suite, as described in docs/TESTING.
 
 

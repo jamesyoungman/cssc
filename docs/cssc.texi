@@ -739,7 +739,7 @@ the maintainer know and it will be fixed.
 @cindex maintainer
 
 If you find a bug in GNU @code{CSSC}, please send electronic mail to
-@w{@samp{JYoungman@@vggas.com}}.  Include the version number, which you
+@w{@samp{jay@@gnu.ai.mit.edu}}.  Include the version number, which you
 can find by giving the option @w{@samp{--version}} to any @code{CSSC}
 command.  Also include in your message the output that the program
 produced and the output you expected.  An @code{s.} file and
@@ -755,7 +755,7 @@ Microsoft Corporation.@refill
 
 If you have other questions, comments or suggestions about GNU
 @code{CSSC}, contact the maintainer via electronic mail to
-@w{@samp{JYoungman@@vggas.com}}.
+@w{@samp{jay@@gnu.ai.mit.edu}}.
 
 @node Copying, Concept Index, Problems, Top
 @c @ignore
