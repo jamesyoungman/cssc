@@ -123,6 +123,6 @@ This line inserted in 1.3 and deleted in 1.4
 ' IGNORE
 
 
-cat $s
+# cat $s
 remove $files
 success
