@@ -117,8 +117,7 @@ EXTRA_DIST = ChangeLog ChangeLog.1 $(testcode) show-disp.sh
 
 
 sccsdiff: sccsdiff.sh
-	cp sccsdiff.sh $@
-	chmod a+x $@
+	sed -e 's:__csscutildir__:$(csscutildir):g' < sccsdiff.sh > $@ && chmod a+x $@ || { rm -f $@; false; }
 
 testsplit$(EXEEXT): fnsplit.cc mystring.$(OBJEXT) quit.$(OBJEXT)
 	$(CXXCOMPILE) -DTEST_FNSPLIT -o testsplit$(EXEEXT) \

@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 dnl 
-dnl $Id: configure.in,v 1.75 2001/11/25 12:59:52 james_youngman Exp $
+dnl $Id: configure.in,v 1.76 2001/11/25 14:34:19 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -137,6 +137,10 @@ dnl AM_PROG_INSTALL
 AC_PROG_RANLIB
 
 
+dnl The next test must be done in C++.
+ 
+AC_LANG_CPLUSPLUS
+
 dnl Determine if we need to work around the bogus printf macro in
 dnl glibc 2.2.3, with GCC versions 2.97 and above. 
 dnl 
@@ -147,7 +151,13 @@ dnl
 AC_MSG_CHECKING([if you are using a broken version of glibc with a version of GCC (>=2.97) that doesn't like it])
 AC_TRY_COMPILE([
 #include <stdio.h>
-class foo { int printf(const char *fmt, ...); }
+int x = 0;
+class foo { 
+public:
+foo() { }
+void some_member_function(void) { };
+int printf(const char *fmt, ...); 
+};
 ],
 [/* no function body*/],
 AC_MSG_RESULT(no),
@@ -186,7 +196,6 @@ AC_MINGW32
 AC_OBJEXT
 AC_EXEEXT
 
-AC_LANG_CPLUSPLUS
 
 AC_PATH_PROG(UNAME,uname,/bin/uname)
 AC_PATH_PROG(PR,pr,/usr/bin/pr)

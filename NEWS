@@ -1,10 +1,25 @@
 New in CSSC-0.13alpha-pl1
+
+	* Fixed Debian GNU/Linux bug #120080 (that sccs sccsdiff fails to 
+          work if the /usr/sccs symbolic link is missing and the 
+          libexecfir is not on the caller's $PATH).
+
+	* Test suite now passes if run against Solaris 2.6 (this is the 
+          pnly Unix system to which the author has convenient access 
+	  at home).
+
+	* admin -fl2 now deletes any other existing locks (this is a 
+          Solaris 2.6 compatibility fix; please report a bug if this
+          breaks compatibility with something else).
 	
 	* If final item in the prs format string is \n (the 
 	  escape code for newline as opposed to newline) then
 	  prs does not emit that newline (for compatibility with 	
 	  Solaris 2.6 - if this is different on other Unix systems,
 	  please report this as a bug).
+
+	* Small changes to prt output format (reserved usr list header
+          and extra spaces at beginning and end of line).
 
 New in CSSC-0.13alpha-pl0
 
