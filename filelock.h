@@ -46,7 +46,7 @@ public:
 
 #else /* CONFIG_NO_LOCKING */
 
-class file_lock: cleanup {
+class file_lock : private cleanup {
 	int locked;
 	mystring name;
 #ifdef CONFIG_SHARE_LOCKING
