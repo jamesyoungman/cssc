@@ -2,7 +2,7 @@ Summary: GNU CSSC - An SCCS clone
 Name: CSSC
 Version: @VERSION@
 Release: 1
-URL: http://www.myth.co.uk/~jay/cssc/
+URL: http://www.free-lunch.demon.co.uk/CSSC/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
