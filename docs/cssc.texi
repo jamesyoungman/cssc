@@ -300,9 +300,11 @@ to most Unix programs, but is the same as the behavior of traditional
 @sc{sccs}}.
 
 @item -z
-Fix the checksum information.  The SCCS file is still validated by 
-CSSC; apart from possibly having an incorrect checksum, the s-file 
-must be valid. 
+Fix the checksum information.  The @sc{sccs} file is still validated by
+CSSC; apart from possibly having an incorrect checksum, the s-file must
+be valid.  If you use this option on an @sc{sccs} file which really is
+invalid, then the attempt may fail or @emph{silently write out a valid
+but incorrect file}.  Use this option with @emph{extreme} care.
 @c TODO: Write the test cases.
 @end table
 
