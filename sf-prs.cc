@@ -35,17 +35,17 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.16 1998/02/21 14:27:25 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.17 1998/06/15 20:50:04 james Exp $";
 #endif
 
-inline void
+inline bool
 sccs_file::get(FILE *out, mystring name, seq_no seq)
 {
   struct subst_parms parms(out, NULL, delta(), 0, sccs_date(NULL));
   class seq_state state(highest_delta_seqno());
   
   prepare_seqstate(state, seq);
-  get(name, state, parms);
+  return get(name, state, parms);
 }
 
 /* Prints a list of sequence numbers on the same line. */
@@ -259,7 +259,8 @@ sccs_file::print_delta(FILE *out, const char *format,
 		       struct delta const &d)
 {
   const char *s = format;
-
+  bool retval = true;
+  
   while (1)
     {
       char c = *s++;
@@ -517,7 +518,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 	  break;
 
 	case KEY2('F','D'):
-	  // The genuine article prints '(none)' of there
+	  // The genuine article prints '(none)' if there
 	  // is no description.
 	  if (0 == comments.length())
 	    fputs("(none)\n", out);
@@ -535,7 +536,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 	  break;
 
 	case KEY2('G','B'):
-	  get(out, "-", d.seq);
+	  get(out, "-", d.seq);	// TODO: check return value?
 	  break;
 
 	case KEY1('W'):
@@ -565,7 +566,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 
 /* Prints out parts of the SCCS file.  */
 
-void		
+bool
 sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
 	       enum when when, int all_deltas)
 {
@@ -579,8 +580,8 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
       const delta *pd = find_delta(rid);
       if (0 == pd)
 	{
-	  quit(-1, "%s: Requested SID doesn't exist.",
-	       name.c_str());
+	  errormsg("%s: Requested SID doesn't exist.", name.c_str());
+	  return false;
 	}
       cutoff_date = pd->date;
     }
@@ -615,6 +616,8 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
       print_delta(out, format.c_str(), *iter.operator->());
       putc('\n', out);
     }
+  
+  return true;
 }
 
 // Explicit template instantiations.

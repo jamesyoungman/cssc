@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.27 1998/05/30 08:54:01 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.28 1998/06/15 20:50:03 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -527,7 +527,8 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 				     
 	/* Set the return status. */
 	struct get_status status;
-
+	status.success = true;
+	
 	status.lines = parms.out_lineno;
 	
 	seq_no seq;	

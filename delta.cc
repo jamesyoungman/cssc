@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.18 1998/06/14 15:26:51 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.19 1998/06/15 20:49:58 james Exp $";
 
 void
 usage() {
@@ -228,11 +228,17 @@ main(int argc, char **argv) {
 		
 		mystring gname = name.gfile();
 
-		file.add_delta(gname, pfile, mr_list, comment_list);
-
-		if (!keep_gfile)
+		if (!file.add_delta(gname, pfile, mr_list, comment_list))
 		  {
-		    remove(gname.c_str());
+		    retval = 1;
+		    // if delta failed, don't delete the g-file.
+		  }
+		else
+		  {
+		    if (!keep_gfile)
+		      {
+			remove(gname.c_str());
+		      }
 		  }
 	}
 

@@ -33,20 +33,24 @@
 #include "delta-table.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.7 1997/11/30 21:05:51 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.8 1998/06/15 20:50:01 james Exp $";
 #endif
 
 /* Starts an update of an SCCS file that includes a new entry to be
    prepended to delta table. */
 
 FILE *
-sccs_file::start_update(const delta &new_delta) {
-	FILE *out = start_update();
-
-	if (write_delta(out, new_delta) || write(out)) {
-		xfile_error("Write error.");
+sccs_file::start_update(const delta &new_delta)
+{
+  FILE *out = start_update();
+  if (out)
+    {
+      if (write_delta(out, new_delta) || write(out))
+	{
+	  xfile_error("Write error.");
 	}
-	return out;
+    }
+  return out;
 }
 
 

@@ -157,7 +157,7 @@ private:
 				       struct subst_parms *,
 				       struct delta const&) const;
 
-  void get(mystring name, class seq_state &state,
+  bool get(mystring name, class seq_state &state,
 	   struct subst_parms &parms,
 	   subst_fn_t subst_fn = 0,
 	   int show_sid = 0, int show_module = 0, int debug = 0,
@@ -174,6 +174,7 @@ public:
   {
     unsigned lines;
     list<sid> included, excluded;
+    bool     success;
   };
 
   bool find_requested_sid(sid requested, sid &found,
@@ -197,16 +198,16 @@ private:
 
   /* sf-write.c */
 private:
-  NORETURN xfile_error(const char *msg) const POSTDECL_NORETURN;
+  void xfile_error(const char *msg) const;
   FILE *start_update() const;
   int write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
-  void end_update(FILE *out) const;
+  bool end_update(FILE *out) const;
   int rehack_encoded_flag(FILE *out, int *sum) const;
 
 public:
   static void update_checksum(const char *name);
-  void update();
+  bool update();
 
   /* sf-add.c */
 
@@ -229,7 +230,7 @@ public:
 
   int check_mrs(list<mystring> mrs);
 
-  void add_delta(mystring gname, sccs_pfile &pfile,
+  bool add_delta(mystring gname, sccs_pfile &pfile,
 		 list<mystring> mrs, list<mystring> comments);
 
   /* sccsfile.cc */
@@ -244,17 +245,17 @@ public:
   bool branches_allowed() const;
   
   /* sf-admin.c */
-  void admin(const char *file_comment,
+  bool admin(const char *file_comment,
 	     bool force_binary,
 	     list<mystring> set_flags, list<mystring> unset_flags,
 	     list<mystring> add_users, list<mystring> erase_users);
-  void create(release first_release, const char *iname,
+  bool create(release first_release, const char *iname,
 	      list<mystring> mrs, list<mystring> comments,
 	      int suppress_comments, bool force_binary);
 
   /* sf-prs.c */
 private:
-  void get(FILE *out, mystring name, seq_no seq);
+  bool get(FILE *out, mystring name, seq_no seq);
   void print_flags(FILE *out) const;
   void print_delta(FILE *out, const char *format,
 		   struct delta const &delta);
@@ -279,10 +280,10 @@ public:
   };
   
 
-  void prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
+  bool prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
 	   enum when when, int all_deltas);
 
-  void prt(FILE *out, struct cutoff exclude, int all_deltas,
+  bool prt(FILE *out, struct cutoff exclude, int all_deltas,
 	   //
 	   int print_body, int print_delta_table, int print_flags,
 	   int incl_excl_ignore, int first_line_only, int print_desc,
@@ -290,11 +291,11 @@ public:
   
   /* sf-cdc.c */
 
-  void cdc(sid id, list<mystring> mrs, list<mystring> comments);
+  bool cdc(sid id, list<mystring> mrs, list<mystring> comments);
 
   /* sf-rmdel.c */
 
-  void rmdel(sid rid);
+  bool rmdel(sid rid);
 
   // Implementation is protected; in the existing [MySC]
   // implementation some of the implementation is private where

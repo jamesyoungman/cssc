@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.11 1998/06/14 15:26:56 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.12 1998/06/15 20:49:59 james Exp $";
 
 void
 usage()
@@ -170,7 +170,8 @@ main(int argc, char **argv)
 
   sccs_file_iterator iter(opts);
 
-  while(iter.next())
+  int retval = 0;
+  while (iter.next())
     {
       sccs_name &name = iter.get_name();
 
@@ -181,18 +182,21 @@ main(int argc, char **argv)
 	
       sccs_file file(name, sccs_file::READ);
 
-      file.prt(stdout,
-	       exclude,		  // -y, -c, -r
-	       all_deltas,	  // -a
-	       print_body,	  // -b
-	       print_delta_table, // -d
-	       print_flags,	  // -f
-	       incl_excl_ignore,  // -i
-	       first_line_only,	  // -s
-	       print_desc,	  // -t
-	       print_users);	  // -u
+      if (!file.prt(stdout,
+		    exclude,		  // -y, -c, -r
+		    all_deltas,		  // -a
+		    print_body,		  // -b
+		    print_delta_table,	  // -d
+		    print_flags,	  // -f
+		    incl_excl_ignore,	  // -i
+		    first_line_only,	  // -s
+		    print_desc,		  // -t
+		    print_users))	  // -u
+	{
+	  retval = 1;
+	}
     }
-  return 0;
+  return retval;
 }
 
 

@@ -34,14 +34,14 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.17 1998/05/10 17:59:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.18 1998/06/15 20:50:05 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
-
-NORETURN
-sccs_file::xfile_error(const char *msg) const {
-	quit(errno, "%s: %s", name.xfile().c_str(), msg);
+void
+sccs_file::xfile_error(const char *msg) const
+{
+  errormsg_with_errno("%s: %s", name.xfile().c_str(), msg);
 }
 
 
@@ -52,10 +52,11 @@ FILE *
 sccs_file::start_update() const {
 	ASSERT(mode != READ);
 
-	if (mode == CREATE && file_exists(name.c_str())) {
-		quit(-1, "%s: SCCS file already exists.",
-		     name.c_str());
-	}
+	if (mode == CREATE && file_exists(name.c_str()))
+	  {
+	    errormsg("%s: SCCS file already exists.", name.c_str());
+	    return NULL;
+	  }
 		     
 	mystring xname = name.xfile();
 
@@ -84,11 +85,21 @@ sccs_file::start_update() const {
 
 	FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE);
 
-	if (out == NULL) {
-		xfile_error("Can't create temporary file for update.");
-	}
-	fputs("\001h-----\n", out);
-	return out;
+	if (out == NULL)
+	  {
+	    xfile_error("Can't create temporary file for update.");
+	    return NULL;
+	  }
+	else
+	  {
+	    if (fputs_failed(fputs("\001h-----\n", out)))
+	      {
+		xfile_error("write error");
+		fclose(out);
+		return NULL;
+	      }
+	    return out;
+	  }
 }
 
 
@@ -408,59 +419,67 @@ sccs_file::rehack_encoded_flag(FILE *f, int *sum) const
 }
 
 
+static bool
+maybe_sync(FILE *fp)
+{
+#ifdef CONFIG_SYNC_BEFORE_REOPEN
+  if (ffsync(out) == EOF)
+    return false;
+#endif
+  return true;
+}
+
+
 /* End the update of the SCCS file by updating the checksum, and
    renaming the x-file to replace the old SCCS file. */
 
-void
-sccs_file::end_update(FILE *out) const {
-#ifdef CONFIG_SYNC_BEFORE_REOPEN
-	if (fflush_failed(fflush(out)) || ffsync(out) == EOF) {
-#else
-	if (fflush_failed(fflush(out))) {
-#endif
+bool
+sccs_file::end_update(FILE *out) const
+{
+  if (fflush_failed(fflush(out)) || !maybe_sync(out))
+    {
+      xfile_error("Write error.");
+    }
 
-		xfile_error("Write error.");
+  int sum;
+  mystring xname = name.xfile();
+  
+  // Open the file (obtaining the checksum) and immediately close it.
+  if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ, &sum))))
+    xfile_error("Error closing file.");
+  
+  // For "admin -i", we may need to change the "encoded" flag
+  // from 0 to 1, if we found out that the input file was
+  // binary, but the "-b" command line option had not been
+  // given.  The checksum is adjusted if required.
+  if (flags.encoded)
+    {
+      rewind(out);
+      if (rehack_encoded_flag(out, &sum))
+	{
+	  xfile_error("Write error.");
 	}
-
-	int sum;
-	mystring xname = name.xfile();
-
-	// Open the file (obtaining the checksum) and immediately close it.
-	if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ, &sum))))
-	  xfile_error("Error closing file.");
-	
-	// For "admin -i", we may need to change the "encoded" flag
-	// from 0 to 1, if we found out that the input file was
-	// binary, but the "-b" command line option had not been
-	// given.  The checksum is adjusted if required.
-	if (flags.encoded)
-	  {
-	    rewind(out);
-	    if (rehack_encoded_flag(out, &sum))
-	      {
-		xfile_error("Write error.");
-	      }
-	  }
-	
-
-	rewind(out);
-	if (printf_failed(fprintf(out, "\001h%05d", sum))
-	    || fclose_failed(fclose(out)))
-	  {
-	    xfile_error("Write error.");
-	  }
-
+    }
+  
+  
+  rewind(out);
+  if (printf_failed(fprintf(out, "\001h%05d", sum))
+      || fclose_failed(fclose(out)))
+    {
+      xfile_error("Write error.");
+    }
+  
 #ifndef TESTING	
-
-	if (mode != CREATE && remove(name.c_str()) == -1) {
-		quit(errno, "%s: Can't remove old SCCS file.",
-		     name.c_str());
-	}
-
-	if (rename(xname.c_str(), name.c_str()) == -1) {
-		xfile_error("Can't rename new SCCS file.");
-	}
-
+  
+  if (mode != CREATE && remove(name.c_str()) == -1) {
+    quit(errno, "%s: Can't remove old SCCS file.",
+	 name.c_str());
+  }
+  
+  if (rename(xname.c_str(), name.c_str()) == -1) {
+    xfile_error("Can't rename new SCCS file.");
+  }
+  
 #endif
 }
 
@@ -483,24 +502,33 @@ sccs_file::update_checksum(const char *name) {
 
 /* Update the SCCS file */
 
-void
-sccs_file::update() {
-	ASSERT(mode != CREATE);
-
-	FILE *out = start_update();
-	if (write(out)) {
-		xfile_error("Write error.");
+bool
+sccs_file::update()
+{
+  ASSERT(mode != CREATE);
+  
+  FILE *out = start_update();
+  if (NULL == out)
+    return false;
+  
+  if (write(out))
+    {
+      xfile_error("Write error.");
+    }
+  
+  seek_to_body();
+  
+  while (read_line() != -1)
+    {
+      if (fputs_failed(fputs(plinebuf->c_str(), out))
+	  || putc_failed(putc('\n', out)))
+	{
+	  xfile_error("Write error.");
 	}
-
-	seek_to_body();
-	while(read_line() != -1) {
-		if (fputs_failed(fputs(plinebuf->c_str(), out))
-		    || putc_failed(putc('\n', out))) {
-			xfile_error("Write error.");
-		}
-	}
-
-	end_update(out);
+    }
+  
+  end_update(out);
+  return true;
 }
 
 /* Local variables: */

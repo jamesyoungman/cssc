@@ -34,7 +34,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.9 1998/05/09 16:10:59 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.10 1998/06/15 20:50:04 james Exp $";
 #endif
 
 static int
@@ -80,14 +80,14 @@ next_state(update_state& current, // this arg is MODIFIED!
 }
 
 
-void
+bool
 sccs_file::rmdel(sid id)
 {
   delta *d = find_delta(id);
   if (0 == d)
     {
-      quit(-1, "%s: Specified SID not found in SCCS file.",
-	   name.c_str());
+      errormsg("%s: Specified SID not found in SCCS file.", name.c_str());
+      return false;
     }
   seq_no seq = d->seq;
 
@@ -96,28 +96,36 @@ sccs_file::rmdel(sid id)
     {
       if (iter->prev_seq == seq)
 	{
-	  quit(-1, "%s: Specified SID has a successor.",
-	       name.c_str());
+	  errormsg("%s: Specified SID has a successor.", name.c_str());
+	  return false;
 	}
       if (is_seqlist_member(seq, iter->included)
 	  || is_seqlist_member(seq, iter->excluded)
 	  || is_seqlist_member(seq, iter->ignored))
 	{
-	  quit(-1, "%s: Specified SID is used in another delta.",
+	  errormsg("%s: Specified SID is used in another delta.",
 	       name.c_str());
+	  return false;
 	}
     }
 
   d->type = 'R';
 	
   FILE *out = start_update();
+  if (NULL == out)
+    return false;
+  
   if (write(out))
     {
       xfile_error("Write error.");
+      return false;
     }
 
   update_state state = COPY;
   int c;
+
+  bool retval = true;
+  
   while ( (c=read_line()) != -1)
     {
       if (0 != c)
@@ -126,11 +134,17 @@ sccs_file::rmdel(sid id)
 	  if (strict_atous(plinebuf->c_str() + 3) == seq)
 	    {
 	      if (!next_state(state, c))
-		corrupt("Unexpected control line");
+		{
+		  corrupt("Unexpected control line");
+		  retval = false;
+		  break;
+		}
 	    }
 	  else if (state == INSERT)
 	    {
 	      corrupt("Non-terminal delta!?!");
+	      retval = false;
+	      break;
 	    }
 	  else
 	    {
@@ -144,14 +158,20 @@ sccs_file::rmdel(sid id)
 	  putc('\n', out);
 	}
     }
+  
   // We should end the file after an 'E', that is,
   // in the 'COPY' state.
   if (state != COPY)
     {
       corrupt("Unexpected EOF");
+      return false;
     }
-  
-  end_update(out);
+  // Only finish write out the file if we had no problem.
+  if (true == retval)
+    {
+      end_update(out);
+    }
+  return retval;
 }		      
 	
 /* Local variables: */

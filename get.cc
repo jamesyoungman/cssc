@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.24 1998/06/14 15:26:53 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.25 1998/06/15 20:49:59 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -319,6 +319,12 @@ main(int argc, char **argv) {
 				   include, exclude, keywords, wstring,
 				   show_sid, show_module, debug);
 
+		if (!status.success) // get failed.
+		  {
+		    retval = 1;
+		    continue;
+		  }
+			  
 		if (!use_stdout && !no_output) {
 			fclose(out);
 #ifdef CONFIG_USE_ARCHIVE_BIT

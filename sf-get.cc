@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.19 1998/06/08 21:51:01 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.20 1998/06/15 20:50:03 james Exp $";
 #endif
 
 void
@@ -75,7 +75,7 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq) {
 	}
 }
 
-void
+bool
 sccs_file::get(mystring gname, class seq_state &state,
 	       struct subst_parms &parms,
 #ifdef __GNUC__
@@ -104,9 +104,11 @@ sccs_file::get(mystring gname, class seq_state &state,
   /* The following statement is not correct. */
   /* "@I 1" should start the body of the SCCS file */
 
-  if (read_line() != 'I') {
-    corrupt("Expected '@I'");
-  }
+  if (read_line() != 'I')
+    {
+      corrupt("Expected '@I'");
+      return false;
+    }
   check_arg();
 
   /* The check on the following line is certainly wrong, since
@@ -119,7 +121,7 @@ sccs_file::get(mystring gname, class seq_state &state,
 
   FILE *out = parms.out;
 
-  while(1) {
+  while (1) {
     int c = read_line();
 
     if (c == -1) { 
@@ -188,8 +190,11 @@ sccs_file::get(mystring gname, class seq_state &state,
 	} 
 
       if (err)
-	quit(errno, "%s: Write error.", gname.c_str());
-
+	{
+	  errormsg_with_errno("%s: Write error.", gname.c_str());
+	  return false;
+	}
+      
       continue;
     }
 
@@ -224,6 +229,7 @@ sccs_file::get(mystring gname, class seq_state &state,
   }
 
   fflush(out);
+  return true;
 }
 
 /* Local variables: */

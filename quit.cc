@@ -38,7 +38,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.14 1998/06/14 17:23:47 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.15 1998/06/15 20:50:00 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -82,8 +82,6 @@ v_errormsg(const char *fmt, va_list ap)
     fprintf(stderr, "%s: ", prg_name);
 
   vfprintf(stderr, fmt, ap);
-
-  putc('\n', stderr);
 }
 
 void errormsg(const char *fmt, ...)
@@ -92,6 +90,20 @@ void errormsg(const char *fmt, ...)
   va_start(ap, fmt);
   v_errormsg(fmt, ap);
   va_end(ap);
+  putc('\n', stderr);
+}
+
+void errormsg_with_errno(const char *fmt, ...)
+{
+  int saved_errno = errno;
+  
+  va_list ap;
+  va_start(ap, fmt);
+  v_errormsg(fmt, ap);
+  va_end(ap);
+  
+  errno = saved_errno;
+  perror("");
 }
 
 static void print_err(int err)

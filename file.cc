@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.16 1998/06/14 15:26:52 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.17 1998/06/15 20:49:59 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -328,7 +328,6 @@ get_user_name()
 	  quit(-1, "UID %d not found in password file.", getuid());
 	}
       name = p->pw_name;
-      endpwent();
     }
   return name.c_str();
 }

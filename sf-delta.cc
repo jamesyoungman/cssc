@@ -41,7 +41,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.22 1998/05/08 07:52:47 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.23 1998/06/15 20:50:02 james Exp $";
 #endif
 
 class diff_state
@@ -361,7 +361,7 @@ diff_state::process(FILE *out, seq_no seq)
    delta list in sccs_file object, so this should be the last operation
    performed before the object is destroyed. */
 
-void
+bool
 sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		     list<mystring> mrs, list<mystring> comments)
 {
@@ -515,7 +515,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   // This also writes out the information for all the
   // earlier deltas.
   FILE *out = start_update(new_delta);
-
+  if (NULL == out)
+    return false;
 	
 #undef DEBUG_FILE
 #ifdef DEBUG_FILE
@@ -738,6 +739,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   printf("\n"
 	 "%lu inserted\n%lu deleted\n%lu unchanged\n",
 	 new_delta.inserted, new_delta.deleted, new_delta.unchanged);
+
+  return true;
 }
 
 /* Local variables: */

@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.13 1998/06/14 15:26:58 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.14 1998/06/15 20:50:00 james Exp $";
 
 void
 usage() {
@@ -129,7 +129,8 @@ main(int argc, char **argv)
 	      tossed_privileges = 1;
 	    }
 	  
-	  file.rmdel(rid);
+	  if (!file.rmdel(rid))
+	    retval = 1;
 	}
     }
   

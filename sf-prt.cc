@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.15 1998/05/11 21:13:57 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.16 1998/06/15 20:50:04 james Exp $";
 #endif
 
 static void
@@ -302,7 +302,7 @@ print_seq_list(FILE *out, list<seq_no> const &list)
 }
 
 
-void		
+bool
 sccs_file::prt(FILE *out,
 	       cutoff exclude,	      // -y, -c, -r
 	       int all_deltas,	      // -a
@@ -501,6 +501,8 @@ sccs_file::prt(FILE *out,
       // silly workaround.
       do_print_body(name.c_str(), f, body_offset, out);
     }
+  
+  return true;
 }
 
 

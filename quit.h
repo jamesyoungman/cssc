@@ -84,6 +84,12 @@ void set_prg_name(const char *name);
 void errormsg(const char *fmt, ...);
 
 
+// errormsg_with_errno(): emits 
+//   prog: your-text-here: errno-error-message \n 
+// to STDERR.
+void errormsg_with_errno(const char *fmt, ...);
+
+
 #ifdef __GNUC__
 NORETURN quit(int err, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;

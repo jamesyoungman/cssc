@@ -32,7 +32,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.15 1998/06/14 15:26:50 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.16 1998/06/15 20:49:58 james Exp $";
 
 void
 usage()
@@ -215,8 +215,15 @@ main(int argc, char *argv[])
 	  tossed_privileges = 1;
 	}
       
-      file.cdc(rid, mr_list, comment_list); // TODO: check success flag return
-      file.update();
+      if (file.cdc(rid, mr_list, comment_list))
+	{
+	  if (!file.update())
+	    retval = 1;
+	}
+      else
+	{
+	  retval = 1;
+	}
     }
   
   return retval;

@@ -36,7 +36,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.26 1998/06/14 15:26:50 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.27 1998/06/15 20:49:57 james Exp $";
 
 
 static bool
@@ -104,9 +104,9 @@ main(int argc, char **argv) {
 	retval = 0;
 	
 	class CSSC_Options opts(argc, argv, "bni!r!t!f!d!a!e!m!y!hzV");
-	for(c = opts.next();
-	    c != CSSC_Options::END_OF_ARGUMENTS;
-	    c = opts.next()) {
+	for (c = opts.next();
+	     c != CSSC_Options::END_OF_ARGUMENTS;
+	     c = opts.next()) {
 		switch (c) {
 		default:
 			errormsg("Unsupported option: '%c'", c);
@@ -196,10 +196,15 @@ main(int argc, char **argv) {
 	  }
 	
 	list<mystring> mr_list, comment_list;
-	int first = 1;
+	int was_first = 1;
 	sccs_file_iterator iter(opts);
 
 	while (iter.next()) {
+	  // can't set first to 0 at end of loop because we may
+	  // use "continue".
+	  int me_first = was_first;
+	  was_first = 0;
+	  
 		sccs_name &name = iter.get_name();
 
 		if (reset_checksum && !check) {
@@ -241,18 +246,23 @@ main(int argc, char **argv) {
 #endif
 
 		
-		file.admin(file_comment,
-			   force_binary, set_flags, unset_flags,
-			   add_users, erase_users);
+		if (!file.admin(file_comment,
+				force_binary, set_flags, unset_flags,
+				add_users, erase_users))
+		  {
+		    retval = 1;
+		    continue;
+		  }
+		
 
 		if (new_sccs_file) {
-			if (iname != NULL && !first) {
+			if (iname != NULL && !me_first) {
 				errormsg("The 'i' keyletter can't be used with"
 					 " multiple files.");
 				return 1;
 			}
 
-			if (first)
+			if (me_first)
 			  {
 			    // The real thing does not prompt the user here.
 			    // Hence we don't either.
@@ -266,7 +276,6 @@ main(int argc, char **argv) {
 			    
 			    mr_list = split_mrs(mrs);
 			    comment_list = split_comments(comments);
-			    first = 0;
 			  }
 
 			if (file.mr_required()) {
@@ -285,13 +294,18 @@ main(int argc, char **argv) {
 				}
 			}
 
-			file.create(first_release, iname,
-				    mr_list, comment_list,
-				    suppress_comments, force_binary);
+			if (!file.create(first_release, iname,
+					 mr_list, comment_list,
+					 suppress_comments, force_binary))
+			  {
+			    retval = 1;
+			    continue;
+			  }
+			
 		} else {
-			file.update();
+			if (!file.update())
+			  retval = 1;
 		}		
-		first = 0;
 	}
 
 	return retval;

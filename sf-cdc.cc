@@ -33,7 +33,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.8 1998/02/21 14:27:21 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.9 1998/06/15 20:50:02 james Exp $";
 #endif
 
 /* Adds new MRs and comments to the specified delta. */
@@ -85,12 +85,16 @@ process_mrs(list<mystring>& current,
 }
 
 
-void
+bool
 sccs_file::cdc(sid id, list<mystring> mrs, list<mystring> comments)
 {
   delta *p = find_delta(id);
   if (!p)
-    quit(-1, "%s: Requested SID doesn't exist.", name.c_str());
+    {
+      errormsg("%s: Requested SID doesn't exist.", name.c_str());
+      return false;
+    }
+  
   
   delta &d = *p;
   
@@ -144,6 +148,8 @@ sccs_file::cdc(sid id, list<mystring> mrs, list<mystring> comments)
       newcomments += d.comments;
       d.comments = newcomments;
     }
+
+  return true;
 }
 
 /* Local variables: */

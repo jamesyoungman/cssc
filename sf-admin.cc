@@ -36,212 +36,249 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.20 1998/02/01 17:59:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.21 1998/06/15 20:50:01 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
    of the SCCS file. */
 
-void
+bool
 sccs_file::admin(const char *file_comment,
 		 bool force_binary,
 		 list<mystring> set_flags, list<mystring> unset_flags,
-		 list<mystring> add_users, list<mystring> erase_users) {
+		 list<mystring> add_users, list<mystring> erase_users)
+{
 	
-	if (force_binary)
-	  flags.encoded = 1;
+  if (force_binary)
+    flags.encoded = 1;
 
-	if (file_comment != NULL) {
-		comments = NULL;
-		if (file_comment[0] != '\0') {
-			FILE *fc = fopen(file_comment, "r");
-			if (fc == NULL) {
-				quit(errno, "%s: Can't open comment file.",
-				     file_comment);
-			}
+  if (file_comment != NULL)
+    {
+      comments = NULL;
+      if (file_comment[0] != '\0')
+	{
+	  FILE *fc = fopen(file_comment, "r");
+	  if (NULL == fc)
+	    {
+	      errormsg_with_errno("%s: Can't open comment file", file_comment);
+	      return false;
+	    }
 
-			while(!read_line_param(fc)) {
-				comments.add(plinebuf->c_str());
-			}
+	  while (!read_line_param(fc))
+	    {
+	      comments.add(plinebuf->c_str());
+	    }
 
-			if (ferror(fc)) {
-				quit(errno, "%s: Read error.", file_comment);
-			}
-			fclose(fc);
-		}
+	  if (ferror(fc))
+	    {
+	      errormsg_with_errno("%s: Read error", file_comment);
+	      fclose(fc);
+	      return false;
+	    }
+	  else
+	    {
+	      fclose(fc);
+	    }
 	}
+    }
 
-	int i;
+  int i;
 
-	int len;
-	len = set_flags.length();
-	for(i = 0; i < len; i++) {
-		const char *s = set_flags[i].c_str();
+  int len;
+  len = set_flags.length();
+  for(i = 0; i < len; i++)
+    {
+      const char *s = set_flags[i].c_str();
+      
+      switch (*s++)
+	{
+	case 'b':
+	  flags.branch = 1;
+	  break;
+	  
+	case 'c':
+	  flags.ceiling = release(s);
+	  if (!flags.ceiling.valid())
+	    {
+	      errormsg("Invalid release ceiling: '%s'", s);
+	      return false;
+	    }
+	  break;
 
-		switch(*s++) {
-
-		case 'b':
-			flags.branch = 1;
-			break;
-
-		case 'c':
-			flags.ceiling = release(s);
-			if (!flags.ceiling.valid()) {
-				quit(-1, "Invalid release ceiling: '%s'", s);
-			}
-			break;
-
-		case 'f':
-			flags.floor = release(s);
-			if (!flags.floor.valid()) {
-				quit(-1, "Invalid release floor: '%s'", s);
-			}
-			break;
-
-
-		case 'd':
-			flags.default_sid = sid(s);
-			if (!flags.default_sid.valid()) {
-				quit(-1, "Invalid default SID: '%s'", s);
-			}
-			break;
-
-		case 'i':
-		  if (strlen(s))
-		    quit(-1, "Flag 'i' does not take an argument.");
-		  else
-		    flags.no_id_keywords_is_fatal = 1;
-		  break;
+	case 'f':
+	  flags.floor = release(s);
+	  if (!flags.floor.valid())
+	    {
+	      errormsg("Invalid release floor: '%s'", s);
+	      return false;
+	    }
+	  break;
 
 
-		case 'j':
-			flags.joint_edit = 1;
-			break;
+	case 'd':
+	  flags.default_sid = sid(s);
+	  if (!flags.default_sid.valid())
+	    {
+	      errormsg("Invalid default SID: '%s'", s);
+	      return false;
+	    }
+	  break;
 
-		case 'l':
-			if (strcmp(s, "a") == 0) {
-				flags.all_locked = 1;
-				flags.locked = NULL;
-			} else {
-				flags.locked.merge(release_list(s));
-			}
-			break;
-
-		case 'm':
-		  set_module_flag(s);
-		  break;
-
-		case 'n':
-			flags.null_deltas = 1;
-			break;
+	case 'i':
+	  if (strlen(s))
+	    {
+	      errormsg("Flag 'i' does not take an argument.");
+	      return false;
+	    }
+	  else
+	    {
+	      flags.no_id_keywords_is_fatal = 1;
+	    }
+	  break;
 
 
-		case 'q':
-			set_user_flag(s);
-			break;
+	case 'j':
+	  flags.joint_edit = 1;
+	  break;
 
-		case 'e':
-		  	quit(-1, "The encoding flag must be set "
-			     "with the -b option");
-			break;
+	case 'l':
+	  if (strcmp(s, "a") == 0)
+	    {
+	      flags.all_locked = 1;
+	      flags.locked = NULL;
+	    }
+	  else
+	    {
+	      flags.locked.merge(release_list(s));
+	    }
+	  break;
 
-		case 't':
-			set_type_flag(s);
-			break;
+	case 'm':
+	  set_module_flag(s);
+	  break;
+	  
+	case 'n':
+	  flags.null_deltas = 1;
+	  break;
 
-		case 'v':
-			set_mr_checker_flag(s);
-			break;
 
-		default:
-			quit(-1, "Unrecognized flag '%c'", s[-1]);
-		}
+	case 'q':
+	  set_user_flag(s);
+	  break;
+	  
+	case 'e':
+	  errormsg("The encoding flag must be set with the -b option");
+	  return false;
+
+
+	case 't':
+	  set_type_flag(s);
+	  break;
+
+	case 'v':
+	  set_mr_checker_flag(s);
+	  break;
+	  
+	default:
+	  // TODO: this will fail for every file, so should probably
+	  // be a "hard" error.
+	  errormsg("Unrecognized flag '%c'", s[-1]);
+	  return false;
 	}
+    }
 	      
 	
-	len = unset_flags.length();
-	for(i = 0; i < len; i++) {
-		const char *s = unset_flags[i].c_str();
+  len = unset_flags.length();
+  for(i = 0; i < len; i++)
+    {
+      const char *s = unset_flags[i].c_str();
 
-		switch(*s++) {
-
-		case 'b':
-			flags.branch = 0;
-			break;
-
-		case 'c':
-			flags.ceiling = NULL;
-			break;
-
-		case 'f':
-			flags.floor = NULL;
-			break;
-
-
-		case 'd':
-			flags.default_sid = NULL;
-			break;
-
-		case 'i':
-			flags.no_id_keywords_is_fatal = 0;
-			break;
-
-		case 'j':
-			flags.joint_edit = 0;
-			break;
-
-		case 'l':
-			if (strcmp(s, "a") == 0) {
-				flags.all_locked = 0;
-				flags.locked = NULL;
-			} else {
-				flags.locked.remove(release_list(s));
-			}
-			break;
-
-		case 'n':
-			flags.null_deltas = 0;
-			break;
-
-
-		case 'q':
-		  	delete flags.user_def;
-			flags.user_def = 0;
-			break;
-
-		case 'e':
-		  	quit(-1, "Deletion of the binary-encoding flag "
-			     "is not supported.");
-			break;
+      switch (*s++)
+	{
+	case 'b':
+	  flags.branch = 0;
+	  break;
+	  
+	case 'c':
+	  flags.ceiling = NULL;
+	  break;
+	  
+	case 'f':
+	  flags.floor = NULL;
+	  break;
+	  
+	  
+	case 'd':
+	  flags.default_sid = NULL;
+	  break;
+	  
+	case 'i':
+	  flags.no_id_keywords_is_fatal = 0;
+	  break;
+	  
+	case 'j':
+	  flags.joint_edit = 0;
+	  break;
+	  
+	case 'l':
+	  if (strcmp(s, "a") == 0)
+	    {
+	      flags.all_locked = 0;
+	      flags.locked = NULL;
+	    }
+	  else
+	    {
+	      flags.locked.remove(release_list(s));
+	    }
+	  break;
+	  
+	case 'n':
+	  flags.null_deltas = 0;
+	  break;
+	  
+	  
+	case 'q':
+	  delete flags.user_def;
+	  flags.user_def = 0;
+	  break;
+	  
+	case 'e':
+	  errormsg("Deletion of the binary-encoding flag is not supported.");
+	  return false;
 			
-		case 't':
-		  	delete flags.type;
-			flags.type = 0;
-			break;
-
-		case 'v':
-			delete flags.mr_checker;
-			flags.mr_checker = 0;
-			break;
-
-		default:
-			quit(-1, "Unrecognized flag '%c'", s[-1]);
-		}
+	case 't':
+	  delete flags.type;
+	  flags.type = 0;
+	  break;
+	  
+	case 'v':
+	  delete flags.mr_checker;
+	  flags.mr_checker = 0;
+	  break;
+	  
+	default:
+	  // TODO: this will fail for every file, so should probably
+	  // be a "hard" error.
+	  errormsg("Unrecognized flag '%c'", s[-1]);
+	  return false;
 	}
+    }
 
-	// Erase any required users from the list.
-	users -= erase_users;
+  // Erase any required users from the list.
+  users -= erase_users;
 	
-	// Add the specified users to the beginning of the user list.
-	list<mystring> newusers = add_users;
-	newusers += users;
-	users = newusers;
+  // Add the specified users to the beginning of the user list.
+  list<mystring> newusers = add_users;
+  newusers += users;
+  users = newusers;
+
+  return true;
 }
 
 
 /* Creates a new SCCS file. */
 
-void
+bool
 sccs_file::create(release first_release, const char *iname,
 		  list<mystring> mrs, list<mystring> comments,
 		  int suppress_comments, bool force_binary)
@@ -265,10 +302,14 @@ sccs_file::create(release first_release, const char *iname,
   new_delta.unchanged = 0;
 
   FILE *out = start_update(new_delta);
+  if (NULL == out)
+    return false;
+  
+  if (fprintf_failed(fprintf(out, "\001I 1\n")))
+    return false;
 
-  fprintf(out, "\001I 1\n");
-
-  if (iname != NULL) {
+  if (iname != NULL)
+    {
     FILE *in;
 
     if (strcmp(iname, "-") == 0)
@@ -278,10 +319,12 @@ sccs_file::create(release first_release, const char *iname,
     else
       {
       in = fopen(iname, "r");
-      if (in == NULL)
+      if (NULL == in)
 	{
-	  quit(errno, "%s: Can't open file for reading.",
-	       iname);
+	  errormsg_with_errno("%s: Can't open file for reading", iname);
+	  // TODO: delete output file?
+	  fclose(out);
+	  return false;
 	}
       }
 
@@ -302,16 +345,21 @@ sccs_file::create(release first_release, const char *iname,
     
     if (in != stdin)
       fclose(in);
-    
+
+    // TODO: what if no id keywords is fatal?  Delete current s-file?
+    // If so, do we continue with the next?
     if (!found_id)
       no_id_keywords(name.c_str());
   }
 	
-  fprintf(out, "\001E 1\n");
+  if (fprintf_failed(fprintf(out, "\001E 1\n")))
+    return false;
 
   // if the "encoded" flag needs to be changed,
   // end_update() will change it.
   end_update(out, new_delta);
+
+  return true;
 }
 
 /* Local variables: */
