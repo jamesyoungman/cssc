@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.18 1998/03/14 13:43:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.19 1998/06/08 21:51:01 james Exp $";
 #endif
 
 void
@@ -163,22 +163,13 @@ sccs_file::get(mystring gname, class seq_state &state,
 	  // delta has actually been selected here...
 
 
-	  // Our keyword substitution function is not
-	  // suitable at the moment for operating
-	  // with an in-memory diestination.  Hence we
-	  // cannot expand keywords for encoded files.
 	  if (flags.encoded)
 	    {
-				// TODO: check against real SCCS and fix me!
-	      if (!binary_keyword_warned)
-		{
-		  fprintf(stderr,
-			  "%s: Warning: Keyword substitution not "
-			  "yet supported for binary files (try the -k flag).\n",
-			  name.c_str());
-		  binary_keyword_warned = true;
-		}
-	      
+	      /*
+	       * We ignore the possiblity of keyword substitution.
+	       * I don't think "real" SCCS does keyword substitution
+	       * for this case either -- James Youngman <jay@gnu.org>
+	       */
 	      err = outputfn(out, plinebuf);
 	    }
 	  else
