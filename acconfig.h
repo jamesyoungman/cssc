@@ -10,6 +10,18 @@
 #undef CONFIG_DIFF_COMMAND
 
 
+/* The package name and version are macros are created by automake but
+ * not understood by autoheader.  Hence I have to point out their
+ * existence to autoheader by putting them here...
+ */
+
+/* Package name. */
+#undef PACKAGE
+
+/* Package version. */
+#undef VERSION
+
+
 @BOTTOM@
 
 
@@ -26,6 +38,7 @@
  * the macros in configure.in which helped acheader out in this, but I
  * can't see how to do it.   Hence we work around this feature of
  * autoheader in this way.
+ *                         -- James Youngman <jay@gnu.org>
  */
 
 /* define if you have the ISO C function fsetpos(). */
