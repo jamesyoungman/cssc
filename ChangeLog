@@ -1,3 +1,22 @@
+1998-05-08  James Youngman  <jay@gnu.org>
+
+	* CSSC-0.06alpha.pl7 released.
+	
+	* auxfiles/CSSC.spec:
+	Included mods from John Interrante <interran@crd.ge.com>,
+	except his patch to pathname.h; must apply that RSN.
+
+	* sf-delta.cc, seqstate.cc, seqstate.h, sccsfile.cc, delta-iterator.h, Makefile.am:
+	Fixed bug in seqstate.h that manifested with Codemgr SCCS files.  This
+	required the introduction of seqstate.cc and a modification to
+	sf-delta.cc as well.
+
+1998-05-06  James Youngman  <jay@gnu.org>
+
+	* seqstate.h:
+	Reindented to prepare for new code which maintaind the state of the
+	"deleting" flag differently.
+
 1998-05-05  James Youngman  <jay@gnu.org>
 
 	* CSSC-0.06alpha.pl6 released.

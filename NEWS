@@ -1,3 +1,9 @@
+New in CSSC-0.06alpha-pl7
+
+	* Fixed bug with ignored deltas that manifested when 
+	  working with SCCS files produced by Sun's "Code
+	  Manager" product.
+
 New in CSSC-0.06alpha-pl6
 
 	* Included the BSD sccs.c program for the first time.
