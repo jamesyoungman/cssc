@@ -7,7 +7,7 @@
 g=foo
 s=s.$g
 
-remove $s $g
+remove $s $g p.$g z.$g
 
 
 # Create an SCCS file.
