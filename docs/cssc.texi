@@ -86,6 +86,7 @@ a work-alike for the traditional Unix SCCS suite.
 * Overview::		Preliminary information.
 * Interface::		How to use the suite.
 * Invoking Programs::	How to run the individual CSSC programs.
+* Filenames::		Names of files used by CSSC.
 * Incomplete::		Missing Features.
 * Year 2000 Issues::    Status of CSSC with regard to the Millennium.
 * Testing::             How to run the test suite and write new cases.
@@ -151,7 +152,7 @@ interface to the @sc{sccs} suite (and hence @sc{cssc}).
 Other than that, you will need to use each of the programs in the suite
 individually.
 
-@node Invoking Programs, Incomplete, Interface, Top
+@node Invoking Programs, Filenames, Interface, Top
 @chapter Invoking CSSC programs
 @cindex invoking
 
@@ -527,10 +528,6 @@ program, sccs(1), will guess the correct filename for you, but this
 doesn't happen unless you do actually invoke it (@code{sccs delta
 umsp.c} for example).
 
-If the file specified on the @code{delta} command line is an @sc{sccs}
-file, the name of the g-file (the file gotten with @code{get} which
-should now be checked in) is discovered from the contents of the p-file.
-
 @node delta options, , delta usage, delta
 @subsection Options for @code{delta}
 
@@ -649,6 +646,9 @@ Get the most recent trunk revision, and print it on standard output.
 The @samp{-r} option could also be used to specify some other revision.
 @end table
 
+Unless you specify the @samp{-k} or @samp{-e} option, the retrieved file
+will be created read-only.
+
 
 @node get options, branches, get usage, get
 @subsection Options for @code{get}
@@ -688,19 +688,19 @@ the near future.
 
 @item -e
 @cindex p-file
-Indicates that the gotten version is for editing.   When checked back in
-the resulting file will have a new revision number.  The gotten file is
-writable, and keyword substitution does not take place.  A @dfn{p-file}
-is created; this file contains information about what versions of the
-s-file are being edited, and by whom.   Unless the @samp{j} flag is set
-(@pxref{Flags}), @code{get -e} will fail if someone else already has the
-file locked.
+Indicates that the retrieved version is for editing.  When checked back
+in the resulting file will have a new revision number.  The retrieved
+file is writable, and keyword substitution does not take place.  A
+@dfn{p-file} is created; this file contains information about what
+versions of the s-file are being edited, and by whom.  Unless the
+@samp{j} flag is set (@pxref{Flags}), @code{get -e} will fail if someone
+else already has the file locked.
 
 
 @item -g
-Do a dry-run, showing what version would be gotten, but don't actually
-get the file.  This is sometimes done by scripts, just to test the exit
-status.  
+Do a dry-run, showing what version would be retrieved, but don't
+actually get the file.  This is sometimes done by scripts, just to test
+the exit status.
 
 @item -G@var{foo}
 Name the gotten file @file{@var{foo}}, instead of the default name.
@@ -711,7 +711,8 @@ Include the deltas for the listed @sc{sid}s.  See also @samp{-x}.  Untested.
 
 @item -k
 Avoid doing keyword substitution (@pxref{Keyword Substitution}).  This
-is assumed when @samp{-e} is specified.
+is assumed when @samp{-e} is specified.  The gotten file is writable.
+
 
 @item -l
 Unsupported.
@@ -854,9 +855,9 @@ As for %D%, but in the US format @i{mm/dd/yy}.
 
 @item I
 Expands to the same as %R%.%L%.%B%.%S%, that is, the @sc{sid} of the
-gotten version.
+retrieved version.
 @item L
-The level number of the gotten version.
+The level number of the retrieved version.
 @item M
 Module name: the value of the @code{m} (module) flag, or the base name
 of the @sc{sccs} file with the @file{s.} removed if the module flag is
@@ -867,11 +868,11 @@ Full name of the @sc{sccs} file.
 Value of the @code{q} flag.  The @code{q} flag has no other purpose, and
 can be set with @samp{admin -fq@r{foo}}.   @xref{Flags}.
 @item R
-Release number of the gotten version.
+Release number of the retrieved version.
 @item S
-Sequence number of the gotten version.
+Sequence number of the retrieved version.
 @item T
-Current time (@i{hh:mm:ss}) when the file was gotten, see %D% and %H%.
+Current time (@i{hh:mm:ss}) when the file was retrieved, see %D% and %H%.
 @item W
 Expands to %Z% %M% <@sc{tab}> %I% or the argument for the @samp{-w}
 flag, if given.
@@ -1660,7 +1661,54 @@ is that sometimes compilers or lint-pickers complain that the variable
 @var{sccs_id} is unused, and defining @code{CONFIG_NO_SCCS_IDS} will
 remove these @sc{id}s and thus silence the warnings.
 
-@node Incomplete, Year 2000 Issues, Invoking Programs, Top
+
+@node Filenames, Incomplete, Invoking Programs, Top
+@chapter Filenames
+
+Temporary files are used during normal operation of @sc{cssc} (and
+@sc{sccs}).  Many of these are given fixed names.  The prefixes for the
+various files used by @sc{cssc} are listed in the table below.
+
+@table @samp
+@item s.
+The history file itself.
+@item p.
+The file containing the list of edit locks.
+@item z.
+The lockfile used to arbitrate access to the history file.  The running
+@sc{cssc} (or @sc{sccs}) program puts its PID into this file.  Some
+versions of @sc{sccs} (but @emph{not} @sc{cssc}) will break the lock
+after 60 seconds if the specified PID is not running on the local
+machine.  In order to work more reliably over networked filesystems,
+@sc{cssc} will not do this; stale lock files would have to be removed
+manually.
+@item x.
+Temporary file into which is written the new s-file.  Once processing is
+complete, the old s-file is replaced by the x-file.
+@item q.
+Temporary file into which is written the new p-file
+@item d.
+Temporary file used by delta; contains the gotten body of the previous
+version (which we run diff against).  This filename is used by @sc{sccs} 
+in the same situation, but according to the @sc{sccs} manual pages, it
+puts the output of @code{diff} in this file instead.
+@item u.
+Encoded version of the gotten file; created by delta.
+@end table
+
+All of the temporary files in the above table are created in the same
+directory as the s-file, rather than in the current working directory.
+
+Since these filenames are always fixed, it is important that the
+permissions on the directory containing the @sc{sccs} file be secure;
+otherwise you have a security vulnerability where a malicious user can
+cause you to accidentally over-write files you own or have access to,
+but they do not.  If you are the super-user, they can use this feature
+to overwrite any file on the system.
+
+
+
+@node Incomplete, Year 2000 Issues, Filenames, Top
 @chapter Missing Features and other Problems
 @cindex missing features
 
@@ -1735,7 +1783,7 @@ some point, and creating a symbolic link of the same name.  Most of the
 temporary files used are created in the same directory as the @sc{sccs}
 file itself.   @sc{cssc} should not be used by the owners of files whose
 security is important, especially to control files whose @sc{sccs} file
-is in a world-writable directory.
+is in a world-writable directory.  @xref{Filenames}
 
 @cindex Setuid execution, why not to do it
 @item Setuid execution ---
