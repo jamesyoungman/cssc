@@ -18,5 +18,6 @@ future.  This means that ALL new test cases are useful.
 The following people have improved the quality of CSSC by providing
 cases for the test suite:
 
-James Youngman <jay@gnu.org>            (come on, everybody else!)
-Richard Polton <richardp@scopic.com>	(sccsdiff; the first contributor)
+James Youngman <jay@gnu.org>                 (come on, everybody else!)
+Richard Polton <richardp@scopic.com>	     (sccsdiff; the first contributor)
+Gerry Green    <gerry.green@cle.philips.com> (included/excluded deltas)
