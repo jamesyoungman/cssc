@@ -1,3 +1,11 @@
+1998-01-27  James Youngman  <jay@gnu.org>
+
+	* admin: check that the # of lines inserted is correct for the
+	first delta.
+
+	* get: Make sure we support "get" without -k, for binary
+	  files.
+
 1998-01-25  James Youngman  <jay@gnu.org>
 
 	* get.cc: Implement -t option (Dave Bodenstab bug report)
