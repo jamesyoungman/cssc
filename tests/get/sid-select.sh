@@ -8,7 +8,8 @@
 # Get a test file...
 s=s.testfile
 remove $s
-uudecode < testfile.uue || miscarry could not extract test file.
+../../testutils/uu_decode --decode < testfile.uue || 
+    miscarry could not extract test file.
 
 get_expect () {
 label=$1         ; shift

@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.36 2001/07/31 08:28:07 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.37 2001/08/29 17:17:02 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -398,8 +398,17 @@ main(int argc, char **argv)
           if (real_file)
             {
               fclose(out);
-              if (!keywords)
-                maybe_clear_archive_bit(gname);
+              if (suppress_keywords)
+              {
+                  if (!set_file_mode(gname, 0644))
+                      retval = 1;
+              }
+              else
+              {
+                  if (!set_file_mode(gname, 0444))
+                      retval = 1;
+                  maybe_clear_archive_bit(gname);
+              }
             }
           
           if (!status.success) // get failed.

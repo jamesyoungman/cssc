@@ -43,7 +43,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.40 2001/07/31 08:28:07 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.41 2001/08/29 17:17:02 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -874,7 +874,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
   pfile.delete_lock();
   
-  end_update(out, new_delta);
+  if (!end_update(&out, new_delta))
+    return false;
       
   printf("%lu inserted\n%lu deleted\n%lu unchanged\n",
          new_delta.inserted, new_delta.deleted, new_delta.unchanged);

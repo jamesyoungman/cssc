@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.29 2001/07/31 08:28:07 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.30 2001/08/29 17:17:02 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -446,10 +446,12 @@ maybe_sync(FILE *fp)
    renaming the x-file to replace the old SCCS file. */
 
 bool
-sccs_file::end_update(FILE *out)
+sccs_file::end_update(FILE **pout)
 {
-  if (fflush_failed(fflush(out)) || !maybe_sync(out))
+  if (fflush_failed(fflush(*pout)) || !maybe_sync(*pout))
     {
+      fclose(*pout);
+      *pout = NULL;
       xfile_error("Write error.");
     }
 
@@ -466,36 +468,68 @@ sccs_file::end_update(FILE *out)
   // given.  The checksum is adjusted if required.
   if (flags.encoded)
     {
-      rewind(out);
-      if (0 != rehack_encoded_flag(out, &sum))
+      rewind(*pout);
+      if (0 != rehack_encoded_flag(*pout, &sum))
         {
           xfile_error("Write error.");
         }
     }
   
   
-  rewind(out);
-  if (printf_failed(fprintf(out, "\001h%05d", sum))
-      || fclose_failed(fclose(out)))
+  rewind(*pout);
+  if (printf_failed(fprintf(*pout, "\001h%05d", sum)))
     {
+      (void) fclose(*pout);
+      *pout = NULL;
       xfile_error("Write error.");
     }
+  if (fclose_failed(fclose(*pout)))
+    {
+      *pout = NULL;
+      xfile_error("Write error.");
+    }
+
+  /* JY, 2001-08-27: Under Windows we cannot rename or delete an open 
+   * file, so we close both the x-file and the s-file here in end_update().
+   * I think closing the file here is harmless for all platforms, but 
+   * for the moment I will make it conditional.
+   *
+   * The destructor sccs_file::~sccs_file() asserts that the file pointer
+   * is not NULL, so we reopen the file in this case.
+   */
+#if defined(__CYGWIN__)
+  fclose(f);
+#endif
+
+  bool retval = false;
   
   if (mode != CREATE && remove(name.c_str()) == -1)
     {
       errormsg_with_errno("%s: Can't remove old SCCS file.", name.c_str());
-      return false;
+      retval = false;
     }
   else if (rename(xname.c_str(), name.c_str()) == -1)
     {
       xfile_error("Can't rename new SCCS file.");
-      return false;
+      retval = false;
     }
   else
     {
       xfile_created = false;    // What was the x-file is now the new s-file.
-      return true;
+      retval = true;
     }
+  
+#if defined(__CYGWIN__)
+  int dummy_sum;
+  mystring sfile_name = name.sfile();
+  f = open_sccs_file(sfile_name.c_str(), READ, &dummy_sum);
+  if (0 == f)
+    {
+      s_missing_quit("Cannot re-open SCCS file %s for reading", name.c_str());
+      retval = false;
+    }
+#endif
+  return retval;
 }
 
 
@@ -570,8 +604,7 @@ sccs_file::update()
         }
     }
   
-  end_update(out);
-  return true;
+  return end_update(&out);
 }
 
 /* Local variables: */

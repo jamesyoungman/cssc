@@ -27,76 +27,76 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	relvbr.h
 
 # Sources required by everybody.
-common_SOURCES = my-getopt.cc version.cc fdclosed.cc \
+common_sources = my-getopt.cc version.cc fdclosed.cc \
 		showconfig.cc  environment.cc
 
 # Sources required by programs working with lists of SCCS files.
-sname_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc \
+sname_srcs = fileiter.cc file.cc linebuf.cc mystring.cc \
 		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc \
 		quit.cc fatalsig.cc
 
 # Sources required by programs working with the contents of SCCS files.
-sfile_SOURCES = sccsfile.cc rel_list.cc \
+sfile_srcs = sccsfile.cc rel_list.cc \
 	sccs-delta.cc delta-table.cc delta-iterator.cc 
 
 
 # Source files required by programs that modify SCCS files.
-mod_SOURCES = cap.cc sf-write.cc
+mod_srcs = cap.cc sf-write.cc
 
 # Source files required by programs that modify delta entries.
-moddelta_SOURCES = l-split.cc prompt.cc run.cc filediff.cc
+moddelta_srcs = l-split.cc prompt.cc run.cc filediff.cc
 
 # Source files required by programs that add new delta entries.
-newdelta_SOURCES = sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc
+newdelta_srcs = sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc
 
 
 # The source lists for the actual executables....
 
 
 what_SOURCES = what.cc \
-	$(common_SOURCES)
+	$(common_sources)
 sact_SOURCES = sact.cc pfile.cc \
-	$(common_SOURCES) $(sname_SOURCES)
+	$(common_sources) $(sname_srcs)
 unget_SOURCES = unget.cc pfile.cc pf-del.cc \
-	$(common_SOURCES) $(sname_SOURCES)
+	$(common_sources) $(sname_srcs)
 
 prt_SOURCES = prt.cc sf-prt.cc \
-	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
+	$(common_sources) $(sname_srcs) $(sfile_srcs)
 prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc sf-get.cc writesubst.cc \
 	bodyio.cc encoding.cc canonify.cc \
 	seqstate.cc \
-	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
+	$(common_sources) $(sname_srcs) $(sfile_srcs)
 
 
 get_SOURCES = get.cc pf-add.cc pfile.cc sf-chkid.cc canonify.cc sf-kw.cc \
 	sf-get.cc sf-get2.cc writesubst.cc sf-get3.cc rl-merge.cc \
 	bodyio.cc encoding.cc \
 	seqstate.cc \
-	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
+	$(common_sources) $(sname_srcs) $(sfile_srcs)
 
 rmdel_SOURCES = rmdel.cc sf-rmdel.cc \
 	pfile.cc \
-	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
+	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
 
 cdc_SOURCES = cdc.cc sf-cdc.cc \
-	$(moddelta_SOURCES) \
-	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
+	$(moddelta_srcs) \
+	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
 
 admin_SOURCES = admin.cc sf-admin.cc \
 	rl-merge.cc \
 	bodyio.cc encoding.cc \
-	$(moddelta_SOURCES) $(newdelta_SOURCES)\
-	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
+	$(moddelta_srcs) $(newdelta_srcs)\
+	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
 
 delta_SOURCES = delta.cc sf-delta.cc \
 	pf-del.cc pfile.cc sf-get.cc writesubst.cc sf-get3.cc \
 	bodyio.cc encoding.cc \
 	seqstate.cc canonify.cc \
-	$(moddelta_SOURCES) $(newdelta_SOURCES)\
-	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
+	$(moddelta_srcs) $(newdelta_srcs)\
+	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
 
 val_SOURCES = val.cc sf-val.cc \
-	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
+	$(common_sources) $(sname_srcs) $(sfile_srcs)
 
 get_LDADD = @LIBOBJS@
 delta_LDADD = @LIBOBJS@

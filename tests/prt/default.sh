@@ -8,7 +8,7 @@
 s=s.testfile
 
 remove $s
-uudecode < testfile.uue || miscarry could not uudecode testfile.uue.
+../../testutils/uu_decode --decode < testfile.uue || miscarry could not uudecode testfile.uue.
 
 
 do_output d1 "${prt} $s" 0 expected/default.1 ""

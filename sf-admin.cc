@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.28 2001/07/10 21:54:54 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.29 2001/08/29 17:17:02 james_youngman Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -370,7 +370,8 @@ sccs_file::create(const sid &id,
 
   // if the "encoded" flag needs to be changed,
   // end_update() will change it.
-  end_update(out, new_delta);
+  if (!end_update(&out, new_delta))
+    return false;
 
   return ret;
 }

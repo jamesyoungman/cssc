@@ -14,7 +14,8 @@ u=sf111140_testcase.uue
 
 remove $g $s $x $z $p
 
-uudecode < $u || miscarry could not uudecode file $u.
+../../testutils/uu_decode --decode <$u || 
+    miscarry could not uudecode file $u.
 
 
 

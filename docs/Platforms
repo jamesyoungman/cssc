@@ -109,3 +109,43 @@ configure script works around this problem (by turning off
 optimisation).  The glibc bug is fixed in glibc 2.2.4.  CSSC compiles
 successfully under GCC version 3.01, with this workaround in place. 
 
+
+Windows NT
+----------
+
+CSSC compiles under the CYGWIN environment for Windows NT.  CSSC
+support inder the Cygwin environment is nearly up to the standard of
+Unix implementations, but there are three significant areas in which
+it falls short :-
+
+1. Files are often created with the wrong mode, but for the most part
+   the relevant program changes the mode of the output file to the
+   correct value immediately after closing the file. 
+
+2. The "Atomic" NFS locking support (which is done on Unix with the use
+   of link(2) requires the ability to use link(2) on an open file; this 
+   is a feature which is not supported under the Cygwin environment.
+   For this reason, it is unsafe to use the Cygwin version of CSSC on
+   SCCS files which are mounted via an NT NFS client.  If, on the other hand,
+   the files are mounted via Samba, this shoul dbe safe (but has not been 
+   tested).
+
+3. Set-user-id execution will not work properly.  Because of the
+   insecure nature of the current code base, this mode of operation 
+   is not currently supported anyway, but this is liable to be
+   especially poor under Windows NT due to the significant differences in
+   the security models of Unix and Windows NT.  The Cygwin environment
+   does provide tools for resolving this problem, but this has not been done. 
+
+A small number of the test cases for the "sccs.exe" binary fail under
+CYGWIN; this is because, although they do the right thing, the output
+messages are in the wrong order.  The reason behind this is that under
+Unix when you use "sccs unedit" the output of "get" appears before the
+output of the "unget()" function, even though the unget() happens
+first.  This is because the output of the unget() function is buffered
+and hence is only flushed to the output file when the parent process
+exits.  The stdio buffering arrangements for CYGWIN seem to be
+slightly different, and this changes the ordering.  For this reason,
+test "h1" currently fails, and is skipped for CYGWIN.
+
+

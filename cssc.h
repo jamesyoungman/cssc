@@ -23,7 +23,7 @@
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.19 2001/07/15 15:08:40 james_youngman Exp $
+ * $Id: cssc.h,v 1.20 2001/08/29 17:17:02 james_youngman Exp $
  *
  */
 
@@ -69,14 +69,14 @@
  * Microsoft systems, in order to avoid falling over all those
  * carriage returns.
  */
-#undef	CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
+#undef  CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
 
 
 
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 //           Tunable
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#define CONFIG_LIST_CHUNK_SIZE		16
+#define CONFIG_LIST_CHUNK_SIZE          16
 #define CONFIG_FILE_NAME_GUESSING
 
 
@@ -88,6 +88,21 @@
 #if defined(HAVE_UNISTD_H) && defined(HAVE_GETEUID) && defined(HAVE_GETEGID)
 #define CONFIG_UIDS
 #endif
+
+/*************************************************************/
+/*           CYGWIN Support                                  */
+/*************************************************************/
+/*
+ * CYGWIN is the Unix environment for Windows, from Cygnus.
+ * It provides a very Unix-like environment under Windows NT;
+ * so much so that the configure script is unable to tell the difference.
+ */
+#if defined(__CYGWIN__)
+#define CONFIG_CAN_HARD_LINK_AN_OPEN_FILE 0
+#else
+#define CONFIG_CAN_HARD_LINK_AN_OPEN_FILE 1
+#endif
+
 
 
 
@@ -143,7 +158,7 @@
 //
 void
 split_filename(const mystring &fullname,
-	       mystring& dirname, mystring& basename);
+               mystring& dirname, mystring& basename);
 mystring prompt_user(const char *prompt);
 
 #endif /* NO_COMMON_HEADERS */

@@ -46,7 +46,7 @@ docommand a1 "${admin} -i$g $s" 0 IGNORE IGNORE
 docommand a2 "${get} -p $s" 0 "garçon mañana áóäæèêëìñåòôùé\n" IGNORE
 
 echo_nonl a3...
-if uudecode s.umsp.uue
+if ../../testutils/uu_decode --decode < s.umsp.uue
 then
     echo passed
 else
@@ -63,7 +63,7 @@ docommand a4 "${get} -p s.umsp.txt" 0 "garçon mañana áóäæèêëìñåòôùé\n" IGNORE
 ## as EOF.  That would be a bug.
 
 echo_nonl a5...
-if uudecode char255.uue
+if ../../testutils/uu_decode --decode < char255.uue
 then
     echo passed
 else

@@ -201,10 +201,10 @@ private:
   /* sf-write.c */
 private:
   void xfile_error(const char *msg) const;
-  FILE *start_update();
+  FILE *start_update();		// this opens the x-file
   int write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
-  bool end_update(FILE *out);
+  bool end_update(FILE **out);	// NB: this closes the x-file too.
   int rehack_encoded_flag(FILE *out, int *sum) const;
 
 public:
@@ -214,7 +214,7 @@ public:
   /* sf-add.c */
 
   FILE *start_update(struct delta const &new_delta);
-  void end_update(FILE *out, struct delta const &new_delta);
+  bool end_update(FILE **out, struct delta const &new_delta);
 
   /* sf-delta.c */
 private:

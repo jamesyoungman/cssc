@@ -44,28 +44,28 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.43 2001/07/10 21:54:54 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.44 2001/08/29 17:17:02 james_youngman Exp $";
 #endif
 
 
 
 /* Static member for opening a SCCS file and then calculating its checksum. */
-
+#define f f_is_also_a_class_member_variable
 FILE *
 sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
 {
-  FILE *f;
+  FILE *f_local;
 
 #ifdef CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
-  f = fopen(name, "rb");
+  f_local = fopen(name, "rb");
 #else
   if (mode == UPDATE)
-    f = fopen(name, "r+");
+    f_local = fopen(name, "r+");
   else
-    f = fopen(name, "r");
+    f_local = fopen(name, "r");
 #endif
   
-  if (f == NULL)
+  if (f_local == NULL)
     {
       const char *purpose = (mode == UPDATE) ? "update" : "reading";
       s_missing_quit("Cannot open SCCS file %s for %s", name, purpose);
@@ -73,9 +73,9 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
       return NULL;
     }
   
-  if (getc(f) != '\001' || getc(f) != 'h')
+  if (getc(f_local) != '\001' || getc(f_local) != 'h')
     {
-      (void)fclose(f);
+      (void)fclose(f_local);
       s_corrupt_quit("%s: No SCCS-file magic number.  "
 		     "Did you specify the right file?", name);
       /*NOTEACHED*/
@@ -85,12 +85,12 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   
   int c;
   errno = 0;
-  while ( (c=getc(f)) != CONFIG_EOL_CHARACTER)
+  while ( (c=getc(f_local)) != CONFIG_EOL_CHARACTER)
     {
       if (EOF == c)
 	{
 	  const int saved_errno = errno;
-	  (void)fclose(f);
+	  (void)fclose(f_local);
 	  errno = saved_errno;
 	  if (errno)
 	    {
@@ -107,13 +107,13 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   
   int sum = 0u;
   
-  while ((c=getc(f)) != EOF)
+  while ((c=getc(f_local)) != EOF)
     sum += (char) c;	// Yes, I mean plain char, not signed, not unsigned.
   
-  if (ferror(f))
+  if (ferror(f_local))
     {
       perror(name);
-      (void)fclose(f);
+      (void)fclose(f_local);
       return NULL;
     }
   
@@ -121,29 +121,30 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   *sump = sum & 0xFFFFu;
   
 #ifdef CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
-  fclose(f);
+  fclose(f_local);
   if (mode == UPDATE)
-    f = fopen(name, "r+");
+    f_local = fopen(name, "r+");
   else
-    f = fopen(name, "r");
+    f_local = fopen(name, "r");
   
-  if (NULL == f)
+  if (NULL == f_local)
     {
       perror(name);
       return NULL;
     }
   
 #else
-  rewind(f);
-  if (ferror(f))
+  rewind(f_local);
+  if (ferror(f_local))
     {
       perror(name);
-      (void)fclose(f);
+      (void)fclose(f_local);
       return NULL;
     }
 #endif
-  return f;
+  return f_local;
 }
+#undef f
 
 
 /* Reads a line from the SCCS file and increments the current line number.

@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl 
-dnl $Id: configure.in,v 1.70 2001/08/25 16:41:41 james_youngman Exp $
+dnl $Id: configure.in,v 1.71 2001/08/29 17:17:02 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -195,6 +195,40 @@ dnl to install_dir/diff-program so the installer can
 dnl add a symlink later.   TODO.
 AC_PATH_PROG(CONFIG_DIFF_COMMAND,diff,/usr/bin/diff)
 AC_DEFINE_UNQUOTED(CONFIG_DIFF_COMMAND,"$ac_cv_path_CONFIG_DIFF_COMMAND")
+
+##
+## Search for something we can use to decompress a .Z file.
+## 
+AC_CHECK_PROG(ZCAT_PROGRAM, uncompress, uncompress)
+if test "$ZCAT_PROGRAM" = ""
+then
+  AC_CHECK_PROG(ZCAT_PROGRAM, compress,   compress -d)
+fi
+if test "$ZCAT_PROGRAM" = ""
+then
+  AC_CHECK_PROG(ZCAT_PROGRAM, gzip,       gzip -d)
+fi
+if test "$ZCAT_PROGRAM" = ""
+then
+  AC_CHECK_PROG(ZCAT_PROGRAM, zcat,       zcat)
+fi
+if test "$ZCAT_PROGRAM" = ""
+then
+  AC_CHECK_PROG(ZCAT_PROGRAM, gunzip,     gunzip)
+fi
+
+if test "$ZCAT_PROGRAM" = ""
+then
+echo 
+echo "WARNING: Cannot find a program that will decompress a compressed file."
+echo "WARNING: This means that you cannot run the test suite, since some"
+echo "WARNING: if the test input files in the test suite are provided"
+echo "WARNING: compressed.  The software should still compile."
+echo "WARNING: "
+echo "WARNING: If you have a command which will decompress a .Z file,"
+echo "WARNING: please set the variable ZCAT_PROGRAM and re-run configure."
+echo 
+fi
 
 
 				
@@ -400,4 +434,4 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_OUTPUT(version.cc Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/Makefile auxfiles/Makefile auxfiles/CSSC.spec unused/Makefile docs/config-info.texi)
+AC_OUTPUT(version.cc Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh testutils/Makefile auxfiles/Makefile auxfiles/CSSC.spec unused/Makefile docs/config-info.texi)

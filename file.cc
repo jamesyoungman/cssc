@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.29 2001/07/31 08:28:07 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.30 2001/08/29 17:17:02 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -475,6 +475,24 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 }
 
 
+/* CYGWIN seems to be unable to create a file for writing, wiht mode
+ * 0444, so this code resets the mode after we have closed the g-file. 
+ */
+bool set_file_mode(mystring &gname, int mode)
+{
+  const char *name = gname.c_str();
+  
+  if (0 == chmod(name, mode))
+    {
+      return true;
+    }
+  else
+    {
+      errormsg_with_errno("%s: cannot set mode of file to 0%o\n",
+                          name, mode);
+      return false;
+    }
+}
 
 
 /* returns a file descriptor open to a newly created file. */
@@ -538,11 +556,12 @@ create(mystring name, int mode) {
             fd = open(name.c_str(), flags, perms);
           }
 #else     
-        if (mode & CREATE_NFS_ATOMIC)
+        if (CONFIG_CAN_HARD_LINK_AN_OPEN_FILE && (mode & CREATE_NFS_ATOMIC) )
           fd = atomic_nfs_create(name.c_str(), flags, perms);
         else
           fd = open(name.c_str(), flags, perms);
 #endif
+
         
 #ifdef CONFIG_UIDS
         if (mode & CREATE_AS_REAL_USER)

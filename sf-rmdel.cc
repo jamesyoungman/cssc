@@ -34,7 +34,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.13 1999/04/21 22:19:12 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.14 2001/08/29 17:17:02 james_youngman Exp $";
 #endif
 
 static int
@@ -169,7 +169,7 @@ sccs_file::rmdel(sid id)
   // Only finish write out the file if we had no problem.
   if (true == retval)
     {
-      end_update(out);
+      retval = end_update(&out);
     }
   return retval;
 }		      

@@ -33,7 +33,7 @@
 #include "delta-table.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.8 1998/06/15 20:50:01 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.9 2001/08/29 17:17:02 james_youngman Exp $";
 #endif
 
 /* Starts an update of an SCCS file that includes a new entry to be
@@ -56,27 +56,32 @@ sccs_file::start_update(const delta &new_delta)
 
 /* Set the line counts in the prepended delta and then end the update. */
 
-void
-sccs_file::end_update(FILE *out, const delta &d)
+bool
+sccs_file::end_update(FILE **pout, const delta &d)
 {
-  if (fflush_failed(fflush(out)))
+  if (fflush_failed(fflush(*pout)))
     {
+      fclose(*pout);
+      *pout = NULL;
       xfile_error("Write error.");
     }
 
-  rewind(out);
+  rewind(*pout);
 
-  if (printf_failed(fprintf(out, "\001h-----\n\001s %05lu/%05lu/%05lu",
+  if (printf_failed(fprintf(*pout, "\001h-----\n\001s %05lu/%05lu/%05lu",
 			    cap5(d.inserted),
 			    cap5(d.deleted),
 			    cap5(d.unchanged))))
     {
+      fclose(*pout);
+      *pout = NULL;
       xfile_error("Write error.");
     }
   
-  end_update(out);
+  bool retval = end_update(pout);
   
   delta_table->prepend(d);
+  return retval;
 }
 
 /* Local variables: */
