@@ -56,7 +56,8 @@ private:
 
 	char **argv;
 	int argc;
-
+	int is_unique;
+  
 #ifndef CONFIG_NO_DIRECTORY
 	list<mystring> files;
 	int pos;
@@ -71,7 +72,12 @@ public:
 	sccs_name &get_name() { return name; }
   // JAY mod: using is now a keyword; change the function name to 
   // using_source().
-	enum sources using_source() { return source; }	
+	enum sources using_source() { return source; }
+
+  // unique() returns nonzero if more than exactly file was specified on
+  // the command line; zero if more than one was specified or the names
+  // are gotten from a directory or pipe.
+  	int unique() const;
 };
 
 #endif /* __FILEITER_H__ */

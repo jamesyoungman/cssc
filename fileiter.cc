@@ -18,7 +18,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.4 1997/05/10 14:49:49 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.5 1997/05/25 15:32:14 james Exp $";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
@@ -78,7 +78,15 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 #endif /* CONFIG_NO_DIRECTORY */
 
 	source = ARGS;
+	is_unique = (1 == argc);
 }
+
+int
+sccs_file_iterator::unique() const
+{
+  return is_unique;
+}
+
 
 int
 sccs_file_iterator::next() {
