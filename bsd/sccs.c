@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.32 2002/03/17 11:17:59 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.33 2002/03/17 12:40:46 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -354,6 +354,8 @@ struct sccsprog
 /* bits for sccsflags */
 #define NO_SDOT 0001            /* no s. on front of args */
 #define REALUSER        0002    /* protected (e.g., admin) */
+#define WARN_MISSING    0004    /* not implemented in GNU CSSC */
+#define NO_HELP_HERE    0010    /* issue special message re "help" */
 
 /* modes for the "clean", "info", "check" ops */
 #define CLEANC          0       /* clean command */
@@ -374,11 +376,11 @@ const struct sccsprog SccsProg[] =
 {
   {"admin", PROG, REALUSER, _PATH_SCCSADMIN},
   {"cdc", PROG, 0, _PATH_SCCSCDC},
-  {"comb", PROG, 0, _PATH_SCCSCOMB},
+  {"comb", PROG, WARN_MISSING, _PATH_SCCSCOMB},
   {"delta", PROG, 0, _PATH_SCCSDELTA},
   {"get", PROG, 0, _PATH_SCCSGET},
   {"unget", PROG, 0, _PATH_SCCSUNGET},
-  {"help", PROG, NO_SDOT, _PATH_SCCSHELP},
+  {"help", PROG, NO_HELP_HERE | NO_SDOT, _PATH_SCCSHELP},
   {"prs", PROG, 0, _PATH_SCCSPRS},
   {"prt", PROG, 0, _PATH_SCCSPRT},
   {"rmdel", PROG, REALUSER, _PATH_SCCSRMDEL},
@@ -1067,6 +1069,28 @@ command (char *argv[], bool forkflag, const char *arg0)
           usage();
           return (CSSC_EX_USAGE);
         }
+      else
+	{
+	  if (cmd->sccsflags & WARN_MISSING)
+	    {
+	      fprintf(stderr,
+		      "Warning: the \"%s\" command is not yet implemented.\n",
+		      *ap);
+	      /* continue anyway just in case we did implement it, or 
+	       * (perhaps) there is a real SCCS around somewhere.
+	       */
+	    }
+	  if (cmd->sccsflags & NO_HELP_HERE)
+	    {
+	      fprintf(stderr,
+		      "GNU CSSC does not provide the \"%s\" command;\n"
+		      "please see the relevant entry in the GNU CSSC manual\n"
+		      "and the \"Missing Features and other Problems\" chapter\n"
+		      "in particular.\n\n",
+		      *ap);
+	    }
+	}
+      
 
       /*
       **  Copy remaining arguments doing editing as appropriate.
