@@ -1,15 +1,9 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1999-04-18 18:16:55 james>
+Time-stamp: <1999-04-24 10:14:15 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
 
-
-Sun Apr 18 18:14:07 1999: James Youngman <jay@gnu.org>
-In version 0.10beta.pl0.  Unfixed.
- sccs unedit /tmp/SCCS/s.foo will cause "./s.foo" to be unlinked
- (though this file probably does not exist).  The actual gotten file
- will not be deleted.
 
 Mon Feb  9 23:41:03 1998: Lars Hecking <lhecking@nmrc.ucc.ie>
 In version 0.05-pl0.  Unfixed.

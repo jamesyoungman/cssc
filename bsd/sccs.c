@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998, 1999\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.22 1999/04/24 08:41:30 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.23 1999/04/24 09:14:07 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -1835,6 +1835,31 @@ isbranch (const char *sid)
 }
 
 /*
+**  HAS_SDOT_PREFIX -- Look for "s." at the start of a filename
+**
+**   If this prefix is present, a nonzero value is returned.
+**
+**   Parameters:
+**           p -- the name of the file.
+**
+**   Returns:
+**           TRUE -- if the prefix is present
+**           FALSE -- if the prefix is not present
+**
+**   Side Effects:
+**           None.
+*/
+bool
+has_sdot_prefix(const char *p)
+{
+  if (p[0] == 's' && p[1] == '.')
+    return TRUE;
+  else
+    return FALSE;
+}
+
+
+/*
 **  UNEDIT -- unedit a file
 **
 **   Checks to see that the current user is actually editting
@@ -1933,6 +1958,14 @@ unedit (const char *fn)
       extern int errno;
 
       cp = tail (fn);
+
+      /* If the user specified the SCCS file name rather than the
+       * g-file name, form the g-file name here, since we need
+       * to delete it later.
+       */
+      if (has_sdot_prefix(cp))
+	cp += 2;
+  
       errno = 0;
       if (access (cp, 0) < 0 && errno != ENOENT)
 	goto bad;

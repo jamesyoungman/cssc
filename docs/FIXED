@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-10-20 18:48:44 james>
+Time-stamp: <1999-04-24 10:14:45 james>
 
 List of fixed bugs 
 
@@ -16,6 +16,12 @@ it's easier to just fix the bug than list it in BUGS _and_ I do it
 promptly, it does not get listed.  If you don't like this (lack of?)
 policy, let me know.  All bugfixes are listed in ChangeLog, in some
 fashion.
+
+Sun Apr 18 18:14:07 1999: James Youngman <jay@gnu.org>
+In version 0.10beta.pl0.  Fixed in version 0.11alpha.pl3
+ sccs unedit /tmp/SCCS/s.foo will cause "./s.foo" to be unlinked
+ (though this file probably does not exist).  The actual gotten file
+ will not be deleted.
 
 Thu Oct  8 1998 12:11:43:  Dick Streefland <dick_streefland@tasking.com>
 In version 0.09alpha.pl0.  Fixed in version 0.09alpha.pl1. 
