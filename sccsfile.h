@@ -201,7 +201,7 @@ private:
   int write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
   void end_update(FILE *out) const;
-  int rehack_encoded_flag(FILE *out, unsigned *sum) const;
+  int rehack_encoded_flag(FILE *out, int *sum) const;
 
 public:
   static void update_checksum(const char *name);

@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.15 1998/02/23 21:41:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.16 1998/05/09 16:10:20 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -377,7 +377,7 @@ sccs_file::write(FILE *out) const
 
 
 int
-sccs_file::rehack_encoded_flag(FILE *f, unsigned *sum) const
+sccs_file::rehack_encoded_flag(FILE *f, int *sum) const
 {
   // Find the encoded flag.  Maybe change it.
   // "f" must be opened for update.
@@ -439,7 +439,7 @@ sccs_file::end_update(FILE *out) const {
 		xfile_error("Write error.");
 	}
 
-	unsigned sum;
+	int sum;
 	mystring xname = name.xfile();
 
 	// Open the file (obtaining the checksum) and immediately close it.
@@ -461,7 +461,7 @@ sccs_file::end_update(FILE *out) const {
 	
 
 	rewind(out);
-	if (printf_failed(fprintf(out, "\001h%05u", sum))
+	if (printf_failed(fprintf(out, "\001h%05d", sum))
 	    || fclose_failed(fclose(out)))
 	  {
 	    xfile_error("Write error.");
@@ -487,10 +487,10 @@ sccs_file::end_update(FILE *out) const {
 
 void
 sccs_file::update_checksum(const char *name) {
-	unsigned sum;
+	int sum;
 	FILE *out = open_sccs_file(name, UPDATE, &sum);
 
-	if (fprintf_failed(fprintf(out, "\001h%05u", sum))
+	if (fprintf_failed(fprintf(out, "\001h%05d", sum))
 	    || fclose_failed(fclose(out)))
 	  {
 	    quit(errno, "%s: Write error.", name);
