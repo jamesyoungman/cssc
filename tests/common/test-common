@@ -10,10 +10,14 @@
 # Common function definitions.
 . ../common/command-names
 
+# Try to find an echo command that allows us to suppress the newline
+# at the end of the line, and also to use C-style escape codes.  We 
+# have our own, as a last resort.
 
 ## First, find out how to echo without appending a newline,
-## and so on.  We end up with three variables:-
+## and so on.  We end up with five variables:-
 #
+# echocmd       The name by which we invoke the "echo" command.
 # ac_e		Leading argument for enabling escape codes.
 # ac_n		Leading argument for echo to suppress newline.
 # ac_c          Arg for suppressing newline (may need -e, we test for that.)
@@ -22,60 +26,82 @@
 # FreeBSD echo (or at least some version of it) does not support both the
 # -n and the -e option AT THE SAME TIME.  This information from 
 # Malcolm Boff <Malcolm_Boff@compuserve.com> on 1997/11/01. 
-#
-# He suggested that we use printf but we can't do that because
+# He suggested that we use printf(1) but we can't do that because
 # many systems just don't support it.
 #
-# The second echo here ensures that the parenthesised command 
-# succeeds and the output ends with a newline.
-if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
-  # The trailing \c option does not work without -e.
-  # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
-  if (echo -e "testing\c"; echo 1,2,3) | grep c >/dev/null; then
-    # \c does not work even with -e.
-    if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
-	# -n option not known (and \c not known)
-	# I don't know what purpose setting ac_c to this value
-	# has, but Autoconf does it...
-	ac_n= ac_c='
+# According to Marty Leisner <leisner@sdsp.mc.xerox.com>, SunOS 4.1.4
+# has the -n option but not the -e option.
+#
+# Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
+#
+for echocmd in echo /bin/echo /usr/bin/echo /usr/5bin/echo ../../testutils/ekko
+do
+if test -f $echocmd
+then
+  # The second echo here ensures that the parenthesised command 
+  # succeeds and the output ends with a newline.
+  if ($echocmd "testing\c"; echo 1,2,3) | grep c >/dev/null
+    then
+    # The trailing \c option does not work without -e.
+    if ($echocmd -e "testing\c"; echo 1,2,3) | grep c >/dev/null
+    then
+      # \c does not work even with -e.
+      if ($echocmd -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null
+      then
+  	  # -n option not known (and \c not known)
+  	  # I don't know what purpose setting ac_c to this value
+  	  # has, but Autoconf does it...
+  	  ac_n= ac_c='
 ' ac_t='	'
+      else
+  	  # -n option works even though -e does not.
+  	  # This is unfortunate since the test scripts assume
+  	  # in places tha ability to expand escape codes.  
+  	  # Send message to STDERR because I want to investigate.
+  	  #
+  	  # According to Marty Leisner <leisner@sdsp.mc.xerox.com>,
+  	  # SunOS 4.1.4 is one such "unusual" system.
+
+  	  # echo Unusual system\; PLEASE inform '<jay@gnu.org>'. >&2
+  	  ac_n=-n ac_c= ac_t=
+      fi
     else
-	# -n option works even though -e does not.
-	# This is unfortunate since the test scripts assume
-	# in places tha ability to expand escape codes.  
-	# Send message to STDERR because I want to investigate.
-	echo Unusual system\; PLEASE inform '<jay@gnu.org>'. >&2
-	ac_n=-n ac_c= ac_t=
+      # \c does work with -e.
+      # Hence we do not need to use -n.
+      ac_n= ac_c='\c' ec_t= 
+      # Break out of the loop, we have a workable solution.
+      break
     fi
   else
-    # \c does work with -e.
-    # Hence we do not need to use -n.
-    ac_n= ac_c='\c' ec_t= 
+    ac_n= ac_c='\c' ac_t=
+    # Break out of the loop, we have a workable solution.
+    break
   fi
-else
-  ac_n= ac_c='\c' ac_t=
 fi
+done
 
 # If "echo -e" generates an error, don't do that.  Hey, at least
 # /dev/null works!
-if (echo -e) >/dev/null 2>&1
+if ($echocmd -e) >/dev/null 2>&1
 then
-    if (echo -e) | sed s/-e/xe/ | grep xe >/dev/null
-    then
-	ac_e=''
-    else
-	ac_e='-e'
-    fi
+  if ($echocmd -e) | sed s/-e/xe/ | grep xe >/dev/null
+  then
+    ac_e=''
+  else
+    ac_e='-e'
+  fi
 fi
 
 # echo "ac_n="$ac_n
 # echo "ac_e="$ac_e
 # echo "ac_t="$ac_t
 # echo "ac_c="$ac_c
+# echo "echocmd=" $echocmd
+
 
 # Function for echoing without a newline, with escape chars enabled.
 echo_nonl () {
-echo $ac_n $ac_e "$@$ac_c" ;
+${echocmd} ${ac_n} ${ac_e} "$@$ac_c" ;
 }
 
 
