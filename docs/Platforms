@@ -39,9 +39,12 @@ If you wish to install GNU Autoconf, you can obtain it from the GNU
 Project's FTP site, ftp.gnu.org.  You will probably also find GNU
 Automake useful.
 
-As far as I know however, CSSC has not yet been tested with any C++
-compiler other than GCC and IRIX's CC (but that failed, see below), so
-I *do* expect portability problems there.
+CSSC has not, as far as I know, been widely tested with C++ compilers
+other than GCC:-
+
+GCC (2.7,2.8,EGCS)		Compiles, test suite passes
+EPC C++                         Compiles, test suite passes
+IRIX CC				Fails to compile (see below)
 
 
 Notes for specific platforms
