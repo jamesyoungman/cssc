@@ -10,6 +10,11 @@
 #undef CONFIG_DIFF_COMMAND
 
 
+/* HAVE_GNU_DIFF is defined if the CONFIG_DIFF_COMMAND is GNU diff.
+ * This affects the commentary we produce in showconfig.cc.
+ */
+#undef HAVE_GNU_DIFF
+
 /* The package name and version are macros are created by automake but
  * not understood by autoheader.  Hence I have to point out their
  * existence to autoheader by putting them here...
@@ -40,7 +45,7 @@
 
 
 /* This section contains those comments and definitions that are too
- * complex for autoheader.m4f to understand; autoheader works by
+ * complex for autoheader.m4 to understand; autoheader works by
  * redefining the autoconf primitives in such a way that it gains a
  * record of what might or might not get defined, just by m4 expansion
  * of congigure.in.  It doesn't seem clever enough to cope with the

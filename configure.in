@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 dnl 
-dnl $Id: configure.in,v 1.80 2002/03/25 00:08:52 james_youngman Exp $
+dnl $Id: configure.in,v 1.81 2002/04/03 14:18:23 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -206,6 +206,17 @@ dnl add a symlink later.   TODO.
 AC_PATH_PROG(CONFIG_DIFF_COMMAND,diff,/usr/bin/diff)
 AC_DEFINE_UNQUOTED(CONFIG_DIFF_COMMAND,"$ac_cv_path_CONFIG_DIFF_COMMAND")
 
+
+AC_MSG_CHECKING([for GNU diff])
+if $ac_cv_path_CONFIG_DIFF_COMMAND --version 2>/dev/null | grep "GNU diff" >/dev/null
+then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE_UNQUOTED(HAVE_GNU_DIFF)	
+else
+	AC_MSG_RESULT(no)
+fi
+
+
 ##
 ## Search for something we can use to decompress a .Z file.
 ## 
@@ -361,13 +372,9 @@ dnl The "select" that autoscan found was a method. AC_CHECK_FUNCS(select)
 AC_CHECK_FUNCS(abort wait)
 
 dnl Check for symlink() and readlink(), which lndir uses.
-AC_CHECK_FUNCS(symlink readlink) 
-
+AC_CHECK_FUNCS(symlink readlink unsetenv fsetpos sysconf memchr) 
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid pipe spawn geteuid getegid)
-AC_CHECK_FUNCS(unsetenv)
-AC_CHECK_FUNCS(fsetpos)
 AC_REPLACE_FUNCS(strerror remove rename strstr)
-AC_CHECK_FUNCS(memchr)
 
 
 
