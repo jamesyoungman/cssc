@@ -1,12 +1,14 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
-Version: 0.06alpha.pl5
+Version: 0.06alpha.pl7
 Release: 1
+URL: http://www.myth.co.uk/~jay/cssc/
 Copyright: GPL
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
-Source: alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.06alpha.pl5.tar.gz
+Source: ftp://alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.06alpha.pl7.tar.gz
 Requires: /usr/bin/diff
+BuildRoot: /var/tmp/cssc-root
 
 %description
 CSSC is a clone for the traditional Unix version control suite SCCS.
@@ -18,16 +20,34 @@ not included.  You can get that from ftp.freebsd.org.
 %setup
 
 %build
+rm -rf $RPM_BUILD_ROOT
+rm -f docs/cssc.info
 ./configure --prefix=/usr --infodir=/usr/info
 make
 
 %install
-make install
-strip /usr/libexec/cssc/*
-[ -L /usr/sccs ] && rm -f /usr/sccs
-ln -s libexec/cssc /usr/sccs
+make prefix=$RPM_BUILD_ROOT/usr install-strip
+# [ -L /usr/sccs ] && rm -f /usr/sccs
+ln -s libexec/cssc $RPM_BUILD_ROOT/usr/sccs
+
+%post
+/sbin/install-info /usr/info/cssc.info /usr/info/dir
+
+%preun
+if [ $1 = 0 ]; then
+	/sbin/install-info --delete /usr/info/cssc.info /usr/info/dir
+fi
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
 
 %changelog
+
+* Fri May  8 1998 interran@crd.GE.COM <John Interrante>
+Use a build-root.   Also use install-info.  Use install-strip 
+rather than just "strip *".
 
 * Sat Feb 21 1998 jay@gnu.org <James Youngman>
 Strip the installed binaries.
@@ -40,21 +60,11 @@ Added sccsdiff to the file list.
 First RPMed version (0.05alpha-pl0)
 
 %files
-%doc README AUTHORS COPYING ChangeLog INSTALL NEWS 
-%doc docs/BUGS docs/CREDITS docs/FIXED docs/Platforms 
-%doc docs/TESTING docs/TODO docs/missing.txt docs/patches.txt
-%doc /usr/info/cssc.info
-%doc /usr/info/cssc.info-1
-%doc /usr/info/cssc.info-2
-/usr/libexec/cssc/admin 
-/usr/libexec/cssc/cdc 
-/usr/libexec/cssc/delta 
-/usr/libexec/cssc/get 
-/usr/libexec/cssc/prs 
-/usr/libexec/cssc/prt
-/usr/libexec/cssc/rmdel 
-/usr/libexec/cssc/sact 
-/usr/libexec/cssc/unget 
-/usr/libexec/cssc/what 
-/usr/libexec/cssc/sccsdiff
-/usr/sccs
+%attr(-, root, root) %doc README AUTHORS COPYING ChangeLog INSTALL NEWS 
+%attr(-, root, root) %doc docs/BUGS docs/CREDITS docs/FIXED docs/Platforms 
+%attr(-, root, root) %doc docs/TESTING docs/TODO docs/missing.txt docs/patches.txt
+%attr(-, root, root) %doc /usr/info/cssc.info
+%attr(-, root, root) %doc /usr/info/cssc.info-1
+%attr(-, root, root) %doc /usr/info/cssc.info-2
+%attr(755, root, root) /usr/libexec/cssc
+%attr(-, root, root) /usr/sccs
