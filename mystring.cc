@@ -48,7 +48,7 @@
 #ifndef USE_STANDARD_STRING
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.11 1998/06/16 20:33:19 james Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.12 1998/06/19 07:12:16 james Exp $";
 #endif
 
 
@@ -275,16 +275,13 @@ mystring::ModifiableReference::operator char() const
 mystring::size_type
 mystring::find_last_of(charT needle) const
 {
-  const charT *p = rep->data + rep->len;
-
-  for (size_type i=rep->len; i>0; i--)
-    {
-      if (*--p == needle)
-	return i;
-    }
-  
+  size_type xpos = length();
+  while (xpos-- > 0)
+    if (rep->data[xpos] == needle)
+      return xpos;
   return npos;
 }
+
 
 #endif /* USE_STANDARD_STRING */
 
