@@ -82,5 +82,5 @@ EXTRA_DIST = ChangeLog $(testcode) $(rainyday_src)
 
 
 sccsdiff: sccsdiff.sh
-	cp $< $@
+	cp sccsdiff.sh $@
 	chmod a+x $@
