@@ -1,41 +1,21 @@
 Brief instructions on testing.
 
-Running the tests currently requires:-
-
-1.	A Posix-like /bin/sh
-		Specifically the sourcing command (".") is required.
-		GNU Bash, for example, is fine.
-
-2.	lndir
-		Lndir is a utility from the X11 distribution for
-		making a duplicate of a directory tree using "ln".  In
-		the future, configure will work around a missing
-		"lndir".  Currently, it is required.
-
-To run the tests, first enter the direcotory "tests".  Testing is
-driven via "make".  The programs in the suite can be tested
-unduvudually or make can be used to run all the tests.  Normally,
-after compiling CSSC you would want to run all the tests and this is
-done with
-	make all-tests
+To run the tests, do
+        make check
 but if you are modifying code, you can re-run any failing tests by
 using one of the specific tests listed in the makefile.
 
-
 The test suite is the single most important component of CSSC.  It
-ensures that CSSC failthfully emulates SCCS, misfeatures and all.  It
+ensures that CSSC faithfully emulates SCCS, misfeatures and all.  It
 also provides for regression testing as an integral part of each
 bug-fix and release.  There has so far been a linear relationship
-between test-cases written and bugs or missing features found.  This
-means that the fastest way to improve CSSC is not to hack with the
-code, but to write new test cases.  If, as the worst case, a new test
-case does not reveal a new bug, it might prevent one in the future.
-This means that ALL new test cases are useful.
+between test-cases written and the number of bugs or missing features
+found.  This means that the fastest way to improve CSSC is not to hack
+with the code, but to write new test cases.  If, as the worst case, a
+new test case does not reveal a new bug, it might prevent one in the
+future.  This means that ALL new test cases are useful.
 
 The following people have improved the quality of CSSC by providing
 cases for the test suite:
 
-James Youngman <jay@gnu.ai.mit.edu>	(come on, everybody else!)
-
-
-
+James Youngman <jay@gnu.org>            (come on, everybody else!)
