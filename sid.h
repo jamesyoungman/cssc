@@ -193,11 +193,12 @@ public:
 	}
 
 	int print(FILE *f) const;
-	int printf(FILE *f, char fmt) const;
+	int printf(FILE *f, char fmt, int force_zero=0) const;
 
-	void
+  	int			// 0 return means success.
 	dprint(FILE *f) const {
-		fprintf(f, "%d.%d.%d.%d", rel, level, branch, sequence);
+		return EOF == fprintf(f, "%d.%d.%d.%d",
+				      rel, level, branch, sequence);
 	}
 
   friend release::release(const sid &s);

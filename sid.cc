@@ -38,7 +38,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.7 1997/07/02 18:05:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.8 1997/10/25 16:50:26 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an
@@ -266,7 +266,7 @@ sid::print(FILE *out) const {
 }
 
 int
-sid::printf(FILE *out, char c) const {
+sid::printf(FILE *out, char c, int force_zero /*=0*/) const {
 	assert(valid());
 	assert(!partial_sid());
 
@@ -283,14 +283,14 @@ sid::printf(FILE *out, char c) const {
 
 	case 'B':
 	        // this field is completely blank for trunk revisions.
-                if (0 == branch && 0 == sequence)
+                if (!force_zero && 0 == branch && 0 == sequence)
 		  return 0;
 		n = branch;
 		break;
 
 	case 'S':
 	        // this field is completely blank for trunk revisions.
-                if (0 == branch && 0 == sequence)
+                if (!force_zero && 0 == branch && 0 == sequence)
 		  return 0;
 		n = sequence;
 		break;
