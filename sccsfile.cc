@@ -43,10 +43,47 @@
 #include <unistd.h>		// SEEK_SET on SunOS.
 #endif
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.49 2002/04/04 19:33:46 james_youngman Exp $";
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>		/* fstat(), struct stat */
 #endif
 
+
+#ifdef CONFIG_SCCS_IDS
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.50 2002/04/07 02:22:35 james_youngman Exp $";
+#endif
+
+#if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
+/* If an SCCS file has a link count greater than one, then the normal 
+ * process of updating the file will break the link.  We try to detect this 
+ * even if the file is being opened to reading only, to give an early
+ * warning (and because SCCS does so).
+ */
+static int just_one_link(FILE *f)
+{
+  int fd = fileno(f);
+  if (fd >= 0)
+    {
+      struct stat st;
+      if (0 != fstat(fd, &st))
+	{
+	  /* We cannot stat the file descriptor.  Perhaps there is a 
+	   * filesystem functionality issue.   If that's the case then we
+	   * will give it the benefit of the doubt on the link coutn front. 
+	   */
+	  return 1;  /* We're happy with the file */
+	}
+      if (st.st_nlink > 1)
+	return 0;		/* We don't like it. */
+    }
+  return 1;			/* OK. */
+}
+#else
+static int just_one_link(FILE *f)
+{
+  /* Without fileno(), we have no way of checking. */
+  return 1;
+}
+#endif
 
 
 /* Static member for opening a SCCS file and then calculating its checksum. */
@@ -64,12 +101,24 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   else
     f_local = fopen(name, "r");
 #endif
-  
+
   if (f_local == NULL)
     {
       const char *purpose = (mode == UPDATE) ? "update" : "reading";
       s_missing_quit("Cannot open SCCS file %s for %s", name, purpose);
       /*NOTEACHED*/
+      return NULL;
+    }
+
+  if (!just_one_link(f_local))
+    {
+      // xx: issue error message here
+      errormsg("%s had a hard link count which is greater than one.\n"
+	       "This means that the normal process of updating the file\n"
+	       "would break the hard link.  This error is therefore fatal,\n"
+	       "please fix the problem.\n",
+	       name);
+      (void)fclose(f_local);
       return NULL;
     }
   

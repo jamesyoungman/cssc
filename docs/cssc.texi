@@ -2918,6 +2918,17 @@ these features may be different to the features of some version of
 @sc{sccs} with which you want to interoperate.  See
 @ref{Interoperability} for more information on how to achieve better
 interoperability with other implementations of @sc{sccs}.
+
+@item
+If you have a hard link to an @sc{sccs} file, then @sc{sccs} programs
+would ``break'' the hard link because the @sc{sccs} file is
+rewritten.  For this reason, @sc{sccs} checks the link count on the
+file before using it.  The @sc{sccs} suite also does this.  While
+@sc{cssc} does this consistently, @sc{sccs} does not - for example the
+@sc{val} program does not do this check. 
+
+@c val does not do this check on Solaris 2.6.
+
 @end enumerate
 
 There are also a small number of respects in which various
