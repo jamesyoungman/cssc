@@ -7,8 +7,11 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.8 2001/11/25 14:27:54 james_youngman Exp $
+# $Id: sccsdiff.sh.in,v 1.9 2001/11/25 16:01:38 james_youngman Exp $
 # LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.9  2001/11/25 16:01:38  james_youngman
+# LOG   Corrected a syntax error.
+# LOG
 # LOG   Revision 1.8  2001/11/25 14:27:54  james_youngman
 # LOG   fixed Debian  Bug#120080: sccs sccsdiff doesn't work (sccsdiff assumes /usr/sccs symlink exists)
 # LOG
@@ -47,13 +50,15 @@ if test x$get = x
 then
     # The CSSC Makefile performs a sed substitution on the next line.
     for get in "__csscutildir__/get" /usr/sccs/get get
-    if [ -x "$get" ]
-    then
-	break
-    fi
+    do
+	if [ -x "$get" ]
+	then
+	    break
+	fi
+    done
 fi
 
-version='$Revision: 1.8 $ $State: Exp $'
+version='$Revision: 1.9 $ $State: Exp $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
