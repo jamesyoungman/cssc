@@ -58,7 +58,7 @@ public:
 	}
 #endif
 
-	bool valid() const { return rel != -1; }
+	bool valid() const { return rel > 0; }
 
 	int
 	partial_sid() const {
@@ -183,7 +183,7 @@ public:
 	release(): rel(-1) {}
 	release(const char *s);
 
-	int valid() const { return rel != -1; }
+	int valid() const { return rel > 0; }
 
 	operator void const *() const {
 		if (rel == 0) {
