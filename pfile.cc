@@ -30,7 +30,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.10 1998/02/21 14:27:12 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.11 1998/08/13 18:16:10 james Exp $";
 #endif
 
 NORETURN
@@ -43,29 +43,30 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 		: name(n), mode(m), pos(-1) {
 
         if (!name.valid()) {
-		quit(-1, "%s: Not a SCCS file.", name.c_str());
+		ctor_quit(-1, "%s: Not a SCCS file.", name.c_str());
 	}
 
 	pname = name.pfile();
 
 	if (mode != READ) {
 		if (name.lock()) {
-			quit(-1, "%s: SCCS file is locked.  Try again later.",
-			     name.c_str());
+			ctor_quit(-1,
+				  "%s: SCCS file is locked.  Try again later.",
+				  name.c_str());
 		}
 	}
 
 	FILE *pf = fopen(pname.c_str(), "r");
 	if (pf == NULL) {
 		if (errno != ENOENT) {
-			quit(-1, "%s: Can't open p-file for reading.",
+			ctor_quit(-1, "%s: Can't open p-file for reading.",
 			     pname.c_str());
 		}
 	} else {
 		cssc_linebuf linebuf;
 
 		int lineno = 0;
-		while(!linebuf.read_line(pf)) {
+		while (!linebuf.read_line(pf)) {
 		  // chomp the newline 
 		  // TODO: make me 8-bit clean!
 		  linebuf[strlen(linebuf.c_str()) - 1] = '\0';
@@ -116,7 +117,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 		}
 
 		if (ferror(pf)) {
-			quit(errno, "%s: Read error.", pname.c_str());
+			ctor_quit(errno, "%s: Read error.", pname.c_str());
 		}
 
 		fclose(pf);
@@ -128,7 +129,7 @@ sccs_pfile::is_locked(sid id) {
 	rewind();
 
 	sccs_pfile &it = *this;
-	while(next()) {
+	while (next()) {
 		if (it->got == id) {
 			return 1;
 		}
@@ -142,7 +143,7 @@ sccs_pfile::is_to_be_created(sid id) {
 	rewind();
 
 	sccs_pfile &it = *this;
-	while(next()) {
+	while (next()) {
 		if (it->delta == id) {
 			return 1;
 		}
