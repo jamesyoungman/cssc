@@ -13,6 +13,9 @@
 #ifndef __STRSTR_C__
 #define __STRSTR_C__
 
+#include "mysc.h"
+
+#ifndef HAVE_STRSTR
 #define strstr LIDENT(strstr)
 
 static char *
@@ -30,6 +33,6 @@ strstr(const char *s1, const char *s2) {
 
 	return (char *) s1;
 }
-
+#endif /*  HAVE_STRSTR */
 #endif /* __STRSTR_C__ */
 

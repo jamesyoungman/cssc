@@ -1,6 +1,8 @@
 /* If we are to roll our own strerror(), we must have sys_errlist
  * and sys_nerr.
  */
+#include "mysc.h"
+
 #undef DIRE
 #ifndef HAVE_SYS_ERRLIST
 #define DIRE
