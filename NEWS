@@ -1,4 +1,9 @@
 New in CSSC-0.11alpha-pl5
+
+	* New script, testutils/compare_gets.sh which can be used 
+          to compare the result of using CSSC on your repository 
+          of SCCS files with the effect of SCCS.  NOTE: please 
+	  use this tool on a COPY of your source repository!
 	
 	* Fix for long-standing bug: we now can correctly extract 
           files containing deltas which include other deltas with 
@@ -15,6 +20,9 @@ New in CSSC-0.11alpha-pl5
 	  for the bug-reporting service in the CSSC manual.
 
 	* Bugfixes: SourceForge bugs 121599, 121605.
+
+  	* Do correct clean up if we get SIGINT while waiting for user
+          input (e.g. MRs)
 
 New in CSSC-0.11alpha-pl4
 	
