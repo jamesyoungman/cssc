@@ -3,6 +3,7 @@
 
 # Import common functions & definitions.
 . ../common/test-common
+. ../common/real-thing
 
 
 
@@ -100,12 +101,15 @@ test_bin   b8 "\000"			# Just the ASCII NUL alone.
 test_bin   b9 "\001"			# Just the ^A alone.
 adminflags=
 
-expect_fail=true
-## Real SCCS fails on these inputs:-
-test_bin   fb10 "foo"  			# no newline at end of file.
-test_ascii fa11 "x\000y\n"		# ASCII NUL.
+if $TESTING_CSSC
+then
+    ## Real SCCS fails on these inputs:-
+    test_bin   fb10 "foo"  		# no newline at end of file.
+    test_ascii fa11 "x\000y\n"		# ASCII NUL.
+else
+    echo "Some tests skipped (since SCCS fails them but CSSC should pass)"
+fi
 
 remove command.log $s $p $g $z $x infile
-expect_fail=false
 success 
 
