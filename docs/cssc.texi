@@ -1582,24 +1582,9 @@ are identical.
 
 @item 
 Some programs behave subtly differently to their original counterparts.
-There are two reasons for this:-
-
-@itemize --
-@item
-The processing of command-line options is done in a way which is
-standard for GNU programs, and this is incompatible with the way @sc{sccs}
-processes its command-line options.  This is being changed, and so for
-the moment there will be some inconsistency.  You will be able to tell
-if this has been fixed in the version of @sc{cssc} you are using
-because this paragraph will be missing.
-
-@item
-Error messages are different, and also extra warnings are provided in 
-some circumstances.
-@end itemize
-
-All other differences are also bugs.  Please report them 
-(@pxref{Problems}).
+Error messages are different, and also extra warnings are provided in
+some circumstances.  All other differences are also bugs.  Please report
+them (@pxref{Problems}).
 
 
 @item 
@@ -1620,7 +1605,50 @@ which features are required first.
 
 There are a small number of known problems documented in the files
 @samp{docs/BUGS} and @samp{docs/TODO}.  These will be fixed at some
-point in the future.
+point in the future.  
+
+@noindent
+There are also some security problems with this code:-
+
+@enumerate
+
+@item Temporary file races ---
+@sc{cssc} opens many temporary files, most of them with very predictable
+names.   This can be used as a lever for compromising the security of a
+system, often by antcipating the name of a file which will be opened at
+some point, and creating a symbolic link of the same name.  Most of the
+temporary files used are created in the same directory as the @sc{sccs}
+file itself.   @sc{cssc} should not be used by the owners of files whose
+security is important, especially to control files whose @sc{sccs} file
+is in a world-writable directory.
+
+@item Setuid execution ---
+It is common to install an extra set of binaries with the set-user-id
+bit turned on in their modes, to allow a specified group of users to
+make revisions to some important files.  There are many ways in which a
+setuid prgram can be used by malicious users to gain access to the
+security privileges of the user as whom a program runs.  @sc{cssc} has
+not been reviewed with the relevant security issues in mind.  Please do
+not install @sc{cssc} programs with the set-user-id or set-group-id bits
+turned on.
+
+@item Environment variables ---
+@sc{cssc} invokes external programs, notably the @code{diff} command and
+the program specified as the @sc{mr} validation program.   Some
+@sc{cssc} programs (for example @code{sccsdiff}) invoke others.   This
+is done without ``cleaning up'' the environment, and so this is another
+reason not to use the set-user-id bit for @sc{cssc} programs.  
+@end enumerate
+
+Please refer to the section of the GNU General Public License entitled
+``NO WARRANTY'' for information regarding the lack of warranty for this
+program.  @sc{cssc} is @emph{not} a secure program, please do not rely
+on it to behave in a secure fashion.
+
+Contributions of code or patches to fix these problems are, as always,
+gleefully welcomed.  Please submit these to the maintainer.
+
+
 
 Additionally, there is currently one problem that may not ever be fixed.
 This problem occurs only in the @code{prt} program when the list of
