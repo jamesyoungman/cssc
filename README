@@ -6,6 +6,30 @@ CSSC is currently under development so expect problems with compiling
 the package on older machines and perhaps even incorrect operation.
 For a list of known bugs see docs/BUGS.  For a list of now-fixed bugs
 see docs/FIXED.
+==============================================================================
+			Quick Start
+------------------------------------------------------------------------------
+1.	Compiling
+ mkdir work
+ cd work
+ ../configure
+ make
+
+2.	Testing 
+ cd work/tests
+ if make all-tests 
+ then
+	uname -a | mail -s "CSSC success" JYoungman@vggas.com 
+ else
+	uname -a | mail -s "CSSC failure" JYoungman@vggas.com 
+ fi
+
+
+3.	Installing
+ cd work
+ make install
+
+==============================================================================
 
 SCCS commands implemented this package are: admin, cdc, delta, get,
 prs, rmdel, sact, unget and what.  Not all options and capabilities of
@@ -24,19 +48,23 @@ option that can take argument, it must take an argument.  Where
 supplying an empty argument for an option of a standard SCCS command
 is meaningful, the corresponding command provides an additional option
 that does not take any arguments and has the same option letter but in
-upper case (eg. use "delta -Y" instead of "delta -y").  Please note
-that this is currently being worked on and so if you discover that
-some option has the wrong behaviour, please report it as a bug.
+upper case (eg. use "delta -Y" instead of "delta -y").
 
-Unimplemented features include support for binary files, the null
-delta flag (admin -fn), consistency checking (admin -h), ignored
-deltas (delta -g), printing the differences after a delta (delta -p),
-l-files (get -l), getting the most recent delta of a release (get -t),
-and getting a delta by sequence number (get -a).  Some features like
-including and excluding deltas (get -i -x) have been implemented but
-not extensively tested.
+	* Please note that this is currently being *
+	* worked on and so if you discover that    *
+	* some option has the wrong behaviour,	   *
+	* please report it as a bug.               *
+
+Unimplemented features include support for binary files, consistency
+checking (admin -h), ignored deltas (delta -g), printing the
+differences after a delta (delta -p), l-files (get -l), getting the
+most recent delta of a release (get -t), and getting a delta by
+sequence number (get -a).  Some features like including and excluding
+deltas (get -i -x) have been implemented but not extensively tested.
 
 See the file INSTALL for information on how to compile this package.
 Send any questions or bug reports by e-mail to the current maintainer,
-<JYoungman@vggas.com>.
+<JYoungman@vggas.com>.  After you have compiled CSSC, _PLEASE_ run the
+test suite, as described in docs/TESTING.
+
 
