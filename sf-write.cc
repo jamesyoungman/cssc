@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.20 1998/08/14 08:23:43 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.21 1998/08/22 17:52:51 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -423,8 +423,10 @@ static bool
 maybe_sync(FILE *fp)
 {
 #ifdef CONFIG_SYNC_BEFORE_REOPEN
-  if (ffsync(out) == EOF)
+  if (ffsync(fp) == EOF)
     return false;
+#else
+  &fp;				// use the otherwise-unused parameter.
 #endif
   return true;
 }
