@@ -65,8 +65,8 @@ EPC C++                         Compiles, test suite passes
 IRIX CC				Fails to compile (see below)
 
 Older versions of CSSC have been built and tested with most of the
-versions of GCC between 2.7 and 3.3, including EGCS.  At the time, the
-code built correctly and the test suite passes.  This does nto mean
+versions of GCC between 2.7 and 3.4, including EGCS.  At the time, the
+code built correctly and the test suite passes.  This does not mean
 that if you try to compile the code with GCC 2.7 now, everything will
 be fine.  However, you should not have too many problems, even so.
 
