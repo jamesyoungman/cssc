@@ -8,7 +8,11 @@
 remove command.log log log.stdout log.stderr SCCS
 mkdir SCCS 2>/dev/null
 
-g=tfile s=SCCS/s.$g p=SCCS/p.$g x=SCCS/x.$g z=SCCS/z.$g
+g=tfile 
+s=SCCS/s.${g} 
+p=SCCS/p.${g} 
+x=SCCS/x.${g} 
+z=SCCS/z.${g}
 remove $s $p $g $x $z
 
 echo "Using the driver program ${sccs}"
@@ -148,13 +152,25 @@ docommand i1 "${sccs} info -b" 0 "Nothing being edited (on trunk)\n" ""
 docommand i2 "${sccs} info"    0 "Nothing being edited\n" ""
 remove SCCS/s.foo foo
 
+
+#
+# check
+#
+docommand j1 "${sccs} check" 0 "" ""
+docommand j2 "${sccs} edit $s" 0 IGNORE IGNORE
+docommand j3 "${sccs} check" 1 IGNORE ""
+docommand j4 "${sccs} unedit $g" 0 IGNORE IGNORE
+
+
+
 remove {expected,got}.std{out,err} last.command 
+remove $s $p $g $x $z
 success
 
 #
 # Still need to test:-
 
-# cdc, comb, help, prs, prt, val, sccsdiff, check, diffs, -diff,
+# cdc, comb, help, prs, prt, val, sccsdiff, diffs, -diff,
 # branch, create
 
 #
