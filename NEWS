@@ -1,12 +1,34 @@
-New in CSSC-0.14alpha-pl1
+New in CSSC-0.15alpha-pl0
+	
+	* Reduced the number of lines of code not tested by the test suite to 
+          2083.
+	
+	* Support for ignored deltas
+
+	* Added section in the CSSC manual on included, excluded and
+	  ignored deltas.  Various other minor improvements to manual,
+	  including a clearer description of CSSC's interoperability
+	  support, and how it treats long lines in its input.
+
+	* sccs get - all g-files processed after a failing file are deleted.
+
+ 	* Fixed compilation bug - we were using idigit() in reveral places but            not including <ctype.h>. (SourceForge bug 623164).
 
 	* The test suite now passes when run against a genuine version of 
 	  SCCS which lacks "prt".
 	
-	* Support for the "-a" option of "get"
+	* Support for the "-a" option of "get" and the "-p" option of "delta".
 
 	* We detect the situation if an SCCS file has a link count
           greater than 1, and we refuse to open the affected file.
+
+ 	* Fix cssc.spec file so that it works with RPM v4 (i.e. when all 
+          manpages are automatically compressed).
+
+	* Correction to support for MR validation on systems lacking
+	  "fork()".
+
+	* Upgraded to autoconf version 2.53.
 
 New in CSSC-0.14alpha-pl0
 
