@@ -36,7 +36,7 @@
 
 
 // Cleaner is a class that you should have in scope in main;
-// it ensures that al; required cleanups are run even if you don't
+// it ensures that all required cleanups are run even if you don't
 // call quit().
 class Cleaner
 {
@@ -45,7 +45,11 @@ public:
   ~Cleaner();
 };
 
-
+/*
+ * The class "cleanup" is one which you can inherit from in order to 
+ * ensure that resources are cleaned up when a function is exited.
+ * This is most notably used by the "file_lock" class.
+ */
 class cleanup {
 	static class cleanup *head;
 	static int running;
@@ -91,11 +95,12 @@ void errormsg(const char *fmt, ...);
 void errormsg_with_errno(const char *fmt, ...);
 
 
+void quit_on_fatal_signals(void); // defined in fatalsig.cc.
+
+
+
+
 #ifdef __GNUC__
-#if 0
-NORETURN quit(int err, const char *fmt, ...)
-	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
-#endif
 NORETURN fatal_quit(int err, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
 NORETURN p_corrupt_quit(const char *fmt, ...)
@@ -107,9 +112,6 @@ NORETURN s_missing_quit(const char *fmt, ...)
 NORETURN ctor_fail(int err, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
 #else
-#if 0
-NORETURN quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
-#endif
 
 NORETURN s_missing_quit(const char *fmt, ...) POSTDECL_NORETURN;
 NORETURN s_corrupt_quit(const char *fmt, ...)  POSTDECL_NORETURN;

@@ -32,7 +32,7 @@ common_SOURCES = my-getopt.cc version.cc fdclosed.cc
 # Sources required by programs working with lists of SCCS files.
 sname_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc \
 		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc \
-		quit.cc 
+		quit.cc fatalsig.cc
 
 # Sources required by programs working with the contents of SCCS files.
 sfile_SOURCES = sccsfile.cc rel_list.cc \

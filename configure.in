@@ -117,6 +117,9 @@ dnl Look for declarations in headers.
 dnl bsd/sccs.c uses sys_siglist[], if available.
 AC_DECL_SYS_SIGLIST
 
+dnl fatalsig.cc uses signal handlers
+AC_TYPE_SIGNAL
+
 dnl Checks for library functions.
 dnl AC_FUNC_MEMCMP
 dnl The "select" that autoscan found was a method. AC_CHECK_FUNCS(select)

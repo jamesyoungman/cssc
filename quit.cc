@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.22 2000/03/19 11:18:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.23 2000/11/12 15:28:10 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -376,7 +376,7 @@ Cleaner::~Cleaner()
 
 Cleaner::Cleaner()
 {
-  // nothing to do...
+  quit_on_fatal_signals();
 }
 
 
