@@ -1,3 +1,13 @@
+New in CSSC-devel-0.03-pl0
+
+	* Fundamental changes, hence new version number.
+
+	* Major change is switch to using "automake" to 
+	  generate the "Makefile.in" files.  The consequent
+	  changes may break things for some machines.
+
+	* The test suite now has its own chapter in the manual.
+
 New in CSSC-0.02-devel-pl7
 
 	* The test scripts now correctly test the %P% keyword.
