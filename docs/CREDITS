@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <97/07/10 21:13:14 james>
+Time-stamp: <97/07/15 19:49:49 james>
 
 The MySC package provides the bulk of the functionality of this
 package, compiled under GCC 2.4.5, and was written by Ross Ridge.
@@ -7,9 +7,9 @@ package, compiled under GCC 2.4.5, and was written by Ross Ridge.
 This package was updated for modern C++ compilers, fixed, enhanced,
 and sparingly documented by James Youngman, <JYoungman@vggas.com>.
 
-Lars Hecking <lhecking@mmrc.ucc.ie> provided valuable help with
+Lars Hecking <lhecking@nmrc.ucc.ie> provided valuable help with
 Autoconf and portability information for Solaris, SunOS, AmigaOS, and
-IRIX.  
+IRIX.  Plus, lots and *lots* of testing and useful bug reports.
 
 
 
