@@ -1,3 +1,9 @@
+1998-05-25  James Youngman  <jay@gnu.org>
+
+	* file.cc: Consider using getpwuid(getuid()) in preference
+	  to getlogin().  Perhaps also remove 
+	  CONFIG_DECLARE_GET{WUID,LOGIN} from cssc.h.
+
 1998-04-08  James Youngman  <jay@gnu.org>
 
 	* Find out if SCO's "unget" produces any output.  We currently
@@ -20,7 +26,6 @@
 	Also check zero-length files, keyword substitution, large
 	binary files.
 
-	
 
 1998-01-27  James Youngman  <jay@gnu.org>
 
@@ -37,10 +42,6 @@
 	  condition while writing the body part of an SCCS file
 	  with admin -i.   Especially important for text files;
 	  we probably want to avoid retrying with binary encoding.
-
-	* Make sure get is 8-bit clean for "ASCII" files containing 
-	  ASCII NUL; make sure admin generates a binary file if this
-	  appears in the input.
 
 1998-01-11  James Youngman  <jay@gnu.org>
 
@@ -85,7 +86,7 @@ Fri Jun 27 19:40:22 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 Mon May 26 14:56:52 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
-	* Write tests for comb, rmdel, sact, sccsdiff, val.
+	* Write tests for comb, sact, val.
 
 Sun May 25 16:27:05 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
@@ -96,15 +97,9 @@ Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
 	* Check the interaction between any -r option to get and the
 	release floors and ceilings.
 
-	* Use standard string class rather than mystring?
-
-	* sf-admin.cc: Test setting & removing the 'e' flag. (is it allowed?)
-
 	* Write a shell script for converting SCCS files to RCS files; use
 	the Bourne shell, since not everybody has the C shell [suggested
 	by RMS].
-
-	* Consider using the BSD sccs(1) code.
 
 	* sccs-val is not yet provided.   Useful for testing.
 
