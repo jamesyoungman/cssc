@@ -1,55 +1,42 @@
-  readme.txt
+This is the README file for the package CSSC, a workalike for the
+source code control system SCCS.  It is based on the MySC package by
+Ross Ridge.
 
-  By Ross Ridge
-  Public Domain
+CSSC is currently under development so expect problems with compiling
+the package on older machines and perhaps even incorrect operation.
+For a list of known bugs see docs/BUGS.  For a list of now-fixed bugs
+see docs/FIXED.
 
-  Readme file for MySC.
-
-  @(#) MySC readme.tx 1.4 93/12/30 19:44:24
-
-
-This package is an BETA release of MySC, a set of utilities for
-providing version control.  It is designed to be compatible with the
-Source Code Control System (SCCS), a standard part of the development
-system of many Unix variants.  The commands in this package provide
-similar interface and use the same file format as the standard SCCS
-commands.  MySC is not intended as replacement for SCCS, these
-utilities were written so that SCCS version control could be used on
-systems that do not have SCCS.  The only significant advantage the
-MySC commands offer over SCCS is an optional feature for filename
-guessing similar to that used by RCS.
-
-MySC is written in C++ and currently only supports Unix and MS-DOS
-operating systems.  So far only it has only been tested with MS-DOS
-5.0 (Borland C++ 3.1, DJGPP 1.10), SLS Linux 1.02 (GNU C++ 2.4.5) and
-SCO Xenix 2.3.1 (GNU C++ 2.4.5).  With GNU C++ 2.4.5 this package
-should compile on other Unix variants without much difficulty.
-Because of the many different ways C++ compilers interpret the C++
-language, using other compilers will likely be more difficult.
-  
 SCCS commands implemented this package are: admin, cdc, delta, get,
-prs, rmdel, sact, unget, and what.  Not all options and capabilities
-of the commands have been implemented yet, and the comb, sccsdiff, val
-and vc commands are not provided at all.
+prs, rmdel, sact, unget and what.  Not all options and capabilities of
+the commands have been implemented yet, and the comb, val and vc
+commands are not provided at all.  Features soon to be provided but
+not yet available are the BSD sccs-driver command "sccs", and a Bourne
+shell script for converting SCCS files to RCS files (a csh script
+exists for this purpose [sccs2rcs.csh] but not everybody has csh).
 
-The utilities use getopt-like command line argument parsing which
-differs from how the standard SCCS commands parse commands line
-arguments.  The key difference is that command line options that take
-arguments can be specified with or without a space (eg.  "-r1.3" or
-"-r 1.3").  A side effect of this is that if an option that can take
-argument, it must take an argument.  Where supplying an empty argument
-for an option of a standard SCCS command is meaningful, the
-corresponding MySC command provides an additional option that does not
-take any arguments and has the same option letter but in upper case
-(eg. use "delta -Y" instead of "delta -y").
+The utilities use traditional getopt-like command-line argument
+parsing which differs from how the standard SCCS commands parse
+commands-line arguments.  The key difference is that command line
+options that take arguments can be specified with or without a space
+(eg.  "-r1.3" or "-r 1.3").  A side effect of this is that if an
+option that can take argument, it must take an argument.  Where
+supplying an empty argument for an option of a standard SCCS command
+is meaningful, the corresponding command provides an additional option
+that does not take any arguments and has the same option letter but in
+upper case (eg. use "delta -Y" instead of "delta -y").  Please note
+that this is currently being worked on and so if you discover that
+some option has the wrong behaviour, please report it as a bug.
 
-Unimplemented features include the null delta flag (admin -fn),
-consistency checking (admin -h), ignored deltas (delta -g), printing
-the differences after a delta (delta -p), l-files (get -l), getting
-the most recent delta of a release (get -t), and getting a delta by
-sequence number (get -a).  Some features like including and excluding
-deltas (get -i -x) have been implemented but not extensively tested.
+Unimplemented features include support for binary files, the null
+delta flag (admin -fn), consistency checking (admin -h), ignored
+deltas (delta -g), printing the differences after a delta (delta -p),
+l-files (get -l), getting the most recent delta of a release (get -t),
+and getting a delta by sequence number (get -a).  Some features like
+including and excluding deltas (get -i -x) have been implemented but
+not extensively tested.
 
-See the file INSTALL for information on how to compile the MySC
-utilities.  Send any questions or bug reports by e-mail to
-"ross@utopia.druid.com".
+See the file INSTALL for information on how to compile this package.
+Send any questions or bug reports by e-mail to the current maintainer,
+<JYoungman@vggas.com>.
+
