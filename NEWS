@@ -1,3 +1,15 @@
+New in CSSC-0.07alpha-pl1
+
+	* get: eliminated spurious warning about keyword expansion and
+	  binary files.
+
+	* delta: Allow backslashes to escape newlines when entering
+	  comments, MRs, etc.
+
+	* "sccs create": pass the -b flag to admin, but not to get.
+
+	* Small correction to test suite entry for prt.
+
 New in CSSC-0.07alpha-pl0
 
 	* "get -e" should now (again) re-use deltas that have been

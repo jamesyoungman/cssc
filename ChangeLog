@@ -1,4 +1,50 @@
+1998-06-08  James Youngman  <jay@gnu.org>
+
+	* auxfiles/CSSC.spec, configure.in: Bumped to 0.07 patchlevel 1.
+
+	* prompt.cc: Allow newlines to be escaped with a backslash.
+
+	* sf-get.cc:
+	Don't warn about keyword substitution not being done for binary files;
+	I don't think it should be done in any case.
+
+	* tests/admin/abspath.sh:
+	Use a less complicated way of building the command.   We seem to have
+	a small problem with this:-  anthonyc@nag.co.uk sees
+	"/zome/anthonyc/.../s.bar: no such file or directory".
+	  ^ Note that the z for the lockfile name appears here!
+
+	* tests/prt/reportmr.sh:
+	Some shells don't like two assignments on one line, for example
+	"g=reportmr.1 s=inputs/s.$g".  With these shells, the $g in the second
+	assignment expands to nothing.  "ash" version 0.2 is like this. Bash
+	version 1.14.7 is not.
+
+	* bsd/sccs.c: Support "sccs cdc".
+
+	If we use "sccs create -b foo", pass the "-b" flag to "admin", but not
+	to "get".  Passing it to "get" would mean "create a branch" rather
+	than "binary" and we're not checking the file out for editing anyway.
+	This at the request of <peter.kjellerstedt@axis.com>.
+
 1998-06-06  James Youngman  <jay@gnu.org>
+
+	* bsd/sccs.c:
+	Be as careful about running setgid as we are about running setuid.
+
+	* bsd/sccs.c:
+	Insist on the compile-time macro SCCSDIR having been set if the program
+	is installed set-user-id (what about set-group-id?).
+
+	* tests/bsd-sccs/driver-basic.sh:
+	Unset $LANG so that the tests for sccs(1) don't fail on systems
+	which are mosconfigured, just because they are misconfigured.
+
+	* docs/TODO: *** empty log message ***
+
+	* NEWS: Added update for version 0.07alpha-pl0.
+
+	* ChangeLog: Updated for version 0.07alpha-pl0.
 
 	* configure.in: Bumped to version 0.07.
 
@@ -39,8 +85,8 @@
 
 	* bsd/Makefile.am: Rolled pathnames.h into sccs.c.
 
-	* bsd/.ispell_english:
-	Removed entries containing punctuation or digits; ispell doesn't like them.
+	* bsd/.ispell_english: Removed entries containing punctuation or
+	digits; ispell doesn't like them.
 
 	* bsd/pathnames.h: Rolled the few remaining definitions into sccs.c
 
