@@ -76,9 +76,20 @@ sccs_file::_delta_table::update_highest(struct delta const &it) {
 		high_seqno = it.seq;
 	}
 
-	if (it.id > high_release) {
-		high_release = it.id;
-	}
+	/* high_release is initialised to {0} so 
+	 * any greater-than comparison always fails since 
+	 * operator> decides it's not comparable with it.id.
+	 */
+	if (high_release.is_null())
+	  {
+	    int on_trunk = sid("1.1").is_trunk_successor(it.id);
+	    if (on_trunk)
+	      high_release = it.id;
+	  }
+	else if (it.id > high_release)
+	  {
+	    high_release = it.id;
+	  }
 
 	if (seq_table != NULL) {
 		if (seq_table[seq] != -1) {
