@@ -14,7 +14,7 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.5 1997/05/10 14:49:53 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.6 1997/05/17 12:19:02 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -122,13 +122,24 @@ run(const char *prg, list<const char *> const &args) {
 /* Runs a programme to checks MRs. */
 
 int
-run_mr_checker(const char *prg, const char *arg1, list<mystring> mrs) {
-	list<const char *> args;
+run_mr_checker(const char *prg, const char *arg1, list<mystring> mrs)
+{
+  // If the validation flag is set but has no value, PRG will be an
+  // empty string and the validation should succeed silently.  This is
+  // for compatibility with "real" SCCS.
+  if (prg[0])
+    {
+      list<const char *> args;
 
-	args.add(arg1);
-	args += mrs;
+      args.add(arg1);
+      args += mrs;
 
-	return run(prg, args);
+      return run(prg, args);
+    }
+  else
+    {
+      return 0;
+    }
 }
 
 /* Local variables: */
