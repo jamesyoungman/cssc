@@ -12,9 +12,9 @@
 @setchapternewpage odd
 @c %**end of header
 
-@set EDITION 1.0
-@set VERSION 0.11alpha-pl0
-@set UPDATED Sun Apr 18 18:23:23 1999
+@set EDITION 1.01
+@set VERSION 0.11alpha-pl4
+@set UPDATED Tue Jul 18 22:38:45 2000
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -25,7 +25,7 @@
 This file documents the the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
-Copyright (C) 1997,1998,1999 Free Software Foundation, Inc.
+Copyright (C) 1997,1998,1999,2000 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -58,7 +58,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1997,1998,1999 Free Software Foundation, Inc.
+Copyright @copyright{} 1997,1998,1999,2000 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -2141,7 +2141,8 @@ them (@pxref{Problems}).
 @item 
 @cindex Known bugs 
 If a bug is listed in @file{docs/BUGS} or @file{docs/TODO} but has in
-fact been fixed, this is a bug in the bug list.  Please report this.
+fact been fixed, this is a bug in the bug list.  Please report this via
+the bug tracking system, which is referred to below. 
 
 @item
 Some programs are partially implemented.  Not all programs support all
@@ -2156,7 +2157,9 @@ report a bug; I'd like to know which features are required first.
 
 There are a small number of known problems documented in the files
 @samp{docs/BUGS} and @samp{docs/TODO}.  These will be fixed at some
-point in the future.  
+point in the future.  Future problems should be reported via the
+@sc{cssc} Bug Tracker, at @url{http://sourceforge.net/CSSC}.
+
 
 @cindex Security problems
 @cindex Insecurity
@@ -2731,20 +2734,16 @@ test `cat foo` = '%M%' || miscarry cannot create file foo.
 @cindex problems
 @cindex maintainer
 
-If you find a bug in GNU @code{CSSC}, please send electronic mail to
-@w{@samp{jay@@gnu.org}} .  Include the version number, which you can find
-by giving the option @w{@samp{--version}} to any @code{CSSC} command.
-Also include in your message the output that the program produced and
-the output you expected.  An @file{s.} file and instructions for
-reproducing the error are almost essential unless the bug is very
-trivial.@refill
+If you find a bug in GNU @code{CSSC}, please report this via the
+@sc{cssc} bug tracking system at @url{http://sourceforge.net/CSSC}.
+Pleass include the version number, which you can find by giving the
+option @w{@samp{--version}} to any @code{CSSC} command.  Also include in
+your message the output that the program produced and the output you
+expected.  An @file{s.} file and instructions for reproducing the error
+are almost essential unless the bug is very trivial.@refill
 
-Because the author receives electronic mail on the other side of a
-Microsoft Mail gateway, @sc{mime}-encoded mail will be unintelligible by
-the time it reaches him.  Please encode any files with @samp{uuencode}
-first (please also compress them, preferably with GNU @samp{gzip}, if
-they are large files).  ``Microsoft'' is a registered trademark of
-Microsoft Corporation.@refill
+You may also find it helpful to join the mailing list.  See the file
+@file{docs/mailing-list.txt} for information about the mailing list.
 
 @cindex Questions about CSSC
 @cindex Comments about CSSC
