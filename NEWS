@@ -6,6 +6,8 @@ New in CSSC-0.16alpha-pl0
           Support for BitKeeper files is read-only.
 	
 	* Fixed SourceForge bug 664900 by applying a fix from Darren Warner.
+
+	* "get -e" now takes notice of the value of the "d" flag.
 	
 New in CSSC-0.15alpha-pl0
 	

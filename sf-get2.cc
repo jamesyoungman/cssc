@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.56 2003/05/05 11:24:05 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.57 2003/12/07 20:37:21 james_youngman Exp $";
 #endif
 
 
@@ -197,6 +197,10 @@ sccs_file::find_next_sid(sid requested, sid got,
   if (requested.release_only())
     {
       next.next_level();
+
+      // JY: 2003-12-07: test e6 of defsid.sh was failing.
+      while (sid_in_use(next, pfile))
+	next.next_level();
     }
   else if (requested.partial_sid())
     {
