@@ -1,5 +1,17 @@
 New in CSSC-0.05alpha-pl1
 
+	* When root runs "get -e", we used to get a "target file
+	  is writable" error even if the gotten file is NOT writable.  
+	  This has been fixed.
+
+	* Binary-file support has been worked on.  It does not 
+          work reliably for large files.   PLEASE DON'T USE IT AT
+	  ALL.   The problem lies in pipe.{cc,h}.  Work progresses.
+	  Some test cases live in tests/binary.
+
+	* Added a spec-file for RPM in the "auxfiles" directory.
+	  See http://www.rpm.org/ for further information.
+
 	* When get ignores the "-b" flag, the user is warned.
 
 	* "get -e -r1.1.1" now works (previously this produced an	
@@ -10,7 +22,7 @@ New in CSSC-0.05alpha-pl1
 
 New in CSSC-0.05alpha-pl0
 
-        * cdc has now beed debugged using new test cases.  
+        * cdc has now been debugged using new test cases.  
 	
 	* The sact, cdc, rmdel and prt commands have now been
 	  documented in the manual.
