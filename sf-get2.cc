@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.28 1998/06/15 20:50:03 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.29 1998/08/13 18:18:11 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -419,7 +419,12 @@ sccs_file::write_subst(const char *start,
 	      s = parms->wstring;
 	      if (0 == s)
 		{
-		  s = "%Z""%%M""%\t%""I%";
+		  /* TODO: SunOS 4.1.4 apparently uses 
+		   * a space rather than a tab here.
+		   * I want to find a third opinion before
+		   * comitting myself...
+		   */
+		  s = "%Z" "%%M" "%\t%" "I%";
 		}
 	      else
 		{
