@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.7 1997/07/02 18:05:07 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.8 1997/10/27 19:28:00 james Exp $";
 #endif
 
 void
@@ -71,16 +71,19 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq) {
 }
 
 void
-sccs_file::get(mystring gname, class seq_state &state, struct subst_parms &parms,
+sccs_file::get(mystring gname, class seq_state &state,
+	       struct subst_parms &parms,
 #ifdef __GNUC__
 	       subst_fn_t subst_fn,
 #else
 	       int (sccs_file::*subst_fn)(const char *,
-					  struct subst_parms *) const,
+					  struct subst_parms *,
+					  struct delta const&) const,
 #endif
 	       int show_sid, int show_module, int debug) {
 	assert(mode != CREATE);
-	
+
+
 	seek_to_body();
 
 	/* The following statement is not correct. */
@@ -137,7 +140,17 @@ sccs_file::get(mystring gname, class seq_state &state, struct subst_parms &parms
 
 			int err;
 			if (subst_fn != NULL) {
-				err = (this->*subst_fn)(linebuf, &parms);
+			  // If there is a cutoff date,
+			  // prepare_seqstate() will take account of
+			  // it.  We need the keyword substitution to
+			  // take account of this and substitute the
+			  // correct stuff.... so we figure out what
+			  // delta has actually been selected here...
+
+			  struct delta const& gotten_delta
+			    = delta_table[state.active_seq()];
+			  err = (this->*subst_fn)(linebuf, &parms,
+						  gotten_delta);
 			} else {
 				err = fputs(linebuf, out) == EOF;
 				if (!parms.found_id 
