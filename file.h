@@ -55,7 +55,12 @@ int file_exists(const char *name);
 const char *get_user_name();
 int user_is_group_member(gid_t gid);
 FILE *fcreate(mystring name, int mode);
-bool set_file_mode(mystring &gname, int mode);
+FILE *fopen_as_real_user(const char *name, const char *mode);
+bool set_file_mode(const mystring &gname, int mode);
+bool set_gfile_mode(const mystring &gname, int mode);
+bool unlink_gfile_if_present(const char *gfile_name);
+bool unlink_file_as_real_user(const char *gfile_name);
+
 
 #ifdef CONFIG_SYNC_BEFORE_REOPEN
 int ffsync(FILE *f);

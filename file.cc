@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.32 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.33 2001/12/01 21:57:58 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -475,10 +475,10 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 }
 
 
-/* CYGWIN seems to be unable to create a file for writing, wiht mode
+/* CYGWIN seems to be unable to create a file for writing, with mode
  * 0444, so this code resets the mode after we have closed the g-file. 
  */
-bool set_file_mode(mystring &gname, int mode)
+bool set_file_mode(const mystring &gname, int mode)
 {
   const char *name = gname.c_str();
   
@@ -491,6 +491,103 @@ bool set_file_mode(mystring &gname, int mode)
       errormsg_with_errno("%s: cannot set mode of file to 0%o", name, mode);
       return false;
     }
+}
+
+/* Set the mode of the g-file.  We need to give up provs to do this, 
+ * since the user as whom we are running setuid does not necessarily
+ * have search privs on the current directory, or privs to chmod
+ * the real user's files.  However, we need to do this (for example, 
+ * for get -k).  This is SourceForge bug 451519.
+ */
+bool set_gfile_mode(const mystring& gname, int mode)
+{
+#ifdef CONFIG_UIDS
+  give_up_privileges();
+#endif
+  bool rv = set_file_mode(gname, mode);
+#ifdef CONFIG_UIDS
+  restore_privileges();
+#endif
+  return rv;
+}
+
+
+/* When doing "get -e" we need to remove any existing read-only g-file. 
+ * To do so we have to restore real user privileges, because the current 
+ * directory may not be accessible to the setuid user.  Equally, we
+ * should prevent the caller from deleting arbitrary read-only files 
+ * that they would not ordinarily be able to delete.  Note though that 
+ * CSSC is not intended for setuid or setgid operation. 
+ * This is SourceForge bug number 481707.
+ */
+
+bool unlink_gfile_if_present(const char *gfile_name)
+{
+#ifdef CONFIG_UIDS
+  give_up_privileges();
+#endif
+  bool rv = true;
+  
+  if (file_exists(gfile_name))
+    {
+      if (unlink(gfile_name) < 0)
+	{
+	  errormsg_with_errno("Cannot unlink the file %s", gfile_name);
+	  rv = false;
+	}
+    }
+#ifdef CONFIG_UIDS
+  restore_privileges();
+#endif
+  
+  return rv;
+}
+
+bool unlink_file_if_present(const char *gfile_name)
+{
+  /* We must also do the existence test as the real user so was 
+   * can't delegate the job to unlink_file_as_real_user().
+   */
+#ifdef CONFIG_UIDS
+  give_up_privileges();
+#endif
+  bool rv = true;
+  
+  if (file_exists(gfile_name))
+    {
+      if (unlink(gfile_name) < 0)
+	{
+	  errormsg_with_errno("Cannot unlink the file %s", gfile_name);
+	  rv = false;
+	}
+    }
+#ifdef CONFIG_UIDS
+  restore_privileges();
+#endif
+  
+  return rv;
+}
+
+/* unlink_file_as_real_user
+ *
+ * Unlinks the specified file as the real user.
+ */
+bool unlink_file_as_real_user(const char *gfile_name)
+{
+#ifdef CONFIG_UIDS
+  give_up_privileges();
+#endif
+  bool rv = true;
+  if (unlink(gfile_name) < 0)
+    {
+      errormsg_with_errno("Cannot unlink the file %s", gfile_name);
+      rv = false;
+    }
+#ifdef CONFIG_UIDS
+  restore_privileges();
+#endif
+  
+  return rv;
 }
 
 
@@ -522,7 +619,7 @@ create(mystring name, int mode) {
                 errno = 0;
                 return -1;
 #endif
-        } else if (file_exists(name.c_str()) && unlink(name.c_str()) == -1) {
+        } else if (!unlink_gfile_if_present(name.c_str())) {
                 return -1;
         }
 
@@ -586,6 +683,23 @@ fcreate(mystring name, int mode) {
         }
         return fdopen(fd, "w");
 }
+
+
+FILE *fopen_as_real_user(const char *s, const char *mode)
+{
+  FILE *fp = NULL;
+  
+#ifdef CONFIG_UIDS
+  give_up_privileges();
+#endif
+  fp = fopen(s, mode);
+#ifdef CONFIG_UIDS
+  restore_privileges();
+#endif
+  return fp;
+}
+
+
 
 #ifdef CONFIG_SHARE_LOCKING
 

@@ -1,3 +1,10 @@
+New in CSSC-0.14alpha-pl0
+
+	* Added Richard Kettlewell's sccs.cgi CGI script.
+
+	* Fixes for set-user-id operation (which is still not
+          recommended - see the CSSC manual for an explanation).
+
 New in CSSC-0.13alpha-pl1
 
 	* get -e should re-use deltas that have been removed 

@@ -32,7 +32,7 @@
 #include "filediff.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: filediff.cc,v 1.5 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: filediff.cc,v 1.6 2001/12/01 21:57:58 james_youngman Exp $";
 #endif
 
 
@@ -57,13 +57,18 @@ FileDiff::finish()
 FILE*
 FileDiff::start()
 {
+  FILE *fp;
+  
   const mystring space(" ");
   const mystring quote("'");
   mystring cmd(mystring(CONFIG_DIFF_COMMAND) + 
 	       space + quote + name1 + quote + 
 	       space + quote + name2 + quote);
-  
+
+  give_up_privileges();
   fp = popen(cmd.c_str(), "r");
+  restore_privileges();
+  
   return fp;
 }
 

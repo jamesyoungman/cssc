@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.40 2001/11/25 23:08:00 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.41 2001/12/01 21:57:58 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -400,7 +400,7 @@ main(int argc, char **argv)
               fclose(out);
               if (suppress_keywords)
               {
-                  if (!set_file_mode(gname, 0644))
+                  if (!set_gfile_mode(gname, 0644))
                       retval = 1;
               }
               else
@@ -410,7 +410,7 @@ main(int argc, char **argv)
 		 * will have to temporarily set EUID=RUID.
 		 */
 		give_up_privileges();
-		if (!set_file_mode(gname, 0444))
+		if (!set_gfile_mode(gname, 0444))
 		  retval = 1;
 		restore_privileges();
 		

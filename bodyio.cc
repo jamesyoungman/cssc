@@ -400,7 +400,7 @@ encode_file(const char *nin, const char *nout)
 {
   int retval = 0;
   
-  FILE *fin = fopen(nin, "rb");	// binary
+  FILE *fin = fopen_as_real_user(nin, "rb");	// binary
   if (0 == fin)
     {
       errormsg_with_errno("Failed to open \"%s\" for reading.\n", nin);

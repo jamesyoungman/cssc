@@ -29,6 +29,7 @@
 #include "cssc.h"
 #include "sccsfile.h"
 #include "except.h"
+#include "file.h"
 
 
 void sccs_file::
@@ -55,7 +56,7 @@ no_id_keywords(const char name[]) const
 bool
 sccs_file::check_keywords_in_file(const char *name)
 {
-  FILE *f = fopen(name, "r");
+  FILE *f = fopen_as_real_user(name, "r");
   if (NULL == f)
     {
       errormsg_with_errno("%s: Can't open file for reading", name);

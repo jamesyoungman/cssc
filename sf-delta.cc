@@ -41,9 +41,13 @@
 
 #undef JAY_DEBUG
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.43 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.44 2001/12/01 21:57:58 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -378,17 +382,25 @@ diff_state::process(FILE *out, seq_no seq)
 class FileDeleter
 {
   mystring name;
+  bool as_real_user;
   bool armed;
   
 public:
-  FileDeleter(const mystring& s) : name(s), armed(true) { }
+  FileDeleter(const mystring& s, bool realuser)
+    : name(s), as_real_user(realuser), armed(true) { }
   
   ~FileDeleter()
     {
       if (armed)
         {
           const char *s = name.c_str();
-          if (0 != remove(s))
+	  bool bOK;
+	  
+	  if (as_real_user)
+	    bOK = unlink_file_as_real_user(s);
+	  else
+	    bOK = (remove(s) == 0);
+	  if (!bOK)
             perror(s);
         }
     }
@@ -432,6 +444,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
    * name of the binary file itself.
    */
   mystring file_to_diff;
+  bool bFileIsInWorkingDir;
+  
   if (flags.encoded)
     {
       mystring uname(name.sub_file('u'));
@@ -440,15 +454,27 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
           return false;
         }
       file_to_diff = uname;
+      bFileIsInWorkingDir = false;
+      const char *s = file_to_diff.c_str();
+
+#ifdef CONFIG_UIDS      
+      if (!is_readable(s))
+	{
+	  errormsg("File %s is not readable by user %d!",
+		   s, (int) geteuid());
+	  return false;
+	}
+#endif
     }
   else
     {
       file_to_diff = gname;
+      bFileIsInWorkingDir = true;
     }
 
   /* When this function exits, delete the temporary file.
    */
-  FileDeleter the_cleaner(file_to_diff);
+  FileDeleter the_cleaner(file_to_diff, bFileIsInWorkingDir);
   if (!flags.encoded)
     the_cleaner.disarm();
 
@@ -474,16 +500,17 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
                    sccs_date(NULL))) // (XXX: correct use of NULL?) 
     return false;
   
+  /* The d-file is created in the SCCS directory (XXX: correct?) */
   mystring dname(name.sub_file('d'));
   
 //FILE *get_out = fopen(dname.c_str(), "wt");
   FILE *get_out = fcreate(dname, CREATE_EXCLUSIVE);
   if (NULL == get_out)
     {
-      errormsg_with_errno("Cannot open file %s", dname.c_str());
+      errormsg_with_errno("Cannot create file %s", dname.c_str());
       return false;
     }
-  FileDeleter another_cleaner(dname);
+  FileDeleter another_cleaner(dname, false);
   
   struct subst_parms parms(get_out, NULL, delta(), 
                            0, sccs_date(NULL)); // (XXX: correct use of NULL?) 
@@ -640,7 +667,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
         
 #undef DEBUG_FILE
 #ifdef DEBUG_FILE
-  FILE *df = fopen("delta.dbg", "w");
+  FILE *df = fopen_as_real_user("delta.dbg", "w");
 #endif
 
   // We have to continue while there is data on the input s-file,
