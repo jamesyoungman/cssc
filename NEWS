@@ -1,3 +1,7 @@
+New in CSSC-0.10beta-pl0
+
+	* Support for C++ compilers other than GNU C++.
+
 New in CSSC-0.09alpha-pl4
 
 	* The -p option of delta has been implemented.

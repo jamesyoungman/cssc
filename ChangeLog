@@ -1,6 +1,20 @@
+1999-03-20  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi:
+	Cosmetic changes to make texinfo-3.12f happy about my use of @xref.
+	(in this case, by adding punctuation after each use).
+
+1999-03-19  James Youngman  <jay@gnu.org>
+
+	* testutils/realpwd.cc, sf-delta.cc, sf-get2.cc, sid.cc, what.cc, bodyio.cc, cdc.cc, delta-iterator.cc, my-getopt.cc, mystring.cc, mystring.h, pfile.h, quit.cc, quit.h, run.cc:
+	Fixes to make CSSC compiler under the EPC C++ compiler (and probably
+	other C++ compilers, too).
+
 1999-03-15  James Youngman  <jay@gnu.org>
 
 	* Released 0.09alpha.pl4.
+
+	* ChangeLog, NEWS, configure.in: Comments etc. for 0.09alpha.pl4.
 
 	* docs/cssc.texi: Marginally improved documentation for "delta -p"
 
