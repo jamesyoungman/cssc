@@ -2,7 +2,7 @@
  * seqstate.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Defines the class seqstate.  
  *
- * @(#) CSSC seqstate.h 1.2 93/11/13 00:14:54
+ * $Id: seqstate.h,v 1.10 1998/05/08 07:52:46 james Exp $
  *
  */
 
@@ -33,7 +33,7 @@
 
 #include "stack.h"
 
-#define NEW_DELETE_STATE_CODE
+class cssc_delta_table;
 
 
 /* This class is used to decide which lines of the body of a SCCS file
@@ -149,64 +149,13 @@ public:
 
   }
 
-  const char *
-  start(seq_no seq, int insert) {
-    ASSERT(seq > 0 && seq <= last);
+  const char * start(seq_no seq, int insert);
+  const char * end(seq_no seq);
+  seq_no active_seq() const;
 
-    if (insert) {
-      active_stack.push(active);
-      active = seq;
-    }
-
-    if (!is_included(seq)) {
-      insert = !insert;
-    }
-                
-    if (p[seq] & ACTIVE) {
-      return "Seq already active.";
-    }
-
-    p[seq] |= ACTIVE;
-
-    if (insert) {
-      p[seq] |= INSERTING;
-    } else {
-      p[seq] &= ~INSERTING;
-      deleting++;
-    }
-
-    return NULL;
-  }
-
-  const char *
-  end(seq_no seq) {
-    ASSERT(seq > 0 && seq <= last);
-
-    if (!(p[seq] & ACTIVE)) {
-      return "Seq not active.";
-    }
-
-    p[seq] &= ~ACTIVE;
-
-    int insert = ((p[seq] & INSERTING) != 0);
-
-    if (!insert) {
-      ASSERT(deleting > 0);
-      deleting--;
-    }
-
-    if (!is_included(seq) ^ insert) {
-      if (seq == active) {
-	active = active_stack.pop();
-      } else {
-	return "Overlapping insertions";
-      }
-    }
-
-    return NULL;
-  }
-
-  seq_no active_seq() const { return active; }
+  void set_deleting_flag();
+  void mark_our_deltas(seq_no me, const cssc_delta_table &dt);
+  
   int include_line() const { return deleting == 0; }
 
   ~seq_state() {
@@ -214,7 +163,7 @@ public:
   }
 };
 
-#endif /* __SEQSTATE_H__ */
+#endif
 
 /* Local variables: */
 /* mode: c++ */

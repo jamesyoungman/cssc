@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.24 1998/05/04 21:59:02 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.25 1998/05/08 07:52:44 james Exp $";
 #endif
 
 
@@ -301,8 +301,6 @@ sccs_file::read_delta() {
 				seq_no seq = strict_atous(start);
 				switch(c) {
 				case 'i':
-				  fprintf(stderr, "adding seq %hd\n",
-					  (unsigned short)seq);
 					tmp.included.add(seq);
 					break;
 
@@ -338,7 +336,6 @@ sccs_file::read_delta() {
 	}
 
 	check_noarg();
-
 
 	ASSERT(0 != delta_table);
 	delta_table->add(tmp);

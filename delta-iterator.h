@@ -1,5 +1,5 @@
 /*
- * delta-table.h: Part of GNU CSSC.
+ * delta-iterator.h: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -21,13 +21,13 @@
  *
  * Definition of the class delta_iterator.
  *
- * $Id: delta-iterator.h,v 1.1 1997/11/30 21:08:07 james Exp $
+ * $Id: delta-iterator.h,v 1.2 1998/05/08 07:52:43 james Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_ITERATOR_H
-#define CSSC_DELTA_ITERATOR_H "$Id: delta-iterator.h,v 1.1 1997/11/30 21:08:07 james Exp $"
+#define CSSC_DELTA_ITERATOR_H "$Id: delta-iterator.h,v 1.2 1998/05/08 07:52:43 james Exp $"
 
 #include "delta.h"
 
