@@ -1,0 +1,16 @@
+#! /bin/sh
+
+# Common function definitions.
+. ../common/command-names
+
+# This defines TESTING_CSSC to "true" if we are testing CSSC, or defines 
+# it to false if we are not.  In the latter case we are usually testing 
+# some vendor's implementation.
+
+
+if ( ${admin} -V 2>&1 ; echo umsp )  | grep CSSC >/dev/null
+then
+    TESTING_CSSC=true
+else
+    TESTING_CSSC=false
+fi
