@@ -149,7 +149,15 @@ exit 1 ;
 }
 
 
-remove () { rm -rf $* || miscarry Could not remove $* ; }
+remove () { 
+    if test -z "$*"
+    then
+	# no files listed, nothing to do.
+	true 
+    else
+	rm -rf "$@" || miscarry "Could not remove $@"
+    fi
+}
 
 rename () { mv "$1" "$2" || miscarry "Could not rename $1 to $2" ; }
 
