@@ -1,8 +1,14 @@
 The Time-stamp: line indicated when this file was last modified.
-Time-stamp: <97/07/22 08:11:25 james>
+Time-stamp: <97/11/05 18:57:45 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
+
+
+Wed Nov  5 18:56:06 1997: James Youngman <jay@gnu.org>
+In version 0.02-pl6.  Unfixed.
+ GCC version 2.7.2.2 compiled for an Alpha running NetBSD fails to
+ compile delta.cc.  If falls over with an "Unrecognised insn" error.
 
 
 Tue Jul 22 08:07:29 1997: Lars Hecking <lhecking@nmrc.ucc.ie>
