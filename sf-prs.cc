@@ -32,9 +32,10 @@
 #include "seqstate.h"
 #include "delta.h"
 #include "delta-iterator.h"
+#include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.12 1997/11/30 21:05:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.13 1997/12/26 18:26:51 james Exp $";
 #endif
 
 inline void
@@ -520,7 +521,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 	  seek_to_body();
 	  while(read_line() != -1)
 	    {
-	      fputs(linebuf, out);
+	      fputs(plinebuf->c_str(), out);
 	      putc('\n', out);
 	    }
 	  break;
