@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.21 1998/09/06 09:25:25 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.22 1998/09/07 21:55:57 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -304,13 +304,13 @@ restore_privileges() {
 
 #endif /* defined(HAVE_SETREUID) */
 
-inline int
-open_as_real_user(const char *name, int mode, int perm) {
-	give_up_privileges();
-	int fd = open(name, mode, perm);
-	restore_privileges();
-	return fd;
-}
+// inline int
+// open_as_real_user(const char *name, int mode, int perm) {
+// 	   give_up_privileges();
+// 	   int fd = open(name, mode, perm);
+// 	   restore_privileges();
+// 	   return fd;
+// }
 
 #ifdef CONFIG_DECLARE_GETPWUID
 extern "C" struct passwd * CDECL getpwuid(int uid);
@@ -352,8 +352,121 @@ user_is_group_member(int) {
 
 #endif /* CONFIG_UIDS */
 
+/* From the Linux manual page for open(2):-
+ *
+ * O_EXCL When used with O_CREAT, if the file already exists it is an
+ *	  error and the open will fail.  O_EXCL is broken on NFS file
+ *	  systems, programs which rely on it for performing locking
+ *	  tasks will contain a race condition.  The solution for
+ *	  performing atomic file locking using a lockfile is to create
+ *	  a unique file on the same fs (e.g., incorporating hostname
+ *	  and pid), use link(2) to make a link to the lockfile and use
+ *	  stat(2) on the unique file to check if its link count has
+ *	  increased to 2.  Do not use the return value of the link()
+ *	  call.
+ */
 
-/* Returns a file descriptor open to a newly created file. */
+static long get_nlinks(int fd)
+{
+  struct stat st;
+  if (0 == fstat(fd, &st))
+    {
+      return (long)st.st_nlink;
+    }
+  else
+    {
+      return -1L;
+    }
+}
+
+
+static int atomic_nfs_create(const mystring& path, int flags, int perms)
+{
+  mystring dirname, basename;
+  char buf[32];
+  const char *pstr = path.c_str();
+  
+  split_filename(path, dirname, basename);
+
+  /* Rely (slightly) on only 11 characters of filename. */
+  for (long attempt=0; attempt < 10000; ++attempt)
+    {
+      /* form the name of a lock file. */
+      sprintf(buf, "nfslck%ld", attempt);
+      const mystring lockname = dirname + mystring(buf);
+      const char *lockstr = lockname.c_str();
+
+      errno = 0;
+      int fd = open(lockstr, flags, perms);
+      if (fd >= 0)
+	{
+	  if (1 == get_nlinks(fd))
+	    {
+	      int link_errno = 0;
+	      errno = 0;
+	      if (-1 == link(lockstr, pstr))
+		link_errno = errno;
+
+	      /* ignore other responses */
+	      
+	      if (2 == get_nlinks(fd))
+		{
+		  unlink(lockstr); 
+		  return fd;	/* success! */
+		}
+	      else		/* link(2) failed. */
+		{
+		  if (EPERM == link_errno)
+		    {
+		      /* containing filesystem does not support hard links. */
+		      close(fd);
+		      unlink(lockstr);
+
+		      /* assume that the filesystem supports O_EXCL if it does
+		       * not supprort link(2).
+		       */
+		      return open(pstr, flags, perms);
+		    }
+		}
+	    }
+	  close(fd);
+	  unlink(lockstr); 
+	}
+      else			/* open() failed. */
+	{
+	  switch (errno)
+	    {
+	    case EEXIST: 
+	      /* someone else got that lock first; they may in fact not
+	       * be trying to lock the same s-file (but instead another 
+	       * s-file in the same directory)
+	       *
+	       * Try again.  Sleep first if we're not doing well,
+	       * but try to avoid pathalogical cases...
+	       */
+	      if ( (attempt > 4) && (attempt & 1) == (getpid() & 1) )
+		{
+		  fprintf(stderr,
+			  "Sleeping for one second while waiting for lock\n");
+		  sleep(1);
+		}
+	      break;
+	      
+	    default:		/* hard failure. */
+	      /* fall back on the less-safe method, which will
+	       * probably still fail
+	       */
+	      return open(pstr, flags, perms);
+	    }
+	}
+    }
+  return -1;
+}
+
+
+
+
+/* returns a file descriptor open to a newly created file. */
 
 int
 create(mystring name, int mode) {
@@ -397,18 +510,35 @@ create(mystring name, int mode) {
 	int fd;
 
 #ifdef CONFIG_UIDS
-	if (mode & CREATE_AS_REAL_USER) {
-		fd = open_as_real_user(name.c_str(), flags, perms);
-	} else 
+	if (mode & CREATE_AS_REAL_USER)
+	  {
+	    give_up_privileges();
+	  } 
 #endif
+	
 #ifdef CONFIG_SHARE_LOCKING
-	if (mode & CREATE_WRITE_LOCK) {
-		fd = sopen(name.c_str(), flags, SH_DENYWR, perms);
-	} else
+	if (mode & CREATE_WRITE_LOCK)
+	  {
+	    fd = sopen(name.c_str(), flags, SH_DENYWR, perms);
+	  }
+	else
+	  {
+	    /* These systems don't support link(2)... */
+	    fd = open(name.c_str(), flags, perms);
+	  }
+#else	  
+	if (mode & CREATE_NFS_ATOMIC)
+	  fd = atomic_nfs_create(name.c_str(), flags, perms);
+	else
+	  fd = open(name.c_str(), flags, perms);
 #endif
-	{
-		fd = open(name.c_str(), flags, perms);
-	}
+	
+#ifdef CONFIG_UIDS
+	if (mode & CREATE_AS_REAL_USER)
+	  {
+	    restore_privileges();
+	  } 
+#endif
 
 	return fd;
 }
@@ -465,7 +595,8 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
 #if 0
   fprintf(stderr, "Lock file is \"%s\"\n", zname.c_str());
 #endif  
-  FILE *f = fcreate(zname, CREATE_READ_ONLY | CREATE_EXCLUSIVE);
+  FILE *f = fcreate(zname,
+		    CREATE_READ_ONLY | CREATE_EXCLUSIVE | CREATE_NFS_ATOMIC);
   if (0 == f)
     {
       if (errno == EEXIST)
