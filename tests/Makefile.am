@@ -80,7 +80,7 @@ test-binary: links
 
 all-tests: 	test-cdc \
 		test-admin test-delta test-get test-prs test-prt test-unget \
-		test-large test-sccsdiff
+		test-large test-sccsdiff test-binary
 	echo Tests passed.
 
 check: all-tests

@@ -13,6 +13,7 @@ z=z.$g
 
 cleanup() {
    remove command.log log log.stdout log.stderr
+   remove char255.txt s.char255.txt s.umsp.txt
    remove $p $x $s $z $g
    remove passwd command.log last.command
    remove got.stdout expected.stdout got.stderr expected.stderr
@@ -40,16 +41,8 @@ else
     miscarry uudecode failed.
 fi
 
-cmd="${get} -p s.umsp.txt" 
-echo_nonl a4...
-if ${cmd} > output 2>/dev/null
-then
-    echo passed
-else
-    fail "a4: $cmd failed"
-fi
+docommand a4 "${get} -p s.umsp.txt" 0 "garçon mañana áóäæèêëìñåòôùé\n" IGNORE
 
-docommand a5 "cat output" 0 "garçon mañana áóäæèêëìñåòôùé\n" IGNORE
 
 ## We must be able to manipulate normally files containing 
 ## the ISO 8859 character whose code is 255 (y-umlaut).
@@ -57,7 +50,7 @@ docommand a5 "cat output" 0 "garçon mañana áóäæèêëìñåòôùé\n" IGNORE
 ## to hold the result of a getchar(), we may detect y-umlaut
 ## as EOF.  That would be a bug.
 
-echo_nonl a6...
+echo_nonl a5...
 if uudecode char255.uue
 then
     echo passed
@@ -66,10 +59,8 @@ else
 fi
 
 remove s.char255.txt
-docommand a7 "${admin} -ichar255.txt s.char255.txt" 0 IGNORE IGNORE
-docommand a8 "${get} -k -p s.char255.txt" 0 "ÿ\n" "1.1\n1 lines\n"
-
-remove output s.umsp.txt
+docommand a6 "${admin} -ichar255.txt s.char255.txt" 0 IGNORE IGNORE
+docommand a7 "${get} -k -p s.char255.txt" 0 "ÿ\n" "1.1\n1 lines\n"
 
 cleanup
 success
