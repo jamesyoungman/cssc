@@ -127,5 +127,5 @@ do_pair 34 1.21
 do_pair 35 1.22
 do_pair 36 1.23
 
-remove $g $s $x $z $p
+remove $g $s $x $z $p wanted.tmp
 success

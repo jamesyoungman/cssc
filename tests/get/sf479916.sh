@@ -118,5 +118,5 @@ docommand T13 "${get} -t -r1.1.2.1 $s" 0 "1.1.2.1
 " IGNORE
 
 
-# remove $g $s $x $z $p
+remove $g $s $x $z $p
 success
