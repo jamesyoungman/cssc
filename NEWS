@@ -1,5 +1,8 @@
 New in CSSC-0.16alpha-pl0
 
+	* We now honour the user's choice of umask (which fixes 
+	  SourceForge bug number 581740).
+
 	* On Red Hat Linux, info files live in /usr/share/info not /usr/info.
 
 	* Recognise BitKeeper files and don't emit spurious warnings when 
