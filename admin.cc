@@ -1,21 +1,22 @@
 /*
- * admin.c: Part of GNU CSSC.
+ * admin.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
  * 
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+ *    This program is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU General Public License as
+ *    published by the Free Software Foundation; either version 2 of
+ *    the License, or (at your option) any later version.
  * 
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  * 
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    You should have received a copy of the GNU General Public
+ *    License along with this program; if not, write to the Free
+ *    Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139,
+ *    USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -35,10 +36,11 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.21 1998/02/23 21:01:09 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.22 1998/02/28 14:47:43 james Exp $";
 
 
-bool well_formed_sccsname(const sccs_name& n)
+static bool
+well_formed_sccsname(const sccs_name& n)
 {
   const char *s;
   
@@ -76,7 +78,20 @@ main(int argc, char **argv) {
 	int reset_checksum = 0;			/* -z */
 	int suppress_mrs = 0;	                /* -m (no arg) */
 	int suppress_comments = 0;              /* -y (no arg) */
-	int empty_t_option = 0;	                /* -t (no arg) */ 
+	int empty_t_option = 0;	                /* -t (no arg) */
+
+
+	// If we use the "-i" option, we read the initial body from the 
+	// named file, or stdin if no file is named.  In this case, we use
+	// fgetpos() or ftell() so that we can rewind the input in order to 
+	// try again with encoding, should we find the body to need it.
+	// GNU glibc version 2.0.6 has a bug which results in ftell()/fgetpos()
+	// succeeding on stdin even if it is a pipe,fifo,tty or other 
+	// nonseekable object.  We get around this bug by setting stdin to 
+	// un-buffered, which avoids this bug.  
+#ifdef __GLIBC__
+	setvbuf(stdin, (char*)0, _IONBF, 0u);
+#endif
 	
 	if (argc > 0) {
 		set_prg_name(argv[0]);
@@ -168,7 +183,8 @@ main(int argc, char **argv) {
 
 	if (empty_t_option && new_sccs_file)
 	  {
-	    quit(-1, "The -t option must have an argument if -n or -i is used.");
+	    quit(-1,
+		 "The -t option must have an argument if -n or -i is used.");
 	  }
 	
 	list<mystring> mr_list, comment_list;
