@@ -9,6 +9,7 @@ New in CSSC-0.13alpha-pl0
 
 	* It is also now possible to have concurrent edits (i.e. the
 	  "j" flag now actually works instead of causing a coredump).
+	  (This was SourceForge bug #439146).
 
 New in CSSC-0.12alpha-pl0
 
