@@ -19,11 +19,14 @@ remove $all
 setup_an_edit () {
 # $1 is the label.
 echo_nonl $1"1-6:"
-remove $all
-echo "%M%" | docommand --silent ${1}1 "${admin}   -i $s1" 0 "" ""
-echo "%M%" | docommand --silent ${1}2 "${admin} -i $s2" 0 "" ""
-             docommand --silent ${1}3 "${admin} -fb -fj $s1 $s2" 0 "" ""
-             docommand --silent ${1}4 "${get} -e -b -r1.1 $s1 $s2" 0 \
+m=mfile
+remove $all $m
+echo "%M%" >$m || miscarry could not create $m.
+docommand --silent ${1}1 "${admin}   -i $s1" 0 "" "" <mfile
+docommand --silent ${1}2 "${admin} -i $s2" 0 "" ""   <mfile
+remove $m
+docommand --silent ${1}3 "${admin} -fb -fj $s1 $s2" 0 "" ""
+docommand --silent ${1}4 "${get} -e -b -r1.1 $s1 $s2" 0 \
  "\ns.new1.txt:\n1.1\nnew delta 1.1.1.1\n1 lines\
 \n\ns.new2.txt:\n1.1\nnew delta 1.1.1.1\n1 lines\n" \
 	IGNORE
