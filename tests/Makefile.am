@@ -1,4 +1,5 @@
-TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel
+TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel \
+		bsd-sccs year-2000 initial
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -6,6 +7,14 @@ links: $(TESTDIRS)
 
 common: 
 	ln -s $(srcdir)/common .
+
+test-initial: links
+	$(SHELL) -ec 'cd initial && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
 
 test-admin: links
 	$(SHELL) -ec 'cd admin && for i in *.sh ; \
@@ -92,7 +101,9 @@ test-bsd-sccs: links
 		$(SHELL) $$i || exit 1; \
 	done'
 
-all-tests: 	test-rmdel \
+# Always do test-initial FIRST.
+all-tests: 	test-initial \
+		test-rmdel \
 		test-admin test-delta test-get test-prs test-prt test-unget \
 		test-cdc  \
 		test-large test-sccsdiff test-binary test-bsd-sccs
