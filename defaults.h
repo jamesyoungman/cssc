@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __DEFAULTS_H__
-#define __DEFAULTS_H__
+#ifndef CSSC__DEFAULTS_H__
+#define CSSC__DEFAULTS_H__
 
 #ifndef LIDENT
 #define LIDENT(ident) cssc_##ident

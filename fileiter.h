@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __FILEITER_H__
-#define __FILEITER_H__
+#ifndef CSSC__FILEITER_H__
+#define CSSC__FILEITER_H__
 
 #include "list.h"
 #include "sccsname.h"

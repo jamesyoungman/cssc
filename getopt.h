@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __GETOPT_H__
-#define __GETOPT_H__
+#ifndef CSSC__GETOPT_H__
+#define CSSC__GETOPT_H__
 
 #ifdef __GNUC__
 #pragma interface

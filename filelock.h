@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __FILELOCK_H__
-#define __FILELOCK_H__
+#ifndef CSSC__FILELOCK_H__
+#define CSSC__FILELOCK_H__
 
 #ifdef __GNUC__
 #pragma interface

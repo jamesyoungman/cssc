@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __FILE_H__
-#define __FILE_H__
+#ifndef CSSC__FILE_H__
+#define CSSC__FILE_H__
 
 #include "filelock.h"
 

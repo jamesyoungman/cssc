@@ -3,12 +3,12 @@
  *
  * Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.5 1997/05/10 14:42:01 james Stable $
+ * $Id: cssc.h,v 1.6 1997/11/06 22:37:02 james Exp $
  *
  */
 
-#ifndef __MYSC_H__
-#define __MYSC_H__
+#ifndef CSSC__CSSC_H__
+#define CSSC__CSSC_H__
 
 #undef TESTING
 
@@ -44,7 +44,7 @@ mystring prompt_user(const char *prompt);
 #endif /* NO_COMMON_HEADERS */
 
 
-#endif /* __MYSC_H__ */
+#endif
 
 /* Local variables: */
 /* mode: c++ */
