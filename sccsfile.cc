@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.26 1998/05/27 20:33:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.27 1998/05/30 08:56:27 james Exp $";
 #endif
 
 
@@ -730,7 +730,13 @@ const delta * sccs_file::find_delta(sid id) const
   return delta_table->find(id);
 }
 
-delta * sccs_file::find_delta(sid id)
+const delta * sccs_file::find_any_delta(sid id) const
+{
+  ASSERT(0 != delta_table);
+  return delta_table->find_any(id);
+}
+
+delta * sccs_file::find_delta(sid id) 
 {
   ASSERT(0 != delta_table);
   return delta_table->find(id);
