@@ -552,6 +552,10 @@ numbers will be verified using that program.  The requested delta will
 not be made if this validation fails (the validation program returns a
 nonzero exit status).
 
+When the @var{v} flag is set, deltas @emph{must} be checked in using
+this flag.  If you are using Emacs's vc-mode, you can do this by setting
+the variable @var{vc-checkin-flags} to @code{"-m2677"} if the @sc{mr}
+with which you are working is numbered 2677, for example.
 
 @item -n
 If this option is given, the edited file is not deleted once processing
