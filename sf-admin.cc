@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.23 1998/09/02 21:03:32 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.24 1998/11/29 19:45:10 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -230,6 +230,11 @@ sccs_file::admin(const char *file_comment,
 	    {
 	      flags.locked.remove(release_list(s));
 	    }
+	  break;
+	  
+	case 'm':
+	  delete flags.module;
+	  flags.module = 0;
 	  break;
 	  
 	case 'n':
