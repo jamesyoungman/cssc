@@ -15,7 +15,9 @@
 #include "mysc.h"
 #include "sysdep.h"
 
-
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #ifdef CONFIG_SCCS_IDS
 static const char sccs_id[] = "@(#) MySC file.c 1.1 93/11/09 17:17:53";
