@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef __FSYNC_H__
-#define __FSYNC_H___
+#ifndef CSSC__FSYNC_H__
+#define CSSC__FSYNC_H___
 
 #ifndef CONFIG_DJGPP
 

@@ -92,8 +92,8 @@ operator +=(list<T1> &l1, list<T2> const &l2) {
 }
 
 
-#ifndef __LIST_C__
-#define __LIST_C__
+#ifndef CSSC__LIST_C__
+#define CSSC__LIST_C__
 
 template <class TYPE>
 list<TYPE>::~list()
