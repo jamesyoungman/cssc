@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.17 1998/06/15 20:49:59 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.18 1998/08/13 18:08:40 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -306,30 +306,15 @@ open_as_real_user(const char *name, int mode, int perm) {
 extern "C" struct passwd * CDECL getpwuid(int uid);
 #endif
 
-#ifdef CONFIG_DECLARE_GETLOGIN
-extern "C" char *getlogin(void);
-#endif
-
 const char *
 get_user_name()
 {
-  static mystring name;
-  
-  const char *n = getlogin();
-  if (n)
+  struct passwd *p = getpwuid(getuid());
+  if (0 == p)
     {
-      name = n;
+      quit(-1, "UID %d not found in password file.", getuid());
     }
-  else
-    {
-      struct passwd *p = getpwuid(getuid());
-      if (0 == p)
-	{
-	  quit(-1, "UID %d not found in password file.", getuid());
-	}
-      name = p->pw_name;
-    }
-  return name.c_str();
+  return p->pw_name;
 }
 
 int
