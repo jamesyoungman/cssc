@@ -183,6 +183,7 @@ public:
 	sccs_file(sccs_name &name, enum _mode mode);
 
 	sid find_most_recent_sid(sid id) const;
+        bool find_most_recent_sid(sid& s, sccs_date& d) const;
 
 	int
 	is_delta_creator(const char *user, sid id) const {
@@ -309,12 +310,25 @@ private:
 
 public:
 	enum when { EARLIER, SIDONLY, LATER };
+  struct cutoff
+  {
+    bool enabled;
+    bool most_recent_sid_only;
+    sid  cutoff_sid;
+    const struct delta *cutoff_delta;
+    sccs_date first_accepted;
+    sccs_date last_accepted;
+
+    cutoff();
+    bool excludes_delta(sid, sccs_date, bool& stop_now) const;
+    void print(FILE *out) const;
+  };
+  
 
 	void prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
 	         enum when when, int all_deltas);
 
-  void prt(FILE *out, sid cutoff_sid, sccs_date cutoff_date,
-	   enum when when, int all_deltas,
+  void prt(FILE *out, struct cutoff exclude, int all_deltas,
 	   //
 	   int print_body, int print_delta_table, int print_flags,
 	   int incl_excl_ignore, int first_line_only, int print_desc,
