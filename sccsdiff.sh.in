@@ -7,8 +7,12 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.5 1998/02/09 21:00:19 james Exp $
+# $Id: sccsdiff.sh.in,v 1.6 1998/03/09 23:25:00 james Exp $
 # LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.6  1998/03/09 23:25:00  james
+# LOG   Bug report from Richard Polton: IRIX's pr(1) requires a space between
+# LOG   the "-h" and its argument.
+# LOG
 # LOG   Revision 1.5  1998/02/09 21:00:19  james
 # LOG   Patch from Maurice O'Donnell <mod@tfn.com>: pass "-e" to sed before
 # LOG   the sed commands.
@@ -41,7 +45,7 @@ then
     fi
 fi
 
-version='$Revision: 1.5 $ $State: Exp $'
+version='$Revision: 1.6 $ $State: Exp $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
@@ -156,7 +160,7 @@ do
         then				  # Output file is not empty.
 	    if $use_pr
 	    then
-		$pr -h"$header"        < $dfile  
+		$pr -h "$header"        < $dfile  
 	    else
 		echo $header
 		cat $dfile
