@@ -1,0 +1,7 @@
+If you are kind enough to submit patches, first of all, thanks.
+Second, it makes life much easier for me if you submit unified diffs
+("diff -u") and if all diff'ed paths are relative to the top-level
+directory.  I also have a preference for diffs split by type (that is,
+diffs for the test suites, code diffs for foo, code diffs for bar, and
+so on).  This makes applying your patches a lot easier -- but as I
+said above, first and foremost thanks for contributing!
