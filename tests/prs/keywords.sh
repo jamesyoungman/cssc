@@ -59,5 +59,9 @@ test -s got.stderr && fail expected empty stderr output
 remove got.stderr got.stdout expected.stdout 
 echo passed
 
+
+# Make sure prs accepts an empty "-r" option.
+docommand Z2 "${prs} -r -d':M:\n' s.1" 0 "1\n\n" ""
+
 remove s.1 p.1 z.1 1 command.log
 success
