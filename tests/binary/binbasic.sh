@@ -78,15 +78,11 @@ do
 done
 
 # Binary support not fully working yet.
-# for n in 4 5 6
-# do
-#     do_delta $n
-# done
-
-
-exit 0
+for n in 4 5 6
+do
+    do_delta $n
+done
 
 cleanup
-
 success
 

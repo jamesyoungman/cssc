@@ -30,12 +30,12 @@
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
-#include "pipe.h"
 #include "run.h"
 #include "linebuf.h"
 #include "delta.h"
 #include "delta-table.h"
 #include "bodyio.h"
+#include "filediff.h"
 
 
 // We use @LIBOBJS@ instead now.
@@ -44,7 +44,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.17 1998/02/11 07:49:15 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.18 1998/02/12 21:33:31 james Exp $";
 #endif
 
 class diff_state
@@ -333,7 +333,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	mystring file_to_diff;
 	if (flags.encoded)
 	  {
-	    mystring uname(tmpnam(NULL)); // get name for temporary file.
+	    mystring uname(name.sub_file('u'));
 	    encode_file(gname.c_str(), uname.c_str());
 	    file_to_diff = uname;
 	  }
@@ -357,52 +357,24 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	prepare_seqstate(sstate, pfile->include, pfile->exclude,
 			 sccs_date(NULL));
 
-	Pipe diff_in;
-
-	FILE *get_out = diff_in.write_stream();
-	if (get_out != NULL) {
-		struct subst_parms parms(get_out, NULL, delta(), 
-					 0, sccs_date(NULL));
-#ifndef USE_PIPE
-		seq_state gsstate = sstate;
-		get("diff pipe", gsstate, parms);
-#else
-		sccs_file file(name, READ);
-		file.get("(diff pipe)", sstate, parms);
-#endif
-	}
+	mystring dname(name.sub_file('d'));
+	FILE *get_out = fopen(dname.c_str(), "wt");
+	if (NULL == get_out)
+	    quit(-1, "Cannot open file %s", dname.c_str());
 	
-	diff_in.write_close();
+
+	struct subst_parms parms(get_out, NULL, delta(), 
+				 0, sccs_date(NULL));
+	seq_state gsstate = sstate;
+	get(dname, gsstate, parms, 0, 0, 0, 0, GET_NO_DECODE);
+
+	if (fclose_failed(fclose(get_out)))
+	  quit(errno, "Failed to close temporary file");
 	
-	Pipe diff_out;
-
-	int ret;
-
-#ifndef USE_PIPE
-
-	ret = run_diff(file_to_diff.c_str(), diff_in, diff_out);
-	if (ret != STATUS(0) && ret != STATUS(1)) {
-		quit(-1, CONFIG_DIFF_COMMAND ": Command failed.  "
-			 STATUS_MSG(ret));
-	}
-
-	diff_in.read_close();
-
-#else /* USE_PIPE */
-
-	run_diff(file_to_diff.c_str(), diff_in, diff_out);
-
-	ret = diff_in.read_close();
-	if (ret != STATUS(0)) {
-		quit(-1, "get: Subprocess exited abnormally. "
-		         STATUS_MSG(ret));
-	}
-
-#endif /* USE_PIPE */
-
-	diff_out.write_close();
-
-	class diff_state dstate(diff_out.read_stream());
+	FileDiff differ(dname.c_str(), file_to_diff.c_str());
+	FILE *diff_out = differ.start();
+	
+	class diff_state dstate(diff_out);
 
 	seek_to_body();
 
@@ -583,21 +555,19 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	fclose(df);
 #endif
 
-#ifndef USE_PIPE
-	diff_out.read_close();
-#else
-	ret = diff_out.read_close();
-	if (ret != STATUS(0) && ret != STATUS(1)) {
-		quit(-1, CONFIG_DIFF_COMMAND ": Command failed.  "
-			 STATUS_MSG(ret));
-	}
-#endif
 
 	pfile.delete_lock();
 	pfile.update();
 
 	end_update(out, new_delta);
 
+	differ.finish();
+	diff_out = 0;
+	if (0 != remove(dname.c_str()))
+	  {
+	    perror(dname.c_str()); // TODO: should we quit?
+	  }
+	
 	// If we had created a temporary file, delete it now.
 	// We should probably not exit fatally if we fail to
 	// unlink the temporary file.

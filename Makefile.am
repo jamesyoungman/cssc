@@ -19,7 +19,7 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
 	sysnerr.h version.h xalloc.h ioerr.h err_no.h delta-table.h delta.h \
-	delta-iterator.h bodyio.h
+	delta-iterator.h bodyio.h filediff.h
 
 # Sources required by everybody.
 common_SOURCES = my-getopt.cc version.cc
@@ -38,7 +38,7 @@ sfile_SOURCES = sccsfile.cc rel_list.cc \
 mod_SOURCES = cap.cc sf-write.cc
 
 # Source files required by programs that modify delta entries.
-moddelta_SOURCES = l-split.cc prompt.cc run.cc
+moddelta_SOURCES = l-split.cc prompt.cc run.cc filediff.cc
 
 # Source files required by programs that add new delta entries.
 newdelta_SOURCES = sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc
@@ -81,7 +81,7 @@ admin_SOURCES = admin.cc sf-admin.cc \
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
 
 delta_SOURCES = delta.cc sf-delta.cc \
-	pf-del.cc pfile.cc pipe.cc sf-get.cc sf-get3.cc \
+	pf-del.cc pfile.cc sf-get.cc sf-get3.cc \
 	bodyio.cc encoding.cc \
 	$(moddelta_SOURCES) $(newdelta_SOURCES)\
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
@@ -104,7 +104,7 @@ testcode = list.cc
 # rainyday_src is code that we don't currently need, and would be
 # in the "unused" directory but might be needed for a port (e.g. 
 # to DOS or something).
-rainyday_src = dummy.cc fsync.cc _chmod.cc sid_list.cc \
+rainyday_src = dummy.cc fsync.cc _chmod.cc sid_list.cc pipe.h pipe.cc \
 	move-if-change 
 
 EXTRA_DIST = ChangeLog $(testcode) $(rainyday_src) show-disp.sh
