@@ -14,7 +14,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.3 1997/05/31 23:29:11 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.4 1997/06/01 00:30:54 james Exp $";
 #endif
 
 static void
@@ -46,10 +46,11 @@ print_string_list(FILE *out,
 
 void print_flag(FILE *out, const char *fmt,  mystring flag, int& count)
 {
-  if (strlen(flag))
+  const char *s = (const char *)flag;
+  if (s && strlen(flag))
     {
       ++count;
-      fprintf(out, fmt, (const char*)flag);
+      fprintf(out, fmt, s);
     }
 }
 
