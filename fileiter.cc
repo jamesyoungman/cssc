@@ -36,7 +36,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.13 1998/03/09 23:43:45 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.14 1998/05/04 21:47:28 james Exp $";
 #endif
 
 #if 0
@@ -58,7 +58,7 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 	if (first[0] != '\0') {
 		DIR *dir = opendir(first);
 		if (dir != NULL) {
-			const char *slash = NULL;
+			const char *slash = "";
 			int len = strlen(first);
 
 #ifdef CONFIG_MSDOS_FILES
