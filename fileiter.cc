@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.9 1997/11/18 23:22:18 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.10 1997/12/26 18:29:11 james Exp $";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
@@ -111,13 +111,13 @@ sccs_file_iterator::next() {
 	switch(source) {
 	case STDIN:
 	  {
-	    static class _linebuf linebuf;
+	    static cssc_linebuf linebuf; // FIXME: static!
 
 	    if (linebuf.read_line(stdin)) {
 	      return 0;
 	    }
 
-	    name = (const char *) linebuf; // XXX TODO: remove cast.
+	    name = linebuf.c_str();
 	    return 1;
 	  }
 	

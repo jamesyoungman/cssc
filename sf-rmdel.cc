@@ -31,9 +31,10 @@
 #include "sccsfile.h"
 #include "delta.h"
 #include "delta-iterator.h"
+#include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.6 1997/11/30 21:05:58 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.7 1997/12/26 18:33:18 james Exp $";
 #endif
 
 static int
@@ -122,7 +123,7 @@ sccs_file::rmdel(sid id)
       if (0 != c)
 	{
 	  check_arg();
-	  if (strict_atous(linebuf + 3) == seq)
+	  if (strict_atous(plinebuf->c_str() + 3) == seq)
 	    {
 	      if (!next_state(state, c))
 		corrupt("Unexpected control line");
@@ -134,7 +135,7 @@ sccs_file::rmdel(sid id)
 	}
       else if (state != INSERT)
 	{
-	  fputs(linebuf, out);
+	  fputs(plinebuf->c_str(), out);
 	  putc('\n', out);
 	}
     }
