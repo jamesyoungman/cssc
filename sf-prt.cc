@@ -13,37 +13,39 @@
 #include "sccsfile.h"
 #include "seqstate.h"
 #include "filepos.h"
+#include "delta.h"
+#include "delta-iterator.h"
+
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>		// SEEK_SET on SunOS.
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.11 1997/11/18 23:22:42 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.12 1997/11/30 21:05:57 james Exp $";
 #endif
 
 static void
 print_string_list(FILE *out,
-		  list<mystring> const &list,
-		  mystring pre,
-		  mystring post,
-		  mystring dflt)
+		  list<mystring> const &l,
+		  const char* pre,
+		  const char* post,
+		  const char* dflt)
 {
-  const int len = list.length();
+  const int len = l.length();
+  
   if (0 == len)
     {
-      fprintf(out, "%s%s", pre.c_str(), dflt.c_str());
+      fprintf(out, "%s%s", pre, dflt);
     }
   else
     {
       for(int i = 0; i < len; i++)
 	{
-	  fprintf(out, "%s%s",
-		  pre.c_str(),
-		  list[i].c_str());
+	  fprintf(out, "%s%s", pre, l[i].c_str());
 	  if (i < len-1)
 	    {
-	      fprintf(out, "%s", post.c_str());
+	      fprintf(out, "%s", post);
 	    }
 	  
 	}
@@ -309,7 +311,7 @@ sccs_file::prt(FILE *out,
 				   exclude.first_accepted);
 	    }
 	  if (exclude.cutoff_sid.valid())
-	    exclude.cutoff_delta = delta_table.find(exclude.cutoff_sid);
+	    exclude.cutoff_delta = find_delta(exclude.cutoff_sid);
   
 	  // exclude.print(stdout);
 	}
@@ -323,7 +325,7 @@ sccs_file::prt(FILE *out,
 	    continue;
 
 	  // Unless -a was specified, don't print removed deltas.
-	  if (!all_deltas && 'R' == iter->type)
+	  if (!all_deltas && iter->removed())
 	    continue;
 	  
 	  if (exclude.enabled)	// -y, -c, or -r option.

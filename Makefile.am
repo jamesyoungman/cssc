@@ -18,44 +18,69 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	filepos.h my-getopt.h linebuf.h list.h mystring.h pfile.h pipe.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
-	sysnerr.h version.h xalloc.h ioerr.h err_no.h
+	sysnerr.h version.h xalloc.h ioerr.h err_no.h delta-table.h delta.h \
+	delta-iterator.h
 
-common_SOURCES = quit.cc my-getopt.cc version.cc
+# Sources required by everybody.
+common_SOURCES = my-getopt.cc version.cc
 
-sfile_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc xalloc.cc \
-		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc
+# Sources required by programs working with lists of SCCS files.
+sname_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc xalloc.cc \
+		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc \
+		quit.cc 
 
-what_SOURCES = what.cc my-getopt.cc version.cc
-get_SOURCES = get.cc pf-add.cc pfile.cc sccsfile.cc rel_list.cc \
-	sf-chkid.cc sf-get.cc sf-get2.cc sf-get3.cc rl-merge.cc \
-	canonify.cc sf-kw.cc $(common_SOURCES) $(sfile_SOURCES)
+# Sources required by programs working with the contents of SCCS files.
+sfile_SOURCES = sccsfile.cc rel_list.cc \
+	sccs-delta.cc delta-table.cc delta-iterator.cc 
 
-delta_SOURCES = delta.cc \
-	l-split.cc pf-del.cc pfile.cc pipe.cc prompt.cc run.cc sccsfile.cc \
-	 rel_list.cc sf-add.cc sf-chkid.cc sf-delta.cc sf-get.cc sf-get3.cc \
-	sf-write.cc cap.cc sf-kw.cc \
-	$(common_SOURCES) $(sfile_SOURCES)
 
-admin_SOURCES = admin.cc l-split.cc prompt.cc run.cc sccsfile.cc sf-add.cc \
-	sf-admin.cc sf-chkid.cc sf-write.cc cap.cc rel_list.cc rl-merge.cc \
-	sf-kw.cc $(common_SOURCES) $(sfile_SOURCES)
+# Source files required by programs that modify SCCS files.
+mod_SOURCES = cap.cc sf-write.cc
 
-prs_SOURCES = prs.cc sccsfile.cc rel_list.cc sf-chkid.cc sf-get.cc sf-prs.cc \
-	$(common_SOURCES) $(sfile_SOURCES)
+# Source files required by programs that modify delta entries.
+moddelta_SOURCES = l-split.cc prompt.cc run.cc
 
-prt_SOURCES = prt.cc sf-prt.cc sccsfile.cc rel_list.cc \
-	$(common_SOURCES) $(sfile_SOURCES)
+# Source files required by programs that add new delta entries.
+newdelta_SOURCES = sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc
 
-unget_SOURCES = unget.cc pf-del.cc pfile.cc $(common_SOURCES) $(sfile_SOURCES)
 
-sact_SOURCES = sact.cc pfile.cc $(common_SOURCES) $(sfile_SOURCES)
+# The source lists for the actual executables....
 
-cdc_SOURCES = cdc.cc sccsfile.cc rel_list.cc sf-cdc.cc \
-	sf-write.cc cap.cc run.cc l-split.cc prompt.cc \
-	$(common_SOURCES) $(sfile_SOURCES)
 
-rmdel_SOURCES = rmdel.cc sccsfile.cc rel_list.cc sf-rmdel.cc \
-	sf-write.cc cap.cc pfile.cc $(common_SOURCES) $(sfile_SOURCES)
+what_SOURCES = what.cc \
+	$(common_SOURCES)
+sact_SOURCES = sact.cc pfile.cc \
+	$(common_SOURCES) $(sname_SOURCES)
+unget_SOURCES = unget.cc pfile.cc pf-del.cc \
+	$(common_SOURCES) $(sname_SOURCES)
+
+prt_SOURCES = prt.cc sf-prt.cc \
+	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
+prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc sf-get.cc \
+	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
+
+
+get_SOURCES = get.cc pf-add.cc pfile.cc sf-chkid.cc canonify.cc sf-kw.cc \
+	sf-get.cc sf-get2.cc sf-get3.cc rl-merge.cc \
+	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
+
+rmdel_SOURCES = rmdel.cc sf-rmdel.cc \
+	pfile.cc \
+	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
+
+cdc_SOURCES = cdc.cc sf-cdc.cc \
+	$(moddelta_SOURCES) \
+	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
+
+admin_SOURCES = admin.cc sf-admin.cc \
+	rl-merge.cc \
+	$(moddelta_SOURCES) $(newdelta_SOURCES)\
+	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
+
+delta_SOURCES = delta.cc sf-delta.cc \
+	pf-del.cc pfile.cc pipe.cc sf-get.cc sf-get3.cc \
+	$(moddelta_SOURCES) $(newdelta_SOURCES)\
+	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
 
 
 get_LDADD = @LIBOBJS@

@@ -33,6 +33,9 @@
 #include "pipe.h"
 #include "run.h"
 #include "linebuf.h"
+#include "delta.h"
+#include "delta-table.h"
+
 
 // We use @LIBOBJS@ instead now.
 // #ifndef HAVE_STRSTR
@@ -40,7 +43,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.13 1997/11/18 23:22:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.14 1997/11/30 21:05:53 james Exp $";
 #endif
 
 class diff_state {
@@ -309,8 +312,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	check_keywords_in_file(gname.c_str());
 
-	seq_state sstate(delta_table.highest_seqno());
-	const struct delta *got_delta = delta_table.find(pfile->got);
+	seq_state sstate(highest_delta_seqno());
+	const delta *got_delta = find_delta(pfile->got);
 	if (got_delta == NULL)
 	  {
 	    quit(-1, "Locked delta doesn't exist!");
@@ -375,7 +378,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	list<seq_no> included, excluded;
 	seq_no seq;
-	for(seq	= 1; seq < delta_table.highest_seqno(); seq++) {
+	for(seq	= 1; seq < highest_delta_seqno(); seq++) {
 		if (sstate.is_explicit(seq)) {
 			if (sstate.is_included(seq)) {
 				included.add(seq);
@@ -412,20 +415,20 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		ASSERT(id.valid());
 		// add a new automatic "null" release.  Use the same
 		// MRs as for the actual delta (is that right?) but
-		seq_no new_seq = delta_table.next_seqno();
+		seq_no new_seq = delta_table->next_seqno();
 		
 		// Set up for adding the next release.
 		id = release(null_rel);
 		id.next_level();
 		
-		struct delta null_delta('D', id, sccs_date::now(),
-					get_user_name(), new_seq, predecessor_seq,
-					mrs, auto_comment);
+		delta null_delta('D', id, sccs_date::now(),
+				 get_user_name(), new_seq, predecessor_seq,
+				 mrs, auto_comment);
 		null_delta.inserted = 0;
 		null_delta.deleted = 0;
 		null_delta.unchanged = 0;
 
-		delta_table.prepend(null_delta);
+		delta_table->prepend(null_delta);
 		
 		predecessor_seq = new_seq;
 
@@ -435,10 +438,10 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		ASSERT(infinite_loop_escape > 0);
 	      }
 	  }
-	seq_no new_seq = delta_table.next_seqno();
-	struct delta new_delta('D', pfile->delta, sccs_date::now(),
-			       get_user_name(), new_seq, predecessor_seq,
-			       included, excluded, mrs, comments);
+	seq_no new_seq = delta_table->next_seqno();
+	delta new_delta('D', pfile->delta, sccs_date::now(),
+			get_user_name(), new_seq, predecessor_seq,
+			included, excluded, mrs, comments);
 	new_delta.inserted = 0;
 	new_delta.deleted = 0;
 	new_delta.unchanged = 0;
@@ -459,7 +462,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		if (c != 0 && c != -1) {
 			seq_no seq = strict_atous(linebuf + 3);
 
-			if (seq < 1 || seq > delta_table.highest_seqno()) {
+			if (seq < 1 || seq > highest_delta_seqno()) {
 				corrupt("Invalid sequence number");
 			}
 

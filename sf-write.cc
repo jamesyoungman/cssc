@@ -28,9 +28,11 @@
  
 #include "cssc.h"
 #include "sccsfile.h"
+#include "delta.h"
+#include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.9 1997/11/18 23:22:44 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.10 1997/11/30 21:05:59 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -89,47 +91,54 @@ print_seqs(FILE *out, char control, list<seq_no> const &seqs) {
    Returns non-zero if an error occurs.  */
 
 int
-sccs_file::write_delta(FILE *out, struct delta const &delta) const {
-	int len;
-	int i;
+sccs_file::write_delta(FILE *out, struct delta const &d) const
+{
+  int len;
+  int i;
 
-	if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
-				  cap5(delta.inserted),
-				  cap5(delta.deleted),
-				  cap5(delta.unchanged)))
-	    || printf_failed(fprintf(out, "\001d %c ", delta.type))
-	    || delta.id.print(out)
-            || putc_failed(putc(' ', out))
-            || delta.date.print(out)
-            || printf_failed(fprintf(out, " %s %u %u\n",
-				     delta.user.c_str(),
-				     delta.seq, delta.prev_seq))) {
-		return 1;
+  if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
+			    cap5(d.inserted),
+			    cap5(d.deleted),
+			    cap5(d.unchanged)))
+      || printf_failed(fprintf(out, "\001d %c ", d.type))
+      || d.id.print(out)
+      || putc_failed(putc(' ', out))
+      || d.date.print(out)
+      || printf_failed(fprintf(out, " %s %u %u\n",
+			       d.user.c_str(),
+			       d.seq, d.prev_seq)))
+    {
+      return 1;
+    }
+
+  if (print_seqs(out, 'i', d.included)
+      || print_seqs(out, 'x', d.excluded)
+      || print_seqs(out, 'g', d.ignored))
+    {
+      return 1;
+    }
+  
+  len = d.mrs.length();
+  for(i = 0; i < len; i++)
+    {
+      if (printf_failed(fprintf(out, "\001m %s\n",
+				d.mrs[i].c_str())))
+	{
+	  return 1;
 	}
+    }
 
-	if (print_seqs(out, 'i', delta.included)
-	    || print_seqs(out, 'x', delta.excluded)
-	    || print_seqs(out, 'g', delta.ignored)) {
-		return 1;
+  len = d.comments.length();
+  for(i = 0; i < len; i++)
+    {
+      if (printf_failed(fprintf(out, "\001c %s\n",
+				d.comments[i].c_str())))
+	{
+	  return 1;
 	}
+    }
 
-	len = delta.mrs.length();
-	for(i = 0; i < len; i++) {
-		if (printf_failed(fprintf(out, "\001m %s\n",
-					  delta.mrs[i].c_str()))) {
-			return 1;
-		}
-	}
-
-	len = delta.comments.length();
-	for(i = 0; i < len; i++) {
-		if (printf_failed(fprintf(out, "\001c %s\n",
-					  delta.comments[i].c_str()))) {
-			return 1;
-		}
-	}
-
-	return fputs_failed(fputs("\001e\n", out));
+  return fputs_failed(fputs("\001e\n", out));
 }
 
 

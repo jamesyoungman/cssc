@@ -30,17 +30,21 @@
 #include "cssc.h"
 #include "sccsfile.h"
 #include "seqstate.h"
+#include "delta.h"
+#include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.11 1997/11/18 23:22:42 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.12 1997/11/30 21:05:56 james Exp $";
 #endif
 
 inline void
-sccs_file::get(FILE *out, mystring name, seq_no seq) {
-	struct subst_parms parms(out, NULL, delta(), 0, sccs_date(NULL));
-	class seq_state state(delta_table.highest_seqno());
-	prepare_seqstate(state, seq);
-	get(name, state, parms);
+sccs_file::get(FILE *out, mystring name, seq_no seq)
+{
+  struct subst_parms parms(out, NULL, delta(), 0, sccs_date(NULL));
+  class seq_state state(highest_delta_seqno());
+  
+  prepare_seqstate(state, seq);
+  get(name, state, parms);
 }
 
 /* Prints a list of sequence numbers on the same line. */
@@ -243,298 +247,310 @@ print_flag(FILE *out, const sid &it)
 
 void
 sccs_file::print_delta(FILE *out, const char *format,
-		       struct delta const &delta) {
-	const char *s = format;
+		       struct delta const &d)
+{
+  const char *s = format;
 
-	while(1) {
-		char c = *s++;
+  while (1)
+    {
+      char c = *s++;
 
-		if (c == '\0')
-		  {
-		    break;	// end of format.
-		  }
-		else if ('\\' == c)
-		  {
-		    if ('\0' != *s)
-		      {
-			// Not at the end of the format string.
-			// Backslash escape codes.  We only recognise \n and \t.
-			switch (*s)
-			  {
-			  case 'n': c = '\n'; break;
-			  case 't': c = '\t'; break;
-			  case '\\': c = '\\'; break;
-			  default:	// not \n or \t -- print the whole thing.
-			    putc('\\', out);
-			    c = *s;
-			    break;
-			  }
-			putc(c, out);
-			++s;
-		      }
-		    else
-		      {
-			putc('\\', out); // trailing backslash at and of format.
-		      }
-		    
-		    continue;
-		  }
-		else if (c != ':' || s[0] == '\0')
-		  {
-		    putc(c, out);
-		    continue;
-		  }
-
-		const char *back_to = s;
-		unsigned key = 0;
-
-		if (s[1] == ':') {
-			key = KEY1(s[0]);
-			s += 2;
-		} else if (s[2] == ':') {
-			key = KEY2(s[0], s[1]);
-			s += 3;
-		} else {
-			putc(':', out);
-			continue;
-		}
-
-		switch(key) {
-		default:
-			s = back_to;
-			putc(':', out);
-			continue;
-			
-		case KEY2('D','t'):
-			print_delta(out, ":DT: :I: :D: :T: :P: :DS: :DP:",
-				    delta);
-			break;
-
-		case KEY2('D','L'):
-			print_delta(out, ":Li:/:Ld:/:Lu:", delta);
-			break;
-
-		case KEY2('L','i'):
-			fprintf(out, "%05lu", delta.inserted);
-			break;
-
-		case KEY2('L','d'):
-			fprintf(out, "%05lu", delta.deleted);
-			break;
-
-		case KEY2('L','u'):
-			fprintf(out, "%05lu", delta.unchanged);
-			break;
-
-		case KEY2('D','T'):
-			putc(delta.type, out);
-			break;
-
-		case KEY1('I'):
-			delta.id.print(out);
-			break;
-
-		case KEY1('R'):
-			delta.id.printf(out, 'R');
-			break;
-
-		case KEY1('L'):
-			delta.id.printf(out, 'L');
-			break;
-
-		case KEY1('B'):
-			delta.id.printf(out, 'B');
-			break;
-
-		case KEY1('S'):
-			delta.id.printf(out, 'S');
-			break;
-
-		case KEY1('D'):
-			delta.date.printf(out, 'D');
-			break;
-
-		case KEY2('D','y'):
-			delta.date.printf(out, 'y');
-			break;
-
-		case KEY2('D','m'):
-			delta.date.printf(out, 'o');
-			break;
-
-		case KEY2('D','d'):
-			delta.date.printf(out, 'd');
-			break;
-
-		case KEY1('T'):
-			delta.date.printf(out, 'T');
-			break;
-
-		case KEY2('T','h'):
-			delta.date.printf(out, 'h');
-			break;
-
-		case KEY2('T','m'):
-			delta.date.printf(out, 'm');
-			break;
-
-		case KEY2('T','s'):
-			delta.date.printf(out, 's');
-			break;
-
-		case KEY1('P'):
-			fputs(delta.user.c_str(), out);
-			break;
-
-		case KEY2('D','S'):
-			fprintf(out, "%u", delta.seq);
-			break;
-
-		case KEY2('D','P'):
-			fprintf(out, "%u", delta.prev_seq);
-			break;
-
-		case KEY2('D', 'I'):
-		  if (delta.included.length() > 0 ||
-		      delta.excluded.length() > 0 ||
-		      delta.ignored.length()  > 0   )
-		    {
-		      print_delta(out, ":Dn:/:Dx:/:Dg:", delta);
-		      break;
-		    }
-		  
-		case KEY2('D','n'):
-			print_seq_list(out, delta.included);
-			break;
-
-		case KEY2('D','x'):
-			print_seq_list(out, delta.excluded);
-			break;
-
-		case KEY2('D','g'):
-			print_seq_list(out, delta.ignored);
-			break;
-
-		case KEY2('M','R'):
-			print_string_list(out, delta.mrs);
-			break;
-
-		case KEY1('C'):
-			print_string_list(out, delta.comments);
-			break;
-
-		case KEY2('U','N'):
-			print_string_list(out, users);
-			break;
-
-		case KEY2('F', 'L'):
-			print_flags(out);
-			break;
-			
-		case KEY1('Y'):
-			print_flag(out, flags.type);
-			break;
-			
-		case KEY2('M','F'):
-			print_yesno(out, flags.mr_checker != 0);
-			break;
-
-		case KEY2('M','P'):
-		  	print_flag(out, flags.mr_checker);
-			break;
-			
-		case KEY2('K','F'):
-			print_yesno(out, flags.no_id_keywords_is_fatal);
-			break;
-
-		case KEY2('B','F'):
-			print_yesno(out, flags.branch);
-			break;
-
-		case KEY1('J'):
-			print_yesno(out, flags.joint_edit);
-			break;
-			
-		case KEY2('L','K'):
-			if (flags.all_locked) {
-				putc('a', out);
-			} else {
-
-			  if (flags.locked.empty())
-			    fprintf(out, "none");
-			  else
-			    print_flag(out, flags.locked);
-			}
-			break;
-
-		case KEY1('Q'):
-		  if (flags.user_def)
-		    print_flag(out, flags.user_def);
-		  break;
-
-		case KEY1('M'):
-			print_flag(out, get_module_name());
-			break;
-			
-		case KEY2('F','B'):
-			print_flag(out, flags.floor);
-			break;
-			
-		case KEY2('C','B'):
-			print_flag(out, flags.ceiling);
-			break;
-
-		case KEY2('D','s'):
-			print_flag(out, flags.default_sid);
-			break;
-
-		case KEY2('N','D'):
-			print_yesno(out, flags.null_deltas);
-			break;
-
-		case KEY2('F','D'):
-		  // The genuine article prints '(none)' of there
-		  // is no description.
-		  	if (0 == comments.length())
-			  fputs("(none)\n", out);
-			else
-			  print_string_list(out, comments);
-			break;
-
-		case KEY2('B','D'):
-			seek_to_body();
-			while(read_line() != -1) {
-				fputs(linebuf, out);
-				putc('\n', out);
-			}
-			break;
-
-		case KEY2('G','B'):
-			get(out, "-", delta.seq);
-			break;
-
-		case KEY1('W'):
-			print_delta(out, ":Z::M:\t:I:", delta);
-			break;
-
-		case KEY1('A'):
-			print_delta(out, ":Z::Y: :M: :I::Z:", delta);
-			break;
-
-		case KEY1('Z'):
-			fputc('@', out);
-			fputs("(#)", out);
-			break;
-
-		case KEY1('F'):
-			fputs(base_part(name.sfile()).c_str(), out);
-			break;
-
-		case KEY2('P','N'):
-			fputs(name.c_str(), out);
-			break;
-		}
+      if (c == '\0')
+	{
+	  break;	// end of format.
 	}
+      else if ('\\' == c)
+	{
+	  if ('\0' != *s)
+	    {
+	      // Not at the end of the format string.
+	      // Backslash escape codes.  We only recognise \n and \t.
+	      switch (*s)
+		{
+		case 'n': c = '\n'; break;
+		case 't': c = '\t'; break;
+		case '\\': c = '\\'; break;
+		default:	// not \n or \t -- print the whole thing.
+		  putc('\\', out);
+		  c = *s;
+		  break;
+		}
+	      putc(c, out);
+	      ++s;
+	    }
+	  else
+	    {
+	      putc('\\', out); // trailing backslash at and of format.
+	    }
+	  
+	  continue;
+	}
+      else if (c != ':' || s[0] == '\0')
+	{
+	  putc(c, out);
+	  continue;
+	}
+      
+      const char *back_to = s;
+      unsigned key = 0;
+      
+      if (s[1] == ':')
+	{
+	  key = KEY1(s[0]);
+	  s += 2;
+	}
+      else if (s[2] == ':')
+	{
+	  key = KEY2(s[0], s[1]);
+	  s += 3;
+	}
+      else
+	{
+	  putc(':', out);
+	  continue;
+	}
+
+      switch(key)
+	{
+	default:
+	  s = back_to;
+	  putc(':', out);
+	  continue;
+			
+	case KEY2('D','t'):
+	  print_delta(out, ":DT: :I: :D: :T: :P: :DS: :DP:",
+		      d);
+	  break;
+
+	case KEY2('D','L'):
+	  print_delta(out, ":Li:/:Ld:/:Lu:", d);
+	  break;
+	  
+	case KEY2('L','i'):
+	  fprintf(out, "%05lu", d.inserted);
+	  break;
+
+	case KEY2('L','d'):
+	  fprintf(out, "%05lu", d.deleted);
+	  break;
+
+	case KEY2('L','u'):
+	  fprintf(out, "%05lu", d.unchanged);
+	  break;
+
+	case KEY2('D','T'):
+	  putc(d.type, out);
+	  break;
+
+	case KEY1('I'):
+	  d.id.print(out);
+	  break;
+
+	case KEY1('R'):
+	  d.id.printf(out, 'R');
+	  break;
+
+	case KEY1('L'):
+	  d.id.printf(out, 'L');
+	  break;
+	  
+	case KEY1('B'):
+	  d.id.printf(out, 'B');
+	  break;
+	  
+	case KEY1('S'):
+	  d.id.printf(out, 'S');
+	  break;
+	  
+	case KEY1('D'):
+	  d.date.printf(out, 'D');
+	  break;
+	  
+	case KEY2('D','y'):
+	  d.date.printf(out, 'y');
+	  break;
+
+	case KEY2('D','m'):
+	  d.date.printf(out, 'o');
+	  break;
+	  
+	case KEY2('D','d'):
+	  d.date.printf(out, 'd');
+	  break;
+	  
+	case KEY1('T'):
+	  d.date.printf(out, 'T');
+	  break;
+	  
+	case KEY2('T','h'):
+	  d.date.printf(out, 'h');
+	  break;
+	  
+	case KEY2('T','m'):
+	  d.date.printf(out, 'm');
+	  break;
+
+	case KEY2('T','s'):
+	  d.date.printf(out, 's');
+	  break;
+
+	case KEY1('P'):
+	  fputs(d.user.c_str(), out);
+	  break;
+
+	case KEY2('D','S'):
+	  fprintf(out, "%u", d.seq);
+	  break;
+
+	case KEY2('D','P'):
+	  fprintf(out, "%u", d.prev_seq);
+	  break;
+
+	case KEY2('D', 'I'):
+	  if (d.included.length() > 0 ||
+	      d.excluded.length() > 0 ||
+	      d.ignored.length()  > 0   )
+	    {
+	      print_delta(out, ":Dn:/:Dx:/:Dg:", d);
+	      break;
+	    }
+		  
+	case KEY2('D','n'):
+	  print_seq_list(out, d.included);
+	  break;
+
+	case KEY2('D','x'):
+	  print_seq_list(out, d.excluded);
+	  break;
+
+	case KEY2('D','g'):
+	  print_seq_list(out, d.ignored);
+			break;
+
+	case KEY2('M','R'):
+	  print_string_list(out, d.mrs);
+	  break;
+
+	case KEY1('C'):
+	  print_string_list(out, d.comments);
+	  break;
+
+	case KEY2('U','N'):
+	  print_string_list(out, users);
+	  break;
+
+	case KEY2('F', 'L'):
+	  print_flags(out);
+	  break;
+			
+	case KEY1('Y'):
+	  print_flag(out, flags.type);
+	  break;
+			
+	case KEY2('M','F'):
+	  print_yesno(out, flags.mr_checker != 0);
+	  break;
+	  
+	case KEY2('M','P'):
+	  print_flag(out, flags.mr_checker);
+	  break;
+			
+	case KEY2('K','F'):
+	  print_yesno(out, flags.no_id_keywords_is_fatal);
+	  break;
+
+	case KEY2('B','F'):
+	  print_yesno(out, flags.branch);
+	  break;
+
+	case KEY1('J'):
+	  print_yesno(out, flags.joint_edit);
+	  break;
+			
+	case KEY2('L','K'):
+	  if (flags.all_locked)
+	    {
+	      putc('a', out);
+	    }
+	  else
+	    {
+	      
+	      if (flags.locked.empty())
+		fprintf(out, "none");
+	      else
+		print_flag(out, flags.locked);
+	    }
+	  break;
+
+	case KEY1('Q'):
+	  if (flags.user_def)
+	    print_flag(out, flags.user_def);
+	  break;
+
+	case KEY1('M'):
+	  print_flag(out, get_module_name());
+	  break;
+			
+	case KEY2('F','B'):
+	  print_flag(out, flags.floor);
+	  break;
+			
+	case KEY2('C','B'):
+	  print_flag(out, flags.ceiling);
+	  break;
+
+	case KEY2('D','s'):
+	  print_flag(out, flags.default_sid);
+	  break;
+
+	case KEY2('N','D'):
+	  print_yesno(out, flags.null_deltas);
+	  break;
+
+	case KEY2('F','D'):
+	  // The genuine article prints '(none)' of there
+	  // is no description.
+	  if (0 == comments.length())
+	    fputs("(none)\n", out);
+	  else
+	    print_string_list(out, comments);
+	  break;
+
+	case KEY2('B','D'):
+	  seek_to_body();
+	  while(read_line() != -1)
+	    {
+	      fputs(linebuf, out);
+	      putc('\n', out);
+	    }
+	  break;
+
+	case KEY2('G','B'):
+	  get(out, "-", d.seq);
+	  break;
+
+	case KEY1('W'):
+	  print_delta(out, ":Z::M:\t:I:", d);
+	  break;
+
+	case KEY1('A'):
+	  print_delta(out, ":Z::Y: :M: :I::Z:", d);
+	  break;
+
+	case KEY1('Z'):
+	  fputc('@', out);
+	  fputs("(#)", out);
+	  break;
+
+	case KEY1('F'):
+	  fputs(base_part(name.sfile()).c_str(), out);
+	  break;
+
+	case KEY2('P','N'):
+	  fputs(name.c_str(), out);
+	  break;
+	}
+    }
 }
 
 
@@ -542,45 +558,54 @@ sccs_file::print_delta(FILE *out, const char *format,
 
 void		
 sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
-	       enum when when, int all_deltas) {
-	if (!rid.valid()) {
-		rid = find_most_recent_sid(rid);
+	       enum when when, int all_deltas)
+{
+  if (!rid.valid())
+    {
+      rid = find_most_recent_sid(rid);
+    }
+
+  if (when != SIDONLY && !cutoff_date.valid())
+    {
+      const delta *pd = find_delta(rid);
+      if (0 == pd)
+	{
+	  quit(-1, "%s: Requested SID doesn't exist.",
+	       name.c_str());
+	}
+      cutoff_date = pd->date;
+    }
+
+  delta_iterator iter(delta_table);
+  while (iter.next(all_deltas))
+    {
+      switch(when)
+	{
+	case EARLIER:
+	  if (iter->date > cutoff_date)
+	    {
+	      continue;
+	    }
+	  break;
+
+	case SIDONLY:
+	  if (rid != iter->id)
+	    {
+	      continue;
+	    }
+	  break;
+
+	case LATER:
+	  if (iter->date < cutoff_date)
+	    {
+	      continue;
+	    }
+	  break;
 	}
 
-	if (when != SIDONLY && !cutoff_date.valid()) {
-		struct delta const *delta = delta_table.find(rid);
-		if (delta == NULL) {
-			quit(-1, "%s: Requested SID doesn't exist.",
-			     name.c_str());
-		}
-		cutoff_date = delta->date;
-	}
-
-	delta_iterator iter(delta_table);
-	while(iter.next(all_deltas)) {
-		switch(when) {
-		case EARLIER:
-			if (iter->date > cutoff_date) {
-				continue;
-			}
-			break;
-
-		case SIDONLY:
-			if (rid != iter->id) {
-				continue;
-			}
-			break;
-
-		case LATER:
-			if (iter->date < cutoff_date) {
-				continue;
-			}
-			break;
-		}
-
-		print_delta(out, format.c_str(), *iter.operator->());
-		putc('\n', out);
-	}
+      print_delta(out, format.c_str(), *iter.operator->());
+      putc('\n', out);
+    }
 }
 
 // Explicit template instantiations.

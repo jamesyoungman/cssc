@@ -1,5 +1,5 @@
 /*
- * sf-get2.c: Part of GNU CSSC.
+ * sf-get2.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -30,11 +30,13 @@
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
+#include "delta-iterator.h"
+
 
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.20 1997/11/18 23:22:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.21 1997/11/30 21:05:54 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -218,7 +220,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
 
 bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
 {
-  if (delta_table.find(id))
+  if (find_delta(id))
     return true;
 
   if (pfile.is_to_be_created(id))
@@ -240,10 +242,10 @@ sccs_file::find_next_sid(sid requested, sid got, int branch,
     {
       /* Not sure what the point of the test whose result is succ is.
        */
-      int succ = got.is_trunk_successor(delta_table.highest_release());
+      int succ = got.is_trunk_successor(highest_delta_release());
       if (!succ)
 	{
-	  if (requested > delta_table.highest_release())
+	  if (requested > highest_delta_release())
 	    {
 	      ASSERT(requested.release_only());
 	      return requested.successor();
@@ -251,7 +253,7 @@ sccs_file::find_next_sid(sid requested, sid got, int branch,
 		
 	  sid next = got.successor();
 		
-	  if (!pfile.is_to_be_created(next) && delta_table.find(next) == NULL)
+	  if (!pfile.is_to_be_created(next) && find_delta(next) == 0)
 	    {
 	      return next;
 	    }
@@ -318,8 +320,7 @@ sccs_file::find_next_sid(sid requested, sid got,
 	&& flags.ceiling.valid() && release(requested) > flags.ceiling;
 
       // have we collided with an existing SID?
-      const bool branch_again
-	= delta_table.find(next) && !requested.partial_sid();
+      const bool branch_again = find_delta(next) && !requested.partial_sid();
       
       if (too_high || branch_again)
 	{
@@ -333,7 +334,7 @@ sccs_file::find_next_sid(sid requested, sid got,
   // looking for an empty branch.
   if (want_branch || forced_branch)
     {
-      while (delta_table.find(next)
+      while (find_delta(next)
 	     || (flags.joint_edit && pfile.is_to_be_created(next)))
 	{
 	  next.next_branch();
@@ -415,158 +416,172 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 int
 sccs_file::write_subst(const char *start,
 		       struct subst_parms *parms,
-		       struct delta const& delta) const {
-  //	struct delta const &delta = parms->delta;
-	FILE *out = parms->out;
+		       const delta& d) const
+{
+  FILE *out = parms->out;
 
-	const char *percent = strchr(start, '%');
-	while(percent != NULL) {
-		char c = percent[1];
-		if (c != '\0' && percent[2] == '%') {
-			if (start != percent
-			    && fwrite(start, percent - start, 1, out) != 1) {
-				return 1;
-			}
+  const char *percent = strchr(start, '%');
+  while (percent != NULL)
+    {
+      char c = percent[1];
+      if (c != '\0' && percent[2] == '%')
+	{
+	  if (start != percent
+	      && fwrite(start, percent - start, 1, out) != 1)
+	    {
+	      return 1;
+	    }
 
-			percent += 3;
+	  percent += 3;
 
-			int err = 0;
+	  int err = 0;
 
-			switch(c) {
-				const char *s;
+	  switch (c)
+	    {
+	      const char *s;
 
-			case 'M':
-			{
-				const char *mod = get_module_name().c_str();
-				err = fputs_failed(fputs(mod, out));
-			}
-				break;
+	    case 'M':
+	      {
+		const char *mod = get_module_name().c_str();
+		err = fputs_failed(fputs(mod, out));
+	      }
+	    break;
 			
-			case 'I':
-				err = delta.id.print(out);
-				break;
+	    case 'I':
+	      err = d.id.print(out);
+	      break;
 
-			case 'R':
-				err = delta.id.printf(out, 'R', 1);
-				break;
+	    case 'R':
+	      err = d.id.printf(out, 'R', 1);
+	      break;
 
-			case 'L':
-				err = delta.id.printf(out, 'L', 1);
-				break;
+	    case 'L':
+	      err = d.id.printf(out, 'L', 1);
+	      break;
 
-			case 'B':
-				err = delta.id.printf(out, 'B', 1);
-				break;
+	    case 'B':
+	      err = d.id.printf(out, 'B', 1);
+	      break;
 
-			case 'S':
-				err = delta.id.printf(out, 'S', 1);
-				break;
+	    case 'S':
+	      err = d.id.printf(out, 'S', 1);
+	      break;
 
-			case 'D':
-				err = parms->now.printf(out, 'D');
-				break;
+	    case 'D':
+	      err = parms->now.printf(out, 'D');
+	      break;
 				
-			case 'H':
-				err = parms->now.printf(out, 'H');
-				break;
+	    case 'H':
+	      err = parms->now.printf(out, 'H');
+	      break;
 
-			case 'T':
-				err = parms->now.printf(out, 'T');
-				break;
+	    case 'T':
+	      err = parms->now.printf(out, 'T');
+	      break;
 
-			case 'E':
-				err = delta.date.printf(out, 'D');
-				break;
+	    case 'E':
+	      err = d.date.printf(out, 'D');
+	      break;
 
-			case 'G':
-				err = delta.date.printf(out, 'H');
-				break;
+	    case 'G':
+	      err = d.date.printf(out, 'H');
+	      break;
 
-			case 'U':
-				err = delta.date.printf(out, 'T');
-				break;
+	    case 'U':
+	      err = d.date.printf(out, 'T');
+	      break;
 
-			case 'Y':
-				if (flags.type)
-				  {
-				    err = fputs_failed(fputs(flags.type->c_str(), out));
-				  }
-				break;
-
-			case 'F':
-			  err =
-			    fputs_failed(fputs(base_part(name.sfile()).c_str(),
-					       out));
-			  break;
-
-			case 'P':
-			  	if (1) // introduce new scope...
-				  {
-				    mystring path(canonify_filename(name.c_str()));
-				    err = fputs_failed(fputs(path.c_str(), out));
-				  }
-				break;
-
-			case 'Q':
-				if (flags.user_def)
-				{
-				  err = fputs_failed(fputs(flags.user_def->c_str(), out));
-				}
-				break;
-
-			case 'C':
-			  err = printf_failed(fprintf(out, "%d",
-						      parms->out_lineno));
-				break;
-
-			case 'Z':
-				if (fputc_failed(fputc('@', out))
-				    || fputs_failed(fputs("(#)", out))) {
-					err = 1;
-				} else {
-					err = 0;
-				}
-				break;
-
-			case 'W':
-				s = parms->wstring;
-				if (s == NULL) {
-					s = "%Z""%%M""%\t%""I%";
-				} else {
-					/* protect against recursion */
-					parms->wstring = NULL; 
-				}
-				err = write_subst(s, parms, delta);
-				if (parms->wstring == NULL) {
-					parms->wstring = s;
-				}
-				break;
-
-			case 'A':
-				err = write_subst("%Z""%%Y""% %M""% %I"
-						  "%%Z""%",
-						  parms, delta);
-				break;
-
-			default:
-				start = percent - 3;
-				percent = percent - 1;
-				continue;
-			}
-
-			parms->found_id = 1;
-
-			if (err) {
-				return 1;
-			}
-			start = percent;
-		} else {
-			percent++;
+	    case 'Y':
+	      if (flags.type)
+		{
+		  err = fputs_failed(fputs(flags.type->c_str(), out));
 		}
-		percent = strchr(percent, '%');
-	}
+	      break;
 
-	return fputs_failed(fputs(start, out));
+	    case 'F':
+	      err =
+		fputs_failed(fputs(base_part(name.sfile()).c_str(),
+				   out));
+	      break;
+
+	    case 'P':
+	      if (1) // introduce new scope...
+		{
+		  mystring path(canonify_filename(name.c_str()));
+		  err = fputs_failed(fputs(path.c_str(), out));
+		}
+	      break;
+
+	    case 'Q':
+	      if (flags.user_def)
+		{
+		  err = fputs_failed(fputs(flags.user_def->c_str(), out));
+		}
+	      break;
+
+	    case 'C':
+	      err = printf_failed(fprintf(out, "%d",
+					  parms->out_lineno));
+	      break;
+
+	    case 'Z':
+	      if (fputc_failed(fputc('@', out))
+		  || fputs_failed(fputs("(#)", out)))
+		{
+		  err = 1;
+		}
+	      else
+		{
+		  err = 0;
+		}
+	      break;
+
+	    case 'W':
+	      s = parms->wstring;
+	      if (0 == s)
+		{
+		  s = "%Z""%%M""%\t%""I%";
+		}
+	      else
+		{
+		  /* protect against recursion */
+		  parms->wstring = 0; 
+		}
+	      err = write_subst(s, parms, d);
+	      if (0 == parms->wstring)
+		{
+		  parms->wstring = s;
+		}
+	      break;
+
+	    case 'A':
+	      err = write_subst("%Z""%%Y""% %M""% %I"
+				"%%Z""%",
+				parms, d);
+	      break;
+
+	    default:
+	      start = percent - 3;
+	      percent = percent - 1;
+	      continue;
+	    }
+
+	  parms->found_id = 1;
+
+	  if (err)
+	    {
+	      return 1;
+	    }
+	  start = percent;
+	}
+      else
+	{
+	  percent++;
+	}
+      percent = strchr(percent, '%');
+    }
+
+  return fputs_failed(fputs(start, out));
 }
 
 /* Output the specified version to a file with possible modifications.
@@ -580,10 +595,10 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	       int keywords, const char *wstring,
 	       int show_sid, int show_module, int debug) {
 
-	seq_state state(delta_table.highest_seqno());
-	struct delta const *delta = delta_table.find(id);
-	ASSERT(delta != NULL);
-	prepare_seqstate(state, delta->seq);
+	seq_state state(highest_delta_seqno());
+	const delta *d = find_delta(id);
+	ASSERT(d != NULL);
+	prepare_seqstate(state, d->seq);
 	prepare_seqstate(state, include, exclude, cutoff_date);
 
 	// The subst_parms here may not be the Whole Truth since
@@ -591,7 +606,7 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	// gotten.  That's taken care of; the correct delta is
 	// passed as a parameter to the substitution function.
 	// (eugh...)
-	struct subst_parms parms(out, wstring, *delta,
+	struct subst_parms parms(out, wstring, *d,
 				 0, sccs_date::now());
 
 #ifdef __GNUC__
@@ -631,15 +646,18 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	status.lines = parms.out_lineno;
 	
 	seq_no seq;	
-	for(seq = 1; seq <= delta_table.highest_seqno(); seq++) {
-		if (state.is_explicit(seq)) {
-			if (state.is_included(seq)) {
-				status.included.add(delta_table[seq].id);
-			} else if (state.is_excluded(seq)) {
-				status.excluded.add(delta_table[seq].id);
-			}
-		}
-	}
+	for(seq = 1; seq <= highest_delta_seqno(); seq++)
+	  {
+	    const sid id = seq_to_sid(seq);
+	    
+	    if (state.is_explicit(seq))
+	      {
+		if (state.is_included(seq))
+		  status.included.add(id);
+		else if (state.is_excluded(seq))
+		  status.excluded.add(id);
+	      }
+	  }
 			
 	return status;
 }

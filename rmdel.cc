@@ -32,8 +32,9 @@
 #include "pfile.h"
 #include "my-getopt.h"
 #include "version.h"
+#include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.7 1997/11/30 14:35:11 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.8 1997/11/30 21:05:48 james Exp $";
 
 void
 usage() {
@@ -117,7 +118,7 @@ template class range_list<sid>;
 template class list<sccs_pfile::edit_lock>;
 template class list<mystring>;
 template class list<seq_no>;
-template class list<sccs_file::delta>;
+template class list<delta>;
 template class range_list<release>;
 
 /* Local variables: */

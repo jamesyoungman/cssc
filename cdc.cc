@@ -30,8 +30,9 @@
 #include "sccsfile.h"
 #include "sf-chkmr.h"
 #include "version.h"
+#include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.8 1997/11/30 14:35:06 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.9 1997/11/30 21:05:44 james Exp $";
 
 void
 usage() {
@@ -153,7 +154,7 @@ main(int argc, char **argv) {
 // Explicit template instantiations.
 template class list<mystring>;
 template class list<seq_no>;
-template class list<sccs_file::delta>;
+template class list<delta>;
 template class range_list<release>;
 template class list<const char*>;
 template list<mystring>& operator+=(list<mystring> &, list<mystring> const &);

@@ -34,6 +34,9 @@
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
+#include "delta.h"
+#include "delta-table.h"
+
 
 // We use @LIBOBJS@ instead now...
 // #ifndef HAVE_STRSTR
@@ -41,7 +44,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.11 1997/11/18 23:22:39 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.12 1997/11/30 21:05:54 james Exp $";
 #endif
 
 void
@@ -55,19 +58,19 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq) {
 		int len;
 		int i;
 
-		struct delta const &delta = delta_table[seq];
+		const delta &d = delta_table->delta_at_seq(seq);
 
-		len = delta.included.length();
+		len = d.included.length();
 		for(i = 0; i < len; i++) {
-			state.pred_include(delta.included[i]);
+			state.pred_include(d.included[i]);
 		} 		
 
-		len = delta.excluded.length();
+		len = d.excluded.length();
 		for(i = 0; i < len; i++) {
-			state.pred_exclude(delta.excluded[i]);
+			state.pred_exclude(d.excluded[i]);
 		} 		
 
-		seq = delta.prev_seq;
+		seq = d.prev_seq;
 	}
 }
 
@@ -79,7 +82,7 @@ sccs_file::get(mystring gname, class seq_state &state,
 #else
 	       int (sccs_file::*subst_fn)(const char *,
 					  struct subst_parms *,
-					  struct delta const&) const,
+					  const delta&) const,
 #endif
 	       int show_sid, int show_module, int debug) {
 	ASSERT(mode != CREATE);
@@ -132,10 +135,11 @@ sccs_file::get(mystring gname, class seq_state &state,
 			if (show_module)
 			  fprintf(out, "%s\t", get_module_name().c_str());
 
-			if (show_sid) {
-				delta_table[state.active_seq()].id.print(out);
-				putc('\t', out);
-			}
+			if (show_sid)
+			  {
+			    seq_to_sid(state.active_seq()).print(out);
+			    putc('\t', out);
+			  }
 
 			int err;
 			if (subst_fn != NULL) {
@@ -146,31 +150,30 @@ sccs_file::get(mystring gname, class seq_state &state,
 			  // correct stuff.... so we figure out what
 			  // delta has actually been selected here...
 
-			  struct delta const& gotten_delta
-			    = delta_table[state.active_seq()];
-			  err = (this->*subst_fn)(linebuf, &parms,
-						  gotten_delta);
-			} else {
-				err = fputs_failed(fputs(linebuf, out));
-				if (!parms.found_id 
-				    && check_id_keywords(linebuf)) {
-					parms.found_id = 1;
-				}
-			} 
+			  const delta& gotten_delta
+			    = delta_table->delta_at_seq(state.active_seq());
+			   err = (this->*subst_fn)(linebuf, &parms,
+						   gotten_delta);
+			 } else {
+				 err = fputs_failed(fputs(linebuf, out));
+				 if (!parms.found_id 
+				     && check_id_keywords(linebuf)) {
+					 parms.found_id = 1;
+				 }
+			 } 
 
-			if (err || fputc_failed(fputc('\n', out)))
-			  {
-			    quit(errno, "%s: Write error.", gname.c_str());
-			  }
-			continue;
-		}
+			 if (err || fputc_failed(fputc('\n', out)))
+			   {
+			     quit(errno, "%s: Write error.", gname.c_str());
+			   }
+			 continue;
+		 }
 
-		/* A control line */
+		 /* A control line */
 
-		check_arg();
-		seq_no seq = strict_atous(linebuf + 3);
-
-		if (seq < 1 || seq > delta_table.highest_seqno()) {
+		 check_arg();
+		 seq_no seq = strict_atous(linebuf + 3);
+		if (seq < 1 || seq > highest_delta_seqno()) {
 			corrupt("Invalid serial number");
 		}
 

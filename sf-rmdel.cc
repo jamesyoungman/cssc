@@ -29,9 +29,11 @@
 
 #include "cssc.h"
 #include "sccsfile.h"
+#include "delta.h"
+#include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.5 1997/11/18 23:22:43 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.6 1997/11/30 21:05:58 james Exp $";
 #endif
 
 static int
@@ -78,66 +80,72 @@ next_state(update_state& current, // this arg is MODIFIED!
 
 
 void
-sccs_file::rmdel(sid id) {
-	struct delta *delta = (struct delta *) delta_table.find(id);
-	if (delta == NULL) {
-		quit(-1, "%s: Specified SID not found in SCCS file.",
-		     name.c_str());
-	}
-	seq_no seq = delta->seq;
+sccs_file::rmdel(sid id)
+{
+  delta *d = find_delta(id);
+  if (0 == d)
+    {
+      quit(-1, "%s: Specified SID not found in SCCS file.",
+	   name.c_str());
+    }
+  seq_no seq = d->seq;
 
-	delta_iterator iter(delta_table);
-	while(iter.next()) {
-		if (iter->prev_seq == seq) {
-			quit(-1, "%s: Specified SID has a successor.",
-			     name.c_str());
-		}
-		if (is_seqlist_member(seq, iter->included)
-		    || is_seqlist_member(seq, iter->excluded)
-		    || is_seqlist_member(seq, iter->ignored)) {
-			quit(-1, "%s: Specified SID is used in another delta.",
-			     name.c_str());
-		}
+  delta_iterator iter(delta_table);
+  while (iter.next())
+    {
+      if (iter->prev_seq == seq)
+	{
+	  quit(-1, "%s: Specified SID has a successor.",
+	       name.c_str());
 	}
+      if (is_seqlist_member(seq, iter->included)
+	  || is_seqlist_member(seq, iter->excluded)
+	  || is_seqlist_member(seq, iter->ignored))
+	{
+	  quit(-1, "%s: Specified SID is used in another delta.",
+	       name.c_str());
+	}
+    }
 
-	delta->type = 'R';
+  d->type = 'R';
 	
-	FILE *out = start_update();
-	if (write(out)) {
-		xfile_error("Write error.");
-	}
+  FILE *out = start_update();
+  if (write(out))
+    {
+      xfile_error("Write error.");
+    }
 
-	update_state state = COPY;
-	int c;
-	while( (c=read_line()) != -1)
-	  {
-	    if (0 != c)
-	      {
-		check_arg();
-		if (strict_atous(linebuf + 3) == seq)
-		  {
-		    if (!next_state(state, c))
-		      corrupt("Unexpected control line");
-		  }
-		else if (state == INSERT)
-		  {
-		    corrupt("Non-terminal delta!?!");
-		  }
-	      }
-	    else if (state != INSERT)
-	      {
-		fputs(linebuf, out);
-		putc('\n', out);
-	      }
-	  }
-	// We should end the file after an 'E', that is,
-	// in the 'COPY' state.
-	if (state != COPY)
-	  {
-	    corrupt("Unexpected EOF");
-	  }
-	
-	end_update(out);
+  update_state state = COPY;
+  int c;
+  while ( (c=read_line()) != -1)
+    {
+      if (0 != c)
+	{
+	  check_arg();
+	  if (strict_atous(linebuf + 3) == seq)
+	    {
+	      if (!next_state(state, c))
+		corrupt("Unexpected control line");
+	    }
+	  else if (state == INSERT)
+	    {
+	      corrupt("Non-terminal delta!?!");
+	    }
+	}
+      else if (state != INSERT)
+	{
+	  fputs(linebuf, out);
+	  putc('\n', out);
+	}
+    }
+  // We should end the file after an 'E', that is,
+  // in the 'COPY' state.
+  if (state != COPY)
+    {
+      corrupt("Unexpected EOF");
+    }
+  
+  end_update(out);
 }		      
 	
 /* Local variables: */

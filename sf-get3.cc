@@ -29,9 +29,10 @@
 #include "cssc.h"
 #include "sccsfile.h"
 #include "seqstate.h"
+#include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.6 1997/11/18 23:22:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.7 1997/11/30 21:05:55 james Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are

@@ -29,9 +29,11 @@
 
 #include "cssc.h"
 #include "sccsfile.h"
+#include "delta.h"
+
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.5 1997/11/18 23:22:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.6 1997/11/30 21:05:52 james Exp $";
 #endif
 
 /* Adds new MRs and comments to the specified delta. */
@@ -42,11 +44,11 @@ sccs_file::cdc(sid id, list<mystring> mrs, list<mystring> comments)
   int i;
   int len;
   
-  delta *p = delta_table.find(id);
+  delta *p = find_delta(id);
   if (!p)
     quit(-1, "%s: Requested SID doesn't exist.", name.c_str());
   
-  struct delta &delta = *p;
+  delta &d = *p;
   
   list<mystring> not_mrs;
   len = mrs.length();
@@ -56,12 +58,12 @@ sccs_file::cdc(sid id, list<mystring> mrs, list<mystring> comments)
       if (s[0] == '!')
 	not_mrs.add(s + 1);
       else
-	delta.mrs.add(s);
+	d.mrs.add(s);
     }
   
-  delta.mrs -= not_mrs;
+  d.mrs -= not_mrs;
   
-  delta.comments += comments;
+  d.comments += comments;
 }
 
 /* Local variables: */

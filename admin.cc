@@ -33,8 +33,9 @@
 #include "sl-merge.h"
 #include "my-getopt.h"
 #include "version.h"
+#include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.16 1997/11/30 14:35:05 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.17 1997/11/30 21:05:43 james Exp $";
 
 void
 usage() {
@@ -237,7 +238,7 @@ main(int argc, char **argv) {
 // Explicit template instantiations.
 template class list<mystring>;
 template class list<seq_no>;
-template class list<sccs_file::delta>;
+template class list<delta>;
 //template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
 template class list<char const *>;
 template list<mystring>& operator+=(list<mystring> &, list<mystring> const &);

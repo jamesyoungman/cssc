@@ -1,5 +1,5 @@
 /*
- * sccsfile.c: Part of GNU CSSC.
+ * sccsfile.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -29,6 +29,8 @@
 
 #include "cssc.h"
 #include "sccsfile.h"
+#include "delta-table.h"
+#include "delta-iterator.h"
 
 #include <ctype.h>
 
@@ -37,179 +39,9 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.14 1997/11/18 23:22:33 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.15 1997/11/30 21:05:49 james Exp $";
 #endif
 
-/* struct */ sccs_file::delta &
-sccs_file::delta::operator =(struct delta const &it) {
-	inserted = it.inserted;
-	deleted = it.deleted;
-	unchanged = it.unchanged;
-	type = it.type;
-	id = it.id;
-	date = it.date;
-	user = it.user;
-	seq = it.seq;
-	prev_seq = it.prev_seq;
-	
-	included = it.included;
-	excluded = it.excluded;
-	ignored = it.ignored;
-	have_includes = it.have_includes;
-	have_excludes = it.have_excludes;
-	have_ignores  = it.have_ignores;
-	
-	mrs = it.mrs;
-	comments = it.comments;
-	return *this;
-}
-
-bool sccs_file::delta::removed() const
-{
-  return 'R' == type;
-}
-
-
-seq_no sccs_file::_delta_table::next_seqno() const
-{
-  return highest_seqno() + 1u;
-}
-
-
-/* Builds the seq_no to delta table index table. */
-
-void
-sccs_file::_delta_table::build_seq_table() {
-	seq_table = (int *) xmalloc((high_seqno + 1) * sizeof(int));
-
-	int i;
-	for(i = 0; i < high_seqno + 1; i++) {
-		seq_table[i] = -1;
-	}
-
-	delta_iterator iter(*this);
-	while(iter.next(1)) {
-		seq_no seq = iter->seq;
-		if (seq_table[seq] != -1) {
-			quit(-1, "Sequence number %u is duplicated"
-			         " in delta table [build].", seq);
-		}
-		seq_table[seq] = iter.index();
-	}
-}
-
-
-void
-sccs_file::_delta_table::update_highest(struct delta const &it) 
-{
-  seq_no seq = it.seq;
-  
-  if (seq > high_seqno) 
-    {
-      if (seq_table != NULL) 
-	{
-	  seq_table = (int *) xrealloc(seq_table, 
-				       (seq + 1) * sizeof(int));
-	  int i;
-	  for(i = high_seqno + 1; i < seq + 1; i++) 
-	    {
-	      seq_table[i] = -1;
-	    }
-	}
-      high_seqno = it.seq;
-    }
-
-  /* high_release is initialised to {0} so 
-   * any greater-than comparison always fails since 
-   * operator> decides it's not comparable with it.id.
-   */
-  if (high_release.is_null())
-    {
-      if (it.id.on_trunk())
-	high_release = it.id;
-    }
-  else if (it.id > high_release)
-    {
-      high_release = it.id;
-    }
-
-  if (seq_table != NULL) 
-    {
-      if (seq_table[seq] != -1) 
-	{
-	  sid sid_using_this_seqno = (*this)[seq_table[seq]].id;
-
-	  fprintf(stderr, "[<");
-	  sid_using_this_seqno.print(stderr);
-	  fprintf(stderr, " ## ");
-	  it.id.print(stderr);
-	  fprintf(stderr, ">]\n");
-
-	  if (it.id != sid_using_this_seqno)
-	    {
-	      // diagnose...
-	      for (int i = 1; i < high_seqno + 1; i++) 
-		fprintf(stderr, "%u ", (unsigned)seq_table[i]);
-
-	      fprintf(stderr,
-		      "Sequence number %u is duplicated"
-		      " in delta table [update] "
-		      "(already used by entry %u: ", seq, seq_table[seq]);
-	      sid_using_this_seqno.print(stderr);
-	      fprintf(stderr, ")\n");
-	  
-	      quit(-1, "Sequence number %u is duplicated"
-		   " in delta table [update]", seq);
-	    }
-	}
-      seq_table[seq] = length() - 1;
-    }
-}
-
-
-/* Adds a delta to the end of the delta_table. */
-
-void
-sccs_file::_delta_table::add(struct delta const &it) {
-	list<struct delta>::add(it);
-	update_highest(it);
-}
-
-/* for the prepend() operation, see sf-add.cc. */
-
-
-/* Finds a delta in the delta table by its SID. */
-
-sccs_file::delta const * sccs_file::_delta_table::
-find(sid id) const
-{
-  delta_iterator iter(*this);
-  
-  while(iter.next())
-    {
-      if (iter->id == id)
-	{
-	  return iter.operator->();
-	}
-    }
-  return NULL;
-}
-
-// This non-const variety is used by sf-cdc.cc.
-sccs_file::delta * sccs_file::_delta_table::
-find(sid id)
-{
-  delta_iterator iter(*this);
-  
-  while(iter.next())
-    {
-      if (iter->id == id)
-	{
-	  return iter.operator->();
-	}
-    }
-  return NULL;
-}
 
 
 /* Static member for opening a SCCS file and then calculating its checksum. */
@@ -396,7 +228,8 @@ sccs_file::read_delta() {
 		corrupt("Two /'s expected");
 	}
 
-	struct delta tmp;	/* The new delta */
+	// TODO: use constructor here?
+	delta tmp;	/* The new delta */
 
 	tmp.inserted = strict_atoul(args[0]);
 	tmp.deleted = strict_atoul(args[1]);
@@ -503,7 +336,7 @@ sccs_file::read_delta() {
 
 	check_noarg();
 
-	delta_table.add(tmp);
+	delta_table->add(tmp);
 }
 
 
@@ -539,7 +372,8 @@ sccs_file::get_module_name() const
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	: name(n), mode(m), lineno(0)
 {
-
+  delta_table = new cssc_delta_table;
+  
   if (!name.valid())
     {
       quit(-1, "%s: Not an SCCS file.", name.c_str());
@@ -601,7 +435,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   check_noarg();
   
   c = read_line();
-  while(c != 'U')
+  while (c != 'U')
     {
       if (c != 0)
 	{
@@ -853,15 +687,65 @@ set_reserved_flag(const char *s)
 }
 
 
+
+int
+sccs_file::read_line_param(FILE *f)
+{
+  if (linebuf.read_line(f))
+    {
+      return 1;
+    }
+  linebuf[strlen(linebuf) - 1] = '\0';
+  return 0;
+}
+
+int
+sccs_file::is_delta_creator(const char *user, sid id) const
+{
+  const delta *d = find_delta(id);
+  return (d != 0) && (strcmp(d->user.c_str(), user) == 0);
+}
+
+
+const delta * sccs_file::find_delta(sid id) const
+{
+  return delta_table->find(id);
+}
+
+delta * sccs_file::find_delta(sid id)
+{
+  return delta_table->find(id);
+}
+
+seq_no sccs_file::highest_delta_seqno() const
+{
+  return delta_table->highest_seqno();
+}
+
+sid sccs_file::highest_delta_release() const
+{
+  return delta_table->highest_release();
+}
+
+sid sccs_file::seq_to_sid(seq_no seq) const
+{
+  return delta_table->delta_at_seq(seq).id;
+}
+
+
 /* Destructor for class sccs_file. */
 
-sccs_file::~sccs_file() {
-	if (mode != READ) {
-		name.unlock();
-	}
-	if (mode != CREATE) {
-		fclose(f);
-	}
+sccs_file::~sccs_file()
+{
+  if (mode != READ)
+    {
+      name.unlock();
+    }
+  if (mode != CREATE)
+    {
+      fclose(f);
+    }
+  delete delta_table;
 }
 
 /* Local variables: */

@@ -30,6 +30,7 @@
 #include "cssc.h"
 #include "sccsfile.h"
 #include "sl-merge.h"
+#include "delta.h"
 
 // We use @LIBOBJS@ instead now.
 // #ifndef HAVE_STRSTR
@@ -37,7 +38,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.15 1997/11/18 23:22:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.16 1997/11/30 21:05:51 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -244,8 +245,8 @@ sccs_file::create(release first_release, const char *iname,
 
   sid id = sid(first_release).successor();
 
-  struct delta new_delta('D', id, now, get_user_name(), 1, 0,
-			 mrs, comments);
+  delta new_delta('D', id, now, get_user_name(), 1, 0,
+		  mrs, comments);
   new_delta.inserted = 0;
   new_delta.deleted = 0;
   new_delta.unchanged = 0;

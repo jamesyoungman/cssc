@@ -1,5 +1,5 @@
 /*
- * sf-write.c: Part of GNU CSSC.
+ * sf-add.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -29,45 +29,18 @@
 
 #include "cssc.h"
 #include "sccsfile.h"
+#include "delta.h"
+#include "delta-table.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.6 1997/11/18 23:22:36 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.7 1997/11/30 21:05:51 james Exp $";
 #endif
-
-/* Insert a delta at the start of the delta table. */
-
-void
-sccs_file::_delta_table::prepend(struct delta const &it) {
-	int i;
-	if (left == 0) {
-		struct delta *new_array
-			= new struct delta[len + CONFIG_LIST_CHUNK_SIZE];
-		if (len != 0) {
-			for(i = 0; i < len; i++) {
-				new_array[i + 1] = array[i];
-			}
-			delete[] array;
-		}
-		array = new_array;
-		left = CONFIG_LIST_CHUNK_SIZE;
-	} else {
-		for(i = len; i > 0; i--) {
-			array[i] = array[i - 1];
-		}
-	}
-	array[0] = it;
-	len++;
-	left--;
-
-	update_highest(it);
-}
-
 
 /* Starts an update of an SCCS file that includes a new entry to be
    prepended to delta table. */
 
 FILE *
-sccs_file::start_update(struct delta const &new_delta) {
+sccs_file::start_update(const delta &new_delta) {
 	FILE *out = start_update();
 
 	if (write_delta(out, new_delta) || write(out)) {
@@ -80,23 +53,26 @@ sccs_file::start_update(struct delta const &new_delta) {
 /* Set the line counts in the prepended delta and then end the update. */
 
 void
-sccs_file::end_update(FILE *out, struct delta const &delta) {
-	if (fflush_failed(fflush(out))) {
-		xfile_error("Write error.");
-	}
+sccs_file::end_update(FILE *out, const delta &d)
+{
+  if (fflush_failed(fflush(out)))
+    {
+      xfile_error("Write error.");
+    }
 
-	rewind(out);
+  rewind(out);
 
-	if (printf_failed(fprintf(out, "\001h-----\n\001s %05lu/%05lu/%05lu",
-				  cap5(delta.inserted),
-				  cap5(delta.deleted),
-				  cap5(delta.unchanged)))) {
-		xfile_error("Write error.");
-	}
-
-	end_update(out);
-
-	delta_table.prepend(delta);
+  if (printf_failed(fprintf(out, "\001h-----\n\001s %05lu/%05lu/%05lu",
+			    cap5(d.inserted),
+			    cap5(d.deleted),
+			    cap5(d.unchanged))))
+    {
+      xfile_error("Write error.");
+    }
+  
+  end_update(out);
+  
+  delta_table->prepend(d);
 }
 
 /* Local variables: */
