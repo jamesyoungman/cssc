@@ -5,7 +5,7 @@
 # Import common functions & definitions.
 . ../common/test-common
 
-remove s.1 p.1 z.1 1 command.log DESC
+remove s.1 p.1 z.1 1 command.log DESC s.foo p.foo z.foo 
 
 # Create file
 echo "hello" > DESC
@@ -43,8 +43,16 @@ docommand b6 "${prs} -d:GB: s.1" 0 "@(#)
 # get -p -k should just emit the body, without kw expansion
 # we have to make this check to ensure that prs was really
 # going keyword expansion
-docommand b6 "${get} -p -k s.1" 0 "%Z%
+docommand b7 "${get} -p -k s.1" 0 "%Z%
 " IGNORE
 
-remove s.1 p.1 z.1 1 command.log
+
+## Testing for :BD:
+docommand b7 "cp sample_foo s.foo" 0 IGNORE IGNORE
+
+do_output b8 "${prs} -d:BD: s.foo" 0 s_foo_bd_output.txt IGNORE
+
+
+
+remove s.1 p.1 z.1 1 command.log s.foo p.foo z.foo 
 success
