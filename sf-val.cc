@@ -16,7 +16,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  *
  * Members of class sccs_file used by "val". 
@@ -31,7 +31,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.3 1998/12/12 15:09:13 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.4 2001/09/29 19:39:41 james_youngman Exp $";
 #endif
 
 const mystring

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1998,1999
+ * Copyright (C) 1998,1999,2001
  *      Free Software Foundation, Inc.  All rights reserved.
  *
  * Copyright (c) 1980, 1993
@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.28 2001/09/16 09:07:29 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.29 2001/09/29 19:39:41 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

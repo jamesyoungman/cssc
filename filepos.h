@@ -15,7 +15,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  *
  */
 
@@ -26,7 +26,7 @@
 
 
 #ifndef CSSC__FILEPOS_H
-#define CSSC__FILEPOS_H "$Id: filepos.h,v 1.7 1998/09/02 21:03:25 james Exp $"
+#define CSSC__FILEPOS_H "$Id: filepos.h,v 1.8 2001/09/29 19:39:41 james_youngman Exp $"
 
 #include "cssc.h"
 

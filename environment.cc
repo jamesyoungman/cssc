@@ -16,11 +16,13 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  *
  * Code for handling environment variables which affect CSSC.  See the
  * sections "Environment" and "Interoperability" in the CSSC manual.
+ *
+ * $Id: environment.cc,v 1.2 2001/09/29 19:39:41 james_youngman Exp $
  */
 #include "cssc.h"
 

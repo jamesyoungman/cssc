@@ -15,12 +15,14 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  * 
  * Some of the files in the test suite are provided uuencoded.  
  * Not all systems have uudecode.  In particular, Cygwin lacks it.
  * Hence we provide our own. 
+ *
+ * $Id: uu_decode.c,v 1.3 2001/09/29 19:39:42 james_youngman Exp $
  */
 
 /*

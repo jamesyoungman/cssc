@@ -1,7 +1,7 @@
 /*
  * get.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.38 2001/09/23 12:45:03 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.39 2001/09/29 19:39:41 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 

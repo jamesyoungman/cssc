@@ -15,7 +15,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  */
 
@@ -33,7 +33,7 @@
  */
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fdclosed.cc,v 1.4 2000/11/26 20:51:46 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: fdclosed.cc,v 1.5 2001/09/29 19:39:41 james_youngman Exp $";
 #endif
 
 #include "cssc.h"

@@ -15,7 +15,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -36,7 +36,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.21 2000/11/05 19:41:35 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.22 2001/09/29 19:39:41 james_youngman Exp $";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)

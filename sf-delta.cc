@@ -2,7 +2,7 @@
  * sf-delta.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  * CSSC was originally based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -43,7 +43,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.42 2001/09/16 10:10:11 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.43 2001/09/29 19:39:41 james_youngman Exp $";
 #endif
 
 class diff_state

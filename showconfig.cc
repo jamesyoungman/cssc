@@ -16,7 +16,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  *
  * Code for showing the configuration of CSSC.
@@ -25,8 +25,35 @@
  * INSTALL files for details of the specific configuration options
  * which are possible.
  *
+ * $Id: showconfig.cc,v 1.3 2001/09/29 19:39:41 james_youngman Exp $
  */
 #include "cssc.h"
+
+
+static const char * copyright_explanation = 
+"Copyright (C) 1997-2001 Free Software Foundation, Inc.\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program in the file COPYING; if not, write to the\n"
+"Free Software Foundation, Inc.,\n"
+"59 Temple Place - Suite 330, Boston, MA 02111, USA.\n";
+
+
+void show_copyright(void)
+{
+  fprintf(stderr, "%s\n\n", copyright_explanation);
+}
+
 
 void show_config_info(void)
 {
@@ -35,7 +62,7 @@ void show_config_info(void)
   bool binary_ok = binary_file_creation_allowed();
   long int line_max = max_sfile_line_len();
   
-  fprintf(stderr,"\n");
+  fprintf(stderr,"CURRENT CONFIGURATION:\n");
   fprintf(stderr,
 	  "Binary file support (compiled-in default): %s\n",
 #ifdef CONFIG_DISABLE_BINARY_SUPPORT

@@ -16,18 +16,18 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  *
  * Definition of the classes cssc_delta_table and delta_iterator.
  *
- * $Id: delta-table.h,v 1.5 2000/03/19 12:56:05 james Exp $
+ * $Id: delta-table.h,v 1.6 2001/09/29 19:39:41 james_youngman Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_TABLE_H
-#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.5 2000/03/19 12:56:05 james Exp $"
+#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.6 2001/09/29 19:39:41 james_youngman Exp $"
 
 #include "delta.h"
 

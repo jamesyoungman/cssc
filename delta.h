@@ -16,18 +16,18 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  *
  * Definition of the class sccs_delta.
  *
- * $Id: delta.h,v 1.3 1999/04/18 17:59:40 james Exp $
+ * $Id: delta.h,v 1.4 2001/09/29 19:39:41 james_youngman Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_H
-#define CSSC_DELTA_H "$Id: delta.h,v 1.3 1999/04/18 17:59:40 james Exp $"
+#define CSSC_DELTA_H "$Id: delta.h,v 1.4 2001/09/29 19:39:41 james_youngman Exp $"
 
 struct delta
 {

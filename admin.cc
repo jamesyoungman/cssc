@@ -1,7 +1,7 @@
 /*
  * admin.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or
  *    modify it under the terms of the GNU General Public License as
@@ -15,8 +15,9 @@
  * 
  *    You should have received a copy of the GNU General Public
  *    License along with this program; if not, write to the Free
- *    Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139,
- *    USA.
+ *    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, 
+ *    MA 02111, USA.
+ *    
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -39,7 +40,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.36 2001/07/15 15:08:40 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.37 2001/09/29 19:39:41 james_youngman Exp $";
 
 
 static bool

@@ -16,13 +16,13 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 
  * See also bodyio.cc, sf-admin.cc and encoding.cc.
  *
  */
 #ifndef CSSC_INC_BODYIO_H
-#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.5 1998/09/06 09:25:24 james Exp $"
+#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.6 2001/09/29 19:39:41 james_youngman Exp $"
 
 bool body_insert_text(const char iname[], const char oname[],
 		      FILE *in, FILE *out,
