@@ -28,9 +28,11 @@
 
 #include "cssc.h"
 #include "pfile.h"
+#include "except.h"
+
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.9 1998/08/13 18:09:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.10 1998/09/06 09:25:27 james Exp $";
 #endif
 
 /* enum */ sccs_pfile::find_status
@@ -67,7 +69,7 @@ sccs_pfile::update()
   const mystring q_name(name.qfile());
   const char* qname = q_name.c_str();
 
-  FILE *pf = fopen(qname, "w");
+  FILE *pf = fopen(qname, "w");	// TODO:XXX:SECURITY: should be O_CREAT|O_EXCL
   if (pf == NULL)
     {
       errormsg_with_errno("%s: Can't create temporary file.", qname);
@@ -75,23 +77,39 @@ sccs_pfile::update()
     }
   
   int count = 0;
-  
-  rewind();
-  while (next())
+
+#ifdef HAVE_EXCEPTIONS  
+  try
     {
-    if (write_edit_lock(pf, edit_locks[pos]))
-      {
-	errormsg_with_errno("%s: Write error.", qname);
-	return false;
-      }
-    count++;
+#endif      
+      rewind();
+      while (next())
+	{
+	  if (write_edit_lock(pf, edit_locks[pos]))
+	    {
+	      errormsg_with_errno("%s: Write error.", qname);
+	      remove(qname);
+	      return false;
+	    }
+	  count++;
+	}
+      
+      if (fclose_failed(fclose(pf)))
+	{
+	  errormsg_with_errno("%s: Write error.", qname);
+	  remove(qname);
+	  return false;
+	}
+#ifdef HAVE_EXCEPTIONS
     }
-  
-  if (fclose_failed(fclose(pf)))
+  catch (CsscException)
     {
-      errormsg_with_errno("%s: Write error.", qname);
-      return false;
+      // got an exception; delete the temporary file and re-throw the exception
+      remove(qname);
+      throw;
     }
+#endif  
+
   
   if (remove(pname.c_str()) != 0)
     {
@@ -99,7 +117,7 @@ sccs_pfile::update()
       return false;
     }
   
-  if (count == 0)
+  if (count == 0)		// no locks left -> no pfile rewuired.
     {
       if (remove(qname) != 0)
 	{
@@ -112,6 +130,7 @@ sccs_pfile::update()
     {
       if (rename(qname, pname.c_str()) != 0)
 	{
+	  // this is really bad; we have already deleted the old p-file!
 	  errormsg_with_errno("%s: Can't rename new p-file.",
 	       qname);
 	  return false;

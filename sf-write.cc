@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.22 1998/09/02 21:03:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.23 1998/09/06 09:25:31 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -49,7 +49,7 @@ sccs_file::xfile_error(const char *msg) const
    become the new SCCS file and writing a dummy checksum line to it. */
 
 FILE *
-sccs_file::start_update() const {
+sccs_file::start_update() {
 	ASSERT(mode != READ);
 
 	if (mode == CREATE && file_exists(name.c_str()))
@@ -92,6 +92,8 @@ sccs_file::start_update() const {
 	  }
 	else
 	  {
+	    xfile_created = true;
+	    
 	    if (fputs_failed(fputs("\001h-----\n", out)))
 	      {
 		xfile_error("write error");
@@ -436,7 +438,7 @@ maybe_sync(FILE *fp)
    renaming the x-file to replace the old SCCS file. */
 
 bool
-sccs_file::end_update(FILE *out) const
+sccs_file::end_update(FILE *out)
 {
   if (fflush_failed(fflush(out)) || !maybe_sync(out))
     {
@@ -483,6 +485,7 @@ sccs_file::end_update(FILE *out) const
     }
   else
     {
+      xfile_created = false;	// What was the x-file is now the new s-file.
       return true;
     }
 }
@@ -497,11 +500,19 @@ sccs_file::update_checksum(const char *name)
   int sum;
   FILE *out = open_sccs_file(name, UPDATE, &sum);
   
-  if (fprintf_failed(fprintf(out, "\001h%05d", sum))
-      || fclose_failed(fclose(out)))
+  if (fprintf_failed(fprintf(out, "\001h%05d", sum)))
     {
-      errormsg_with_errno("%s: Write error.", name);
+      errormsg_with_errno("%s: Write error", name);
+      fclose(out);
       return false;
+    }
+  else
+    {
+      if (fclose_failed(fclose(out)))
+	{
+	  errormsg_with_errno("%s: Write error", name);
+	  return false;
+	}
     }
   return true;
 }

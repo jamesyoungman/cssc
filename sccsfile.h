@@ -60,7 +60,8 @@ private:
   int lineno;
   long body_offset;
   int body_lineno;
-
+  bool xfile_created;
+  
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
   
@@ -201,10 +202,10 @@ private:
   /* sf-write.c */
 private:
   void xfile_error(const char *msg) const;
-  FILE *start_update() const;
+  FILE *start_update();
   int write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
-  bool end_update(FILE *out) const;
+  bool end_update(FILE *out);
   int rehack_encoded_flag(FILE *out, int *sum) const;
 
 public:

@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.20 1998/09/02 21:03:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.21 1998/09/06 09:25:25 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -477,9 +477,7 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
 
   if (do_lock(f) != 0 || fclose_failed(fclose(f)))
     {
-      // Here, the file is open (i.e. has been created)
-      // but we quit without deleting it.  
-      // TODO: does this need fixing?
+      remove(zname.c_str());
       ctor_fail(errno, "%s: Write error.", zname.c_str());
     }
   

@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.32 1998/09/02 21:03:30 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.33 1998/09/06 09:25:28 james Exp $";
 #endif
 
 
@@ -406,7 +406,7 @@ sccs_file::get_module_name() const
    locked if it isn't only being read.  */
 
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
-  : name(n), mode(m), lineno(0)
+  : name(n), mode(m), lineno(0), xfile_created(false)
 {
   delta_table = new cssc_delta_table;
   plinebuf     = new cssc_linebuf;
@@ -835,6 +835,11 @@ sccs_file::~sccs_file()
       ASSERT(0 != f);		// catch multiple destruction.
       fclose(f);
       f = 0;
+    }
+
+  if (xfile_created)
+    {
+      remove(name.xfile().c_str());
     }
   
   ASSERT(0 != delta_table); 	// catch multiple destruction.

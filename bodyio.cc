@@ -29,6 +29,7 @@
 #include "bodyio.h"
 #include "sccsfile.h"
 #include "linebuf.h"
+#include "except.h"
 
 #ifdef HAVE_STDIO_H
 #include <stdio.h>
@@ -273,24 +274,37 @@ body_insert(bool *binary,
 	  FILE *tmp = tmpfile();
 	  if (tmp)
 	    {
-	      // Recover the data already written to the output
-	      // file and then rewind it, so that we can overwrite
-	      // it with the encoded version.
-	      FilePosSaver *fp_out = new FilePosSaver(out);
 	      bool ret = true;
 	      
-	      if (copy_data(out, tmp) && copy_data(in,  tmp))
+#ifdef HAVE_EXCEPTIONS
+	      try 
 		{
-		  delete fp_out;	// rewind the file OUT.
-		  rewind(tmp);
+#endif		  
+		  // Recover the data already written to the output
+		  // file and then rewind it, so that we can overwrite
+		  // it with the encoded version.
+		  FilePosSaver *fp_out = new FilePosSaver(out);
 		  
-		  ret = body_insert_binary("temporary file",
-					   oname, tmp, out, lines, idkw);
+		  if (copy_data(out, tmp) && copy_data(in,  tmp))
+		    {
+		      delete fp_out;	// rewind the file OUT.
+		      rewind(tmp);
+		      
+		      ret = body_insert_binary("temporary file",
+					       oname, tmp, out, lines, idkw);
+		    }
+		  else
+		    {
+		      ret = false;
+		    }
+#ifdef HAVE_EXCEPTIONS
 		}
-	      else
+	      catch (CsscException)
 		{
-		  ret = false;
+		  fclose(tmp);
+		  throw;
 		}
+#endif
 	      fclose(tmp);
 	      return ret;
 	    }
@@ -324,6 +338,8 @@ int output_body_line_binary(FILE *fp, const cssc_linebuf* plb)
 int 
 encode_file(const char *nin, const char *nout)
 {
+  int retval = 0;
+  
   FILE *fin = fopen(nin, "rb");	// binary
   if (0 == fin)
     {
@@ -332,25 +348,43 @@ encode_file(const char *nin, const char *nout)
     }
   
   FILE *fout = fopen(nout, "w"); // text
+
   if (0 == fout)
     {
       errormsg_with_errno("Failed to open \"%s\" for writing.\n", nout);
-      return -1;
+      retval = -1;
     }
-  
-  encode_stream(fin, fout);
-
-  
-  if (ferror(fin) || fclose_failed(fclose(fin)))
+  else
     {
-      errormsg_with_errno("%s: Read error.\n", nin);
-      return -1;
+#ifdef HAVE_EXCEPTIONS
+      try
+	{
+#endif
+	  encode_stream(fin, fout);
+	  
+	  if (ferror(fin) || fclose_failed(fclose(fin)))
+	    {
+	      errormsg_with_errno("%s: Read error.\n", nin);
+	      retval = -1;
+	    }
+	  else
+	    {
+	      if (ferror(fout) || fclose_failed(fclose(fout)))
+		{
+		  errormsg_with_errno("%s: Write error.\n", nout);
+		  retval = -1;
+		}
+	    }
+#ifdef HAVE_EXCEPTIONS
+	}
+      catch (CsscException)
+	{
+	  remove(nout);
+	  throw;
+	}
+#endif
+      if (0 != retval)
+	remove(nout);
     }
-  
-  if (ferror(fout) || fclose_failed(fclose(fout)))
-    {
-      errormsg_with_errno("%s: Write error.\n", nout);
-      return -1;
-    }
-  return 0;
+  return retval;
 }

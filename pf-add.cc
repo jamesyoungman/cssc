@@ -26,9 +26,11 @@
 
 #include "cssc.h"
 #include "pfile.h"
+#include "except.h"
+
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.10 1998/09/02 21:03:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.11 1998/09/06 09:25:26 james Exp $";
 #endif
 
 bool
@@ -54,13 +56,24 @@ sccs_pfile::add_lock(sid got, sid delta,
 	    perror(pname.c_str());
 	    return false;
 	  }
-
-	if (write_edit_lock(pf, new_lock) || fclose_failed(fclose(pf)))
+#ifdef HAVE_EXCEPTIONS
+	try
 	  {
-	    perror(pname.c_str());
-	    return false;
+#endif	    
+	    if (write_edit_lock(pf, new_lock) || fclose_failed(fclose(pf)))
+	      {
+		perror(pname.c_str());
+		return false;
+	      }
+	    return true;
+#ifdef HAVE_EXCEPTIONS
 	  }
-	return true;
+	catch (CsscException)
+	  {
+	    remove(pname.c_str());
+	    throw;
+	  }
+#endif
 }
 
 /* Local variables: */
