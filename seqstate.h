@@ -33,184 +33,185 @@
 
 #include "stack.h"
 
-#ifdef __GNUC__
-#pragma interface
-#endif
+#define NEW_DELETE_STATE_CODE
+
 
 /* This class is used to decide which lines of the body of a SCCS file
    should be included in a gotten file. */
 
-class seq_state {
-	enum flags {
-		INCLUDED    = 001,
-		EXCLUDED    = 002,
-		MASK        = 003,
-		PREDECESSOR = 004,
-		EXPLICIT    = 010,
-		ACTIVE 	    = 020,
-		INSERTING   = 040
-	};
+class seq_state
+{
+  enum flags
+  {
+    INCLUDED    = 001,
+    EXCLUDED    = 002,
+    MASK        = 003,
+    PREDECESSOR = 004,
+    EXPLICIT    = 010,
+    ACTIVE      = 020,
+    INSERTING   = 040
+  };
 
-	unsigned char *p;
-	seq_no last;
-	int deleting;
-	stack<seq_no> active_stack;
-	seq_no active;
+  unsigned char *p;
+  seq_no last;
+  int deleting;
+  stack<seq_no> active_stack;
+  seq_no active;
 
-	void
-        copy(class seq_state const &it) {
-		last = it.last;
-		p = new unsigned char[last + 1];
-		memcpy(p, it.p, sizeof(unsigned char) * (last + 1));
-		deleting = it.deleting;
-		active = it.active;
-	}
+  void
+  copy(class seq_state const &it) {
+    last = it.last;
+    p = new unsigned char[last + 1];
+    memcpy(p, it.p, sizeof(unsigned char) * (last + 1));
+    deleting = it.deleting;
+    active = it.active;
+  }
 
 public:
-	seq_state(seq_no l): active_stack(l + 1) {
-		p = new unsigned char[l + 1];
-		for( int i=0; i<l+1; i++)
-		  p[i] = '\0';
-		last = l;
-		deleting = 0;
-		active = 0;
-	}
+  seq_state(seq_no l): active_stack(l + 1) {
+    p = new unsigned char[l + 1];
+    for( int i=0; i<l+1; i++)
+      p[i] = '\0';
+    last = l;
+    deleting = 0;
+    active = 0;
+  }
 
-	seq_state(class seq_state const &it): active_stack(it.active_stack) {
-		copy(it);
-	}
+  seq_state(class seq_state const &it): active_stack(it.active_stack) {
+    copy(it);
+  }
 
-	class seq_state &
-	operator =(class seq_state const &it) {
-		if (this != &it) {
-		  delete [] p;
-			copy(it);
-			active_stack = it.active_stack;
-		}
-		return *this;
-	}
+  class seq_state &
+  operator =(class seq_state const &it) {
+    if (this != &it) {
+      delete [] p;
+      copy(it);
+      active_stack = it.active_stack;
+    }
+    return *this;
+  }
 
-	int
-	is_included(seq_no seq) const { 
-		return (p[seq] & MASK) == INCLUDED;
-	}
+  int
+  is_included(seq_no seq) const { 
+    return (p[seq] & MASK) == INCLUDED;
+  }
 
-	int
-	is_excluded(seq_no seq) const { 
-		return (p[seq] & MASK) == EXCLUDED;
-	}
+  int
+  is_excluded(seq_no seq) const { 
+    return (p[seq] & MASK) == EXCLUDED;
+  }
 
-	int
-	is_predecessor(seq_no seq) const {
-		return (p[seq] & PREDECESSOR) != 0;
-	}
+  int
+  is_predecessor(seq_no seq) const {
+    return (p[seq] & PREDECESSOR) != 0;
+  }
 
-	int
-	is_explicit(seq_no seq) const {
-		return (p[seq] & EXPLICIT) != 0;
-	}
-	
-	void
-	set_predecessor(seq_no seq) {
-		ASSERT(seq > 0 && seq <= last);
-		if ((p[seq] & MASK) == 0) {
-			p[seq] |= INCLUDED;
-		}
-		p[seq] |= PREDECESSOR;
-	}
+  int
+  is_explicit(seq_no seq) const {
+    return (p[seq] & EXPLICIT) != 0;
+  }
+        
+  void
+  set_predecessor(seq_no seq) {
+    ASSERT(seq > 0 && seq <= last);
+    if ((p[seq] & MASK) == 0) {
+      p[seq] |= INCLUDED;
+    }
+    p[seq] |= PREDECESSOR;
+  }
 
-	void
-	pred_include(seq_no seq) {
-		ASSERT(seq > 0 && seq <= last);
-		p[seq] = (p[seq] & ~MASK) | INCLUDED;
-	}
+  void
+  pred_include(seq_no seq) {
+    ASSERT(seq > 0 && seq <= last);
+    p[seq] = (p[seq] & ~MASK) | INCLUDED;
+  }
 
-	void
-	pred_exclude(seq_no seq) {
-		ASSERT(seq > 0 && seq <= last);
-		p[seq] = (p[seq] & ~MASK) | EXCLUDED;
-	}
+  void
+  pred_exclude(seq_no seq) {
+    ASSERT(seq > 0 && seq <= last);
+    p[seq] = (p[seq] & ~MASK) | EXCLUDED;
+  }
 
-	void
-	include(seq_no seq) {
-		ASSERT(seq > 0 && seq <= last);
-		if (!is_included(seq)) {
-			p[seq] = (p[seq] & ~MASK) | INCLUDED | EXPLICIT;
-		}
-	}
+  void
+  include(seq_no seq) {
+    ASSERT(seq > 0 && seq <= last);
+    if (!is_included(seq)) {
+      p[seq] = (p[seq] & ~MASK) | INCLUDED | EXPLICIT;
+    }
+  }
 
-	void
-	exclude(seq_no seq) {
-		ASSERT(seq > 0 && seq <= last);
-		if (is_included(seq)) {
-			p[seq] = (p[seq] & ~MASK) | EXCLUDED | EXPLICIT;
-		}
+  void
+  exclude(seq_no seq) {
+    ASSERT(seq > 0 && seq <= last);
+    if (is_included(seq)) {
+      p[seq] = (p[seq] & ~MASK) | EXCLUDED | EXPLICIT;
+    }
 
-	}
+  }
 
-	const char *
-	start(seq_no seq, int insert) {
-		ASSERT(seq > 0 && seq <= last);
+  const char *
+  start(seq_no seq, int insert) {
+    ASSERT(seq > 0 && seq <= last);
 
-		if (insert) {
-			active_stack.push(active);
-			active = seq;
-		}
+    if (insert) {
+      active_stack.push(active);
+      active = seq;
+    }
 
-		if (!is_included(seq)) {
-			insert = !insert;
-		}
-		
-		if (p[seq] & ACTIVE) {
-			return "Seq already active.";
-		}
+    if (!is_included(seq)) {
+      insert = !insert;
+    }
+                
+    if (p[seq] & ACTIVE) {
+      return "Seq already active.";
+    }
 
-		p[seq] |= ACTIVE;
+    p[seq] |= ACTIVE;
 
-		if (insert) {
-			p[seq] |= INSERTING;
-		} else {
-			p[seq] &= ~INSERTING;
-			deleting++;
-		}
+    if (insert) {
+      p[seq] |= INSERTING;
+    } else {
+      p[seq] &= ~INSERTING;
+      deleting++;
+    }
 
-		return NULL;
-	}
+    return NULL;
+  }
 
-	const char *
-	end(seq_no seq) {
-		ASSERT(seq > 0 && seq <= last);
+  const char *
+  end(seq_no seq) {
+    ASSERT(seq > 0 && seq <= last);
 
-		if (!(p[seq] & ACTIVE)) {
-			return "Seq not active.";
-		}
+    if (!(p[seq] & ACTIVE)) {
+      return "Seq not active.";
+    }
 
-		p[seq] &= ~ACTIVE;
+    p[seq] &= ~ACTIVE;
 
-		int insert = ((p[seq] & INSERTING) != 0);
+    int insert = ((p[seq] & INSERTING) != 0);
 
-		if (!insert) {
-			ASSERT(deleting > 0);
-			deleting--;
-		}
+    if (!insert) {
+      ASSERT(deleting > 0);
+      deleting--;
+    }
 
-		if (!is_included(seq) ^ insert) {
-			if (seq == active) {
-				active = active_stack.pop();
-			} else {
-				return "Overlapping insertions";
-			}
-		}
+    if (!is_included(seq) ^ insert) {
+      if (seq == active) {
+	active = active_stack.pop();
+      } else {
+	return "Overlapping insertions";
+      }
+    }
 
-		return NULL;
-	}
+    return NULL;
+  }
 
-	seq_no active_seq() const { return active; }
-	int include_line() const { return deleting == 0; }
+  seq_no active_seq() const { return active; }
+  int include_line() const { return deleting == 0; }
 
-	~seq_state() {
-	  delete [] p;
-	}
+  ~seq_state() {
+    delete [] p;
+  }
 };
 
 #endif /* __SEQSTATE_H__ */
