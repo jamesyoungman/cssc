@@ -1,4 +1,12 @@
-#!/bin/sh
+#! /bin/sh
+
+######################################################################
+#                             CAUTION                                #
+# When editing this file be aware that it is the focus of /bin/sh    #
+# portability problems.  Be very, very careful!  Problems with this  #
+# file could cause test cases to succeed when they should fail!      #
+######################################################################
+
 # Common function definitions.
 . ../common/command-names
 
@@ -22,9 +30,18 @@ else
   ac_n= ac_c='\c' ac_t=
 fi
 
-# Function for echoing without a newline.
+if (echo -e) | sed s/-e/xe/ | grep xn >/dev/null
+then
+    ac_e=''
+else
+    ac_e='-e'
+fi
+
+
+
+# Function for echoing without a newline, with escape chars enabled.
 echo_nonl () {
-echo $ac_n "$@" $ac_c ;
+echo $ac_n $ac_e "$@" $ac_c ;
 }
 
 
@@ -80,30 +97,30 @@ eval "$silent" || echo_nonl "$label..."
 
 shift
 
-echo_nonl -e $4 > expected.stderr
+echo_nonl $4 > expected.stderr
 echo $1 > last.command
 
 echo $1 >> command.log
 eval "$1" >got.stdout 2>got.stderr
 rv=$?
 
-if ! test "$2" = "IGNORE"
+if test "$2" != "IGNORE"
 then
     test $rv -eq $2 || fail "$label: $1: Expected return value $2, got return value $rv"
 fi
 
-if ! test "$3" = "IGNORE"
+if test "$3" != "IGNORE"
 then
-    echo_nonl -e $3 > expected.stdout
+    echo_nonl $3 > expected.stdout
     # diff can fail if the file does not end in newline.
     echo        >>expected.stdout
     echo        >>     got.stdout
     diff expected.stdout got.stdout || fail $label: stdout format error with $1
 fi
 
-if ! test "$4" = "IGNORE"
+if test "$4" != "IGNORE"
 then
-    echo_nonl -e $4 > expected.stderr
+    echo_nonl $4 > expected.stderr
     # diff can fail if the file does not end in newline.
     echo        >>expected.stderr
     echo        >>     got.stderr
@@ -127,26 +144,26 @@ label=$1
 echo_nonl "$label..."
 shift
 
-echo_nonl -e $4 > expected.stderr
+echo_nonl $4 > expected.stderr
 echo $1 > last.command
 
 echo $1 >> command.log
 $1 >got.stdout 2>got.stderr
 rv=$?
 
-if ! test "$2" = "IGNORE"
+if test "$2" != "IGNORE"
 then
     test $rv -eq $2 || fail "$label: $1: Expected return value $2, got return value $rv"
 fi
 
-if ! test "$3" = "IGNORE"
+if test "$3" != "IGNORE"
 then
     diff $3 got.stdout || fail $label: stdout format error with $1
 fi
 
-if ! test "$4" = "IGNORE"
+if test "$4" != "IGNORE"
 then
-    echo_nonl -e $4 > expected.stderr
+    echo_nonl $4 > expected.stderr
     # diff can fail if the file does not end in newline.
     echo        >>expected.stderr
     echo        >>     got.stderr
