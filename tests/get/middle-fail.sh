@@ -30,7 +30,7 @@ echo "Creating the input files..."
 for i in $files
 do
     echo "This is file $i" > $i
-    admin -i$i SCCS/s.$i
+    ${admin} -i$i SCCS/s.$i
     rm $i
 done
 
