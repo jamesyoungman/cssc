@@ -12,9 +12,10 @@ New in CSSC-1.0.1
 	* "sccs sccsdiff" now accepts "-r X" as well as
           "-rX". (SourceForge bug 966010)
 
-	* "get -e" could experience an assertion failure with some branch 
-          arrangements in history files.  This is now fixed.  Files without 
-	  branches were not affected. (SourceForge bug 865422).
+	* "get -e" could experience an assertion failure where a file
+          is checked out for editing; this occurred when the "next" 
+	  revision has already been reserved by a previous "get -e".
+          This is now fixed.  (SourceForge bug 865422).
 
 New in CSSC-1.00
 
