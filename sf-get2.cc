@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.37 2000/03/19 11:18:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.38 2000/03/19 12:56:05 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -518,6 +518,12 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
     {
       for (seq_no s = d->seq; s>0; s--)
 	{
+          if (!delta_table->delta_at_seq_exists(s))
+            {
+              /* skip non-existent seq number */
+              continue;
+            }
+
 	  const struct delta & d = delta_table->delta_at_seq(s);
 	  const sid & id = d.id;
 
@@ -582,10 +588,10 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   seq_no seq;	
   for(seq = 1; seq <= highest_delta_seqno(); seq++)
     {
-      const sid id = seq_to_sid(seq);
-      
       if (state.is_explicitly_tagged(seq))
 	{
+          const sid id = seq_to_sid(seq);
+
 	  if (state.is_included(seq))
 	    status.included.add(id);
 	  else if (state.is_excluded(seq))

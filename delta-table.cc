@@ -29,6 +29,18 @@
 #include "delta-table.h"
 #include "delta-iterator.h"
 
+const bool
+cssc_delta_table::delta_at_seq_exists(seq_no seq)
+{
+  ASSERT(0 != this);
+  ASSERT(seq > 0 && seq <= high_seqno);
+  if (seq_table == NULL)
+    {
+      build_seq_table();
+    }
+  return seq_table[seq] != -1;
+}
+
 const delta &
 cssc_delta_table::delta_at_seq(seq_no seq)
 {
@@ -81,6 +93,11 @@ cssc_delta_table::build_seq_table()
       seq_no seq = iter->seq;
       if (seq_table[seq] != -1)
 	{
+          /* ignore duplicate sequence number: some old sccs files
+           * contain removed deltas with the same sequence number as
+           * existing delta
+           */
+          continue;
 	  s_corrupt_quit("Sequence number %u is duplicated"
 	       " in delta table [build].", seq);
 	}

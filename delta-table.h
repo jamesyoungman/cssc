@@ -21,13 +21,13 @@
  *
  * Definition of the classes cssc_delta_table and delta_iterator.
  *
- * $Id: delta-table.h,v 1.4 1999/04/18 17:59:39 james Exp $
+ * $Id: delta-table.h,v 1.5 2000/03/19 12:56:05 james Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_TABLE_H
-#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.4 1999/04/18 17:59:39 james Exp $"
+#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.5 2000/03/19 12:56:05 james Exp $"
 
 #include "delta.h"
 
@@ -55,6 +55,7 @@ public:
   void add(const delta &d);		
   void prepend(const delta &); /* sf-add.c */
 
+  const bool delta_at_seq_exists(seq_no seq);
   const delta & delta_at_seq(seq_no seq);
   const delta *find(sid id) const; 
   const delta *find_any(sid id) const; // includes removed deltas.
