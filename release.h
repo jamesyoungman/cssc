@@ -41,7 +41,7 @@ class release
 
 public:
   release(): rel(-1) {}
-  release(short r): rel(r) {}
+  release(int r): rel(r) {}
   release(const char *s);
   release(const sid& s);
   
