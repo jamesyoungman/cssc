@@ -96,29 +96,34 @@ try_lseek()
 int do_help(const char *name)
 {
   usage(name, 0);
+  return 0;
 }
 
 int do_unbuffered(const char *name)
 {
   printf("stdin is unbuffered\n");
   setvbuf(stdin, (char*)NULL, _IONBF, 0u);
+  return 0;
 }
 
 int do_blockbuffered(const char *name)
 {
   printf("stdin is fully-buffered\n");
   setvbuf(stdin, (char*)NULL, _IOFBF, BUFSIZ);
+  return 0;
 }
 
 int do_linebuffered(const char *name)
 {
   printf("stdin is line-buffered\n");
-  setlinebuf(stdin);
+  setvbuf(stdin, (char *)NULL, _IOLBF, 0);
+  return 0;
 }
 
 int do_nothing(const char *name)
 {
   printf("stdin is buffered in the default way\n");
+  return 0;
 }
 
 
