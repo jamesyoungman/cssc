@@ -3,7 +3,7 @@
  *
  * Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.11 1997/12/26 17:02:18 james Exp $
+ * $Id: cssc.h,v 1.12 1998/01/17 11:20:15 james Exp $
  *
  */
 
@@ -13,8 +13,9 @@
 #undef TESTING
 
 // Get the definitions deduced by "configure".
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
+#endif
 
 #define CONFIG_NO_TIMEZONE_VAR
 
