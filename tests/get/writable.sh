@@ -30,6 +30,6 @@ test -e $gfile	    && miscarry could not remove _g.$f
 # though the file's usual name is occupied by a writable file.
 docommand W3 "$get -G$gfile s.$f" 0 "1.1\n0 lines\n" IGNORE
 remove $f s.$f $gfile
-
+remove command.log
 success
 

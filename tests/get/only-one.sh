@@ -21,4 +21,5 @@ remove s.$f
 docommand O3 "$get s.$f" 1 "" IGNORE
 remove s.$f $f 
 
+remove command.log
 success
