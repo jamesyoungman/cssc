@@ -29,17 +29,29 @@
 #pragma implementation "getopt.h"
 #endif
 
-#include "cssc.h"
+//#include "cssc.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
+
 #include "getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: getopt.cc,v 1.6 1997/07/02 18:18:09 james Exp $";
+static const char rcs_id[] = "CSSC $Id: getopt.cc,v 1.7 1997/11/23 18:56:08 james Exp $";
 #endif
 
 int
 getopt::next()
 {
-  if (cindex == NULL || *cindex == '\0')
+  if (cindex == 0 || *cindex == '\0')
     {
       if (index >= argc)
 	{
@@ -68,11 +80,12 @@ getopt::next()
   // Look for the argument character in the option list.
   char *match = strchr(opts, c);
 	
-  if (c == '\0' || match == NULL)
+  if (0 == c || 0 == match)
     {
       if (opterr)		// set opterr for verbose error returns.
 	{
-	  quit(-2, "Unrecognized option '%c'.\n", c);
+	  fprintf(stderr, "Unrecognized option '%c'.\n", c);
+	  exit(2);
 	}
       arg = cindex - 1;
       return UNRECOGNIZED_OPTION;
@@ -112,8 +125,8 @@ getopt::next()
 	    {
 	      if (opterr)
 		{
-		  quit(-2, "Option '%c' requires"
-		       "an argument.\n", c);
+		  fprintf(stderr, "Option '%c' requires an argument.\n", c);
+		  exit(2);
 		}
 	      arg = cindex - 1;
 	      return MISSING_ARGUMENT;
@@ -128,11 +141,11 @@ getopt::next()
 	  // sccs-get's -y option, and there is no actual argument.
 	  arg = cindex;
 	}
-      cindex = NULL;
+      cindex = 0;
     }
   else				
     {
-      arg = NULL;		// no argument taken by this option.
+      arg = 0;			// no argument taken by this option.
     }
 
   return c;
