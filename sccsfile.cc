@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.30 1998/06/16 20:43:15 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.31 1998/08/13 18:12:29 james Exp $";
 #endif
 
 
@@ -99,7 +99,7 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   
   int sum = 0u;
   
-  while( (c=getc(f)) != EOF)
+  while ((c=getc(f)) != EOF)
     sum += (char) c;	// Yes, I mean plain char, not signed, not unsigned.
   
   if (ferror(f))
@@ -121,9 +121,6 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   if (f == NULL)
     {
       perror(name);
-      // quit(errno, "%s: Can't open SCCS file for %s.",
-      //  name,
-      // (mode == UPDATE) ? "update" : "reading");
       return NULL;
     }
   
@@ -143,7 +140,7 @@ int
 sccs_file::read_line() {
 	if (read_line_param(f)) {
 		if (ferror(f)) {
-			quit(errno, "%s: Read error.", name.c_str());
+			errormsg_with_errno("%s: Read error.", name.c_str());
 		}
 		return -1;
 	} 
@@ -195,7 +192,7 @@ sccs_file::strict_atous(const char *s) const
   long n = 0;
   
   char c;
-  while( 0 != (c=*s++) )
+  while ( 0 != (c=*s++) )
     {
       if (!isdigit((unsigned char)c))
 	{
@@ -221,7 +218,7 @@ sccs_file::strict_atoul(const char *s) const
   unsigned long n = 0;
   
   char c;
-  while( 0 != (c=*s++) )
+  while ( 0 != (c=*s++) )
     {
       if (!isdigit((unsigned char)c))
 	{
@@ -296,7 +293,7 @@ sccs_file::read_delta() {
 	for(i = 0; i < 3; i++) {
 		if (c == "ixg"[i]) {
 
-		  switch(c)
+		  switch (c)
 		    {
 		    case 'i':
 		      tmp.have_includes = true;
@@ -326,7 +323,7 @@ sccs_file::read_delta() {
 					*end++ = '\0';
 				}
 				seq_no seq = strict_atous(start);
-				switch(c) {
+				switch (c) {
 				case 'i':
 					tmp.included.add(seq);
 					break;
@@ -340,19 +337,19 @@ sccs_file::read_delta() {
 					break;
 				}
 				start = end;
-			} while(start != NULL);
+			} while (start != NULL);
 
 			c = read_line();
 		}
 	}
 	
-	while(c == 'm') {
+	while (c == 'm') {
 		check_arg();
 		tmp.mrs.add(plinebuf->c_str() + 3);
 		c = read_line();
 	}
 
-	while(c == 'c') {
+	while (c == 'c') {
 		check_arg();
 		tmp.comments.add(plinebuf->c_str() + 3);
 		c = read_line();
@@ -407,8 +404,9 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   
   if (!name.valid())
     {
-      quit(-1, "%s: Not an SCCS file.  Did you specify the right file?",
-	   name.c_str());
+      ctor_quit(-1,
+		"%s: Not an SCCS file.  Did you specify the right file?",
+		name.c_str());
     }
   
   flags.no_id_keywords_is_fatal = 0;
@@ -430,7 +428,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     {
       if (name.lock())
 	{
-	  quit(-1, "%s: SCCS file is locked.  Try again later.",
+	  ctor_quit(-1, "%s: SCCS file is locked.  Try again later.",
 	       name.c_str());
 	}
     }
@@ -444,7 +442,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   f = open_sccs_file(name.c_str(), READ, &sum);
   if (NULL == f)
     {
-      quit(-1, "Cannot open SCCS file.\n");
+      ctor_quit(-1, "Cannot open SCCS file.\n");
     }
   
   int c = read_line();
@@ -472,7 +470,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     }
   
   c = read_line();
-  while(c == 's')
+  while (c == 's')
     {
       read_delta();
       c = read_line();
@@ -619,7 +617,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   /*check_noarg();*/
   
   c = read_line();
-  while(c == 0)
+  while (c == 0)
     {
       comments.add(plinebuf->c_str());
       c = read_line();
@@ -640,7 +638,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   body_offset = ftell(f);
   if (body_offset == -1L)
     {
-      quit(errno, "ftell() failed.");
+      ctor_quit(errno, "ftell() failed.");
     }
   
   body_lineno = lineno;
@@ -664,7 +662,7 @@ sccs_file::find_most_recent_sid(sid id) const {
 	fputs(")\n", stderr);
 #endif
 
-	while(iter.next()) {
+	while (iter.next()) {
 		if (id.trunk_match(iter->id)) {
 #if 0
 			fputs("match: ", stderr);
