@@ -5,7 +5,7 @@ these platforms (at some stage):
 
 James Youngman  <jay@gnu.org>    		    Red Hat Linux, versions
 						    4.1,4.2,5.0,5.1,5.2,5.9,
-						    6.0, 6.2, 7.0, 7.1
+						    6.0, 6.2, 7.0, 7.1, 7.1.93
 James Youngman  <jay@gnu.org>    		    HPUX 9
 Lars Hecking    <lhecking@nmrc.ucc.ie>              Solaris-2.5.1
 Malcolm Boff    <Malcolm_Boff@compuserve.com>       Solaris-2.5.1
@@ -98,4 +98,14 @@ this problem, you could apply the following sed command to
 "cssc.texi":-
 
 	sed -e 's/@env{\([^]]*\)}/@code{\1}/'
+
+
+GNU libc
+--------
+
+GNU libc 2.2.3 has a bug in it which means that if you use GCC 2.97 or
+later, classes cannot have member functions called "printf".  The
+configure script works around this problem (by turning off
+optimisation).  The glibc bug is fixed in glibc 2.2.4.  CSSC compiles
+successfully under GCC version 3.01, with this workaround in place. 
 
