@@ -43,6 +43,7 @@ test-unget: links
 	done'
 
 all-tests: test-admin test-delta test-get test-prs test-prt test-unget
+	echo Tests passed.
 
 check: all-tests
 
