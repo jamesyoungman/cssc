@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.39 2000/03/19 16:06:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.40 2000/11/12 10:27:54 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -206,9 +206,21 @@ sccs_file::find_next_sid(sid requested, sid got,
       // the release number of the gotten SID is not the highest, we
       // have to branch.  Otherwise I think the normal anti-collision
       // rules take care of it.
-      const bool not_trunk_top =
-	release(got) < release(highest_delta_release());
-      
+      bool not_trunk_top;
+      if (ncomponents < 3)
+	{
+	  not_trunk_top = release(got) < release(highest_delta_release());
+	}
+      else
+	{
+	  /* If 4 components were specified, then we don't care if the
+	   * current release is not the highest release.  If we
+	   * specified that we want to check 1.2.1.1 out for editing
+	   * and in fact 1.2.1.2 alredy exists, we should just fail,
+	   * rather than making a branch.
+	   */
+	  not_trunk_top = false;
+	}
       if (too_high || branch_again || not_trunk_top)
 	{
 	  next = got;
