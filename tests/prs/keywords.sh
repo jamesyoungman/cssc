@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# comment.sh:  Testing for correct expansion of formats for prs -d.
+# keywords.sh:  Testing for correct expansion of formats for prs -d.
 
 # Import common functions & definitions.
 . ../common/test-common
