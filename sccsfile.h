@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.47 2002/03/28 18:55:49 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.48 2002/04/04 19:34:48 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -180,6 +180,7 @@ public:
 
   bool find_requested_sid(sid requested, sid &found,
                           bool include_branches=false) const ;
+  bool find_requested_seqno(seq_no n, sid &found) const ;
   sid find_next_sid(sid requested, sid got, int branch,
                     sccs_pfile &pfile, int *failed) const;
   bool test_locks(sid got, sccs_pfile &pfile) const;

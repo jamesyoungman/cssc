@@ -35,8 +35,11 @@
 #include "except.h"
 #include "err_no.h"
 
+#ifdef HAVE_LIMITS_H
+#include <limits.h>
+#endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.43 2002/04/03 14:15:55 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.44 2002/04/04 19:34:48 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -98,9 +101,7 @@ main(int argc, char **argv)
   int debug = 0;                        /* -D */
   mystring gname;                       /* -G */
   int got_gname = 0;                    /* -G */
-#if 0
-  int seq_no = 0;                       /* -a */
-#endif
+  seq_no seq = 0;                       /* -a */
   int get_top_delta = 0;                /* -t */
   bool real_file;
   
@@ -206,17 +207,18 @@ main(int argc, char **argv)
           wstring = opts.getarg();
           break;
 
-#if 0                  
         case 'a':
-          int i = atoi(opts.getarg());
-          if (i < 1)
-            {
-              errormsg("Invalid sequence number: '%s'", optarg);
-              return 2;
-            }
-          seq_no = i;
+	  {
+	    int i;
+	    i = atoi(opts.getarg());
+	    if (i < 1 || i > USHRT_MAX)
+	      {
+		errormsg("Invalid sequence number: '%s'", opts.getarg());
+		return 2;
+	      }
+	    seq = (unsigned short) i;
+	  }
           break;
-#endif
           
         case 't':
           get_top_delta = 1;
@@ -240,8 +242,7 @@ main(int argc, char **argv)
 
   if (branch && !for_edit)
     {
-      errormsg(
-              "Warning: there is not a lot of point in using the "
+      warning("there is not a lot of point in using the "
               "-b option unless you want to check the file out for "
               "editing (using the -e option).\n");
     }
@@ -303,26 +304,46 @@ main(int argc, char **argv)
           sid new_delta;
           sid retrieve;
 
-          rid = org_rid;
-          if (!file.find_requested_sid(rid, retrieve, get_top_delta))
-            {
-              errormsg("%s: Requested SID not found.", name.c_str());
-              retval = 1;
-              continue; // with next file....
-            }
-          if (!rid.valid() ||
-              (rid.release_only() && release(rid) == release(retrieve)))
-            {
-              rid = retrieve;
-            }
+	  if (seq)
+	    {
+	      if (org_rid.valid())
+		{
+		  warning("both the the -r and the -a "
+			  "option have been specified; "
+			  "the -r option has been ignored.");
+		}
+	      
+	      if (!file.find_requested_seqno(seq, retrieve))
+		{
+		  errormsg("%s: Requested sequence number %d not found.",
+			   name.c_str(), (int) seq);
+		  retval = 1;
+		  continue; // with next file....
+		}
+	    }
+	  else
+	    {
+	      rid = org_rid;
+	      if (!file.find_requested_sid(rid, retrieve, get_top_delta))
+		{
+		  errormsg("%s: Requested SID not found.", name.c_str());
+		  retval = 1;
+		  continue; // with next file....
+		}
+	      if (!rid.valid() ||
+		  (rid.release_only() && release(rid) == release(retrieve)))
+		{
+		  rid = retrieve;
+		}
+	    }
+	  
           
           
           if (for_edit)
             {
               if (branch && !file.branches_allowed())
                 {
-                  errormsg(
-                          "%s: Warning: Branch-enable flag not set, "
+                  warning("%s: Branch-enable flag not set, "
                           "option -b ignored.\n",
                           name.c_str());
                 }
