@@ -98,7 +98,9 @@ NOW="$(date)"
 
 cat<<EOF    
 <html>
-<head>Test Suite Coverage Summary</head>
+<head>
+<title>Test Suite Coverage Summary</title>
+</head>
 <body>
 <h1>Test Suite Coverage Summary</h1>
 These tests were run at $NOW
