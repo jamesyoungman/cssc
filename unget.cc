@@ -32,7 +32,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.14 1998/06/14 15:27:01 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.15 1998/08/13 18:14:19 james Exp $";
 
 void
 usage() {
@@ -112,7 +112,8 @@ main(int argc, char **argv)
 	  fputc('\n', stdout);
 	  
 	  pfile.delete_lock();
-	  pfile.update();
+	  if (!pfile.update())
+	    retval = 1;
 	  
 	  if (!keep_gfile)
 	    {
