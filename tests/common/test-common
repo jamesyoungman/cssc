@@ -1,0 +1,121 @@
+# Common function definitions.
+. command-names
+
+expect_fail=false
+
+# Call fail when a test failed.
+fail () { 
+if ${expect_fail:-false}
+then
+	echo XFAIL $0 $* 
+	# but don't exit...
+else
+	echo FAIL $0 $* ; exit 2; 
+fi
+}
+
+# Call success when a test succeeded.
+success () { 
+if ${expect_fail:-false}
+then
+	echo XPASS $0: $* ; exit 0; 
+else
+	echo PASS $0:  $* ; exit 0; 
+fi
+}
+
+# Call miscarry wen a test could not be completed.
+miscarry () { echo $0: Test could not be completed. exit 1; }
+
+
+remove () { rm -rf $* || miscarry Could not remove $* }
+
+##############
+docommand () {
+# $1 is the label.
+# $2 is the command to execute.
+# $3 is the return value to expect
+# $4 is what to expect on stdout
+# $5 is what to expect on stderr.
+remove last.command expected.stdout expected.stderr got.stdout got.stderr
+label=$1
+echo -n "$label..."
+shift
+
+echo -ne $4 > expected.stderr
+echo $1 > last.command
+
+echo $1 >> command.log
+eval "$1" >got.stdout 2>got.stderr
+rv=$?
+
+if ! test "$2" = "IGNORE"
+then
+    test $rv -eq $2 || fail "$label: $1: Expected return value $2, got return value $rv"
+fi
+
+if ! test "$3" = "IGNORE"
+then
+    echo -ne $3 > expected.stdout
+    # diff can fail if the file does not end in newline.
+    echo        >>expected.stdout
+    echo        >>     got.stdout
+    diff expected.stdout got.stdout || fail $label: stdout format error with $1
+fi
+
+if ! test "$4" = "IGNORE"
+then
+    echo -ne $4 > expected.stderr
+    # diff can fail if the file does not end in newline.
+    echo        >>expected.stderr
+    echo        >>     got.stderr
+    diff expected.stderr got.stderr || fail $label: stderr format error with $1
+fi
+
+remove last.command expected.stdout expected.stderr got.stdout got.stderr
+echo "passed "
+true
+}
+
+#######################
+do_output () {
+# $1 is the label.
+# $2 is the command to execute.
+# $3 is the return value to expect
+# $4 is a file containing what to expect on stdout.
+# $5 is what to expect on stderr.
+remove last.command expected.stdout expected.stderr got.stdout got.stderr
+label=$1
+echo -n "$label..."
+shift
+
+echo -ne $4 > expected.stderr
+echo $1 > last.command
+
+echo $1 >> command.log
+$1 >got.stdout 2>got.stderr
+rv=$?
+
+if ! test "$2" = "IGNORE"
+then
+    test $rv -eq $2 || fail "$label: $1: Expected return value $2, got return value $rv"
+fi
+
+if ! test "$3" = "IGNORE"
+then
+    diff $3 got.stdout || fail $label: stdout format error with $1
+fi
+
+if ! test "$4" = "IGNORE"
+then
+    echo -ne $4 > expected.stderr
+    # diff can fail if the file does not end in newline.
+    echo        >>expected.stderr
+    echo        >>     got.stderr
+    diff expected.stderr got.stderr || fail $label: stderr format error with $1
+fi
+
+remove last.command expected.stdout expected.stderr got.stdout got.stderr
+echo "passed "
+true
+}
