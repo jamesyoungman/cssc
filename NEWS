@@ -9,6 +9,10 @@ New in CSSC-0.16alpha-pl1
 	  (this was a suggestion by Thomas Duffy, who has just taken on 
           responsibility for the RPM and SRPM packages of CSSC).
 
+	* The "sccs -d /xxx print foo.txt" command now works;
+          previously, use of the "-d" flag would have generated an
+          error.
+
 New in CSSC-0.16alpha-pl0
 
 	* We now honour the user's choice of umask (which fixes 
