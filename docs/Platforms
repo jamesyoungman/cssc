@@ -15,9 +15,12 @@ Richard Polton  <rap@maths.soton.ac.uk>		    IRIX 5.3
 Dave Bodenstab  <imdave@mcs.net>		    FreeBSD-2.0.5-950622-SNAP
 Andy Sharp      <andy@accrue.com>		    FreeBSD-2.2.2-RELEASE
 Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] SunOS 4
+Mark Reynolds   <mark@aoainc.com>                   SunOS 4.1.3
 Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] AmigaOS (ixemul)
 Andrew Bardsley <bardslea@cs.man.ac.uk>		[*] GNU Hurd
 James Youngman  <jay@gnu.org>    		    Dynix/ptx 4.2
+
+Mark Reynolds   <mark@aoainc.com>                   Ultrix 4.2  [SEE BELOW!]
 
 [*] These entries denote that CSSC compiled successfully but the test
 suite was not run.
@@ -64,3 +67,23 @@ To compile on IRIX it appears that GNU make is required.  CSSC also
 does not compile with IRIX's native cc, "CC".  The IRIX compiler seems
 not to support static template instantiation.  (Thanks to Achim
 Hoffmann <hoffmann@tebis.de> for this information).
+
+
+Ultrix 4.2
+----------
+Mark Reynolds has run the test suite on this platform (at CSSC version
+0.11 alpha.pl2).  All the tests except one pass.  In the failing test,
+we get a coredump:-
+
+> All tests pass, except that anything involving get -r ANYTHING -p
+> ... or get -r ANYTHING -s core dump. Again, when I have isolated the
+> problem I will send a more detailed report along with (hopefully)
+> patches.
+
+To run the tests on this platform, one must use:-
+
+> Because this OS is so ancient, it is not possible to run "make
+> check" out of the box. Both "sh" and "sh5" (the Sys V version of sh)
+> give syntax errors loading the defs in common. However "make
+> SHELL=bash check" does run (I'm using bash 2.03).  
+

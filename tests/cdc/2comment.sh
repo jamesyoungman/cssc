@@ -40,7 +40,7 @@ docommand C4 "sed -n 2p <comment" 0 "NewComment2\n" ""
 
 # Test the third line
 # I can't think of a better match for a username than [^ ][^ ]*
-docommand C5 "sed -n 3p <comment|grep \
+docommand C5 "sed -n 3p <comment|egrep \
 '^\*\*\* CHANGED \*\*\* [0-9][0-9]/[01][0-9]/[0-3][0-9] [012][0-9]:[0-6][0-9]:[0-6][0-9] [^ ][^ ]*$'" 0 "IGNORE" ""
 
 
@@ -57,14 +57,14 @@ ${prs} -d:C: -r1.1 $s > comment || fail prs failed unexpectedly
 docommand C7 "sed -n 1p <comment" 0 "Another Comment\n" ""
 
 # Test the second (new "CHANGED") line
-docommand C8 "sed -n 2p <comment|grep \
+docommand C8 "sed -n 2p <comment|egrep \
 '^\*\*\* CHANGED \*\*\* [0-9][0-9]/[01][0-9]/[0-3][0-9] [012][0-9]:[0-6][0-9]:[0-6][0-9] [^ ][^ ]*$'" 0 "IGNORE" ""
 
 # Test the third line (used to be 1st line of previous comment)
 docommand C9 "sed -n 3p <comment" 0 "NewComment\n" ""
 
 # Test the fifth (old "CHANGED") line
-docommand C10 "sed -n 5p <comment|grep \
+docommand C10 "sed -n 5p <comment|egrep \
 '^\*\*\* CHANGED \*\*\* [0-9][0-9]/[01][0-9]/[0-3][0-9] [012][0-9]:[0-6][0-9]:[0-6][0-9] [^ ][^ ]*$'" 0 "IGNORE" ""
 
 

@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.41 1999/05/16 16:53:16 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.42 2000/03/19 11:18:41 james Exp $";
 #endif
 
 
@@ -68,7 +68,7 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   if (f == NULL)
     {
       const char *purpose = (mode == UPDATE) ? "update" : "reading";
-      s_missing_quit("Cannot open SCCS file %s for %s.\n", name, purpose);
+      s_missing_quit("Cannot open SCCS file %s for %s", name, purpose);
       /*NOTEACHED*/
       return NULL;
     }
@@ -152,33 +152,20 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
    is returned.  Otherwise 0 is returned. */
 
 int
-sccs_file::read_line()
-{
-  if (!body_line_pushed_back)
-    {
-      if (read_line_param(f))
-	{
-	  if (ferror(f))
-	    {
-	      errormsg_with_errno("%s: Read error.", name.c_str());
-	    }
-	  return -1;
+sccs_file::read_line() {
+	if (read_line_param(f)) {
+		if (ferror(f)) {
+			errormsg_with_errno("%s: Read error.", name.c_str());
+		}
+		return -1;
 	} 
-      lineno++;
-    }
 
-  body_line_pushed_back = false;
-  if ( bufchar(0) == '\001')
-    {
-      return bufchar(1);
-    }
-  return 0;
-}
-
-void sccs_file::push_back_current_line(void)
-{
-  if (!feof(f))
-    body_line_pushed_back = true;
+	lineno++;
+	if ( bufchar(0) == '\001')
+	  {
+	    return bufchar(1);
+	  }
+	return 0;
 }
 
 
@@ -382,12 +369,22 @@ sccs_file::read_delta() {
 			c = read_line();
 		}
 	}
-	
-	while (c == 'm') {
-		check_arg();
+
+	// According to Hyman Rosen <hymie@jyacc.com>, it is possible
+	// to have a ^A m line which has no argument.  Therefore we don't
+	// use check_arg().  
+
+	// According to Hyman Rosen <hymie@jyacc.com>, it is sometimes
+	// possible to have ^Am lines after ^Ac lines, as well as the
+	// more usual before.  Hence we now cope with both.
+	while (c == 'm')
+	  {
+	    if (bufchar(2) == ' ')
+	      {
 		tmp.mrs.add(plinebuf->c_str() + 3);
+	      }
 		c = read_line();
-	}
+	  }
 
 	while (c == 'c') {
 	  /* Larry McVoy's extensions for BitKeeper and BitSCCS
@@ -404,6 +401,18 @@ sccs_file::read_delta() {
 		tmp.comments.add(plinebuf->c_str() + 3);
 		c = read_line();
 	}
+
+	// According to Hyman Rosen <hymie@jyacc.com>, it is sometimes
+	// possible to have ^Am lines after ^Ac lines, as well as the
+	// more usual before.  Hence we now cope with both.
+	while (c == 'm')
+	  {
+	    if (bufchar(2) == ' ')
+	      {
+		tmp.mrs.add(plinebuf->c_str() + 3);
+	      }
+		c = read_line();
+	  }
 
 	if (c != 'e') {
 		corrupt("Expected '@e'");
@@ -456,8 +465,7 @@ sccs_file::get_module_name() const
    locked if it isn't only being read.  */
 
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
-  : name(n), mode(m), lineno(0), xfile_created(false), 
-    body_line_pushed_back(false)
+  : name(n), mode(m), lineno(0), xfile_created(false)
 {
   delta_table = new cssc_delta_table;
   plinebuf     = new cssc_linebuf;

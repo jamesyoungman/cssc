@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.26 1999/03/13 11:57:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.27 2000/03/19 11:18:40 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -102,7 +102,7 @@ stdout_to_null()
   if (NULL == freopen(CONFIG_NULL_FILENAME, "w", stdout))
     {
       errormsg_with_errno("Can't redirect stdout to "
-			  CONFIG_NULL_FILENAME ".");
+			  CONFIG_NULL_FILENAME );
       return false;
     }
   else
@@ -122,20 +122,20 @@ stdout_to_stderr() {
 	int out = dup(1);
 	if (out == -1)
 	  {
-	    errormsg_with_errno("dup(1) failed.");
+	    errormsg_with_errno("dup(1) failed");
 	    return NULL;
 	  }
 
 	if (close(1) == -1 || dup(2) != 1)
 	  {
-	    errormsg_with_errno("Can't redirect stdout to stderr.");
+	    errormsg_with_errno("Can't redirect stdout to stderr");
 	    return NULL;
 	  }
 
 	FILE *f = fdopen(out, "w");
 	if (f == NULL)
 	  {
-	    errormsg_with_errno("fdopen failed.");
+	    errormsg_with_errno("fdopen failed");
 	    return NULL;
 	  }
 	return f;
@@ -611,13 +611,15 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
 	{
 	  return;
 	}
-      ctor_fail(errno, "%s: Can't create lock file.", zname.c_str());
+      errormsg_with_errno("%s: Can't create lock file", zname.c_str());
+      ctor_fail(1, NULL);
     }
 
   if (do_lock(f) != 0 || fclose_failed(fclose(f)))
     {
       remove(zname.c_str());
-      ctor_fail(errno, "%s: Write error.", zname.c_str());
+      errormsg_with_errno("%s: Write error", zname.c_str());
+      ctor_fail(1, NULL);
     }
   
   locked = 1;

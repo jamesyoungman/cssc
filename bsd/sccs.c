@@ -41,10 +41,10 @@
 static const char copyright[] =
 "@(#) Copyright (c) 1980, 1993\n"
 "The Regents of the University of California.  All rights reserved.\n"
-"@(#) Copyright (c) 1998, 1999\n"
+"@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.23 1999/04/24 09:14:07 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.24 2000/03/19 11:19:01 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -188,129 +188,126 @@ static const char filever[] = "$Id: sccs.c,v 1.23 1999/04/24 09:14:07 james Exp 
 
 
 /*
-**  SCCS.C -- human-oriented front end to the SCCS system.
-**
-**   Without trying to add any functionality to speak of, this
-**   program tries to make SCCS a little more accessible to human
-**   types.  The main thing it does is automatically put the
-**   string "SCCS/s." on the front of names.  Also, it has a
-**   couple of things that are designed to shorten frequent
-**   combinations, e.g., "delget" which expands to a "delta"
-**   and a "get".
-**
-**   This program can also function as a setuid front end.
-**   To do this, you should copy the source, renaming it to
-**   whatever you want, e.g., "syssccs".  Change any defaults
-**   in the program (e.g., syssccs might default -d to
-**   "/usr/src/sys").  Then recompile and put the result
-**   as setuid to whomever you want.  In this mode, sccs
-**   knows to not run setuid for certain programs in order
-**   to preserve security, and so forth.
-**
-**   Note that this is not the original version of the code and so
-**   any assumptions you might make about the code security of the
-**   original code do not apply to this version.  Think twice (and
-**   define SCCSDIR) before installing this program setuid.
-**
-**   Usage:
-**           sccs [flags] command [args]
-**
-**   Flags:
-**           -d<dir>         <dir> represents a directory to search
-**                           out of.  It should be a full pathname
-**                           for general usage.  E.g., if <dir> is
-**                           "/usr/src/sys", then a reference to the
-**                           file "dev/bio.c" becomes a reference to
-**                           "/usr/src/sys/dev/bio.c".
-**           -p<path>        prepends <path> to the final component
-**                           of the pathname.  By default, this is
-**                           "SCCS".  For example, in the -d example
-**                           above, the path then gets modified to
-**                           "/usr/src/sys/dev/SCCS/s.bio.c".  In
-**                           more common usage (without the -d flag),
-**                           "prog.c" would get modified to
-**                           "SCCS/s.prog.c".  In both cases, the
-**                           "s." gets automatically prepended.
-**           -r              run as the real user.
-**
-**   Flags peculiar to the GNU version of this program:
-**
-**           --cssc           Print "yes", and exit successfully.
-**           --version        Show version information.
-**           --prefix=foo     Prepend ``foo'' to the names of the
-**                            sccs programs before running them.
-**                            If --prefix is not used, there is a
-**                            default, usually "/usr/sccs".  Use the 
-**                            --version flag to discover the default
-**                            prefix.
-**           -V               Synonymous with --version.
-**
-**   Commands:
-**           admin,
-**           get,
-**           delta,
-**           rmdel,
-**           cdc,
-**           etc.            Straight out of SCCS; only difference
-**                           is that pathnames get modified as
-**                           described above.
-**           enter           Front end doing "sccs admin -i<name> <name>"
-**           create          Macro for "enter" followed by "get".
-**           edit            Macro for "get -e".
-**           unedit          Removes a file being edited, knowing
-**                           about p-files, etc.
-**           delget          Macro for "delta" followed by "get".
-**           deledit         Macro for "delta" followed by "get -e".
-**           branch          Macro for "get -b -e", followed by "delta
-**                           -s -n", followd by "get -e -t -g".
-**           diffs           "diff" the specified version of files
-**                           and the checked-out version.
-**           print           Macro for "prs -e" followed by "get -p -m".
-**           tell            List what files are being edited.
-**           info            Print information about files being edited.
-**           clean           Remove all files that can be
-**                           regenerated from SCCS files.
-**           check           Like info, but return exit status, for
-**                           use in makefiles.
-**           fix             Remove a top delta & reedit, but save
-**                           the previous changes in that delta.
-**
-**   Compilation Flags:
-**           SCCSDIR -- if defined, forces the -d flag to take on
-**                   this value.  This is so that the setuid
-**                   aspects of this program cannot be abused.
-**                   This flag also disables the -p flag.
-**                   Setuid execution is only supported if this
-**                   flag is set.
-**           SCCSPATH -- the default for the -p flag.
-**           MYNAME -- the title this program should print when it
-**                   gives error messages.
-**
-**           UIDUSER -- removed since we cannot trust $USER
-**                      or getlogin in setuid programs.
-**           
-**           PREFIX  -- Sets the default prefix which allows us to
-**                      find the SCCS subcommands.  Unless you overrride
-**                      this on the compiler command line or by editing
-**                      the source, this defaults to "/usr/sccs".  Using
-**                      the --version flag will tell you what the setting
-**                      is.   This macro is available only in the GNU
-**                      version of this program.
-**                      
-**                      
-**                      
-**   Compilation Instructions:
-**           cc -O -n -s sccs.c
-**           The flags listed above can be -D defined to simplify
-**                   recompilation for variant versions.
-**
-**   Author:
-**           Eric Allman, UCB/INGRES
-**           Copyright 1980 Regents of the University of California
-**
-**
-**           Modified by James Youngman for GNU CSSC.
-*/
+   **  SCCS.C -- human-oriented front end to the SCCS system.
+   **
+   **   Without trying to add any functionality to speak of, this
+   **   program tries to make SCCS a little more accessible to human
+   **   types.  The main thing it does is automatically put the
+   **   string "SCCS/s." on the front of names.  Also, it has a
+   **   couple of things that are designed to shorten frequent
+   **   combinations, e.g., "delget" which expands to a "delta"
+   **   and a "get".
+   **
+   **   This program can also function as a setuid front end.
+   **   To do this, you should copy the source, renaming it to
+   **   whatever you want, e.g., "syssccs".  Change any defaults
+   **   in the program (e.g., syssccs might default -d to
+   **   "/usr/src/sys").  Then recompile and put the result
+   **   as setuid to whomever you want.  In this mode, sccs
+   **   knows to not run setuid for certain programs in order
+   **   to preserve security, and so forth.
+   **
+   **   Note that this is not the original version of the code and so
+   **   any assumptions you might make about the code security of the
+   **   original code do not apply to this version.  Think twice (and
+   **   define SCCSDIR) before installing this program setuid.
+   **
+   **   Usage:
+   **           sccs [flags] command [args]
+   **
+   **   Flags:
+   **           -d<dir>         <dir> represents a directory to search
+   **                           out of.  It should be a full pathname
+   **                           for general usage.  E.g., if <dir> is
+   **                           "/usr/src/sys", then a reference to the
+   **                           file "dev/bio.c" becomes a reference to
+   **                           "/usr/src/sys/dev/bio.c".
+   **           -p<path>        prepends <path> to the final component
+   **                           of the pathname.  By default, this is
+   **                           "SCCS".  For example, in the -d example
+   **                           above, the path then gets modified to
+   **                           "/usr/src/sys/dev/SCCS/s.bio.c".  In
+   **                           more common usage (without the -d flag),
+   **                           "prog.c" would get modified to
+   **                           "SCCS/s.prog.c".  In both cases, the
+   **                           "s." gets automatically prepended.
+   **           -r              run as the real user.
+   **
+   **   Flags peculiar to the GNU version of this program:
+   **
+   **           --cssc           Print "yes", and exit successfully.
+   **           --version        Show version information.
+   **           --prefix=foo     Prepend ``foo'' to the names of the
+   **                            sccs programs before running them.
+   **                            If --prefix is not used, there is a
+   **                            default, usually "/usr/sccs".  Use the 
+   **                            --version flag to discover the default
+   **                            prefix.
+   **           -V               Synonymous with --version.
+   **
+   **   Commands:
+   **           admin,
+   **           get,
+   **           delta,
+   **           rmdel,
+   **           cdc,
+   **           etc.            Straight out of SCCS; only difference
+   **                           is that pathnames get modified as
+   **                           described above.
+   **           enter           Front end doing "sccs admin -i<name> <name>"
+   **           create          Macro for "enter" followed by "get".
+   **           edit            Macro for "get -e".
+   **           unedit          Removes a file being edited, knowing
+   **                           about p-files, etc.
+   **           delget          Macro for "delta" followed by "get".
+   **           deledit         Macro for "delta" followed by "get -e".
+   **           branch          Macro for "get -b -e", followed by "delta
+   **                           -s -n", followd by "get -e -t -g".
+   **           diffs           "diff" the specified version of files
+   **                           and the checked-out version.
+   **           print           Macro for "prs -e" followed by "get -p -m".
+   **           tell            List what files are being edited.
+   **           info            Print information about files being edited.
+   **           clean           Remove all files that can be
+   **                           regenerated from SCCS files.
+   **           check           Like info, but return exit status, for
+   **                           use in makefiles.
+   **           fix             Remove a top delta & reedit, but save
+   **                           the previous changes in that delta.
+   **
+   **   Compilation Flags:
+   **           SCCSDIR -- if defined, forces the -d flag to take on
+   **                   this value.  This is so that the setuid
+   **                   aspects of this program cannot be abused.
+   **                   This flag also disables the -p flag.
+   **                   Setuid execution is only supported if this
+   **                   flag is set.
+   **           SCCSPATH -- the default for the -p flag.
+   **           MYNAME -- the title this program should print when it
+   **                   gives error messages.
+   **
+   **           UIDUSER -- removed since we cannot trust $USER
+   **                      or getlogin in setuid programs.
+   **           
+   **           PREFIX  -- Sets the default prefix which allows us to
+   **                      find the SCCS subcommands.  Unless you overrride
+   **                      this on the compiler command line or by editing
+   **                      the source, this defaults to "/usr/sccs".  Using
+   **                      the --version flag will tell you what the setting
+   **                      is.   This macro is available only in the GNU
+   **                      version of this program.
+   **                      
+   **                      
+   **                      
+   **   Compilation Instructions:
+   **           cc -O -n -s sccs.c
+   **           The flags listed above can be -D defined to simplify
+   **                   recompilation for variant versions.
+   **
+   **   Author:
+   **           Eric Allman, UCB/INGRES
+   **           Copyright 1980 Regents of the University of California
+ */
 
 
 /*******************  Configuration Information  ********************/
@@ -363,13 +360,13 @@ struct sccsprog
 #define TELLC		3	/* give list of files being edited */
 
 /*
-**  Description of commands known to this program.
-**   First argument puts the command into a class.  Second arg is
-**   info regarding treatment of this command.  Third arg is a
-**   list of flags this command accepts from macros, etc.  Fourth
-**   arg is the pathname of the implementing program, or the
-**   macro definition, or the arg to a sub-algorithm.
-*/
+   **  Description of commands known to this program.
+   **   First argument puts the command into a class.  Second arg is
+   **   info regarding treatment of this command.  Third arg is a
+   **   list of flags this command accepts from macros, etc.  Fourth
+   **   arg is the pathname of the implementing program, or the
+   **   macro definition, or the arg to a sub-algorithm.
+ */
 
 const struct sccsprog SccsProg[] =
 {
@@ -603,6 +600,9 @@ main (int argc, char **argv)
 
   if (TrustEnvironment)
     {
+#ifndef __ultrix
+      // Mark Reynolds <mark@aoainc.com>: If $LANG is not 
+      // set, setlocale() fails on VAX Ultrix 4.2.
       if (NULL == setlocale(LC_ALL, ""))
 	{
 	  /* If we can't set the locale as the user wishes,
@@ -611,6 +611,7 @@ main (int argc, char **argv)
 	   */
 	  perror("Error setting locale");
 	}
+#endif      
     }
 
   check_data_integrity();
@@ -658,8 +659,8 @@ main (int argc, char **argv)
 
   
   /*
-  **  Detect and decode flags intended for this program.
-  */
+     **  Detect and decode flags intended for this program.
+   */
 
   if (argc < 2)
     {
@@ -913,27 +914,27 @@ try_to_exec(const char *prog, char * const argv[])
 }
 
 /*
-**  COMMAND -- look up and perform a command
-**
-**   This routine is the guts of this program.  Given an
-**   argument vector, it looks up the "command" (argv[0])
-**   in the configuration table and does the necessary stuff.
-**
-**   Parameters:
-**           argv -- an argument vector to process.
-**           forkflag -- if set, fork before executing the command.
-**           editflag -- if set, only include flags listed in the
-**                   sccsklets field of the command descriptor.
-**           arg0 -- a space-seperated list of arguments to insert
-**                   before argv.
-**
-**   Returns:
-**           zero -- command executed ok.
-**           else -- error status.
-**
-**   Side Effects:
-**           none.
-*/
+   **  COMMAND -- look up and perform a command
+   **
+   **   This routine is the guts of this program.  Given an
+   **   argument vector, it looks up the "command" (argv[0])
+   **   in the configuration table and does the necessary stuff.
+   **
+   **   Parameters:
+   **           argv -- an argument vector to process.
+   **           forkflag -- if set, fork before executing the command.
+   **           editflag -- if set, only include flags listed in the
+   **                   sccsklets field of the command descriptor.
+   **           arg0 -- a space-seperated list of arguments to insert
+   **                   before argv.
+   **
+   **   Returns:
+   **           zero -- command executed ok.
+   **           else -- error status.
+   **
+   **   Side Effects:
+   **           none.
+ */
 /* Warning in command () */
 int 
 command (char *argv[], bool forkflag, const char *arg0)
@@ -1197,18 +1198,18 @@ command (char *argv[], bool forkflag, const char *arg0)
 
 
 /*
-**  LOOKUP -- look up an SCCS command name.
-**
-**   Parameters:
-**           name -- the name of the command to look up.
-**
-**   Returns:
-**           ptr to command descriptor for this command.
-**           NULL if no such entry.
-**
-**   Side Effects:
-**           none.
-*/
+   **  LOOKUP -- look up an SCCS command name.
+   **
+   **   Parameters:
+   **           name -- the name of the command to look up.
+   **
+   **   Returns:
+   **           ptr to command descriptor for this command.
+   **           NULL if no such entry.
+   **
+   **   Side Effects:
+   **           none.
+ */
 
 const struct sccsprog *
 lookup (const char *name)
@@ -1295,24 +1296,24 @@ do_fork(void)
 
 
 /*
-**  CALLPROG -- call a program
-**
-**   Used to call the SCCS programs.
-**
-**   Parameters:
-**           progpath -- pathname of the program to call.
-**           flags -- status flags from the command descriptors.
-**           argv -- an argument vector to pass to the program.
-**           forkflag -- if true, fork before calling, else just
-**                   exec.
-**
-**   Returns:
-**           The exit status of the program.
-**           Nothing if forkflag == FALSE.
-**
-**   Side Effects:
-**           Can exit if forkflag == FALSE.
-*/
+   **  CALLPROG -- call a program
+   **
+   **   Used to call the SCCS programs.
+   **
+   **   Parameters:
+   **           progpath -- pathname of the program to call.
+   **           flags -- status flags from the command descriptors.
+   **           argv -- an argument vector to pass to the program.
+   **           forkflag -- if true, fork before calling, else just
+   **                   exec.
+   **
+   **   Returns:
+   **           The exit status of the program.
+   **           Nothing if forkflag == FALSE.
+   **
+   **   Side Effects:
+   **           Can exit if forkflag == FALSE.
+ */
 
 int 
 callprog (const char *progpath,
@@ -1420,18 +1421,18 @@ callprog (const char *progpath,
 }
 
 /*
-**  STR_DUP -- make a copy of a string.
-**
-**   Parameters:
-**           S -- the string to be cpied.
-**
-**   Returns:
-**           A duplicate copy of that string.
-**           NULL on error.
-**
-**   Side Effects:
-**           none.
-*/
+   **  STR_DUP -- make a copy of a string.
+   **
+   **   Parameters:
+   **           S -- the string to be cpied.
+   **
+   **   Returns:
+   **           A duplicate copy of that string.
+   **           NULL on error.
+   **
+   **   Side Effects:
+   **           none.
+ */
 
 static char *
 str_dup (const char *s)
@@ -1453,30 +1454,30 @@ str_dup (const char *s)
 
 
 /*
-**  MAKEFILE -- make filename of SCCS file
-**
-**   If the name passed is already the name of an SCCS file,
-**   just return it.  Otherwise, munge the name into the name
-**   of the actual SCCS file.
-**
-**   There are cases when it is not clear what you want to
-**   do.  For example, if SccsPath is an absolute pathname
-**   and the name given is also an absolute pathname, we go
-**   for SccsPath (& only use the last component of the name
-**   passed) -- this is important for security reasons (if
-**   sccs is being used as a setuid front end), but not
-**   particularly intuitive.
-**
-**   Parameters:
-**           name -- the file name to be munged.
-**
-**   Returns:
-**           The pathname of the sccs file.
-**           NULL on error.
-**
-**   Side Effects:
-**           none.
-*/
+   **  MAKEFILE -- make filename of SCCS file
+   **
+   **   If the name passed is already the name of an SCCS file,
+   **   just return it.  Otherwise, munge the name into the name
+   **   of the actual SCCS file.
+   **
+   **   There are cases when it is not clear what you want to
+   **   do.  For example, if SccsPath is an absolute pathname
+   **   and the name given is also an absolute pathname, we go
+   **   for SccsPath (& only use the last component of the name
+   **   passed) -- this is important for security reasons (if
+   **   sccs is being used as a setuid front end), but not
+   **   particularly intuitive.
+   **
+   **   Parameters:
+   **           name -- the file name to be munged.
+   **
+   **   Returns:
+   **           The pathname of the sccs file.
+   **           NULL on error.
+   **
+   **   Side Effects:
+   **           none.
+ */
 
 char *
 makefile (const char *name)
@@ -1493,17 +1494,17 @@ makefile (const char *name)
     p++;
 
   /*
-  **  Check to see that the path is "safe", i.e., that we
-  **  are not letting some nasty person use the setuid part
-  **  of this program to look at or munge some presumably
-  **  hidden files.
-  */
+     **  Check to see that the path is "safe", i.e., that we
+     **  are not letting some nasty person use the setuid part
+     **  of this program to look at or munge some presumably
+     **  hidden files.
+   */
 
   if (SccsDir[0] == '/' && !safepath (name))
     return (NULL);
 
   /*
-  **  Create the base pathname.
+     **  Create the base pathname.
    */
 
   /* first the directory part */
@@ -1544,16 +1545,16 @@ makefile (const char *name)
 }
 
 /*
-**  ISDIR -- return true if the argument is a directory.
-**
-**   Parameters:
-**           name -- the pathname of the file to check.
-**
-**   Returns:
-**           TRUE if 'name' is a directory, FALSE otherwise.
-**
-**   Side Effects:
-**           none.
+   **  ISDIR -- return true if the argument is a directory.
+   **
+   **   Parameters:
+   **           name -- the pathname of the file to check.
+   **
+   **   Returns:
+   **           TRUE if 'name' is a directory, FALSE otherwise.
+   **
+   **   Side Effects:
+   **           none.
  */
 
 bool
@@ -1569,22 +1570,22 @@ isdir (const char *name)
 }
 
 /*
-**  SAFEPATH -- determine whether a pathname is "safe"
-**
-**   "Safe" pathnames only allow you to get deeper into the
-**   directory structure, i.e., full pathnames and ".." are
-**   not allowed.
-**
-**   Parameters:
-**           p -- the name to check.
-**
-**   Returns:
-**           TRUE -- if the path is safe.
-**           FALSE -- if the path is not safe.
-**
-**   Side Effects:
-**           Prints a message if the path is not safe.
-*/
+   **  SAFEPATH -- determine whether a pathname is "safe"
+   **
+   **   "Safe" pathnames only allow you to get deeper into the
+   **   directory structure, i.e., full pathnames and ".." are
+   **   not allowed.
+   **
+   **   Parameters:
+   **           p -- the name to check.
+   **
+   **   Returns:
+   **           TRUE -- if the path is safe.
+   **           FALSE -- if the path is not safe.
+   **
+   **   Side Effects:
+   **           Prints a message if the path is not safe.
+ */
 
 bool
 safepath (register const char *p)
@@ -1620,23 +1621,23 @@ form_gname(char *buf, int bufsize, struct dirent *dir)
   
 
 /*
-**  CLEAN -- clean out recreatable files
-**
-**   Any file for which an "s." file exists but no "p." file
-**   exists in the current directory is purged.
-**
-**   Parameters:
-**           mode -- tells whether this came from a "clean", "info", or
-**                   "check" command.
-**           argv -- the rest of the argument vector.
-**
-**   Returns:
-**           none.
-**
-**   Side Effects:
-**           Removes files in the current directory.
-**           Prints information regarding files being edited.
-**           Exits if a "check" command.
+   **  CLEAN -- clean out recreatable files
+   **
+   **   Any file for which an "s." file exists but no "p." file
+   **   exists in the current directory is purged.
+   **
+   **   Parameters:
+   **           mode -- tells whether this came from a "clean", "info", or
+   **                   "check" command.
+   **           argv -- the rest of the argument vector.
+   **
+   **   Returns:
+   **           none.
+   **
+   **   Side Effects:
+   **           Removes files in the current directory.
+   **           Prints information regarding files being edited.
+   **           Exits if a "check" command.
  */
 int 
 do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
@@ -1713,10 +1714,10 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
     }
 
   /*
-  **  Scan the SCCS directory looking for s. files.
-  **   gotedit tells whether we have tried to clean any
-  **           files that are being edited.
-  */
+     **  Scan the SCCS directory looking for s. files.
+     **   gotedit tells whether we have tried to clean any
+     **           files that are being edited.
+   */
 
   gotedit = FALSE;
   while (NULL != (dir = readdir (dirp)))
@@ -1731,10 +1732,10 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
 
 
       /*
-      **  open and scan the p-file.
-      **   'gotpfent' tells if we have found a valid p-file
-      **           entry.
-      */
+         **  open and scan the p-file.
+         **   'gotpfent' tells if we have found a valid p-file
+         **           entry.
+       */
 
       pfp = fopen (buf, "r");
       gotpfent = FALSE;
@@ -1804,18 +1805,18 @@ clean (int mode, char *const *argv)
 }
 
 /*
-**  ISBRANCH -- is the SID a branch?
-**
-**   Parameters:
-**           sid -- the sid to check.
-**
-**   Returns:
-**           TRUE if the sid represents a branch.
-**           FALSE otherwise.
-**
-**   Side Effects:
-**           none.
-*/
+   **  ISBRANCH -- is the SID a branch?
+   **
+   **   Parameters:
+   **           sid -- the sid to check.
+   **
+   **   Returns:
+   **           TRUE if the sid represents a branch.
+   **           FALSE otherwise.
+   **
+   **   Side Effects:
+   **           none.
+ */
 
 int 
 isbranch (const char *sid)
@@ -1835,48 +1836,23 @@ isbranch (const char *sid)
 }
 
 /*
-**  HAS_SDOT_PREFIX -- Look for "s." at the start of a filename
-**
-**   If this prefix is present, a nonzero value is returned.
-**
-**   Parameters:
-**           p -- the name of the file.
-**
-**   Returns:
-**           TRUE -- if the prefix is present
-**           FALSE -- if the prefix is not present
-**
-**   Side Effects:
-**           None.
-*/
-bool
-has_sdot_prefix(const char *p)
-{
-  if (p[0] == 's' && p[1] == '.')
-    return TRUE;
-  else
-    return FALSE;
-}
-
-
-/*
-**  UNEDIT -- unedit a file
-**
-**   Checks to see that the current user is actually editting
-**   the file and arranges that s/he is not editting it.
-**
-**   Parameters:
-**           fn -- the name of the file to be unedited.
-**
-**   Returns:
-**           TRUE -- if the file was successfully unedited.
-**           FALSE -- if the file was not unedited for some
-**                   reason.
-**
-**   Side Effects:
-**           fn is removed
-**           entries are removed from pfile.
-*/
+   **  UNEDIT -- unedit a file
+   **
+   **   Checks to see that the current user is actually editting
+   **   the file and arranges that s/he is not editting it.
+   **
+   **   Parameters:
+   **           fn -- the name of the file to be unedited.
+   **
+   **   Returns:
+   **           TRUE -- if the file was successfully unedited.
+   **           FALSE -- if the file was not unedited for some
+   **                   reason.
+   **
+   **   Side Effects:
+   **           fn is removed
+   **           entries are removed from pfile.
+ */
 
 bool
 unedit (const char *fn)
@@ -1931,7 +1907,7 @@ unedit (const char *fn)
   myname = username ();
 
   /*
-  **  Copy p-file to temp file, doing deletions as needed.
+     **  Copy p-file to temp file, doing deletions as needed.
    */
 
   while ((pent = getpfent (pfp)) != NULL)
@@ -1958,14 +1934,6 @@ unedit (const char *fn)
       extern int errno;
 
       cp = tail (fn);
-
-      /* If the user specified the SCCS file name rather than the
-       * g-file name, form the g-file name here, since we need
-       * to delete it later.
-       */
-      if (has_sdot_prefix(cp))
-	cp += 2;
-  
       errno = 0;
       if (access (cp, 0) < 0 && errno != ENOENT)
 	goto bad;
@@ -2035,18 +2003,18 @@ unedit (const char *fn)
 }
 
 /*
-**  DODIFF -- diff an s-file against a g-file
-**
-**   Parameters:
-**           getv -- argv for the 'get' command.
-**           gfile -- name of the g-file to diff against.
-**
-**   Returns:
-**           Result of get.
-**
-**   Side Effects:
-**           none.
-*/
+   **  DODIFF -- diff an s-file against a g-file
+   **
+   **   Parameters:
+   **           getv -- argv for the 'get' command.
+   **           gfile -- name of the g-file to diff against.
+   **
+   **   Returns:
+   **           Result of get.
+   **
+   **   Side Effects:
+   **           none.
+ */
 int 
 dodiff (char * getv[], const char *gfile)
 {
@@ -2096,18 +2064,18 @@ dodiff (char * getv[], const char *gfile)
 }
 
 /*
-**  TAIL -- return tail of filename.
-**
-**   Parameters:
-**           fn -- the filename.
-**
-**   Returns:
-**           a pointer to the tail of the filename; e.g., given
-**           "cmd/ls.c", "ls.c" is returned.
-**
-**   Side Effects:
-**           none.
-*/
+   **  TAIL -- return tail of filename.
+   **
+   **   Parameters:
+   **           fn -- the filename.
+   **
+   **   Returns:
+   **           a pointer to the tail of the filename; e.g., given
+   **           "cmd/ls.c", "ls.c" is returned.
+   **
+   **   Side Effects:
+   **           none.
+ */
 
 const char *
 tail (register const char *fn)
@@ -2121,18 +2089,18 @@ tail (register const char *fn)
 }
 
 /*
-**  TAIL_NC -- return tail of filename (non-const version).
-**
-**   Parameters:
-**           fn -- the filename.
-**
-**   Returns:
-**           a pointer to the tail of the filename; e.g., given
-**           "cmd/ls.c", "ls.c" is returned.
-**
-**   Side Effects:
-**           none.
-*/
+   **  TAIL_NC -- return tail of filename (non-const version).
+   **
+   **   Parameters:
+   **           fn -- the filename.
+   **
+   **   Returns:
+   **           a pointer to the tail of the filename; e.g., given
+   **           "cmd/ls.c", "ls.c" is returned.
+   **
+   **   Side Effects:
+   **           none.
+ */
 
 char *
 tail_nc (register char *fn)
@@ -2146,18 +2114,18 @@ tail_nc (register char *fn)
 }
 
 /*
-**  GETPFENT -- get an entry from the p-file
-**
-**   Parameters:
-**           pfp -- p-file file pointer
-**
-**   Returns:
-**           pointer to p-file struct for next entry
-**           NULL on EOF or error
-**
-**   Side Effects:
-**           Each call wipes out results of previous call.
-*/
+   **  GETPFENT -- get an entry from the p-file
+   **
+   **   Parameters:
+   **           pfp -- p-file file pointer
+   **
+   **   Returns:
+   **           pointer to p-file struct for next entry
+   **           NULL on EOF or error
+   **
+   **   Side Effects:
+   **           Each call wipes out results of previous call.
+ */
 
 const struct pfile *
 getpfent (FILE * pfp)
@@ -2197,20 +2165,19 @@ nextfield (register char *p)
   *p++ = '\0';
   return p;
 }
-
-/*
-**  PUTPFENT -- output a p-file entry to a file
-**
-**   Parameters:
-**           pf -- the p-file entry
-**           f -- the file to put it on.
-**
-**   Returns:
-**           none.
-**
-**   Side Effects:
-**           pf is written onto file f.
-*/
+/*
+   **  PUTPFENT -- output a p-file entry to a file
+   **
+   **   Parameters:
+   **           pf -- the p-file entry
+   **           f -- the file to put it on.
+   **
+   **   Returns:
+   **           none.
+   **
+   **   Side Effects:
+   **           pf is written onto file f.
+ */
 
 void 
 putpfent (register const struct pfile *pf, register FILE * f)
@@ -2225,18 +2192,18 @@ putpfent (register const struct pfile *pf, register FILE * f)
 }
 
 /*
-**  USRERR -- issue user-level error
-**
-**   Parameters:
-**           f -- format string.
-**           p1-p3 -- parameters to a printf.
-**
-**   Returns:
-**           -1
-**
-**   Side Effects:
-**           none.
-*/
+   **  USRERR -- issue user-level error
+   **
+   **   Parameters:
+   **           f -- format string.
+   **           p1-p3 -- parameters to a printf.
+   **
+   **   Returns:
+   **           -1
+   **
+   **   Side Effects:
+   **           none.
+ */
 
 void
 usrerr (const char *fmt,...)
@@ -2254,18 +2221,18 @@ usrerr (const char *fmt,...)
 }
 
 /*
-**  SYSERR -- print system-generated error.
-**
-**   Parameters:
-**           f -- format string to a printf.
-**           p1, p2, p3 -- parameters to f.
-**
-**   Returns:
-**           never.
-**
-**   Side Effects:
-**           none.
-*/
+   **  SYSERR -- print system-generated error.
+   **
+   **   Parameters:
+   **           f -- format string to a printf.
+   **           p1, p2, p3 -- parameters to f.
+   **
+   **   Returns:
+   **           never.
+   **
+   **   Side Effects:
+   **           none.
+ */
 
 
 void
@@ -2292,19 +2259,18 @@ syserr (const char *fmt,...)
       exit (CSSC_EX_OSERR);
     }
 }
-
-/*
-**  USERNAME -- return name of the current user
-**
-**   Parameters:
-**           none
-**
-**   Returns:
-**           name of current user
-**
-**   Side Effects:
-**           none
-*/
+/*
+   **  USERNAME -- return name of the current user
+   **
+   **   Parameters:
+   **           none
+   **
+   **   Returns:
+   **           name of current user
+   **
+   **   Side Effects:
+   **           none
+ */
 
 const char *
 username (void)
@@ -2323,9 +2289,9 @@ username (void)
 }
 
 /*
-**   Guarded string manipulation routines; the last argument
-**   is the length of the buffer into which the strcpy or strcat
-**   is to be done.
+   **   Guarded string manipulation routines; the last argument
+   **   is the length of the buffer into which the strcpy or strcat
+   **   is to be done.
  */
 static char *
 gstrcat (char *to, const char *from, int length)

@@ -32,23 +32,19 @@ seq_state::seq_state(seq_no l) :
   last(l),
   active(0u)
 {
-  pIncluded  = new unsigned char[l + 1];
-  pExcluded  = new unsigned char[l + 1];
-  pAncestral = new unsigned char[l + 1];
-  pActive    = new unsigned char[l + 1];
-  pVisible   = new unsigned char[l + 1];
-  pExplicit  = new unsigned char[l + 1];
-  pCommand   = new          char[l + 1];
+  pIncluded = new unsigned char[l + 1];
+  pExcluded = new unsigned char[l + 1];
+  pExplicit = new unsigned char[l + 1];
+  pActive   = new unsigned char[l + 1];
+  pCommand  = new          char[l + 1];
   
   for(int i=0; i <= last; i++)
     {
-      pIncluded[i]  = 0;
-      pExcluded[i]  = 0;
-      pAncestral[i] = 0;
-      pVisible[i]   = 0;
-      pExplicit[i]  = 0;
-      pActive[i]    = 0;
-      pCommand[i]   = 0;
+      pIncluded[i] = 0;
+      pExcluded[i] = 0;
+      pExplicit[i] = 0;
+      pActive[i]   = 0;
+      pCommand[i]  = 0;
     }
   
   decide_disposition();
@@ -60,20 +56,16 @@ seq_state::seq_state(const seq_state& s) :
   active(s.active)
   
 {
-  pIncluded  = new unsigned char[last + 1];
-  pExcluded  = new unsigned char[last + 1];
-  pAncestral = new unsigned char[last + 1];
-  pVisible   = new unsigned char[last + 1];
-  pExplicit  = new unsigned char[last + 1];
-  pActive    = new unsigned char[last + 1];
-  pCommand   = new          char[last + 1];
+  pIncluded = new unsigned char[last + 1];
+  pExcluded = new unsigned char[last + 1];
+  pExplicit = new unsigned char[last + 1];
+  pActive   = new unsigned char[last + 1];
+  pCommand  = new          char[last + 1];
   
   for( int i=0; i <= last; i++)
     {
       pIncluded[i] = s.pIncluded[i];
       pExcluded[i] = s.pExcluded[i];
-      pAncestral[i]= s.pAncestral[i];
-      pVisible[i]  = s.pVisible[i];
       pExplicit[i] = s.pExplicit[i];
       pActive[i]   = s.pActive[i];
       pCommand[i]  = s.pCommand[i];
@@ -83,16 +75,6 @@ seq_state::seq_state(const seq_state& s) :
 }
 
 
-
-bool seq_state::is_visible(seq_no n) const
-{
-  return pVisible[n];
-}
-
-bool seq_state::is_explicit(seq_no n) const
-{
-  return pExplicit[n];
-}
 
 bool seq_state::is_included(seq_no n) const
 {
@@ -104,18 +86,15 @@ bool seq_state::is_excluded(seq_no n) const
   return pExcluded[n];
 }
 
-bool seq_state::is_ancestral(seq_no n) const
+void seq_state::set_explicitly_included(seq_no n)
 {
-  return pAncestral[n];
+  set_included(n);
+  pExplicit[n] = 1;
 }
 
-void seq_state::set_visible(seq_no n)
+void seq_state::set_explicitly_excluded(seq_no n)
 {
-  pVisible[n] = 1;
-}
-
-void seq_state::set_explicit(seq_no n)
-{
+  set_excluded(n);
   pExplicit[n] = 1;
 }
 
@@ -131,9 +110,9 @@ void seq_state::set_excluded(seq_no n)
   pIncluded[n] = 0;
 }
 
-void seq_state::set_ancestral(seq_no n)
+bool seq_state::is_explicitly_tagged(seq_no n) const
 {
-  pAncestral[n] = 1;
+  return pExplicit[n];
 }
 
 
@@ -141,12 +120,11 @@ seq_state::~seq_state()
 {
   delete[] pIncluded;
   delete[] pExcluded;
-  delete[] pAncestral;
-  delete[] pVisible;
+  delete[] pExplicit;
   delete[] pActive;
   delete[] pCommand;
   
-  pIncluded = pExcluded = pVisible = pAncestral = pActive = 0;
+  pIncluded = pExcluded = pExplicit = pActive = 0;
   pCommand = 0;
 }
 
@@ -180,7 +158,7 @@ seq_state::decide_disposition()
       
       if ('I' == pCommand[s])
 	{
-	  if (is_visible(s))
+	  if (is_included(s))
 	    {
 	      if (our_highest_insert < s)
 		our_highest_insert = s;
@@ -193,7 +171,7 @@ seq_state::decide_disposition()
 	}
       else
 	{
-	  if (is_visible(s))
+	  if (is_included(s))
 	    {
 	      if (our_highest_delete < s)
 		our_highest_delete = s;
@@ -305,7 +283,7 @@ seq_state::end(seq_no seq)
 }
 
 
-// Tells us if body lines at the point we are reading are visible
+// Tells us if the delta at the top of the stack is being included.
 int
 seq_state::include_line() const
 {

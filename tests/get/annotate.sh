@@ -45,7 +45,6 @@ docommand N4 "$get -p -m $s" 0 \
 docommand G2 "$get -e -r1.1 $s" 0 "1.1\nnew delta 1.1.1.1\n2 lines\n" ""
 
 echo "line4 %Z%" >> $f
-
 docommand D2 "$delta '-yAdded line: a branch' $s" 0 \
     "1.1.1.1\n1 inserted\n0 deleted\n2 unchanged\n" \
     IGNORE

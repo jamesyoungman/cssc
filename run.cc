@@ -33,7 +33,7 @@
 #include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.21 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.22 2000/03/19 11:18:41 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -125,7 +125,14 @@ run(const char *prg, mylist<const char *> const &args) {
 
 #else /* HAVE_FORK */
 	// We _do_ have fork().
+
+	// SunOS 4.1.3 appears not to like fflush(NULL).
+#if 0	
 	fflush(NULL);
+#else
+	fflush(stdout);
+	fflush(stderr);
+#endif	
 	pid_t pid = fork(); 
 	if (pid < 0) {
 		fatal_quit(errno, "fork() failed.");

@@ -94,6 +94,9 @@ in this Software without prior written authorization from the X Consortium.
 #include <sys/param.h>
 #endif
 
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 
 #if HAVE_DIRENT_H
 # include <dirent.h>

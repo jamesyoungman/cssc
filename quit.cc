@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.21 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.22 2000/03/19 11:18:40 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -96,17 +96,23 @@ void errormsg(const char *fmt, ...)
   putc('\n', stderr);
 }
 
+void v_errormsg_with_errno(const char *fmt, va_list ap)
+{
+  int saved_errno = errno;
+  
+  v_errormsg(fmt, ap);
+  errno = saved_errno;
+  perror(" ");
+}
+
 void errormsg_with_errno(const char *fmt, ...)
 {
   int saved_errno = errno;
   
   va_list ap;
   va_start(ap, fmt);
-  v_errormsg(fmt, ap);
+  v_errormsg_with_errno(fmt, ap);
   va_end(ap);
-  
-  errno = saved_errno;
-  perror(" ");
   putc('\n', stderr);
 }
 
@@ -244,16 +250,19 @@ s_missing_quit(const char *fmt, ...) {
 	va_list ap;
 
 
-	va_start(ap, fmt);
 #ifdef HAVE_EXCEPTIONS	
-	v_errormsg(fmt, ap);
+	va_start(ap, fmt);
+	v_errormsg_with_errno(fmt, ap);
+	va_end(ap);
+	
 	putc('\n', stderr);
 	throw CsscSfileMissingException();
 #else
-	v_quit(-1, fmt, ap);
+	va_start(ap, fmt);
+	v_quit(-1, NULL, ap);
+	va_end(ap);
 #endif
 	/*NOTREACHED*/
-	va_end(ap);
 	ASSERT(0);		// not reached.
 }
 

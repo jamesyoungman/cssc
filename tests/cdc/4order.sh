@@ -43,7 +43,7 @@ ${prs} -d:C: -r1.1 $s > comment || fail prs failed unexpectedly
 docommand O6 "sed -n 1p <comment" 0 "MyExtraComment\n" ""
 docommand O7 "sed -n 2p <comment" 0 "*** LIST OF DELETED MRS ***\n" ""
 docommand O8 "sed -n 3p <comment" 0 "MR3\n" ""
-docommand O9 "sed -n 4p <comment|grep \
+docommand O9 "sed -n 4p <comment|egrep \
 '^\*\*\* CHANGED \*\*\* [0-9][0-9]/[01][0-9]/[0-3][0-9] [012][0-9]:[0-6][0-9]:[0-6][0-9] [^ ][^ ]*$'" 0 "IGNORE" ""
 
 

@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1999-03-21 10:09:48 james>
+Time-stamp: <1999-06-26 22:15:39 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -81,6 +81,13 @@ make version 3.12f of makeinfo happy.
 
 William W. Austin provided a bug report regarding SCCS files
 containing flag lines which are only four characters long.
+
+Hyman Rosen provided fixes for better compatibility with strange SCCS
+files produced by ther implementations (e.g. ^Am after ^Ac instead of
+before it).
+
+Mark Reynolds provided a fair number of portability improvements (IRIX
+6.5, SunOS 4.1.3, Ultrix 4.2).
 
 Local Variables:
 mode: Text

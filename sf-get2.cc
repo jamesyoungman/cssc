@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.36 1999/05/16 16:53:17 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.37 2000/03/19 11:18:41 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -500,19 +500,20 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   ASSERT(d != NULL);
   
   ASSERT(0 != delta_table);
+
+  if (!prepare_seqstate(state, d->seq))
+    {
+      status.success = false;
+      return status;
+    }
+  
+  ASSERT(0 != delta_table);
   if (!prepare_seqstate(state, include, exclude, cutoff_date))
     {
       status.success = false;
       return status;
     }
 
-  ASSERT(0 != delta_table);
-  if (!finalise_seqstate(state, d->seq))
-    {
-      status.success = false;
-      return status;
-    }
-  
   if (getenv("CSSC_SHOW_SEQSTATE"))
     {
       for (seq_no s = d->seq; s>0; s--)
@@ -524,29 +525,23 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 
 	  putc(':', stderr);
 	  putc(' ', stderr);
-	  
-	  if (state.is_visible(s))
-	    {
-	      fprintf(stderr, "visible ");
-	    }
-	  if (state.is_ancestral(s))
-	    {
-	      fprintf(stderr, "ancestral ");
-	    }
-	  
-	  if (state.is_explicit(s))
+	  if (state.is_explicitly_tagged(s))
 	    {
 	      fprintf(stderr, "explicitly ");
 	    }
+	  
 	  if (state.is_included(s))
 	    {
-	      fprintf(stderr, "included");
+	      fprintf(stderr, "included\n");
 	    }
 	  else if (state.is_excluded(s))
 	    {
-	      fprintf(stderr, "excluded");
+	      fprintf(stderr, "excluded\n");
 	    }
-	  fprintf(stderr, "\n");
+	  else
+	    {
+	      fprintf(stderr, "irrelevant\n");
+	    }
 	}
     }
 
@@ -589,7 +584,7 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
     {
       const sid id = seq_to_sid(seq);
       
-      if (state.is_explicit(seq))
+      if (state.is_explicitly_tagged(seq))
 	{
 	  if (state.is_included(seq))
 	    status.included.add(id);

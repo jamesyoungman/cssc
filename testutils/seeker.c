@@ -45,6 +45,10 @@
 #include <unistd.h>
 #endif
 
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
 #ifndef HAVE_FSEEK
 #define HAVE_FSEEK
 #endif

@@ -1,10 +1,57 @@
+1999-06-27  James Youngman  <jay@gnu.org>
+
+	* quit.cc, sccsfile.cc, file.cc:
+	Improved the error message which is issued when you try to open a
+	nonexistent SCCS file.
+
+	* docs/CREDITS, docs/CREDITS.short.txt, docs/Platforms:
+	Bugfixes from Hyman Rosen and Mark Reynolds
+
+	* sf-get.cc:
+	Mark Reynolds <mark@aoainc.com>: GCC 2.8.1 on VAX Ultrix 4.2 doesn't
+	seem to get this call right.  Since subst_fn is always write_subst
+	anyway, we work around it by using the function pointer just as a
+	boolean variable.  Yeuch.
+
+	* bsd/sccs.c:
+	Mark Reynolds <mark@aoainc.com>: If $LANG is not set, setlocale()
+	fails on VAX Ultrix 4.2.
+
+1999-06-26  James Youngman  <jay@gnu.org>
+
+	* tests/admin/lockfail.sh:
+	Fail correctly, but don't coredump, when we fail to create a lock file.
+	Bug report by Michael Ubell <ubell@mindspring.com>.
+
+	* tests/admin/lockfail.sh: New file.
+
+	* file.cc, sccsname.h:
+	Fail correctly, but don't coredump, when we fail to create a lock file.
+	Bug report by Michael Ubell <ubell@mindspring.com>.
+
+	* run.cc: Fixed typos.
+
+	* tests/cdc/2comment.sh, tests/cdc/4order.sh:
+	Use egrep, not grep, because on SunOS 4.1.3, grep(1) doesn't like the
+	long regexps...
+
+	* run.cc: SunOS 4.1.3 doesn't like fflush(NULL). (Mark Reynolds)
+
+	* testutils/seeker.c, testutils/lndir.c:
+	Vax Ultrix 4.2 requires <sys/types.h>. (Mark Reynolds)
+
+	* sccsfile.cc: Compatibility fixes provided by Hyman Rosen.
+
+	* val.cc: Fixed the name of the executable passed to set_prg_name().
+
 1999-04-21  James Youngman  <jay@gnu.org>
+
+	* ChangeLog: Added changes to date.
 
 	* docs/Makefile.am: Added texinfo.tex to the distribution.
 
-	* configure.in, sccsfile.cc, sf-delta.cc, sf-get.cc, sf-get2.cc,
-	sf-get3.cc, sf-prs.cc, sf-prt.cc, sf-rmdel.cc, NEWS: Removed some
-	dead code.
+	* configure.in, sccsfile.cc, sf-delta.cc, sf-get.cc, sf-get2.cc, sf-get3.cc, sf-prs.cc, sf-prt.cc, sf-rmdel.cc, NEWS:
+	Removed some dead code.
 
 	* seqstate.h, seqstate.cc: Removed dependency on the STL <list> header.
 
