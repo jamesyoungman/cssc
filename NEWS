@@ -1,3 +1,10 @@
+New in CSSC-0.06alpha-pl2
+
+	* 8-bit input data now works, as ordinary text.  This means that
+	  you can use use CSSC to control revisions of ISO-8859 text
+          files without needing to encode them (i.e. using the -b flag
+	  of admin).  SCCS also supports this.
+	
 New in CSSC-0.06alpha-pl1
 	
 	* "get" keywords now sustitute the right values, the ones

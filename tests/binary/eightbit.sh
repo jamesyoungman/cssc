@@ -50,6 +50,25 @@ else
 fi
 
 docommand a5 "cat output" 0 "garçon mañana áóäæèêëìñåòôùé\n" IGNORE
+
+## We must be able to manipulate normally files containing 
+## the ISO 8859 character whose code is 255 (y-umlaut).
+## EOF is often (-1) and if a char has carelessly been used
+## to hold the result of a getchar(), we may detect y-umlaut
+## as EOF.  That would be a bug.
+
+echo_nonl a6...
+if uudecode char255.uue
+then
+    echo passed
+else
+    miscarry uudecode failed.
+fi
+
+remove s.char255.txt
+docommand a7 "${admin} -ichar255.txt s.char255.txt" 0 IGNORE IGNORE
+docommand a8 "${get} -k -p s.char255.txt" 0 "ÿ\n" "1.1\n1 lines\n"
+
 remove output s.umsp.txt
 
 cleanup

@@ -57,7 +57,7 @@ body_insert_text(const char iname[], const char oname[],
 		 unsigned long int *lines,
 		 bool *idkw)
 {
-  char ch, last;
+  int ch, last;
   unsigned long int nl;		// number of lines.
   bool found_id;
 
