@@ -1,3 +1,22 @@
+Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
+
+	* Write test cases for admin's -a, -h, -l, -r, -V, -z and -e
+ 	flags.
+
+	* Write code and test cases for admin's -b flag.
+
+	* Write test cases for delta's -g, -n, -p, -r, -s flags.
+
+	* Write test cases for get's -i, -l, -lp flags.
+
+	* Write code and test cases for "sccs", val and sccs-comb.
+
+	* Write documentation for sact, prt and rmdel.
+	
+	* Write test cases for cdc.
+
+	* Write documentation and test cases for sccsdiff.
+
 Mon Aug  4 23:33:16 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Check that Dave Bodenstab's changes also provide for running the
