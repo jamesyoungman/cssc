@@ -23,17 +23,18 @@ range_list<TYPE>::merge(range_list<TYPE> const &list) {
 		return *this;
 	}
 
-	struct range *sp = list.head;
+	range<TYPE> *sp = list.head;
 	if (sp == NULL) {
 		return *this;
 	}
 
-	sp = copy(sp);
+	assert(valid());
+	sp = do_copy_list(sp);
 
 	if (head == NULL) {
 		head = sp;
 	} else {
-		struct range *dp = head;
+		range<TYPE> *dp = head;
 
 		while(dp->next != NULL) {
 			dp = dp->next;
@@ -52,7 +53,7 @@ range_list<TYPE>::remove(range_list<TYPE> const &list) {
 		return *this;
 	}
 
-	struct range *sp = list.head;
+	range<TYPE> *sp = list.head;
 	if (sp == NULL) {
 		return *this;
 	}
@@ -62,7 +63,7 @@ range_list<TYPE>::remove(range_list<TYPE> const &list) {
 	}
 
 	while(sp != NULL) {
-		struct range *dp = head;
+		range<TYPE> *dp = head;
 		while(dp != NULL) {
 			if (sp->from <= dp->from
 			    && sp->to >= dp->from) {
@@ -75,8 +76,8 @@ range_list<TYPE>::remove(range_list<TYPE> const &list) {
 				--dp->to;
 			}
 			if (sp->from > dp->from && sp->to < dp->to) {
-				struct range *p = (struct range *) 
-					xmalloc(sizeof(struct range));
+				range<TYPE> *p = (range<TYPE> *) 
+					xmalloc(sizeof(range<TYPE>));
 				p->from = dp->from;
 				p->to = sp->from;
 				--p->to;
