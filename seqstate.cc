@@ -33,6 +33,7 @@ seq_state::seq_state(seq_no l) :
   active(0u)
 {
   pIncluded = new unsigned char[l + 1];
+  pIgnored  = new unsigned char[l + 1];
   pExcluded = new unsigned char[l + 1];
   pExplicit = new unsigned char[l + 1];
   pDoneBy   = new seq_no       [l + 1];
@@ -43,6 +44,7 @@ seq_state::seq_state(seq_no l) :
   for(int i=0; i <= last; i++)
     {
       pIncluded[i] = 0;
+      pIgnored[i]  = 0;
       pExcluded[i] = 0;
       pExplicit[i] = 0;
       pDoneBy[i]   = 0u;
@@ -61,6 +63,7 @@ seq_state::seq_state(const seq_state& s) :
   
 {
   pIncluded = new unsigned char[last + 1];
+  pIgnored  = new unsigned char[last + 1];
   pExcluded = new unsigned char[last + 1];
   pExplicit = new unsigned char[last + 1];
   pDoneBy   = new seq_no       [last + 1];
@@ -71,6 +74,7 @@ seq_state::seq_state(const seq_state& s) :
   for( int i=0; i <= last; i++)
     {
       pIncluded[i] = s.pIncluded[i];
+      pIgnored [i] = s.pIgnored [i];
       pExcluded[i] = s.pExcluded[i];
       pExplicit[i] = s.pExplicit[i];
       pDoneBy  [i] = s.pDoneBy[i];
@@ -92,6 +96,11 @@ bool seq_state::is_included(seq_no n) const
 bool seq_state::is_excluded(seq_no n) const
 {
   return pExcluded[n];
+}
+
+bool seq_state::is_ignored(seq_no n) const
+{
+  return pIgnored[n];
 }
 
 void seq_state::set_explicitly_included(seq_no n, seq_no who)
@@ -118,8 +127,18 @@ void seq_state::set_included(seq_no n,
 			     bool bNonRecursive /*=false*/)
 {
   pIncluded[n] = 1;
+  pIgnored[n]  = 0;
   pExcluded[n] = 0;
   pNonrecursive[n] = bNonRecursive;
+  pDoneBy[n] = who;
+}
+
+void seq_state::set_ignored(seq_no n, seq_no who)
+{
+  pIgnored [n] = 1;
+  pIncluded[n] = 0;
+  pExcluded[n] = 0;
+  pNonrecursive[n] = true;
   pDoneBy[n] = who;
 }
 
@@ -127,6 +146,7 @@ void seq_state::set_excluded(seq_no n, seq_no who)
 {
   pExcluded[n] = 1;
   pIncluded[n] = 0;
+  pIgnored [n] = 0;
   pDoneBy[n] = who;
 }
 
@@ -154,6 +174,7 @@ seq_no seq_state::whodunit(seq_no n) const
 seq_state::~seq_state()
 {
   delete[] pIncluded;
+  delete[] pIgnored;
   delete[] pExcluded;
   delete[] pExplicit;
   delete[] pDoneBy;
@@ -161,7 +182,7 @@ seq_state::~seq_state()
   delete[] pActive;
   delete[] pCommand;
   
-  pIncluded = pExcluded = pExplicit = pNonrecursive = pActive = 0;
+  pIncluded = pExcluded = pIgnored = pExplicit = pNonrecursive = pActive = 0;
   pDoneBy = 0;
   pCommand = 0;
 }
@@ -234,11 +255,36 @@ seq_state::decide_disposition()
     }
   else if (our_highest_insert > owner_of_current_insertion)
     {
-#if 0
-      fprintf(stderr, "Our insertion is in scope and is unsuperceded\n");
-#endif      
-      inserting = true;
+      bool ignored = false;
+      
       active = our_highest_insert;
+      inserting = true;
+#if 0      
+      for (seq_no s=0; s <= active; ++s)
+	{
+	  if (pActive[s] && is_ignored(s))
+	    ignored = true;
+	}
+#else
+      if (is_ignored(active))
+	ignored = true;
+#endif      
+      if (ignored)
+	{
+#if 0
+	  fprintf(stderr,
+		  "Our insertion is in scope and is unsuperceded "
+		  "but is ignored\n");
+#endif
+	  inserting = false;
+	}
+      else
+	{
+#if 0
+	  fprintf(stderr, "Our insertion is in scope and is unsuperceded\n");
+#endif
+	  inserting = true;
+	}
     }
   else
     {

@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.49 2002/04/04 19:34:48 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.50 2002/11/02 12:35:24 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -431,7 +431,12 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
               fprintf(stderr, "explicitly ");
             }
           
-          if (state.is_included(s))
+          if (state.is_ignored(s))
+            {
+              fprintf(stderr, "ignored  by %4d\n",
+		      state.whodunit(s));
+            }
+          else if (state.is_included(s))
             {
               fprintf(stderr, "included by %4d\n",
 		      state.whodunit(s));

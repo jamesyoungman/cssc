@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.35 2002/04/02 13:51:05 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.36 2002/11/02 12:33:19 james_youngman Exp $";
 #endif
 
 bool
@@ -129,14 +129,50 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	  }
       }
     }
-      
+    
+
+  // Apply any ignores
+  // These are not recursive, so for example if version 1.6 ignored
+  // version 1.2, the body lines for 1.1 will still be included.
+  // (but what about any includes or excludes?)
+  for (y=seq; y>0; --y)
+    {
+      if (state.is_included(y))
+	{
+	  const delta &d = delta_table->delta_at_seq(y);
+	  len = d.ignored.length();
+	  if (bDebug)
+	    {
+	      fprintf(stderr,
+		      "seq %d ignores %d other deltas...\n",
+		      y, len);
+	    }
+	
+	  
+	  for(i = 0; i < len; i++)
+	    {
+	      const seq_no s = d.ignored[i];
+	      if (s == y)
+		continue;
+	      ASSERT(s <= y);
+	      state.set_ignored(s, y);
+	      
+	      ASSERT(state.is_ignored(s));
+	      ASSERT(!state.is_included(s));
+	      ASSERT(!state.is_excluded(s));
+	    }
+	}
+    }
+  
 
   if (bDebug)
     {
       for (y=1; y<=seq; ++y)
 	{
 	  const char *msg;
-	  if (state.is_included(y))
+	  if (state.is_ignored(y))
+	    msg = "ignored";
+	  else if (state.is_included(y))
 	    msg = "included";
 	  else
 	    msg = "excluded";

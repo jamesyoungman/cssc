@@ -24,7 +24,7 @@
  *
  * Defines the class seqstate.  
  *
- * $Id: seqstate.h,v 1.18 2002/04/02 13:51:05 james_youngman Exp $
+ * $Id: seqstate.h,v 1.19 2002/11/02 12:35:24 james_youngman Exp $
  *
  */
 
@@ -48,6 +48,7 @@ class seq_state
   
   unsigned char * pIncluded;
   unsigned char * pExcluded;
+  unsigned char * pIgnored;
   unsigned char * pNonrecursive;
   unsigned char * pExplicit;
   seq_no *        pDoneBy;
@@ -80,6 +81,7 @@ public:
   
   bool is_included(seq_no n) const;
   bool is_excluded(seq_no) const;
+  bool is_ignored(seq_no) const;
 
   bool is_explicitly_tagged(seq_no) const;
   bool is_nonrecursive(seq_no n) const;
@@ -89,6 +91,7 @@ public:
   void set_explicitly_excluded(seq_no which, seq_no whodunit);
   void set_included(seq_no n, seq_no whodunit, bool bNonRecursive=false);
   void set_excluded(seq_no n, seq_no whodunit);
+  void set_ignored (seq_no n, seq_no whodunit);
   
   seq_no whodunit(seq_no n) const;
   
