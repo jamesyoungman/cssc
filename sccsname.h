@@ -6,7 +6,7 @@
  *
  * Defines the class sccs_name.
  *
- * @(#) MySC sccsname.h 1.1 93/11/09 17:17:50
+ * @(#) CSSC sccsname.h 1.1 93/11/09 17:17:50
  *
  */
 
