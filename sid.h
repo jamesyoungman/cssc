@@ -196,6 +196,8 @@ public:
 		return EOF == fprintf(f, "%d.%d.%d.%d",
 				      rel, level, branch, sequence);
 	}
+  
+  	mystring as_string() const;
 
   friend release::release(const sid &s);
 };

@@ -32,8 +32,21 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.13 1998/08/13 18:13:52 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.14 1998/12/09 23:36:37 james Exp $";
 #endif
+
+
+mystring sid::as_string() const
+{
+  char buf[32];
+  if (branch || sequence)
+    sprintf(buf, "%d.%d.%d.%d", rel, level, branch, sequence);
+  else
+    sprintf(buf, "%d.%d", rel, level);
+  
+  return mystring(buf);
+}
+
 
 /* This pointer is used by the template range_list to denote an
    invalid range. */
