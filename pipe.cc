@@ -38,7 +38,7 @@ class Pipe;
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.9 1998/01/10 23:19:46 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.10 1998/02/11 08:10:33 james Exp $";
 #endif
 
 extern int create(mystring name, int mode); /* file.c */
@@ -48,17 +48,23 @@ extern int create(mystring name, int mode); /* file.c */
 /* Deletes the temporary file if the programme quits prematurely. */
 
 void 
-Pipe::do_cleanup() {
-	if (name != NULL) {
-		if (fd != -1) {
-			if (f != NULL) {
-				fclose(f);
-			} else {
-				close(fd);
-			}
-			remove(name);
-		}
+Pipe::do_cleanup()
+{
+  if (!name.empty())
+    {
+      if (fd != -1)
+	{
+	  if (f != NULL)
+	    {
+	      fclose(f);
+	    }
+	  else
+	    {
+	      close(fd);
+	    }
+	  remove(name.c_str());
 	}
+    }
 }
 
 /* Constructor for class Pipe.  Creates a temporary file to emulate
@@ -66,17 +72,22 @@ Pipe::do_cleanup() {
 
 Pipe::Pipe() {
 #ifdef CONFIG_TEMP_DIRECTORY
-	char *s = tempnam(CONFIG_TEMP_DIRECTORY, "cssc");
+	const char *s = tempnam(CONFIG_TEMP_DIRECTORY, "cssc");
 	name = s;
 	if (s == NULL) {
 		quit(-1, "tempnam() failed.");
 	}
 	free(s);
 #else
-	name = tmpnam(NULL);
-	if (name == NULL) {
-		quit(-1, "tmpnam() failed.");
-	}
+	const char *s = tmpnam(NULL);
+	if (NULL == s)
+	  {
+	    quit(-1, "tmpnam() failed.");
+	  }
+	else
+	  {
+	    name = s;
+	  }
 #endif
 
 	fd = create(name, CREATE_EXCLUSIVE | CREATE_READ_ONLY);
@@ -95,7 +106,7 @@ Pipe::Pipe() {
 
 FILE *
 Pipe::read_stream() {
-	fd = open(name, O_RDONLY);
+	fd = open(name.c_str(), O_RDONLY);
 	if (fd == -1) {
 		quit(errno, "%s: Can't reopen temporary file.",
 		     name.c_str());
@@ -111,15 +122,15 @@ Pipe::read_stream() {
 /* Closes the read stream and deletes the temporary file. */
 
 int
-Pipe::read_close() {
-	fclose(f);
-	f = NULL;
-	fd = -1;
-	if (remove(name) == -1) {
-		quit(errno, "%s: Can't remove temporary file.",
-		     name.c_str());
-	}
-	return 0;
+Pipe::read_close()
+{
+  fclose(f);
+  f = NULL;
+  fd = -1;
+  const char *s = name.c_str();
+  if (remove(s) == -1)
+    quit(errno, "%s: Can't remove temporary file.", s);
+  return 0;
 }
 
 /* Runs the diff command with a one pipe as stdin and another pipe

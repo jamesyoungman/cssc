@@ -55,6 +55,15 @@
 #undef  USE_PIPE
 #endif
 
+
+/* We want the code for variour systems to be as consistent as 
+ * possible so I think we should discard the fork-and-pipe method,
+ * and use temporary files instead.   However the no-pipe code seems
+ * not to work perfectly.  Perhaps I should rewrite it.
+ */
+/* #undef USE_PIPE */
+
+
 #ifndef USE_PIPE
 
 class Pipe: cleanup {
