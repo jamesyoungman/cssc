@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-06-16 22:12:29 james>
+Time-stamp: <1998-11-01 22:50:37 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -58,6 +58,14 @@ prodiced by (a bug in) Sun's Code Manager).
 Achim Hoffann did his best to help me find a bug that was staring me
 right in the face.  Many apologies for making him gather all sorts of
 information which wasn't in the end neccesary.  I'm sorry!
+
+Dick Streefland provided patches for fixing several problems; core
+dumps when no SCCS files were specified, and some prototype mismatches.
+He also added checks for out-of-space conditions for get and prs.
+
+Greg A. Woods <gwoods@acm.org>, <woods@planix.com>, <woods@weird.com>
+provided the "yammer.c" program that allows us to run the test suite
+on systems that lack "nl", for example NetBSD/SPARC 1.3.2.
 
 
 Local Variables:
