@@ -2504,9 +2504,9 @@ binary.
 
 If the @code{x} flag is set, @sc{cssc} will generate a g-file whose
 execute bits are set.  This feature exists for compatibility with SCO
-@sc{sccs}.  Do not use this feature if you wish to interoperate with
-other implementations of @sc{sccs}.  Setting this flag with
-@code{admin -fx} generates a warning about this.
+OpenServer's @sc{sccs}.  Do not use this feature if you wish to
+interoperate with other implementations of @sc{sccs}.  Setting this
+flag with @code{admin -fx} generates a warning about this.
 
 @node BitKeeper, Maximum Line Length, Executable File Support, Interoperability
 @section BitKeeper
@@ -2745,10 +2745,11 @@ option to @code{admin}.  See @ref{Binary File Support}, for more
 information.
 
 @item Executable file support
-The SCO implementation of @sc{sccs} provides an @code{x} flag, which
-turns on the executable bits of the mode of the g-file when it is
-created.  Other versions of @sc{sccs} do not have this feature.  While
-@sc{csssc} provides this feature also, its use is not recommended.
+The SCO OpenServer implementation of @sc{sccs} provides an @code{x}
+flag, which turns on the executable bits of the mode of the g-file
+when it is created.  Other versions of @sc{sccs} do not have this
+feature.  While @sc{csssc} provides this feature also, its use is not
+recommended.
 
 @item Initial delta
 The @option{-r} option is used to specify the release of the initial
