@@ -30,6 +30,9 @@ docommand a4 "${rmdel} -r1.2 $s" 0 "" ""
 # lines ^AI, ^AE etc. were all deleted.   Bug reported by Peter Kjellerstedt.
 docommand a5 "${get} -r1.1 -p $s" 0 "hello, this is a test file\n" IGNORE
 
+# Make sure that the revision we tried to remove is actually now absent.
+docommand a6 "${get} -r1.2 -p $s" 1 "" IGNORE
+
 remove command.log log log.stdout log.stderr $g $s $z $x $p
 success
 
