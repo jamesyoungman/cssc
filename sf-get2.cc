@@ -37,8 +37,50 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.52 2003/03/01 15:38:26 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.53 2003/03/08 14:29:26 james_youngman Exp $";
 #endif
+
+
+bool sccs_file::sid_matches(const sid& requested,
+			    const sid& found,
+			    bool get_top_delta) const
+{
+  // Giving a SID of two components is a request for 
+  // an exact match on the trunk, unless get_top_delta
+  // is specified, in which case it is a request for
+  // the latest SID of the specified release and level.
+  
+  int ncomponents = requested.components();
+  if (2 == ncomponents && !get_top_delta)
+    ncomponents = 4;            // want an exact match.
+
+  ASSERT(ncomponents != 0);
+  ASSERT(ncomponents <= 4);
+
+  if (1 == ncomponents)
+    {
+      if ( (release)found > (release)requested )
+	return false;
+      else if (!get_top_delta && !found.on_trunk())
+	return false;
+      else
+	return true;
+    }
+  else if (3 == ncomponents)
+    {
+      // We ignore anything that is not on a branch.
+      if (found.components() >= ncomponents)
+	  return (relvbr)found == (relvbr)requested;
+      else
+	return false;
+    }
+  else
+    {
+      return found.matches(requested, ncomponents);
+    }
+}
+
+
 
 /* Returns the SID of the delta to retrieve that best matches the
    requested SID. */
@@ -83,66 +125,52 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
       // have to be on the trunk.
       while (iter.next())
         {
-          if ( (release)iter->id > (release)requested )
-            continue;
-          else if (!get_top_delta && !iter->id.on_trunk())
-            continue;
-
-          if (!got_best || iter->id.gte(best))
-            {
-              best = iter->id;
-              got_best = true;
-
-              /* The -t option to get was specified.
-               * This means that the user wants to find the "top"
-               * delta - this is the one most recently added to the 
-               * SCCS file, that is the one closest to the beginning 
-               * of the file.  It is not possible to determine which 
-               * SID this is by looking at the tree of SIDs alone.
-               * The addition of this conditional fixed SourceForge bug 
-               * number 479916.
-               */
-              if (get_top_delta
-                  && iter->id.matches(requested, ncomponents))
-                {
-                  found = best;
-                  return true;
-                }
-            }
+	  if (sid_matches(requested, iter->id, get_top_delta))
+	    {
+	      if (!got_best || iter->id.gte(best))
+		{
+		  best = iter->id;
+		  got_best = true;
+		  
+		  /* The -t option to get was specified.
+		   * This means that the user wants to find the "top"
+		   * delta - this is the one most recently added to the 
+		   * SCCS file, that is the one closest to the beginning 
+		   * of the file.  It is not possible to determine which 
+		   * SID this is by looking at the tree of SIDs alone.
+		   * The addition of this conditional fixed SourceForge bug 
+		   * number 479916.
+		   */
+		  if (get_top_delta
+		      && iter->id.matches(requested, ncomponents))
+		    {
+		      found = best;
+		      return true;
+		    }
+		}
+	    }
         }
     }
   else if (3 == ncomponents)
     {
       while (iter.next())
         {
-          const sid &s = iter->id;
-          const int nc = s.components();
-          
-          // We ignore anything that is not on a branch.
-          if (nc >= ncomponents)
-            {
-              // Fix by Mark Fortescue <mfortescue@transoft.com> for the 
-              // situation where we specify -rx.y.z.
-              // 
-              // There was a branch problem here - We were only checking the
-              // Release. We need to check Level and Branch as well
-              if ( (relvbr)s == (relvbr)requested )
-                {
-                  if (!got_best || s >= best)
-                    {
-                      best = s;
-                      got_best = true;
-                    }
-                }
-            }
+	  if (sid_matches(requested, iter->id, get_top_delta))
+	    {
+	      if (!got_best || (iter->id) >= best)
+		{
+		  best = iter->id;
+		  got_best = true;
+		}
+	    }
         }
     }
   else
     {
       while (iter.next())
         {
-          if (iter->id.matches(requested, ncomponents))
-            {
+	  if (sid_matches(requested, iter->id, get_top_delta))
+	    {
               if (!got_best || iter->id.gte(best))
                 {
                   best = iter->id;
