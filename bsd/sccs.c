@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.14 1998/06/06 17:46:07 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.15 1998/06/08 20:01:04 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -90,11 +90,13 @@ static const char filever[] = "$Id: sccs.c,v 1.14 1998/06/06 17:46:07 james Exp 
 #define WCOREDUMP(stat_val) ( (stat_val) & 0200 )
 #endif
 
-#include <sys/cdefs.h>		/* TODO: this does what? */
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>		/* TODO: this does what? */
+#endif
 
-
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
 
 #if HAVE_DIRENT_H
 # include <dirent.h>
@@ -125,7 +127,11 @@ static const char filever[] = "$Id: sccs.c,v 1.14 1998/06/06 17:46:07 james Exp 
 /* #include "pathnames.h" */
 /* The next few lines inserted from @(#)pathnames.h	8.1 (Berkeley) 6/6/93
  */
-#include <paths.h>
+/* #include <paths.h> */
+
+#ifndef _PATH_BSHELL
+#define _PATH_BSHELL "/bin/sh"
+#endif
 
 /* #define PASTE(a,b) a##b */
 
@@ -139,6 +145,7 @@ static const char filever[] = "$Id: sccs.c,v 1.14 1998/06/06 17:46:07 james Exp 
 #define	_PATH_SCCSPRS	("prs")
 #define	_PATH_SCCSPRT	("prt")
 #define	_PATH_SCCSRMDEL	("rmdel")
+#define	_PATH_SCCSCDC	("cdc")
 #define	_PATH_SCCSVAL	("val")
 #define	_PATH_SCCSWHAT	("what")
 #undef _PATH_TMP
@@ -339,7 +346,7 @@ struct sccsprog
 const struct sccsprog SccsProg[] =
 {
   {"admin", PROG, REALUSER, _PATH_SCCSADMIN},
-  {"cdc", PROG, 0, _PATH_SCCSRMDEL},
+  {"cdc", PROG, 0, _PATH_SCCSCDC},
   {"comb", PROG, 0, _PATH_SCCSCOMB},
   {"delta", PROG, 0, _PATH_SCCSDELTA},
   {"get", PROG, 0, _PATH_SCCSGET},
@@ -364,7 +371,7 @@ const struct sccsprog SccsProg[] =
   {"print", CMACRO, 0, "prs -e/get -p -m -s"},
   {"branch", CMACRO, NO_SDOT, "get:ixrc -e -b/delta: -s -n -ybranch-place-holder/get:pl -e -t -g"},
   {"enter", ENTER, NO_SDOT, NULL},
-  {"create", CMACRO, NO_SDOT, "enter/get:ixbeskcl -t"},
+  {"create", CMACRO, NO_SDOT, "enter/get:ixeskcl -t"},
   {NULL, -1, 0, NULL},
 };
 
