@@ -65,37 +65,40 @@
 /* This class is used to iterate over the list of SCCS files as
    specified on the command line. */
 
-class sccs_file_iterator {
+class sccs_file_iterator
+{
 public:
-	enum sources { ARGS, STDIN, DIRECTORY };
+  enum sources { ARGS, STDIN, DIRECTORY };
 
 private:
-	enum sources source;
+  enum sources source;
 
-	char **argv;
-	int argc;
-	int is_unique;
+  char **argv;
+  int argc;
+  int is_unique;
   
 #ifndef CONFIG_NO_DIRECTORY
-	list<mystring> files;
-	int pos;
+  list<mystring> files;
+  int pos;
 #endif
-	sccs_name name;
+  sccs_name name;
 
 public:
-	sccs_file_iterator(int ac, char **av, int ind = 1);
-	
-	int next();
+  sccs_file_iterator(int ac, char **av, int ind = 1);
+  
+  int next();
 
-	sccs_name &get_name() { return name; }
+  sccs_name &get_name() { return name; }
+
   // JAY mod: using is now a keyword; change the function name to 
   // using_source().
-	enum sources using_source() { return source; }
-
-  // unique() returns nonzero if more than exactly file was specified on
-  // the command line; zero if more than one was specified or the names
-  // are gotten from a directory or pipe.
-  	int unique() const;
+  enum sources using_source() { return source; }
+  bool using_stdin() { return STDIN == source; }
+  
+  // unique() returns nonzero if more than exactly one file was
+  // specified on the command line; zero if more than one was
+  // specified or the names are gotten from a directory or pipe.
+  int unique() const;
 };
 
 #endif /* __FILEITER_H__ */
