@@ -3,8 +3,17 @@ control system SCCS.  It is based on the MySC package by Ross Ridge.
 
 CSSC is currently under development so expect problems with compiling
 the package on older machines and perhaps even incorrect operation.
-For a list of known bugs see docs/BUGS.  For a list of now-fixed bugs
-see docs/FIXED.
+
+
+
+STOP PRESS!
+
+         CSSC is now hosted on SourceForge, and so a bug reporting and
+         technical support system is available on
+         http://sourceforge.net/CSSC.
+
+
+
 ==============================================================================
 			Quick Start
 ------------------------------------------------------------------------------
