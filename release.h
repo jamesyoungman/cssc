@@ -28,7 +28,8 @@ public:
 
   int valid() const { return rel > 0; }
 
-
+  enum { LARGEST = 9999 };	// largest valid release number.
+  
   release &operator++() { rel++; return *this; }
   release &operator--() { rel--; return *this; }
 
