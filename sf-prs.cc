@@ -35,14 +35,14 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.30 2002/03/10 17:54:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.31 2002/03/21 21:16:17 james_youngman Exp $";
 #endif
 
 inline bool
 sccs_file::get(FILE *out, mystring name, seq_no seq)
 {
   struct subst_parms parms(out, NULL, delta(), 0,
-			   sccs_date());  // XXX: was sccs_date(NULL) (bad!)
+                           sccs_date());  // XXX: was sccs_date(NULL) (bad!)
   class seq_state state(highest_delta_seqno());
   
   return prepare_seqstate(state, seq) && get(name, state, parms, true);
@@ -51,14 +51,17 @@ sccs_file::get(FILE *out, mystring name, seq_no seq)
 /* Prints a list of sequence numbers on the same line. */
 
 static void
-print_seq_list(FILE *out, mylist<seq_no> const &list) {
+print_seq_list(FILE *out, mylist<seq_no> const &list,
+               const sccs_file *psfile) {
         int i;
         int len = list.length();
 
         if (len > 0) {
-                fprintf(out, "%u", list[0]);
-                for(i = 1; i < len; i++) {
-                        fprintf(out, " %u", list[i]);
+                for(i = 0; i < len; i++) {
+                    sid s = psfile->seq_to_sid(list[i]);
+                    if (i > 0)
+                        fprintf(out, " ");
+                    s.print(out);
                 }
         }
 }
@@ -277,21 +280,21 @@ sccs_file::print_delta(FILE *out, const char *format,
               switch (*s)
                 {
                 case 'n':
-		  /* Turn a \n into a newline unless it is the last 
-		   * bit of the format string.  In the latter case we 
-		   * ignore it - see prs/format.sh test cases 4a and 4b.
-		   * Those partiicular test cases were checked against 
-		   * Sun Solaris 2.6.
-		   */
-		  if (s[1])
-		    {
-		      c = '\n';
-		      break;
-		    }
-		  else
-		    {
-		      return;
-		    }
+                  /* Turn a \n into a newline unless it is the last 
+                   * bit of the format string.  In the latter case we 
+                   * ignore it - see prs/format.sh test cases 4a and 4b.
+                   * Those partiicular test cases were checked against 
+                   * Sun Solaris 2.6.
+                   */
+                  if (s[1])
+                    {
+                      c = '\n';
+                      break;
+                    }
+                  else
+                    {
+                      return;
+                    }
                 case 't': c = '\t'; break;
                 case '\\': c = '\\'; break;
                 default:        // not \n or \t -- print the whole thing.
@@ -440,15 +443,15 @@ sccs_file::print_delta(FILE *out, const char *format,
             }
                   
         case KEY2('D','n'):
-          print_seq_list(out, d.included);
+          print_seq_list(out, d.included, this);
           break;
 
         case KEY2('D','x'):
-          print_seq_list(out, d.excluded);
+          print_seq_list(out, d.excluded, this);
           break;
 
         case KEY2('D','g'):
-          print_seq_list(out, d.ignored);
+          print_seq_list(out, d.ignored, this);
                         break;
 
         case KEY2('M','R'):
@@ -534,8 +537,8 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY2('F','D'):
           // The genuine article prints '(none)' if there
           // is no description.  
-	  // JY Sun Nov 25 01:33:46 2001; Solaris 2.6 
-	  // prints "none" rather than "(none)".
+          // JY Sun Nov 25 01:33:46 2001; Solaris 2.6 
+          // prints "none" rather than "(none)".
           if (0 == comments.length())
             fputs("none\n", out);
           else
