@@ -34,7 +34,7 @@
 #include "linebuf.h"
 #include "quit.h"
 
-#ifdef HAVE_CTYPE_H
+#ifdef STDC_HEADERS
 #include <ctype.h>
 #endif
 
@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.29 1998/06/14 15:27:00 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.30 1998/06/16 20:43:15 james Exp $";
 #endif
 
 
@@ -465,7 +465,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       
       if (given_sum != sum)
 	{
-	  fprintf(stderr, "%s: Warning bad checksum "
+	  fprintf(stderr, "%s: Warning: bad checksum "
 		  "(expected=%d, calculated %d).\n",
 		  name.c_str(), given_sum, sum);
 	}
