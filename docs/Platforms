@@ -28,6 +28,18 @@ $ gmake SHELL=/bin/posix/sh
 
 Because GNU CSSC uses GNU "autoconf" to generate configuration
 scripts, it's reasonable to expect CSSC to work on almost any version
-of Unix with little or no modification.  As far as I know however, it
-has not yet been tested with any C++ compiler other than GCC, so I
-*do* expect portability problems there.
+of Unix with little or no modification.  If modification is required,
+it is best to modify "configure.in" appropriately and let "configure"
+determine what needs to be done.  However, if you do not have GNU
+Autoconf installed you will not be able to regenerate "configure" from
+"configure.in".  In any case, please let the maintainer know about
+these required modifications (see the README file in the distribution
+directory).  Don't forget also to explain clearly *why* these
+modifications are required, and on what systems.
+
+If you wish to install GNU Autoconf, you can obtain it from the GNU
+Project's FTP site, ftp.gnu.org.  You will probably also find GNU
+Automake useful.
+
+As far as I know however, CSSC has not yet been tested with any C++
+compiler other than GCC, so I *do* expect portability problems there.

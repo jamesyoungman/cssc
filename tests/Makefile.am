@@ -1,4 +1,4 @@
-TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary
+TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -78,9 +78,17 @@ test-binary: links
 		$(SHELL) $$i || exit 1; \
 	done'
 
-all-tests: 	test-cdc \
+test-rmdel: links
+	$(SHELL) -ec 'cd rmdel && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
+all-tests: 	test-rmdel \
 		test-admin test-delta test-get test-prs test-prt test-unget \
-		test-large test-sccsdiff test-binary
+		test-cdc  \
+		test-large test-sccsdiff test-binary 
 	echo Tests passed.
 
 check: all-tests

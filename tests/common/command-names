@@ -9,5 +9,6 @@ sact=${sact:-${dir}/sact}
 sccsdiff=${sccsdiff:-${dir}/sccsdiff}
 unget=${unget:-${dir}/unget}
 what=${what:-${dir}/what}
+rmdel=${rmdel:-${dir}/rmdel}
 
 DIFF=${DIFF:-diff}

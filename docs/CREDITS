@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-02-28 13:38:40 james>
+Time-stamp: <1998-03-11 18:08:28 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -36,6 +36,9 @@ delete rather than a mixture of that and xalloc()/free().
 
 Support for development snapshots of GCC (as of 1997-08-11) was
 contributed by Fila Kolodny <fila@ibi.com>.
+
+Peter Kjellerstedt <Peter.Kjellerstedt@axis.com> has provided many
+consise and useful bug reports, mostly with patches.
 
 
 Local Variables:

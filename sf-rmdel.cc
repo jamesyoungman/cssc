@@ -34,7 +34,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.7 1997/12/26 18:33:18 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.8 1998/03/11 18:19:51 james Exp $";
 #endif
 
 static int
@@ -131,6 +131,11 @@ sccs_file::rmdel(sid id)
 	  else if (state == INSERT)
 	    {
 	      corrupt("Non-terminal delta!?!");
+	    }
+	  else
+	    {
+	      fputs(plinebuf->c_str(), out);
+	      putc('\n', out);
 	    }
 	}
       else if (state != INSERT)

@@ -1,8 +1,15 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-03-03 22:14:43 james>
+Time-stamp: <1998-03-11 18:06:42 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
+
+Wed Mar 11 18:01:54 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl3.  Fixed in version 0.06-pl4.
+ If you use rmdel, your s.-file will end up totally corrupted.
+ This is due to the fact that all the lines which specify
+ what should be included/excluded for each SID are removed...
+
 
 Thu Feb 19 21:50:49 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
 In version 0.06-pl0.  Unfixed. 
