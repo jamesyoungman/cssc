@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __MYSTRING_H__
-#define __MYSTRING_H__
+#ifndef CSSC__MYSTRING_H__
+#define CSSC__MYSTRING_H__
 
 #ifdef __GNUC__
 #pragma interface

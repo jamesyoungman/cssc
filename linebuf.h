@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __LINEBUF_H__
-#define __LINEBUF_H__
+#ifndef CSSC__LINEBUF_H__
+#define CSSC__LINEBUF_H__
 
 #ifdef __GNUC__
 //#pragma interface

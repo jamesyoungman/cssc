@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __PIPE_H__
-#define __PIPE_H__
+#ifndef CSSC__PIPE_H__
+#define CSSC__PIPE_H__
 
 #include <stdio.h>
 

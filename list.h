@@ -28,8 +28,8 @@
  *
  */
  
-#ifndef __LIST_H__
-#define __LIST_H__
+#ifndef CSSC__LIST_H__
+#define CSSC__LIST_H__
 
 template <class TYPE>
 class list {

@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef __QUIT_H__
-#define __QUIT_H__
+#ifndef CSSC__QUIT_H__
+#define CSSC__QUIT_H__
 
 #ifdef __GNUC__
 #pragma interface

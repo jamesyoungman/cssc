@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef __RUN_H__
-#define __RUN_H__
+#ifndef CSSC__RUN_H__
+#define CSSC__RUN_H__
 
 #include "list.h"
 

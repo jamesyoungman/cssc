@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __PFILE_H__
-#define __PFILE_H__
+#ifndef CSSC__PFILE_H__
+#define CSSC__PFILE_H__
 
 #include "sccsname.h"
 #include "sid.h"
