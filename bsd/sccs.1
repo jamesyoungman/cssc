@@ -434,6 +434,44 @@ or
 .Dq Li source .
 If such a directory is found, it is used.
 .El
+.Sh DIAGNOSTICS
+There are many error messages, mostly brief but fairly obvious.
+If all goes acording to plan, the program's exit status is zero.
+Otherwise, it will be one of the following values:-
+.Bl -tag -width >128
+.It 0
+No error; everything proceeded according to plan.
+.It 64 
+Command line usage error 
+.\" 65 data format error 
+.\" 66 cannot open input 
+.\" 67 addressee unknown 
+.\" 68 host name unknown 
+.It 69 
+Could not exec program
+.It 70 
+Internal software error.  This should not happen.
+.It 71 
+System error (e.g., can't fork) 
+.\" 72 critical OS file missing 
+.\" 73 can't create (user) output file 
+.\" 74 input/output error 
+.It 75 
+Temporary failure; retry later.  This error is returned when the
+system runs out of memory.
+.\" 76 remote error in protocol 
+.It 77 
+Permission denied.  This error occurs when the program has been 
+installed setuid, but SCCSDIR was not configured in at compile time.
+This can also happen if something goes wrong when the program tries 
+to drop its setuid or setgid privileges.
+.\" 78 configuration error 
+.\" >128
+When a program exits due to a fatal signal, the shell usually adds 128
+to the signal number and uses that as the return value.   Some systems
+also produce values in this range if there was a problem with the
+dynamic linker.
+.El
 .Sh SEE ALSO
 .Xr what 1 ,
 .Xr sccs-admin 1 ,
