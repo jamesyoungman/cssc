@@ -16,12 +16,13 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.12 1997/06/01 12:05:35 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.13 1997/06/01 20:37:54 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
    requested SID. */
 
+#if 0
 bool
 sccs_file::find_requested_sid(sid requested, sid &found) const
 {
@@ -127,6 +128,75 @@ sccs_file::find_requested_sid(sid requested, sid &found) const
     }
 	
 }
+#else
+bool
+sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) const
+{
+  if (requested.is_null())	// no sid specified?
+    {				// get the default.
+      requested = flags.default_sid; 
+      if (requested.is_null())	// no default?
+	{			// get the latest.
+	  requested = sid(release::LARGEST);
+	}
+    }
+
+  // Giving a SID of two components is a request for 
+  // an exact match on the trunk, unless include_branches
+  // is specified, in which case it is a request for
+  // the latest SID of the specified release and level.
+  int ncomponents = requested.components();
+  if (2 == ncomponents && !include_branches)
+    ncomponents = 4;		// want an exact match.
+
+  assert(ncomponents != 0);
+  assert(ncomponents <= 4);
+
+  // Remember the best so far.
+  bool got_best = false;
+  sid best;
+  
+  delta_iterator iter(delta_table);
+
+  if (1 == ncomponents)
+    {
+      // find highest SID of any level, which is less than or equal to
+      // the requested one.  If include_branches is true, they don't
+      // have to be on the trunk.
+      while(iter.next())
+	{
+	  if ( (release)iter->id > (release)requested )
+	    continue;
+	  else if (!include_branches && !iter->id.on_trunk())
+	    continue;
+	  if (!got_best || iter->id.gte(best))
+	    {
+	      best = iter->id;
+	      got_best = true;
+	    }
+	}
+    }
+  else
+    {
+      while(iter.next())
+	{
+	  if (iter->id.matches(requested, ncomponents))
+	    {
+	      if (!got_best || iter->id.gte(best))
+		{
+		  best = iter->id;
+		  got_best = true;
+		}
+	    }
+	}
+    }
+
+  assert(true == got_best);
+  found = best;
+  return got_best;
+}
+
+#endif
 
 
 /* Returns the SID of the new delta to be created. */
