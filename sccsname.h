@@ -36,6 +36,7 @@
 #endif
 
 const char *base_part(const char *s);
+mystring canonify_filename(const char* fname);
 
 class sccs_name {
 	mystring name;
