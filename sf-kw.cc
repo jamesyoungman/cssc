@@ -31,8 +31,8 @@
 
 
 
-void
-sccs_file::no_id_keywords() const 
+void sccs_file::
+no_id_keywords(const char name[]) const 
 {
   if (flags.no_id_keywords_is_fatal)
     {
