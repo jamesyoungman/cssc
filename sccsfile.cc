@@ -31,6 +31,7 @@
 #include "sccsfile.h"
 #include "delta-table.h"
 #include "delta-iterator.h"
+#include "linebuf.h"
 
 #include <ctype.h>
 
@@ -39,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.15 1997/11/30 21:05:49 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.16 1997/12/26 18:35:20 james Exp $";
 #endif
 
 
@@ -122,9 +123,9 @@ sccs_file::read_line() {
 	} 
 
 	lineno++;
-	if (linebuf[0] == '\001')
+	if ( bufchar(0) == '\001')
 	  {
-	    return linebuf[1];
+	    return bufchar(1);
 	  }
 	return 0;
 }
@@ -143,7 +144,7 @@ sccs_file::corrupt(const char *why) const {
 
 void
 sccs_file::check_arg() const {
-	if (linebuf[2] != ' ') {
+	if (bufchar(2) != ' ') {
 		corrupt("Missing arg");
 	}
 }
@@ -153,7 +154,7 @@ sccs_file::check_arg() const {
 
 void
 sccs_file::check_noarg() const {
-	if (linebuf[2] != '\0') {
+	if (bufchar(2) != '\0') {
 		corrupt("Unexpected arg");
 	}
 }
@@ -219,14 +220,15 @@ sccs_file::read_delta() {
 
 	/* The current line should be an 's' control line */
 
-	ASSERT(linebuf[1] == 's');
+	ASSERT(bufchar(1) == 's');
 	check_arg();
 	
 	char *args[7];		/* Stores the result of spliting a line */
 
-	if (split(linebuf + 3, args, 3, '/') != 3) {
-		corrupt("Two /'s expected");
-	}
+	if (plinebuf->split(3, args, 3, '/') != 3)
+	  {
+	    corrupt("Two /'s expected");
+	  }
 
 	// TODO: use constructor here?
 	delta tmp;	/* The new delta */
@@ -241,7 +243,7 @@ sccs_file::read_delta() {
 
 	check_arg();
 
-	split(linebuf + 3, args, 7, ' ');
+	plinebuf->split(3, args, 7, ' ');
 
 	tmp.type = args[0][0];
 	tmp.id = sid(args[1]);
@@ -283,7 +285,7 @@ sccs_file::read_delta() {
 		      break;
 		    }
 		  
-		  if (linebuf[2] != ' ')
+		  if (bufchar(2) != ' ')
 		    {
 		      c = read_line(); // throw line away.
 		      continue;
@@ -291,7 +293,7 @@ sccs_file::read_delta() {
 		  	
 			check_arg();
 
-			start = linebuf + 3;
+			start = plinebuf->c_str() + 3;
 			do {
 				char *end = strchr(start, ' ');
 				if (end != NULL) {
@@ -320,13 +322,13 @@ sccs_file::read_delta() {
 	
 	while(c == 'm') {
 		check_arg();
-		tmp.mrs.add(linebuf + 3);
+		tmp.mrs.add(plinebuf->c_str() + 3);
 		c = read_line();
 	}
 
 	while(c == 'c') {
 		check_arg();
-		tmp.comments.add(linebuf + 3);
+		tmp.comments.add(plinebuf->c_str() + 3);
 		c = read_line();
 	}
 
@@ -336,6 +338,7 @@ sccs_file::read_delta() {
 
 	check_noarg();
 
+	ASSERT(0 != delta_table);
 	delta_table->add(tmp);
 }
 
@@ -373,6 +376,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	: name(n), mode(m), lineno(0)
 {
   delta_table = new cssc_delta_table;
+  plinebuf     = new cssc_linebuf;
+  ASSERT(0 != delta_table);
   
   if (!name.valid())
     {
@@ -414,7 +419,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   int c = read_line();
   ASSERT(c == 'h');
   
-  if (strict_atous(linebuf + 2) != sum)
+  if (strict_atous(plinebuf->c_str() + 2) != sum)
     {
       fprintf(stderr, "%s: Warning bad checksum.\n",
 	      name.c_str());
@@ -441,7 +446,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	{
 	  corrupt("User name expected.");
 	}
-      users.add(linebuf.c_str());
+      users.add(plinebuf->c_str());
       c = read_line();
     }
 
@@ -452,18 +457,18 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     {
       check_arg();
 
-      if (linebuf[3] == '\0'
-	  || (linebuf[4] != '\0' && linebuf[4] != ' '))
+      if (bufchar(3) == '\0'
+	  || (bufchar(4) != '\0' && bufchar(4) != ' '))
 	{
 	  corrupt("Bad flag arg.");
 	}
       
-      char *arg = NULL;
-      if (linebuf[4] == ' ') {
-	arg = linebuf + 5;
+      const char *arg = 0;
+      if (bufchar(4) == ' ') {
+	arg = plinebuf->c_str() + 5;
       }
       
-      switch(linebuf[3]) {
+      switch (bufchar(3)) {
       case 't':
 	set_type_flag(arg);
 	break;
@@ -569,7 +574,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   c = read_line();
   while(c == 0)
     {
-      comments.add(linebuf.c_str());
+      comments.add(plinebuf->c_str());
       c = read_line();
     }
   
@@ -597,6 +602,8 @@ sid
 sccs_file::find_most_recent_sid(sid id) const {
 	sccs_date newest;
 	sid found;
+
+	ASSERT(0 != delta_table);
 	delta_iterator iter(delta_table);
 
 #if 0
@@ -628,8 +635,10 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
   d = sccs_date();
   bool found = false;
   
+  ASSERT(0 != delta_table);
+
   delta_iterator iter(delta_table);
-  while(iter.next())
+  while (iter.next())
     {
       if (!found || iter->date > d)
 	{
@@ -691,11 +700,11 @@ set_reserved_flag(const char *s)
 int
 sccs_file::read_line_param(FILE *f)
 {
-  if (linebuf.read_line(f))
+  if (plinebuf->read_line(f))
     {
       return 1;
     }
-  linebuf[strlen(linebuf) - 1] = '\0';
+  (*plinebuf)[strlen(plinebuf->c_str()) - 1] = '\0';
   return 0;
 }
 
@@ -709,26 +718,31 @@ sccs_file::is_delta_creator(const char *user, sid id) const
 
 const delta * sccs_file::find_delta(sid id) const
 {
+  ASSERT(0 != delta_table);
   return delta_table->find(id);
 }
 
 delta * sccs_file::find_delta(sid id)
 {
+  ASSERT(0 != delta_table);
   return delta_table->find(id);
 }
 
 seq_no sccs_file::highest_delta_seqno() const
 {
+  ASSERT(0 != delta_table);
   return delta_table->highest_seqno();
 }
 
 sid sccs_file::highest_delta_release() const
 {
+  ASSERT(0 != delta_table);
   return delta_table->highest_release();
 }
 
 sid sccs_file::seq_to_sid(seq_no seq) const
 {
+  ASSERT(0 != delta_table);
   return delta_table->delta_at_seq(seq).id;
 }
 
@@ -741,12 +755,29 @@ sccs_file::~sccs_file()
     {
       name.unlock();
     }
+  
   if (mode != CREATE)
     {
+      ASSERT(0 != f);		// catch multiple destruction.
       fclose(f);
+      f = 0;
     }
+  
+  ASSERT(0 != delta_table); 	// catch multiple destruction.
   delete delta_table;
+  delta_table = 0;
+  
+  ASSERT(0 != plinebuf); 	// catch multiple destruction.
+  delete plinebuf;
+  plinebuf = 0;
 }
+
+
+char sccs_file::bufchar(int pos) const
+{
+  return (*plinebuf)[pos];
+}
+
 
 /* Local variables: */
 /* mode: c++ */
