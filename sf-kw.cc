@@ -43,3 +43,43 @@ no_id_keywords(const char name[]) const
       fprintf(stderr, "%s: Warning: No id keywords.\n", name);
     }
 }
+
+/* Warns or quits if the new delta doesn't include any id keywords */
+
+void
+sccs_file::check_keywords_in_file(const char *name)
+{
+  FILE *f = fopen(name, "r");
+  if (NULL == f)
+    {
+      quit(errno, "%s: Can't open file for reading.", name);
+    }
+  else
+    {
+      int ch, last;
+      
+      last = '\n';
+      while ( EOF != (ch=getc(f)) )
+	{
+	  if ('%' == last && is_id_keyword_letter(ch))
+	    {
+	      const int peek = getc(f);
+	      if ('%' == peek)
+		{
+		  fclose(f);
+		  return;
+		}
+	      else if (EOF == peek)
+		{
+		  break;
+		}
+	      ungetc(peek, f);
+	    }
+	  last = ch;
+	}
+      no_id_keywords(name);
+    }
+  fclose(f);
+}
+
+

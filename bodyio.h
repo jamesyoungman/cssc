@@ -22,7 +22,7 @@
  *
  */
 #ifndef CSSC_INC_BODYIO_H
-#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.1 1998/02/01 18:45:56 james Exp $"
+#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.2 1998/02/11 07:49:17 james Exp $"
 
 bool body_insert_text(const char iname[], const char oname[],
 		      FILE *in, FILE *out,
@@ -44,6 +44,7 @@ void body_insert(bool *binary,
 // Encoding functions...
 void encode_line(const char in[], char out[], int len);
 int decode_line(const char in[], char out[]);
+int encode_stream(FILE *fin, FILE *fout); /* encodes a whole file. */
 
 
 // Decoding (output) functions
@@ -54,5 +55,6 @@ int output_body_line_binary(FILE *fp, const cssc_linebuf*);
 
 bool check_id_keywords(const char *s, size_t len);
 
+int encode_file(const char* name_in, const char* name_out);
 
 #endif

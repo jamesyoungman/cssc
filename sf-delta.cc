@@ -35,6 +35,7 @@
 #include "linebuf.h"
 #include "delta.h"
 #include "delta-table.h"
+#include "bodyio.h"
 
 
 // We use @LIBOBJS@ instead now.
@@ -43,10 +44,11 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.16 1998/02/01 18:00:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.17 1998/02/11 07:49:15 james Exp $";
 #endif
 
-class diff_state {
+class diff_state
+{
 public:
 	enum state { START, NOCHANGE, DELETE, INSERT, END };
 
@@ -58,7 +60,6 @@ private:
 
 	FILE *in;
 	cssc_linebuf linebuf;
-	mystring gname;
 
 	NORETURN corrupt() POSTDECL_NORETURN;
 	NORETURN corrupt(const char *msg) POSTDECL_NORETURN;
@@ -67,10 +68,12 @@ private:
 	int read_line() { return linebuf.read_line(in); }
 
 public:
-	diff_state(FILE *f, mystring name)
-		: _state(START), 
-		  in_lineno(0), out_lineno(0),
-		  lines_left(0), change_left(0), in(f), gname(name) {}
+  diff_state(FILE *f)
+    : _state(START), 
+      in_lineno(0), out_lineno(0),
+      lines_left(0), change_left(0), in(f)
+    {
+    }
 
 	enum state process(FILE *out, seq_no seq);
 
@@ -102,8 +105,9 @@ diff_state::corrupt() {
    is wrong with the diff output. */
 
 NORETURN
-diff_state::corrupt(const char *msg) {
-	quit(-1, "Diff output corrupt. (%s)", msg);
+diff_state::corrupt(const char *msg)
+{
+  quit(-1, "Diff output corrupt. (%s)", msg);
 }
 
 
@@ -111,125 +115,153 @@ diff_state::corrupt(const char *msg) {
    diff output. */
 
 inline void
-diff_state::next_state() {
-	if (_state == DELETE && change_left != 0) {
-		if (read_line()) {
-			corrupt();
-		}
-		if (strcmp(linebuf.c_str(), "---\n") != 0) {
-			corrupt("---");
-		}
-		lines_left = change_left;
-		change_left = 0;
-		_state = INSERT;
-		return;
+diff_state::next_state()
+{
+  if (_state == DELETE && change_left != 0)
+    {
+      if (read_line())
+	{
+	  corrupt();
+	}
+      if (strcmp(linebuf.c_str(), "---\n") != 0)
+	{
+	  corrupt("---");
+	}
+      lines_left = change_left;
+      change_left = 0;
+      _state = INSERT;
+      return;
+    }
+
+  if (_state != NOCHANGE)
+    {
+      if (read_line())
+	{
+	  if (ferror(in))
+	    {
+	      corrupt();
+	    }
+	  _state = END;
+	  return;
 	}
 
-	if (_state != NOCHANGE) {
-		if (read_line()) {
-			if (ferror(in)) {
-				corrupt();
-			}
-			_state = END;
-			return;
-		}
+      /* Ignore "\ No newline at end of file" if it appears
+	 at the end of the diff output. */
 
-		/* Ignore "\ No newline at end of file" if it appears
-		   at the end of the diff output. */
-
-		if (linebuf[0] == '\\') {
-			if (!read_line()) {
-				corrupt("Expected EOF");
-			}
-			if (ferror(in)) {
-				corrupt();
-			}
-			_state = END;
-			return;
-		}
+      if (linebuf[0] == '\\')
+	{
+	  if (!read_line())
+	    {
+	      corrupt("Expected EOF");
+	    }
+	  if (ferror(in))
+	    {
+	      corrupt();
+	    }
+	  _state = END;
+	  return;
+	}
 			
+    }
+
+  char *s = NULL;
+  int line1, line2, line3, line4;
+  char c;
+
+  line1 = (int) strtol(linebuf.c_str(), &s, 10);
+  line2 = line1;
+  if (*s == ',')
+    {
+      line2 = (int) strtol(s + 1, &s, 10);
+      if (line2 <= line1)
+	{
+	  corrupt("left end line");
 	}
+    }
 
-	char *s = NULL;
-	int line1, line2, line3, line4;
-	char c;
+  c = *s;
 
-	line1 = (int) strtol(linebuf.c_str(), &s, 10);
-	line2 = line1;
-	if (*s == ',') {
-		line2 = (int) strtol(s + 1, &s, 10);
-		if (line2 <= line1) {
-			corrupt("left end line");
-		}
-	}
-
-	c = *s;
-
-	ASSERT(c != '\0');
+  ASSERT(c != '\0');
 		
-	if (c == 'a') {
-		if (line1 >= in_lineno) {
-			_state = NOCHANGE;
-			lines_left = line1 - in_lineno + 1;
-			return;
-		}
-		if (line1 + 1 != in_lineno) {
-			corrupt("left start line");
-		}
-	} else {
-		if (line1 > in_lineno) {
-			_state = NOCHANGE;
-			lines_left = line1 - in_lineno;
-			return;
-		}
-		if (line1 != in_lineno) {
-			corrupt("left start line");
-		}
+  if (c == 'a')
+    {
+      if (line1 >= in_lineno)
+	{
+	  _state = NOCHANGE;
+	  lines_left = line1 - in_lineno + 1;
+	  return;
 	}
-
-	line3 = (int) strtol(s + 1, &s, 10);
-	if (c == 'd') {
-		if (line3 != out_lineno) {
-			corrupt("right start line");
-		}
-	} else {
-		if (line3 != out_lineno + 1) {
-			corrupt("right start line");
-		}
+      if (line1 + 1 != in_lineno)
+	{
+	  corrupt("left start line [case 1]");
 	}
-
-	line4 = line3;
-	if (*s == ',') {
-		line4 = (int) strtol(s + 1, &s, 10);
-		if (line4 <= line3) {
-			corrupt("right end line");
-		}
+    }
+  else
+    {
+      if (line1 > in_lineno)
+	{
+	  _state = NOCHANGE;
+	  lines_left = line1 - in_lineno;
+	  return;
 	}
-
-	if (*s != '\n') {
-		corrupt("EOL");
+      if (line1 != in_lineno)
+	{
+	  corrupt("left start line [case 2]");
 	}
+    }
 
-	switch(c) {
-	case 'a':
-		_state = INSERT;
-		lines_left = line4 - line3 + 1;
-		break;		
-
-	case 'd':
-		_state = DELETE;
-		lines_left = line2 - line1 + 1;
-		break;
-
-	case 'c':
-		_state = DELETE;
-		lines_left = line2 - line1 + 1;
-		change_left = line4 - line3 + 1;
-		break;
-
-	default:
-		corrupt("unknown operation");
+  line3 = (int) strtol(s + 1, &s, 10);
+  if (c == 'd')
+    {
+      if (line3 != out_lineno)
+	{
+	  corrupt("right start line [case 1]");
 	}
+    }
+  else
+    {
+      if (line3 != out_lineno + 1)
+	{
+	  corrupt("right start line [case 2]");
+	}
+    }
+  
+  line4 = line3;
+  if (*s == ',')
+    {
+      line4 = (int) strtol(s + 1, &s, 10);
+      if (line4 <= line3)
+	{
+	  corrupt("right end line");
+	}
+    }
+
+  if (*s != '\n')
+    {
+      corrupt("EOL");
+    }
+
+  switch(c)
+    {
+    case 'a':
+      _state = INSERT;
+      lines_left = line4 - line3 + 1;
+      break;		
+
+    case 'd':
+      _state = DELETE;
+      lines_left = line2 - line1 + 1;
+      break;
+      
+    case 'c':
+      _state = DELETE;
+      lines_left = line2 - line1 + 1;
+      change_left = line4 - line3 + 1;
+      break;
+      
+    default:
+      corrupt("unknown operation");
+    }
 }
 
 
@@ -281,26 +313,6 @@ diff_state::process(FILE *out, seq_no seq) {
 }
 
 
-/* Warns or quits if the new delta doesn't include any id keywords */
-
-void
-sccs_file::check_keywords_in_file(const char *name) {
-	FILE *f = fopen(name, "r");
-	if (f == NULL) {
-		quit(errno, "%s: Can't open file for reading.", name);
-	}
-
-	while(!read_line_param(f)) {
-		if (plinebuf->check_id_keywords()) {
-			fclose(f);
-			return;
-		}
-	}
-	no_id_keywords(name);
-	fclose(f);
-}
-
-
 /* Adds a new delta to the SCCS file.  It doesn't add the delta to the
    delta list in sccs_file object, so this should be the last operation
    performed before the object is destroyed. */
@@ -312,6 +324,24 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	check_keywords_in_file(gname.c_str());
 
+
+	/*
+	 * At this point, encode the contents of "gname", and pass
+	 * the name of this encoded file to diff, instead of the 
+	 * name of the binary file itself.
+	 */
+	mystring file_to_diff;
+	if (flags.encoded)
+	  {
+	    mystring uname(tmpnam(NULL)); // get name for temporary file.
+	    encode_file(gname.c_str(), uname.c_str());
+	    file_to_diff = uname;
+	  }
+	else
+	  {
+	    file_to_diff = gname;
+	  }
+	
 	seq_state sstate(highest_delta_seqno());
 	const delta *got_delta = find_delta(pfile->got);
 	if (got_delta == NULL)
@@ -350,7 +380,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 #ifndef USE_PIPE
 
-	ret = run_diff(gname.c_str(), diff_in, diff_out);
+	ret = run_diff(file_to_diff.c_str(), diff_in, diff_out);
 	if (ret != STATUS(0) && ret != STATUS(1)) {
 		quit(-1, CONFIG_DIFF_COMMAND ": Command failed.  "
 			 STATUS_MSG(ret));
@@ -360,7 +390,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 #else /* USE_PIPE */
 
-	run_diff(gname.c_str(), diff_in, diff_out);
+	run_diff(file_to_diff.c_str(), diff_in, diff_out);
 
 	ret = diff_in.read_close();
 	if (ret != STATUS(0)) {
@@ -372,7 +402,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	diff_out.write_close();
 
-	class diff_state dstate(diff_out.read_stream(), gname);
+	class diff_state dstate(diff_out.read_stream());
 
 	seek_to_body();
 
@@ -568,6 +598,17 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	end_update(out, new_delta);
 
+	// If we had created a temporary file, delete it now.
+	// We should probably not exit fatally if we fail to
+	// unlink the temporary file.
+	if (flags.encoded)
+	  {
+	    if (0 != remove(file_to_diff.c_str()))
+	      {
+		perror(file_to_diff.c_str());
+	      }
+	  }
+	
 	new_delta.id.print(stdout);
 	printf("\n"
 	       "%lu inserted\n%lu deleted\n%lu unchanged\n",

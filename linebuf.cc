@@ -37,7 +37,7 @@
 #define CONFIG_LINEBUF_CHUNK_SIZE (1024)
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.8 1998/02/01 17:57:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.9 1998/02/11 07:49:15 james Exp $";
 #endif
 
 cssc_linebuf::cssc_linebuf()
@@ -64,10 +64,6 @@ cssc_linebuf::read_line(FILE *f)
       buflen += CONFIG_LINEBUF_CHUNK_SIZE;
       buf[buflen - 2] = '\0';
 		
-#if 1
-      fprintf(stderr, "buflen = %d\n", buflen);
-
-#endif		
       s = fgets(s, CONFIG_LINEBUF_CHUNK_SIZE + 1, f);
     }
   
