@@ -1,4 +1,22 @@
-Nwe in CSSC-0.03alpha-pl2
+New in CSSC-0.04alpha-pl0
+
+	* Fixes for year-2000 compliance.  While previous versions
+	  did in fact work in the year 2000, version 0.04 includes
+	  fixes for bugs with the years 2019, 2020, and also a 
+	  partial fix for the Unix year-2038 problem.  SCCS files
+	  containing dates throughout the valid range for SCCS
+	  (1969-2038) work correctly.  "delta", "cdc" and "admin -i"
+	  Depend on the operating system function time(), and so
+	  may stop working on some systems in the year 2038.  Y2k
+	  compliance tests have been added to the testsuite.  
+
+	* A chapter on Year 2000 issues has been added to the manual.
+
+	* We no longer need to have a mktime() function.
+
+	* We now use the standard C++ <string> header, if available.
+
+New in CSSC-0.03alpha-pl2
 
 	* Really fixed the test case for %P% in tests/get this time.
 
