@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.30 2001/08/29 17:17:02 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.31 2001/09/23 12:34:17 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -488,8 +488,7 @@ bool set_file_mode(mystring &gname, int mode)
     }
   else
     {
-      errormsg_with_errno("%s: cannot set mode of file to 0%o\n",
-                          name, mode);
+      errormsg_with_errno("%s: cannot set mode of file to 0%o", name, mode);
       return false;
     }
 }
