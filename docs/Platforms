@@ -3,7 +3,7 @@ Porting People
 The following people have helped ensure that CSSC has worked on
 these platforms (at some stage):
 
-James Youngman  <jay@gnu.org>    		    Linux (Red Hat 4.1,4.2)
+James Youngman  <jay@gnu.org>    		    Linux (Red Hat 4.1,4.2,5.0)
 James Youngman  <jay@gnu.org>    		[!] HPUX 9
 Lars Hecking    <lhecking@nmrc.ucc.ie>              Solaris-2.5.1
 Malcolm Boff    <Malcolm_Boff@compuserve.com>       Solaris-2.5.1
@@ -24,8 +24,8 @@ $ SHELL=/bin/posix/sh $SHELL ./configure
 $ gmake SHELL=/bin/posix/sh 
 
 
-Because GNU CSSC uses GNU "autoconf" to generate configuration scripts,
-it's reasonable to expect CSSC to work on almost any version of Unix
-with little or no modification.  As far as I know however, it has not
-yet been tested with any C++ compiler other than GCC, so I do expect
-portability problems there.
+Because GNU CSSC uses GNU "autoconf" to generate configuration
+scripts, it's reasonable to expect CSSC to work on almost any version
+of Unix with little or no modification.  As far as I know however, it
+has not yet been tested with any C++ compiler other than GCC, so I
+*do* expect portability problems there.
