@@ -35,7 +35,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.28 1998/09/06 09:25:26 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.29 1998/09/06 13:18:11 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -413,7 +413,11 @@ main(int argc, char **argv)
 	      
 	      if (!pfile->add_lock(retrieve, new_delta, include, exclude))
 		{
-		  retval = 1;		// TODO: what else?  Delete g-file?
+		  // Failed to add the lock to the p-file.
+		  if (real_file)
+		    remove(gname.c_str());
+
+		  retval = 1;	// remember the failure.
 		}
 	      delete pfile;
 	      pfile = NULL;
