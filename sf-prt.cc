@@ -19,7 +19,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.7 1997/07/02 07:07:16 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.8 1997/07/02 07:18:33 james Exp $";
 #endif
 
 static void
@@ -291,11 +291,6 @@ sccs_file::prt(FILE *out,
 
 {
   putc('\n', out);
-  
-  if (print_body)
-    {
-      print_delta_table = 0;
-    }
   
   if (print_delta_table)
     {
