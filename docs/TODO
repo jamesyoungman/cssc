@@ -60,10 +60,6 @@ Mon Aug  4 23:33:16 1997  James Youngman  <jay@gnu.ai.mit.edu>
  	required was the ability to select a shell other than /bin/sh.
 	
 
-Wed Jul  9 18:22:56 1997  James Youngman  <jay@gnu.ai.mit.edu>
-
-	* Migrate from <cstdio> to <iostream> (any nay-sayers?)
-
 Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Allow the utilities to be built with a shared library containing
@@ -71,7 +67,8 @@ Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
  	two version numbers, one for the library and one for each app.  I
  	don't expect to need/want to support user code linking against the
  	library, the intent is just to conserve disk space and perhaps
- 	system memory too.
+ 	system memory too. [ 2000-12-03: JY: not certain if this is a 
+        good plan ]
 
 Mon May 26 14:56:52 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
