@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.10 1998/05/28 21:59:57 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.11 1998/05/28 22:30:43 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -70,14 +70,21 @@ static const char filever[] = "$Id: sccs.c,v 1.10 1998/05/28 21:59:57 james Exp 
 #endif
 
 #include <sys/types.h>
+
 #if HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
+
+/* Cope with systems that have no (compatible) sys/wait.h.
+ */
 #ifndef WEXITSTATUS
 #define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
 #endif
 #ifndef WIFEXITED
 #define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#endif
+#ifndef WTERMSIG
+#define WTERMSIG(stat_val) ( (stat_val) & 0177 )
 #endif
 
 
@@ -356,6 +363,7 @@ static void gstrbotch (const char *str1, const char *str2);
 static void  gstrbotchn (int avail, const char *, int, const char *, int);
 
 static char *str_dup (const char *);
+static void childwait(int pid, int *status_ptr, int ignoreintr);
 
 
 /* #define	FBUFSIZ	BUFSIZ */
@@ -852,6 +860,39 @@ lookup (const char *name)
   return NULL;
 }
 
+/* 
+ * childwait()
+ *
+ * Wait for a child process, perhaps with SIGINT ignored.
+ */
+static void 
+childwait(int pid, int *status_ptr, int ignoreintr)
+{
+  struct sigaction sa={0}, osa;
+  int ret;
+
+  /* temporarily ignore SIG_INT.
+   */
+  if (ignoreintr)
+    {
+      sa.sa_handler = SIG_IGN;
+      sigemptyset(&sa.sa_mask);
+      sa.sa_flags = 0;
+      ret = sigaction(SIGINT, &sa, &osa);
+    }
+  /* May eventually need to kludge waitpid() as a loop
+   * with wait() for older systems.
+   */
+  while ( -1 == waitpid(pid, status_ptr, 0) && EINTR == errno)
+    errno = 0;
+
+  /* Restore previous disposition of SIG_INT.
+   */
+  if (ignoreintr && 0 == ret)
+    sigaction(SIGINT, &osa, NULL);
+}
+
+
 /*
  *  get_sig_name -- find the name for a signal.
  *
@@ -900,11 +941,6 @@ callprog (const char *progpath,
 	  bool forkflag)
 {
   register int i;
-  register int wpid;
-  auto int st;
-  register int sigcode;
-  register int coredumped;
-  register const char *sigmsg;
 
 #ifdef DEBUG
   if (Debug)
@@ -936,23 +972,25 @@ callprog (const char *progpath,
 	}
       else if (i > 0)		/* parent */
 	{
-	  while ((wpid = wait (&st)) != -1 && wpid != i)
-	    ;
-	  if ((sigcode = st & 0377) == 0)
-	    st = (st >> 8) & 0377;
-	  else
+	  int st;
+	  
+	  childwait(i, &st, 0);	/* don't block SIGINT. */
+
+	  if (WIFEXITED(st))	/* normal exit. */
 	    {
-	      /* TODO: Use WIFEXITED etc. */
-	      coredumped = sigcode & 0200;
-	      sigcode &= 0177;
+	      st = WEXITSTATUS(st);
+	    }
+	  else			/* child exited via signal */
+	    {
+	      int sigcode = WTERMSIG(st);
 	      if (sigcode != SIGINT && sigcode != SIGPIPE)
 		{
-		  fprintf (stderr, "sccs: %s: %s%s", argv[0],
-			   get_sig_name(sigcode),
-			   coredumped ? " - core dumped" : "");
+		  fprintf (stderr, "sccs: %s: %s", argv[0],
+			   get_sig_name(sigcode));
 		}
 	      st = EX_SOFTWARE;
 	    }
+	  
 	  if (OutFile >= 0)
 	    {
 	      close (OutFile);
@@ -968,7 +1006,7 @@ callprog (const char *progpath,
     }
 
   /* 
-   * in child.
+   * in child (or didn't fork at all).
    */
 
   /* set protection as appropriate */
@@ -1599,34 +1637,6 @@ unedit (const char *fn)
     }
 }
 
-/* 
- * childwait()
- *
- * Wait for a child process, with SIGINT ignored.
- */
-static void 
-childwait(int pid, int *status_ptr)
-{
-  struct sigaction sa={0}, osa;
-  int ret;
-
-  /* temporarily ignore SIG_INT.
-   */
-  sa.sa_handler = SIG_IGN;
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags = 0;
-  ret = sigaction(SIGINT, &sa, &osa);
-
-  while ( -1 == waitpid(pid, status_ptr, 0) && EINTR == errno)
-    errno = 0;
-
-  /* Restore previous disposition of SIG_INT.
-   */
-  if (0 == ret)
-    sigaction(SIGINT, &osa, NULL);
-}
-
-
 /*
    **  DODIFF -- diff an s-file against a g-file
    **
@@ -1672,7 +1682,7 @@ dodiff (char *const getv[], const char *gfile)
       close (pipev[0]);
       rval = command (&getv[1], TRUE, "get:rcixt -s -k -p"); /* Warning */
 
-      childwait(pid, &st);
+      childwait(pid, &st, 1);	/* ignore SIGINT while waiting. */
       /* ignore result of diff */
     }
   else
