@@ -38,7 +38,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.10 1997/11/23 11:55:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.11 1998/03/14 13:43:38 james Stab $";
 #endif
 
 // The MySC code used to just check for (year % 4) and (year == 0).
@@ -194,7 +194,7 @@ sccs_date::sccs_date(const char *s)
 	  isdigit((unsigned char)s[1]))
 	{
 	  const int century_field_val = year;
-	  year =  year * 100 + get_two_digits(&s[0]);
+	  year =  (century_field_val * 100) + get_two_digits(&s[0]);
 	  s += 2;		// this consumes exactly two characters.
 	}
     }

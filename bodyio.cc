@@ -259,7 +259,7 @@ int output_body_line_binary(FILE *fp, const cssc_linebuf* plb)
   // Curiously, if the file is encoded, we know that
   // the encoded form is only about 60 characters
   // and contains no 8-bit or zero data.
-  int n;
+  size_t n;
   char outbuf[80];
   
   n = decode_line(plb->c_str(), outbuf); // see encoding.cc

@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.13 1998/02/21 14:27:05 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.14 1998/03/14 13:43:37 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -58,7 +58,7 @@ extern "C" int CDECL stat(const char *, struct stat *);
    effective uid and gid, not the real uid and gid. */
 
 static int
-eaccess(const char *name, int perm) {
+eaccess(const char *name, mode_t perm) {
 	struct stat st;
 
 	if (stat(name, &st) == -1) {
@@ -165,7 +165,7 @@ is_readable(const char *name) {
  * overwriting a file which we might be editing.
  */
 int
-is_writable(const char *filename, int as_real_user = 1)
+is_writable(const char *filename, int /* as_real_user = 1 */ )
 {
   struct stat st;
   if (0 != stat(filename, &st))
@@ -187,9 +187,9 @@ is_writable(const char *filename, int as_real_user = 1)
 inline int
 old_is_writable(const char *name, int as_real_user = 1) {
 	if (as_real_user) {
-		return access(name, 02) != -1;
+		return access(name,  (mode_t) 02) != -1;
 	} else {
-		return eaccess(name, 02) != -1;
+		return eaccess(name, (mode_t) 02) != -1;
 	}
 }
 

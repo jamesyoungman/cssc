@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.17 1998/02/21 14:27:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.18 1998/03/14 13:43:38 james Exp $";
 #endif
 
 void
@@ -183,11 +183,7 @@ sccs_file::get(mystring gname, class seq_state &state,
 	    }
 	  else
 	    {
-	      // text output, with 
-	      const delta& gotten_delta
-		= delta_table->delta_at_seq(state.active_seq());
-	      err = (this->*subst_fn)(plinebuf->c_str(),
-				      &parms, parms.delta);
+	      err = (this->*subst_fn)(plinebuf->c_str(), &parms, parms.delta);
 	      
 	      if (fputc_failed(fputc('\n', out)))
 		err = 1;

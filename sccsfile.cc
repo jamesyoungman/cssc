@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.22 1998/02/23 21:41:25 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.23 1998/03/14 13:43:38 james Exp $";
 #endif
 
 
@@ -424,7 +424,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   if (given_sum != sum)
     {
       fprintf(stderr, "%s: Warning bad checksum "
-	      "(expected=%lx, calculated %lx).\n",
+	      "(expected=%x, calculated %x).\n",
 	      name.c_str(), given_sum, sum);
     }
   
