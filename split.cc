@@ -29,32 +29,37 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: split.cc,v 1.5 1997/11/18 23:22:47 james Exp $";
+static const char rcs_id[] = "CSSC $Id: split.cc,v 1.6 1997/12/26 18:42:50 james Stab $";
 #endif
 
 /* Destructively spilts a string into an argument list. */
 
+#if 0
 int
-split(char *s, char **args, int len, char c) {
-	char *start = s;
-	char *end = strchr(start, c);
-	int i;
+split(char *s, char **args, int len, char c)
+{
+  char *start = s;
+  char *end = strchr(start, c);
+  int i;
 
-	for(i = 0; i < len; i++) {
-		args[i] = start;
-		if (end	== NULL) {
-			if (start[0] != '\0') {
-				i++;
-			}
-			return i;
-		}
-		*end++ = '\0';
-		start = end;
-		end = strchr(start, c);
+  for(i = 0; i < len; i++)
+    {
+      args[i] = start;
+      if (0 == end)
+	{
+	  if (start[0] != '\0')
+	    i++;
+	  else
+	    return i;		// no more delimiters.
 	}
+      *end++ = '\0';
+      start = end;
+      end = strchr(start, c);
+    }
 
-	return i;
+  return i;
 }
+#endif
 
 /* Local variables: */
 /* mode: c++ */
