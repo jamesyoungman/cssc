@@ -7,8 +7,12 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.4 1998/01/24 14:15:13 james Exp $
+# $Id: sccsdiff.sh.in,v 1.5 1998/02/09 21:00:19 james Exp $
 # LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.5  1998/02/09 21:00:19  james
+# LOG   Patch from Maurice O'Donnell <mod@tfn.com>: pass "-e" to sed before
+# LOG   the sed commands.
+# LOG
 # LOG   Revision 1.4  1998/01/24 14:15:13  james
 # LOG   SCCS compatibility fix -- When "get" fails, exit with value 1, not 2.
 # LOG
@@ -37,7 +41,7 @@ then
     fi
 fi
 
-version='$Revision: 1.4 $ $State: Exp $'
+version='$Revision: 1.5 $ $State: Exp $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
@@ -113,8 +117,8 @@ fi
 # Remove the leading "-r" from $first_sid and $second_sid
 # so that we can echo the correct string as the header line
 # introducing the diff.
-first_sid=`echo   $first_sid | sed s/^-r//`
-second_sid=`echo $second_sid | sed s/^-r//`
+first_sid=`echo   $first_sid | sed -e 's/^-r//' `
+second_sid=`echo $second_sid | sed -e 's/^-r//' `
 
 getprefix=/tmp/get.$$.
 g1=${getprefix}${first_sid}
