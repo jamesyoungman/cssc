@@ -14,12 +14,12 @@
 #include "pfile.h"
 #include "getopt.h"
 
-char const main_sccs_id[] = "@(#) MySC get.c 1.1 93/11/09 17:17:54";
+const char main_sccs_id[] = "@(#) MySC get.c 1.1 93/11/09 17:17:54";
 
 /* Prints a list of included or excluded SIDs. */
 
 static void
-print_id_list(char const *s, list<sid> const &list) {
+print_id_list(const char *s, list<sid> const &list) {
 	int i, len;
 	
 	len = list.length();
@@ -62,7 +62,7 @@ main(int argc, char **argv) {
 	int use_stdout = 0;		/* -p */
 	int silent = 0;			/* -s */
 	int no_output = 0;		/* -g */
-	char const *wstring = NULL;	/* -w */
+	const char *wstring = NULL;	/* -w */
 	sid_list include, exclude;	/* -i, -x */
 	sccs_date cutoff;		/* -c */
 	int show_sid = 0;		/* -m */
@@ -176,7 +176,7 @@ main(int argc, char **argv) {
 	FILE *out = stdin;	/* The output file.  It's initialized with
 				   stdin so if it's accidently used before
 				   being set it will quickly cause an error. */
-	string gname;
+	mystring gname;
 
 	if (use_stdout) {
 		gname = "-";
@@ -206,12 +206,13 @@ main(int argc, char **argv) {
 		}
 
 		sccs_file file(name, sccs_file::READ);
-		sid retrieve = file.find_requested_sid(rid);
 		sid new_delta;
+		
+		sid retrieve;
 
-		if (retrieve == NULL) {
-			quit(-1, "%s: Requested SID not found.",
-			     (char const *) name);
+		if (!file.find_requested_sid(rid, retrieve)) {
+		  quit(-1, "%s: Requested SID not found.",
+		       (const char *) name);
 		}
 		
 		if (for_edit) {
@@ -234,7 +235,7 @@ main(int argc, char **argv) {
 			if (out == NULL) {
 				quit(errno, "%s: Can't open file for"
 					    " writing",
-				     (char const *)gname);
+				     (const char *)gname);
 			}
 		}
 

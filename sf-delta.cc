@@ -21,7 +21,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-delta.c 1.2 93/11/12 06:01:20";
+static const char sccs_id[] = "@(#) MySC sf-delta.c 1.2 93/11/12 06:01:20";
 #endif
 
 class diff_state {
@@ -36,22 +36,23 @@ private:
 
 	FILE *in;
 	class _linebuf linebuf;
-	string gname;
+	mystring gname;
 
-	NORETURN corrupt();
-	NORETURN corrupt(char const *msg);
+	NORETURN corrupt() POSTDECL_NORETURN;
+	NORETURN corrupt(const char *msg) POSTDECL_NORETURN;
 
 	void next_state();
 	int read_line() { return linebuf.read_line(in); }
 
 public:
-	diff_state(FILE *f, string name)
-		: in(f), gname(name), in_lineno(0), out_lineno(0),
-		  lines_left(0), change_left(0), _state(START) {}
+	diff_state(FILE *f, mystring name)
+		: _state(START), 
+		  in_lineno(0), out_lineno(0),
+		  lines_left(0), change_left(0), in(f), gname(name) {}
 
 	enum state process(FILE *out, seq_no seq);
 
-	char const *
+	const char *
 	get_insert_line() {
 		assert(_state == INSERT);
 		assert(linebuf[0] == '>' && linebuf[1] == ' ');
@@ -66,7 +67,7 @@ public:
 /* Quit with an appropriate error message when a read operation
    on the diff output fails. */
 
-void
+NORETURN
 diff_state::corrupt() {
 	if (ferror(in)) {
 		quit(errno, "(diff output): Read error.");
@@ -78,8 +79,8 @@ diff_state::corrupt() {
 /* Quit with a cryptic error message indicating that something
    is wrong with the diff output. */
 
-void
-diff_state::corrupt(char const *msg) {
+NORETURN
+diff_state::corrupt(const char *msg) {
 	quit(-1, "Diff output corrupt. (%s)", msg);
 }
 
@@ -261,13 +262,13 @@ diff_state::process(FILE *out, seq_no seq) {
 /* Warns or quits if the new delta doesn't include any id keywords */
 
 void
-sccs_file::check_keywords_in_file(char const *name) {
+sccs_file::check_keywords_in_file(const char *name) {
 	FILE *f = fopen(name, "r");
 	if (f == NULL) {
 		quit(errno, "%s: Can't open file for reading.", name);
 	}
 
-	if (flags.id_keywords && *(char const *)flags.id_keywords != '\0') {
+	if ( flags.id_keywords && *(const char *)flags.id_keywords != '\0') {
 		while(!read_line_param(f)) {
 			if (strstr(linebuf, flags.id_keywords) != NULL) {
 				fclose(f);
@@ -275,7 +276,7 @@ sccs_file::check_keywords_in_file(char const *name) {
 			}
 		}
 		quit(-1, "%s: Required keywords \"%s\" missing.",
-		     name, (char const *) flags.id_keywords);
+		     name, (const char *) flags.id_keywords);
 	}
 
 	while(!read_line_param(f)) {
@@ -299,8 +300,8 @@ sccs_file::check_keywords_in_file(char const *name) {
    performed before the object is destroyed. */
 
 void
-sccs_file::add_delta(string gname, sccs_pfile &pfile,
-		     list<string> mrs, list<string> comments) {
+sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
+		     list<mystring> mrs, list<mystring> comments) {
 	assert(mode == UPDATE);
 
 	check_keywords_in_file(gname);
@@ -314,7 +315,7 @@ sccs_file::add_delta(string gname, sccs_pfile &pfile,
 	prepare_seqstate(sstate, pfile->include, pfile->exclude,
 			 sccs_date(NULL));
 
-	pipe diff_in;
+	Pipe diff_in;
 
 	FILE *get_out = diff_in.write_stream();
 	if (get_out != NULL) {
@@ -331,7 +332,7 @@ sccs_file::add_delta(string gname, sccs_pfile &pfile,
 	
 	diff_in.write_close();
 	
-	pipe diff_out;
+	Pipe diff_out;
 
 	int ret;
 
@@ -401,7 +402,7 @@ sccs_file::add_delta(string gname, sccs_pfile &pfile,
 				corrupt("Invalid sequence number");
 			}
 
-			char const *msg = NULL;
+			const char *msg = NULL;
 
 			switch(c) {
 			case 'E':
@@ -434,7 +435,7 @@ sccs_file::add_delta(string gname, sccs_pfile &pfile,
 					fprintf(df, "%4d %4d - %s\n",
 						dstate.in_line(),
 						dstate.out_line(),
-					        (char const *) linebuf);
+					        (const char *) linebuf);
 						fflush(df);
 #endif
 					new_delta.deleted++;
@@ -463,7 +464,7 @@ sccs_file::add_delta(string gname, sccs_pfile &pfile,
 					fprintf(df, "%4d %4d   %s\n",
 						dstate.in_line(),
 						dstate.out_line(),
-					        (char const *) 
+					        (const char *) 
 						linebuf);
 					fflush(df);
 #endif

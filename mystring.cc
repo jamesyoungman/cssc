@@ -13,14 +13,15 @@
 #endif
 
 #include "mysc.h"
+#include "mystring.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC mystring.c 1.1 93/11/09 17:32:32";
+static const char sccs_id[] = "@(#) MySC mystring.c 1.1 93/11/09 17:32:32";
 #endif
 
 
 void
-string::create(char const *s) {
+mystring::create(const char *s) {
 	if (s == NULL) {
 		str = NULL;
 		return;
@@ -34,7 +35,7 @@ string::create(char const *s) {
 }
 
 void
-string::create(char const *s1, char const *s2) {
+mystring::create(const char *s1, const char *s2) {
 	if (s1 == NULL) {
 		create(s2);
 		return;
@@ -55,14 +56,14 @@ string::create(char const *s1, char const *s2) {
 
 
 void
-string::destroy() {
+mystring::destroy() {
 	if (str != NULL && --STR_PTR(str)->refs == 0) {
 		free(STR_PTR(str));
 	}
 }
 
-string &
-string::operator =(string const &s) {
+mystring &
+mystring::operator =(mystring const &s) {
 	if (this != &s) {
 		destroy();
 		copy(s);
@@ -70,8 +71,8 @@ string::operator =(string const &s) {
 	return *this;
 }
 
-string &
-string::operator =(char const *s) {
+mystring &
+mystring::operator =(const char *s) {
 	assert(s == NULL || str != s);
 	destroy();
 	create(s);

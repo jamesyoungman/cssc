@@ -13,7 +13,7 @@
 #include "sccsfile.h"
 #include "getopt.h"
 
-char const main_sccs_id[] = "@(#) MySC prs.c 1.1 93/11/09 17:17:57";
+const char main_sccs_id[] = "@(#) MySC prs.c 1.1 93/11/09 17:17:57";
 
 void
 usage() {
@@ -25,9 +25,9 @@ usage() {
 int
 main(int argc, char **argv) {
 	int c;
-	string format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
+	mystring format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
 	sid rid = NULL;
-	/* enum */ sccs_file::when when = sccs_file::SIDONLY;
+	/* enum */ sccs_file::when selected = sccs_file::SIDONLY;
 	int all_deltas = 0;
 	sccs_date cutoff;
 	int default_processing = 1;
@@ -75,12 +75,12 @@ main(int argc, char **argv) {
 			break;
 
 		case 'e':
-			when = sccs_file::EARLIER;
+			selected = sccs_file::EARLIER;
 			default_processing = 0;
 			break;
 
 		case 'l':
-			when = sccs_file::LATER;
+			selected = sccs_file::LATER;
 			default_processing = 0;
 			break;
 
@@ -95,13 +95,13 @@ main(int argc, char **argv) {
 
 	}
 
-	if (when == sccs_file::SIDONLY && cutoff.valid()) {
+	if (selected == sccs_file::SIDONLY && cutoff.valid()) {
 		quit(-2, "Either the -e or -l switch must used with a"
 			 " cutoff date.");
 	}
 
 	if (default_processing) {
-		when = sccs_file::EARLIER;
+		selected = sccs_file::EARLIER;
 	}
 
 	sccs_file_iterator iter(argc, argv, opts.get_index());
@@ -111,13 +111,14 @@ main(int argc, char **argv) {
 		sccs_file file(name, sccs_file::READ);
 
 		if (default_processing) {
-			printf("%s:\n\n", (char const *) name);
+			printf("%s:\n\n", (const char *) name);
 		}
-		file.prs(stdout, format, rid, cutoff, when, all_deltas);
+		file.prs(stdout, format, rid, cutoff, selected, all_deltas);
 	}
 
 	return 0;
 }
+template class range_list<sid>;
 
 /* Local variables: */
 /* mode: c++ */

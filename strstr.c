@@ -16,7 +16,7 @@
 #define strstr LIDENT(strstr)
 
 static char *
-strstr(char const *s1, char const *s2) {
+strstr(const char *s1, const char *s2) {
 	char c = *s2;
 
 	if (c == '\0') {

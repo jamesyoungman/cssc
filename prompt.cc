@@ -11,13 +11,13 @@
 #include "mysc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC prompt.c 1.1 93/11/09 17:17:57";
+static const char sccs_id[] = "@(#) MySC prompt.c 1.1 93/11/09 17:17:57";
 #endif
 
 /* Prompts the user for input. */
 
-string
-prompt_user(char const *prompt) {
+mystring
+prompt_user(const char *prompt) {
 	static char *linebuf = (char *) xmalloc(CONFIG_LINEBUF_CHUNK_SIZE);
 	static int buflen = CONFIG_LINEBUF_CHUNK_SIZE;
 	int c;

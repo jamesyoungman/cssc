@@ -18,16 +18,16 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-admin.c 1.1 93/11/09 17:18:00";
+static const char sccs_id[] = "@(#) MySC sf-admin.c 1.1 93/11/09 17:18:00";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
    of the SCCS file. */
 
 void
-sccs_file::admin(char const *file_comment,
-		 list<string> set_flags, list<string> unset_flags,
-		 list<string> add_users, list<string> erase_users) {
+sccs_file::admin(const char *file_comment,
+		 list<mystring> set_flags, list<mystring> unset_flags,
+		 list<mystring> add_users, list<mystring> erase_users) {
 	int i;
 	int len;
 
@@ -41,7 +41,7 @@ sccs_file::admin(char const *file_comment,
 			}
 
 			while(!read_line_param(fc)) {
-				comments.add((char const *)linebuf);
+				comments.add((const char *)linebuf);
 			}
 
 			if (ferror(fc)) {
@@ -53,7 +53,7 @@ sccs_file::admin(char const *file_comment,
 
 	len = set_flags.length();
 	for(i = 0; i < len; i++) {
-		char const *s = set_flags[i];
+		const char *s = set_flags[i];
 
 		switch(*s++) {
 
@@ -125,7 +125,7 @@ sccs_file::admin(char const *file_comment,
 	      
 	len = unset_flags.length();
 	for(i = 0; i < len; i++) {
-		char const *s = unset_flags[i];
+		const char *s = unset_flags[i];
 
 		switch(*s++) {
 
@@ -193,14 +193,14 @@ sccs_file::admin(char const *file_comment,
 /* Creates a new SCCS file. */
 
 void
-sccs_file::create(release first_release, char const *iname,
-		  list<string> mrs, list<string> comments) {
+sccs_file::create(release first_release, const char *iname,
+		  list<mystring> mrs, list<mystring> comments) {
 
 	sccs_date now = sccs_date::now();
 	if (comments.length() == 0) {
-		string one("date and time created ", now.as_string()),
+		mystring one("date and time created ", now.as_string()),
 		       two(" by ", get_user_name());
-		string it(one, two);
+		mystring it(one, two);
 		comments.add(it);
 	}
 
@@ -230,7 +230,7 @@ sccs_file::create(release first_release, char const *iname,
 		}
 
 		int found_id = 0;
-		char const *req_id = flags.id_keywords;
+		const char *req_id = flags.id_keywords;
 		if (req_id != NULL && req_id[0] == '\0') {
 			req_id = NULL;
 		}
@@ -239,9 +239,9 @@ sccs_file::create(release first_release, char const *iname,
 			new_delta.inserted++;
 			if (fputs(linebuf, out) == EOF
 			    || putc('\n', out) == EOF) {
-				string zname = name.zfile();
+				mystring zname = name.zfile();
 				quit(errno, "%s: Write error.",
-				     (char const *) zname);
+				     (const char *) zname);
 			}
 			if (!found_id) {
 				if (req_id == NULL) {
@@ -264,10 +264,10 @@ sccs_file::create(release first_release, char const *iname,
 			if (req_id != NULL) {
 				quit(-1, "%s: Required keywords \"%s\""
 				         " missing.",
-				     (char const *) name, req_id);
+				     (const char *) name, req_id);
 			}
 			fprintf(stderr, "%s: Warning: No id keywords.\n",
-				(char const *) name);
+				(const char *) name);
 		}
 	}
 

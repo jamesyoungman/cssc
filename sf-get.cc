@@ -22,14 +22,14 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-get.c 1.1 93/11/09 17:18:01";
+static const char sccs_id[] = "@(#) MySC sf-get.c 1.1 93/11/09 17:18:01";
 #endif
 
 void
 sccs_file::prepare_seqstate(seq_state &state, seq_no seq) {
 	while(seq != 0) {
 		if (state.is_predecessor(seq)) {
-			quit(-1, "%s: Loop in deltas.", (char const *) name);
+			quit(-1, "%s: Loop in deltas.", (const char *) name);
 		}
 		state.set_predecessor(seq);
 
@@ -53,17 +53,17 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq) {
 }
 
 void
-sccs_file::get(string gname, class seq_state &state, struct subst_parms &parms,
+sccs_file::get(mystring gname, class seq_state &state, struct subst_parms &parms,
 #ifdef __GNUC__
 	       subst_fn_t subst_fn,
 #else
-	       int (sccs_file::*subst_fn)(char const *,
+	       int (sccs_file::*subst_fn)(const char *,
 					  struct subst_parms *) const,
 #endif
 	       int show_sid, int show_module, int debug) {
 	assert(mode != CREATE);
 	
-	char const *req_idkey = flags.id_keywords;
+	const char *req_idkey = flags.id_keywords;
 	if (req_idkey != NULL && req_idkey[0] == '\0') {
 		req_idkey = NULL;
 	}
@@ -109,8 +109,8 @@ sccs_file::get(string gname, class seq_state &state, struct subst_parms &parms,
 			parms.out_lineno++;
 
 			if (show_module) {
-				string module = get_module_name();
-				fprintf(out, "%s\t", (char const *) module);
+				mystring module = get_module_name();
+				fprintf(out, "%s\t", (const char *) module);
 			}
 
 			if (show_sid) {
@@ -137,7 +137,7 @@ sccs_file::get(string gname, class seq_state &state, struct subst_parms &parms,
 				
 			if (err || fputc('\n', out) == EOF) {
 				quit(errno, "%s: Write error.",
-				     (char const *) gname);
+				     (const char *) gname);
 			}
 			continue;
 		}
@@ -151,7 +151,7 @@ sccs_file::get(string gname, class seq_state &state, struct subst_parms &parms,
 			corrupt("Invalid serial number");
 		}
 
-		char const *msg = NULL;
+		const char *msg = NULL;
 
 		switch(c) {
 		case 'E':

@@ -26,8 +26,8 @@ class sccs_date {
 
 public:
 	sccs_date(): t((time_t) -1) {}
-	sccs_date(char const *cutoff);
-	sccs_date(char const *date, char const *time);
+	sccs_date(const char *cutoff);
+	sccs_date(const char *date, const char *time);
 
 	int valid() { return t != -1; }
 
@@ -37,7 +37,7 @@ public:
 		return temp;
 	}
 
-	char const *as_string() const;
+	const char *as_string() const;
 
 	int printf(FILE *f, char fmt) const;
 	int print(FILE *f) const;

@@ -10,14 +10,14 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-chkid.c 1.1 93/11/09 17:17:55";
+static const char sccs_id[] = "@(#) MySC sf-chkid.c 1.1 93/11/09 17:17:55";
 #endif
 
 
 /* Returns true if the string contains a valid SCCS id keyword. */
 
 int
-sccs_file::check_id_keywords(char const *s) {
+sccs_file::check_id_keywords(const char *s) {
 	s = strchr(s, '%');
 	while(s != NULL) {
 		if (s[1] != '\0' 

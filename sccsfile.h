@@ -32,20 +32,20 @@ private:
 		char type;
 		sid id;
 		sccs_date date;
-		string user;
+		mystring user;
 		seq_no seq, prev_seq;
 		list<seq_no> included, excluded, ignored;
-		list<string> mrs;
-		list<string> comments;
+		list<mystring> mrs;
+		list<mystring> comments;
 
 		delta() {}
-		delta(char t, sid i, sccs_date d, string u, seq_no s, seq_no p,
-		      list<string> ms, list<string> cs)
+		delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
+		      list<mystring> ms, list<mystring> cs)
 			: type(t), id(i), date(d), user(u),
 			  seq(s), prev_seq(p), mrs(ms), comments(cs) {}
-		delta(char t, sid i, sccs_date d, string u, seq_no s, seq_no p,
+		delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
 		      list<seq_no> incl, list<seq_no> excl,
-		      list<string> ms, list<string> cs)
+		      list<mystring> ms, list<mystring> cs)
 			: type(t), id(i), date(d), user(u),
 			  seq(s), prev_seq(p), included(incl), excluded(excl), 
 			  mrs(ms), comments(cs) {}
@@ -136,13 +136,13 @@ private:
 	int body_lineno;
 
 	class _delta_table delta_table;
-	list<string> users;
+	list<mystring> users;
 	struct {
-		string type;
-		string mr_checker;
-		string id_keywords;
+		mystring type;
+		mystring mr_checker;
+		mystring id_keywords;
 		int branch;
-		string module;
+		mystring module;
 		release floor;
 		release ceiling;
 		sid default_sid;
@@ -150,17 +150,17 @@ private:
 		int joint_edit;
 		release_list locked;
 		int all_locked;
-		string user_def;
-		string reserved;
+		mystring user_def;
+		mystring reserved;
 	} flags;
-	list<string> comments;
+	list<mystring> comments;
 
-	static FILE *open_sccs_file(char const *name, enum _mode mode,
+	static FILE *open_sccs_file(const char *name, enum _mode mode,
 				    unsigned *sump);
-	NORETURN corrupt(char const *why) const;
+	NORETURN corrupt(const char *why) const POSTDECL_NORETURN;
 	void check_arg() const;
 	void check_noarg() const;
-	unsigned short strict_atous(char const *s) const;
+	unsigned short strict_atous(const char *s) const;
 	
 	int
 	read_line_param(FILE *f) {
@@ -175,7 +175,7 @@ private:
 	void read_delta();
 	void seek_to_body();
 
-	string get_module_name() const;
+	mystring get_module_name() const;
 
 public:
 	sccs_file(sccs_name &name, enum _mode mode);
@@ -183,7 +183,7 @@ public:
 	sid find_most_recent_sid(sid id) const;
 
 	int
-	is_delta_creator(char const *user, sid id) const {
+	is_delta_creator(const char *user, sid id) const {
 		struct delta const *delta = delta_table.find(id);
 		return delta != NULL && strcmp(delta->user, user) == 0;
 	}
@@ -194,13 +194,13 @@ public:
 private:
 	struct subst_parms {
 		FILE *out;
-		char const *wstring;
+		const char *wstring;
 		struct delta const &delta;
 		unsigned out_lineno;
 		sccs_date now;
 		int found_id;
 
-		subst_parms(FILE *o, char const *w, struct delta const &d,
+		subst_parms(FILE *o, const char *w, struct delta const &d,
 			    int l, sccs_date n)
 			: out(o), wstring(w), delta(d), out_lineno(l), now(n),
 			  found_id(0) {}
@@ -208,21 +208,21 @@ private:
 
 	void prepare_seqstate(seq_state &state, seq_no seq);
 
-	typedef int (sccs_file::*subst_fn_t)(char const *,
+	typedef int (sccs_file::*subst_fn_t)(const char *,
 					     struct subst_parms *) const;
 
-	void get(string name, class seq_state &state,
+	void get(mystring name, class seq_state &state,
 		 struct subst_parms &parms,
 #ifdef __GNUC__
-		 subst_fn_t subst_fn = NULL,
+		 subst_fn_t subst_fn = 0,
 #else
-		 int (sccs_file::*subst_fn)(char const *,
-					    struct subst_parms *) const = NULL,
+		 int (sccs_file::*subst_fn)(const char *,
+					    struct subst_parms *) const = 0,
 #endif
 		 int show_sid = 0, int show_module = 0, int debug = 0);
 
 	/* sf-get2.c */
-	int write_subst(char const *start, struct subst_parms *parms) const;
+	int write_subst(const char *start, struct subst_parms *parms) const;
 
 public:
 	struct get_status {
@@ -230,12 +230,12 @@ public:
 		list<sid> included, excluded;
 	};
 
-	sid find_requested_sid(sid requested) const ;
+	bool find_requested_sid(sid requested, sid &found) const ;
 	sid find_next_sid(sid requested, sid got, int branch,
 			  sccs_pfile &pfile) const;
 	void test_locks(sid got, sccs_pfile &pfile) const;
 
-	struct get_status get(FILE *out, string name, sid id,
+	struct get_status get(FILE *out, mystring name, sid id,
 			      sccs_date cutoff = NULL,
 #ifdef __GNUC__
 			      sid_list include = sid_list(NULL),
@@ -243,7 +243,7 @@ public:
 #else
 			      sid_list include = NULL, sid_list exclude = NULL,
 #endif
-			      int keywords = 0, char const *wstring = NULL,
+			      int keywords = 0, const char *wstring = NULL,
 			      int show_sid = 0, int show_module = 0,
 			      int debug = 0);
 
@@ -255,18 +255,18 @@ private:
 
 	/* sf-chkid.c */
 
-	static int check_id_keywords(char const *s);
+	static int check_id_keywords(const char *s);
 
 	/* sf-write.c */
 private:
-	NORETURN xfile_error(char const *msg) const;
+	NORETURN xfile_error(const char *msg) const POSTDECL_NORETURN;
 	FILE *start_update() const;
 	int write_delta(FILE *out, struct delta const &delta) const;
 	int write(FILE *out) const;
 	void end_update(FILE *out) const;
 
 public:
-	static void update_checksum(char const *name);
+	static void update_checksum(const char *name);
 	void update();
 
 	/* sf-add.c */
@@ -276,43 +276,43 @@ public:
 
 	/* sf-delta.c */
 private:
-	void check_keywords_in_file(char const *name);
+	void check_keywords_in_file(const char *name);
 
 public:
 	int
 	mr_required() const {
-		return flags.mr_checker != NULL;
+		return flags.mr_checker;
 	}
 
- 	int check_mrs(list<string> mrs);
+ 	int check_mrs(list<mystring> mrs);
 
-	void add_delta(string gname, sccs_pfile &pfile,
-		       list<string> mrs, list<string> comments);
+	void add_delta(mystring gname, sccs_pfile &pfile,
+		       list<mystring> mrs, list<mystring> comments);
 
 	/* sf-admin.c */
 
-	void admin(char const *file_comment,
-		   list<string> set_flags, list<string> unset_flags,
-		   list<string> add_users, list<string> erase_users);
-	void create(release first_release, char const *iname,
-		    list<string> mrs, list<string> comments);
+	void admin(const char *file_comment,
+		   list<mystring> set_flags, list<mystring> unset_flags,
+		   list<mystring> add_users, list<mystring> erase_users);
+	void create(release first_release, const char *iname,
+		    list<mystring> mrs, list<mystring> comments);
 
 	/* sf-prs.c */
 private:
-	void get(FILE *out, string name, seq_no seq);
+	void get(FILE *out, mystring name, seq_no seq);
 	void print_flags(FILE *out) const;
-	void print_delta(FILE *out, char const *format,
+	void print_delta(FILE *out, const char *format,
 			 struct delta const &delta);
 
 public:
 	enum when { EARLIER, SIDONLY, LATER };
 
-	void prs(FILE *out, string format, sid rid, sccs_date cutoff,
+	void prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
 	         enum when when, int all_deltas);
 
 	/* sf-cdc.c */
 
-	void cdc(sid id, list<string> mrs, list<string> comments);
+	void cdc(sid id, list<mystring> mrs, list<mystring> comments);
 
 	/* sf-rmdel.c */
 
@@ -322,8 +322,8 @@ public:
 
 /* l-split.c */
 
-list<string> split_mrs(string mrs);
-list<string> split_comments(string comments);
+list<mystring> split_mrs(mystring mrs);
+list<mystring> split_comments(mystring comments);
 
 #endif /* __SCCSFILE_H__ */
 

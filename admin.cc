@@ -14,7 +14,7 @@
 #include "fileiter.h"
 #include "getopt.h"
 
-char const main_sccs_id[] = "@(#) MySC admin.c 1.1 93/11/09 17:17:52";
+const char main_sccs_id[] = "@(#) MySC admin.c 1.1 93/11/09 17:17:52";
 
 void
 usage() {
@@ -29,11 +29,11 @@ main(int argc, char **argv) {
 	int c;
 	release first_release = NULL;		/* -r */
 	int new_sccs_file = 0;			/* -n */
-	char const *iname = NULL;		/* -i -I */
-	char const *file_comment = NULL;	/* -t -T */
-	list<string> set_flags, unset_flags;	/* -f, -d */
-	list<string> add_users, erase_users;	/* -a, -e */
-	string mrs, comments;			/* -m -M, -y -Y */
+	const char *iname = NULL;		/* -i -I */
+	const char *file_comment = NULL;	/* -t -T */
+	list<mystring> set_flags, unset_flags;	/* -f, -d */
+	list<mystring> add_users, erase_users;	/* -a, -e */
+	mystring mrs, comments;			/* -m -M, -y -Y */
 	const int check = 0;			/* -h */
 	int reset_checksum = 0;			/* -z */
 	
@@ -127,7 +127,7 @@ main(int argc, char **argv) {
 		}
 	}
 
-	list<string> mr_list, comment_list;
+	list<mystring> mr_list, comment_list;
 	int first = 1;
 	sccs_file_iterator iter(argc, argv, opts.get_index());
 
@@ -137,7 +137,7 @@ main(int argc, char **argv) {
 		if (reset_checksum && !check) {
 			if (!name.valid()) {
 				quit(-1, "%s: Not a SCCS file.",
-				     (char const *) name);
+				     (const char *) name);
 			}
 			sccs_file::update_checksum(name);
 			continue;
@@ -187,11 +187,11 @@ main(int argc, char **argv) {
 				if (mr_list.length() == 0) {
 					quit(-1, "%s: MR number(s) must be "
 						 " supplied.",
-					     (char const *) name);
+					     (const char *) name);
 				}
 				if (file.check_mrs(mr_list)) {
 					quit(-1, "%s: Invalid MR number(s).",
-					     (char const *) name);
+					     (const char *) name);
 				}
 			}
 

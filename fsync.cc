@@ -21,7 +21,7 @@ struct check_msdos_version {
 
 check_msdos_version::check_msdos_version() {
 	if (_osmajor < 2 || (_osmajor == 3 && _osminor < 3)) {
-		static char const msg[] = "MS-DOS version 3.3 or later"
+		static const char msg[] = "MS-DOS version 3.3 or later"
 			                  " required.\r\n";
 		_write(2, msg, sizeof(msg));
 	}

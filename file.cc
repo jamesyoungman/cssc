@@ -16,13 +16,13 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC file.c 1.1 93/11/09 17:17:53";
+char static const sccs_id[] = "@(#) MySC file.c 1.1 93/11/09 17:17:53";
 #endif
 
 #ifdef CONFIG_UIDS
 
 #ifdef CONFIG_DECLARE_STAT
-extern "C" int CDECL stat(char const *, struct stat *);
+extern "C" int CDECL stat(const char *, struct stat *);
 #endif
 
 
@@ -30,7 +30,7 @@ extern "C" int CDECL stat(char const *, struct stat *);
    effective uid and gid, not the real uid and gid. */
 
 static int
-eaccess(char const *name, int perm) {
+eaccess(const char *name, int perm) {
 	struct stat st;
 
 	if (stat(name, &st) == -1) {
@@ -58,7 +58,7 @@ eaccess(char const *name, int perm) {
 #else /* CONFIG_UIDS */
 
 inline int
-eaccess(char const *name, int perm) {
+eaccess(const char *name, int perm) {
 	return access(name, perm);
 }
 
@@ -123,7 +123,7 @@ open_null() {
 /* Returns true if the file exists and is readable. */
 
 int
-is_readable(char const *name) {
+is_readable(const char *name) {
 	return access(name, 04) != -1;
 }
 
@@ -131,7 +131,7 @@ is_readable(char const *name) {
 /* Returns true if the file exists and is writable. */
 
 inline int
-is_writable(char const *name, int as_real_user = 1) {
+is_writable(const char *name, int as_real_user = 1) {
 	if (as_real_user) {
 		return access(name, 02) != -1;
 	} else {
@@ -143,7 +143,7 @@ is_writable(char const *name, int as_real_user = 1) {
 /* Returns true if the file exists. */
 
 int
-file_exists(char const *name) {
+file_exists(const char *name) {
 	return access(name, 0) != -1;
 }
 
@@ -185,7 +185,7 @@ ffsync(FILE *f) {
 /* Clears the archive file attribute bit of a file. */
 
 void
-clear_archive_bit(char const *name) {
+clear_archive_bit(const char *name) {
 	int attribs = _chmod(name, 0);
 	if (attribs == -1 || _chmod(name, 1, attribs & ~FA_ARCH) == -1) {
 		quit(errno, "%s: Can't clear archive file attribute.", name);
@@ -196,7 +196,7 @@ clear_archive_bit(char const *name) {
 /* Returns true if the archive file attribute bit of a file is set. */
 
 inline int
-test_archive_bit(char const *name) {
+test_archive_bit(const char *name) {
 	int attribs = _chmod(name, 0);
 	if (attribs == -1) {
 		quit(errno, "%s: Can't test archive file attribute.", name);
@@ -291,7 +291,7 @@ restore_privileges() {
 #endif /* defined(CONFIG_SETREUID) */
 
 inline int
-open_as_real_user(char const *name, int mode, int perm) {
+open_as_real_user(const char *name, int mode, int perm) {
 	give_up_privileges();
 	int fd = open(name, mode, perm);
 	restore_privileges();
@@ -306,9 +306,9 @@ extern "C" struct passwd * CDECL getpwuid(int uid);
 extern "C" char *getlogin(void);
 #endif
 
-char const *
+const char *
 get_user_name() {
-	static string name = getlogin();
+	static mystring name = getlogin();
 	if (name != NULL) {
 		return name;
 	}
@@ -328,9 +328,9 @@ user_is_group_member(int gid) {
 
 #else /* CONFIG_UIDS */
 
-char const *
+const char *
 get_user_name() {
-	char const *s = getenv("USER");
+	const char *s = getenv("USER");
 	if (s != NULL) {
 		return s;
 	}
@@ -348,7 +348,7 @@ user_is_group_member(int) {
 /* Returns a file descriptor open to a newly created file. */
 
 int
-create(string name, int mode) {
+create(mystring name, int mode) {
 	int flags = O_CREAT;
 
 	if (mode & CREATE_FOR_UPDATE) {
@@ -363,12 +363,12 @@ create(string name, int mode) {
 	} else if ((mode & CREATE_FOR_GET)
 		   && file_exists(name) && test_archive_bit(name)) {
 		quit(-1, "%s: File exists and its archive attribute is set.",
-		     (char const *) name);
+		     (const char *) name);
 #else
 	} else if ((mode & CREATE_FOR_GET)
 		   && is_writable(name, mode & CREATE_AS_REAL_USER)) {
 		quit(-1, "%s: File exists and is writable.",
-		     (char const *) name);
+		     (const char *) name);
 #endif
 	} else if (file_exists(name) && unlink(name) == -1) {
 		return -1;
@@ -406,7 +406,7 @@ create(string name, int mode) {
 /* Returns a file stream open to a newly created file. */
 
 FILE *
-fcreate(string name, int mode) {
+fcreate(mystring name, int mode) {
 	int fd = create(name, mode);
 	if (fd == -1) {
 		return NULL;
@@ -419,7 +419,7 @@ fcreate(string name, int mode) {
 
 #ifdef CONFIG_SHARE_LOCKING
 
-file_lock::file_lock(string zname): locked(0), name(zname) {
+file_lock::file_lock(mystring zname): locked(0), name(zname) {
 	f = fcreate(zname, CREATE_WRITE_LOCK | CREATE_EXCLUSIVE);
 	if (f == NULL) {
 		struct DOSERROR err;
@@ -430,11 +430,11 @@ file_lock::file_lock(string zname): locked(0), name(zname) {
 			return;
 		}
 		quit(errno, "%s: Can't create lock file.", 
-		     (char const *) zname);
+		     (const char *) zname);
 	}
 	if (fprintf(f, "%s\n", get_user_name()) == EOF
 	    || fflush(f) == EOF || ffsync(f) == EOF) {
-		quit(errno, "%s: Write error.", (char const *) zname);
+		quit(errno, "%s: Write error.", (const char *) zname);
 	}
 
 	locked = 1;
@@ -451,14 +451,14 @@ file_lock::~file_lock() {
 
 #elif defined(CONFIG_PID_LOCKING) || defined(CONFIG_DUMB_LOCKING)
 
-file_lock::file_lock(string zname): locked(0), name(zname) {
+file_lock::file_lock(mystring zname): locked(0), name(zname) {
 	FILE *f = fcreate(zname, CREATE_READ_ONLY | CREATE_EXCLUSIVE);
 	if (f == NULL) {
 		if (errno == EEXIST) {
 			return;
 		}
 		quit(errno, "%s: Can't create lock file.", 
-		     (char const *) zname);
+		     (const char *) zname);
 	}
 
 #ifdef CONFIG_DUMB_LOCKING
@@ -467,7 +467,7 @@ file_lock::file_lock(string zname): locked(0), name(zname) {
 	if (putw(getpid(), f) == EOF
 #endif
 	    || fclose(f) == EOF) {
-		quit(errno, "%s: Write error.", (char const *) zname);
+		quit(errno, "%s: Write error.", (const char *) zname);
 	}
 
 	locked = 1;
@@ -487,7 +487,7 @@ file_lock::~file_lock() {
 #ifdef CONFIG_NO_REMOVE
 
 int
-remove(char const *name) {
+remove(const char *name) {
 	return unlink(name);
 }
 
@@ -497,7 +497,7 @@ remove(char const *name) {
 #ifdef CONFIG_NO_RENAME
 
 int
-rename(char const *from, char const *to) {
+rename(const char *from, const char *to) {
 	if (link(from, to) == -1 || unlink(from) == -1) {
 		return -1;
 	}

@@ -14,7 +14,7 @@
 #include "pfile.h"
 #include "getopt.h"
 
-char const main_sccs_id[] = "@(#) MySC rmdel.c 1.1 93/11/09 17:17:58";
+const char main_sccs_id[] = "@(#) MySC rmdel.c 1.1 93/11/09 17:17:58";
 
 void
 usage() {
@@ -55,7 +55,7 @@ main(int argc, char **argv) {
 		}
 	}
 
-	if (rid == NULL) {
+	if (!rid.valid()) {
 		quit(-2, "A SID must be specified on the command line.");
 	}
 
@@ -78,7 +78,7 @@ main(int argc, char **argv) {
 			if (pfile->got == rid) {
 				quit(-1, "%s: Requested SID is locked"
 				         " for editing.",
-				     (char const *) name);
+				     (const char *) name);
 			}
 		}
 		
@@ -92,6 +92,9 @@ main(int argc, char **argv) {
 
 	return 0;
 }
+
+template class range_list<sid>;
+
 
 /* Local variables: */
 /* mode: c++ */

@@ -20,7 +20,7 @@
 /* Gets or sets a file's attributes under MS-DOS. */
 
 int
-_chmod(char const *name, int fl, int attr = 0) {
+_chmod(const char *name, int fl, int attr = 0) {
 	char ret;
 	short err;
 
@@ -47,7 +47,7 @@ _chmod(char const *name, int fl, int attr = 0) {
 /* Gets or sets a file's attributes under MS-DOS. */
 
 int
-_chmod(char const *name, int fl, int attr = 0) {
+_chmod(const char *name, int fl, int attr = 0) {
 	union REGS regs;
 
 	regs.x.cx = (short) attr;

@@ -17,12 +17,12 @@
 #pragma interface
 #endif
 
-char const *base_part(char const *s);
+const char *base_part(const char *s);
 
 class sccs_name {
-	string name;
+	mystring name;
 	char *_name, *change;
-	string gname;
+	mystring gname;
 
 	file_lock *lock_ptr;
 	int lock_cnt;
@@ -49,36 +49,36 @@ class sccs_name {
 	}
 
 public:
-	static int valid_filename(char const *name);
+	static int valid_filename(const char *name);
 
-/*	sccs_name(string n): name(n), lock_cnt(0) { create(n); } /**/
+/*	sccs_name(mystring n): name(n), lock_cnt(0) { create(n); } /**/
 	sccs_name(): _name(NULL), lock_cnt(0) {}
 
 	int valid() const { return _name != NULL; }
 	void make_valid();
 
-	operator char const *() const { return (char const *) name; }
-	sccs_name &operator =(string n); /* undefined */
+	operator const char *() const { return (const char *) name; }
+	sccs_name &operator =(mystring n); /* undefined */
 
 #ifdef CONFIG_MSDOS_FILES
 
-	string gfile() const { return gname; }
+	mystring gfile() const { return gname; }
 
-	string pfile() const { return _file('%'); }
-	string qfile() const { return _file('^'); }
-/*	string lfile() const { return base_part(_file('!')); } /**/
-	string xfile() const { return _file('\''); }
-	string zfile() const { return _file('&'); }
+	mystring pfile() const { return _file('%'); }
+	mystring qfile() const { return _file('^'); }
+/*	mystring lfile() const { return base_part(_file('!')); } /**/
+	mystring xfile() const { return _file('\''); }
+	mystring zfile() const { return _file('&'); }
 
 #else
 
-	string gfile() const { return gname; }
+	mystring gfile() const { return gname; }
 
-	string pfile() const { return _file('p'); }
-	string qfile() const { return _file('q'); }
-/*	string lfile() const { return base_part(_file('l')); } /**/
-	string xfile() const { return _file('x'); }
-	string zfile() const { return _file('z'); }
+	mystring pfile() const { return _file('p'); }
+	mystring qfile() const { return _file('q'); }
+/*	mystring lfile() const { return base_part(_file('l')); } /**/
+	mystring xfile() const { return _file('x'); }
+	mystring zfile() const { return _file('z'); }
 
 #endif
 

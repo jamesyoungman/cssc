@@ -14,7 +14,7 @@
 #include "quit.h"
 #include "getopt.h"
 
-char const main_sccs_id[] = "@(#) MySC what.c 1.2 93/11/13 06:30:43";
+const char main_sccs_id[] = "@(#) MySC what.c 1.2 93/11/13 06:30:43";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -25,7 +25,7 @@ typedef FILE *XFILE;
 const XFILE XOPEN_FAILURE = NULL;
 
 inline XFILE
-xopen(char const *name) {
+xopen(const char *name) {
 #ifdef CONFIG_BINARY_FILE
 	return fopen(name, "rb");
 #else
@@ -63,7 +63,7 @@ typedef int XFILE;
 const XFILE XOPEN_FAILURE = -1;
 
 inline XFILE
-xopen(char const *name) {
+xopen(const char *name) {
 #ifdef CONFIG_BINARY_FILE
 	return open(name, O_RDONLY | O_BINARY);
 #else

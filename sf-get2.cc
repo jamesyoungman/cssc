@@ -16,20 +16,21 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-get2.c 1.3 93/12/31 15:16:23";
+static const char sccs_id[] = "@(#) MySC sf-get2.c 1.3 93/12/31 15:16:23";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
    requested SID. */
 
-sid
-sccs_file::find_requested_sid(sid requested) const {
-	if (requested == NULL) {
+bool
+sccs_file::find_requested_sid(sid requested, sid &found) const {
+	if (requested.is_null()) {
 		requested = flags.default_sid;
 	}
 
-	sid best = NULL;
-
+	sid best;
+	bool got_best = false;
+	
 	/* Find the delta with the highest SID that matches the
 	   requested SID */
 
@@ -39,33 +40,52 @@ sccs_file::find_requested_sid(sid requested) const {
 		sid const &id = iter->id;
 		if (id == requested) {
 			/* Found an exact match. */
-			return requested;
+			found = requested;
+			return true;
 		}
 		if (requested.partial_match(id)
-		    && (id > best || best == NULL)) {
+		    && (!got_best || id > best)) {
 			best = id;
+			got_best = true;
 		}
 	}
-
-	if (best != NULL || !requested.release_only()) {
-		return best;
-	}
+	if (got_best)
+	  {
+	    found = best;
+	    return true;
+	  }
+	else if (!requested.release_only())
+	  {
+	    // JAY TODO: if !requested.release_only(),
+	    // should we return best at all?
+	    return best;
+	  }
 
 	/* If a match wasn't found above and the requested SID
 	   only mentions a release then look for the delta with 
            the highest SID that's lower than the requested SID. */
 
-	best = sid(NULL);
-
+	best = sid();
+	got_best = false;
+	
 	iter.rewind();
 	while(iter.next()) {
 		sid const &id = iter->id;
-		if (id > best && id < requested) {
-			best = id;
+		if (!got_best) {
+		  best = id;
+		} else if (id > best && id < requested) {
+		  best = id;
 		}
 	}
-
-	return best;
+	if (got_best)
+	  {
+	    found = best;
+	    return true;
+	  }
+	else
+	  {
+	    return false;		// TODO: what???
+	  }
 }
 
 
@@ -124,14 +144,14 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 	int i;
 	int len;
 
-	char const *user = get_user_name();
+	const char *user = get_user_name();
 
 	len = users.length();
 	if (len != 0) {
 		int found = 0;
 
 		for(i = 0; i < len; i++) {
-			char const *s = users[i];
+			const char *s = users[i];
 			char c = s[0];
 
 			if (c == '!') {
@@ -159,22 +179,22 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 		
 		if (!found) {
 			quit(-1, "%s: You are not authorized to make deltas.",
-			     (char const *) name);
+			     (const char *) name);
 		}
 	}
 
 	if (flags.all_locked 
-	    || (flags.floor != NULL && flags.floor > got)
-	    || (flags.ceiling != NULL && flags.ceiling < got)
+	    || (flags.floor.valid() && flags.floor > got)
+	    || (flags.ceiling.valid() && flags.ceiling < got)
 	    || flags.locked.member(got)) {
 		quit(-1, "%s: Requested release is locked.",
-		     (char const *) name);
+		     (const char *) name);
 	}
 	
 	if (pfile.is_locked(got) && !flags.joint_edit) {
 		quit(-1, "%s: Requested SID locked by '%s'.\n",
-		     (char const *) name,
-		     (char const *) pfile->user);
+		     (const char *) name,
+		     (const char *) pfile->user);
 	}
 }
 
@@ -183,11 +203,11 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
    Returns true if an error occurs. */
 
 int
-sccs_file::write_subst(char const *start, struct subst_parms *parms) const {
+sccs_file::write_subst(const char *start, struct subst_parms *parms) const {
 	struct delta const &delta = parms->delta;
 	FILE *out = parms->out;
 
-	char const *percent = strchr(start, '%');
+	const char *percent = strchr(start, '%');
 	while(percent != NULL) {
 		char c = percent[1];
 		if (c != '\0' && percent[2] == '%') {
@@ -201,11 +221,11 @@ sccs_file::write_subst(char const *start, struct subst_parms *parms) const {
 			int err = 0;
 
 			switch(c) {
-				char const *s;
+				const char *s;
 
 			case 'M':
 			{
-				string module = get_module_name();
+				mystring module = get_module_name();
 				err = (fputs(module, out) == EOF);
 			}
 				break;
@@ -337,9 +357,9 @@ sccs_file::write_subst(char const *start, struct subst_parms *parms) const {
    should be included in the output file. */
 	
 /* struct */ sccs_file::get_status
-sccs_file::get(FILE *out, string gname, sid id, sccs_date cutoff,
+sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff,
 	       sid_list include, sid_list exclude,
-	       int keywords, char const *wstring,
+	       int keywords, const char *wstring,
 	       int show_sid, int show_module, int debug) {
 
 	seq_state state(delta_table.highest_seqno());
@@ -354,7 +374,7 @@ sccs_file::get(FILE *out, string gname, sid id, sccs_date cutoff,
 #ifdef __GNUC__
 	    (keywords ? (subst_fn_t) 0 : &sccs_file::write_subst),
 #else
-	    (keywords ? (int (sccs_file::*)(char const *,
+	    (keywords ? (int (sccs_file::*)(const char *,
 					    struct subst_parms *) const) 0
 	              : &sccs_file::write_subst),
 #endif
@@ -362,14 +382,14 @@ sccs_file::get(FILE *out, string gname, sid id, sccs_date cutoff,
 
 	if (!parms.found_id) {
 		if (flags.id_keywords != NULL
-		    && *(char const *)flags.id_keywords != '\0') {
+		    && *(const char *)flags.id_keywords != '\0') {
 			fprintf(stderr, "%s: Warning: Required keywords \"%s\""
 				        " missing.",
-				(char const *) name,
-				(char const *) flags.id_keywords);
+				(const char *) name,
+				(const char *) flags.id_keywords);
 		}
 		fprintf(stderr, "%s: Warning: No id keywords.\n",
-			(char const *) name);
+			(const char *) name);
 	}
 				     
 	/* Set the return status. */

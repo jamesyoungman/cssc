@@ -28,21 +28,21 @@
 #endif
 
 template <class TYPE>
-range_list<TYPE>::range_list(char const *list): head(NULL) {
-	char const *s = list;
+range_list<TYPE>::range_list(const char *list): head(NULL) {
+	const char *s = list;
 	if (s == NULL || *s == '\0') {
 		return;
 	}
 
 	do {
-		char const *comma = strchr(s, ',');
+		const char *comma = strchr(s, ',');
 
 		if (comma == NULL) {
 			comma = s + strlen(s);
 		}
 		
 		char buf[64];
-		int len = comma - s;
+		size_t len = comma - s;
 		if (len > sizeof(buf) - 1) {
 			quit(-1, "Range in list too long: '%s'",
 			     list);
@@ -256,7 +256,7 @@ main() {
 
 		sid_list test(linebuf);
 
-		printf("\"%s\"\n -> \"", (char const *) linebuf);
+		printf("\"%s\"\n -> \"", (const char *) linebuf);
 		test.print(stdout);
 		puts("\"");
 	}

@@ -18,7 +18,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC fileiter.c 1.1 93/11/09 17:17:54";
+static const char sccs_id[] = "@(#) MySC fileiter.c 1.1 93/11/09 17:17:54";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
@@ -39,7 +39,7 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 	if (first[0] != '\0') {
 		DIR *dir = opendir(first);
 		if (dir != NULL) {
-			char const *slash = NULL;
+			const char *slash = NULL;
 			int len = strlen(first);
 
 #ifdef CONFIG_MSDOS_FILES
@@ -55,11 +55,11 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 				slash = "/";
 			}
 #endif
-			string dirname(first, slash);
+			mystring dirname(first, slash);
 
 			struct dirent *dent = readdir(dir);
 			while(dent != NULL) {
-				string name = string(dirname, dent->d_name);
+				mystring name = mystring(dirname, dent->d_name);
 				if (sccs_name::valid_filename(name)
 				    && is_readable(name)) {
 					files.add(name);
@@ -83,15 +83,17 @@ int
 sccs_file_iterator::next() {
 	switch(source) {
 	case STDIN:
-		static class _linebuf linebuf;
+	  {
+	    static class _linebuf linebuf;
 
-		if (linebuf.read_line(stdin)) {
-			return 0;
-		}
+	    if (linebuf.read_line(stdin)) {
+	      return 0;
+	    }
 
-		name = (char const *) linebuf;
-		return 1;
-
+	    name = (const char *) linebuf;
+	    return 1;
+	  }
+	
 #ifndef CONFIG_NO_DIRECTORY	
 	case DIRECTORY:
 		if (pos < files.length()) {

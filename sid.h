@@ -39,8 +39,10 @@ class sid {
 
 public:
 	sid(): rel(-1) {}
-	sid(char const *s);
+	sid(const char *s);
 	sid(release);		/* Defined below */
+
+  	bool is_null() const { return rel < 0; }
 
 #if 1
 	sid(sid const &id): rel(id.rel), level(id.level),
@@ -56,7 +58,7 @@ public:
 	}
 #endif
 
-	int valid() const { return rel != -1; }
+	bool valid() const { return rel != -1; }
 
 	int
 	partial_sid() const {
@@ -179,7 +181,7 @@ class release {
 
 public:
 	release(): rel(-1) {}
-	release(char const *s);
+	release(const char *s);
 
 	int valid() const { return rel != -1; }
 

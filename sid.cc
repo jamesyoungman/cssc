@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sid.c 1.1 93/11/09 17:18:02";
+static const char sccs_id[] = "@(#) MySC sid.c 1.1 93/11/09 17:18:02";
 #endif
 
 /* This pointer is used by the template range_list to denote an
@@ -29,7 +29,7 @@ static char const sccs_id[] = "@(#) MySC sid.c 1.1 93/11/09 17:18:02";
 void *invalid_range = xmalloc(1);
 
 static int
-get_comp(char const *&s) {
+get_comp(const char *&s) {
 	int n = 0;
 	char c = *s;
 	while(c != '\0') {
@@ -50,7 +50,7 @@ get_comp(char const *&s) {
 	return n;
 }
 
-release::release(char const *s) {
+release::release(const char *s) {
 	if (s == NULL) {
 		rel = 0;
 		return;
@@ -63,7 +63,7 @@ release::release(char const *s) {
 	}
 }
 
-sid::sid(char const *s) {
+sid::sid(const char *s) {
 	if (s == NULL) {
 		sequence = branch = level = rel = 0;
 		return;
@@ -172,7 +172,7 @@ sid::partial_match(sid const &id) const {
 
 sid
 sid::successor() const {
-	if (*this == NULL) {
+	if (is_null()) {
 		return sid(1, 1, 0, 0);
 	} else if (branch != 0) {
 		return sid(rel, level, branch, sequence + 1);

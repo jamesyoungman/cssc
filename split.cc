@@ -11,7 +11,7 @@
 #include "mysc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC split.c 1.1 93/11/09 17:18:03";
+static const char sccs_id[] = "@(#) MySC split.c 1.1 93/11/09 17:18:03";
 #endif
 
 /* Destructively spilts a string into an argument list. */

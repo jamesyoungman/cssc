@@ -18,12 +18,12 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sccsname.c 1.1 93/11/09 17:17:59";
+static const char sccs_id[] = "@(#) MySC sccsname.c 1.1 93/11/09 17:17:59";
 #endif
 
-char const *
-base_part(char const *name) {
-	char const *s = name + strlen(name);
+const char *
+base_part(const char *name) {
+	const char *s = name + strlen(name);
 	
 #ifdef CONFIG_MSDOS_FILES
 	if (isalpha(name[0]) && name[1] == ':') {
@@ -51,12 +51,12 @@ base_part(char const *name) {
 }
 
 int
-sccs_name::valid_filename(char const *name) {
-	char const *base = base_part(name);
+sccs_name::valid_filename(const char *name) {
+	const char *base = base_part(name);
 
 #ifdef CONFIG_MSDOS_FILES
-	char const *dot = strrchr(base, '.');
-	char const *dollar = strrchr(base, '$');
+	const char *dot = strrchr(base, '.');
+	const char *dollar = strrchr(base, '$');
 
 	return dot != NULL && dollar != NULL && dollar > dot
 	       && strchr(base, '.') == dot;
@@ -96,7 +96,7 @@ sccs_name::create() {
 }
 
 sccs_name &
-sccs_name::operator =(string n) {
+sccs_name::operator =(mystring n) {
 	destroy();
 	name = n;
 	create();
@@ -116,9 +116,9 @@ sccs_name::make_valid() {
 	char *dot = strchr(base, '.');
 
 	if (dot == NULL) {
-		name = string(s, ".$");
+		name = mystring(s, ".$");
 	} else if (dot[1] == '\0' || dot[2] == '\0' || dot[3] == '\0') {
-		name = string(s, "$");
+		name = mystring(s, "$");
 	} else {
 		dot[3] = '$';
 		dot[4] = '\0';
@@ -129,9 +129,9 @@ sccs_name::make_valid() {
 		s = name.xstrdup();
 		base = (char *) base_part(s);
 
-		string tmp(strchr(s, '/') != NULL ? "SCCS/" : "SCCS\\", base);
+		mystring tmp(strchr(s, '/') != NULL ? "SCCS/" : "SCCS\\", base);
 		base[0] = '\0';
-		tmp = string(s, tmp);
+		tmp = mystring(s, tmp);
 
 		if (is_readable(tmp)) {
 			name = tmp;
@@ -146,13 +146,13 @@ sccs_name::make_valid() {
 	char *s = name.xstrdup();
 	char *base = (char *) base_part(s);
 
-	string tmp("s.", base);
+	mystring tmp("s.", base);
 	base[0] = '\0';
-	name = string(s, tmp);
+	name = mystring(s, tmp);
 	       
 	if (!is_readable(name)) {
-		tmp = string("SCCS/", tmp);
-		tmp = string(s, tmp);
+		tmp = mystring("SCCS/", tmp);
+		tmp = mystring(s, tmp);
 		if (is_readable(tmp)) {
 			name = tmp;
 		}

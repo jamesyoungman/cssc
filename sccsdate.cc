@@ -18,7 +18,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sccsdate.c 1.1 93/11/09 17:17:58";
+static const char sccs_id[] = "@(#) MySC sccsdate.c 1.1 93/11/09 17:17:58";
 #endif
 
 #ifdef CONFIG_NO_MKTIME
@@ -105,7 +105,7 @@ days_in_month(int mon, int year) {
 }
 
 static int
-get_part(char const *&s, int def) {
+get_part(const char *&s, int def) {
 	char c = *s;
 	while(c != '\0') {
 		if (isdigit(c)) {
@@ -131,7 +131,7 @@ check_tm(struct tm &tm) {
 	       || tm.tm_hour > 23 || tm.tm_min > 59 || tm.tm_sec > 59;
 }
 
-sccs_date::sccs_date(char const *s) {
+sccs_date::sccs_date(const char *s) {
 	t = (time_t) -1;
 
 	if (s == NULL) {
@@ -169,7 +169,7 @@ sccs_date::sccs_date(char const *s) {
 	t = mktime(&tm);
 }
 
-sccs_date::sccs_date(char const *date, char const *time) {
+sccs_date::sccs_date(const char *date, const char *time) {
 	struct tm tm;
 
 	t = (time_t) -1;
@@ -265,7 +265,7 @@ sccs_date::print(FILE *f) const {
 }
 
 
-char const *
+const char *
 sccs_date::as_string() const {
 	struct tm const *tm = localtime(&t); 
 

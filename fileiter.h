@@ -39,7 +39,7 @@ private:
 	int argc;
 
 #ifndef CONFIG_NO_DIRECTORY
-	list<string> files;
+	list<mystring> files;
 	int pos;
 #endif
 	sccs_name name;
@@ -50,7 +50,9 @@ public:
 	int next();
 
 	sccs_name &get_name() { return name; }
-	enum sources using() { return source; }	
+  // JAY mod: using is now a keyword; change the function name to 
+  // using_source().
+	enum sources using_source() { return source; }	
 };
 
 #endif /* __FILEITER_H__ */

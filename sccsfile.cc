@@ -15,7 +15,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sccsfile.c 1.2 93/11/13 05:48:45";
+static const char sccs_id[] = "@(#) MySC sccsfile.c 1.2 93/11/13 05:48:45";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -122,7 +122,7 @@ sccs_file::_delta_table::find(sid id) const {
 /* Static member for opening a SCCS file and then calculating its checksum. */
 
 FILE *
-sccs_file::open_sccs_file(char const *name, enum _mode mode, unsigned *sump) {
+sccs_file::open_sccs_file(const char *name, enum _mode mode, unsigned *sump) {
 	FILE *f;
 
 #ifdef CONFIG_BINARY_FILE
@@ -159,7 +159,7 @@ sccs_file::open_sccs_file(char const *name, enum _mode mode, unsigned *sump) {
 	}
 
 	if (ferror(f)) {
-		quit(errno, "%s: Read error.", (char const *) name);
+		quit(errno, "%s: Read error.", (const char *) name);
 	}
 
 	*sump = sum & 0xFFFF;
@@ -191,7 +191,7 @@ int
 sccs_file::read_line() {
 	if (read_line_param(f)) {
 		if (ferror(f)) {
-			quit(errno, "%s: Read error.", (char const *) name);
+			quit(errno, "%s: Read error.", (const char *) name);
 		}
 		return -1;
 	} 
@@ -199,12 +199,12 @@ sccs_file::read_line() {
 	lineno++;
 	if (linebuf[0] == '\001') {
 #if 0
-		fprintf(stderr, "@%s\n", (char const *) linebuf + 1);
+		fprintf(stderr, "@%s\n", (const char *) linebuf + 1);
 #endif
 		return linebuf[1];
 	}
 #if 0
-	fprintf(stderr, ":%s\n", (char const *) linebuf);
+	fprintf(stderr, ":%s\n", (const char *) linebuf);
 #endif
 	return 0;
 
@@ -214,9 +214,9 @@ sccs_file::read_line() {
 /* Quits with a message saying that SCCS file is corrupt. */
 
 NORETURN
-sccs_file::corrupt(char const *why) const {
+sccs_file::corrupt(const char *why) const {
 	quit(-1, "%s: line %d: Corrupted SCCS file. (%s)",
-	     (char const *) name, lineno, why);
+	     (const char *) name, lineno, why);
 }
 
 
@@ -244,7 +244,7 @@ sccs_file::check_noarg() const {
    string isn't a valid number. */
 
 unsigned short
-sccs_file::strict_atous(char const *s) const {
+sccs_file::strict_atous(const char *s) const {
 	long n = 0;
 
 	char c = *s++;
@@ -314,7 +314,7 @@ sccs_file::read_delta() {
 
 	int c = read_line();
 	int i;
- 	char const *start;
+ 	const char *start;
 	for(i = 0; i < 3; i++) {
 		if (c == "ixg"[i]) {
 			check_arg();
@@ -375,7 +375,7 @@ sccs_file::read_delta() {
 void
 sccs_file::seek_to_body() {
 	if (fseek(f, body_offset, 0) != 0) {
-		quit(errno, "%s: fseek() failed!", (char const *) name);
+		quit(errno, "%s: fseek() failed!", (const char *) name);
 	}
 	lineno = body_lineno;
 }
@@ -384,7 +384,7 @@ sccs_file::seek_to_body() {
 
 /* Returns the module name of the SCCS file. */
 
-string
+mystring
 sccs_file::get_module_name() const {
 	if (flags.module == NULL) {
 		return name.gfile();
@@ -400,7 +400,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	: name(n), mode(m), lineno(0) {
 
 	if (!name.valid()) {
-		quit(-1, "%s: Not an SCCS file.", (char const *) name);
+		quit(-1, "%s: Not an SCCS file.", (const char *) name);
 	}
 
 	flags.branch = 0;
@@ -414,7 +414,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	if (mode != READ) {
 		if (name.lock()) {
 			quit(-1, "%s: SCCS file is locked.  Try again later.",
-			     (char const *) name);
+			     (const char *) name);
 		}
 	}
 
@@ -430,7 +430,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 
 	if (strict_atous(linebuf + 2) != sum) {
 		fprintf(stderr, "%s: Warning bad checksum.\n",
-			(char const *) name);
+			(const char *) name);
 	}
 	
 	c = read_line();
@@ -450,7 +450,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 		if (c != 0) {
 			corrupt("User name expected.");
 		}
-		users.add((char const *)linebuf);
+		users.add((const char *)linebuf);
 		c = read_line();
 	}
 
@@ -555,7 +555,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 
 	c = read_line();
 	while(c == 0) {
-		comments.add((char const *)linebuf);
+		comments.add((const char *)linebuf);
 		c = read_line();
 	}
 
@@ -580,7 +580,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 sid
 sccs_file::find_most_recent_sid(sid id) const {
 	sccs_date newest;
-	sid found = NULL;
+	sid found;
 	delta_iterator iter(delta_table);
 
 #if 0
@@ -596,7 +596,7 @@ sccs_file::find_most_recent_sid(sid id) const {
 			iter->id.dprint(stderr);
 			putc('\n', stderr);
 #endif
-			if (found == NULL || newest < iter->date) {
+			if (found.is_null() || newest < iter->date) {
 				newest = iter->date;
 				found = iter->id;
 			}

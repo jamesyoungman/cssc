@@ -30,14 +30,14 @@ public:
 
 	int index;
 	char *cindex;
-	char const *opts;
+	const char *opts;
 	int opterr;
 	char *arg;
 
 public:
-	getopt(int ac, char **av, char const *s, int err = 1)
-		: argc(ac), argv(av), opts(s), opterr(err), index(1),
-		  cindex(NULL) {}
+	getopt(int ac, char **av, const char *s, int err = 1)
+		: argc(ac), argv(av), index(1),
+		  cindex(NULL), opts(s), opterr(err) {}
 	int next();
 
 	int get_index() { return index; }

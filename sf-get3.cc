@@ -13,7 +13,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-get3.c 1.1 93/11/09 17:18:05";
+static const char sccs_id[] = "@(#) MySC sf-get3.c 1.1 93/11/09 17:18:05";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are

@@ -15,7 +15,7 @@
 #include "sccsfile.h"
 #include "sf-chkmr.h"
 
-char const main_sccs_id[] = "@(#) MySC delta.c 1.2 93/11/13 00:11:18";
+const char main_sccs_id[] = "@(#) MySC delta.c 1.2 93/11/13 00:11:18";
 
 void
 usage() {
@@ -33,8 +33,8 @@ main(int argc, char **argv) {
 #if 0
 	sid_list ignore;	/* -g */
 #endif
-	string mrs;		/* -m -M */
-	string comments;	/* -y -Y */
+	mystring mrs;		/* -m -M */
+	mystring comments;	/* -y -Y */
 	
 	if (argc > 0) {
 		set_prg_name(argv[0]);
@@ -90,7 +90,7 @@ main(int argc, char **argv) {
 		stdout_to_null();
 	}
 
-	list<string> mr_list, comment_list;
+	list<mystring> mr_list, comment_list;
 	int first = 1;
 
 	while(iter.next()) {
@@ -117,9 +117,9 @@ main(int argc, char **argv) {
 			break;
 
 		case sccs_pfile::NOT_FOUND:
-			if (rid == NULL) {
+			if (!rid.valid()) {
 				quit(-1, "%s: You have no edits outstanding.",
-				     (char const *) name);
+				     (const char *) name);
 			}
 			quit(-1, "%s: Specified SID hasn't been locked for"
 			         " editing by you.",
@@ -127,12 +127,12 @@ main(int argc, char **argv) {
 			break;
 
 		case sccs_pfile::AMBIGUOUS:
-			if (rid != NULL) {
+			if (rid.valid()) {
 				quit(-1, "%s: Specified SID is ambiguous.",
-				     (char const *) name);
+				     (const char *) name);
 			}
 			quit(-1, "%s: You must specify a SID on the"
-			         " command line.", (char const *) name);
+			         " command line.", (const char *) name);
 			break;
 
 		default:
@@ -142,15 +142,15 @@ main(int argc, char **argv) {
 		if (file.mr_required()) {
 			if (mr_list.length() == 0) {
 				quit(-1, "%s: MR number(s) must be supplied.",
-				     (char const *) name);
+				     (const char *) name);
 			}
 			if (file.check_mrs(mr_list)) {
 				quit(-1, "%s: Invalid MR number(s).",
-				     (char const *) name);
+				     (const char *) name);
 			}
 		}
 
-		string gname = name.gfile();
+		mystring gname = name.gfile();
 
 		file.add_delta(gname, pfile, mr_list, comment_list);
 
@@ -163,6 +163,8 @@ main(int argc, char **argv) {
 
 	return 0;
 }
+
+template class range_list<sid>;
 
 /* Local variables: */
 /* mode: c++ */

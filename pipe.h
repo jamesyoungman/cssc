@@ -4,7 +4,7 @@
  * By Ross Ridge
  * Public Domain
  *
- * Defines the class pipe.
+ * Defines the class Pipe.
  *
  * @(#) MySC pipe.h 1.1 93/12/30 17:33:40
  *
@@ -17,7 +17,7 @@
 #pragma interface
 #endif
 
-/* One of two definitions of the class pipe are used depending if the
+/* One of two definitions of the class Pipe are used depending if the
    system supports pipes (and fork) or not.  If pipes are not supported
    then a temporary file used to emulate one.  The members must be
    called in order: constructor, write_stream(), write_close(),
@@ -25,23 +25,23 @@
 
 #ifdef CONFIG_NO_PIPE
 
-class pipe: cleanup {
-	friend int run_diff(char const *gname, pipe &in, pipe &out);
+class Pipe: cleanup {
+	friend int run_diff(const char *gname, Pipe &in, Pipe &out);
 
 	FILE *f;
 	int fd;
-	string name;
+	mystring name;
 
 	void do_cleanup();
 
 public:
-	pipe();
+	Pipe();
 
 	FILE *write_stream() { return f; }
 	void write_close() { fclose(f); }
 	FILE *read_stream();
 	int read_close();
-	~pipe() { assert(f == NULL); }
+	~Pipe() { assert(f == NULL); }
 };
 
 #else /*  CONFIG_NO_PIPE */
@@ -96,18 +96,18 @@ public:
 	}
 };
 
-class pipe {
-	friend int run_diff(char const *gname, pipe &in, pipe &out);
+class Pipe {
+	friend int run_diff(const char *gname, Pipe &in, Pipe &out);
 
 	int fd;
 	wait_pid pid;
 	int child;
 	FILE *f;
 
-	static NORETURN _exit(int);
+	static NORETURN _exit(int) POSTDECL_NORETURN;
 
 public:
-	pipe();
+	Pipe();
 
 	FILE *
 	write_stream() {
@@ -141,7 +141,7 @@ public:
 	}
 
 
-	~pipe() {
+	~Pipe() {
 		assert(!child);
 		assert(f == NULL);
 	}

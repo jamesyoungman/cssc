@@ -25,6 +25,17 @@
 #endif
 #endif /* NORETURN */
 
+#ifndef POSTDECL_NORETURN
+#ifdef __GNUC__
+// GNU C
+#define POSTDECL_NORETURN __attribute__ ((noreturn))
+#else
+// Not GNU C
+#define POSTDECL_NORETURN /* does not return */
+#endif
+#endif
+
+
 #ifndef CDECL
 #ifdef __BORLANDC__
 #define CDECL __cdecl

@@ -14,11 +14,11 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-prs.c 1.2 93/12/31 15:16:24";
+static const char sccs_id[] = "@(#) MySC sf-prs.c 1.2 93/12/31 15:16:24";
 #endif
 
 inline void
-sccs_file::get(FILE *out, string name, seq_no seq) {
+sccs_file::get(FILE *out, mystring name, seq_no seq) {
 	struct subst_parms parms(out, NULL, delta(), 0, sccs_date(NULL));
 	class seq_state state(delta_table.highest_seqno());
 	prepare_seqstate(state, seq);
@@ -44,12 +44,12 @@ print_seq_list(FILE *out, list<seq_no> const &list) {
 /* Prints a list of strings, one per line. */
 
 static void
-print_string_list(FILE *out, list<string> const &list) {
+print_string_list(FILE *out, list<mystring> const &list) {
 	int i;
 	int len = list.length();
 
 	for(i = 0; i < len; i++) {
-		fprintf(out, "%s\n", (char const *) list[i]);
+		fprintf(out, "%s\n", (const char *) list[i]);
 	}
 }
 
@@ -57,9 +57,9 @@ print_string_list(FILE *out, list<string> const &list) {
 /* Prints a string flag with it's name. */
 
 static void
-print_flag2(FILE *out, char const *s, string it) {
+print_flag2(FILE *out, const char *s, mystring it) {
 	if (it != NULL) {
-		fprintf(out, "%s: %s\n", s, (char const *) it);
+		fprintf(out, "%s: %s\n", s, (const char *) it);
 	}
 }
 
@@ -67,7 +67,7 @@ print_flag2(FILE *out, char const *s, string it) {
 /* Prints a boolean flag with it's name. */
 
 static void
-print_flag2(FILE *out, char const *s, int it) {
+print_flag2(FILE *out, const char *s, int it) {
 	if (it) {
 		fprintf(out, "%s: yes\n", s);
 	}
@@ -78,8 +78,8 @@ print_flag2(FILE *out, char const *s, int it) {
 
 template <class TYPE>
 void
-print_flag2(FILE *out, char const *s, TYPE it) {
-	if (it != NULL) {
+print_flag2(FILE *out, const char *s, TYPE it) {
+	if (it.valid()) {
 		fprintf(out, "%s: ", s);
 		it.print(out);
 		putc('\n', out);
@@ -91,24 +91,24 @@ print_flag2(FILE *out, char const *s, TYPE it) {
 
 void
 sccs_file::print_flags(FILE *out) const {
-	print_flag2(out, (char const *) "Module Type", flags.type);
-	print_flag2(out, (char const *) "MR Validation", flags.mr_checker);
-	print_flag2(out, (char const *) "Keyword Validation",
+	print_flag2(out, (const char *) "Module Type", flags.type);
+	print_flag2(out, (const char *) "MR Validation", flags.mr_checker);
+	print_flag2(out, (const char *) "Keyword Validation",
 		    flags.id_keywords);
-	print_flag2(out, (char const *) "Branch", flags.branch);
-	print_flag2(out, (char const *) "Module Name", flags.module);
-	print_flag2(out, (char const *) "Floor", flags.floor);
-	print_flag2(out, (char const *) "Ceiling", flags.ceiling);
-	print_flag2(out, (char const *) "Default SID", flags.default_sid);
-	print_flag2(out, (char const *) "Null Deltas", flags.null_deltas);
-	print_flag2(out, (char const *) "Joint Editing", flags.joint_edit);
+	print_flag2(out, (const char *) "Branch", flags.branch);
+	print_flag2(out, (const char *) "Module Name", flags.module);
+	print_flag2(out, (const char *) "Floor", flags.floor);
+	print_flag2(out, (const char *) "Ceiling", flags.ceiling);
+	print_flag2(out, (const char *) "Default SID", flags.default_sid);
+	print_flag2(out, (const char *) "Null Deltas", flags.null_deltas);
+	print_flag2(out, (const char *) "Joint Editing", flags.joint_edit);
 	if (flags.all_locked) {
 		fputs("Locked Releases: a", out);
 	} else {
-		print_flag2(out, (char const *) "Locked Releases",
+		print_flag2(out, (const char *) "Locked Releases",
 			    flags.locked);
 	}
-	print_flag2(out, (char const *) "User Keyword", flags.user_def);
+	print_flag2(out, (const char *) "User Keyword", flags.user_def);
 }
 
 
@@ -125,22 +125,20 @@ print_yesno(FILE *out, int flag) {
 
 
 /* Prints the the value of string flag. */
-
 template <class TYPE>
 void
 print_flag(FILE *out, TYPE it) {
-	if (it == NULL) {
-		fputs("none", out);
-	} else {
+	if (it.valid()) {
 		it.print(out);
+	} else {
+		fputs("none", out);
 	}
 }
-
 
 /* Prints the value of flag whose type has a print(FILE *) member. */
 
 static void
-print_flag(FILE *out, string s) {
+print_flag(FILE *out, mystring s) {
 	if (s == NULL) {
 		fputs("none", out);
 	} else {
@@ -160,9 +158,9 @@ print_flag(FILE *out, string s) {
    delta table. */
 
 void
-sccs_file::print_delta(FILE *out, char const *format,
+sccs_file::print_delta(FILE *out, const char *format,
 		       struct delta const &delta) {
-	char const *s = format;
+	const char *s = format;
 
 	while(1) {
 		char c = *s++;
@@ -176,7 +174,7 @@ sccs_file::print_delta(FILE *out, char const *format,
 			continue;
 		}
 
-		char const *back_to = s;
+		const char *back_to = s;
 		unsigned key = 0;
 
 		if (s[1] == ':') {
@@ -421,9 +419,9 @@ sccs_file::print_delta(FILE *out, char const *format,
 /* Prints out parts of the SCCS file.  */
 
 void		
-sccs_file::prs(FILE *out, string format, sid rid, sccs_date cutoff,
+sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
 	       enum when when, int all_deltas) {
-	if (rid == NULL) {
+	if (!rid.valid()) {
 		rid = find_most_recent_sid(rid);
 	}
 
@@ -431,7 +429,7 @@ sccs_file::prs(FILE *out, string format, sid rid, sccs_date cutoff,
 		struct delta const *delta = delta_table.find(rid);
 		if (delta == NULL) {
 			quit(-1, "%s: Requested SID doesn't exist.",
-			     (char const *) name);
+			     (const char *) name);
 		}
 		cutoff = delta->date;
 	}

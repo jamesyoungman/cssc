@@ -12,7 +12,7 @@
 #include "fileiter.h"
 #include "pfile.h"
 
-char const main_sccs_id[] = "@(#) MySC sact.c 1.1 93/11/09 17:17:58";
+const char main_sccs_id[] = "@(#) MySC sact.c 1.1 93/11/09 17:17:58";
 
 void
 usage() {
@@ -56,6 +56,8 @@ main(int argc, char **argv) {
 
 	return 0;
 }
+
+template class range_list<sid>;
 
 /* Local variables: */
 /* mode: c++ */

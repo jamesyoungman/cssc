@@ -21,7 +21,7 @@
 
 class file_lock {
 public:
-	file_lock(string) {}
+	file_lock(mystring) {}
 	int failed() { return 0; }
 	~file_lock() {}
 };
@@ -30,7 +30,7 @@ public:
 
 class file_lock: cleanup {
 	int locked;
-	string name;
+	mystring name;
 #ifdef CONFIG_SHARE_LOCKING
 	FILE *f;
 #endif
@@ -38,7 +38,7 @@ class file_lock: cleanup {
 	void do_cleanup() { this->~file_lock(); }
 
 public:
-	file_lock(string zname);
+	file_lock(mystring zname);
 	int failed() { return !locked; }
 	~file_lock();
 };

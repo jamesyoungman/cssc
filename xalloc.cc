@@ -12,7 +12,7 @@
 #include "mysc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC xalloc.c 1.1 93/11/09 17:24:28";
+static const char sccs_id[] = "@(#) MySC xalloc.c 1.1 93/11/09 17:24:28";
 #endif
 
 #ifdef CONFIG_DECLARE_MALLOC

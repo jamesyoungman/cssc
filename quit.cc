@@ -18,7 +18,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC quit.c 1.1 93/11/09 17:17:57";
+static const char sccs_id[] = "@(#) MySC quit.c 1.1 93/11/09 17:17:57";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -28,14 +28,14 @@ extern "C" char * CDECL strlwr(char *);
 #include <dir.h>
 #endif /* CONFIG_BORLANDC */
 
-char const *prg_name = NULL;
+const char *prg_name = NULL;
 
 #ifdef CONFIG_DECLARE_STRERROR
 extern "C" char * CDECL strerror(int err);
 #endif
 
 void
-set_prg_name(char const *name) {
+set_prg_name(const char *name) {
 #ifdef CONFIG_BORLANDC
 
 	static char file[MAXFILE + MAXEXT];
@@ -58,7 +58,7 @@ set_prg_name(char const *name) {
 }
 
 NORETURN
-quit(int err, char const *fmt, ...) {
+quit(int err, const char *fmt, ...) {
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -76,7 +76,7 @@ quit(int err, char const *fmt, ...) {
 
 
 	if (prg_name != NULL && err != 0) {
-		fprintf(stderr, "%s: ", (char const *) prg_name);
+		fprintf(stderr, "%s: ", (const char *) prg_name);
 	}
 
 	vfprintf(stderr, fmt, ap);
@@ -128,7 +128,7 @@ nomem() {
 }
 
 NORETURN
-assert_failed(char const *file, int line, char const *test) {
+assert_failed(const char *file, int line, const char *test) {
 	quit(-3, "Assertion failed: %s\nFile: %s  Line: %d", test, file, line);
 }
 

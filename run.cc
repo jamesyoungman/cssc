@@ -14,13 +14,13 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC run.c 1.1 93/11/09 17:17:58";
+static const char sccs_id[] = "@(#) MySC run.c 1.1 93/11/09 17:17:58";
 #endif
 
 /* Runs a programme and returns its exit status. */
 
 int
-run(char const *prg, list<char const *> const &args) {
+run(const char *prg, list<const char *> const &args) {
 	int i;
 	int len = args.length();
 
@@ -55,8 +55,8 @@ run(char const *prg, list<char const *> const &args) {
 
 #else /* defined(CONFIG_NO_FORK) && defined(CONFIG_NO_SPAWN) */
 
-	char const *  *argv = (char const *  *) xmalloc((len + 2) 
-						      * sizeof(char const *  *));
+	const char *  *argv = (const char *  *) xmalloc((len + 2) 
+						      * sizeof(const char *  *));
 
 	argv[0] = prg;
 
@@ -108,8 +108,8 @@ run(char const *prg, list<char const *> const &args) {
 /* Runs a programme to checks MRs. */
 
 int
-run_mr_checker(char const *prg, char const *arg1, list<string> mrs) {
-	list<char const *> args;
+run_mr_checker(const char *prg, const char *arg1, list<mystring> mrs) {
+	list<const char *> args;
 
 	args.add(arg1);
 	args += mrs;

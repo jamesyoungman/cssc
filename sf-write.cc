@@ -12,16 +12,16 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-write.c 1.1 93/11/09 17:18:02";
+static const char sccs_id[] = "@(#) MySC sf-write.c 1.1 93/11/09 17:18:02";
 #endif
 
 /* Quit because an error related to the x-file. */
 
 NORETURN
-sccs_file::xfile_error(char const *msg) const {
-	string xname = name.xfile();
+sccs_file::xfile_error(const char *msg) const {
+	mystring xname = name.xfile();
 
-	quit(errno, "%s: %s", (char const *) xname, msg);
+	quit(errno, "%s: %s", (const char *) xname, msg);
 }
 
 
@@ -34,10 +34,10 @@ sccs_file::start_update() const {
 
 	if (mode == CREATE && file_exists(name)) {
 		quit(-1, "%s: SCCS file already exists.",
-		     (char const *) name);
+		     (const char *) name);
 	}
 		     
-	string xname = name.xfile();
+	mystring xname = name.xfile();
 	FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE);
 
 	if (out == NULL) {
@@ -83,7 +83,7 @@ sccs_file::write_delta(FILE *out, struct delta const &delta) const {
 	    || delta.id.print(out)
             || putc(' ', out) == EOF
             || delta.date.print(out)
-            || fprintf(out, " %s %u %u\n", (char const *) delta.user,
+            || fprintf(out, " %s %u %u\n", (const char *) delta.user,
 		       delta.seq, delta.prev_seq) == EOF) {
 		return 1;
 	}
@@ -97,7 +97,7 @@ sccs_file::write_delta(FILE *out, struct delta const &delta) const {
 	len = delta.mrs.length();
 	for(i = 0; i < len; i++) {
 		if (fprintf(out, "\001m %s\n",
-			    (char const *) delta.mrs[i]) == EOF) {
+			    (const char *) delta.mrs[i]) == EOF) {
 			return 1;
 		}
 	}
@@ -105,7 +105,7 @@ sccs_file::write_delta(FILE *out, struct delta const &delta) const {
 	len = delta.comments.length();
 	for(i = 0; i < len; i++) {
 		if (fprintf(out, "\001c %s\n",
-			    (char const *) delta.comments[i]) == EOF) {
+			    (const char *) delta.comments[i]) == EOF) {
 			return 1;
 		}
 	}
@@ -121,7 +121,7 @@ int
 sccs_file::write(FILE *out) const {
 	int len;
 	int i;
-	char const *s;
+	const char *s;
 
 	delta_iterator iter(delta_table);
 	while(iter.next(1)) {
@@ -185,14 +185,14 @@ sccs_file::write(FILE *out) const {
 		return 1;
 	}
 
-	if (flags.floor != NULL 
+	if (flags.floor.valid()
 	    && (fputs("\001f f ", out) == EOF
 		|| flags.floor.print(out)
 		|| putc('\n', out) == EOF)) {
 		return 1;
 	}
 
-	if (flags.ceiling != NULL
+	if (flags.ceiling.valid()
 	    && (fputs("\001f c ", out) == EOF
 		|| flags.ceiling.print(out)
 		|| putc('\n', out) == EOF)) {
@@ -265,7 +265,7 @@ sccs_file::end_update(FILE *out) const {
 	rewind(out);
 
 	unsigned sum;
-	string xname = name.xfile();
+	mystring xname = name.xfile();
 	if (fclose(open_sccs_file(xname, READ, &sum)) == EOF) {
 		xfile_error("Error closing file.");
 	}
@@ -279,7 +279,7 @@ sccs_file::end_update(FILE *out) const {
 
 	if (mode != CREATE && remove(name) == -1) {
 		quit(errno, "%s: Can't remove old SCCS file.",
-		     (char const *) name);
+		     (const char *) name);
 	}
 
 	if (rename(xname, name) == -1) {
@@ -294,14 +294,14 @@ sccs_file::end_update(FILE *out) const {
 /* Recalculate and update the checksum of a SCCS file. */
 
 void
-sccs_file::update_checksum(char const *name) {
+sccs_file::update_checksum(const char *name) {
 	unsigned sum;
 	FILE *out = open_sccs_file(name, UPDATE, &sum);
 
 	if (fprintf(out, "\001h%05u", sum) == EOF
 	    || fclose(out) == EOF) {
 		quit(errno, "%s: Write error.",
-		     (char const *) name);
+		     (const char *) name);
 	}
 }
 

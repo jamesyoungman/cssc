@@ -13,20 +13,20 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC pfile.c 1.1 93/11/09 17:17:56";
+static const char sccs_id[] = "@(#) MySC pfile.c 1.1 93/11/09 17:17:56";
 #endif
 
 NORETURN
-sccs_pfile::corrupt(int lineno, char const *msg) const {
+sccs_pfile::corrupt(int lineno, const char *msg) const {
 	quit(-1, "%s: line %d: p-file is corrupt.  (%s)",
-	     (char const *) pname, lineno, msg);
+	     (const char *) pname, lineno, msg);
 }
 
 sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 		: name(n), mode(m), pos(-1) {
 
         if (!name.valid()) {
-		quit(-1, "%s: Not a SCCS file.", (char const *) name);
+		quit(-1, "%s: Not a SCCS file.", (const char *) name);
 	}
 
 	pname = name.pfile();
@@ -34,7 +34,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 	if (mode != READ) {
 		if (name.lock()) {
 			quit(-1, "%s: SCCS file is locked.  Try again later.",
-			     (char const *) name);
+			     (const char *) name);
 		}
 	}
 
@@ -42,7 +42,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 	if (pf == NULL) {
 		if (errno != ENOENT) {
 			quit(-1, "%s: Can't open p-file for reading.",
-			     (char const *) pname);
+			     (const char *) pname);
 		}
 	} else {
 		class _linebuf linebuf;
@@ -97,7 +97,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 		}
 
 		if (ferror(pf)) {
-			quit(errno, "%s: Read error.", (char const *) pname);
+			quit(errno, "%s: Read error.", (const char *) pname);
 		}
 
 		fclose(pf);
@@ -137,6 +137,7 @@ sccs_pfile::~sccs_pfile() {
 		name.unlock();
 	}
 }
+
 
 /* Local variables: */
 /* mode: c++ */

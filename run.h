@@ -34,9 +34,9 @@
 
 #endif /* CONFIG_NO_FORK */
 
-int run(char const *prg, list<char const *> const &args);
-int run_mr_checker(char const *prg, char const *arg1,
-		   list<string> mrs);
+int run(const char *prg, list<const char *> const &args);
+int run_mr_checker(const char *prg, const char *arg1,
+		   list<mystring> mrs);
 
 #endif /* __RUN_H__ */
 

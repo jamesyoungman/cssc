@@ -13,12 +13,12 @@
 #include "list.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC l-split.c 1.1 93/11/09 17:17:55";
+static const char sccs_id[] = "@(#) MySC l-split.c 1.1 93/11/09 17:17:55";
 #endif
 
-list<string>
-split_mrs(string mrs) {
-	list<string> mr_list;
+list<mystring>
+split_mrs(mystring mrs) {
+	list<mystring> mr_list;
 
 	if (mrs != NULL) {
 		char *s = mrs.xstrdup();
@@ -34,9 +34,9 @@ split_mrs(string mrs) {
 	return mr_list;
 }
 
-list<string>
-split_comments(string comments) {
-	list<string> comment_list;
+list<mystring>
+split_comments(mystring comments) {
+	list<mystring> comment_list;
 
 	if (comments != NULL) {
 		char *s = comments.xstrdup();

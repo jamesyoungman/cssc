@@ -29,8 +29,9 @@ class stack {
 	}
 	       
 public:
-	stack(int l): len(l), top(0), 
-		      array((TYPE *)xmalloc(l * sizeof(TYPE))) {}
+	stack(int l):
+	  array((TYPE *)xmalloc(l * sizeof(TYPE))),
+	  top(0), len(l) {}
 
 	stack(stack<TYPE> const &it) {
 		copy(it);

@@ -42,11 +42,11 @@ extern int errno;
 typedef unsigned short seq_no;
 
 int split(char *s, char **args, int len, char c);
-string prompt_user(char const *prompt);
+mystring prompt_user(const char *prompt);
 
 #endif /* NO_COMMON_HEADERS */
 
-extern char const main_sccs_id[];
+extern const char main_sccs_id[];
 
 inline void
 version() {

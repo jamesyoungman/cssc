@@ -16,7 +16,7 @@
 #include "getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC getopt.c 1.1 93/11/09 17:17:54";
+static const char sccs_id[] = "@(#) MySC getopt.c 1.1 93/11/09 17:17:54";
 #endif
 
 int

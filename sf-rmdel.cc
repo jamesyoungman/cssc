@@ -13,7 +13,7 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-rmdel.c 1.1 93/11/09 17:18:05";
+static const char sccs_id[] = "@(#) MySC sf-rmdel.c 1.1 93/11/09 17:18:05";
 #endif
 
 static int
@@ -33,7 +33,7 @@ sccs_file::rmdel(sid id) {
 	struct delta *delta = (struct delta *) delta_table.find(id);
 	if (delta == NULL) {
 		quit(-1, "%s: Specified SID not found in SCCS file.",
-		     (char const *) name);
+		     (const char *) name);
 	}
 	seq_no seq = delta->seq;
 
@@ -41,13 +41,13 @@ sccs_file::rmdel(sid id) {
 	while(iter.next()) {
 		if (iter->prev_seq == seq) {
 			quit(-1, "%s: Specified SID has a successor.",
-			     (char const *) name);
+			     (const char *) name);
 		}
 		if (is_seqlist_member(seq, iter->included)
 		    || is_seqlist_member(seq, iter->excluded)
 		    || is_seqlist_member(seq, iter->ignored)) {
 			quit(-1, "%s: Specified SID is used in another delta.",
-			     (char const *) name);
+			     (const char *) name);
 		}
 	}
 

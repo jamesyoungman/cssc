@@ -45,19 +45,19 @@ public:
 #endif
 };
 
-extern char const *prg_name;
+extern const char *prg_name;
 
-void set_prg_name(char const *name);
+void set_prg_name(const char *name);
 
 #ifdef __GNUC__
-NORETURN quit(int err, char const *fmt, ...)
-	__attribute__((format(printf, 2, 3)));
+NORETURN quit(int err, const char *fmt, ...)
+	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
 #else
-NORETURN quit(int err, char const *fmt, ...);
+NORETURN quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 #endif
 
-NORETURN nomem();
-NORETURN assert_failed(char const *file, int line, char const *test);
+NORETURN nomem()  POSTDECL_NORETURN;
+NORETURN assert_failed(const char *file, int line, const char *test) POSTDECL_NORETURN;
 
 #define assert(test) ((test) ? (void) 0					\
 		             : assert_failed(__FILE__, __LINE__, #test))

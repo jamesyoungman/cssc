@@ -129,7 +129,7 @@ public:
 
 	}
 
-	char const *
+	const char *
 	start(seq_no seq, int insert) {
 		assert(seq > 0 && seq <= last);
 
@@ -158,7 +158,7 @@ public:
 		return NULL;
 	}
 
-	char const *
+	const char *
 	end(seq_no seq) {
 		assert(seq > 0 && seq <= last);
 

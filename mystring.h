@@ -4,7 +4,7 @@
  * By Ross Ridge
  * Public Domain
  *
- * Defines the class string.
+ * Defines the class mystring.
  *
  * @(#) MySC mystring.h 1.1 93/11/09 17:24:42
  *
@@ -20,10 +20,10 @@
 #define STR_OFFSET (offsetof(ptr, str))
 #define STR_PTR(str) ((ptr *)((str) - STR_OFFSET))
 
-/* This is a very simple string class.  It's purpose is mainly to
+/* This is a very simple string class.  Its purpose is mainly to
    simplify the allocation of strings. */
 
-class string {
+class mystring {
 	struct ptr {
 		int refs;
 		char str[1];
@@ -31,12 +31,12 @@ class string {
 
 	char *str;
 
-	void create(char const *s);
-	void create(char const *s1, char const *s2);
+	void create(const char *s);
+	void create(const char *s1, const char *s2);
 	void destroy();
 
 	void
-	copy(string const &s) {
+	copy(mystring const &s) {
 		str = s.str;
 		if (str != NULL) {
 			STR_PTR(str)->refs++;
@@ -44,21 +44,25 @@ class string {
 	}
 
 public:
-	string(): str(NULL) {}
-	string(char const *s) { create(s); }
-	string(char const *s1, char const *s2) { create(s1, s2); }
+	mystring(): str(NULL) {}
+	mystring(const char *s) { create(s); }
+	mystring(const char *s1, const char *s2) { create(s1, s2); }
 
-	string(string const &s) {
+
+	mystring(mystring const &s) {
 		copy(s);
 	}
 
-	string &operator =(string const &s);
-	string &operator =(char const *s);
+	mystring &operator =(mystring const &s);
+	mystring &operator =(const char *s);
 
-	operator char const *() const {
+	operator const char *() const {
 		return str;
 	}
-
+  	operator bool() const   {
+	  return str ? true : false;
+  	}
+  
 #ifdef __GNUC__
 	operator void *() const {
 		return str;
@@ -66,21 +70,23 @@ public:
 #endif
 
 	int
-	operator ==(string const &s) const {
+	operator ==(mystring const &s) const {
 		assert(s.str != NULL);
 		assert(str != NULL);
 		return strcmp(str, s.str) == 0;
 	}
+	int operator !=(mystring const &s) const { return !operator==(s); }	
 
 	int
-	operator ==(char const *s) const {
+	operator ==(const char *s) const {
 		if (s == NULL) {
 			return str == NULL;
 		}
 		assert(str != NULL);
 		return strcmp(str, s) == 0;
 	}
-		
+	int operator !=(const char *s) const { return !operator==(s); }
+  
 	int
 	print(FILE *out) const {
 		return fputs(str, out) == EOF;
@@ -91,7 +97,7 @@ public:
 		return strcpy((char *) xmalloc(strlen(str) + 1), str);
 	}
 
-	~string() {
+	~mystring() {
 		destroy();
 	}
 };

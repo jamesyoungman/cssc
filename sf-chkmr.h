@@ -20,8 +20,8 @@
    have the run_mr_checker function defined. */
 
 inline int 
-sccs_file::check_mrs(list<string> mrs) {
-	string gname = name.gfile();
+sccs_file::check_mrs(list<mystring> mrs) {
+	mystring gname = name.gfile();
 	return run_mr_checker(flags.mr_checker, gname, mrs) != 0;
 }
 

@@ -26,28 +26,28 @@ public:
 private:
 	struct edit_lock {
 		sid got, delta;
-		string user;
+		mystring user;
 		sccs_date date;
 		sid_list include, exclude;
 		int deleted;
 
-		edit_lock(char const *g, char const *d, char const *u,
-			  char const *dd, char const *dt, char const *i,
-			  char const *x)
+		edit_lock(const char *g, const char *d, const char *u,
+			  const char *dd, const char *dt, const char *i,
+			  const char *x)
 			: got(g), delta(d), user(u), date(dd, dt),
 			  include(i), exclude(x), deleted(0) {}
 		edit_lock() {}
 	};
 
 	sccs_name &name;
-	string pname;
+	mystring pname;
 	enum _mode mode;
 	
 	list<struct edit_lock> edit_locks;
 
 	int pos;
 
-	NORETURN corrupt(int lineno, char const *msg) const;
+	NORETURN corrupt(int lineno, const char *msg) const  POSTDECL_NORETURN;
 
 	static int
 	write_edit_lock(FILE *out, struct edit_lock const &it) {

@@ -30,11 +30,11 @@ void stdout_to_null();
 FILE *stdout_to_stderr();
 int stdin_is_a_tty();
 FILE *open_null();
-int is_readable(char const *name);
-int file_exists(char const *name);
-char const *get_user_name();
+int is_readable(const char *name);
+int file_exists(const char *name);
+const char *get_user_name();
 int user_is_group_member(int gid);
-FILE *fcreate(string name, int mode);
+FILE *fcreate(mystring name, int mode);
 
 #ifdef CONFIG_SYNC_BEFORE_REOPEN
 int ffsync(FILE *f);
@@ -51,13 +51,13 @@ inline void restore_privileges() {}
 #ifdef CONFIG_NO_REMOVE
 #undef remove
 #define remove LIDENT(remove)
-int remove(char const *name);
+int remove(const char *name);
 #endif
 
 #ifdef CONFIG_NO_RENAME
 #undef rename
 #define rename LIDENT(rename)
-int rename(char const *from, char const *to);
+int rename(const char *from, const char *to);
 #endif
 
 #ifdef CONFIG_USE_ARCHIVE_BIT

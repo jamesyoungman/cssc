@@ -14,7 +14,7 @@
 #define __SID_LIST_H__
 
 #ifdef __GNUC__
-#pragma this does not work with templates interface
+// #pragma this does not work with templates interface
 #endif
 
 extern void *invalid_range;
@@ -41,7 +41,7 @@ class range_list {
 
 public:
 	range_list(): head(NULL) {}
-	range_list(char const *list);
+	range_list(const char *list);
 
 	range_list(range_list const &list) {
 		head = copy(list.head);

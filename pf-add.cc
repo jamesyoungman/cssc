@@ -12,7 +12,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC pf-add.c 1.1 93/11/09 17:17:56";
+static const char sccs_id[] = "@(#) MySC pf-add.c 1.1 93/11/09 17:17:56";
 #endif
 
 void
@@ -36,19 +36,19 @@ sccs_pfile::add_lock(sid got, sid delta,
 	if (edit_locks.length() == 0) {
 		pf = fcreate(pname, CREATE_EXCLUSIVE);
 		if (pf == NULL) {
-			quit(errno, "%s: Can't create.", (char const *) pname);
+			quit(errno, "%s: Can't create.", (const char *) pname);
 		}
 	} else {
 		pf = fopen(pname, "a");
 		if (pf == NULL) {
 			quit(errno, "%s: Can't open for append.",
-			     (char const *) pname);
+			     (const char *) pname);
 		}
 	}
 
 	if (write_edit_lock(pf, new_lock)
 	    || fclose(pf) == EOF) {
-		quit(errno, "%s: Write error.", (char const *) pname);
+		quit(errno, "%s: Write error.", (const char *) pname);
 	}
 }
 

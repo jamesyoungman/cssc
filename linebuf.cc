@@ -16,7 +16,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC linebuf.c 1.1 93/11/09 17:17:55";
+static const char sccs_id[] = "@(#) MySC linebuf.c 1.1 93/11/09 17:17:55";
 #endif
 
 int

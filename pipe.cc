@@ -4,13 +4,15 @@
  * By Ross Ridge
  * Public Domain
  *
- * Members of the class pipe.
+ * Members of the class Pipe.
  *
  */
 
 #ifdef __GNUC__
 #pragma implementation "pipe.h"
 #endif
+
+class Pipe;
 
 #include "mysc.h"
 #include "pipe.h"
@@ -19,17 +21,17 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC pipe.c 1.1 93/11/09 17:17:57";
+static const char sccs_id[] = "@(#) MySC pipe.c 1.1 93/11/09 17:17:57";
 #endif
 
-extern int create(string name, int mode); /* file.c */
+extern int create(mystring name, int mode); /* file.c */
 
 #ifdef CONFIG_NO_PIPE
 
 /* Deletes the temporary file if the programme quits prematurely. */
 
 void 
-pipe::do_cleanup() {
+Pipe::do_cleanup() {
 	if (name != NULL) {
 		if (fd != -1) {
 			if (f != NULL) {
@@ -42,10 +44,10 @@ pipe::do_cleanup() {
 	}
 }
 
-/* Constructor for class pipe.  Creates a temporary file to emulate
+/* Constructor for class Pipe.  Creates a temporary file to emulate
    a pipe. */
 
-pipe::pipe() {
+Pipe::Pipe() {
 #ifdef CONFIG_TEMP_DIRECTORY
 	char *s = tempnam(CONFIG_TEMP_DIRECTORY, "mysc");
 	name = s;
@@ -63,7 +65,7 @@ pipe::pipe() {
 	fd = create(name, CREATE_EXCLUSIVE | CREATE_READ_ONLY);
 	if (fd == -1) {
 		quit(errno, "%s: Can't create temporary file.",
-		     (char const *) name);
+		     (const char *) name);
 	}
 	f = fdopen(fd, "w");
 	if (f == NULL) {
@@ -72,14 +74,14 @@ pipe::pipe() {
 }
 
 
-/* Returns the stream to use to read from the pipe. */
+/* Returns the stream to use to read from the Pipe. */
 
 FILE *
-pipe::read_stream() {
+Pipe::read_stream() {
 	fd = open(name, O_RDONLY);
 	if (fd == -1) {
 		quit(errno, "%s: Can't reopen temporary file.",
-		     (char const *) name);
+		     (const char *) name);
 	}
 	f = fdopen(fd, "r");
 	if (f == NULL) {
@@ -92,13 +94,13 @@ pipe::read_stream() {
 /* Closes the read stream and deletes the temporary file. */
 
 int
-pipe::read_close() {
+Pipe::read_close() {
 	fclose(f);
 	f = NULL;
 	fd = -1;
 	if (remove(name) == -1) {
 		quit(errno, "%s: Can't remove temporary file.",
-		     (char const *) name);
+		     (const char *) name);
 	}
 	return 0;
 }
@@ -107,7 +109,7 @@ pipe::read_close() {
    as stdout. */
 
 int	
-run_diff(char const *gname, pipe &in, pipe &out) {
+run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out) {
 	int old_stdin = dup(0);
 	if (old_stdin == -1) {
 		quit(errno, "dup(0) failed.");
@@ -117,19 +119,19 @@ run_diff(char const *gname, pipe &in, pipe &out) {
 		quit(errno, "dup(1) failed.");
 	}
 
-	in.read_stream();
+	pipe_in.read_stream();
 
 	close(0);
-	if (dup(in.fd) != 0) {
+	if (dup(pipe_in.fd) != 0) {
 		quit(errno, "dup() != 0");
 	}
 
 	close(1);
-	if (dup(out.fd) != 1) {
+	if (dup(pipe_out.fd) != 1) {
 		quit(errno, "dup() != 1");
 	}
 
-	list<char const *> args;
+	list<const char *> args;
 
 #ifdef CONFIG_DIFF_SWITCHES
 	args.add(CONFIG_DIFF_SWITCHES);
@@ -230,16 +232,16 @@ wait_pid::wait() {
 /* This is used to keep system dependencies out of the include files. */
 
 NORETURN
-pipe::_exit(int ret) {
+Pipe::_exit(int ret) {
 	::_exit(ret);
 }
 
 
-/* Constructor for the class pipe.  Creates a pipe and forks, giving
+/* Constructor for the class Pipe.  Creates a pipe and forks, giving
    the write end of the pipe to child process and the read end to the
    parent process. */
 
-pipe::pipe() {
+Pipe::Pipe() {
 	int fds[2];
 
 	if (::pipe(fds) == -1) {
@@ -274,18 +276,20 @@ pipe::pipe() {
    as stdout. */
 
 int
-run_diff(char const *gname, pipe &in, pipe &out) {
-	if (out.write_stream() == NULL) {
+run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out)
+{
+	    
+	if (pipe_out.write_stream() == NULL) {
 		return 0;
 	}
 
 	close(0);
-	if (dup(in.fd) != 0) {
+	if (dup(pipe_in.fd) != 0) {
 		quit(errno, "dup() != 0.");
 	}
 
 	close(1);
-	if (dup(out.fd) != 1) {
+	if (dup(pipe_out.fd) != 1) {
 		quit(errno, "dup() != 1.");
 	}
 
@@ -293,7 +297,7 @@ run_diff(char const *gname, pipe &in, pipe &out) {
 #ifdef CONFIG_DIFF_SWITCHES
 	      CONFIG_DIFF_SWITCHES,
 #endif
-	      "-", (char const *) gname, (char const *) 0);
+	      "-", (const char *) gname, (const char *) 0);
 
 	quit(errno, "execl(\"" CONFIG_DIFF_COMMAND "\") failed.");
 

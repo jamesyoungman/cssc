@@ -13,7 +13,7 @@
 #include "pfile.h"
 #include "getopt.h"
 
-char const main_sccs_id[] = "@(#) MySC unget.c 1.1 93/11/09 17:18:04";
+const char main_sccs_id[] = "@(#) MySC unget.c 1.1 93/11/09 17:18:04";
 
 void
 usage() {
@@ -77,9 +77,9 @@ main(int argc, char **argv) {
 			break;
 
 		case sccs_pfile::NOT_FOUND:
-			if (rid == NULL) {
+			if (!rid.valid()) {
 				quit(-1, "%s: You have no edits outstanding.",
-				     (char const *) name);
+				     (const char *) name);
 			}
 			quit(-1, "%s: Specified SID hasn't been locked for"
 			         " editing by you.",
@@ -87,12 +87,12 @@ main(int argc, char **argv) {
 			break;
 
 		case sccs_pfile::AMBIGUOUS:
-			if (rid != NULL) {
+			if (!rid.valid()) {
 				quit(-1, "%s: Specified SID is ambiguous.",
-				     (char const *) name);
+				     (const char *) name);
 			}
 			quit(-1, "%s: You must specify a SID on the"
-			         " command line.", (char const *) name);
+			         " command line.", (const char *) name);
 			break;
 
 		default:
@@ -103,7 +103,7 @@ main(int argc, char **argv) {
 		pfile.update();
 
 		if (!keep_gfile) {
-			string gname = name.gfile();
+			mystring gname = name.gfile();
 #ifndef TESTING
 			remove(gname);
 #endif
@@ -112,6 +112,7 @@ main(int argc, char **argv) {
 
 	return 0;
 }
+template class range_list<sid>;
 
 /* Local variables: */
 /* mode: c++ */

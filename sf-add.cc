@@ -13,7 +13,7 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static char const sccs_id[] = "@(#) MySC sf-add.c 1.1 93/11/09 17:18:00";
+static const char sccs_id[] = "@(#) MySC sf-add.c 1.1 93/11/09 17:18:00";
 #endif
 
 /* Insert a delta at the start of the delta table. */
