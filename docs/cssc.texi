@@ -217,10 +217,13 @@ Unlock the specified releases.   If @samp{a} is specified as the
 release, that denotes ``all releases''.  Untested.
 
 @item -mMR-list
-When initialising a file, add the specified list of MR numbers
+When initialising a file, add the specified list of @sc{mr} numbers
 (@pxref{mr-numbers}) to the delta commentary for the initial version.
-The specified MRs are validated according to the setting of the @var{v}
-flag, which should be set (@pxref{flags}).  Untested.
+The specified @sc{mr}s are validated according to the setting of the
+@var{v} flag, which should be set (@pxref{flags}).  If the @var{v} flag
+is set but has no value (i.e. is set to the empty string), validation
+silently succeeds.  If the @var{v} flag is not set, the @samp{-m} option
+causes @code{delta} to fail.
 
 @item -M
 As for @samp{-m} but specifying no list of modification requests.
@@ -308,7 +311,9 @@ Sets the value for the @samp{%Y%} keyword as described in @ref{keyword
 substitution}.
 @item v
 Sets the name of the program used to validate @sc{mr} (modification
-request) numbers; @sc{mr}s are described in @ref{mr-numbers}.
+request) numbers; @sc{mr}s are described in @ref{mr-numbers}.  This flag
+can be set to the empty string, in which case @sc{mr}s are allowed and
+the validation silently succeeds without any program being run.
 @end table
 
 @node mr-numbers, , flags, admin
