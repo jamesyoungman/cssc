@@ -252,6 +252,7 @@ example @samp{^A}, the character whose code is 1.
 
 @table @option
 @cindex Restricting access to history files
+@cindex Authorisation
 @item -a@var{xxx}
 Add user or group @var{xxx} to the list of those authorised to check
 revisions in.  Users must be specified by name and groups by numeric
@@ -392,7 +393,7 @@ Create empty releases when the @option{-r} option to @code{get} is used to
 skip releases.   These empty releases can later serve as branch points.
 @end table
 
-@unnumberedsubsubsec Numerical Flags 
+@unnumberedsubsubsec Other Flags 
 @table @samp
 @item c
 Set the release ceiling.  Releases higher than the ceiling cannot be
