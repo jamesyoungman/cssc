@@ -35,6 +35,12 @@ STOP PRESS!
     disable this feature only if you need to interoperate with a
     version of SCCS which lacks binary file support.
 
+ --disable-binary
+
+    Turns off suport for creating encoded ("binary") SCCS files.
+    CSSC will still handle these as input, but will never create one,
+    when this option is used. 
+
 --enable-max-line-length=N 
 
     Sets the maximum line length allowed in SCCS files to N.  By
