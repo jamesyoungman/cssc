@@ -1,6 +1,6 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
-Version: 0.06alpha.pl0
+Version: 0.06alpha.pl1
 Release: 1
 Copyright: GPL
 Packager: James Youngman <jay@gnu.org>
@@ -23,10 +23,14 @@ make
 
 %install
 make install
+strip /usr/libexec/cssc/*
 [ -L /usr/sccs ] && rm -f /usr/sccs
 ln -s libexec/cssc /usr/sccs
 
 %changelog
+
+* Sat Feb 21 1998 jay@gnu.org <James Youngman>
+Strip the installed binaries.
 
 * Thu Feb 12 1998 jay@gnu.org <James Youngman>
 Added sccsdiff to the file list.
