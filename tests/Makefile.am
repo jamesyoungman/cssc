@@ -1,6 +1,4 @@
 TESTDIRS = admin delta get prs prt unget
-SUBDIRS = $(TESTDIRS)
-
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -48,21 +46,10 @@ all-tests: test-admin test-delta test-get test-prs test-prt test-unget
 
 check: all-tests
 
-# Some magic which generates the Makefile.am files for the
-# subdirectories.  Basically, we just add all the contents of 
-# the subdirectories, except symbolic links and directories.
-#
-sub-automake:
-	cd $(srcdir)
-	for  i in $(TESTDIRS) ; \
-	do \
-		( cd $$i ; \
-		rm $$i/Makefile.am \ \
-		echo "EXTRA_DIST ="$$(\
-		for i in * ; \
-		do \
-			[ ! -d $$i -a ! -L $$i ] && echo $$i; \
-		done );\
-		) > $$i/Makefile.am ; \
-	done
+# When a distribution is being made and all the files that automake
+# knows about have been copied into $(distdir), dist-hook is called.
+dist-hook:
+	( cd $(srcdir)  && tar cf - $(TESTDIRS) ) | \
+	( cd $(distdir) && tar xf - )
+
 
