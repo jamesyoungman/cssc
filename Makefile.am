@@ -10,7 +10,7 @@ csscutildir = $(libexecdir)/cssc
 # so that when we do "make check", the "Tests passed" message
 # is emitted last (we wouldn't want "entering directory unused"
 # messages to make that scroll offf the screen).
-SUBDIRS = bsd docs testutils auxfiles unused tests
+SUBDIRS = bsd docs testutils auxfiles unused sccs-cgi tests 
 
 
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
