@@ -20,7 +20,7 @@ for f in ${get} ${admin} ${csc} ${prs} ${prt} \
 do
 	case $f in 
 		/*)
-			test -x $f || echo "WARNING: cannot execute $f" >&2
+			test -x "$f" || echo "WARNING: cannot execute $f" >&2
 			;;
 		*)
 			;;
@@ -33,13 +33,13 @@ done
 # We need to run the candidate 
 # to find out if it accepts the --prefix option.
 
-if test x${sccs} = x
+if test x"${sccs}" = x
 then
-    if test -f ${dir}/sccs
+    if test -f "${dir}/sccs"
     then
 	sccsprog="${dir}/sccs"
     else
-	case ${dir} in 
+	case "${dir}" in 
 	    ../..) sccsprog="${dir}/bsd/sccs"
 		    ;;
 	    *) sccsprog="sccs"
