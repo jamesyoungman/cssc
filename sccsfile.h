@@ -152,6 +152,7 @@ private:
 		int all_locked;
 		mystring user_def;
 		mystring reserved;
+	  	int encoded;
 	} flags;
 	list<mystring> comments;
 

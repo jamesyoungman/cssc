@@ -109,6 +109,8 @@ sccs_file::print_flags(FILE *out) const {
 			    flags.locked);
 	}
 	print_flag2(out, (const char *) "User Keyword", flags.user_def);
+	if (flags.encoded)
+	  fputs("encoded\n", out);
 }
 
 

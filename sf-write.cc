@@ -222,7 +222,17 @@ sccs_file::write(FILE *out) const {
 	if (s != NULL && fprintf(out, "\001f q %s\n", s) == EOF) {
 		return 1;
 	}
-
+	
+	/* Flag 'e': encoded flag -- boolean.
+	 * Some versions of SCCS produce "\001 f a 0" if the file
+	 * is not encoded, and some do not.  We shall not so as not
+	 * to upset broken implementations, for example our own for the 
+	 * time being.
+	 */
+	if (flags.encoded && fprintf(out, "\001f e 1") == EOF) {
+                return 1;
+	}
+	
 	s = flags.reserved;
 	if (s != NULL && fprintf(out, "\001f z %s\n", s) == EOF) {
 		return 1;

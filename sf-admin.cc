@@ -110,6 +110,11 @@ sccs_file::admin(const char *file_comment,
 			flags.user_def = s;
 			break;
 
+		case 'e':
+		  	quit(-1, "The encoding flag must be set "
+			     "with the -b option");
+			break;
+
 		case 't':
 			flags.type = s;
 			break;
@@ -172,6 +177,11 @@ sccs_file::admin(const char *file_comment,
 			flags.user_def = NULL;
 			break;
 
+		case 'e':
+		  	quit(-1, "Deletion of the binary-encoding flag "
+			     "is not supported.");
+			break;
+			
 		case 't':
 			flags.type = NULL;
 			break;

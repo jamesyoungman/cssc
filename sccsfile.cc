@@ -410,7 +410,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	flags.null_deltas = 0;
 	flags.joint_edit = 0;
 	flags.all_locked = 0;
-		
+	flags.encoded = 0;
+	
 	if (mode != READ) {
 		if (name.lock()) {
 			quit(-1, "%s: SCCS file is locked.  Try again later.",
@@ -538,6 +539,23 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 
 		case 'z':
 			flags.reserved = arg;
+			break;
+		case 'e':
+			if ('1' == *arg)
+		          {
+			    fprintf(stderr,
+				    "%s: Warning: encoded files not "
+				    "fully supported.\n", (const char *) name);
+			    flags.encoded = 1;
+			  }
+		        else if ('0' == *arg)
+			  {
+			    flags.encoded = 0;
+			  }
+		        else
+			  {
+			    corrupt("Bad value for 'e' flag.");
+			  }
 			break;
 
 		default:
