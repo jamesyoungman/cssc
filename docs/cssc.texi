@@ -1,0 +1,201 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename cssc.info
+@settitle CSSC: Compatibly Stupid Source Control
+@finalout
+@setchapternewpage odd
+@c %**end of header
+
+@c %This documentation is skeletal; nothing useful here yet.
+
+@set EDITION 1.0
+@set VERSION 0.01-devel
+@set UPDATED Sat May 10 17:04:15 1997
+
+@ifinfo
+This file documents the the GNU @code{cssc} package for working with
+SCCS files.
+
+Copyright (C) 1997, Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@titlepage
+@title CSSC
+@subtitle Compatibly Stupid Source Control
+@subtitle Edition @value{EDITION}, for CSSC Version @value{VERSION}
+@subtitle @value{UPDATED}
+@author by James Youngman
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1992, 1993 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+
+@node Top, , , (dir)
+
+@ifinfo
+This file documents the the GNU @code{CSSC} package, which is 
+a workalike for the traditional Unix SCCS suite.
+@end ifinfo
+
+@menu
+* Copying::		How you can copy and share @code{CSSC}.
+* Overview::		Preliminary information.
+* Interface::		How to use the suite.
+* Invoking Programs::	How to run the individual CSSC programs.
+* Incomplete::		Missing Features.
+* Problems::		Reporting bugs.
+* Concept Index::	Index of concepts.
+@end menu
+
+@node Copying, Overview, , Top
+@chapter Copying @code{CSSC}
+GNU CSSC is published under the GNU General Public License, which is
+designed to protect your rights, as the user of this program.  You have
+the right to modify this program, and distribute it.  You also have
+responsibilities to those to whom you distribute copies, as detailed in
+the license, below.
+
+@include gpl.texi
+
+@node Overview, Interface, Copying, Top
+@chapter Overview
+@cindex overview
+
+The GNU @code{cssc} program is designed to be a compatible replacement
+for the traditional Unix SCCS suite.
+
+This documentation is horrendously incomplete since this package is
+still under development.
+
+While it is strongly suggested that new projects not use this package,
+sometimes existing projects require the use of SCCS files.  While
+conversion to other formats is possible, this is also sometimes
+impractical.   See the documentation for CVS and RCS. 
+@xref{What is CVS?, ,What is CVS?, cvs, The CVS Manual}.  See also the
+manual pages for RCS.
+
+GNU @code{CSSC} was originally based on the public-domain package
+@code{MySC}, which was written by Ross Ridge.   The enhancement work was
+done by James Youngman. 
+
+
+@node Interface, Invoking Programs, Overview, Top
+@chapter How to use the suite
+@cindex interface
+
+By far the easiest way to use @code{CSSC} (or indeed @code{SCCS}) is 
+to use VC-mode in GNU Emacs.  @xref{Version Systems, ,Version
+Systems,emacs,The GNU Emacs manual}.
+
+
+@node Invoking Programs, Incomplete, Interface, Top
+@chapter Invoking CSSC programs
+@cindex invoking
+
+@node Incomplete, Problems, Invoking Programs, Top
+@chapter Missing Features
+@cindex invoking
+
+@itemize @bullet
+
+@item
+Documentation is incomplete or missing.  That includes this document.
+
+@item
+Some programs are missing, that is, some programs are present in the
+SCCS suite and absent from this one.
+
+@item 
+Some programs behave subtly differently to their original counterparts.
+There are two reasons for this:-
+
+ @itemize --
+ @item
+ The procesing of command-line options is done in a way which is
+ standard for GNU programs, and this is incompatible with the way SCCS
+ processes its command-line options.   An example is the @code{-y}
+ option to @code{delta}, which can be specified with no argument in
+ SCCS.  It is not possible to do this with CSSC at the moment, and so 
+ the @code{-Y} option is provided.   This is certainly a bug, but it
+ isn't going to be fixed very soon, and a workaround is provided.
+
+ @item
+ Error messages are different, and also extra warnings are provided in 
+ some circumstances.
+
+ @item
+ All other differences are bugs.  Please report them 
+ (@pxref{Problems}).
+ @end itemize
+
+@item
+Some programs are partially implemented.  Not all programs support all
+the command-line options of their original counterparts.  Also, some
+features are currently missing, for example there is no support for
+encoded binary files (this mainly affects @code{delta} and @code{get}).
+
+@end itemize
+
+
+@node Problems, Concept Index, Incomplete, Top
+@chapter Reporting Bugs
+@cindex bugs
+@cindex problems
+
+If you find a bug in GNU @code{CSSC}, please send electronic mail to
+@w{@samp{JYoungman@@vggas.com}}.  Include the version number, which you
+can find by giving the option @w{@samp{--version}} to any @code{CSSC}
+command.  Also include in your message the output that the program
+produced and the output you expected.  An @code{s.} file and instructions
+for reproducing the error are almost essential unless the bug is very
+trivial.@refill
+
+If you have other questions, comments or suggestions about GNU
+@code{CSSC}, contact the maintainer via electronic mail to
+@w{@samp{JYoungman@@vggas.com}}.
+
+@node Concept Index, , Problems, Top
+@unnumbered Concept Index
+
+@cindex tail recursion
+@printindex cp
+
+@shortcontents
+@contents
+@bye
