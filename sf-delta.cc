@@ -43,7 +43,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.38 2001/07/14 18:30:51 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.39 2001/07/15 15:08:40 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -395,6 +395,18 @@ public:
 };
 
 
+
+static void line_too_long(long int max_len, size_t actual_len)
+{
+  errormsg("Input line is %lu characters long but "
+	   "the maximum allowed SCCS file line length "
+	   "is %ld characters (see output of delta -V)\n",
+	   (unsigned long) actual_len,
+	   max_len);
+}
+
+
+
 /* Adds a new delta to the SCCS file.  It doesn't add the delta to the
    delta list in sccs_file object, so this should be the last operation
    performed before the object is destroyed. */
@@ -406,6 +418,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 {
   const char *pline;
   size_t len;
+  const long int len_max = max_sfile_line_len();
   ASSERT(mode == UPDATE);
 
   if (!check_keywords_in_file(gname.c_str()))
@@ -752,11 +765,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		  pline = dstate.get_insert_line();
 		  len = strlen(pline);
 		  if (len)
-		    len -= 1;	// newline char should not contribute.
+		    len -= 1u;	// newline char should not contribute.
 		  
-		  if (0 == CONFIG_MAX_BODY_LINE_LENGTH
-		      || len < CONFIG_MAX_BODY_LINE_LENGTH
-		      )
+		  if (0 == len_max || len < len_max)
 		    {
 		      if (fputs_failed(fputs(pline, out)))
 			{
@@ -766,11 +777,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		  else
 		    {
 		      // The line is too long.
-		      errormsg("Input line is %d characters long but "
-			       "the maximum allowed SCCS file line length "
-			       "is %d characters (see output of delta -V)\n",
-			       (int) len - 1,
-			       (int) CONFIG_MAX_BODY_LINE_LENGTH);
+		      line_too_long(len_max, len);
+		      return false;
 		    }
 		  break;
 
@@ -818,10 +826,10 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	      pline = dstate.get_insert_line();
 	      len = strlen(pline);
 	      if (len)
-		len -= 1;	// newline char should not contribute.
+		len -= 1u;	// newline char should not contribute.
 	      
-	      if (0 == CONFIG_MAX_BODY_LINE_LENGTH
-		  || len < CONFIG_MAX_BODY_LINE_LENGTH
+	      if (0 == len_max
+		  || len < len_max
 		  )
 		{
 		  if (fputs_failed(fputs(pline, out)))
@@ -832,11 +840,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	      else
 		{
 		  // The line is too long.
-		  errormsg("Input line is %d characters long but "
-			   "the maximum allowed SCCS file line length "
-			   "is %d characters (see output of delta -V)\n",
-			   (int) len - 1,
-			   (int) CONFIG_MAX_BODY_LINE_LENGTH);
+		  line_too_long(len_max, len);
+		  return false;
 		}
 	    }
 	  

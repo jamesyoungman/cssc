@@ -39,7 +39,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.35 2001/07/14 18:30:51 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.36 2001/07/15 15:08:40 james_youngman Exp $";
 
 
 static bool
@@ -122,12 +122,15 @@ main(int argc, char **argv)
       break;
 
     case 'b':
-#if CONFIG_DISABLE_BINARY_SUPPORT
-      errormsg("Option -b specified but binary file support is disabled.");
-      return 2;
-#else      
-      force_binary = true;
-#endif
+      if (binary_file_creation_allowed())
+	{
+	  force_binary = true;
+	}
+      else
+	{
+	  errormsg("Option -b specified but binary file support is disabled.");
+	  return 2;
+	}
       break;
 
     case 'i':

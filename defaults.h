@@ -84,19 +84,6 @@
 #endif
 #endif /* CONFIG_NULL_FILENAME */
 
-  
-/* I'm afraid that if you want to change CSSC's idea of what goes at
- * the end of the line then this macro will not help very much.
- * Ninety percent of the cases where detecting the end-of-line is
- * useful are just dealt with tith a literal '\n'.   I'm not sure if
- * it is useful to open the file in text mode (given the nonprintable
- * control character \001) but that seems the best plan to me.  Please
- * let me know how it goes.   Patches, as always, gleefully welcomed!
- * See docs/patches.txt for further information.
- */
-#ifndef CONFIG_EOL_CHARACTER
-#define CONFIG_EOL_CHARACTER ('\n')
-#endif
 
 #endif /* __DEFAULTS_H__ */
 

@@ -23,7 +23,7 @@
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.18 1998/08/13 18:15:31 james Exp $
+ * $Id: cssc.h,v 1.19 2001/07/15 15:08:40 james_youngman Exp $
  *
  */
 
@@ -95,7 +95,21 @@
 //           MS-DOS
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #undef  CONFIG_USE_ARCHIVE_BIT
-#define CONFIG_EOL_CHARACTER		'\n'
+  
+/* I'm afraid that if you want to change CSSC's idea of what goes at
+ * the end of the line then this macro will not help very much.
+ * Ninety percent of the cases where detecting the end-of-line is
+ * useful are just dealt with tith a literal '\n'.   I'm not sure if
+ * it is useful to open the file in text mode (given the nonprintable
+ * control character \001) but that seems the best plan to me.  Please
+ * let me know how it goes.   Patches, as always, gleefully welcomed!
+ * See docs/patches.txt for further information.
+ */
+#ifndef CONFIG_EOL_CHARACTER
+#define CONFIG_EOL_CHARACTER ('\n')
+#endif
+
+
 #undef  CONFIG_MSDOS_FILES
 #undef  CONFIG_BORLANDC
 #define CONFIG_DJGPP
@@ -138,6 +152,11 @@ typedef unsigned short seq_no;
 
 unsigned long cap5(unsigned long);
 bool is_id_keyword_letter(char ch);
+
+/* functions from environment.cc. */
+bool binary_file_creation_allowed (void);
+long max_sfile_line_len(void);
+void check_env_vars(void);
 
 #endif
 

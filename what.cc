@@ -47,9 +47,10 @@
 #include "err_no.h"
 #include "defaults.h"
 #include "my-getopt.h"
+#include "cssc.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.17 1999/03/19 23:58:35 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.18 2001/07/15 15:08:40 james_youngman Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -210,6 +211,7 @@ main(int argc, char **argv)
   if (argc > 0)
     what_prg_name = argv[0];
 
+  check_env_vars();
   
   int c;
   class CSSC_Options opts(argc, argv, "r!snV");

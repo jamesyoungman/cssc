@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl 
-dnl $Id: configure.in,v 1.68 2001/07/14 18:25:39 james_youngman Exp $
+dnl $Id: configure.in,v 1.69 2001/07/15 15:08:40 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -37,21 +37,28 @@ AM_CONFIG_HEADER(config.h)
 
 
 dnl Feature and package checks
+binary_defaulted=no
 AC_MSG_CHECKING([if binary file support should be disabled])
 AC_ARG_ENABLE(binary,
-[--enable-binary		  Enables support for creating "binary" SCCS files
-			  (required for interoperability with Solaris).
-			  If binary support is disabled, encoded SCCS
-			  files can still be read, but not created.
-			  You should disable this feature only if you need
-			  to interoperate with a version of SCCS which
-			  lacks binary file support.],
+[--enable-binary		  
+
+    Enables support for creating "binary" SCCS files (required for
+    interoperability with Solaris).  If binary support is disabled,
+    encoded SCCS files can still be read, but not created.  You should
+    disable this feature only if you need to interoperate with a
+    version of SCCS which lacks binary file support.  To disable this
+    feature, use --enable-binary=no or --disable-binary.  This setting
+    is overridden by the environment variable CSSC_BINARY_SUPPORT.
+
+--disable-binary
+
+    This is the opposite of --enable-binary; see above.
+],
 dnl action if given
 ,
 dnl action if not given
-echo 
-echo "Please use either --enable-binary or --disable-binary (use --help option to find out what this means)." >&2
-exit 1
+binary_defaulted=yes
+enable_binary=yes
 )
 if test "$enable_binary" = yes; then
 	AC_MSG_RESULT(no)
@@ -59,17 +66,38 @@ else
 	AC_DEFINE(CONFIG_DISABLE_BINARY_SUPPORT)
 	AC_MSG_RESULT(yes)
 fi
+if test "$binary_defaulted" = "yes"; then
+	echo WARNING
+	echo WARNING This was assumed because you did not specify either 
+	echo WARNING --enable-binary or --disable-binary.	
+	echo WARNING
+	# Pause for a bit so that the user notices this message.
+	( sleep 10 2>/dev/null )
+fi
 AC_SUBST(enable_binary)dnl
 
 AC_MSG_CHECKING([for required SCCS file line length limits])
 AC_ARG_ENABLE(max-line-length,
-[--enable-max-line-length=N     Sets the maximum line length allowed in 
-				SCCS files to N.  By default, CSSC has no 
-				limit.  
-				Use this option only if you need to make 
-				CSSC interoperate with other versions of
-				SCCS.],
-AC_MSG_RESULT(limit is $enable_max_line_length)
+[--enable-max-line-length=N     
+
+    Sets the maximum line length allowed in SCCS files to N.  By
+    default, CSSC has no limit.  Use this option only if you need to
+    make CSSC interoperate with other versions of SCCS.  Setting this 
+    option to 0 will impose no limit (which is the default in any case).
+    This setting is overridden by the environment variable 
+    CSSC_MAX_LINE_LENGTH.
+
+--disable-binary-max-line-length
+
+    This is equivalent to --enable-max-line-length=0 (which is the default).
+],
+if test "$enable_max_line_length" = "no"
+then 
+	enable_max_line_length=0
+	AC_MSG_RESULT(no limit)
+else
+	AC_MSG_RESULT(limit is $enable_max_line_length)
+fi
 max_line_length_description=$enable_max_line_length
 
 ,
@@ -78,12 +106,14 @@ enable_max_line_length=0
 )
 AC_DEFINE_UNQUOTED(CONFIG_MAX_BODY_LINE_LENGTH,$enable_max_line_length)
 
+
 if test $enable_max_line_length -eq 0 
 then
 	max_line_length_description="no limit"
 else
 	max_line_length_description=$enable_max_line_length
 fi
+
 AC_SUBST(max_line_length_description)dnl
 
 
@@ -134,7 +164,7 @@ dnl Checks for header files.
 
 dnl Standard C header files:-
 AC_HEADER_STDC
-AC_CHECK_HEADERS(stdarg.h stdlib.h string.h stdio.h errno.h locale.h)
+AC_CHECK_HEADERS(stdarg.h stdlib.h string.h stdio.h errno.h locale.h limits.h)
 
 dnl Posix/Unix header files:-
 AC_CHECK_HEADERS(fcntl.h prototypes.h io.h process.h pwd.h unistd.h)

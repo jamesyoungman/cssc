@@ -4,8 +4,10 @@ New in CSSC-0.13alpha-pl0
 	  running "configure", to enforce compatibility with an 
 	  SCCS implementation which lacks binary file support.  It is 
 	  also possible to indicate a maximum allowable line length as 
-	  well.  For more information, see the "Interoperability" chapter
-	  in the CSSC manual.
+	  well.  These settings can be overridden by the use of 
+	  environment variables.  For more information, see the
+	  "Interoperability" and "Environment" chapters in the CSSC 
+	  manual.
 
 	* It is also now possible to have concurrent edits (i.e. the
 	  "j" flag now actually works instead of causing a coredump).

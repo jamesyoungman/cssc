@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.25 2000/07/18 20:49:34 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.26 2001/07/15 15:08:40 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -562,6 +562,21 @@ static void
 check_data_integrity()
 {
 }
+
+/* cleanup_environment
+ * 
+ * This function unsets the CSSC configuration variables, so that the values 
+ * specified to "configure" at compilation time are enforced.  This prevents
+ * the invoking user overriding the policy decision made by the person who
+ * installed the set-user-id or set-group-id copy of the "sccs" driver.
+ *
+ * This function is not called when "sccs" is running unprivileged.
+ */
+static void cleanup_environment(void)
+{
+  unsetenv("CSSC_BINARY_SUPPORT");
+  unsetenv("CSSC_MAX_LINE_LENGTH");
+}
 
 static void 
 usage(void)
@@ -594,7 +609,8 @@ main (int argc, char **argv)
 #ifndef SCCSDIR
       setuid_warn();
       exit(CSSC_EX_NOPERM);
-#endif      
+#endif
+      cleanup_environment();
     }
   else
     {

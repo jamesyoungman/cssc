@@ -127,6 +127,7 @@ This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
 * Filenames::		Names of files used by CSSC.
 * File Format::         Description of the @sc{sccs} file format
 * Interoperability::    Interoperating with other versions of @sc{sccs}.
+* Environment::         How environment variables affect CSSC.
 * Incomplete::		Missing Features.
 * Year 2000 Issues::    Status of CSSC with regard to the Millennium.
 * Testing::             How to run the test suite and write new cases.
@@ -206,7 +207,7 @@ because you have to use it to start with.
 The commands in the CSSC suite are described in alphabetical order.
 Ordered by the frequency with which I use them, they are:-
 @code{sccs, get, delta, what, sccsdiff, unget, admin,}
-@code{prs, sact, rmdel, cdc, prt, comb, help, val.}
+@code{prs, sact, rmdel, cdc, prt, help, val, comb.}
 @end iftex
 
 @menu
@@ -262,9 +263,11 @@ because the @sc{cssc} suite is not secure (@pxref{Known Problems}).
 @item -b
 @cindex Binary files
 Ensure that the file is encoded as a binary file.  This option only
-works in conjunction with the @code{-n} or @code{-i} options.  This
-option is not available if @sc{cssc} is configured without binary file
-support (@pxref{Interoperability}).
+works in conjunction with the @code{-n} or @code{-i} options.  
+
+This option is not available if binary file support is turned off
+(@pxref{Interoperability}) though this can be re-enabled if neccessary
+with an environment variable (@pxref{Environment}).
 
 @item -d@var{F}
 Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
@@ -305,7 +308,7 @@ If no argument is given, read from standard input.  This implies the
 
 @item -m@var{MR-list}
 When initializing a file, add the specified list of @sc{mr} numbers
-(@pxref{Modification Request numbers}) to the delta commentary for the
+(@pxref{Modification Request Numbers}) to the delta commentary for the
 initial version.  This list can be empty.  The specified @sc{mr}s are
 validated according to the setting of the @var{v} flag, which should be
 set (@pxref{Flags}).  If the @var{v} flag is set but has no value
@@ -332,8 +335,7 @@ any existing description.  If no argument, remove any existing
 description (this is illegal if @samp{-i} or @samp{-n} is used).
 
 @item -V 
-Display version information.  Untested.
-@c TODO: Write the test cases (how?)
+Display version information.
 
 @item -y@var{adayada}
 When initializing a file, set the comment for that delta to
@@ -353,8 +355,8 @@ but incorrect file}.  Use this option with @emph{extreme} care.
 @end table
 
 
-@node Flags, Modification Request numbers, ,admin
-@subsection @sc{sccs} file flags
+@node Flags, Modification Request Numbers, ,admin
+@subsection SCCS file flags
 @cindex Flags
 
 Flags are set and cleared with the @code{admin} program.  @xref{admin}.
@@ -417,13 +419,13 @@ Substitution}.
 @item v
 Sets the name of the program used to validate @sc{mr} (modification
 request) numbers; @sc{mr}s are described in @ref{Modification Request
-numbers}.  This flag can be set to the empty string, in which case
+Numbers}.  This flag can be set to the empty string, in which case
 @sc{mr}s are allowed and the validation silently succeeds without any
 program being run.
 @end table
 
-@node Modification Request numbers, , Flags, admin
-@subsection Modification Request numbers
+@node Modification Request Numbers, , Flags, admin
+@subsection Modification Request Numbers
 @cindex mr-numbers
 @sc{mr}s are identifiers that can be specified when checking in a
 revision using @samp{delta} (or even using @samp{admin}, when creating a
@@ -603,7 +605,7 @@ are indicated by a dash).  Untested.
 
 @item -m@var{mr-list}
 Specify the indicated list of @sc{mr} numbers (separated by spaces) for
-this change (@pxref{Modification Request numbers}).  If the @var{v} flag
+this change (@pxref{Modification Request Numbers}).  If the @var{v} flag
 (@pxref{Flags}) is set, @code{delta} will prompt for MR numbers if none
 are given on the command line.  If the @var{v} flag has a non-empty
 value, as opposed to just being set, then the supplied list of MR
@@ -1805,7 +1807,7 @@ but they do not.  If you are the super-user, they can use this feature
 to overwrite any file on the system.
 
 
-@node File Format, Interoperability, Filenames, Top
+@node File Format, Environment, Filenames, Top
 @chapter File Format
 
 This chapter provides a description of the format of @sc{sccs} files.
@@ -1968,7 +1970,7 @@ of the creation of this delta, one or more lines of the form
 ^Am mr4
 @end example
 
-These lines constitute a list of Modification Request numbers, one on
+These lines constitute a list of Modification Request Numbers, one on
 each line.
 
 The next part of the delta table entry is the the delta commentary.
@@ -2002,7 +2004,7 @@ an @sc{sccs} file:-
 
 @example
 ^As 00001/00000/00007
-^Ad D 1.2 99/12/31 23:59:59 lm 2 1
+^Ad D 1.2 99/12/31 23:59:59 mcvoy 2 1
 ^Ac Added an extra line
 ^Ae
 ^As 00007/00000/00000
@@ -2069,7 +2071,7 @@ header.  The following line is the first line of the file body.
 
 
 @node Example Header, , File Description, The Header
-@subsection Example @sc{sccs} File Header
+@subsection Example SCCS File Header
 
 This example also includes the file body, since the body is short.
 
@@ -2140,10 +2142,183 @@ Hence I can't thouroughly explain the precise meaning of the @samp{^AI},
 at a future date.  If you have an understanding of these issues, please
 let me (@email{jay@@gnu.org}) know.
 
-@c TODO: complete this seciton.
+@c TODO: complete this section.
+
+@node Environment, Interoperability, File Format, Top
+@chapter Environment Variables
+
+Several environment variables control the behaviour of @sc{cssc}.  This
+section explains what these variables are and how they work. 
+
+@menu
+* Child Processes::	    CSSC tools run other programs occasionally.
+* Configuration Variables:: Variables that turn features on or off.
+* Other Variables::         Miscellaneous other variables you might use.
+@end menu
+
+@node Child Processes, Configuration Variables, , Environment
+@section Child Processes
+
+Unlike some other implementations of @sc{sccs}, @sc{cssc} tools do not
+usually execute each other.  This means for example that @code{delta}
+does not invoke @code{get} to extract the previous version of the file,
+and @code{prs} doesn't use @code{get} when processing the @code{:GB:}
+keyword.
+
+There are a small number of exceptions to this rule :-
+
+@table @code
+@item sccs
+The @code{sccs} driver program can be used to invoke any of the other
+tools in the suite.  @xref{Known Problems} for a discussion of the
+issues this raises.
+
+@item delta
+The @code{delta} program runs a program to validate the Modification
+Request Numbers offered by the user.  @xref{Modification Request
+Numbers}.
+
+@item sccsdiff
+The @code{sccsdiff} program is a shell script, and invokes
+@code{get}, @code{diff} and @code{pr}, as well as other tools such as
+@code{cat}, @code{test} and @code{rm}.  The @code{sccsdiff} program must
+not be installed set-user-id.
+@end table
+
+The driver program @code{sccs} takes a number of precautionary steps if it
+detects that is running set-user-id or set-group-id.  These steps are
+described below, as part of the discussion of each environment
+variable. 
+
+@node Configuration Variables, Other Variables, Child Processes, Environment
+@section Configuration Variables
+
+When ``configure'' is run, some default behaviours are set.  These can
+be overridden with the use of environment variables as described below.
+
+@subsection CSSC_BINARY_SUPPORT
+
+The @env{CSSC_BINARY_SUPPORT} environment variable controls whether
+@sc{cssc} will create ``encoded'' @sc{sccs} files.  The three valid
+values for this variable are as follows :-
+
+@table @asis
+@item @samp{enabled} 
+@sc{cssc} will create encoded @sc{sccs} files if required
+@item @samp{disabled}
+@sc{cssc} will not create encoded @sc{sccs} files
+@item unset
+The default behaviour is used; this default will be the same as for one
+of @samp{enabled} or @samp{disabled}.  The default is set by passing
+either @code{--enable-binary} or @code{--disable-binary} to
+``configure'' when @sc{cssc} is compiled.  See @xref{Interoperability}
+for more information.
+@end table
+
+This variable is unset by the @code{sccs} driver program, if it is
+installed set-user-id or set-group-id.
 
 
-@node Interoperability, Incomplete, File Format, Top
+@subsection CSSC_MAX_LINE_LENGTH
+
+The @env{CSSC_BINARY_SUPPORT} environment variable controls the maximum
+length of lines that @sc{cssc} will allow to go into an @sc{sccs} file. 
+This variable should be set to a decimal integer.  
+
+The default behaviour of @sc{cssc} when this variable is unset is
+described in @xref{Interoperability}.
+
+This variable is unset by the @code{sccs} driver program, if it is
+installed set-user-id or set-group-id.
+
+@node Other Variables, , Configuration Variables, Environment
+@section Other Variables
+
+@subsection USER
+
+If ``configure'' detects that UIDs are not supported on the system you
+are running on (that is, you are compiling on a system that doesn't look
+at all like Unix) then the environment variable USER is used to
+determine the invoking user's name.  This is then the name which is used
+in the p-file and in the delta information for new deltas.  This
+username is also compared against the list of authorised users by
+@code{delta}.  Of course, this doesn't provide much security but in the
+absence of user ID support, @sc{cssc} can't tell who users really are
+anyway.
+
+The behaviour of @sc{cssc} with respect to this option is not sensitive
+to whether or not programs are installed set-user-id, because this
+variable is only consulted on systems where set-user-id is not
+supported.  This may be a problem on systems where it is possible to
+grant enhanced privileges to a program, but which do not look like
+Unix to the ``configure'' program. 
+
+@subsection CSSC_SHOW_SEQSTATE
+
+If set, the environment variable @env{CSSC_SHOW_SEQSTATE} will cause
+@sc{cssc} to emit debugging information about the delta table to stderr.
+This is only of use when debugging @sc{cssc}.
+
+@subsection PROJECTDIR
+
+The @env{PROJECTDIR} environment variable is used only by the
+@code{sccs} driver program.  This variable is ignored if the the
+@code{sccs} program is installed with the set-user-ID bit set.  See
+@xref{Known Problems} for other remarks concerning setuid execution.
+
+The @env{PROJECTDIR} variable is used to locate the @sc{sccs} history
+file corresponding to a filename given on the command line.  If the
+value of @env{PROJECTDIR} starts with a `/', it is used as an absolute
+directory name.  If @env{PROJECTDIR} does not start with a slash, it is
+assumed to be the name of a user, and @sc{sccs} files are assumed to be
+in the subdirectory ``src'' or ``source'' beneath their home directory.  
+
+@subsection PATH
+
+Normally, the @code{sccs} driver program locates the other tools by
+searching the directories specified in @env{PATH}, but if it is
+running set-user-id or set-group-id, a compiled-in value is used
+instead.  By default, this value is is @file{/usr/sccs}.
+
+If @sc{sccs} is not privileged, it will fall back on the compiled-in
+value in order to find the other tools if they are not found in any of
+the directories in @env{$PATH}.
+
+In normal operation, @code{sccs diffs} will use the system @code{diff}
+command by searching the @env{PATH} environment variable.  This doesn't
+happen if it is running set-user-id or set-group-id.  
+
+@subsection LD_LIBRARY_PATH
+
+None of the programs in the @sc{cssc} suite take any specific action
+regargind the @env{LD_LIBRARY_PATH} environment variable, but your
+system libraries may take notice of it (or decide not to do so, for
+example when a program is running set-user-id or set-group-id).  
+
+@subsection TMPDIR
+
+The @code{sccsdiff} program ignores the setting of the @env{TMPDIR}
+environment variable.  Temporary files with predictable names are
+created in the @file{/tmp} directory.  @xref{Known Problems}.
+
+@subsection Locale variables
+
+The @code{sccs} driver program uses the @code{setlocale} function, whose
+behaviour depends on several implementation-dependent environment
+variables.  If you are using the GNU C library, these variables are
+@env{LC_COLLATE}, 
+@env{LC_CTYPE}, 
+@env{LC_MESSAGES}, 
+@env{LC_MONETARY}, 
+@env{LC_NUMERIC}, 
+@env{LC_TIME}, 
+and 
+@env{LANG}.   The @code{setlocale} function is not called if @sc{sccs}
+is running set-user-id or set-group-id.
+
+
+
+@node Interoperability, Incomplete, Environment, Top
 @chapter Interoperability
 
 In order to interoperate better with other implementations of @sc{sccs}, 
@@ -2165,6 +2340,10 @@ specifying the @code{--disable-binary} option.  This will cause
 (@pxref{Flags}).  The @code{admin} program would normally do this if the
 user requested it via the @code{-b} option or if it discovered that the
 file could not safely be stored in the normal @sc{sccs} file format.
+
+This setting can be overridden with the environment variable 
+@env{CSSC_BINARY_SUPPORT}; for a description of how to use this
+environment variable, see @ref{Environment}.
 
 If you use @sc{cssc} with support for encoded SCCS files turned off,
 encoded files will still be handled; @sc{cssc} will just refuse to
@@ -2190,6 +2369,10 @@ to the @code{admin -i} command, one of two things will happen when an
 over-length line is found.  If binary file support is enabled, the
 @sc{sccs} file will automatically be created as an encoded file.
 Otherwise, @code{admin} will fail with an explanatory message.
+
+This setting can be overridden with the environment variable 
+@env{CSSC_MAX_LINE_LENGTH}; for a description of how to use this
+environment variable, see @ref{Environment}.
 
 @node Configuration,, Maximum line length, Interoperability
 @section Checking the Current Configuration
@@ -2290,6 +2473,10 @@ file itself.   @sc{cssc} should not be used by the owners of files whose
 security is important, especially to control files whose @sc{sccs} file
 is in a world-writable directory.  @xref{Filenames}.
 
+The @code{sccsdiff} program ignores the setting of the @env{TMPDIR}
+environment variable.  Temporary files with predictable names are
+created in the @file{/tmp} directory.
+
 @cindex Setuid execution, why not to do it
 @item Setuid execution ---
 It is common to install an extra set of binaries with the set-user-id
@@ -2306,7 +2493,8 @@ turned on.
 the program specified as the @sc{mr} validation program.   Some
 @sc{cssc} programs (for example @code{sccsdiff}) invoke others.   This
 is done without ``cleaning up'' the environment, and so this is another
-reason not to use the set-user-id bit for @sc{cssc} programs.  
+reason not to use the set-user-id bit for @sc{cssc} programs.
+@xref{Environment}. 
 @end enumerate
 
 Please refer to the section of the GNU General Public License entitled

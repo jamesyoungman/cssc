@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.27 2000/03/19 11:18:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.28 2001/07/15 15:08:40 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -336,6 +336,9 @@ user_is_group_member(gid_t gid)
 
 #else /* CONFIG_UIDS */
 
+/* This function is documented in the subsection "USER" in the 
+ * CSSC manual. 
+ */
 const char *
 get_user_name()
 {

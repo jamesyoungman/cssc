@@ -30,61 +30,83 @@
 
 void show_config_info(void)
 {
+  static const char * const enabled  = "enabled";
+  static const char * const disabled = "disabled";
+  bool binary_ok = binary_file_creation_allowed();
+  long int line_max = max_sfile_line_len();
+  
   fprintf(stderr,"\n");
   fprintf(stderr,
-	  "Binary file support: %s\n",
+	  "Binary file support (compiled-in default): %s\n",
 #ifdef CONFIG_DISABLE_BINARY_SUPPORT
-	  "disabled"
+	  disabled
 #else
-	  "enabled"
+	  enabled
 #endif
 	  );
+  fprintf(stderr,
+	  "Binary file support (as overridden by $CSSC_BINARY_SUPPORT): %s\n",
+	  binary_ok ? enabled : disabled );
 
   fprintf(stderr, 
-	  "Maximum body line length: %d\n",
-	  (int) CONFIG_MAX_BODY_LINE_LENGTH);
+	  "Maximum body line length (compiled-in default): %ld\n",
+	  (long int) CONFIG_MAX_BODY_LINE_LENGTH);
+  fprintf(stderr, 
+	  "Maximum body line length (as overridden by "
+	  "$CSSC_MAX_LINE_LENGTH): %ld\n",
+	  line_max);
   fprintf(stderr,"\n");
 
   fprintf(stderr, "Commentary:\n");
   
-#ifdef CONFIG_DISABLE_BINARY_SUPPORT
-  fprintf(stderr, "%s",
-	  "Binary file support is disabled; this means that CSSC\n"
-	  "will not create encoded SCCS files, but will handle them\n"
-	  "both for reading and writing, if it finds already encoded files.\n"
-	  "To enable binary file support, you will have to recompile CSSC.\n"
-	  );
-#else
-  fprintf(stderr, "%s",
-	  "Binary file support is enabled; this means that CSSC\n"
-	  "will create an encoded SCCS file if you pass the \"-b\"\n"
-	  "option to \"admin\", or if you create an SCCS file from\n"
-	  "an input file which the SCCS file format cannot represent in\n"
-	  "text format.  To disable binary file support, you will have\n"
-	  "to recompile CSSC.\n"
-	  );
-#endif
-  fprintf(stderr,"\n");
+  if (binary_ok)
+    {
+      fprintf(stderr, "%s",
+	      "Binary file support is enabled; this means that CSSC\n"
+	      "will create an encoded SCCS file if you pass the \"-b\"\n"
+	      "option to \"admin\", or if you create an SCCS file from\n"
+	      "an input file which the SCCS file format cannot represent in\n"
+	      "text format.\n"
+	      );
+    }
+  else
+    {
+      fprintf(stderr, "%s",
+	      "Binary file support is disabled; this means that CSSC\n"
+	      "will not create encoded SCCS files, but will handle them\n"
+	      "both for reading and writing, if it finds already encoded\n"
+	      "files.\n"
+	      );
+    }
+  fprintf(stderr,
+	  "Set the environment variable CSSC_BINARY_SUPPORT "
+	  "to change this.\n\n");
 
-#if CONFIG_MAX_BODY_LINE_LENGTH
+
+  if (line_max)
+    {
+      fprintf(stderr,
+	      "Lines in the main body of the SCCS files that CSSC produces\n"
+	      "are limited to %ld characters; input lines longer than this\n"
+	      "will cause a fatal error.  This means that CSSC can fail to\n"
+	      "interoperate with SCCS implementations which limit the length\n"
+	      "of a body line to less than %ld characters, or fail to\n"
+	      "correctly modify SCCS files produced by SCCS implementations\n"
+	      "which has a limit which is greater than %ld characters.\n",
+	      line_max,
+	      line_max,
+	      line_max
+	      );
+    }
+  else
+    {
+      fprintf(stderr,
+	      "Lines in the main body of the SCCS files that CSSC produces\n"
+	      "are not limited in length.  This means that CSSC can fail to\n"
+	      "interoperate with SCCS implementations which limit the length\n"
+	      "of a body line to some fixed number.\n");
+    }
   fprintf(stderr,
-	  "Lines in the main body of the SCCS files that CSSC produces\n"
-	  "are limited to %d characters; input lines longer than this\n"
-	  "will cause a fatal error.  This means that CSSC can fail to\n"
-	  "interoperate with SCCS implementations which limit the length\n"
-	  "of a body line to less than %d characters.\n"
-	  "To change or remove this limit, you will have to recompile CSSC.\n",
-	  (int) CONFIG_MAX_BODY_LINE_LENGTH,
-	  (int) CONFIG_MAX_BODY_LINE_LENGTH
-	  );
-#else
-  fprintf(stderr,
-	  "Lines in the main body of the SCCS files that CSSC produces\n"
-	  "are not limited in length.  This means that CSSC can fail to\n"
-	  "interoperate with SCCS implementations which limit the length\n"
-	  "of a body line to some fixed number.\n"
-	  "To change this behaviour, you will have to recompile CSSC.\n",
-	  (int) CONFIG_MAX_BODY_LINE_LENGTH
-	  );
-#endif
+	  "Set the environment variable CSSC_MAX_LINE_LENGTH "
+	  "to change this.\n");
 }

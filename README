@@ -24,10 +24,11 @@ STOP PRESS!
  See the file INSTALL for the generic options you can use with "configure".
  Options for "configure" that are specific to CSSC are detailed below.
 
- Please note that you MUST specify either --enable-binary or --disable-binary.
-
 
 --enable-binary		   
+  
+    This is the default setting (but the default setting may change 
+    in the future).
 
     Enables support for creating "binary" SCCS files (required for
     interoperability with Solaris).  If binary support is disabled,
@@ -35,13 +36,21 @@ STOP PRESS!
     disable this feature only if you need to interoperate with a
     version of SCCS which lacks binary file support.
 
+    The setting of this option can be overridden at runtime by setting 
+    the environment variable CSSC_BINARY_SUPPORT to "disable".
+
  --disable-binary
 
     Turns off suport for creating encoded ("binary") SCCS files.
     CSSC will still handle these as input, but will never create one,
-    when this option is used. 
+    when this option is used.
+
+    The setting of this option can be overridden at runtime by setting 
+    the environment variable CSSC_BINARY_SUPPORT to "enable".
 
 --enable-max-line-length=N 
+
+    The default setting corresponds with N=0.
 
     Sets the maximum line length allowed in SCCS files to N.  By
     default, CSSC has no limit.  Use this option only if you need to
@@ -50,6 +59,12 @@ STOP PRESS!
     checked for (e.g.) comments.  This means that by entering a 
     very long comment, you can make CSSC produce an SCCS file which 
     cannot be read by some other versions of SCCS.
+
+    The setting of this option can be overridden at runtime by setting 
+    the environment variable CSSC_MAX_LINE_LENGTH to a positive integer. 
+    Setting CSSC_MAX_LINE_LENGTH to 0 removes the limit (and so CSSC will
+    handle lines of any length).
+
 
 
 1.	Compiling

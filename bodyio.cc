@@ -36,47 +36,40 @@
 #endif
 
 
-#if CONFIG_MAX_BODY_LINE_LENGTH	  
 /* Check if we have exceeded the maximum line length. 
- * CONFIG_MAX_BODY_LINE_LENGTH is 0 if there is no limit. 
  */
-static bool check_line_len(int column,
+static bool check_line_len(const char *iname,
+			   long int len_max,
+			   int column,
 			   int ch,
 			   FILE *in,
 			   bool *binary)
 {
-  if (column > CONFIG_MAX_BODY_LINE_LENGTH)
+  if (0 == len_max || column < len_max)
+    {
+      return true;		// no maximum.
+    }
+  else
     {
       ungetc(ch, in);	// push back the character.
       
-#if CONFIG_DISABLE_BINARY_SUPPORT
-      errormsg("%s: line length exceeds %d characters, "
-	       "and binary file support is disabled.\n",
-	       iname,
-	       (int) CONFIG_MAX_BODY_LINE_LENGTH
-	       );
-#else
-      errormsg("%s: line length exceeds %d characters, "
-	       "treating as binary.\n",
-	       iname,
-	       (int) CONFIG_MAX_BODY_LINE_LENGTH);
-      *binary = true;
-#endif	      
+      if (binary_file_creation_allowed())
+	{
+	  errormsg("%s: line length exceeds %ld characters, "
+		   "treating as binary.\n",
+		   iname, len_max );
+	  *binary = true;
+	}
+      else
+	{
+	  errormsg("%s: line length exceeds %d characters, "
+		   "and binary file support is disabled.\n",
+		   iname, len_max );
+	}
       return false;	
     }
 }
 
-#else
-/* No maximum line length. */
-static bool check_line_len(int column,
-			   int ch,
-			   FILE *in,
-			   bool *binary)
-{
-  return true;
-}
-
-#endif
 
 
 
@@ -107,6 +100,7 @@ body_insert_text(const char iname[], const char oname[],
 {
   int ch, last;
   unsigned long int nl;		// number of lines.
+  const long int len_max = max_sfile_line_len();
   bool found_id;
   int column;			// current column in ouutput file.
   
@@ -146,7 +140,7 @@ body_insert_text(const char iname[], const char oname[],
       else
 	{
 	  ++column;
-	  if (!check_line_len(++column, ch, in, binary))
+	  if (!check_line_len(iname, len_max, ++column, ch, in, binary))
 	    {
 	      return false; // output file pointer implicitly rewound
 	    }
@@ -324,11 +318,13 @@ body_insert(bool *binary,
 	  if (io_failure)
 	    return false;
 
-#if CONFIG_DISABLE_BINARY_SUPPORT
-	  // We an't try again with a binary file, because that 
-	  // feature is disabled.
-	  return false;
-#endif	  
+	  if (!binary_file_creation_allowed())
+	    {
+	      // We can't try again with a binary file, because that 
+	      // feature is disabled.
+	      return false;
+	    }
+
 	  // It wasn't text after all.  We may be reading from
 	  // stdin, so we can't seek on it.  But we have 
 	  // the first segment of the file written to the x-file

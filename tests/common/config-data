@@ -11,24 +11,20 @@
 
 if $TESTING_CSSC
 then
-    
-    binary_support=`${admin} -V 2>&1  | 
-	grep "^Binary file support: " |
-	sed -e 's/^.*://' `
-    case $binary_support in 
-	enabled) binary_support=true  ;;
-	*)       binary_support=false ;;
-    esac
+    # Turn on binary file support in CSSC (if it is disabled)
+    CSSC_BINARY_SUPPORT=enabled
+    export CSSC_BINARY_SUPPORT
+    binary_support=true
 
     max_line_len=`${admin} -V 2>&1         |
-	grep "^Maximum body line length: " |
+	grep "^Maximum body line length.*overridden: " |
 	sed -e 's/^.*://' `
 
 else
     # Not CSSC.
     # For the moment, just guess --- and be conservative.
     binary_support=false
-    max_line_len=200
+    max_line_len=400
 fi
 
 # echo Max line len $max_line_len
