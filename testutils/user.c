@@ -206,6 +206,7 @@ int main(int argc, char *argv[])
       else if (0 == strcmp(argv[1], "foreigngroup"))
 	{
 	  fprintf(stdout, "%ld\n", (long)foreign_group());
+	  return 0;
 	}
       else if (0 == strcmp(argv[1], "group"))
 	{
