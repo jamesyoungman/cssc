@@ -14,7 +14,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.2 1997/05/31 19:09:02 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.3 1997/05/31 23:29:11 james Exp $";
 #endif
 
 static void
@@ -255,6 +255,20 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
   return ret;
 }
 
+static void
+print_seq_list(FILE *out, list<seq_no> const &list)
+{
+  const int len = list.length();
+
+  if (len > 0)
+    {
+      fprintf(out, "%u", list[0]);
+      for(int i = 1; i < len; i++)
+	{
+	  fprintf(out, " %u", list[i]);
+	}
+    }
+}
 
 
 void		
@@ -321,7 +335,26 @@ sccs_file::prt(FILE *out,
 		  (unsigned short)iter->prev_seq);
 	  fprintf(out, "\t%05u/%05u/%05u\n",
 		  iter->inserted, iter->deleted, iter->unchanged);
-      
+
+	  if (!first_line_only)
+	    {
+	      if (incl_excl_ignore)
+		{
+		  fprintf(out, "Included:\t");
+		  print_seq_list(out, iter->included);
+		  fprintf(out, "\nExcluded:\t");
+		  print_seq_list(out, iter->excluded);
+		  fprintf(out, "\n");
+		}
+	      // Print any MRs and then the comments.
+	      if (iter->mrs.length())
+		print_string_list(out, iter->mrs, "MRs:\t", " ", "");
+	      if (iter->comments.length())
+		{
+		  fprintf(out, "\n");
+		  print_string_list(out, iter->comments, "", "\n", "");
+		}
+	    }
 	}
     }
       
@@ -369,8 +402,6 @@ sccs_file::prt(FILE *out,
       print_flag(out, "\tcsect name\t%s\n", flags.user_def, flag_count);
       print_flag(out, "\ttype\t%s\n", flags.type, flag_count);
       print_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count);
-      
-      
     }
   if (print_desc)
     {
