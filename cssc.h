@@ -3,7 +3,7 @@
  *
  * Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.9 1997/11/15 20:02:59 james Exp $
+ * $Id: cssc.h,v 1.10 1997/11/18 23:22:14 james Exp $
  *
  */
 
@@ -92,26 +92,28 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
-#include <errno.h>
 
-#ifdef CONFIG_DECLARE_ERRNO
-extern int errno;
-#endif
+#include "err_no.h"
 
 #ifndef NO_COMMON_HEADERS
-
 #include "quit.h"
 #include "xalloc.h"
 #include "mystring.h"
 #include "file.h"
 
-typedef unsigned short seq_no;
 
-int split(char *s, char **args, int len, char c);
+// Some declarations are only useful if we know what a "mystring" is.
+//
+void
+split_filename(const mystring &fullname,
+	       mystring& dirname, mystring& basename);
 mystring prompt_user(const char *prompt);
 
 #endif /* NO_COMMON_HEADERS */
 
+typedef unsigned short seq_no;
+int split(char *s, char **args, int len, char c);
+unsigned long cap5(unsigned long);
 
 #endif
 

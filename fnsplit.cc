@@ -1,5 +1,5 @@
 /*
- * sf-kw.cc: Part of GNU CSSC.
+ * fnsplit.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -18,28 +18,49 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  * 
- *
- * sccs_file::no_id_keywords()
+ * Functions for canonifying filenames.
  */
 
-#ifdef __GNUC__
-#pragma implementation "seqstate.h"
-#endif
-
 #include "cssc.h"
-#include "sccsfile.h"
+#include "mystring.h"
 
-
-
-void sccs_file::
-no_id_keywords(const char name[]) const 
+void
+split_filename(const mystring &fullname,
+	       mystring& dirname, mystring& basename)
 {
-  if (flags.no_id_keywords_is_fatal)
+  ASSERT(fullname.length() > 0);
+  
+  dirname = mystring("");	// empty string.
+  basename = fullname;
+  
+  /* Find the final slash.
+   */
+  mystring::size_type i = fullname.find_last_of('/');
+  if (i != mystring::npos)
     {
-      quit(-1, "%s: No id keywords.", name);
-    }
-  else
-    {
-      fprintf(stderr, "%s: Warning: No id keywords.\n", name);
+      dirname = fullname.substr(0, i+1); // initial i characters
+      basename = fullname.substr(i+1, mystring::npos);
+      return;
     }
 }
+
+#ifdef TEST_FNSPLIT
+
+void usage() 
+{
+}
+
+int main(int argc, char *argv[])
+{
+  for (int i=0; i<argc; ++i)
+    {
+      printf("Splitting \"%s\"..\n", argv[i]);
+      mystring d, b;
+      split_filename(argv[i], d, b);
+      printf("Directory part=\"%s\"\nBase part=\"%s\"\n",
+	     d.c_str(), b.c_str());
+    }
+  return 0;
+}
+
+#endif

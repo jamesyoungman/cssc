@@ -11,7 +11,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.3 1997/06/28 14:40:04 james Stab $";
+const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.4 1997/11/18 23:22:28 james Exp $";
 
 void
 usage()
@@ -140,7 +140,7 @@ main(int argc, char **argv)
     {
       sccs_name &name = iter.get_name();
 
-      fprintf(stdout, "\n%s:", (const char*)name);
+      fprintf(stdout, "\n%s:", name.c_str());
 
       sccs_file file(name, sccs_file::READ);
 

@@ -23,7 +23,7 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 common_SOURCES = quit.cc getopt.cc version.cc
 
 sfile_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc xalloc.cc \
-		sccsname.cc sid.cc sccsdate.cc split.cc
+		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc
 
 what_SOURCES = what.cc $(common_SOURCES)
 get_SOURCES = get.cc pf-add.cc pfile.cc sccsfile.cc rel_list.cc \
@@ -33,10 +33,11 @@ get_SOURCES = get.cc pf-add.cc pfile.cc sccsfile.cc rel_list.cc \
 delta_SOURCES = delta.cc \
 	l-split.cc pf-del.cc pfile.cc pipe.cc prompt.cc run.cc sccsfile.cc \
 	 rel_list.cc sf-add.cc sf-chkid.cc sf-delta.cc sf-get.cc sf-get3.cc \
-	sf-write.cc sf-kw.cc  $(common_SOURCES) $(sfile_SOURCES)
+	sf-write.cc cap.cc sf-kw.cc \
+	$(common_SOURCES) $(sfile_SOURCES)
 
 admin_SOURCES = admin.cc l-split.cc prompt.cc run.cc sccsfile.cc sf-add.cc \
-	sf-admin.cc sf-chkid.cc sf-write.cc rel_list.cc rl-merge.cc \
+	sf-admin.cc sf-chkid.cc sf-write.cc cap.cc rel_list.cc rl-merge.cc \
 	sf-kw.cc $(common_SOURCES) $(sfile_SOURCES)
 
 prs_SOURCES = prs.cc sccsfile.cc rel_list.cc sf-chkid.cc sf-get.cc sf-prs.cc \
@@ -45,17 +46,16 @@ prs_SOURCES = prs.cc sccsfile.cc rel_list.cc sf-chkid.cc sf-get.cc sf-prs.cc \
 prt_SOURCES = prt.cc sf-prt.cc sccsfile.cc rel_list.cc \
 	$(common_SOURCES) $(sfile_SOURCES)
 
-unget_SOURCES = unget.cc pf-del.cc pfile.cc  $(common_SOURCES) $(sfile_SOURCES)
+unget_SOURCES = unget.cc pf-del.cc pfile.cc $(common_SOURCES) $(sfile_SOURCES)
 
 sact_SOURCES = sact.cc pfile.cc $(common_SOURCES) $(sfile_SOURCES)
 
 cdc_SOURCES = cdc.cc sccsfile.cc rel_list.cc sf-cdc.cc \
-	sf-write.cc run.cc l-split.cc prompt.cc \
+	sf-write.cc cap.cc run.cc l-split.cc prompt.cc \
 	$(common_SOURCES) $(sfile_SOURCES)
 
 rmdel_SOURCES = rmdel.cc sccsfile.cc rel_list.cc sf-rmdel.cc \
-	sf-write.cc pfile.cc $(common_SOURCES) $(sfile_SOURCES)
-
+	sf-write.cc cap.cc pfile.cc $(common_SOURCES) $(sfile_SOURCES)
 
 
 get_LDADD = @LIBOBJS@
@@ -84,3 +84,7 @@ EXTRA_DIST = ChangeLog $(testcode) $(rainyday_src)
 sccsdiff: sccsdiff.sh
 	cp sccsdiff.sh $@
 	chmod a+x $@
+
+testsplit: fnsplit.cc mystring.o quit.o
+	$(CXXCOMPILE) -DTEST_FNSPLIT -o testsplit \
+		$(srcdir)/fnsplit.cc mystring.o quit.o

@@ -137,7 +137,7 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
     }
   else
     {
-      assert(valid());
+      ASSERT(valid());
     }
 }
 
@@ -285,23 +285,23 @@ template <class TYPE>
 range_list<TYPE>::range_list(range_list const &list)
 {
   valid_flag = 1;
-  assert(list.valid());
+  ASSERT(list.valid());
   head = do_copy_list(list.head);
-  assert(valid());
+  ASSERT(valid());
 }	
 
 template <class TYPE>
 range_list<TYPE> &
 range_list<TYPE>::operator =(range_list<TYPE> const &list)
 {
-  assert(valid());
-  assert(list.valid());
+  ASSERT(valid());
+  ASSERT(list.valid());
 
   range<TYPE> *p = do_copy_list(list.head);
   destroy();
   head = p;
 
-  assert(valid());
+  ASSERT(valid());
   return *this;
 }	
 

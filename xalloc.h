@@ -34,9 +34,37 @@
 void *xmalloc(size_t size);
 void *xrealloc(void *p, size_t size);
 void *xcalloc(size_t n, size_t size);
+char *xstrdup(const char *);
 
-void *operator new(size_t size);
-void operator delete(void *p);
+
+#ifdef __GNUG__
+// GNU C++ compiler.
+#if __GNUG__ >= 2
+// GNU C++ compiler, version 2 or above.
+#if __GNUC_MINOR__ > 7
+// GNU C++ newer than 2.7.
+#define EXCEPTIONS_SUPPORTED
+#endif
+#endif
+#else
+// Assume exceptions supported.
+#define EXCEPTIONS_SUPPORTED 
+#endif
+
+
+#ifdef EXCEPTIONS_SUPPORTED
+class bad_alloc;
+#define OPERATOR_NEW_THROWSPEC /* throw(bad_alloc) */
+#define OPERATOR_DELETE_THROWSPEC throw() /* Throws nothing. */
+#else
+#define OPERATOR_NEW_THROWSPEC /* throw(bad_alloc) */
+#define OPERATOR_DELETE_THROWSPEC /* Throws nothing anyway. */
+#endif
+
+
+
+void *operator new(size_t size) OPERATOR_NEW_THROWSPEC; 
+void operator delete(void *p)   OPERATOR_DELETE_THROWSPEC;
 
 #endif /* __XALLOC_H__ */
 

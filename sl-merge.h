@@ -46,7 +46,7 @@ range_list<TYPE>::merge(range_list<TYPE> const &list) {
 		return *this;
 	}
 
-	assert(valid());
+	ASSERT(valid());
 	sp = do_copy_list(sp);
 
 	if (head == NULL) {

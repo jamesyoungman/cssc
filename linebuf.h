@@ -48,6 +48,7 @@ public:
 	int read_line(FILE *f);
 
 	operator char *() const { return buf; }
+  	const char *c_str() const { return buf; }
 	char &operator [](int index) const { return buf[index]; }
 
 #ifdef __GNUC__

@@ -30,7 +30,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: xalloc.cc,v 1.4 1997/07/02 18:06:18 james Exp $";
+static const char rcs_id[] = "CSSC $Id: xalloc.cc,v 1.5 1997/11/18 23:22:49 james Exp $";
 #endif
 
 #ifdef CONFIG_DECLARE_MALLOC
@@ -66,6 +66,12 @@ xcalloc(size_t n, size_t size) {
 		nomem();
 	}
 	return p;
+}
+
+char *
+xstrdup(const char *str)
+{
+  return strcpy((char *) xmalloc(strlen(str) + 1), str);
 }
 
 

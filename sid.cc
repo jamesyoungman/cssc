@@ -38,7 +38,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.9 1997/11/15 20:06:29 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.10 1997/11/18 23:22:44 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an
@@ -250,8 +250,8 @@ bool sid::matches(const sid &m, int nfields) const
 
 int
 sid::print(FILE *out) const {
-	assert(valid());
-	assert(rel != 0);
+	ASSERT(valid());
+	ASSERT(rel != 0);
 
 	if (printf_failed(fprintf(out, "%d", rel))
 	    || (level != 0 
@@ -269,8 +269,8 @@ sid::print(FILE *out) const {
 
 int
 sid::printf(FILE *out, char c, int force_zero /*=0*/) const {
-	assert(valid());
-	assert(!partial_sid());
+	ASSERT(valid());
+	ASSERT(!partial_sid());
 
 	short n;
 

@@ -32,7 +32,7 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.8 1997/07/07 21:16:29 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.9 1997/11/18 23:22:31 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -146,8 +146,21 @@ run(const char *prg, list<const char *> const &args) {
 #endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 }
 
+inline list<const char*> &
+operator +=(list<const char*> &l1, list<mystring> const &l2)
+{
+  int len = l2.length();
+  int i;
+  for(i = 0; i < len; i++)
+    {
+      // This add operation would be push_back() under STL.
+      // When everybody supports STL, we'll switch.
+      l1.add(l2[i].c_str());
+    }
+  return l1;
+}
 
-/* Runs a programme to checks MRs. */
+/* Runs a program to check MRs. */
 
 int
 run_mr_checker(const char *prg, const char *arg1, list<mystring> mrs)
@@ -160,7 +173,10 @@ run_mr_checker(const char *prg, const char *arg1, list<mystring> mrs)
       list<const char *> args;
 
       args.add(arg1);
-      args += mrs;
+
+      int len = mrs.length();
+      for(int i = 0; i < len; i++)
+	args.add(mrs[i].c_str()); // STL's push_back
 
       return run(prg, args);
     }

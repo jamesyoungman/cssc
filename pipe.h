@@ -73,7 +73,7 @@ public:
 	void write_close() { fclose(f); }
 	FILE *read_stream();
 	int read_close();
-	~Pipe() { assert(f == NULL); }
+	~Pipe() { ASSERT(f == NULL); }
 };
 
 #else /*  HAVE_PIPE */
@@ -110,7 +110,7 @@ public:
 
 	int
 	operator =(int p) {
-		assert(pid == (pid_t)-1);
+		ASSERT(pid == (pid_t)-1);
 		link(p);
 		return p;
 	}
@@ -160,13 +160,13 @@ public:
 
 	FILE *
 	read_stream() {
-		assert(!child);
+		ASSERT(!child);
 		return f;
 	}
 
 	int
 	read_close() {
-		assert(!child);
+		ASSERT(!child);
 		fclose(f);
 		f = NULL;
 		return pid.wait();
@@ -174,8 +174,8 @@ public:
 
 
 	~Pipe() {
-		assert(!child);
-		assert(f == NULL);
+		ASSERT(!child);
+		ASSERT(f == NULL);
 	}
 };	
 

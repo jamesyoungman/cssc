@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.8 1997/11/11 23:23:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.9 1997/11/18 23:22:18 james Exp $";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
@@ -72,17 +72,15 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 				slash = "/";
 			}
 #endif
-			// GCC 2.6.3 requires the (char*) cast on the
-			// following line,  according to Dave
-			// Bodenstab <imdave@mcs.net>.
-			mystring dirname(first, (char*) slash);
+			
+			mystring dirname(mystring(first) + mystring(slash));
 
 			struct dirent *dent = readdir(dir);
 			while(dent != NULL) {
 				mystring name = mystring(dirname) + mystring(dent->d_name, NAMLEN(dent));
 				
-				if (sccs_name::valid_filename(name)
-				    && is_readable(name)) {
+				if (sccs_name::valid_filename(name.c_str())
+				    && is_readable(name.c_str())) {
 					files.add(name);
 				}
 				dent = readdir(dir);
@@ -119,7 +117,7 @@ sccs_file_iterator::next() {
 	      return 0;
 	    }
 
-	    name = (const char *) linebuf;
+	    name = (const char *) linebuf; // XXX TODO: remove cast.
 	    return 1;
 	  }
 	
@@ -139,11 +137,11 @@ sccs_file_iterator::next() {
 		name = *argv++;
 
 #ifdef CONFIG_FILE_NAME_GUESSING
-		if (!name.valid()) {
-			name.make_valid();
-		}
+		if (!name.valid())
+		  {
+		    name.make_valid();
+		  }
 #endif
-
 		return 1;
 
 	default:

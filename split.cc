@@ -1,5 +1,5 @@
 /*
- * split.c: Part of GNU CSSC.
+ * split.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -29,7 +29,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: split.cc,v 1.4 1997/07/02 18:05:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: split.cc,v 1.5 1997/11/18 23:22:47 james Exp $";
 #endif
 
 /* Destructively spilts a string into an argument list. */

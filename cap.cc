@@ -1,5 +1,5 @@
 /*
- * sf-cdc.c: Part of GNU CSSC.
+ * cap.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -21,49 +21,29 @@
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
  *
- *
- * Members of the class sccs_file used for change the comments and
- * MRs of a delta. 
- *
+ * Utilities for limiting output to the constraints of the file format.
  */
 
 #include "cssc.h"
-#include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.5 1997/11/18 23:22:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: cap.cc,v 1.1 1997/11/18 23:22:12 james Stab $";
 #endif
 
-/* Adds new MRs and comments to the specified delta. */
-
-void
-sccs_file::cdc(sid id, list<mystring> mrs, list<mystring> comments)
+template<class T> const T& min(const T& a, const T& b)
 {
-  int i;
-  int len;
-  
-  delta *p = delta_table.find(id);
-  if (!p)
-    quit(-1, "%s: Requested SID doesn't exist.", name.c_str());
-  
-  struct delta &delta = *p;
-  
-  list<mystring> not_mrs;
-  len = mrs.length();
-  for(i = 0; i < len; i++)
-    {
-      const char *s = mrs[i].c_str();
-      if (s[0] == '!')
-	not_mrs.add(s + 1);
-      else
-	delta.mrs.add(s);
-    }
-  
-  delta.mrs -= not_mrs;
-  
-  delta.comments += comments;
+  return (a < b) ? a : b;
 }
 
-/* Local variables: */
-/* mode: c++ */
-/* End: */
+// Many data fields in SCCS files are limited to five digits; hence
+// some output fields are capped at 99,999.
+//
+// An example of such a field is the delta summary line; the fields
+// indicating the numbers of lines added/removed/unchanged are capped
+// at five digits.
+//
+unsigned long 
+cap5(unsigned long n)
+{
+  return min(n, 99999uL);
+}

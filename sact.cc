@@ -31,7 +31,7 @@
 #include "pfile.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.5 1997/07/02 18:04:17 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.6 1997/11/18 23:22:32 james Exp $";
 
 void
 usage() {
@@ -66,7 +66,7 @@ main(int argc, char **argv) {
 			putchar(' ');
 			pfile->delta.print(stdout);
 			putchar(' ');
-			fputs(pfile->user, stdout);
+			fputs(pfile->user.c_str(), stdout);
 			putchar(' ');
 			pfile->date.print(stdout);
 			putchar('\n');

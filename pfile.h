@@ -69,12 +69,16 @@ private:
 
 	static int
 	write_edit_lock(FILE *out, struct edit_lock const &it) {
-		if (it.got.print(out) || putc(' ', out) == EOF
-		    || it.delta.print(out) || putc(' ', out) == EOF
-		    || fputs(it.user, out) == EOF || putc(' ', out) == EOF
-		    || it.date.print(out)) {
-			return 1;
-		}
+		if (it.got.print(out)
+		    || putc_failed(putc(' ', out))
+		    || it.delta.print(out)
+		    || putc_failed(putc(' ', out))
+		    || fputs_failed(fputs(it.user.c_str(), out))
+		    || putc_failed(putc(' ', out))
+		    || it.date.print(out))
+		  {
+		    return 1;
+		  }
 
 		if (!it.include.empty()
 		    && ((fputs(" -i", out) == EOF || it.include.print(out)))) {

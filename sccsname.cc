@@ -36,151 +36,142 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.4 1997/07/02 18:04:36 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.5 1997/11/18 23:22:34 james Exp $";
 #endif
 
-const char *
-base_part(const char *name) {
-	const char *s = name + strlen(name);
-	
-#ifdef CONFIG_MSDOS_FILES
-	if (isalpha(name[0]) && name[1] == ':') {
-		name += 2;
-	}
-
-	while(s > name && *s != '/' && *s != '\\') {
-		s--;
-	}
-#else
-	while(s > name && *s == '/') {
-		s--;
-	}
-
-	while(s > name && *s != '/') {
-		s--;
-	}
+#ifdef CONFIG_MSDOS_FILES 
+#error The CONFIG_MSDOS_FILES option is no longer supported.  See sccsname.cc.
+// Please feel free to add the support yourself.  Don't forget
+// to send the patches to <jay@gnu.org>.
 #endif
 
-	if (s == name) {
-		return name;
-	}
-
-	return s + 1;
+mystring
+base_part(const mystring &name)
+{
+  mystring dirname, basename;
+  split_filename(name, dirname, basename);
+  return basename;
 }
 
 int
-sccs_name::valid_filename(const char *name) {
-	const char *base = base_part(name);
-
-#ifdef CONFIG_MSDOS_FILES
-	const char *dot = strrchr(base, '.');
-	const char *dollar = strrchr(base, '$');
-
-	return dot != NULL && dollar != NULL && dollar > dot
-	       && strchr(base, '.') == dot;
-#else
-	return base[0] == 's' && base[1] == '.';
+sccs_name::valid_filename(const char *thename)
+{
+  ASSERT(0 != thename);
+  
+  if (thename && thename[0])
+    {
+      mystring base = base_part(mystring(thename));
+      const int valid = (base[0] == 's' && base[1] == '.');
+#if 0
+      fprintf(stderr, "valid_filename returning %d\n", valid);
 #endif
+      return valid;
+    }
+  else
+    {
+      // empty filename; not valid.
+      return 0;
+    }
 }
 
 void
-sccs_name::create() {
-	if (!valid_filename(name)) {
-		_name = NULL;
-		return;
-	}
+sccs_name::create()
+{
+#if 0
+  fprintf(stderr, "sccs_name::create(): sname='%s'\n", sname.c_str());
+#endif  
 
-	_name = name.xstrdup();
+  // derive all other names from "name",
+  // when they're asked for.
+  mystring dirname, basename;
+  split_filename(sname, dirname, basename);
 
-#ifdef CONFIG_MSDOS_FILES
+#if 0  
+  fprintf(stderr, "sccs_name::create(): dirname='%s', basename='%s'\n",
+	  dirname.c_str(), basename.c_str());
+#endif
+  
+  name_front = dirname;
 
-	char *s = (char *) base_part(_name);
-	change = s + strlen(s) - 1;
+  // name_rear does not contain the "s" 
+  // of the "s." but does contain the dot itself.
+  name_rear.assign(basename, 1);
 
-	if (change > s && change[-1] == '.') {
-		change[-1] = '\0';
-		gname = base_part(_name);
-		change[-1] = '.';
-	} else {
-		gname = base_part(_file('\0'));
-	}
-
-#else 
-
-	change = (char *) base_part(_name);
-	gname = change + 2;
-
-#endif /* CONFIG_MSDOS_FILES */
+  // The gname does not include the directory part,
+  // or the leading "s.".
+  gname.assign(basename, 2);
 }
+
+// I don't think we EVER need this function.
+// sccs_name::sccs_name(sccs_name const &from) : lock_cnt(from.lock_cnt)
+// {
+//   sname = from.sfile();
+//   create();
+// }
 
 sccs_name &
-sccs_name::operator =(mystring n) {
-	destroy();
-	name = n;
-	create();
-	return *this;
+sccs_name::operator =(const mystring &newname)
+{
+  ASSERT(newname.length() != 0);
+
+#if 0
+  fprintf(stderr, "sccs_name::operator=(const mystring&): newname='%s'\n",
+		newname.c_str());
+#endif
+  
+  sname = newname;
+  create();
+  return *this;
 }
+
+
+mystring sccs_name::
+sub_file(char insertme) const
+{
+  char prefix[2];
+  prefix[0] = insertme;
+  prefix[1] = 0;
+  mystring ret = name_front + mystring(prefix) + name_rear;
+#if 0
+  fprintf(stderr,
+	  "sccs_name::sub_file('%c') returning \"%s\".\n",
+	  insertme, ret.c_str());
+#endif
+  return ret;
+}
+
 
 #ifdef CONFIG_FILE_NAME_GUESSING
 
 void
-sccs_name::make_valid() {
-	assert(!valid_filename(name));
+sccs_name::make_valid()
+{
+  ASSERT(sname.length() != 0);
+  ASSERT(!valid_filename(sname.c_str()));
 
-#ifdef CONFIG_MSDOS_FILES
-
-	char *s = name.xstrdup();
-	char *base = (char *) base_part(s);
-	char *dot = strchr(base, '.');
-
-	if (dot == NULL) {
-		name = mystring(s, ".$");
-	} else if (dot[1] == '\0' || dot[2] == '\0' || dot[3] == '\0') {
-		name = mystring(s, "$");
-	} else {
-		dot[3] = '$';
-		dot[4] = '\0';
-		name = s;
-	}
-
-	if (!is_readable(name)) {
-		s = name.xstrdup();
-		base = (char *) base_part(s);
-
-		mystring tmp(strchr(s, '/') != NULL ? "SCCS/" : "SCCS\\", base);
-		base[0] = '\0';
-		tmp = mystring(s, tmp);
-
-		if (is_readable(tmp)) {
-			name = tmp;
-		}
-	}
-
-
-	free(s);
-
-#else /* CONFIG_MSDOS_FILES */
-
-	char *s = name.xstrdup();
-	char *base = (char *) base_part(s);
-
-	mystring tmp("s.", base);
-	base[0] = '\0';
-	name = mystring(s, tmp);
-	       
-	if (!is_readable(name)) {
-		tmp = mystring("SCCS/", tmp);
-		tmp = mystring(s, tmp);
-		if (is_readable(tmp)) {
-			name = tmp;
-		}
-	}
-
-	free(s);
-
-#endif /* CONFIG_MSDOS_FILES */
-
-	create();
+#if 0
+  fprintf(stderr, "Making filename '%s' valid...\n",
+	  sname.c_str());
+#endif
+  
+  mystring dirpart, basepart;
+  split_filename(sname, dirpart, basepart);
+  
+  
+  // try dir/s.foo
+  const mystring s_dot_foo = mystring("s.") + basepart;
+  sname = dirpart + s_dot_foo;
+  
+  if (!is_readable(sname.c_str()))
+    {
+      // try dir/SCCS/s.foo
+      const mystring tmp = dirpart + mystring("SCCS/") + s_dot_foo;
+      
+      if (is_readable(tmp.c_str()))
+	sname = tmp;
+    }
+  
+  create();
 }
 	
 #endif /* CONFIG_FILE_NAME_GUESSING */

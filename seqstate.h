@@ -111,7 +111,7 @@ public:
 	
 	void
 	set_predecessor(seq_no seq) {
-		assert(seq > 0 && seq <= last);
+		ASSERT(seq > 0 && seq <= last);
 		if ((p[seq] & MASK) == 0) {
 			p[seq] |= INCLUDED;
 		}
@@ -120,19 +120,19 @@ public:
 
 	void
 	pred_include(seq_no seq) {
-		assert(seq > 0 && seq <= last);
+		ASSERT(seq > 0 && seq <= last);
 		p[seq] = (p[seq] & ~MASK) | INCLUDED;
 	}
 
 	void
 	pred_exclude(seq_no seq) {
-		assert(seq > 0 && seq <= last);
+		ASSERT(seq > 0 && seq <= last);
 		p[seq] = (p[seq] & ~MASK) | EXCLUDED;
 	}
 
 	void
 	include(seq_no seq) {
-		assert(seq > 0 && seq <= last);
+		ASSERT(seq > 0 && seq <= last);
 		if (!is_included(seq)) {
 			p[seq] = (p[seq] & ~MASK) | INCLUDED | EXPLICIT;
 		}
@@ -140,7 +140,7 @@ public:
 
 	void
 	exclude(seq_no seq) {
-		assert(seq > 0 && seq <= last);
+		ASSERT(seq > 0 && seq <= last);
 		if (is_included(seq)) {
 			p[seq] = (p[seq] & ~MASK) | EXCLUDED | EXPLICIT;
 		}
@@ -149,7 +149,7 @@ public:
 
 	const char *
 	start(seq_no seq, int insert) {
-		assert(seq > 0 && seq <= last);
+		ASSERT(seq > 0 && seq <= last);
 
 		if (insert) {
 			active_stack.push(active);
@@ -178,7 +178,7 @@ public:
 
 	const char *
 	end(seq_no seq) {
-		assert(seq > 0 && seq <= last);
+		ASSERT(seq > 0 && seq <= last);
 
 		if (!(p[seq] & ACTIVE)) {
 			return "Seq not active.";
@@ -189,7 +189,7 @@ public:
 		int insert = ((p[seq] & INSERTING) != 0);
 
 		if (!insert) {
-			assert(deleting > 0);
+			ASSERT(deleting > 0);
 			deleting--;
 		}
 

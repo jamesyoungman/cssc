@@ -30,7 +30,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.6 1997/11/15 20:07:03 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.7 1997/11/18 23:22:24 james Exp $";
 #endif
 
 /* enum */ sccs_pfile::find_status
@@ -38,12 +38,12 @@ sccs_pfile::find_sid(sid id) {
 
 	rewind();
 
-	const char *user = get_user_name();
+	const char *username = get_user_name();
 	sccs_pfile &it = *this;
 	int found = -1;
 
 	while(next()) {
-		if (strcmp(user, it->user) == 0
+		if (strcmp(username, it->user.c_str()) == 0
 		    && (id.is_null() || id == it->got || id == it->delta)) {
 			if (found != -1) {
 				return AMBIGUOUS;
@@ -63,12 +63,12 @@ sccs_pfile::find_sid(sid id) {
 
 void
 sccs_pfile::update() {
-	mystring qname = name.qfile();
+	const char* qname = name.qfile().c_str();
 
 	FILE *pf = fopen(qname, "w");
 	if (pf == NULL) {
 		quit(errno, "%s: Can't create temporary file.",
-		     (const char *) qname);
+		     qname);
 	}
 
         int count = 0;
@@ -77,37 +77,37 @@ sccs_pfile::update() {
 	while(next()) {
 #ifdef __GNUC__
 		if (write_edit_lock(pf, edit_locks[pos])) {
-			quit(errno, "%s: Write error.", (const char *) qname);
+			quit(errno, "%s: Write error.", qname);
 		}
 		    
 #else
 		if (write_edit_lock(pf, *operator->())) {
-			quit(errno, "%s: Write error.", (const char *) qname);
+			quit(errno, "%s: Write error.", qname);
 		}
 #endif	       
 		count++;
 	}
 
 	if (fclose_failed(fclose(pf))) {
-		quit(errno, "%s: Write error.", (const char *) qname);
+		quit(errno, "%s: Write error.", qname);
 	}
 
 #ifndef TESTING	
 
-	if (remove(pname) != 0) {
+	if (remove(pname.c_str()) != 0) {
 		quit(errno, "%s: Can't remove old p-file.",
-		     (const char *) pname);
+		     pname.c_str());
 	}
 
 	if (count == 0) {
 		if (remove(qname) != 0) {
 			quit(errno, "%s: Can't remove temporary file.",
-			     (const char *) pname);
+			     pname.c_str());
 		}
 	} else {
-		if (rename(qname, pname) != 0) {
+		if (rename(qname, pname.c_str()) != 0) {
 			quit(errno, "%s: Can't rename new p-file.",
-			     (const char *) qname);
+			     qname);
 		}
 	}
 #endif

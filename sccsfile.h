@@ -47,7 +47,7 @@ public:
 
 private:
 	struct delta {
-		unsigned inserted, deleted, unchanged;
+		unsigned long inserted, deleted, unchanged;
 		char type;
 		sid id;
 		sccs_date date;
@@ -110,7 +110,7 @@ private:
 
 		struct delta const &
 		operator [](seq_no seq) {
-			assert(seq > 0 && seq <= high_seqno);
+			ASSERT(seq > 0 && seq <= high_seqno);
 			if (seq_table == NULL) {
 				build_seq_table();
 			}
@@ -118,6 +118,7 @@ private:
 		}
 
 		struct delta const *find(sid id) const; 
+		struct delta *find(sid id); 
 
 		seq_no highest_seqno() const { return high_seqno; }
 	  	seq_no next_seqno()    const;
@@ -155,14 +156,15 @@ private:
 		int index() const { return pos; }
 
 		struct delta const *
-		operator ->() const {
-			return &dtbl.select(pos);
-		}
+		operator ->() const { return &dtbl.select(pos); }
+
+		struct delta *
+		operator ->()       { return &dtbl.select(pos); }
 
 		void rewind() { pos = -1; }
 	};
 
-	sccs_name &name;
+	sccs_name& name;
 	FILE *f;
 	enum _mode mode;
 	class _linebuf linebuf;
@@ -173,11 +175,11 @@ private:
 	class _delta_table delta_table;
 	list<mystring> users;
 	struct sccs_file_flags {
-		mystring type;
-		mystring mr_checker;
+		mystring *type;
+		mystring *mr_checker;
 	  	int no_id_keywords_is_fatal;
 		int branch;
-		mystring module;
+		mystring *module;
 		release floor;
 		release ceiling;
 		sid default_sid;
@@ -185,8 +187,8 @@ private:
 		int joint_edit;
 		release_list locked;
 		int all_locked;
-		mystring user_def;
-		mystring reserved;
+		mystring *user_def;
+		mystring *reserved;
 	  	int encoded;
 	} flags;
 	list<mystring> comments;
@@ -197,6 +199,7 @@ private:
 	void check_arg() const;
 	void check_noarg() const;
 	unsigned short strict_atous(const char *s) const;
+        unsigned long strict_atoul(const char *s) const;
 	
 	int
 	read_line_param(FILE *f) {
@@ -214,6 +217,13 @@ private:
 	mystring get_module_name() const;
 
 public:
+
+  // sccs_file::sccs_file(sccs_name&, enum _mode) MUST 
+  // take a non-const reference to an sccs_name as an 
+  // argument in order to get the semantics of lock
+  // ownership correct; an sccs_name carries with it a
+  // lock, so if we copy it, either the copy does not
+  // have a lock or we have too many locks in total.
 	sccs_file(sccs_name &name, enum _mode mode);
 
 	sid find_most_recent_sid(sid id) const;
@@ -222,7 +232,7 @@ public:
 	int
 	is_delta_creator(const char *user, sid id) const {
 		struct delta const *delta = delta_table.find(id);
-		return delta != NULL && strcmp(delta->user, user) == 0;
+		return delta != NULL && strcmp(delta->user.c_str(), user) == 0;
 	}
 
 	~sccs_file();
@@ -322,7 +332,10 @@ private:
 public:
 	int
 	mr_required() const {
-		return flags.mr_checker;
+		if (flags.mr_checker)
+		  return 1;
+		else
+		  return 0;
 	}
 
  	int check_mrs(list<mystring> mrs);
@@ -330,8 +343,14 @@ public:
 	void add_delta(mystring gname, sccs_pfile &pfile,
 		       list<mystring> mrs, list<mystring> comments);
 
-	/* sf-admin.c */
+  /* sccsfile.cc */
+  	void set_mr_checker_flag(const char *s);
+  	void set_module_flag(const char *s);
+  	void set_user_flag(const char *s);
+  	void set_reserved_flag(const char *s);
+  	void set_type_flag(const char *s);
 
+	/* sf-admin.c */
 	void admin(const char *file_comment,
 		   list<mystring> set_flags, list<mystring> unset_flags,
 		   list<mystring> add_users, list<mystring> erase_users);

@@ -33,7 +33,7 @@
 #include "sf-chkmr.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.8 1997/07/02 18:17:53 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.9 1997/11/18 23:22:15 james Exp $";
 
 void
 usage() {
@@ -54,7 +54,9 @@ main(int argc, char **argv) {
 	mystring mrs;		/* -m -M */
 	mystring comments;	/* -y -Y */
 	int suppress_mrs = 0;	// if -m given with no arg.
+	int got_mrs = 0;	// if no need to prompt for MRs.
 	int suppress_comments = 0; // if -y given with no arg.
+	int got_comments = 0;
 
 	if (argc > 0) {
 		set_prg_name(argv[0]);
@@ -85,21 +87,25 @@ main(int argc, char **argv) {
 		case 'm':
 			mrs = opts.getarg();
 			suppress_mrs = (mrs == "");
+			got_mrs = 1;
 			break;
 
 		case 'M':
 			mrs = "";
 			suppress_mrs = 1;
+			got_mrs = 1;
 			break;
 
 		case 'y':
 			comments = opts.getarg();
 			suppress_comments = (comments == "");
+			got_comments = 1;
 			break;
 
 		case 'Y':
 			comments = "";
 			suppress_comments = 1;
+			got_comments = 1;
 			break;
 
 		case 'V':
@@ -126,13 +132,15 @@ main(int argc, char **argv) {
 		  {
 		    if (stdin_is_a_tty())
 		      {
-			if (!suppress_mrs && mrs == NULL && file.mr_required())
+			if (!suppress_mrs && !got_mrs && file.mr_required())
 			  {
 			    mrs = prompt_user("MRs? ");
+			    got_mrs = 1;
 			  }
-			if (!suppress_mrs && comments == NULL)
+			if (!suppress_comments && !got_comments)
 			  {
 			    comments = prompt_user("comments? ");
+			    got_comments = 1;
 			  }
 		      }
 		    mr_list = split_mrs(mrs);
@@ -147,20 +155,20 @@ main(int argc, char **argv) {
 		case sccs_pfile::NOT_FOUND:
 			if (!rid.valid()) {
 				quit(-1, "%s: You have no edits outstanding.",
-				     (const char *) name);
+				     name.c_str());
 			}
 			quit(-1, "%s: Specified SID hasn't been locked for"
 			         " editing by you.",
-			     (const char *) name);
+			     name.c_str());
 			break;
 
 		case sccs_pfile::AMBIGUOUS:
 			if (rid.valid()) {
 				quit(-1, "%s: Specified SID is ambiguous.",
-				     (const char *) name);
+				     name.c_str());
 			}
 			quit(-1, "%s: You must specify a SID on the"
-			         " command line.", (const char *) name);
+			         " command line.", name.c_str());
 			break;
 
 		default:
@@ -172,7 +180,7 @@ main(int argc, char **argv) {
 		    if (mr_list.length() == 0)
 		      {
 			quit(-1, "%s: MR number(s) must be supplied.",
-			     (const char *) name);
+			     name.c_str());
 		      }
 		    if (file.check_mrs(mr_list))
 		      {
@@ -180,8 +188,7 @@ main(int argc, char **argv) {
                          */
 			pfile->delta.print(stdout);
 			putchar('\n');
-			quit(-1, "%s: Invalid MR number(s).",
-			     (const char *) name);
+			quit(-1, "%s: Invalid MR number(s).", name.c_str());
 		      }
 		  }
 		else if (mr_list.length())
@@ -192,18 +199,17 @@ main(int argc, char **argv) {
 		    quit(-1,
 			 "%s: MR verification ('v') flag not set, MRs"
 			 " are not allowed.\n",
-			 (const char *) name);
+			 name.c_str());
 		  }
 		
 		mystring gname = name.gfile();
 
 		file.add_delta(gname, pfile, mr_list, comment_list);
 
-		if (!keep_gfile) {
-#ifndef TESTING
-			remove(gname);
-#endif
-		}
+		if (!keep_gfile)
+		  {
+		    remove(gname.c_str());
+		  }
 	}
 
 	return 0;
@@ -216,7 +222,7 @@ template class list<sccs_file::delta>;
 template class list<seq_no>;
 template class list<sccs_pfile::edit_lock>;
 template class list<char const*>;
-template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
+//template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
 template class range_list<release>;
 
 #include "stack.h"

@@ -50,7 +50,7 @@ class sid {
 
 	sid(short r, short l, short b, short s)
 		: rel(r), level(l), branch(b), sequence(s) {
-		assert((!r && !l && !b && !s)
+		ASSERT((!r && !l && !b && !s)
 		       || (r && !l && !b && !s)
 		       || (r && l && !b && !s)
 		       || (r && l && b));

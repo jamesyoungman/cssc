@@ -33,7 +33,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.5 1997/07/02 18:03:56 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.6 1997/11/18 23:22:30 james Exp $";
 
 void
 usage() {
@@ -97,7 +97,7 @@ main(int argc, char **argv) {
 			if (pfile->got == rid) {
 				quit(-1, "%s: Requested SID is locked"
 				         " for editing.",
-				     (const char *) name);
+				     name.c_str());
 			}
 		}
 		

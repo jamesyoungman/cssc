@@ -32,7 +32,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.10 1997/07/02 18:05:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.11 1997/11/18 23:22:42 james Exp $";
 #endif
 
 inline void
@@ -67,28 +67,18 @@ print_string_list(FILE *out, list<mystring> const &list) {
 	int len = list.length();
 
 	for(i = 0; i < len; i++) {
-		fprintf(out, "%s\n", (const char *) list[i]);
+		fprintf(out, "%s\n", list[i].c_str());
 	}
 }
 
 
-/* Prints a string flag with it's name. */
-
+/* Prints a boolean flag with its name.
+ */
 static void
-print_flag2(FILE *out, const char *s, mystring it) {
-	if (it != NULL) {
-		fprintf(out, "%s: %s\n", s, (const char *) it);
-	}
-}
-
-
-/* Prints a boolean flag with it's name. */
-
-static void
-print_flag2(FILE *out, const char *s, int it) {
-	if (it) {
-		fprintf(out, "%s: yes\n", s);
-	}
+print_flag2(FILE *out, const char *s, int it)
+{
+  if (it)
+    fprintf(out, "%s: yes\n", s);
 }
 
 
@@ -104,17 +94,43 @@ print_flag2(FILE *out, const char *s, TYPE it) {
 	}
 }
 
+// /* Prints a string flag with its name.
+//  */
+// static void
+// print_flag2(FILE *out, const char *s, mystring it)
+// {
+//   if (!it.empty())
+//     fprintf(out, "%s: %s\n", s, it.c_str());
+// }
+
+
+static inline void
+print_flag2(FILE *out, const char *name, mystring *s)
+{
+  if (s)
+    fprintf(out, "%s: %s\n", name, s->c_str());
+}
+
+static inline void
+print_flag2(FILE *out, const char *name, const char *s)
+{
+  if (s)
+    fprintf(out, "%s: %s\n", name, s);
+}
+
 
 /* Prints all the flags of an SCCS file. */
 
 void
 sccs_file::print_flags(FILE *out) const {
 	print_flag2(out, (const char *) "Module Type", flags.type);
-	print_flag2(out, (const char *) "MR Validation", flags.mr_checker);
+	print_flag2(out, (const char *) "MR Validation",
+		    (flags.mr_checker ? flags.mr_checker->c_str() : ""));
 	print_flag2(out, (const char *) "Keyword Validation",
 		    flags.no_id_keywords_is_fatal);
 	print_flag2(out, (const char *) "Branch", flags.branch);
-	print_flag2(out, (const char *) "Module Name", flags.module);
+	print_flag2(out, (const char *) "Module Name",
+		    (flags.module ? flags.module->c_str() : "") );
 	print_flag2(out, (const char *) "Floor", flags.floor);
 	print_flag2(out, (const char *) "Ceiling", flags.ceiling);
 	print_flag2(out, (const char *) "Default SID", flags.default_sid);
@@ -137,7 +153,7 @@ sccs_file::print_flags(FILE *out) const {
 
 /* Prints "yes" or "no" according to the value of a boolean flag. */
 
-static void
+inline static void
 print_yesno(FILE *out, int flag) {
 	if (flag) {
 		fputs("yes", out);
@@ -146,28 +162,74 @@ print_yesno(FILE *out, int flag) {
 	}
 }
 
-/* Prints the the value of string flag. */
-template <class TYPE>
-void
-print_flag(FILE *out, TYPE it) {
-	if (it.valid()) {
-		it.print(out);
-	} else {
-		fputs("none", out);
-	}
+/* Prints the value of a mystring flag. */
+inline static void
+print_flag(FILE *out, const mystring *s)
+{
+  if (s) 
+    fputs("none", out);
+  else
+    fputs(s->c_str(), out);
 }
 
-/* Prints the value of flag whose type has a print(FILE *) member. */
-
-static void
-print_flag(FILE *out, mystring s) {
-	if (s == NULL) {
-		fputs("none", out);
-	} else {
-		fputs(s, out);
-	}
+/* Prints the value of a mystring flag. */
+inline static void
+print_flag(FILE *out, mystring *s)
+{
+  if (s) 
+    fputs(s->c_str(), out);
+  else
+    fputs("none", out);
 }
 
+/* Prints the value of a mystring flag. */
+inline static void
+print_flag(FILE *out, const mystring &s)
+{
+  if (s.empty()) 
+    fputs("none", out);
+  else
+    fputs(s.c_str(), out);
+}
+
+
+inline static void
+print_flag(FILE *out, const release_list &it)
+{
+  if (it.valid()) 
+    it.print(out);
+  else
+    fputs("none", out);
+}
+
+inline static void
+print_flag(FILE *out, const release &it)
+{
+  if (it.valid()) 
+    it.print(out);
+  else
+    fputs("none", out);
+}
+
+inline static void
+print_flag(FILE *out, const sid &it)
+{
+  if (it.valid()) 
+    it.print(out);
+  else
+    fputs("none", out);
+}
+
+// /* Prints the the value of string flag. */
+// template <class TYPE>
+// void
+// print_flag(FILE *out, TYPE it)
+// {
+//   if (it.valid()) 
+//     it.print(out);
+//   else
+//     fputs("none", out);
+// }
 
 /* These macros are used to convert the one or two characters a prs
    data keyword in an unsigned value used in the switch statement 
@@ -253,15 +315,15 @@ sccs_file::print_delta(FILE *out, const char *format,
 			break;
 
 		case KEY2('L','i'):
-			fprintf(out, "%05u", delta.inserted);
+			fprintf(out, "%05lu", delta.inserted);
 			break;
 
 		case KEY2('L','d'):
-			fprintf(out, "%05u", delta.deleted);
+			fprintf(out, "%05lu", delta.deleted);
 			break;
 
 		case KEY2('L','u'):
-			fprintf(out, "%05u", delta.unchanged);
+			fprintf(out, "%05lu", delta.unchanged);
 			break;
 
 		case KEY2('D','T'):
@@ -321,7 +383,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 			break;
 
 		case KEY1('P'):
-			fputs(delta.user, out);
+			fputs(delta.user.c_str(), out);
 			break;
 
 		case KEY2('D','S'):
@@ -374,11 +436,11 @@ sccs_file::print_delta(FILE *out, const char *format,
 			break;
 			
 		case KEY2('M','F'):
-			print_yesno(out, flags.mr_checker != NULL);
+			print_yesno(out, flags.mr_checker != 0);
 			break;
 
 		case KEY2('M','P'):
-			print_flag(out, flags.mr_checker);
+		  	print_flag(out, flags.mr_checker);
 			break;
 			
 		case KEY2('K','F'):
@@ -406,7 +468,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 			break;
 
 		case KEY1('Q'):
-		  if (flags.user_def != NULL)
+		  if (flags.user_def)
 		    print_flag(out, flags.user_def);
 		  break;
 
@@ -465,11 +527,11 @@ sccs_file::print_delta(FILE *out, const char *format,
 			break;
 
 		case KEY1('F'):
-			fputs(base_part(name), out);
+			fputs(base_part(name.sfile()).c_str(), out);
 			break;
 
 		case KEY2('P','N'):
-			fputs(name, out);
+			fputs(name.c_str(), out);
 			break;
 		}
 	}
@@ -489,7 +551,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
 		struct delta const *delta = delta_table.find(rid);
 		if (delta == NULL) {
 			quit(-1, "%s: Requested SID doesn't exist.",
-			     (const char *) name);
+			     name.c_str());
 		}
 		cutoff_date = delta->date;
 	}
@@ -516,11 +578,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
 			break;
 		}
 
-#ifdef __GNUC__
-		print_delta(out, format, *(iter.*&sccs_file::delta_iterator::operator->)());
-#else
-		print_delta(out, format, *iter.operator->());
-#endif
+		print_delta(out, format.c_str(), *iter.operator->());
 		putc('\n', out);
 	}
 }
@@ -529,10 +587,6 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
 template void print_flag2(FILE *out, const char *s, release);
 template void print_flag2(FILE *out, const char *s, sid);
 template void print_flag2(FILE *out, const char *s, release_list);
-template void print_flag (FILE *out, release_list);
-template void print_flag (FILE *out, range_list<release>);
-template void print_flag (FILE *out, release);
-template void print_flag (FILE *out, sid);
 
 /* Local variables: */
 /* mode: c++ */

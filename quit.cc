@@ -38,7 +38,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.10 1997/07/07 21:23:10 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.11 1997/11/18 23:22:29 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -90,7 +90,7 @@ quit(int err, const char *fmt, ...) {
 		usage();
 	}
 
-
+	// XXX TODO: remove this cast.
 	if (prg_name != NULL && err != 0) {
 		fprintf(stderr, "%s: ", (const char *) prg_name);
 	}
@@ -182,7 +182,7 @@ cleanup::~cleanup() {
 
 	while(p->next != this) {
 		p = p->next;
-		assert(p != NULL);
+		ASSERT(p != NULL);
 	}
 
 	p->next = next;

@@ -34,7 +34,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.14 1997/11/15 20:02:33 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.15 1997/11/18 23:22:11 james Exp $";
 
 void
 usage() {
@@ -157,9 +157,9 @@ main(int argc, char **argv) {
 		if (reset_checksum && !check) {
 			if (!name.valid()) {
 				quit(-1, "%s: Not a SCCS file.",
-				     (const char *) name);
+				     name.c_str());
 			}
-			sccs_file::update_checksum(name);
+			sccs_file::update_checksum(name.c_str());
 			continue;
 		}
 			
@@ -202,7 +202,7 @@ main(int argc, char **argv) {
 					}
 				}
 #endif
-				if (!file.mr_required() && mrs != NULL)
+				if (!file.mr_required() && !mrs.empty())
 				  quit(-1, "MRs not enabled with 'v' flag, "
 				       "can't use 'm' keyword.");
 				
@@ -214,12 +214,11 @@ main(int argc, char **argv) {
 			if (file.mr_required()) {
 				if (!suppress_mrs && mr_list.length() == 0) {
 					quit(-1, "%s: MR number(s) must be "
-						 " supplied.",
-					     (const char *) name);
+						 " supplied.", name.c_str());
 				}
 				if (file.check_mrs(mr_list)) {
 					quit(-1, "%s: Invalid MR number(s).",
-					     (const char *) name);
+					     name.c_str());
 				}
 			}
 
@@ -239,7 +238,7 @@ main(int argc, char **argv) {
 template class list<mystring>;
 template class list<seq_no>;
 template class list<sccs_file::delta>;
-template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
+//template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
 template class list<char const *>;
 template list<mystring>& operator+=(list<mystring> &, list<mystring> const &);
 template list<mystring>& operator-=(list<mystring> &, list<mystring> const &);

@@ -31,6 +31,21 @@
 #ifndef CSSC__MYSTRING_H__
 #define CSSC__MYSTRING_H__
 
+// If we have the header file <string>, then
+// ue that rather than mystring.
+#ifdef HAVE_STRING
+#define USE_STANDARD_STRING
+#endif
+
+
+#ifdef USE_STANDARD_STRING
+
+#include <string>
+typedef string mystring;
+
+
+#else /* Use MySC's old "mystring". */
+
 #ifdef __GNUC__
 #pragma interface
 #endif
@@ -79,7 +94,7 @@ public:
   	const mystring& operator+=(const mystring& s);
   	mystring  operator+ (const mystring& s);
   
-	operator const char *() const {
+	const char * c_str() const {
 		return str;
 	}
   	const char& operator[](size_t n) const;
@@ -103,8 +118,8 @@ public:
 
 	int
 	operator ==(mystring const &s) const {
-		assert(s.str != NULL);
-		assert(str != NULL);
+		ASSERT(s.str != NULL);
+		ASSERT(str != NULL);
 		return strcmp(str, s.str) == 0;
 	}
 	int operator !=(mystring const &s) const { return !operator==(s); }	
@@ -114,7 +129,7 @@ public:
 		if (s == NULL) {
 			return str == NULL;
 		}
-		assert(str != NULL);
+		ASSERT(str != NULL);
 		return strcmp(str, s) == 0;
 	}
 	int operator !=(const char *s) const { return !operator==(s); }
@@ -133,6 +148,8 @@ public:
 		destroy();
 	}
 };
+#endif /* USE_STANDARD_STRING */
+
 
 #endif /* __MYSTRING_H__ */
 

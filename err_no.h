@@ -1,5 +1,6 @@
 /*
- * prompt.cc: Part of GNU CSSC.
+ * err_no.h: Part of GNU CSSC.
+ * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
@@ -17,45 +18,20 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
- * placed in the Public Domain.
  *
- *
- * Defines the function prompt_user.
+ * The sole purpose of this header file is to make sure that errno
+ * has been declared.
  *
  */
 
-#include "cssc.h"
-
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.6 1997/11/18 23:22:27 james Exp $";
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
 #endif
 
-/* Prompts the user for input. */
+#ifdef CONFIG_DECLARE_ERRNO
+extern int errno;
+#endif
 
-mystring
-prompt_user(const char *prompt) {
-	static char *linebuf = (char *) xmalloc(CONFIG_LINEBUF_CHUNK_SIZE);
-	static int buflen = CONFIG_LINEBUF_CHUNK_SIZE;
-	int c;
-	int i = 0;
-
-	fputs(prompt, stdout);
-	fflush(stdout);
-	
-	c = getchar();
-	while(c != EOF && c != '\n') {
-		if (i == buflen - 1) {
-			buflen += CONFIG_LINEBUF_CHUNK_SIZE;
-			linebuf = (char *) xrealloc(linebuf, buflen);
-		}
-		linebuf[i++] = c;
-		c = getchar();
-	}
-
-	linebuf[i] = '\0';
-	return linebuf;
-}
 
 /* Local variables: */
 /* mode: c++ */

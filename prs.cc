@@ -31,7 +31,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.7 1997/07/02 18:18:41 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.8 1997/11/18 23:22:28 james Exp $";
 
 void
 usage() {
@@ -129,7 +129,7 @@ main(int argc, char **argv) {
 		sccs_file file(name, sccs_file::READ);
 
 		if (default_processing) {
-			printf("%s:\n\n", (const char *) name);
+			printf("%s:\n\n", name.c_str());
 		}
 		file.prs(stdout, format, rid, cutoff_date, selected,
 			 all_deltas);

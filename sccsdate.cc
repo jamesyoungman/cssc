@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.7 1997/11/15 20:05:45 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.8 1997/11/18 23:22:32 james Exp $";
 #endif
 
 static int
@@ -220,7 +220,7 @@ sccs_date::printf(FILE *f, char fmt) const {
 		return printf_failed(fprintf(f, "%02d", tm->tm_sec));
 
 	default:
-		assert(!"sccs_date::printf: Invalid format");
+		ASSERT(!"sccs_date::printf: Invalid format");
 	}
 
 	return 0;

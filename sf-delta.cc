@@ -40,7 +40,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.12 1997/11/09 13:57:49 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.13 1997/11/18 23:22:38 james Exp $";
 #endif
 
 class diff_state {
@@ -73,8 +73,8 @@ public:
 
 	const char *
 	get_insert_line() {
-		assert(_state == INSERT);
-		assert(linebuf[0] == '>' && linebuf[1] == ' ');
+		ASSERT(_state == INSERT);
+		ASSERT(linebuf[0] == '>' && linebuf[1] == ' ');
 		return linebuf + 2;
 	}
 
@@ -162,7 +162,7 @@ diff_state::next_state() {
 
 	c = *s;
 
-	assert(c != '\0');
+	ASSERT(c != '\0');
 		
 	if (c == 'a') {
 		if (line1 >= in_lineno) {
@@ -240,7 +240,7 @@ diff_state::process(FILE *out, seq_no seq) {
 	}
 
 	if (_state != END) {
-		assert(lines_left >= 0);
+		ASSERT(lines_left >= 0);
 		if (lines_left == 0) {
 			if (_state == DELETE || _state == INSERT) {
 				fprintf(out, "\001E %d\n", seq);
@@ -305,9 +305,9 @@ sccs_file::check_keywords_in_file(const char *name) {
 void
 sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		     list<mystring> mrs, list<mystring> comments) {
-	assert(mode == UPDATE);
+	ASSERT(mode == UPDATE);
 
-	check_keywords_in_file(gname);
+	check_keywords_in_file(gname.c_str());
 
 	seq_state sstate(delta_table.highest_seqno());
 	const struct delta *got_delta = delta_table.find(pfile->got);
@@ -347,7 +347,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 #ifndef USE_PIPE
 
-	ret = run_diff(gname, diff_in, diff_out);
+	ret = run_diff(gname.c_str(), diff_in, diff_out);
 	if (ret != STATUS(0) && ret != STATUS(1)) {
 		quit(-1, CONFIG_DIFF_COMMAND ": Command failed.  "
 			 STATUS_MSG(ret));
@@ -357,7 +357,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 #else /* USE_PIPE */
 
-	run_diff(gname, diff_in, diff_out);
+	run_diff(gname.c_str(), diff_in, diff_out);
 
 	ret = diff_in.read_close();
 	if (ret != STATUS(0)) {
@@ -403,13 +403,13 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	    release null_rel = release(id);
 	    ++null_rel;
 	    
-	    assert(id.valid());
+	    ASSERT(id.valid());
 	    
 	    int infinite_loop_escape = 10000;
 
 	    while (null_rel < last_auto_rel)
 	      {
-		assert(id.valid());
+		ASSERT(id.valid());
 		// add a new automatic "null" release.  Use the same
 		// MRs as for the actual delta (is that right?) but
 		seq_no new_seq = delta_table.next_seqno();
@@ -432,7 +432,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		++null_rel;
 
 		--infinite_loop_escape;
-		assert(infinite_loop_escape > 0);
+		ASSERT(infinite_loop_escape > 0);
 	      }
 	  }
 	seq_no new_seq = delta_table.next_seqno();
@@ -491,12 +491,12 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 				switch(action) {
 
 				case diff_state::DELETE:
-					assert(c != -1);
+					ASSERT(c != -1);
 #ifdef DEBUG_FILE
 					fprintf(df, "%4d %4d - %s\n",
 						dstate.in_line(),
 						dstate.out_line(),
-					        (const char *) linebuf);
+					        linebuf.c_str());
 						fflush(df);
 #endif
 					new_delta.deleted++;
@@ -520,13 +520,12 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 					}
 					/* FALLTHROUGH */
 				case diff_state::NOCHANGE:
-					assert(c != -1);
+					ASSERT(c != -1);
 #ifdef DEBUG_FILE
 					fprintf(df, "%4d %4d   %s\n",
 						dstate.in_line(),
 						dstate.out_line(),
-					        (const char *) 
-						linebuf);
+						linebuf.c_str());
 					fflush(df);
 #endif
 					new_delta.unchanged++;
@@ -568,7 +567,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	new_delta.id.print(stdout);
 	printf("\n"
-	       "%u inserted\n%u deleted\n%u unchanged\n",
+	       "%lu inserted\n%lu deleted\n%lu unchanged\n",
 	       new_delta.inserted, new_delta.deleted, new_delta.unchanged);
 }
 

@@ -30,16 +30,14 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.8 1997/11/15 20:06:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.9 1997/11/18 23:22:44 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
 
 NORETURN
 sccs_file::xfile_error(const char *msg) const {
-	mystring xname = name.xfile();
-
-	quit(errno, "%s: %s", (const char *) xname, msg);
+	quit(errno, "%s: %s", name.xfile().c_str(), msg);
 }
 
 
@@ -48,11 +46,11 @@ sccs_file::xfile_error(const char *msg) const {
 
 FILE *
 sccs_file::start_update() const {
-	assert(mode != READ);
+	ASSERT(mode != READ);
 
-	if (mode == CREATE && file_exists(name)) {
+	if (mode == CREATE && file_exists(name.c_str())) {
 		quit(-1, "%s: SCCS file already exists.",
-		     (const char *) name);
+		     name.c_str());
 	}
 		     
 	mystring xname = name.xfile();
@@ -95,15 +93,16 @@ sccs_file::write_delta(FILE *out, struct delta const &delta) const {
 	int len;
 	int i;
 
-	if (printf_failed(fprintf(out, "\001s %05u/%05u/%05u\n",
-				  delta.inserted, delta.deleted,
-				  delta.unchanged))
+	if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
+				  cap5(delta.inserted),
+				  cap5(delta.deleted),
+				  cap5(delta.unchanged)))
 	    || printf_failed(fprintf(out, "\001d %c ", delta.type))
 	    || delta.id.print(out)
             || putc_failed(putc(' ', out))
             || delta.date.print(out)
             || printf_failed(fprintf(out, " %s %u %u\n",
-				     (const char *) delta.user,
+				     delta.user.c_str(),
 				     delta.seq, delta.prev_seq))) {
 		return 1;
 	}
@@ -117,7 +116,7 @@ sccs_file::write_delta(FILE *out, struct delta const &delta) const {
 	len = delta.mrs.length();
 	for(i = 0; i < len; i++) {
 		if (printf_failed(fprintf(out, "\001m %s\n",
-					  (const char *) delta.mrs[i]))) {
+					  delta.mrs[i].c_str()))) {
 			return 1;
 		}
 	}
@@ -125,7 +124,7 @@ sccs_file::write_delta(FILE *out, struct delta const &delta) const {
 	len = delta.comments.length();
 	for(i = 0; i < len; i++) {
 		if (printf_failed(fprintf(out, "\001c %s\n",
-					  (const char *) delta.comments[i]))) {
+					  delta.comments[i].c_str()))) {
 			return 1;
 		}
 	}
@@ -145,13 +144,9 @@ sccs_file::write(FILE *out) const {
 
 	delta_iterator iter(delta_table);
 	while(iter.next(1)) {
-#ifdef __GNUC__
-		if (write_delta(out, *(iter.*&sccs_file::delta_iterator::operator->)())) {
-#else
-		if (write_delta(out, *iter.operator->())) {
-#endif
-			return 1;
-		}
+	  if (write_delta(out, *iter.operator->())) {
+	    return 1;
+	  }
 	}
 
 	if (fputs_failed(fputs("\001u\n", out))) {
@@ -160,8 +155,8 @@ sccs_file::write(FILE *out) const {
 
 	len = users.length();
 	for(i = 0; i < len; i++) {
-		s = users[i];
-		assert(s[0] != '\001');
+		s = users[i].c_str();
+		ASSERT(s[0] != '\001');
 		if (printf_failed(fprintf(out, "%s\n", s))) {
 			return 1;
 		}
@@ -171,16 +166,22 @@ sccs_file::write(FILE *out) const {
 		return 1;
 	}
 
-	s = flags.type;
-	if (s != NULL && printf_failed(fprintf(out, "\001f t %s\n", s))) {
+	if (flags.type)
+	  {
+	    if (printf_failed(fprintf(out, "\001f t %s\n",
+				      flags.type->c_str())))
+	      {
 		return 1;
-	}
-       
-	s = flags.mr_checker;
-	if (s != NULL && printf_failed(fprintf(out, "\001f v %s\n", s))) {
-		return 1;
-	}
-
+	      }
+	  }
+	
+	if (flags.mr_checker)
+	  {
+	    if (printf_failed(fprintf(out, "\001f v %s\n",
+				      flags.mr_checker->c_str())))
+	      return 1;
+	  }
+	
 	if (flags.no_id_keywords_is_fatal) {
 		if (fputs_failed(fputs("\001f i\n", out))) {
 			return 1;
@@ -191,11 +192,14 @@ sccs_file::write(FILE *out) const {
 		return 1;
 	}
 		
-	s = flags.module;
-	if (s != NULL && printf_failed(fprintf(out, "\001f m %s\n", s))) {
-		return 1;
-	}
-
+	if (flags.module)
+	  {
+	    if (printf_failed(fprintf(out, "\001f m %s\n",
+				      flags.module->c_str()))) {
+	      return 1;
+	    }
+	  }
+	
 	if (flags.floor.valid())
 	  {
 	    if (fputs_failed(fputs("\001f f ", out))
@@ -239,10 +243,14 @@ sccs_file::write(FILE *out) const {
 		return 1;
 	}
 
-	s = flags.user_def;
-	if (s != NULL && printf_failed(fprintf(out, "\001f q %s\n", s))) {
+	if (flags.user_def)
+	  {
+	    const char *p = flags.user_def->c_str();
+	    if (printf_failed(fprintf(out, "\001f q %s\n", p)))
+	      {
 		return 1;
-	}
+	      }
+	  }
 	
 	/* Flag 'e': encoded flag -- boolean.
 	 * Some versions of SCCS produce "\001 f a 0" if the file
@@ -256,11 +264,14 @@ sccs_file::write(FILE *out) const {
 	      return 1;
 	  }
 	
-	s = flags.reserved;
-	if (s != NULL && printf_failed(fprintf(out, "\001f z %s\n", s))) {
-		return 1;
-	}
-
+	if (flags.reserved)
+	  {
+	    if (printf_failed(fprintf(out, "\001f z %s\n",
+				      flags.reserved->c_str()))) {
+	      return 1;
+	    }
+	  }
+	
 	if (fputs_failed(fputs("\001t\n", out)))
 	  {
 	    return 1;
@@ -268,8 +279,8 @@ sccs_file::write(FILE *out) const {
 
 	len = comments.length();
 	for(i = 0; i < len; i++) {
-		s = comments[i];
-		assert(s[0] != '\001');
+		s = comments[i].c_str();
+		ASSERT(s[0] != '\001');
 		if (printf_failed(fprintf(out, "%s\n", s))) {
 			return 1;
 		}
@@ -301,9 +312,10 @@ sccs_file::end_update(FILE *out) const {
 
 	unsigned sum;
 	mystring xname = name.xfile();
-	if (fclose_failed(fclose(open_sccs_file(xname, READ, &sum)))) {
-		xfile_error("Error closing file.");
-	}
+	if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ, &sum))))
+	  {
+	    xfile_error("Error closing file.");
+	  }
 
 	if (printf_failed(fprintf(out, "\001h%05u", sum))
 	    || fclose_failed(fclose(out)))
@@ -313,12 +325,12 @@ sccs_file::end_update(FILE *out) const {
 
 #ifndef TESTING	
 
-	if (mode != CREATE && remove(name) == -1) {
+	if (mode != CREATE && remove(name.c_str()) == -1) {
 		quit(errno, "%s: Can't remove old SCCS file.",
-		     (const char *) name);
+		     name.c_str());
 	}
 
-	if (rename(xname, name) == -1) {
+	if (rename(xname.c_str(), name.c_str()) == -1) {
 		xfile_error("Can't rename new SCCS file.");
 	}
 
@@ -337,8 +349,7 @@ sccs_file::update_checksum(const char *name) {
 	if (fprintf_failed(fprintf(out, "\001h%05u", sum))
 	    || fclose_failed(fclose(out)))
 	  {
-	    quit(errno, "%s: Write error.",
-		 (const char *) name);
+	    quit(errno, "%s: Write error.", name);
 	  }
 }
 
@@ -347,7 +358,7 @@ sccs_file::update_checksum(const char *name) {
 
 void
 sccs_file::update() {
-	assert(mode != CREATE);
+	ASSERT(mode != CREATE);
 
 	FILE *out = start_update();
 	if (write(out)) {

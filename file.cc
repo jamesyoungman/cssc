@@ -38,7 +38,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.10 1997/11/15 20:04:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.11 1997/11/18 23:22:17 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -251,7 +251,7 @@ give_up_privileges() {
 		if (setuid(getuid()) == -1) {
 			quit(errno, "setuid(%d) failed", getuid());
 		}
-		assert(getuid() == geteuid());
+		ASSERT(getuid() == geteuid());
 	}
 }
 
@@ -262,9 +262,9 @@ restore_privileges() {
 		if (setuid(old_euid) == -1) { 
 			quit(errno, "setuid(%d) failed", old_euid);
 		}
-		assert(geteuid() == old_euid);
+		ASSERT(geteuid() == old_euid);
 	}
-	assert(unprivileged >= 0);
+	ASSERT(unprivileged >= 0);
 }
 
 #elif defined(HAVE_SETREUID)
@@ -284,7 +284,7 @@ give_up_privileges() {
 			quit(errno, "setreuid(%d, %d) failed.",
 			     old_euid, old_ruid);
 		}
-		assert(geteuid() == old_ruid);
+		ASSERT(geteuid() == old_ruid);
 	}
 }
 
@@ -295,9 +295,9 @@ restore_privileges() {
 			quit(errno, "setreuid(%d, %d) failed.", 
 			     old_ruid, old_euid);
 		}
-		assert(geteuid() == old_euid);
+		ASSERT(geteuid() == old_euid);
 	}
-	assert(unprivileged >= 0);
+	ASSERT(unprivileged >= 0);
 }
 
 
@@ -316,7 +316,7 @@ give_up_privileges() {
 void
 restore_privileges() {
 	--unprivileged;
-	assert(unprivileged >= 0);
+	ASSERT(unprivileged >= 0);
 }
 
 #endif /* defined(HAVE_SETREUID) */
@@ -338,34 +338,44 @@ extern "C" char *getlogin(void);
 #endif
 
 const char *
-get_user_name() {
-	static mystring name = getlogin();
-	if (name != NULL) {
-		return name;
+get_user_name()
+{
+  static mystring name;
+  
+  const char *n = getlogin();
+  if (n)
+    {
+      name = n;
+    }
+  else
+    {
+      struct passwd *p = getpwuid(getuid());
+      if (0 == p)
+	{
+	  quit(-1, "UID %d not found in password file.", getuid());
 	}
-	struct passwd *p = getpwuid(getuid());
-	if (p == NULL) {
-		quit(-1, "UID %d not found in password file.", getuid());
-	}
-	name = p->pw_name;
-	endpwent();
-	return name;
+      name = p->pw_name;
+      endpwent();
+    }
+  return name.c_str();
 }
 
 int
-user_is_group_member(int gid) {
-	return gid == getegid();
+user_is_group_member(gid_t gid)
+{
+  return gid == getegid();
 }
 
 #else /* CONFIG_UIDS */
 
 const char *
-get_user_name() {
-	const char *s = getenv("USER");
-	if (s != NULL) {
-		return s;
-	}
-	return "unknown";
+get_user_name()
+{
+  const char *s = getenv("USER");
+  if (s)
+    return s;
+  else
+    return "unknown";
 }
 
 int
@@ -392,16 +402,17 @@ create(mystring name, int mode) {
 		flags |= O_EXCL;
 #ifdef CONFIG_USE_ARCHIVE_BIT
 	} else if ((mode & CREATE_FOR_GET)
-		   && file_exists(name) && test_archive_bit(name)) {
+		   && file_exists(name.c_str())
+		   && test_archive_bit(name.c_str())) {
 		quit(-1, "%s: File exists and its archive attribute is set.",
-		     (const char *) name);
+		     name.c_str());
 #else
 	} else if ((mode & CREATE_FOR_GET)
-		   && is_writable(name, mode & CREATE_AS_REAL_USER)) {
+		   && is_writable(name.c_str(), mode & CREATE_AS_REAL_USER)) {
 		quit(-1, "%s: File exists and is writable.",
-		     (const char *) name);
+		     name.c_str());
 #endif
-	} else if (file_exists(name) && unlink(name) == -1) {
+	} else if (file_exists(name.c_str()) && unlink(name.c_str()) == -1) {
 		return -1;
 	}
 
@@ -418,16 +429,16 @@ create(mystring name, int mode) {
 
 #ifdef CONFIG_UIDS
 	if (mode & CREATE_AS_REAL_USER) {
-		fd = open_as_real_user(name, flags, perms);
+		fd = open_as_real_user(name.c_str(), flags, perms);
 	} else 
 #endif
 #ifdef CONFIG_SHARE_LOCKING
 	if (mode & CREATE_WRITE_LOCK) {
-		fd = sopen(name, flags, SH_DENYWR, perms);
+		fd = sopen(name.c_str(), flags, SH_DENYWR, perms);
 	} else
 #endif
 	{
-		fd = open(name, flags, perms);
+		fd = open(name.c_str(), flags, perms);
 	}
 
 	return fd;
@@ -438,7 +449,7 @@ create(mystring name, int mode) {
 
 FILE *
 fcreate(mystring name, int mode) {
-	int fd = create(name, mode);
+	int fd = create(name.c_str(), mode);
 	if (fd == -1) {
 		return NULL;
 	}
@@ -461,11 +472,11 @@ file_lock::file_lock(mystring zname): locked(0), name(zname) {
 			return;
 		}
 		quit(errno, "%s: Can't create lock file.", 
-		     (const char *) zname);
+		     zname.c_str());
 	}
 	if (fprintf(f, "%s\n", get_user_name()) < 0
 	    || fflush_failed(fflush(f)) || ffsync(f) == EOF) {
-		quit(errno, "%s: Write error.", (const char *) zname);
+		quit(errno, "%s: Write error.", zname.c_str());
 	}
 
 	locked = 1;
@@ -492,33 +503,54 @@ put_pid(FILE *f)
 
 #endif
 
-file_lock::file_lock(mystring zname): locked(0), name(zname) {
-	FILE *f = fcreate(zname, CREATE_READ_ONLY | CREATE_EXCLUSIVE);
-	if (f == NULL) {
-		if (errno == EEXIST) {
-			return;
-		}
-		quit(errno, "%s: Can't create lock file.", 
-		     (const char *) zname);
-	}
 
 #ifdef CONFIG_DUMB_LOCKING
-	if (fprintf(f, "%s\n", get_user_name()) < 0
-#else
-	if (put_pid(f) < 0
-#endif
-	    || fclose_failed(fclose(f))) {
-		quit(errno, "%s: Write error.", (const char *) zname);
-	}
-
-	locked = 1;
-	return;
+static int
+do_lock(FILE *f)		// dumb version
+{
+  return fprintf_failed(fprintf(f, "%s\n", get_user_name()))
 }
+#else
+static int
+do_lock(FILE *f)		// process-aware version
+{
+  return put_pid(f) < 0;
+}
+#endif
 
-file_lock::~file_lock() {
+file_lock::file_lock(mystring zname): locked(0), name(zname)
+{
+  ASSERT(name == zname);
+#if 0
+  fprintf(stderr, "Lock file is \"%s\"\n", zname.c_str());
+#endif  
+  FILE *f = fcreate(zname, CREATE_READ_ONLY | CREATE_EXCLUSIVE);
+  if (0 == f)
+    {
+      if (errno == EEXIST)
+	{
+	  return;
+	}
+      quit(errno, "%s: Can't create lock file.", 
+	   zname.c_str());
+    }
+
+  if (do_lock(f) != 0 || fclose_failed(fclose(f)))
+    {
+      // Here, the file is open (i.e. has been created)
+      // but we quit without deleting it.  
+      // TODO: does this need fixing?
+      quit(errno, "%s: Write error.", zname.c_str());
+    }
+  
+  locked = 1;
+  return;
+}
+  
+  file_lock::~file_lock() {
 	if (locked) {
 		locked = 0;
-		unlink(name);
+		unlink(name.c_str());
 	}
 }
 

@@ -19,7 +19,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.10 1997/11/15 20:06:17 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.11 1997/11/18 23:22:42 james Exp $";
 #endif
 
 static void
@@ -32,33 +32,39 @@ print_string_list(FILE *out,
   const int len = list.length();
   if (0 == len)
     {
-      fprintf(out, "%s%s",
-	      (const char *)pre,
-	      (const char *)dflt);
+      fprintf(out, "%s%s", pre.c_str(), dflt.c_str());
     }
   else
     {
       for(int i = 0; i < len; i++)
 	{
 	  fprintf(out, "%s%s",
-		  (const char *)pre,
-		  (const char *)list[i]);
+		  pre.c_str(),
+		  list[i].c_str());
 	  if (i < len-1)
 	    {
-	      fprintf(out, "%s", (const char *)post);
+	      fprintf(out, "%s", post.c_str());
 	    }
 	  
 	}
     }
 }
 
-void print_flag(FILE *out, const char *fmt,  mystring flag, int& count)
+void print_flag(FILE *out, const char *fmt, mystring flag, int& count)
 {
-  const char *s = (const char *)flag;
-  if (s && strlen(flag))
+  if (!flag.empty())
     {
       ++count;
-      fprintf(out, fmt, s);
+      fprintf(out, fmt, flag.c_str());
+    }
+}
+
+void print_flag(FILE *out, const char *fmt, const mystring* pflag, int& count)
+{
+  if (pflag && !pflag->empty())
+    {
+      ++count;
+      fprintf(out, fmt, pflag->c_str());
     }
 }
 
@@ -93,7 +99,7 @@ void print_flag(FILE *out, const char *fmt,  release flag, int& count)
     }
 }
 
-bool sccs_file::cutoff::excludes_delta(sid s,
+bool sccs_file::cutoff::excludes_delta(sid /* s */,
 				       sccs_date date,
 				       bool& stop_now) const
 {
@@ -321,7 +327,7 @@ sccs_file::prt(FILE *out,
 	    continue;
 	  
 	  if (exclude.enabled)	// -y, -c, or -r option.
-	    fprintf(out, "%s:\t", (const char *)name);
+	    fprintf(out, "%s:\t", name.c_str());
 	  else
 	    putc('\n', out);
       
@@ -333,10 +339,10 @@ sccs_file::prt(FILE *out,
 	  putc(' ', out);
 	  iter->date.printf(out, 'T');
 	  fprintf(out, " %s\t%hu %hu",
-		  (const char*)iter->user,
+		  iter->user.c_str(),
 		  (unsigned short)iter->seq,
 		  (unsigned short)iter->prev_seq);
-	  fprintf(out, "\t%05u/%05u/%05u\n",
+	  fprintf(out, "\t%05lu/%05lu/%05lu\n",
 		  iter->inserted, iter->deleted, iter->unchanged);
 
 	  if (!first_line_only)
@@ -451,7 +457,7 @@ sccs_file::prt(FILE *out,
     {
       // seek_to_body() is a non-const member, so we have this
       // silly workaround.
-      do_print_body((const char *)name, f, body_offset, out);
+      do_print_body(name.c_str(), f, body_offset, out);
     }
 }
 

@@ -38,7 +38,7 @@ class Pipe;
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.7 1997/07/07 21:24:19 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.8 1997/11/18 23:22:26 james Exp $";
 #endif
 
 extern int create(mystring name, int mode); /* file.c */
@@ -82,7 +82,7 @@ Pipe::Pipe() {
 	fd = create(name, CREATE_EXCLUSIVE | CREATE_READ_ONLY);
 	if (fd == -1) {
 		quit(errno, "%s: Can't create temporary file.",
-		     (const char *) name);
+		     name.c_str());
 	}
 	f = fdopen(fd, "w");
 	if (f == NULL) {
@@ -98,7 +98,7 @@ Pipe::read_stream() {
 	fd = open(name, O_RDONLY);
 	if (fd == -1) {
 		quit(errno, "%s: Can't reopen temporary file.",
-		     (const char *) name);
+		     name.c_str());
 	}
 	f = fdopen(fd, "r");
 	if (f == NULL) {
@@ -117,7 +117,7 @@ Pipe::read_close() {
 	fd = -1;
 	if (remove(name) == -1) {
 		quit(errno, "%s: Can't remove temporary file.",
-		     (const char *) name);
+		     name.c_str());
 	}
 	return 0;
 }
@@ -205,7 +205,7 @@ wait_pid::unlink() {
 		p = p->next;
 	}
 
-	assert(&wait_pid::unlink);
+	ASSERT(&wait_pid::unlink);
 }
 
 
@@ -215,7 +215,7 @@ wait_pid::unlink() {
 
 int
 wait_pid::wait() {
-	assert(pid != (pid_t)-1 && pid != 0);
+	ASSERT(pid != (pid_t)-1 && pid != 0);
 
 	if (reaped) {
 		pid = (pid_t)-1;
@@ -318,7 +318,7 @@ run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out)
 #ifdef CONFIG_DIFF_SWITCHES
 	      CONFIG_DIFF_SWITCHES,
 #endif
-	      "-", (const char *) gname, (const char *) 0);
+	      "-", gname, (const char *) 0);
 
 	quit(errno, "execl(\"" CONFIG_DIFF_COMMAND "\") failed.");
 

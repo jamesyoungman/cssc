@@ -31,7 +31,7 @@
 #include "sf-chkmr.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.6 1997/07/02 18:17:50 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.7 1997/11/18 23:22:13 james Exp $";
 
 void
 usage() {
@@ -45,7 +45,9 @@ main(int argc, char **argv) {
 	int c;
 	sid rid = NULL;
 	mystring mrs;
+	int got_mrs = 0;
 	mystring comments;
+	int got_comments = 0;
 	
 	if (argc > 0) {
 		set_prg_name(argv[0]);
@@ -68,18 +70,22 @@ main(int argc, char **argv) {
 
 		case 'm':
 			mrs = opts.getarg();
+			got_mrs = 1;
 			break;
 
 		case 'M':
 			mrs = "";
+			got_mrs = 1;
 			break;
 
 		case 'y':
 			comments = opts.getarg();
+			got_comments = 1;
 			break;
 
 		case 'Y':
 			comments = "";
+			got_comments = 1;
 			break;
 
 		case 'V':
@@ -107,24 +113,28 @@ main(int argc, char **argv) {
 		sccs_name &name = iter.get_name();
 		sccs_file file(name, sccs_file::UPDATE);
 		
-		if (first) {
-			if (stdin_is_a_tty()) {
-				if (mrs == NULL && file.mr_required()) {
-					mrs = prompt_user("MRs? ");
-				}
-				if (comments == NULL) {
-					comments = prompt_user("comments? ");
-				}
-			}
-			mr_list = split_mrs(mrs);
-			comment_list = split_comments(comments);
-			first = 0;
-		}
+		if (first)
+		  {
+		    first = 0;
+		    
+		    // TODO: check if REAL SCCS prompts at this point.
+		    if (stdin_is_a_tty())
+		      {
+			if (!got_mrs && file.mr_required())
+			  mrs = prompt_user("MRs? ");
+			
+			if (!got_comments)
+			  comments = prompt_user("comments? ");
+		      }
+		    
+		    mr_list = split_mrs(mrs);
+		    comment_list = split_comments(comments);
+		  }
 
 		if (file.mr_required() && mr_list.length() != 0) {
 			if (file.check_mrs(mr_list)) {
 				quit(-1, "%s: Invalid MR number(s).",
-				     (const char *) name);
+				     name.c_str());
 			}
 		}
 
@@ -148,7 +158,6 @@ template class range_list<release>;
 template class list<const char*>;
 template list<mystring>& operator+=(list<mystring> &, list<mystring> const &);
 template list<mystring>& operator-=(list<mystring> &, list<mystring> const &);
-template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
 
 /* Local variables: */
 /* mode: c++ */

@@ -32,7 +32,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.7 1997/07/02 18:06:07 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.8 1997/11/18 23:22:48 james Exp $";
 
 void
 usage() {
@@ -98,39 +98,38 @@ main(int argc, char **argv) {
 		case sccs_pfile::NOT_FOUND:
 			if (!rid.valid()) {
 				quit(-1, "%s: You have no edits outstanding.",
-				     (const char *) name);
+				     name.c_str());
 			}
 			quit(-1, "%s: Specified SID hasn't been locked for"
 			         " editing by you.",
-			     (const char *) name);
+			     name.c_str());
 			break;
 
 		case sccs_pfile::AMBIGUOUS:
 			if (!rid.valid()) {
 				quit(-1, "%s: Specified SID is ambiguous.",
-				     (const char *) name);
+				     name.c_str());
 			}
 			quit(-1, "%s: You must specify a SID on the"
-			         " command line.", (const char *) name);
+			         " command line.", name.c_str());
 			break;
 
 		default:
 			abort();
 		}
 		if (!iter.unique())
-		  printf("\n%s:\n", (const char*)name);
+		  printf("\n%s:\n", name.c_str());
 		pfile.print_lock_sid(stdout);
 		fputc('\n', stdout);
 
 		pfile.delete_lock();
 		pfile.update();
 
-		if (!keep_gfile) {
-			mystring gname = name.gfile();
-#ifndef TESTING
-			remove(gname);
-#endif
-		}
+		if (!keep_gfile)
+		  {
+		    mystring gname = name.gfile();
+		    remove(gname.c_str());
+		  }
 	}
 
 	return 0;

@@ -79,11 +79,11 @@ NORETURN assert_failed(const char *file, int line, const char *func,
 		       const char *test) POSTDECL_NORETURN;
 
 #ifdef __GNUC__
-#define assert(test) ((test) ? (void) 0					\
+#define ASSERT(test) ((test) ? (void) 0					\
 		             : assert_failed(__FILE__, __LINE__,        \
 					     __PRETTY_FUNCTION__, #test))
 #else
-#define assert(test) ((test) ? (void) 0					\
+#define ASSERT(test) ((test) ? (void) 0					\
 		             : assert_failed(__FILE__, __LINE__, "", #test))
 #endif
 

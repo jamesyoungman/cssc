@@ -37,7 +37,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.13 1997/07/10 20:17:18 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.14 1997/11/18 23:22:33 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -180,21 +180,35 @@ sccs_file::_delta_table::add(struct delta const &it) {
 
 /* Finds a delta in the delta table by its SID. */
 
-/* struct */ sccs_file::delta const *
-sccs_file::_delta_table::find(sid id) const {
-	delta_iterator iter(*this);
-
-	while(iter.next()) {
-		if (iter->id == id) {
-#ifdef __GNUC__
-			return (iter.*&sccs_file::delta_iterator::operator->)();
-#else
-			return iter.operator->();
-#endif
-		}
+sccs_file::delta const * sccs_file::_delta_table::
+find(sid id) const
+{
+  delta_iterator iter(*this);
+  
+  while(iter.next())
+    {
+      if (iter->id == id)
+	{
+	  return iter.operator->();
 	}
+    }
+  return NULL;
+}
 
-	return NULL;
+// This non-const variety is used by sf-cdc.cc.
+sccs_file::delta * sccs_file::_delta_table::
+find(sid id)
+{
+  delta_iterator iter(*this);
+  
+  while(iter.next())
+    {
+      if (iter->id == id)
+	{
+	  return iter.operator->();
+	}
+    }
+  return NULL;
 }
 
 
@@ -238,7 +252,7 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, unsigned *sump) {
 	}
 
 	if (ferror(f)) {
-		quit(errno, "%s: Read error.", (const char *) name);
+		quit(errno, "%s: Read error.", name);
 	}
 
 	*sump = sum & 0xFFFF;
@@ -270,23 +284,17 @@ int
 sccs_file::read_line() {
 	if (read_line_param(f)) {
 		if (ferror(f)) {
-			quit(errno, "%s: Read error.", (const char *) name);
+			quit(errno, "%s: Read error.", name.c_str());
 		}
 		return -1;
 	} 
 
 	lineno++;
-	if (linebuf[0] == '\001') {
-#if 0
-		fprintf(stderr, "@%s\n", (const char *) linebuf + 1);
-#endif
-		return linebuf[1];
-	}
-#if 0
-	fprintf(stderr, ":%s\n", (const char *) linebuf);
-#endif
+	if (linebuf[0] == '\001')
+	  {
+	    return linebuf[1];
+	  }
 	return 0;
-
 }
 
 
@@ -295,7 +303,7 @@ sccs_file::read_line() {
 NORETURN
 sccs_file::corrupt(const char *why) const {
 	quit(-1, "%s: line %d: Corrupted SCCS file. (%s)",
-	     (const char *) name, lineno, why);
+	     name.c_str(), lineno, why);
 }
 
 
@@ -323,22 +331,52 @@ sccs_file::check_noarg() const {
    string isn't a valid number. */
 
 unsigned short
-sccs_file::strict_atous(const char *s) const {
-	long n = 0;
-
-	char c = *s++;
-	while(c != '\0') {
-		if (!isdigit(c)) {
-			corrupt("Invalid number");
-		}
-		n = n * 10 + (c - '0');
-		if (n > 65535L) {
-			corrupt("Number too big");
-		}
-		c = *s++;
+sccs_file::strict_atous(const char *s) const
+{
+  long n = 0;
+  
+  char c;
+  while( 0 != (c=*s++) )
+    {
+      if (!isdigit((unsigned char)c))
+	{
+	  corrupt("Invalid number");
 	}
+      n = n * 10 + (c - '0');
+      if (n > 65535L)
+	{
+	  corrupt("Number too big");
+	}
+    }
+  
+  return (unsigned short) n;
+}
 
-	return (unsigned short) n;
+// Convert a number field in an SCCS file to a 
+// number.  Fields representing numbers in 
+// SCCS files should top out at 9999.
+
+unsigned long
+sccs_file::strict_atoul(const char *s) const
+{
+  unsigned long n = 0;
+  
+  char c;
+  while( 0 != (c=*s++) )
+    {
+      if (!isdigit((unsigned char)c))
+	{
+	  corrupt("Invalid number");
+	}
+      n = n * 10 + (c - '0');
+    }
+  if (n > 99999uL)
+    {
+      fprintf(stderr, "%s: line %d: Warning: number field exceeds 99999.", 
+	      name.c_str(), lineno);
+    }
+  
+  return n;
 }
 
 /* Reads a delta from the SCCS file's delta table and adds it to the
@@ -349,7 +387,7 @@ sccs_file::read_delta() {
 
 	/* The current line should be an 's' control line */
 
-	assert(linebuf[1] == 's');
+	ASSERT(linebuf[1] == 's');
 	check_arg();
 	
 	char *args[7];		/* Stores the result of spliting a line */
@@ -360,9 +398,9 @@ sccs_file::read_delta() {
 
 	struct delta tmp;	/* The new delta */
 
-	tmp.inserted = strict_atous(args[0]);
-	tmp.deleted = strict_atous(args[1]);
-	tmp.unchanged = strict_atous(args[2]);
+	tmp.inserted = strict_atoul(args[0]);
+	tmp.deleted = strict_atoul(args[1]);
+	tmp.unchanged = strict_atoul(args[2]);
 
 	if (read_line() != 'd') {
 		corrupt("Expected '@d'");
@@ -476,7 +514,7 @@ sccs_file::read_delta() {
 void
 sccs_file::seek_to_body() {
 	if (fseek(f, body_offset, SEEK_SET) != 0) {
-		quit(errno, "%s: fseek() failed!", (const char *) name);
+		quit(errno, "%s: fseek() failed!", name.c_str());
 	}
 	lineno = body_lineno;
 }
@@ -486,11 +524,12 @@ sccs_file::seek_to_body() {
 /* Returns the module name of the SCCS file. */
 
 mystring
-sccs_file::get_module_name() const {
-	if (flags.module == NULL) {
-		return name.gfile();
-	}
-	return flags.module;
+sccs_file::get_module_name() const
+{
+  if (flags.module)
+    return *flags.module;
+  else
+    return name.gfile();
 }
 
 /* Constructor for the class sccs_file.  Unless the SCCS file is being
@@ -498,195 +537,222 @@ sccs_file::get_module_name() const {
    locked if it isn't only being read.  */
 
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
-	: name(n), mode(m), lineno(0) {
+	: name(n), mode(m), lineno(0)
+{
 
-	if (!name.valid()) {
-		quit(-1, "%s: Not an SCCS file.", (const char *) name);
+  if (!name.valid())
+    {
+      quit(-1, "%s: Not an SCCS file.", name.c_str());
+    }
+  
+  flags.no_id_keywords_is_fatal = 0;
+  flags.branch = 0;
+  flags.floor = NULL;
+  flags.ceiling = NULL;
+  flags.default_sid = NULL;
+  flags.null_deltas = 0;
+  flags.joint_edit = 0;
+  flags.all_locked = 0;
+  flags.encoded = 0;
+  flags.mr_checker = 0;
+  flags.module = 0;
+  flags.type = 0;
+  flags.reserved = 0;
+  flags.user_def = 0;
+  
+  if (mode != READ)
+    {
+      if (name.lock())
+	{
+	  quit(-1, "%s: SCCS file is locked.  Try again later.",
+	       name.c_str());
 	}
+    }
+  
+  if (mode == CREATE)
+    {
+      return;
+    }
+  
+  unsigned sum;
+  f = open_sccs_file(name.c_str(), READ, &sum);
+  
+  int c = read_line();
+  ASSERT(c == 'h');
+  
+  if (strict_atous(linebuf + 2) != sum)
+    {
+      fprintf(stderr, "%s: Warning bad checksum.\n",
+	      name.c_str());
+    }
+  
+  c = read_line();
+  while(c == 's')
+    {
+      read_delta();
+      c = read_line();
+    }
+  
+  if (c != 'u')
+    {
+      corrupt("Expected '@u'");
+    }
+  
+  check_noarg();
+  
+  c = read_line();
+  while(c != 'U')
+    {
+      if (c != 0)
+	{
+	  corrupt("User name expected.");
+	}
+      users.add(linebuf.c_str());
+      c = read_line();
+    }
 
-	flags.no_id_keywords_is_fatal = 0;
-	flags.branch = 0;
-	flags.floor = NULL;
-	flags.ceiling = NULL;
-	flags.default_sid = NULL;
-	flags.null_deltas = 0;
-	flags.joint_edit = 0;
-	flags.all_locked = 0;
-	flags.encoded = 0;
+  check_noarg();
+  
+  c = read_line();
+  while(c == 'f')
+    {
+      check_arg();
+
+      if (linebuf[3] == '\0'
+	  || (linebuf[4] != '\0' && linebuf[4] != ' '))
+	{
+	  corrupt("Bad flag arg.");
+	}
+      
+      char *arg = NULL;
+      if (linebuf[4] == ' ') {
+	arg = linebuf + 5;
+      }
+      
+      switch(linebuf[3]) {
+      case 't':
+	set_type_flag(arg);
+	break;
 	
-	if (mode != READ) {
-		if (name.lock()) {
-			quit(-1, "%s: SCCS file is locked.  Try again later.",
-			     (const char *) name);
-		}
-	}
-
-	if (mode == CREATE) {
-		return;
-	}
-
-	unsigned sum;
-	f = open_sccs_file(name, READ, &sum);
-
-	int c = read_line();
-	assert(c == 'h');
-
-	if (strict_atous(linebuf + 2) != sum) {
-		fprintf(stderr, "%s: Warning bad checksum.\n",
-			(const char *) name);
-	}
+      case 'v':
+	set_mr_checker_flag(arg);
+	break;
 	
-	c = read_line();
-	while(c == 's') {
-		read_delta();
-		c = read_line();
-	}
+      case 'i':
+	flags.no_id_keywords_is_fatal = 1;
+	break;
+	
+      case 'b':
+	flags.branch = 1;
+	break;
+	
+      case 'm':
+	set_module_flag(arg);
+	break;
+	
+      case 'f':
+	flags.floor = release(arg);
+	if (!flags.floor.valid())
+	  {
+	    corrupt("Bad 'f' flag");
+	  }
+	break;
+	
+      case 'c':
+	flags.ceiling = release(arg);
+	if (!flags.ceiling.valid())
+	  {
+	    corrupt("Bad 'c' flag");
+	  }
+	break;
 
-	if (c != 'u') {
-		corrupt("Expected '@u'");
-	}
-
-	check_noarg();
-
-	c = read_line();
-	while(c != 'U') {
-		if (c != 0) {
-			corrupt("User name expected.");
-		}
-		users.add((const char *)linebuf);
-		c = read_line();
-	}
-
-	check_noarg();
-
-	c = read_line();
-	while(c == 'f') {
-		check_arg();
-
-		if (linebuf[3] == '\0'
-		    || (linebuf[4] != '\0' && linebuf[4] != ' ')) {
-			corrupt("Bad flag arg.");
-		}
-
-		char *arg = NULL;
-		if (linebuf[4] == ' ') {
-			arg = linebuf + 5;
-		}
-
-		switch(linebuf[3]) {
-		case 't':
-			flags.type = arg;
-			break;
-
-		case 'v':
-			flags.mr_checker = arg;
-			break;
-
-		case 'i':
-			flags.no_id_keywords_is_fatal = 1;
-			break;
-
-		case 'b':
-			flags.branch = 1;
-			break;
-
-		case 'm':
-			flags.module = arg;
-			break;
-
-		case 'f':
-			flags.floor = release(arg);
-			if (!flags.floor.valid()) {
-				corrupt("Bad 'f' flag");
-			}
-			break;
-
-		case 'c':
-			flags.ceiling = release(arg);
-			if (!flags.ceiling.valid()) {
-				corrupt("Bad 'c' flag");
-			}
-			break;
-
-		case 'd':
-			flags.default_sid = sid(arg);
-			if (!flags.default_sid.valid()) {
-				corrupt("Bad 'd' flag");
-			}
-			break;
-
-		case 'n':
-			flags.null_deltas = 1;
-			break;
-
-		case 'j':
-			flags.joint_edit = 1;
-			break;
-
-		case 'l':
-			if (arg != NULL && strcmp(arg, "a") == 0) {
-				flags.all_locked = 1;
-			} else {
-				flags.locked = release_list(arg);
-			}
-			break;
-
-		case 'q':
-			flags.user_def = arg;
-			break;
-
-		case 'z':
-			flags.reserved = arg;
-			break;
-		case 'e':
-			if ('1' == *arg)
-		          {
-			    fprintf(stderr,
-				    "%s: Warning: encoded files not "
-				    "fully supported.\n", (const char *) name);
-			    flags.encoded = 1;
-			  }
-		        else if ('0' == *arg)
-			  {
-			    flags.encoded = 0;
-			  }
-		        else
-			  {
-			    corrupt("Bad value for 'e' flag.");
-			  }
-			break;
-
-		default:
-			corrupt("Unknown flag.");
-		}
-
-		c = read_line();
-	}
-
-	if (c != 't') {
-		corrupt("Expected '@t'");
-	}
-
-	check_noarg();
-
-	c = read_line();
-	while(c == 0) {
-		comments.add((const char *)linebuf);
-		c = read_line();
-	}
-
-	if (c != 'T') {
-		corrupt("Expected '@T'");
-	}
-
-	check_noarg();
-
-	body_offset = ftell(f);
-	if (body_offset == -1L) {
-		quit(errno, "ftell() failed.");
-	}
-
-	body_lineno = lineno;
+      case 'd':
+	flags.default_sid = sid(arg);
+	if (!flags.default_sid.valid())
+	  {
+	    corrupt("Bad 'd' flag");
+	  }
+	break;
+	
+      case 'n':
+	flags.null_deltas = 1;
+	break;
+	
+      case 'j':
+	flags.joint_edit = 1;
+	break;
+	
+      case 'l':
+	if (arg != NULL && strcmp(arg, "a") == 0)
+	  {
+	    flags.all_locked = 1;
+	  }
+	else
+	  {
+	    flags.locked = release_list(arg);
+	  }
+	break;
+	
+      case 'q':
+	set_user_flag(arg);
+	break;
+	
+      case 'z':
+	set_reserved_flag(arg);
+	break;
+      case 'e':
+	if ('1' == *arg)
+	  {
+	    fprintf(stderr,
+		    "%s: Warning: encoded files not "
+		    "fully supported.\n", name.c_str());
+	    flags.encoded = 1;
+	  }
+	else if ('0' == *arg)
+	  {
+	    flags.encoded = 0;
+	  }
+	else
+	  {
+	    corrupt("Bad value for 'e' flag.");
+	  }
+	break;
+	
+      default:
+	corrupt("Unknown flag.");
+      }
+      
+      c = read_line();
+    }
+  
+  if (c != 't')
+    {
+      corrupt("Expected '@t'");
+    }
+  
+  check_noarg();
+  
+  c = read_line();
+  while(c == 0)
+    {
+      comments.add(linebuf.c_str());
+      c = read_line();
+    }
+  
+  if (c != 'T')
+    {
+      corrupt("Expected '@T'");
+    }
+  
+  check_noarg();
+  
+  body_offset = ftell(f);
+  if (body_offset == -1L)
+    {
+      quit(errno, "ftell() failed.");
+    }
+  
+  body_lineno = lineno;
 }
 
 
@@ -739,6 +805,51 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
 	}
     }
   return found;
+}
+
+void sccs_file::
+set_mr_checker_flag(const char *s)
+{
+  if (flags.mr_checker)
+    *flags.mr_checker = s;
+  else
+    flags.mr_checker = new mystring(s);
+}
+
+void sccs_file::
+set_module_flag(const char *s)
+{
+  if (flags.module)
+    *flags.module = s;
+  else
+    flags.module = new mystring(s);
+}
+
+void  sccs_file::
+set_user_flag(const char *s)
+{
+  if (flags.user_def)
+    *flags.user_def = s;
+  else
+    flags.user_def = new mystring(s);
+}
+
+void sccs_file::
+set_type_flag(const char *s)
+{
+  if (flags.type)
+    *flags.type = s;
+  else
+    flags.type = new mystring(s);
+}
+
+void sccs_file::
+set_reserved_flag(const char *s)
+{
+  if (flags.reserved)
+    *flags.reserved = s;
+  else
+    flags.reserved = new mystring(s);
 }
 
 

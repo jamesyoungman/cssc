@@ -37,7 +37,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.14 1997/11/15 20:05:59 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.15 1997/11/18 23:22:37 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -60,7 +60,7 @@ sccs_file::admin(const char *file_comment,
 			}
 
 			while(!read_line_param(fc)) {
-				comments.add((const char *)linebuf);
+				comments.add(linebuf.c_str());
 			}
 
 			if (ferror(fc)) {
@@ -72,7 +72,7 @@ sccs_file::admin(const char *file_comment,
 
 	len = set_flags.length();
 	for(i = 0; i < len; i++) {
-		const char *s = set_flags[i];
+		const char *s = set_flags[i].c_str();
 
 		switch(*s++) {
 
@@ -129,7 +129,7 @@ sccs_file::admin(const char *file_comment,
 
 
 		case 'q':
-			flags.user_def = s;
+			set_user_flag(s);
 			break;
 
 		case 'e':
@@ -138,11 +138,11 @@ sccs_file::admin(const char *file_comment,
 			break;
 
 		case 't':
-			flags.type = s;
+			set_type_flag(s);
 			break;
 
 		case 'v':
-			flags.mr_checker = s;
+			set_mr_checker_flag(s);
 			break;
 
 		default:
@@ -152,7 +152,7 @@ sccs_file::admin(const char *file_comment,
 	      
 	len = unset_flags.length();
 	for(i = 0; i < len; i++) {
-		const char *s = unset_flags[i];
+		const char *s = unset_flags[i].c_str();
 
 		switch(*s++) {
 
@@ -196,7 +196,8 @@ sccs_file::admin(const char *file_comment,
 
 
 		case 'q':
-			flags.user_def = NULL;
+		  	delete flags.user_def;
+			flags.user_def = 0;
 			break;
 
 		case 'e':
@@ -205,11 +206,13 @@ sccs_file::admin(const char *file_comment,
 			break;
 			
 		case 't':
-			flags.type = NULL;
+		  	delete flags.type;
+			flags.type = 0;
 			break;
 
 		case 'v':
-			flags.mr_checker = NULL;
+			delete flags.mr_checker;
+			flags.mr_checker = 0;
 			break;
 
 		default:
@@ -233,12 +236,10 @@ sccs_file::create(release first_release, const char *iname,
   sccs_date now = sccs_date::now();
   if (!suppress_comments && comments.length() == 0)
     {
-      // The two casts to (char*) on the following line are required
-      // by GCC 2.6.3, according to Dave Bodenstab <imdave@mcs.net>.
-      mystring one("date and time created ", (char*)now.as_string()),
-	two(" by ", (char*)get_user_name());
-      mystring it(one, two);
-      comments.add(it);
+      comments.add(mystring("date and time created ")
+		   + now.as_string()
+		   + mystring(" by ")
+		   + get_user_name());
     }
 
   sid id = sid(first_release).successor();
@@ -280,8 +281,7 @@ sccs_file::create(release first_release, const char *iname,
 	    putc_failed(putc('\n', out)))
 	  {
 	    mystring zname = name.zfile();
-	    quit(errno, "%s: Write error.",
-		 (const char *) zname);
+	    quit(errno, "%s: Write error.", zname.c_str());
 	  }
 	if (!found_id)
 	  {
@@ -303,7 +303,7 @@ sccs_file::create(release first_release, const char *iname,
     
     if (!found_id)
       {
-	no_id_keywords(name);
+	no_id_keywords(name.c_str());
       }
   }
 	

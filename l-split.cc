@@ -31,7 +31,7 @@
 #include <string.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.6 1997/07/02 18:18:11 james Exp $";
+static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.7 1997/11/18 23:22:20 james Exp $";
 #endif
 
 list<mystring>
@@ -40,9 +40,9 @@ split_mrs(mystring mrs)
   list<mystring> mr_list;
   const char *delims = " \t\n";
   
-  if (mrs != NULL)
+  if (!mrs.empty())
     {
-      char *s = mrs.xstrdup();
+      char *s = xstrdup(mrs.c_str());
       char *p = strtok(s, delims);
       
       while(p)
@@ -60,8 +60,8 @@ list<mystring>
 split_comments(mystring comments) {
 	list<mystring> comment_list;
 
-	if (comments != NULL) {
-		char *s = comments.xstrdup();
+	if (!comments.empty()) {
+		char *s = xstrdup(comments.c_str());
 		char *start;
 		char *end;
 

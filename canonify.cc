@@ -64,24 +64,13 @@ get_current_directory()
 mystring
 canonify_filename(const char* fname)
 {
-  mystring dirname(".");
-  mystring basename(fname);
-  
-  for (size_t i=strlen(fname)-1; i>0; --i)
-    {
-      if ('/' == fname[i])
-	{
-	  /* found the final slash.
-	   */
-	  dirname = mystring(fname, i); // initial i characters
-	  basename = mystring( & ((const char*)fname)[i+1] );
-	  break;
-	}
-    }
+  mystring dirname, basename;
+  split_filename(fname, dirname, basename);
+
   mystring old_dir(get_current_directory());
-  chdir(dirname);
+  chdir(dirname.c_str());
   mystring canonical_dir(get_current_directory());
-  chdir(old_dir);
+  chdir(old_dir.c_str());
   
   return mystring(canonical_dir + mystring("/") + basename);
 }

@@ -66,13 +66,13 @@ public:
 
 	void
 	push(TYPE a) {
-		assert(top < len);
+		ASSERT(top < len);
 		array[top++] = a;
 	}
 
 	TYPE
 	pop() {
-		assert(top > 0);
+		ASSERT(top > 0);
 		return array[--top];
 	}
 

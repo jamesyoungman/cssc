@@ -34,7 +34,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.19 1997/11/15 20:06:10 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.20 1997/11/18 23:22:40 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -75,7 +75,7 @@ sccs_file::find_requested_sid(sid requested, sid &found) const
 	      got_best = true;
 	    }
 	}
-      assert(got_best);
+      ASSERT(got_best);
       found = best;
       return true;
     }
@@ -101,7 +101,7 @@ sccs_file::find_requested_sid(sid requested, sid &found) const
 	}
       if ( got_best )
 	{
-	  assert(!best.is_null());
+	  ASSERT(!best.is_null());
 	  found = best;
 	  return true;
 	}
@@ -167,8 +167,8 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
   if (2 == ncomponents && !include_branches)
     ncomponents = 4;		// want an exact match.
 
-  assert(ncomponents != 0);
-  assert(ncomponents <= 4);
+  ASSERT(ncomponents != 0);
+  ASSERT(ncomponents <= 4);
 
   // Remember the best so far.
   bool got_best = false;
@@ -245,7 +245,7 @@ sccs_file::find_next_sid(sid requested, sid got, int branch,
 	{
 	  if (requested > delta_table.highest_release())
 	    {
-	      assert(requested.release_only());
+	      ASSERT(requested.release_only());
 	      return requested.successor();
 	    }
 		
@@ -340,7 +340,7 @@ sccs_file::find_next_sid(sid requested, sid got,
 	}
     }
 
-  assert(!sid_in_use(next, pfile));
+  ASSERT(!sid_in_use(next, pfile));
   return next;
 }
 
@@ -362,7 +362,7 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 		int found = 0;
 
 		for(i = 0; i < len; i++) {
-			const char *s = users[i];
+			const char *s = users[i].c_str();
 			char c = s[0];
 
 			if (c == '!') {
@@ -390,7 +390,7 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 		
 		if (!found) {
 			quit(-1, "%s: You are not authorized to make deltas.",
-			     (const char *) name);
+			     name.c_str());
 		}
 	}
 
@@ -399,13 +399,12 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 	    || (flags.ceiling.valid() && flags.ceiling < got)
 	    || flags.locked.member(got)) {
 		quit(-1, "%s: Requested release is locked.",
-		     (const char *) name);
+		     name.c_str());
 	}
 	
 	if (pfile.is_locked(got) && !flags.joint_edit) {
 		quit(-1, "%s: Requested SID locked by '%s'.\n",
-		     (const char *) name,
-		     (const char *) pfile->user);
+		     name.c_str(), pfile->user.c_str());
 	}
 }
 
@@ -438,8 +437,8 @@ sccs_file::write_subst(const char *start,
 
 			case 'M':
 			{
-				mystring module = get_module_name();
-				err = fputs_failed(fputs(module, out));
+				const char *mod = get_module_name().c_str();
+				err = fputs_failed(fputs(mod, out));
 			}
 				break;
 			
@@ -488,28 +487,30 @@ sccs_file::write_subst(const char *start,
 				break;
 
 			case 'Y':
-				s = flags.type;
-				if (s != NULL) {
-					err = fputs_failed(fputs(s, out));
-				}
+				if (flags.type)
+				  {
+				    err = fputs_failed(fputs(flags.type->c_str(), out));
+				  }
 				break;
 
 			case 'F':
-			  err = fputs_failed(fputs(base_part(name), out));
-				break;
+			  err =
+			    fputs_failed(fputs(base_part(name.sfile()).c_str(),
+					       out));
+			  break;
 
 			case 'P':
 			  	if (1) // introduce new scope...
 				  {
-				    mystring path(canonify_filename(name));
-				    err = fputs_failed(fputs(path, out));
+				    mystring path(canonify_filename(name.c_str()));
+				    err = fputs_failed(fputs(path.c_str(), out));
 				  }
 				break;
 
 			case 'Q':
-				s = flags.user_def;
-				if (s != NULL) {
-					err = fputs_failed(fputs(s, out));
+				if (flags.user_def)
+				{
+				  err = fputs_failed(fputs(flags.user_def->c_str(), out));
 				}
 				break;
 
@@ -581,7 +582,7 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 
 	seq_state state(delta_table.highest_seqno());
 	struct delta const *delta = delta_table.find(id);
-	assert(delta != NULL);
+	ASSERT(delta != NULL);
 	prepare_seqstate(state, delta->seq);
 	prepare_seqstate(state, include, exclude, cutoff_date);
 
@@ -621,7 +622,7 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
     // substituted, IF keyword substitution was being done.
 	if (keywords && !parms.found_id)
 	  {
-	    no_id_keywords(name);
+	    no_id_keywords(name.c_str());
 	  }
 				     
 	/* Set the return status. */

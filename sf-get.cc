@@ -41,14 +41,14 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.10 1997/11/15 20:06:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.11 1997/11/18 23:22:39 james Exp $";
 #endif
 
 void
 sccs_file::prepare_seqstate(seq_state &state, seq_no seq) {
 	while(seq != 0) {
 		if (state.is_predecessor(seq)) {
-			quit(-1, "%s: Loop in deltas.", (const char *) name);
+			quit(-1, "%s: Loop in deltas.", name.c_str());
 		}
 		state.set_predecessor(seq);
 
@@ -82,7 +82,7 @@ sccs_file::get(mystring gname, class seq_state &state,
 					  struct delta const&) const,
 #endif
 	       int show_sid, int show_module, int debug) {
-	assert(mode != CREATE);
+	ASSERT(mode != CREATE);
 
 
 	seek_to_body();
@@ -129,10 +129,8 @@ sccs_file::get(mystring gname, class seq_state &state,
 
 			parms.out_lineno++;
 
-			if (show_module) {
-				mystring module = get_module_name();
-				fprintf(out, "%s\t", (const char *) module);
-			}
+			if (show_module)
+			  fprintf(out, "%s\t", get_module_name().c_str());
 
 			if (show_sid) {
 				delta_table[state.active_seq()].id.print(out);
@@ -160,10 +158,10 @@ sccs_file::get(mystring gname, class seq_state &state,
 				}
 			} 
 
-			if (err || fputc_failed(fputc('\n', out))) {
-				quit(errno, "%s: Write error.",
-				     (const char *) gname);
-			}
+			if (err || fputc_failed(fputc('\n', out)))
+			  {
+			    quit(errno, "%s: Write error.", gname.c_str());
+			  }
 			continue;
 		}
 

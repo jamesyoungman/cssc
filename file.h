@@ -53,7 +53,7 @@ FILE *open_null();
 int is_readable(const char *name);
 int file_exists(const char *name);
 const char *get_user_name();
-int user_is_group_member(int gid);
+int user_is_group_member(gid_t gid);
 FILE *fcreate(mystring name, int mode);
 
 #ifdef CONFIG_SYNC_BEFORE_REOPEN

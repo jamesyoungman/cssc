@@ -28,13 +28,13 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.6 1997/11/15 20:06:58 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.7 1997/11/18 23:22:23 james Exp $";
 #endif
 
 void
 sccs_pfile::add_lock(sid got, sid delta, 
 		     sid_list &included, sid_list &excluded) {
-	assert(mode == APPEND);
+	ASSERT(mode == APPEND);
 
 	struct edit_lock new_lock;
 
@@ -49,22 +49,26 @@ sccs_pfile::add_lock(sid got, sid delta,
 	edit_locks.add(new_lock);
 
 	FILE *pf;
-	if (edit_locks.length() == 0) {
-		pf = fcreate(pname, CREATE_EXCLUSIVE);
-		if (pf == NULL) {
-			quit(errno, "%s: Can't create.", (const char *) pname);
-		}
-	} else {
-		pf = fopen(pname, "a");
-		if (pf == NULL) {
-			quit(errno, "%s: Can't open for append.",
-			     (const char *) pname);
-		}
-	}
+	if (edit_locks.length() == 0)
+	  {
+	    pf = fcreate(pname, CREATE_EXCLUSIVE);
+	    if (pf == NULL)
+	      {
+		quit(errno, "%s: Can't create.", pname.c_str());
+	      }
+	  }
+	else
+	  {
+	    pf = fopen(pname.c_str(), "a");
+	    if (pf == NULL)
+	      {
+		quit(errno, "%s: Can't open for append.", pname.c_str());
+	      }
+	  }
 
 	if (write_edit_lock(pf, new_lock)
 	    || fclose_failed(fclose(pf))) {
-		quit(errno, "%s: Write error.", (const char *) pname);
+		quit(errno, "%s: Write error.", pname.c_str());
 	}
 }
 

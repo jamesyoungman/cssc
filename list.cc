@@ -1,5 +1,5 @@
 /*
- * list.c: Part of GNU CSSC.
+ * list.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
@@ -21,65 +21,22 @@
  * placed in the Public Domain.
  *
  *
- * Test code for the template list<T>.
+ * Code for the template list<T>.
  */
 
-#ifndef CSSC__LIST_C__
-#define CSSC__LIST_C__
-
-template <class TYPE>
-void
-list<TYPE>::destroy() {
-	if (len != 0) {
-		delete[] array;
-	}
+list<const char*> &
+operator +=(list<const char*> &l1, list<mystring> const &l2)
+{
+  int len = l2.length();
+  int i;
+  for(i = 0; i < len; i++)
+    {
+      // This add operation would be push_back() under STL.
+      // When everybody supports STL, we'll switch.
+      l1.add(l2[i].c_str());
+    }
+  return l1;
 }
-
-template <class TYPE>
-void
-list<TYPE>::copy(list<TYPE> const &l) {
-	len = l.len;
-	left = l.left;
-	if (len + left > 0) {
-		array = new TYPE[len + left];
-		int i;
-		for(i = 0; i < len; i++) {
-			array[i] = l.array[i];
-		}
-	}
-}
-
-template <class TYPE>
-list<TYPE> &
-list<TYPE>::operator =(list<TYPE> const &l) {
-	if (this != &l) {
-		destroy();
-		copy(l);
-	}
-	return *this;
-}
-
-template <class TYPE>
-void
-list<TYPE>::add(TYPE const &ent) {
-	if (left == 0) {
-		TYPE *new_array = new TYPE[len + CONFIG_LIST_CHUNK_SIZE];
-		if (len != 0) {
-			int i;
-			for(i = 0; i < len; i++) {
-				new_array[i] = array[i];
-			}
-			delete[] array;
-		}
-		array = new_array;
-		left = CONFIG_LIST_CHUNK_SIZE;
-	}
-	array[len++] = ent;
-	left--;
-}
-
-
-#endif
 
 /* Local variables: */
 /* mode: c++ */

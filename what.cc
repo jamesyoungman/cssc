@@ -28,12 +28,25 @@
 
 #define NO_COMMON_HEADERS
 
-#include "cssc.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
+
+#include "err_no.h"
+#include "defaults.h"
 #include "quit.h"
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.6 1997/11/15 20:06:40 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.7 1997/11/18 23:22:49 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 

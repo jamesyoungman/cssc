@@ -1,10 +1,21 @@
-#include "cssc.h"
+/* If this file is being compiled at all, that means that mktime() is
+ * missing from the library or does not work properly.  This version
+ * of mktime() is certainly poor, but it works well enough for CSSC.
+ *
+ * This does mean, though, that "configure" might decide that the
+ * system mktime() is not to be used, since it's slightly broken and
+ * hence substitute something even worse.
+ *
+ * One of these days I'll put a really working mktime() here, perhaps
+ * the one out of glibc (Note: I assume that GPL and LGPL are
+ * compatible enough for this to be OK -- check [TODO]!)
+ */
+
+#include <config.h>
 
 #include <time.h>
-#undef HAVE_MKTIME
-#ifndef HAVE_MKTIME
 
-#define mktime LIDENT(mktime)
+#ifndef HAVE_MKTIME
 
 #ifdef CONFIG_DECLARE_TIMEZONE
 extern long timezone;
@@ -16,7 +27,7 @@ extern "C" void CDECL tzset();
 /* This is a "good enough for CSSC" implementation of mktime. */
 
 time_t
-mktime(struct tm const *tm) {
+mktime(struct tm *tm) {
 	const long day_secs = 24L * 60L * 60L;
 	int year = tm->tm_year - 70;
 	time_t t = (long) year * 365 * day_secs

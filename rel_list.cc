@@ -27,14 +27,14 @@
 #include <stdlib.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.2 1997/07/02 18:03:20 james Exp $";
+static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.3 1997/11/18 23:22:30 james Exp $";
 #endif
 
 // Because we use member() all the time, this
 // is a quadratic algorithm...but N is usually very small.
 release_list::release_list(const char *s)
 {
-  assert(NULL != s);
+  ASSERT(NULL != s);
 
   char *p;
   while (*s)

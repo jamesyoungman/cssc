@@ -22,6 +22,8 @@ AC_PROG_CXXCPP
 AM_PROG_INSTALL
 AC_PROG_RANLIB
 
+AC_LANG_CPLUSPLUS
+
 AC_PATH_PROG(PR,pr,/usr/bin/pr)
 dnl It would be a good idea to default the path for diff
 dnl to install_dir/diff-program so the installer can 
@@ -32,12 +34,19 @@ AC_DEFINE_UNQUOTED(CONFIG_DIFF_COMMAND,"$ac_cv_path_CONFIG_DIFF_COMMAND")
 dnl Checks for libraries.
 
 dnl Checks for header files.
+
+dnl Standard C header files:-
 AC_HEADER_STDC
-AC_CHECK_HEADERS(sys/stat.h sys/param.h sys/types.h sys/file.h)
-AC_CHECK_HEADERS(fcntl.h prototypes.h io.h process.h pwd.h unistd.h)
 AC_CHECK_HEADERS(stdarg.h stdlib.h string.h stdio.h errno.h)
+
+dnl Posix/Unix header files:-
+AC_CHECK_HEADERS(fcntl.h prototypes.h io.h process.h pwd.h unistd.h)
+AC_CHECK_HEADERS(sys/stat.h sys/param.h sys/types.h sys/file.h)
 AC_HEADER_DIRENT
 AC_HEADER_SYS_WAIT
+
+dnl C++ Header files...
+AC_CHECK_HEADERS(string)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -75,8 +84,14 @@ dnl Checks for library functions.
 dnl AC_FUNC_MEMCMP
 dnl The "select" that autoscan found was a method. AC_CHECK_FUNCS(select)
 
+dnl Undocumented: the mktime() test ONLY works using C.
+AC_LANG_SAVE
+AC_LANG_C
 AM_FUNC_MKTIME
-dnl AC_CHECK_FUNCS(mktime abort wait)
+AC_LANG_RESTORE
+
+
+AC_CHECK_FUNCS(abort wait)
 
 dnl Check for symlink() and readlink(), which lndir uses.
 AC_CHECK_FUNCS(symlink readlink) 

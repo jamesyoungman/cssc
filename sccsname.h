@@ -35,96 +35,85 @@
 #pragma interface
 #endif
 
-const char *base_part(const char *s);
+mystring base_part(const mystring &name);
 mystring canonify_filename(const char* fname);
 
-class sccs_name {
-	mystring name;
-	char *_name, *change;
-	mystring gname;
+class sccs_name
+{
+  mystring sname;		// name of the s. file.
+  mystring gname;
+  
+  // We hold separate strings for the part before 
+  // and the part after the character that changes:
+  //  dir/s.foo.c
+  //  dir/p.foo.c
+  //  dir/z.foo.c
+  // In these cases, name_front is "dir/" and name_rear is ".foo.c".
+  
+  mystring name_front, name_rear;
+  
+  file_lock *lock_ptr;
+  int lock_cnt;
+  
+  void create();
 
-	file_lock *lock_ptr;
-	int lock_cnt;
+  void
+  destroy()
+  {
+    if (lock_cnt > 0)
+      delete lock_ptr;
+  }
 
-	char *
-	_file(char c) const {
-		*change = c;
-		return _name;
-	}
-
-	void create();
-
-	sccs_name(sccs_name const &);
-	sccs_name &operator =(sccs_name const &);
-
-	void
-	destroy() {
-		if (_name != NULL) {
-			free(_name);
-		}
-		if (lock_cnt > 0) {
-			delete lock_ptr;
-		}
-	}
-
+  sccs_name &operator =(sccs_name const &);
+  sccs_name(sccs_name const &);
+  
 public:
-	static int valid_filename(const char *name);
+  static int valid_filename(const char *name);
+  sccs_name(): lock_cnt(0) {}
+  sccs_name &operator =(const mystring& n); /* undefined */
+
+  int valid() const { return sname.length(); }
+  void make_valid();
+
+  const char * c_str() const { return sname.c_str(); }
+
+  mystring sub_file(char insertme) const;
+  mystring sfile() const { return sname; }
+  mystring gfile() const { return gname; }
+  
+  mystring pfile() const { return sub_file('p'); }
+  mystring qfile() const { return sub_file('q'); }
 #if 0
-	sccs_name(mystring n): name(n), lock_cnt(0) { create(n); }
+  mystring lfile() const { return base_part(_file('l')); }
 #endif
-	sccs_name(): _name(NULL), lock_cnt(0) {}
+  mystring xfile() const { return sub_file('x'); }
+  mystring zfile() const { return sub_file('z'); }
+  
+  int
+  lock()
+  { 
+    if (lock_cnt++ == 0)
+      {
+	mystring zf = zfile();
+	lock_ptr = new file_lock(zf);
+	return lock_ptr->failed();
+      }
+    return 0;
+  }
 
-	int valid() const { return _name != NULL; }
-	void make_valid();
-
-	operator const char *() const { return (const char *) name; }
-	sccs_name &operator =(mystring n); /* undefined */
-
-#ifdef CONFIG_MSDOS_FILES
-
-	mystring gfile() const { return gname; }
-
-	mystring pfile() const { return _file('%'); }
-	mystring qfile() const { return _file('^'); }
-#if 0
-	mystring lfile() const { return base_part(_file('!')); }
-#endif
-	mystring xfile() const { return _file('\''); }
-	mystring zfile() const { return _file('&'); }
-
-#else
-
-	mystring gfile() const { return gname; }
-
-	mystring pfile() const { return _file('p'); }
-	mystring qfile() const { return _file('q'); }
-#if 0
-	mystring lfile() const { return base_part(_file('l')); }
-#endif
-	mystring xfile() const { return _file('x'); }
-	mystring zfile() const { return _file('z'); }
-
-#endif
-
-	int
-	lock() { 
-		if (lock_cnt++ == 0) {
-			lock_ptr = new file_lock(zfile());
-			return lock_ptr->failed();
-		}
-		return 0;
-	}
-
-	void
-	unlock() {
-		if (--lock_cnt == 0) {
-			delete lock_ptr;
-		}
-	}
-
-	~sccs_name() {
-		destroy();
-	}
+  void
+  unlock()
+  {
+    if (--lock_cnt == 0)
+      {
+	delete lock_ptr;
+      }
+  }
+  
+  ~sccs_name()
+  {
+    destroy();
+  }
 };
 
 #endif /* __SCCSNAME_H__ */

@@ -31,7 +31,7 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.4 1997/07/02 18:05:27 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.5 1997/11/18 23:22:43 james Exp $";
 #endif
 
 static int
@@ -46,12 +46,43 @@ is_seqlist_member(seq_no seq, list<seq_no> const &seq_list) {
 	return 0;
 }
 
+
+typedef enum { COPY, DELETE, INSERT} update_state;
+
+static int
+next_state(update_state& current, // this arg is MODIFIED!
+	   int key)
+{
+  if (current == COPY)
+    {
+      switch (key)
+	{
+	case 'I':
+	  current = INSERT;
+	  return 1;
+	case 'D':
+	  current = DELETE;
+	  return 1;
+	}
+    }
+  else
+    {
+      if ('E' == key)
+	{
+	  current = COPY;
+	  return 1;
+	}
+    }
+  return 0;		// not expected.
+}
+
+
 void
 sccs_file::rmdel(sid id) {
 	struct delta *delta = (struct delta *) delta_table.find(id);
 	if (delta == NULL) {
 		quit(-1, "%s: Specified SID not found in SCCS file.",
-		     (const char *) name);
+		     name.c_str());
 	}
 	seq_no seq = delta->seq;
 
@@ -59,13 +90,13 @@ sccs_file::rmdel(sid id) {
 	while(iter.next()) {
 		if (iter->prev_seq == seq) {
 			quit(-1, "%s: Specified SID has a successor.",
-			     (const char *) name);
+			     name.c_str());
 		}
 		if (is_seqlist_member(seq, iter->included)
 		    || is_seqlist_member(seq, iter->excluded)
 		    || is_seqlist_member(seq, iter->ignored)) {
 			quit(-1, "%s: Specified SID is used in another delta.",
-			     (const char *) name);
+			     name.c_str());
 		}
 	}
 
@@ -76,39 +107,36 @@ sccs_file::rmdel(sid id) {
 		xfile_error("Write error.");
 	}
 
-	enum { COPY, DELETE, INSERT} state = COPY;
-	int c = read_line();
-	while(c != -1) {
-		if (c != 0) {
-			check_arg();
-			if (strict_atous(linebuf + 3) == seq) {
-				if (state == COPY && c == 'I') {
-					state = INSERT;
-				} else if (state == COPY && c == 'D') {
-					state = DELETE;
-				} else if (state != COPY && c == 'E') {
-					state = COPY;
-				} else {
-					corrupt("Unexpected control line");
-				}
-				c = read_line();
-				continue;
-			}
-			if (state == INSERT) {
-				corrupt("Non-terminal delta!?!");
-			}
-		}
-		if (state != INSERT) {
-			fputs(linebuf, out);
-			putc('\n', out);
-		}
-		c = read_line();
-	}
-
-	if (state != COPY) {
-		corrupt("Unexpected EOF");
-	}
-
+	update_state state = COPY;
+	int c;
+	while( (c=read_line()) != -1)
+	  {
+	    if (0 != c)
+	      {
+		check_arg();
+		if (strict_atous(linebuf + 3) == seq)
+		  {
+		    if (!next_state(state, c))
+		      corrupt("Unexpected control line");
+		  }
+		else if (state == INSERT)
+		  {
+		    corrupt("Non-terminal delta!?!");
+		  }
+	      }
+	    else if (state != INSERT)
+	      {
+		fputs(linebuf, out);
+		putc('\n', out);
+	      }
+	  }
+	// We should end the file after an 'E', that is,
+	// in the 'COPY' state.
+	if (state != COPY)
+	  {
+	    corrupt("Unexpected EOF");
+	  }
+	
 	end_update(out);
 }		      
 	

@@ -32,7 +32,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.12 1997/10/26 17:40:06 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.13 1997/11/18 23:22:19 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -242,10 +242,10 @@ main(int argc, char **argv) {
 		
 		sid retrieve;
 
-		if (!file.find_requested_sid(rid, retrieve)) {
-		  quit(-1, "%s: Requested SID not found.",
-		       (const char *) name);
-		}
+		if (!file.find_requested_sid(rid, retrieve))
+		  {
+		    quit(-1, "%s: Requested SID not found.", name.c_str());
+		  }
 		if (!rid.valid() ||
 		    (rid.release_only() && release(rid) == release(retrieve)))
 		    {
@@ -259,7 +259,7 @@ main(int argc, char **argv) {
 		}
 
 		if (!use_stdout && !no_output) {
-			assert(name.valid());
+			ASSERT(name.valid());
 
 			/* got_gname is specified if we had -G g-file
 			 * on the command line.   This only works for the
@@ -277,11 +277,11 @@ main(int argc, char **argv) {
 
 			out = fcreate(gname, mode);
 
-			if (out == NULL) {
-				quit(errno, "%s: Can't open file for"
-					    " writing",
-				     (const char *)gname);
-			}
+			if (out == NULL)
+			  {
+			    quit(errno, "%s: Can't open file for writing",
+				 gname.c_str());
+			  }
 		}
 		const int keywords = !suppress_keywords;
 		struct sccs_file::get_status status
@@ -302,7 +302,7 @@ main(int argc, char **argv) {
 		//const int ix = opts.get_index();
 		if ((argc-1) != opts.get_index())
 		  {
-		    fprintf(stdout, "\n%s:\n", (const char*)name);
+		    fprintf(stdout, "\n%s:\n", name.c_str());
 		  }
 		
 		print_id_list("Included", status.included);

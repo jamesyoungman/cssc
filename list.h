@@ -49,7 +49,7 @@ public:
 
 	void
 	operator =(void *p) {
-		assert(p == NULL);
+		ASSERT(p == NULL);
 		destroy();
 		len = 0;
 		left = 0;
@@ -61,13 +61,13 @@ public:
 
 	TYPE const &
 	operator [](int index) const {
-		assert(index >= 0 && index < len);
+		ASSERT(index >= 0 && index < len);
 		return array[index];
 	}
 
 	TYPE &
 	select(int index) const {
-		assert(index >= 0 && index < len);
+		ASSERT(index >= 0 && index < len);
 		return array[index];
 	}
 
@@ -76,19 +76,15 @@ public:
 
 /* Appends the contents of one list to another. */
 
-template<class T1, class T2> 
+template<class T1> 
 list<T1> &
-operator +=(list<T1> &l1, list<T2> const &l2) {
-	int i;
-	int len = l2.length();
-	for(i = 0; i < len; i++) {
-#ifdef __GNUC__
-		l1.add((T1) l2[i]);
-#else
-		l1.add(l2[i]);
-#endif
-	}
-	return l1;
+operator +=(list<T1> &l1, list<T1> const &l2)
+{
+  int i;
+  int len = l2.length();
+  for(i = 0; i < len; i++)
+    l1.add(l2[i]);
+  return l1;
 }
 
 

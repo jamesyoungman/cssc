@@ -1,5 +1,5 @@
 /*
- * sf-get3.c: Part of GNU CSSC.
+ * sf-get3.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -31,7 +31,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.5 1997/07/02 18:05:18 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.6 1997/11/18 23:22:41 james Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are

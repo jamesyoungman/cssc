@@ -25,15 +25,22 @@
  *
  */
 
-#ifdef __GNUC__
-#pragma implementation "mystring.h"
-#endif
+
+// We don't implement the standard string class, so we only have
+// code here if USE_STANDARD_STRING is not defined.
+
 
 #include "cssc.h"
 #include "mystring.h"
 
+#ifndef USE_STANDARD_STRING
+
+#ifdef __GNUC__
+#pragma implementation "mystring.h"
+#endif
+
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.7 1997/10/25 16:47:01 james Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.8 1997/11/18 23:22:22 james Exp $";
 #endif
 
 
@@ -120,7 +127,7 @@ mystring::operator =(mystring const &s) {
 
 mystring &
 mystring::operator =(const char *s) {
-	assert(s == NULL || str != s);
+	ASSERT(s == NULL || str != s);
 	destroy();
 	create(s);
 	return *this;
@@ -131,6 +138,9 @@ mystring::operator[](size_t n) const
 {
   return str[n];
 }
+
+
+#endif /* USE_STANDARD_STRING */
 
 	
 /* Local variables: */
