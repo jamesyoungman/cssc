@@ -5,7 +5,8 @@
 . ../common/test-common
 
 
-g=reportmr.1 s=inputs/s.$g
+g=reportmr.1 
+s=inputs/s.$g
 remove $g
 
 # Vanilla operation, but with two files.
