@@ -1,14 +1,8 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-01-11 18:14:24 james>
+Time-stamp: <1998-01-24 20:22:52 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
-
-Sun Jan 11 18:13:13 1998: James Youngman <jay@gnu.org>
-In version 0.04-pl0.  Unfixed.
- If the "v" flag in the SCCS file is set, cdc should still not
- prompt for MR changes (though this can be done with the -m option).
-
 
 Wed Nov  5 18:56:06 1997: James Youngman <jay@gnu.org>
 In version 0.02-pl6.  Unfixed.
