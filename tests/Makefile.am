@@ -48,8 +48,9 @@ check: all-tests
 
 # When a distribution is being made and all the files that automake
 # knows about have been copied into $(distdir), dist-hook is called.
-dist-hook:
-	( cd $(srcdir)  && tar cf - $(TESTDIRS) ) | \
+dist-hook: 
+	( cd $(srcdir) && find common $(TESTDIRS) -type l -print| xargs $(RM) )
+	( cd $(srcdir)  && tar cf - common $(TESTDIRS) ) | \
 	( cd $(distdir) && tar xf - )
 
 
