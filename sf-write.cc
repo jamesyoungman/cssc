@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.13 1998/02/12 23:10:33 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.14 1998/02/20 20:57:23 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -58,6 +58,30 @@ sccs_file::start_update() const {
 	}
 		     
 	mystring xname = name.xfile();
+
+	// real SCCS silently destroys any existing file named
+	// x.[whatever].  Dave Bodenstab <imdave@mcs.net> pointed out
+	// that this isn't very friendly.  However, I don't want to
+	// abort if x.foo exists, since "real" SCCS doesn't.  So we'll
+	// produce a warning and rename the old file.  If x.foo.bak exists,
+	// we fail to rename, and lose the original x.foo file, as does 
+	// the genuine article.
+	if (file_exists(xname.c_str()))
+	  {
+	    const char *xns = xname.c_str();
+	    mystring newname(xname + ".bak");
+	    if (0 == rename(xns, newname.c_str()))
+	      {
+		fprintf(stderr, "Warning: %s renamed to %s\n",
+			xns, newname.c_str());
+	      }
+	    else
+	      {
+		fprintf(stderr, "Warning: %s over-written!\n", xns);
+	      }
+	  }
+	
+
 	FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE);
 
 	if (out == NULL) {
