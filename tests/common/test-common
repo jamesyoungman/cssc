@@ -131,6 +131,9 @@ remove got.stdout           got.stderr
 remove expected.stdout expected.stderr 
 remove command.log last.command
 
+echo 
+echo "All Tests in `/bin/pwd`/$name are now completed on tools in '$dir'"
+
 if ${expect_fail:-false}
 then
 	echo XPASS $name: $* ; exit 0; 
@@ -161,12 +164,12 @@ docommand () {
 # If --silent is specified before the label, no output is notmally made.
 #
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
-label=$1
+label="$1"
 case $1 in
---silent) silent=true ; shift ; label=$1 ;;
+--silent) silent=true ; shift ; label="$1" ;;
        *) silent=false  ;;
 esac
-eval "$silent" || echo_nonl "$label..."
+eval "$silent" || echo_nonl "${label}"...
 
 shift
 
@@ -213,7 +216,7 @@ do_output () {
 # $4 is a file containing what to expect on stdout.
 # $5 is what to expect on stderr.
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
-label=$1
+label="$1"
 echo_nonl "$label..."
 shift
 
