@@ -12,9 +12,9 @@
 @setchapternewpage odd
 @c %**end of header
 
-@set EDITION 1.07
-@set VERSION 1.00
-@set UPDATED Sun Oct 10 13:12:31 2004
+@set EDITION 1.08
+@set VERSION 1.01
+@set UPDATED Sun Oct 17 13:46:43 2004
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
