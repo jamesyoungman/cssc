@@ -50,11 +50,11 @@ cd $RPM_BUILD_ROOT/usr/bin
 ln -s ../libexec/cssc/* .
 
 %post
-/sbin/install-info /usr/info/cssc.info /usr/info/dir
+/sbin/install-info /usr/share/info/cssc.info /usr/share/info/dir
 
 %preun
 if [ $1 = 0 ]; then
-    /sbin/install-info --delete /usr/info/cssc.info /usr/info/dir
+    /sbin/install-info --delete /usr/share/info/cssc.info /usr/share/info/dir
 fi
 
 %clean
@@ -107,7 +107,7 @@ First RPMed version (0.05alpha-pl0)
 %attr(-, root, root) %doc docs/patches.txt docs/mailing-list.txt
 %attr(-, root, root) %doc docs/style.txt
 %attr(-, root, root) %doc bsd/COPYING.bsd bsd/sccs.me
-%attr(-, root, root) %doc /usr/info/cssc.info*
+%attr(-, root, root) %doc /usr/share/info/cssc.info*
 %attr(755, root, root) /usr/libexec/cssc
 %attr(-, root, root) /usr/sccs
 %attr(-, root, root) /usr/bin/sccs
