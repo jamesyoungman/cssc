@@ -1,3 +1,69 @@
+1998-02-21  James Youngman  <jay@gnu.org>
+
+	* what.cc, sid_list.cc, unget.cc, sf-prt.cc, sf-prs.cc,
+	sf-get2.cc, sf-kw.cc, sf-get.cc, sf-chkid.cc, sf-delta.cc,
+	sf-cdc.cc, sccsfile.h, sact.cc, sccsfile.cc, run.cc, run.h,
+	rel_list.h, rmdel.cc, prt.cc, prompt.cc, prs.cc, pipe.h, pfile.h,
+	pipe.cc, mystring.h, pfile.cc, mystring.cc, my-getopt.h, mylist.h,
+	linebuf.h, my-getopt.cc, l-split.cc, linebuf.cc, get.cc, ioerr.h,
+	fileiter.h, filepos.h, file.cc, delta.cc, encoding.cc, cssc.h,
+	defaults.h, bodyio.h, cdc.cc, bodyio.cc: Updated the year in the
+	copyright message for all those files modified so far in 1998.
+
+	* docs/FIXED, docs/TODO, docs/BUGS: Added some bug reports.
+
+	* unget.cc, sact.cc, sf-get.cc, rmdel.cc, prs.cc, prt.cc, my-getopt.cc, my-getopt.h, fileiter.h, get.cc, fileiter.cc, cdc.cc, delta.cc, admin.cc:
+	Modified option processing so that "get s.foo -Gbaz" is equivalent
+	to "get -Gbaz s.foo".
+
+	* configure.in: Bumped version to 0.06-pl1.
+
+	* docs/cssc.texi: Minor punctuation corrections.
+
+	* tests/prs/keywords.sh: Added test for :PN:.
+
+	* Makefile.am, sf-prs.cc:
+	The prs keyword :PN: needs to produce the full pathname of the SCCS
+	file, not just the name as specified on the command line.
+
+	* tests/get/optorder.sh: Initial version.
+
+1998-02-20  James Youngman  <jay@gnu.org>
+
+	* sf-write.cc:
+	Cope in a more user-friendly way with the prior existence of "x.foo".
+
+	* docs/BUGS:
+	Some bug reports from Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+	and Dave Bodenstab <imdave@mcs.net>.
+
+	* tests/get/sep_subst.sh:
+	Make sure the substitution happens for the actual gotten delta, not
+	the delta to which the current line belongs.
+
+	* tests/get/sep_subst.sh: *** empty log message ***
+
+	* tests/get/sep_subst.sh:
+	Make sure that the delta information substituted for each line is the
+	information for the delta that we are actually getting, not the delta
+	information for the delta which last touched that line.
+
+1998-02-12  James Youngman  <jay@gnu.org>
+
+	* ChangeLog: *** empty log message ***
+
+	* auxfiles/CSSC.spec: Updated RPM spec-file for version 0.06alpha.pl0.
+
+	* ChangeLog: *** empty log message ***
+
+	* docs/cssc.texi, docs/Platforms, docs/TODO, auxfiles/CSSC.spec,
+	sf-write.cc, configure.in, sccsfile.cc, NEWS: Binary file support.
+
+	* docs/missing.txt: Binary file support is now present.
+
+	* tests/binary/binbasic.sh, filediff.h, sf-delta.cc, filediff.cc,
+	Makefile.am, configure.in: First working binary file support.
+
 1998-02-12  James Youngman  <jay@gnu.org>
 
 	* auxfiles/CSSC.spec: Updated RPM spec-file for version
