@@ -19,7 +19,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.8 1997/07/02 07:18:33 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.9 1997/07/10 20:17:31 james Exp $";
 #endif
 
 static void
@@ -360,11 +360,19 @@ sccs_file::prt(FILE *out,
 		      print_seq_list(out, iter->included);
 		      putc('\n', out);
 		    }
+		  else if (iter->have_includes)
+		    {
+		      fprintf(out, "Included:\t\n");
+		    }
 		  if (iter->excluded.length())
 		    {
 		      fprintf(out, "Excluded:\t");
 		      print_seq_list(out, iter->excluded);
 		      putc('\n', out);
+		    }
+		  else if (iter->have_excludes)
+		    {
+		      fprintf(out, "Excluded:\t\n");
 		    }
 		}
 	      // Print any MRs and then the comments.

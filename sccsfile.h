@@ -54,19 +54,34 @@ private:
 		mystring user;
 		seq_no seq, prev_seq;
 		list<seq_no> included, excluded, ignored;
+
+	  	// have_* are a hack to ensure that prt works the same way
+	  	// as the Real Thing.  We have to output Excludes: lines
+	  	// if the SCCS file contained even an EMPTY includes list.
+	  	bool         have_includes, have_excludes, have_ignores;
 		list<mystring> mrs;
 		list<mystring> comments;
 
-		delta() {}
+		delta()       : have_includes(false),
+				have_excludes(false),
+				have_ignores (false)
+	         {}
+	  
 		delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
 		      list<mystring> ms, list<mystring> cs)
 			: type(t), id(i), date(d), user(u),
-			  seq(s), prev_seq(p), mrs(ms), comments(cs) {}
+			  seq(s), prev_seq(p),
+			  have_includes(false), have_excludes(false),
+			  have_ignores(false),
+			  mrs(ms), comments(cs) {}
 		delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
 		      list<seq_no> incl, list<seq_no> excl,
 		      list<mystring> ms, list<mystring> cs)
 			: type(t), id(i), date(d), user(u),
-			  seq(s), prev_seq(p), included(incl), excluded(excl), 
+			  seq(s), prev_seq(p),
+			  included(incl), excluded(excl),
+			  have_includes(false), have_excludes(false),
+			  have_ignores(false),
 			  mrs(ms), comments(cs) {}
 
 		struct delta &operator =(struct delta const &);

@@ -37,7 +37,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.12 1997/07/02 18:04:30 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.13 1997/07/10 20:17:18 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -51,9 +51,14 @@ sccs_file::delta::operator =(struct delta const &it) {
 	user = it.user;
 	seq = it.seq;
 	prev_seq = it.prev_seq;
+	
 	included = it.included;
 	excluded = it.excluded;
 	ignored = it.ignored;
+	have_includes = it.have_includes;
+	have_excludes = it.have_excludes;
+	have_ignores  = it.have_ignores;
+	
 	mrs = it.mrs;
 	comments = it.comments;
 	return *this;
@@ -391,6 +396,22 @@ sccs_file::read_delta() {
  	const char *start;
 	for(i = 0; i < 3; i++) {
 		if (c == "ixg"[i]) {
+
+		  switch(c)
+		    {
+		    case 'i':
+		      tmp.have_includes = true;
+		      break;
+
+		    case 'x':
+		      tmp.have_excludes = true;
+		      break;
+
+		    case 'g':
+		      tmp.have_ignores = true;
+		      break;
+		    }
+		  
 		  if (linebuf[2] != ' ')
 		    {
 		      c = read_line(); // throw line away.
