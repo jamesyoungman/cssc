@@ -1,24 +1,126 @@
+2000-11-26  James Youngman  <james_youngman@users.sourceforge.net>
+
+	* /cvsroot/cssc/gnu/CSSC/sccsname.cc, /cvsroot/cssc/gnu/CSSC/cap.cc, /cvsroot/cssc/gnu/CSSC/delta-iterator.cc, /cvsroot/cssc/gnu/CSSC/fdclosed.cc, /cvsroot/cssc/gnu/CSSC/my-getopt.cc, /cvsroot/cssc/gnu/CSSC/sid_list.h, /cvsroot/cssc/gnu/CSSC/stack.h:
+	Partial fix for SF bug #123246 (GCC-specific assumptions + typos)
+
+2000-11-19  James Youngman  <james_youngman@users.sourceforge.net>
+
+	* /cvsroot/cssc/gnu/CSSC/seqstate.cc, /cvsroot/cssc/gnu/CSSC/seqstate.h, /cvsroot/cssc/gnu/CSSC/sf-get.cc, /cvsroot/cssc/gnu/CSSC/tests/get/sf111140.sh, /cvsroot/cssc/gnu/CSSC/tests/get/sf111140.wtd, /cvsroot/cssc/gnu/CSSC/tests/get/sf111140_testcase.uue, /cvsroot/cssc/gnu/CSSC/testutils/compare_gets.sh, /cvsroot/cssc/gnu/CSSC/testutils/mogrify.awk, /cvsroot/cssc/gnu/CSSC/NEWS:
+	Fix for long-standing bug: we now can correctly extract
+	files containing deltas which include other deltas with
+	the ^Ai construct (e.g. branch merges).  We may still not
+	handle "get -i" correctly yet though.  Also, no similar
+	fix for the excluded delta situation (I have no example
+	file demonstrating that problem).  This is recorded as
+	SourceForge bug 111140.  A test for this bug is also now
+	included.
+
+	* /cvsroot/cssc/gnu/CSSC/docs/cssc.texi, /cvsroot/cssc/gnu/CSSC/bsd/COPYING.bsd:
+	Updated BSD license & documentation to remove advertising clause
+
+	* /cvsroot/cssc/gnu/CSSC/unused/configs/README:
+	Include README file to explain the contents of the directory
+
+	* /cvsroot/cssc/gnu/CSSC/docs/patches.txt:
+	Indicate that patches can be submitted via the SourceForge Patch Manager.
+
+	* /cvsroot/cssc/gnu/CSSC/configure.in:
+	A test commit, changing the suffix on the version number (to emphasise
+	the fact that it's the CVS code).  Real purpose is to test the CVS checkin
+	notification facility.
+
+2000-11-12  James Youngman  <james_youngman@users.sourceforge.net>
+
+	* /cvsroot/cssc/gnu/CSSC/fatalsig.cc:
+	Added new file to resolve Sourceforge bug 110909.
+
+	* /cvsroot/cssc/gnu/CSSC/Makefile.am, /cvsroot/cssc/gnu/CSSC/configure.in, /cvsroot/cssc/gnu/CSSC/quit.cc, /cvsroot/cssc/gnu/CSSC/quit.h:
+	Delete the z-file when we get a fatal signal (fix for Sourceforge
+	bug number 110909).
+
+	* /cvsroot/cssc/gnu/CSSC/sf-get2.cc: Fixed bug 110537.
+
+2000-11-05  James Youngman  <james_youngman@users.sourceforge.net>
+
+	* /cvsroot/cssc/gnu/CSSC/fileiter.cc:
+	Fixed SourceForge bug 121605 (coredump when fileiter is passed a directory
+	name ending in a slash).
+
+	* /cvsroot/cssc/gnu/CSSC/tests/admin/locks.sh:
+	Test case covering SourceForge bug 111140 (admin -dla coredumps).
+
+	* /cvsroot/cssc/gnu/CSSC/rel_list.cc, /cvsroot/cssc/gnu/CSSC/sf-admin.cc, /cvsroot/cssc/gnu/CSSC/sf-write.cc:
+	Fixed SourceForge bug #121599: "admin -dla" crashes
+
+2000-09-17  James Youngman  <james_youngman@users.sourceforge.net>
+
+	* /cvsroot/cssc/gnu/CSSC/show-disp.sh:
+	Removed spurious extra newlines (I wonder when they started appearing?)
+
+2000-08-05  James Youngman  <james_youngman@users.sourceforge.net>
+
+	* /cvsroot/cssc/gnu/CSSC/show-disp.sh:
+	Updated copyright year and added ID header comment.
+
+	* /cvsroot/cssc/gnu/CSSC/show-disp.sh:
+	Use the -z3 option to compress data for "cvs status" because we have a
+	long link with low bandwidth, often.  However, we don't use -z9
+	because that would be worse for faster links.
+
+	* /cvsroot/cssc/gnu/CSSC/NEWS, /cvsroot/cssc/gnu/CSSC/configure.in:
+	Added in information about recent changes.
+
+	* /cvsroot/cssc/gnu/CSSC/docs/cssc.texi:
+	Resolved conflict on line containing the URL of the CSSC bug reporting page.
+
+	* /cvsroot/cssc/gnu/CSSC/tests/get/sid-select2.sh:
+	Added test case for [ Bug #110537 ] Invalid SID got in branch where Rtrunk
+	greater than Rbranch
+
+2000-08-04  James Youngman  <james_youngman@users.sourceforge.net>
+
+	* /cvsroot/cssc/gnu/CSSC/show-disp.sh:
+	Cope with CVS servers as well as local filesystem CVSROOTs.
+
+2000-08-03  James Youngman  <james_youngman@users.sourceforge.net>
+
+	* /cvsroot/cssc/gnu/CSSC/docs/cssc.texi, /cvsroot/cssc/gnu/CSSC/README, /cvsroot/cssc/gnu/CSSC/docs/BUGS:
+	Fixed some incorrect SourceForge URLs.
+
+	* /cvsroot/cssc/gnu/CSSC/docs/CREDITS: Corrected some spelling errors.
+
 2000-07-18  James Youngman  <jay@gnu.org>
 
-	* auxfiles/CSSC.spec.in: Updated the URL.
+	* /cvsroot/cssc/gnu/CSSC/Makefile.am: Added relvbr.h to noinst_HEADERS.
 
-	* docs/BUGS: Refer to the bug tracking system at SourceForge.
+	* /cvsroot/cssc/gnu/CSSC/docs/cssc.texi:
+	Updated with details of the web site and changed the bug-reporting
+	procedure.
 
-	* AUTHORS:
-	Inserted reference to file docs/CREDITS in the "AUTHORS" file.
-
-	* README: Added information about SourceForge to the README.
-
-	* configure.in: Bumped the patchlevel.
-
-	* NEWS, docs/CREDITS.short.txt, docs/CREDITS:
+	* /cvsroot/cssc/gnu/CSSC/ChangeLog:
 	Brought into line with recent changes.
 
-	* bsd/sccs.c:
+	* /cvsroot/cssc/gnu/CSSC/auxfiles/CSSC.spec.in: Updated the URL.
+
+	* /cvsroot/cssc/gnu/CSSC/docs/BUGS:
+	Refer to the bug tracking system at SourceForge.
+
+	* /cvsroot/cssc/gnu/CSSC/AUTHORS:
+	Inserted reference to file docs/CREDITS in the "AUTHORS" file.
+
+	* /cvsroot/cssc/gnu/CSSC/README:
+	Added information about SourceForge to the README.
+
+	* /cvsroot/cssc/gnu/CSSC/configure.in: Bumped the patchlevel.
+
+	* /cvsroot/cssc/gnu/CSSC/NEWS, /cvsroot/cssc/gnu/CSSC/docs/CREDITS.short.txt, /cvsroot/cssc/gnu/CSSC/docs/CREDITS:
+	Brought into line with recent changes.
+
+	* /cvsroot/cssc/gnu/CSSC/bsd/sccs.c:
 	Patch from Albert John FitzPatrick III  <ajf_nylorac@acm.org>;
 	Added support for "unget".
 
-	* delta.cc:
+	* /cvsroot/cssc/gnu/CSSC/delta.cc:
 	Accept list of MRs on input even if the input is not a TTY since
 	allegedly other implementations do this.
 
