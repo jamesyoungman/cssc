@@ -48,7 +48,7 @@
 #ifndef USE_STANDARD_STRING
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.10 1998/02/21 14:27:11 james Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.11 1998/06/16 20:33:19 james Exp $";
 #endif
 
 
@@ -57,7 +57,7 @@ static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.10 1998/02/21 14:27:11 j
 struct mystring::MyStrRep
 {
 public:
-  char *data;
+  charT *data;
   int  refs;
   size_type len;
   
@@ -65,7 +65,7 @@ public:
   {
     data = new charT[sl+1];
     len = sl;
-    memcpy(data, s, len);
+    memcpy(data, s, len*sizeof(charT));
     data[sl] = 0;		// terminate.
     refs = 1;
   }
@@ -205,6 +205,8 @@ mystring mystring::operator+(const mystring &s) const
   return mystring(newdata, newlen);
 }
 
+// TODO: either using memcmp() here is invalid, 
+// or we could just use strcmp()...
 int
 mystring::compare(const mystring &s) const
 {
@@ -270,19 +272,19 @@ mystring::ModifiableReference::operator char() const
   return s.rep->data[pos];
 }
 
-
 mystring::size_type
 mystring::find_last_of(charT needle) const
 {
-  const char *p = rep->data;
+  const charT *p = rep->data + rep->len;
 
-  for (size_type i=0; i<rep->len; ++i)
-    if (*p++ == needle)
-      return i;
+  for (size_type i=rep->len; i>0; i--)
+    {
+      if (*--p == needle)
+	return i;
+    }
+  
   return npos;
 }
-
-
 
 #endif /* USE_STANDARD_STRING */
 
