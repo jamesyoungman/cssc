@@ -40,7 +40,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.38 2002/04/04 19:32:04 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.39 2004/10/17 12:40:19 james_youngman Exp $";
 
 
 static bool
@@ -82,6 +82,7 @@ main(int argc, char **argv)
   mylist<mystring> add_users, erase_users;	/* -a, -e */
   mystring mrs, comments;			/* -m, -y */
   int check_checksum = 0;	                /* -h */
+  int validate       = 0;	                /* also -h */ 
   int reset_checksum = 0;			/* -z */
   int suppress_mrs = 0;				/* -m (no arg) */
   int suppress_comments = 0;			/* -y (no arg) */
@@ -204,6 +205,7 @@ main(int argc, char **argv)
 
     case 'h':
       check_checksum = 1;
+      validate = 1;
       break;
 
     case 'z':
@@ -281,13 +283,27 @@ main(int argc, char **argv)
 	  
 	  sccs_file file(name, mode);
 
-	  // The -h option (check_checksum) overrides all the other options;
-	  // if you specify the -h flag, no other action will take place.
-	  if (check_checksum)
+	  // The -h option (check_checksum and validate) overrides all the 
+	  // other options; if you specify the -h flag, no other action 
+	  // will take place.
+	  if (check_checksum || validate)
 	    {
-	      if (!file.checksum_ok())
-		retval = 1;
-		    
+	      if (check_checksum)
+		{
+		  if (!file.checksum_ok())
+		    retval = 1;
+		}
+	      
+	      if (validate)
+		{
+		  // Validate the file itself.   The original sccs suite
+		  // probably does this by running "val" from "admin", but
+		  // we prefer not to exec things (for security reasons, 
+		  // among others).
+		  if (!file.validate())
+		    retval = 1; // Validation failed.
+		}
+	      
 	      continue;
 	    }
 		

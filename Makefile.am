@@ -85,7 +85,7 @@ cdc_SOURCES = cdc.cc sf-cdc.cc \
 
 admin_SOURCES = admin.cc sf-admin.cc \
 	rl-merge.cc \
-	bodyio.cc encoding.cc \
+	bodyio.cc encoding.cc sf-val.cc \
 	$(moddelta_srcs) $(newdelta_srcs)\
 	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
 
