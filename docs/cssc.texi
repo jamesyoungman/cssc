@@ -732,7 +732,7 @@ is set to one.  Hence the first branch from version 1.1 will be version
 
 Branches are made from any given version when that version already has a
 successor (for example, a @code{get -e} on version 1.1 will result in a
-branch (1.1.1.1) if version 1.2 exsts, and a @code{get -e} on version
+branch (1.1.1.1) if version 1.2 exists, and a @code{get -e} on version
 1.2.1.1 will result in a branch (1.2.2.1) if version 1.2.1.2 exists.
 
 If the ``enable branches'' flag is set, it is also possible to make
@@ -879,7 +879,7 @@ do.
 
 @table @samp
 @item prs s.myfile.c
-Show information about all the versions of myfile.c.
+Show information about all the versions of @file{myfile.c}.
 
 @item prs SCCS
 Show information about all the @sc{sccs} files in the directory
@@ -1215,7 +1215,7 @@ starts some lines of an @sc{sccs} file is printed as three asterisks,
 @samp{***}.  Lines that do not start with the control character are
 indented by one tab stop.  For encoded (binary) files, the encoded form
 of the file data is printed (this is what actually appears in the
-@sc{sccs} fuile itself).  If you want to extract the actual body of the
+@sc{sccs} file itself).  If you want to extract the actual body of the
 @sc{sccs} file, use the @samp{:BD:} keyword of @code{prs} (@pxref{Data
 Keywords}.
 
@@ -1617,7 +1617,7 @@ There are also some security problems with this code:-
 @item Temporary file races ---
 @sc{cssc} opens many temporary files, most of them with very predictable
 names.   This can be used as a lever for compromising the security of a
-system, often by antcipating the name of a file which will be opened at
+system, often by anticipating the name of a file which will be opened at
 some point, and creating a symbolic link of the same name.  Most of the
 temporary files used are created in the same directory as the @sc{sccs}
 file itself.   @sc{cssc} should not be used by the owners of files whose
@@ -1628,7 +1628,7 @@ is in a world-writable directory.
 It is common to install an extra set of binaries with the set-user-id
 bit turned on in their modes, to allow a specified group of users to
 make revisions to some important files.  There are many ways in which a
-setuid prgram can be used by malicious users to gain access to the
+setuid program can be used by malicious users to gain access to the
 security privileges of the user as whom a program runs.  @sc{cssc} has
 not been reviewed with the relevant security issues in mind.  Please do
 not install @sc{cssc} programs with the set-user-id or set-group-id bits
@@ -1661,6 +1661,34 @@ empty}.  In this case @sc{sccs} prints the @samp{Included:} or
 horrible kludge, this has not been done.  It is not expected that this
 will cause a problem for any users; if this is a problem for you, let
 the maintainer know and it will be fixed.
+
+
+
+@section Unemulated features
+
+There are some features of (some implementations of) the traditional
+@sc{sccs} suite which it may not be desirable to copy.
+
+@enumerate
+@item 
+If the ``encoded'' flag is set, some versions of @code{prt} omit a
+newline in the output and so the next thing follows immediately on the
+same line.
+
+@item
+If an @sc{sccs} file is created with the @samp{-i} option, and it turns
+out to need encoding, then genuine @sc{sccs} seeks back to the start of
+the file and encodes it.  However, if the input file is not seekable,
+for example if it is a pipe, then this doesn't always work.  The
+@sc{sccs} file is then sometimes created containing only the initial
+part of the body, before the offending segment of the file.  The exit
+value of the @code{admin} program is nevertheless still zero.  Tests for
+this situation are in @file{tests/binary/seeking.sh} but these tests are
+only carried out if the program under test seems to be @sc{CSSC} rather
+than the genuine @sc{sccs} suite.
+
+@end enumerate
+
 
 @node Year 2000 Issues, Testing, Incomplete, Top
 @chapter Year 2000 Issues
