@@ -20,3 +20,22 @@ done with
 	make all-tests
 but if you are modifying code, you can re-run any failing tests by
 using one of the specific tests listed in the makefile.
+
+
+The test suite is the single most important component of CSSC.  It
+ensures that CSSC failthfully emulates SCCS, misfeatures and all.  It
+also provides for regression testing as an integral part of each
+bug-fix and release.  There has so far been a linear relationship
+between test-cases written and bugs or missing features found.  This
+means that the fastest way to improve CSSC is not to hack with the
+code, but to write new test cases.  If, as the worst case, a new test
+case does not reveal a new bug, it might prevent one in the future.
+This means that ALL new test cases are useful.
+
+The following people have improved the quality of CSSC by providing
+cases for the test suite:
+
+James Youngman <JYoungman@vggas.com>	(come on, everybody else!)
+
+
+
