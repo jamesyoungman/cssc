@@ -36,7 +36,7 @@
 #include "seqstate.h"
 #include "delta.h"
 #include "delta-table.h"
-
+#include "linebuf.h"
 
 // We use @LIBOBJS@ instead now...
 // #ifndef HAVE_STRSTR
@@ -44,7 +44,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.12 1997/11/30 21:05:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.13 1997/12/26 18:38:53 james Exp $";
 #endif
 
 void
@@ -100,10 +100,10 @@ sccs_file::get(mystring gname, class seq_state &state,
 
 	/* The check on the following line is certainly wrong, since
 	 * the first body line need not refer to the first delta.  For
-	 * example, SunOS 4.1.1's SCCS implementation donesn't always
+	 * example, SunOS 4.1.1's SCCS implementation doesn't always
 	 * start with ^AI 1.
 	 */
-	unsigned short first_delta = strict_atous(linebuf + 3);
+	unsigned short first_delta = strict_atous( plinebuf->c_str() + 3);
 	state.start(first_delta, 1); /* 1 means "insert". */
 
 	FILE *out = parms.out;
@@ -152,12 +152,12 @@ sccs_file::get(mystring gname, class seq_state &state,
 
 			  const delta& gotten_delta
 			    = delta_table->delta_at_seq(state.active_seq());
-			   err = (this->*subst_fn)(linebuf, &parms,
+			   err = (this->*subst_fn)(plinebuf->c_str(), &parms,
 						   gotten_delta);
 			 } else {
-				 err = fputs_failed(fputs(linebuf, out));
+				 err = fputs_failed(fputs(plinebuf->c_str(), out));
 				 if (!parms.found_id 
-				     && check_id_keywords(linebuf)) {
+				     && check_id_keywords(plinebuf->c_str())) {
 					 parms.found_id = 1;
 				 }
 			 } 
@@ -172,7 +172,7 @@ sccs_file::get(mystring gname, class seq_state &state,
 		 /* A control line */
 
 		 check_arg();
-		 seq_no seq = strict_atous(linebuf + 3);
+		 seq_no seq = strict_atous(plinebuf->c_str() + 3);
 		if (seq < 1 || seq > highest_delta_seqno()) {
 			corrupt("Invalid serial number");
 		}

@@ -30,9 +30,10 @@
 #include "sccsfile.h"
 #include "delta.h"
 #include "delta-iterator.h"
+#include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.10 1997/11/30 21:05:59 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.11 1997/12/26 18:41:47 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -376,7 +377,7 @@ sccs_file::update() {
 
 	seek_to_body();
 	while(read_line() != -1) {
-		if (fputs_failed(fputs(linebuf, out))
+		if (fputs_failed(fputs(plinebuf->c_str(), out))
 		    || putc_failed(putc('\n', out))) {
 			xfile_error("Write error.");
 		}

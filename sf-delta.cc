@@ -43,7 +43,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.14 1997/11/30 21:05:53 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.15 1997/12/26 18:38:08 james Exp $";
 #endif
 
 class diff_state {
@@ -57,7 +57,7 @@ private:
 	int change_left;
 
 	FILE *in;
-	class _linebuf linebuf;
+	cssc_linebuf linebuf;
 	mystring gname;
 
 	NORETURN corrupt() POSTDECL_NORETURN;
@@ -116,7 +116,7 @@ diff_state::next_state() {
 		if (read_line()) {
 			corrupt();
 		}
-		if (strcmp(linebuf, "---\n") != 0) {
+		if (strcmp(linebuf.c_str(), "---\n") != 0) {
 			corrupt("---");
 		}
 		lines_left = change_left;
@@ -154,7 +154,7 @@ diff_state::next_state() {
 	int line1, line2, line3, line4;
 	char c;
 
-	line1 = (int) strtol(linebuf, &s, 10);
+	line1 = (int) strtol(linebuf.c_str(), &s, 10);
 	line2 = line1;
 	if (*s == ',') {
 		line2 = (int) strtol(s + 1, &s, 10);
@@ -291,7 +291,7 @@ sccs_file::check_keywords_in_file(const char *name) {
 	}
 
 	while(!read_line_param(f)) {
-		if (check_id_keywords(linebuf)) {
+		if (check_id_keywords(plinebuf->c_str())) {
 			fclose(f);
 			return;
 		}
@@ -460,7 +460,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		int c = read_line();
 
 		if (c != 0 && c != -1) {
-			seq_no seq = strict_atous(linebuf + 3);
+			seq_no seq = strict_atous(plinebuf->c_str() + 3);
 
 			if (seq < 1 || seq > highest_delta_seqno()) {
 				corrupt("Invalid sequence number");
@@ -538,14 +538,14 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 					abort();
 				}
 
-			} while(action == diff_state::INSERT);
+			} while (action == diff_state::INSERT);
 		}
 
 		if (c == -1) {
 			break;
 		}
 
-		fputs(linebuf, out);
+		fputs(plinebuf->c_str(), out);
 		putc('\n', out);
 	}
 

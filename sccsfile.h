@@ -35,11 +35,12 @@
 #include "sid.h"
 #include "sccsdate.h"
 #include "list.h"
-#include "linebuf.h"
+// #include "linebuf.h"
 #include "rel_list.h"
 
 class sccs_pfile;	/* pfile.h */
 class seq_state;	/* seqstate.h */
+class cssc_linebuf;
 
 struct delta;
 class cssc_delta_table;
@@ -54,12 +55,12 @@ private:
   sccs_name& name;
   FILE *f;
   enum _mode mode;
-  class _linebuf linebuf;
   int lineno;
   long body_offset;
   int body_lineno;
 
   cssc_delta_table *delta_table;
+  cssc_linebuf     *plinebuf;
   
   list<mystring> users;
   struct sccs_file_flags
@@ -123,6 +124,10 @@ public:
   sid highest_delta_release() const;
   sid seq_to_sid(seq_no) const;
   
+
+  /* Forwarding functinos for the line buffer.
+   */
+  char bufchar(int pos) const;
   
   ~sccs_file();
 
@@ -298,6 +303,12 @@ protected:
   // sid_in_use() should take a const sccs_pfile&, but iteration over
   // a sccs_pfile requires that it is not const (FIXME!).
   bool sid_in_use(sid id, sccs_pfile& p) const;
+
+private:
+  // Because we now have a pointer member, don't use the compiler's
+  // default assignment and constructor.
+  const sccs_file& operator=(const sccs_file&);	// not allowed to use!
+  sccs_file(const sccs_file&);	// not allowed to use!
 };
 
 /* l-split.c */
