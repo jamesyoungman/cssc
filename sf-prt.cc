@@ -14,7 +14,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.1 1997/05/31 10:16:00 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.2 1997/05/31 19:09:02 james Exp $";
 #endif
 
 static void
@@ -84,11 +84,182 @@ void print_flag(FILE *out, const char *fmt,  release flag, int& count)
     }
 }
 
+bool sccs_file::cutoff::excludes_delta(sid s,
+				       sccs_date date,
+				       bool& stop_now) const
+{
+  stop_now = false;
+  
+  if (!enabled)
+    return false;
+
+  if (first_accepted.valid())
+    {
+      // stop_now = stop_now || (date <= first_accepted);
+      if (date < first_accepted)
+	return true;
+    }
+  if (last_accepted.valid())
+    {
+      // Don't set stop_now, since we have not eve got to the first
+      // one that's not excluded, yet.
+      if (date > last_accepted)
+	return true;
+    }
+  if (cutoff_delta)
+    {
+      stop_now = stop_now || (date <= cutoff_delta->date);
+      if (date < cutoff_delta->date)
+	return true;
+    }
+  return false;
+}
+
+void
+sccs_file::cutoff::print(FILE *out) const
+{
+  fprintf(out, "cutoff: ");
+  if (enabled)
+    {
+      fputs("enabled ", out);
+      if (most_recent_sid_only)
+	  fputs("most-recent-only ", out);
+      fputs("cutoff_sid='", out);
+      if (cutoff_sid.valid())
+	cutoff_sid.print(out);
+      else
+	fputs("(invalid)", out);
+
+      fputs("' first_accepted='", out);
+      if (first_accepted.valid())
+	{
+	  first_accepted.printf(out, 'D');
+	  fprintf(out, " ");
+	  first_accepted.printf(out, 'T');
+	}
+      else
+	{
+	fputs("(invalid)'", out);
+	}
+      fputs("' last_accepted='", out);
+      if (last_accepted.valid())
+	{
+	  last_accepted.printf(out, 'D');
+	  fprintf(out, " ");
+	  last_accepted.printf(out, 'T');
+	}
+      else
+	{
+	fputs("(invalid)'", out);
+	}
+
+      if (cutoff_delta)
+	{
+	  fputs("' cutoff_delta->date='", out);
+	  if (cutoff_delta->date.valid())
+	    {
+	      last_accepted.printf(out, 'D');
+	      fprintf(out, " ");
+	      last_accepted.printf(out, 'T');
+	    }
+	  else
+	    {
+	      fputs("(invalid)'", out);
+	    }
+	}
+      fputs("'\n", out);
+    }
+  else
+    {
+      fputs("disabled\n", out);
+    }
+}
+
+sccs_file::cutoff::cutoff()
+  : enabled(false), most_recent_sid_only(false),
+    cutoff_sid(sid()),
+    cutoff_delta(NULL)
+{
+  // all done above.
+}
+
+// Print the body of an SCCS file, transforming all "^A"s 
+// into "*** "s.
+static bool 
+do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
+{
+  fpos_t saved_pos;
+
+  if (0 != fgetpos(fp, &saved_pos))
+    quit(errno, "%s: fgetpos() failed!", name);
+  
+  if (0 != fseek(fp, body_offset, SEEK_SET))
+    quit(errno, "%s: fseek() failed!", name);
+  
+  int ch;
+  bool ret = true;
+  
+  if (EOF == putc('\n', out))
+    ret = false;
+  
+  while ( ret && (ch=getc(fp)) != EOF )
+    {
+      if (ferror(fp))		// read error is fatal.
+	quit(errno, "%s: read failed!", name);
+      
+      if ('\001' == ch)
+	{
+	  if (EOF == fputs("*** ", out))
+	    {
+	      ret = false;	// write error
+	      break;
+	    }
+	}
+      else if ('\n' == ch)
+	{
+	  int peek = getc(fp);
+	  
+	  if ('\001' == peek)
+	    {
+	      ungetc(peek, fp);
+	      if (EOF == putc('\n', out))
+		ret = false;
+	    }
+	  else if (EOF == peek)
+	    {
+	      if (EOF == putc('\n', out))
+		ret = false;
+	      break;
+	    }
+	  else 
+	    {
+	      ungetc(peek, fp);
+	      if (EOF == fputs("\n\t", out))
+		{
+		  ret = false;	// write error
+		  break;
+		}
+	    }
+	}
+      else
+	{
+	  if (EOF == putc(ch, out))
+	    {
+	      ret = false;	// write error
+	      break;
+	    }
+	}
+    }
+  if (0 != fsetpos(fp, &saved_pos))
+    quit(errno, "%s: fsetpos() failed!", name);
+  return ret;
+}
+
+
+
 void		
 sccs_file::prt(FILE *out,
-	       sid cutoff_sid,	      // -y
-	       sccs_date cutoff_date, // -c or -r
-	       enum when when,	      // distinguished -c & -r
+	       cutoff exclude,	      // -y, -c, -r
 	       int all_deltas,	      // -a
 	       int print_body,	      // -b
 	       int print_delta_table, // -d
@@ -99,6 +270,61 @@ sccs_file::prt(FILE *out,
 	       int print_users) const // -u
 
 {
+  if (print_body)
+    {
+      print_delta_table = 0;
+    }
+  
+  if (print_delta_table)
+    {
+      if (exclude.enabled)
+	{
+	  // exclude.print(stdout);
+	  if (exclude.most_recent_sid_only)
+	    {
+	      find_most_recent_sid(exclude.cutoff_sid,
+				   exclude.first_accepted);
+	    }
+	  if (exclude.cutoff_sid.valid())
+	    exclude.cutoff_delta = delta_table.find(exclude.cutoff_sid);
+  
+	  // exclude.print(stdout);
+	}
+      
+      bool stop_now = false;
+      delta_iterator iter(delta_table);
+  
+      while(!stop_now && iter.next(all_deltas))
+	{
+	  if (exclude.excludes_delta(iter->id, iter->date, stop_now))
+	    continue;
+
+	  // Unless -a was specified, don't print removed deltas.
+	  if (!all_deltas && 'R' == iter->type)
+	    continue;
+	  
+	  if (exclude.enabled)	// -y, -c, or -r option.
+	    fprintf(out, "%s:\t", (const char *)name);
+	  else
+	    fprintf(out, "\n");
+      
+	  // Print the stuff from the delta...
+	  fprintf(out, "%c ", iter->type);
+	  iter->id.print(out);
+	  fprintf(out, "\t");
+	  iter->date.printf(out, 'D');
+	  fprintf(out, " ");
+	  iter->date.printf(out, 'T');
+	  fprintf(out, " %s\t%hu %hu",
+		  (const char*)iter->user,
+		  (unsigned short)iter->seq,
+		  (unsigned short)iter->prev_seq);
+	  fprintf(out, "\t%05u/%05u/%05u\n",
+		  iter->inserted, iter->deleted, iter->unchanged);
+      
+	}
+    }
+      
   // global stuff.
   if (print_users)
     {
@@ -150,6 +376,13 @@ sccs_file::prt(FILE *out,
     {
       fprintf(out, "\nDescription --\n");
       print_string_list(out, comments, "\t", "\n", "none");
+    }
+
+  if (print_body)
+    {
+      // seek_to_body() is a non-const member, so we have this
+      // silly workaround.
+      do_print_body((const char *)name, f, body_offset, out);
     }
 }
 
