@@ -6,7 +6,7 @@
 
 csscutildir = $(libexecdir)/cssc
 
-SUBDIRS = docs testutils tests
+SUBDIRS = docs testutils tests auxfiles
 
 
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt

@@ -172,4 +172,4 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and to the second invocation couldn't find it
 dnl and so things go wrong.
 
-AC_OUTPUT(Makefile sccsdiff.sh tests/Makefile docs/Makefile testutils/Makefile version.cc)
+AC_OUTPUT(Makefile sccsdiff.sh tests/Makefile docs/Makefile testutils/Makefile auxfiles/Makefile version.cc)
