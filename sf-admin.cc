@@ -39,7 +39,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.17 1997/12/11 22:55:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.18 1997/12/26 18:37:06 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -222,12 +222,13 @@ sccs_file::admin(const char *file_comment,
 		}
 	}
 
+	// Erase any required users from the list.
+	users -= erase_users;
+	
 	// Add the specified users to the beginning of the user list.
 	list<mystring> newusers = add_users;
 	newusers += users;
 	users = newusers;
-	
-	users -= erase_users;
 }
 
 
