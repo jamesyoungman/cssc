@@ -1,6 +1,6 @@
 #! /bin/sh
 # optorder.sh:  Testing for option ordering.
-#   "get s.foo -Gbar" and "get -Gbar s.foo" shoulf be equivalent.
+#   "get s.foo -Gbar" and "get -Gbar s.foo" should be equivalent.
 
 # Import common functions & definitions.
 . ../common/test-common
@@ -21,7 +21,7 @@ echo foo > $g
 
 
 #
-# Create an SCCS file with several branches to work on.
+# Create an SCCS file to work on.
 # We generally ignore stderr output since we produce "Warning: no id keywords"
 # more often than "real" SCCS.
 #
