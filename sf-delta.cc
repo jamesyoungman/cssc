@@ -38,6 +38,7 @@
 #include "bodyio.h"
 #include "filediff.h"
 #include "err_no.h"
+#include "myset.h"
 
 #undef JAY_DEBUG
 
@@ -47,7 +48,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.46 2002/03/19 15:36:13 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.47 2002/03/21 21:15:25 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -545,7 +546,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   
   // The new delta header includes info about what deltas
   // are included, excluded, ignored.   Compute that now.
-  mylist<seq_no> included, excluded;
+  myset<seq_no> included, excluded;
   seq_no seq;
   
   for (seq = 1; seq < highest_delta_seqno(); seq++)
@@ -616,7 +617,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   // assign a sequence number.
   seq_no new_seq = delta_table->next_seqno();
 
-  
+#if 1
+  /* 2002-03-21: James Youngman: we already did this, above */
+
   // copy the list of excluded and included deltas from the p-file
   // into the delta.  pfile->include is a range_list<sid>,
   // but what we actually want to create is a list of seq_no.
@@ -642,11 +645,12 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
             }
         }
     }
+#endif
   
   // Construct the delta information for the new delta.
   delta new_delta('D', pfile->delta, sccs_date::now(),
                   get_user_name(), new_seq, predecessor_seq,
-                  included, excluded, mrs, comments);
+                  included.list(), excluded.list(), mrs, comments);
 
   // We don't know how many lines will be added/changed yet.
   // end_update() fixes that.
