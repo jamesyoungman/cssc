@@ -1,4 +1,10 @@
-This bug is now fixed but the table is useful.
+This bug is now fixed but the table is useful BUT INCOMPLETE.
+
+[Sun Mar 15 16:55:53 1998: Behaviout for "get -t" is missing
+ especially for the case where the top revision on the trunk
+ is a branch point.  The tests in tests/get/t-option.sh do
+ in fact test this, however]
+
 
 I was having problems with sccs-get not getting the correct versions
 with and without the -r and -e options.

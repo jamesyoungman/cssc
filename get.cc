@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.22 1998/03/10 00:24:12 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.23 1998/03/15 17:16:48 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -84,6 +84,7 @@ main(int argc, char **argv) {
 #if 0
 	int seq_no = 0;			/* -a */
 #endif
+	int include_branches = 0;       /* -t */
 
 	if (argc > 0) {
 		set_prg_name(argv[0]);
@@ -179,6 +180,10 @@ main(int argc, char **argv) {
 			break;
 #endif
 
+		case 't':
+		  include_branches = 1;
+		  break;
+
 		case 'G':
 		  	got_gname = 1;
 			use_stdout = 0;
@@ -204,9 +209,10 @@ main(int argc, char **argv) {
 	  }
 	
 
-	FILE *out = stdin;	/* The output file.  It's initialized with
-				   stdin so if it's accidently used before
-				   being set it will quickly cause an error. */
+	FILE *out = NULL;	/* The output file.  It's initialized
+				   with NULL so if it's accidentally
+				   used before being set it will
+				   quickly cause an error. */
 
 	if (use_stdout) {
 		gname = "-";
@@ -244,7 +250,7 @@ main(int argc, char **argv) {
 		sid retrieve;
 
 		rid = org_rid;
-		if (!file.find_requested_sid(rid, retrieve))
+		if (!file.find_requested_sid(rid, retrieve, include_branches))
 		  {
 		    quit(-1, "%s: Requested SID not found.", name.c_str());
 		  }

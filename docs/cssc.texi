@@ -396,8 +396,6 @@ If the @samp{-y} option is not given, the user is prompted for comments.
 @end table 
 
 
-@c TODO: Write the test cases for cdc.
-
 @c TODO: if SCCS-file iterator is using stdin, it is an error 
 @c not to use -y; at the moment this is not detected, and 
 @c cdc probably goes on to do silly things.
@@ -678,8 +676,15 @@ Retrieve version @var{X}, rather than the default.
 Run silently.
 
 @item -t
-Get the ``top'' delta for the indicated release.   Used by @samp{comb}.
-@xref{comb}.
+Get the ``top'' delta for the indicated release.  The default behaviour
+of @code{get} is to get the highest revision on the trunk.  The
+@samp{-t} option only modifies this behaviour in the situation where the
+topmost trunk revision is a branch point.  In this case, the @samp{-t}
+option causes the topmost revision on this branch to be retrieved.  In
+other words, the @samp{-t} option removes the restriction that the
+retrieved version should be on the trunk.  This option is used by
+@samp{comb} (@pxref{comb}) and by the driver program @samp{sccs} from
+BSD.
 
 @item -V
 Show version information.

@@ -1,0 +1,40 @@
+Notes on the coding style used in the maintenance of CSSC
+----------------------------------------------------------
+
+1. Indentation.
+
+	The indentation used by the code may look random to you, but
+	it is quite simple, really.  MySC, the package on which CSSC
+	is based, was written with a K&R indentation style.  New code
+	written for CSSC, or rewritten code, is indented according to
+	the GNU style (that is, with Emacs's default indentation
+	rules).  This is deliberate; please don't re-indent code
+	UNLESS you are rewriting it.  New code for CSSC should be
+	indented in the GNU fashion.
+
+
+2. Design.  
+
+        Much of the design of CSSC is inherited from MySC.  MySC was
+	written when the C++ language was quite different to the way
+	it is now, and when GCC was a much less good C++ compiler.
+	Hence it has features which now seem non-optimal.  While
+	redesigning CSSC to be more elegant might be nice, it is far
+	more important to make it work *correctly*.  Redesign has been
+	deliberately avoided unless it can be done in the course of
+	other work required for the sake of correctness.
+
+
+3. Comments
+
+	Yes, please.  But no "//" comments in the C code, though
+	they're fine for the C++ code.
+
+
+4. Other aspects of the coding style.
+	 
+	 Most of the other aspects of the coding for this project
+	 follow the GNU guidelines.   The only exception is the 
+	 function call notation; while the GNU standard stipulates 
+	 "f ()", I strongly prefer "f()".
+

@@ -6,11 +6,11 @@
 
 1998-02-01  James Youngman  <jay@gnu.org>
 
-	* tests: Testing for binary files: auto detects binary files
-	OK, check that admin -b works OK, "prs -d:GB:", "prs -d:BD:"
-	and "prt -b" work OK.  Also check zero-length files, keyword
-	substitution, large binary files, "text" files with zero-bytes
-	in them, and files that do not end in newline.
+	* tests: Testing for binary files: 
+	OK, check that "prs -d:GB:", "prs -d:BD:" and "prt -b" work OK.  
+	Also check zero-length files, keyword substitution, large
+	binary files.
+
 	
 
 1998-01-27  James Youngman  <jay@gnu.org>
@@ -18,12 +18,7 @@
 	* admin: check that the # of lines inserted is correct for the
 	first delta.
 
-	* get: Make sure we support "get" without -k, for binary
-	  files.
-
 1998-01-25  James Youngman  <jay@gnu.org>
-
-	* get.cc: Implement -t option (Dave Bodenstab bug report)
 
 	* bodyio.cc: Test what happens if the text input ends with
 	  "%A", that is, the peeked character is EOF.  At the moment,
@@ -47,15 +42,11 @@ Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
 	* Write test cases for admin's -h, -l, -r, -V, and -z
  	flags.
 
-	* Write test cases for admin's -b flag.
-
 	* Write test cases for delta's -g, -n, -p, -r, -s flags.
 
 	* Write test cases for get's -i, -l, -lp flags.
 
 	* Write code and test cases for "sccs", val and sccs-comb.
-
-	* Write test cases for cdc.
 
 	* Write documentation and test cases for sccsdiff.
 

@@ -88,6 +88,26 @@ get_expect ty5 ""    2.1.1.2
 get_expect ty6 -r1   1.2.1.1
 
 
+## Set the default delta flag and test the -t option's effect
+## (the -t flag should not over-ride it).
+docommand prep13 "${admin} -fd1.1 $s" 0 "" ""
+
+toption=""
+get_expect d1 ""     1.1
+toption="-t"
+get_expect td1 ""    1.1
+
+
+## Set the release ceiling...
+docommand prep14 "${admin} -dd $s" 0 "" ""  # remove default delta flag
+docommand prep15 "${admin} -fc1 $s" 0 "" "" # set release ceiling to 1.
+
+# Testing on "real" SCCS shows that the release ceiling apparently has
+# no effect.  This is surely wrong, given the documentation. [jay@gnu.org]
+toption=""
+get_expect c1 ""     2.1			# This is surely wrong!
+toption="-t"
+get_expect tc1 ""    2.1.1.2			# This is surely wrong!
 
 remove $s
 success
