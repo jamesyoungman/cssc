@@ -2,7 +2,7 @@
  * sf-write.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2003 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.32 2002/04/04 19:32:05 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.33 2003/03/01 14:16:45 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -459,7 +459,9 @@ sccs_file::end_update(FILE **pout)
   mystring xname = name.xfile();
   
   // Open the file (obtaining the checksum) and immediately close it.
-  if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ, &sum))))
+  bool dummy_bk_flag;
+  if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ,
+					  &sum, &dummy_bk_flag))))
     xfile_error("Error closing file.");
   
   // For "admin -i", we may need to change the "encoded" flag

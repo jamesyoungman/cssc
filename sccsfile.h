@@ -2,7 +2,7 @@
  * sccsfile.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001,2002 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997-2003 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.48 2002/04/04 19:34:48 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.50 2003/03/01 14:16:25 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -63,6 +63,7 @@ private:
   long body_offset;
   int body_lineno;
   bool xfile_created;
+  bool is_bk_file;
   
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
@@ -91,8 +92,8 @@ private:
   mylist<mystring> comments;
 
   static FILE *open_sccs_file(const char *name, enum _mode mode,
-                              int *sump);
-  NORETURN corrupt(const char *why) const POSTDECL_NORETURN;
+                              int *sump, bool *is_bk_file);
+  NORETURN corrupt(const char *fmt, ...) const POSTDECL_NORETURN;
   void check_arg() const;
   void check_noarg() const;
   unsigned short strict_atous(const char *s) const;
@@ -104,6 +105,10 @@ private:
   void read_delta();
   bool seek_to_body();
 
+  /* Support for BitKeeper files */
+  void check_bk_flag(char flagchar) const;
+  void check_bk_comment(char ch, char arg) const;
+  
 public:
 
   // sccs_file::sccs_file(sccs_name&, enum _mode) MUST 
@@ -195,7 +200,7 @@ public:
 
 private:
   
-  void saw_unknown_feature(const char *fmt, ...);
+  void saw_unknown_feature(const char *fmt, ...) const;
   
   /* sf-get3.c */
   bool prepare_seqstate(seq_state &state, seq_no seq,

@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.50 2002/04/07 02:22:35 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.51 2003/03/01 14:15:15 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -89,7 +89,10 @@ static int just_one_link(FILE *f)
 /* Static member for opening a SCCS file and then calculating its checksum. */
 #define f f_is_also_a_class_member_variable
 FILE *
-sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
+sccs_file::open_sccs_file(const char *name,
+			  enum _mode mode,
+			  int *sump,
+			  bool* isBKFile)
 {
   FILE *f_local;
 
@@ -121,8 +124,42 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
       (void)fclose(f_local);
       return NULL;
     }
-  
-  if (getc(f_local) != '\001' || getc(f_local) != 'h')
+
+  bool badMagic = false;
+  if (getc(f_local) != '\001')
+    {
+      badMagic = true;
+    }
+  else
+    {
+      char magicMarker = getc(f_local);
+      if (magicMarker == 'H')
+	{
+	  if (READ == mode)
+	    {
+	      /* We support read-only access to BK files. */
+	      warning("%s is a BitKeeper file.", name);
+	    }
+	  else
+	    {
+	      errormsg("%s: This is a BitKeeper file, and only read-only "
+		       "access to BitKeeper files is supported at the moment, "
+		       "sorry.\n",
+		       name);
+	      (void)fclose(f_local);
+	      return NULL;
+	    }
+	  // Inform the caller that this is a BK file.
+	  // NB: this is the parameter, not member variable	  
+	  *isBKFile = true;	
+	}
+      else if (magicMarker != 'h')
+	{
+	  badMagic = true;
+	}
+    }
+
+  if (badMagic)
     {
       (void)fclose(f_local);
       s_corrupt_quit("%s: No SCCS-file magic number.  "
@@ -222,9 +259,25 @@ sccs_file::read_line() {
 /* Quits with a message saying that SCCS file is corrupt. */
 
 NORETURN
-sccs_file::corrupt(const char *why) const {
-	s_corrupt_quit("%s: line %d: Corrupted SCCS file. (%s)",
-		       name.c_str(), lineno, why);
+sccs_file::corrupt(const char *fmt, ...) const {
+  char buf[80];
+  const char *p;
+  
+  va_list ap;
+  va_start(ap, fmt);
+  if (-1 == vsnprintf(buf, sizeof(buf), fmt, ap))
+    {
+      warning("%s: error message too long for buffer, so the "
+	      "next message will lack some relevant detail", 
+	      name.c_str());
+      p = fmt;			// best effort
+    }
+  else
+    {
+      p = buf;
+    }
+  s_corrupt_quit("%s: line %d: Corrupted SCCS file. (%s)",
+		 name.c_str(), lineno, p);
 }
 
 
@@ -459,11 +512,19 @@ sccs_file::read_delta() {
 		 * to support Larry's extensions, we don't call check_arg()
 		 * here.
 		 */
-		/* check_arg(); */
-		if (bufchar(2) != ' ')
+		if (is_bk_file)
 		  {
-		    saw_unknown_feature("Unknown special comment intro %c%c",
-					c, bufchar(2));
+		    check_bk_comment(c, bufchar(2));
+		  }
+		else
+		  {
+		    check_arg();
+		    if (bufchar(2) != ' ')
+		      {
+			saw_unknown_feature("Unknown special comment "
+					    "intro '%c%c'",
+					    c, bufchar(2));
+		      }
 		  }
 		tmp.comments.add(plinebuf->c_str() + 3);
 	      }
@@ -480,6 +541,56 @@ sccs_file::read_delta() {
 
 	ASSERT(0 != delta_table);
 	delta_table->add(tmp);
+}
+
+
+/* Check for BK flags */
+void
+sccs_file::check_bk_flag(char flagchar) const
+{
+  switch (flagchar)
+    {
+    case 'x':
+      return;
+
+    default:
+      corrupt("Unknown flag '%c'.", flagchar);
+    }
+}
+
+
+/* Check for BK comments */
+void
+sccs_file::check_bk_comment(char ch, char arg) const
+{
+  ASSERT(is_bk_file);
+  
+  switch (arg)
+    {
+    case 'B':
+    case 'C':
+    case 'F':
+    case 'H':
+    case 'K':
+    case 'M':
+    case 'O':
+    case 'P':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'V':
+    case 'X':
+    case 'Z':
+      return;
+
+    case ' ': // this is the normal SCCS case.
+      return;
+
+    default:
+      saw_unknown_feature("Unknown special comment intro '%c%c' "
+			  "in BitKeeper file\n",
+			  ch, arg);
+    }
 }
 
 
@@ -523,7 +634,7 @@ sccs_file::get_module_name() const
    locked if it isn't only being read.  */
 
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
-  : name(n), mode(m), lineno(0), xfile_created(false)
+  : name(n), mode(m), lineno(0), xfile_created(false), is_bk_file(false)
 {
   delta_table = new cssc_delta_table;
   plinebuf     = new cssc_linebuf;
@@ -569,7 +680,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   // a new x-file and then renaming it.   This means that we open
   // the s-file read-only.
   signed int sum = 0;
-  f = open_sccs_file(name.c_str(), READ, &sum);
+  f = open_sccs_file(name.c_str(), READ, &sum, &is_bk_file);
   
   /* open_sccs_file() returns normally if everything went OK, or if 
    * there was an IO error on an apparently valid file.  If this is 
@@ -581,12 +692,29 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     }
   
   int c = read_line();
-  ASSERT(c == 'h');
+  
+  // open_sccs_file() should have already checked that the first line
+  // is ^Ah or ^Ah, so this assertion is really just checking that
+  // open_sccs_file() did the right thing.
+  if (is_bk_file)
+    {
+      ASSERT(c == 'H');
+    }
+  else
+    {
+      ASSERT(c == 'h');
+    }
 
   /* the checksum is represented in the file as decimal.
    */
   signed int given_sum = 0;
-  if (1 != sscanf(plinebuf->c_str(), "%*ch%d", &given_sum))
+  const char *format;
+  if (is_bk_file)
+    format = "%*cH%d";
+  else
+    format = "%*ch%d";
+  
+  if (1 != sscanf(plinebuf->c_str(), format, &given_sum))
     {
       errormsg("Expected checksum line, found line beginning '%.3s'\n",
 	       plinebuf->c_str());
@@ -753,11 +881,18 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	else if (got_arg && '0' == *arg)
 	  flags.encoded = 0;
 	else
-	  corrupt("Bad value for 'e' flag.");
+	  corrupt("Bad value '%c' for 'e' flag.", arg[0]);
 	break;
 	
       default:
-	corrupt("Unknown flag.");
+	if (is_bk_file)
+	  {
+	    check_bk_flag(bufchar(3));
+	  }
+	else
+	  {
+	    corrupt("Unknown flag '%c'.", bufchar(3));
+	  }
       }
       
       c = read_line();
@@ -1002,7 +1137,7 @@ bool sccs_file::branches_allowed() const
  * checks what mode we're using the SCCS file in, and reacts
  * accordingly.
  */
-void sccs_file::saw_unknown_feature(const char *fmt, ...)
+void sccs_file::saw_unknown_feature(const char *fmt, ...) const
 {
   va_list ap;
 
