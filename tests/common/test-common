@@ -140,7 +140,10 @@ fi ;
 }
 
 # Call miscarry wen a test could not be completed.
-miscarry () { echo `basename $0`: Test could not be completed; exit 1 ; }
+miscarry () { 
+echo `basename $0`: "Test could not be completed: " "$@"
+exit 1 ; 
+}
 
 
 remove () { rm -rf $* || miscarry Could not remove $* ; }

@@ -1,0 +1,39 @@
+# Hey, Emacs!  This is a -*- sh -*- script.
+#
+# The test suite fails if run by root, because when you are root,
+# "test -w foo" returns 0 even for read-only files because root can
+# write to them.
+#
+# The test suite depends on being able to accurately detect a readonly file.
+
+# Execute in a subshell so that we can use "trap ... 0" and 
+# ensure that the temporary file is removed before we reach 
+# the end of this file.
+
+(
+f=/tmp/foo.$$.tmp
+# Use rm and echo rather than risking a missing "touch".
+rm -f $f ; echo > $f
+
+# Remove temporary file on exit.
+trap "rm -f $f" 0
+
+
+chmod 400 $f
+if test -f $f
+then
+	if test -w $f
+	then
+		miscarry "Please do not run the suite as root" 
+		# should not reach this point.
+		exit 1
+	fi
+else
+	miscarry "Could not create $f (or buggy test(1))"
+	# should not reach this point.
+	exit 1
+fi
+unset f
+)
+
+
