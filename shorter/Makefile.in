@@ -10,8 +10,11 @@
 #
 # Makefile for compiling under Unix.   Uses ./configure.
 #
-# $Id: Makefile.in,v 1.2 1997/06/30 22:06:54 james Exp $
+# $Id: Makefile.in,v 1.3 1997/11/07 23:06:36 james Exp $
 # $Log: Makefile.in,v $
+# Revision 1.3  1997/11/07 23:06:36  james
+# Make sure the RM macro is defined, for non-GNU makes.
+#
 # Revision 1.2  1997/06/30 22:06:54  james
 # Removed unneccessary features still present in this file only because
 # it was copied from the one in the parent directory.
@@ -34,6 +37,7 @@ CXXCPP = @CXXCPP@
 CC = @CC@
 TEMPLATE_CXXFLAGS = -fno-implicit-templates
 DIFF = @CONFIG_DIFF_COMMAND@
+RM = rm -f
 
 
 # Flags for use only with 
