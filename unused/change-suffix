@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# A shell script for renaming C++ source files, in order
+# to change their suffixes.
+#
+# DOS users don't need this, they can just type
+#  REN *.foo *.bar
+#
+# In the Unix world:	 .cc .cxx .C
+# In the DOS world:	 .cpp .cxx 
+# I prefer:		 .cc
+# Only suffix in common: .cxx
+
+if [ $# -ne 2 ]
+then
+	echo $0: usage $0 from-suffix to-suffix
+	exit 1
+fi
+before=$1
+after=$2
+for file in *${before}
+do
+	newname=`echo ${file} | sed -e "s/${before}$/${after}/"`
+	mv ${file} ${newname}
+done
