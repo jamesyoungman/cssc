@@ -3,16 +3,16 @@ dnl Process this file with autoconf to produce a configure script.
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
 AC_INIT(sccsfile.h)
+AC_CONFIG_HEADER(aconf.h)
 
 dnl Checks for programs.
-dnl AC_PROG_CC
+AC_PROG_CC
 AC_PROG_CXX
-AC_LANG_CPLUSPLUS
-AC_MSG_CHECKING(whether g++ is being used)
 AC_SUBST(GXX)dnl
-AC_MSG_RESULT($GXX)
+AC_PROG_CPP
 AC_PROG_INSTALL
-dnl It would be a good idea to defailt the path for diff
+
+dnl It would be a good idea to default the path for diff
 dnl to install_dir/diff-program so the installer can 
 dnl add a symlink later.   TODO.
 AC_PATH_PROG(CONFIG_DIFF_COMMAND,diff,/usr/bin/diff)
@@ -21,7 +21,6 @@ AC_DEFINE_UNQUOTED(CONFIG_DIFF_COMMAND,"$ac_cv_path_CONFIG_DIFF_COMMAND")
 dnl Checks for libraries.
 
 dnl Checks for header files.
-AC_CONFIG_HEADER(aconf.h)
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h sys/types.h sys/file.h prototypes.h io.h process.h pwd.h unistd.h)
 AC_HEADER_DIRENT
@@ -33,12 +32,41 @@ AC_TYPE_SIZE_T
 AC_TYPE_PID_T
 AC_TYPE_UID_T
 
+
+dnl AC_CHECK_DECL_IN_HEADER(IDENTIFIER, HEADERS)
+AC_DEFUN(AC_CHECK_DECL_IN_HEADER,
+AC_MSG_CHECKING(for $1 in $2)
+ac_tr_ident=`echo $1 | tr '.abcdefghijklmnopqrstuvwxyz' '_ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
+ac_tr_header=`echo $2 | tr '.abcdefghijklmnopqrstuvwxyz' '_ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
+ac_tr_define=${ac_tr_header}_DECLARES_${ac_tr_ident}
+AC_CACHE_VAL(ac_cv_decl_$ac_tr_define,
+[AC_EGREP_HEADER([$1], [$2], 
+eval "ac_cv_decl_$ac_tr_define=yes", 
+eval "ac_cv_decl_$ac_tr_define=no")])dnl
+if eval "test \"`echo '$ac_cv_decl_'$ac_tr_define`\" = yes"; then
+	 AC_MSG_RESULT(yes)
+	 AC_DEFINE($ac_tr_define,1)
+else
+	 AC_MSG_RESULT(no)
+fi
+)
+
+
+
+dnl Look for declarations in headers.
+AC_CHECK_DECL_IN_HEADER(sys_errlist,errno.h)
+AC_CHECK_DECL_IN_HEADER(sys_errlist,stdlib.h)
+AC_CHECK_DECL_IN_HEADER(sys_errlist,stdio.h)
+
+
 dnl Checks for library functions.
 dnl AC_FUNC_MEMCMP
 dnl The "select" that autoscan found was a method. AC_CHECK_FUNCS(select)
 AC_CHECK_FUNCS(mktime remove rename strerror strstr abort)
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid fork pipe spawn geteuid getegid)
 AC_CHECK_FUNCS(wait)
+
+
 
 AC_DEFUN(AC_CHECK_GLOBAL,
 [for ac_global in $1
@@ -64,8 +92,12 @@ dnl   ]
 done
 ])
 
-dnl Search for the global variable timezone.
+
+dnl Search for the global variables timezone, sys_nerr, sys_errlist.
 AC_CHECK_GLOBAL(timezone)
+AC_CHECK_GLOBAL(sys_nerr)
+AC_CHECK_GLOBAL(sys_errlist)
+
 
 dnl What about saved setuid?
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile,[echo timestamp > stamp-h; echo updated stamp-h])
