@@ -3,12 +3,11 @@ devoted to the development of the program.   If you have a bug report
 to make or a question about GNU CSSC, it may be better to send it to
 the CSSC maintainer (see the CSSC manual).   
 
-If you wish to join this mailing list, please send an email to
-<cssc-users-request@gnu.org>, with the subject "subscribe
-cssc-users".  In the body of the message you should indicate your full
-name and the email address under which you would like to subscribe.
-Please send the subscription address from the same email address.   If
-you do not get a response within a few days, this is probably because
-your email address is wrong.
+If you wish to join this mailing list, please visit its web site at
+http://mail.gnu.org/mailman/listinfo/cssc-users.  
+
+If you don't want to subscribe via the web interface, you could send
+an email to <cssc-users-request@gnu.org>.  The body of this message
+should contain just the word "subscribe".
 
 Please do not send email to the list without joining it first.
