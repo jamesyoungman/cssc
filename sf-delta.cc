@@ -44,7 +44,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.20 1998/03/09 23:43:46 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.21 1998/03/10 00:19:22 james Exp $";
 #endif
 
 class diff_state
@@ -556,11 +556,10 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 #endif
 
 
-	pfile.delete_lock();
-	pfile.update();
-
-	end_update(out, new_delta);
-
+	// The order of things that we do at this point is quite
+	// important; we want only to update the s- and p- files if
+	// everything worked; if something failed though we still want
+	// to delete the temporary files.
 	diff_out = 0;
 	if (0 != remove(dname.c_str()))
 	  {
@@ -577,12 +576,17 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		perror(file_to_diff.c_str());
 	      }
 	  }
-	
-	if (!differ.finish())
-	  {
-	    quit(-1, "diff returned unsuccessful exit status.");
-	  }
-	
+
+	// It would be nice to know if the diff failed, but actually 
+	// diff's return value indicates if there was a difference 
+	// or not.
+	differ.finish();
+
+	pfile.delete_lock();
+	pfile.update();
+
+	end_update(out, new_delta);
+
 	new_delta.id.print(stdout);
 	printf("\n"
 	       "%lu inserted\n%lu deleted\n%lu unchanged\n",
