@@ -24,7 +24,7 @@
  *
  * Defines the class seqstate.  
  *
- * $Id: seqstate.h,v 1.17 2001/09/29 19:39:41 james_youngman Exp $
+ * $Id: seqstate.h,v 1.18 2002/04/02 13:51:05 james_youngman Exp $
  *
  */
 
@@ -50,6 +50,7 @@ class seq_state
   unsigned char * pExcluded;
   unsigned char * pNonrecursive;
   unsigned char * pExplicit;
+  seq_no *        pDoneBy;
   
   unsigned char * pActive;
   char          * pCommand;
@@ -71,7 +72,8 @@ class seq_state
   void decide_disposition();
 
 public:
-  
+  enum { BY_DEFAULT = -1, BY_COMMAND_LINE = -2 };  
+
   seq_state(seq_no l);
   seq_state(const seq_state& s);
   ~seq_state();
@@ -83,10 +85,12 @@ public:
   bool is_nonrecursive(seq_no n) const;
   bool is_recursive(seq_no n) const;
 
-  void set_explicitly_included(seq_no);
-  void set_explicitly_excluded(seq_no);
-  void set_included(seq_no n, bool bNonRecursive=false);
-  void set_excluded(seq_no);
+  void set_explicitly_included(seq_no which, seq_no whodunit);
+  void set_explicitly_excluded(seq_no which, seq_no whodunit);
+  void set_included(seq_no n, seq_no whodunit, bool bNonRecursive=false);
+  void set_excluded(seq_no n, seq_no whodunit);
+  
+  seq_no whodunit(seq_no n) const;
   
   // stuff for use when reading the body of the s-file.
 

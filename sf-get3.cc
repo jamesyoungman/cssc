@@ -32,7 +32,7 @@
 #include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.18 2002/03/28 18:55:49 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.19 2002/04/02 13:51:05 james_youngman Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are to
@@ -53,11 +53,13 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
 
       if (include.member(id))   // explicitly included on command line
         {
-          state.set_explicitly_included(iter->seq);
+          state.set_explicitly_included(iter->seq,
+					(seq_no) seq_state::BY_COMMAND_LINE );
         }
       else if (exclude.member(id)) // explicitly included on command line
         {
-          state.set_explicitly_excluded(iter->seq);
+          state.set_explicitly_excluded(iter->seq,
+					(seq_no) seq_state::BY_COMMAND_LINE );
         }
       else if (cutoff_date.valid() && iter->date > cutoff_date)
         {
@@ -65,7 +67,7 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
           // if it is newer than the cutoff date, we don't want it.
           // This is the feature that allows us to retrieve a delta
           // that was current at some time in the past.
-          state.set_excluded(iter->seq);
+          state.set_excluded(iter->seq, (seq_no) seq_state::BY_COMMAND_LINE);
         }
       
       ASSERT(0 != delta_table);

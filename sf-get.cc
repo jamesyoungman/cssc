@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.34 2002/03/28 18:55:49 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.35 2002/04/02 13:51:05 james_youngman Exp $";
 #endif
 
 bool
@@ -53,8 +53,102 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 {
   bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
 
+  /* new code */
+#if 1
+  seq_no y;
+  int i, len;
+
+  // deltas descended from the version we want are wanted (unless excluded)
+  y = seq;
+  do
+    {
+      ASSERT(y <= seq);
+      const delta &d = delta_table->delta_at_seq(y);
+      ASSERT(d.prev_seq < y);
+      state.set_included(d.prev_seq, y, false);
+      y = d.prev_seq;
+    } while (y > 0);
+  state.set_included(seq, (seq_no) seq_state::BY_DEFAULT, false);
+
+  // Apply any inclusions 
+  for (y=seq; y>0; --y)
+    {
+      if (state.is_included(y))
+	{
+	  const delta &d = delta_table->delta_at_seq(y);
+
+	  len = d.included.length();
+	  if (bDebug)
+	    {
+	      fprintf(stderr,
+		      "seq %d includes %d other deltas...\n",
+		      y, len);
+	    }
+	  
+	  for(i = 0; i < len; i++)
+	    {
+	      const seq_no s = d.included[i];
+	      if (s == y)
+		continue;
+	      
+	      // A particular delta cannot have a LATER delta in 
+	      // its include list.
+	      ASSERT(s <= y);
+	      state.set_included(s, y, true); 
+	      ASSERT(state.is_included(s));
+	    }
+	}
+    }
+  
+  // Apply any exlusions
+  for (y=1; y<=seq; ++y)
+    {
+      if (state.is_included(y))
+      {
+	const delta &d = delta_table->delta_at_seq(y);
+	
+	len = d.excluded.length();
+	if (bDebug)
+	  {
+	    fprintf(stderr,
+		    "seq %d excludes %d other deltas...\n",
+		    y, len);
+	  }
+	
+	for(i = 0; i < len; i++)
+	  {
+	    const seq_no s = d.excluded[i];
+	    if (s == y)
+	      continue;
+	    
+	    // A particular delta cannot have a LATER delta in 
+	    // its exclude list.
+	    ASSERT(s <= y);
+	    state.set_excluded(s, y);
+	    ASSERT(state.is_excluded(s));
+	  }
+      }
+    }
+      
+
+  if (bDebug)
+    {
+      for (y=1; y<=seq; ++y)
+	{
+	  const char *msg;
+	  if (state.is_included(y))
+	    msg = "included";
+	  else
+	    msg = "excluded";
+	      
+	  fprintf(stderr, "seq_no %d: %s\n", y, msg);
+	}
+    }
+  
+#else
+
   // We must include the version we are trying to get.
-  state.set_included(seq);
+  state.set_included(seq, (seq_no) seq_state::BY_DEFAULT, false);
   
   while (seq != 0)
     {
@@ -100,6 +194,13 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
           len = d.included.length();
           for(i = 0; i < len; i++)
             {
+	      if (bDebug)
+		{
+		  fprintf(stderr,
+			  "seq %d includes %d other deltas...\n",
+			  seq, len);
+		}
+		      
               const seq_no s = d.included[i];
               if (s == seq)
                 continue;
@@ -116,21 +217,21 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
                               (unsigned long) seq,
                               (unsigned long) s);
                     }
-                  state.set_included(s, true); 
+                  state.set_included(s, seq, true); 
                   ASSERT(state.is_included(s));
                 }
             }           
 
-          // If this seq was explicitly included, don't recurse for it 
-          // (this fixes SourceForge bug number 111140).
-          if (state.is_recursive(seq))
-            {
-                state.set_included(d.prev_seq);
-            }
-          
           len = d.excluded.length();
           for(i = 0; i < len; i++)
             {
+	      if (bDebug)
+		{
+		  fprintf(stderr,
+			  "se %d excludes %d other deltas...\n",
+			  seq, len);
+		}
+		      
               const seq_no s = d.excluded[i];
               if (s == seq)
                 continue;
@@ -139,22 +240,32 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
               // its exclude list.
               ASSERT(s <= seq);
               
-              if (!state.is_included(s))
-                {
-                  if (bDebug)
-                    {
-                      fprintf(stderr, "seq %lu excludes seq %lu\n",
-                              (unsigned long)seq,
-                              (unsigned long)s);
-                    }
-                  state.set_excluded(s);
-                  ASSERT(state.is_excluded(s));
-                }
+	      if (bDebug)
+		{
+		  fprintf(stderr, "seq %lu excludes seq %lu\n",
+			  (unsigned long)seq,
+			  (unsigned long)s);
+		}
+	      state.set_explicitly_excluded(s, seq);
+	      ASSERT(state.is_excluded(s));
             }
-        }
+
+          // If this seq was explicitly included, don't recurse for it 
+          // (this fixes SourceForge bug number 111140).
+          if (state.is_recursive(seq))
+            {
+	      fprintf(stderr, "seq %lu is recursive; including seq %lu\n",
+		      (unsigned long)seq,
+		      (unsigned long)d.prev_seq);
+	      state.set_included(d.prev_seq, seq, false);
+	    }
+	}
       
       --seq;
     }
+
+#endif
+
   
   if (bDebug)
     {

@@ -40,7 +40,7 @@ then
     echo "SOME TESTS OMITTED in $0"
 
     sleep 2
-    exit 0
+    # exit 0
 
     echo "We appear to be continuing anyway...."
 fi
@@ -77,6 +77,10 @@ echo "V1.3 excluded V1.1" >> $g
 docommand Delt_2 "$delta -yNoComment $s" 0 "1.3\n1 inserted\n0 deleted\n1 unchanged\n" IGNORE
 
 # Now let's see what happens with various gets.
+
+# Manually exclude 1.1 (it should be excluded anyway even if we didn't)
+docommand Get_0 "$get -x1.1 -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
+
 # First get V1.3 which should automatically exclude V1.1
 
 docommand Get_1 "$get -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
