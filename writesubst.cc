@@ -36,8 +36,26 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: writesubst.cc,v 1.2 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: writesubst.cc,v 1.3 2004/10/10 11:38:51 james_youngman Exp $";
 #endif
+
+/* Return TRUE if the specified keyword letter should be 
+ * expanded in the gotten file.  If the y flag is set, it controls the 
+ * keyletters which are expanded.  If the y flag is not present, all 
+ * key letters are expanded.  The y flag is a Solaris 8 extension.
+ */
+static bool expand_keyletter(char which, const myset<char> expanded)
+{
+  if (expanded.count() == 0)
+    {
+      return true;
+    }
+  else
+    {
+      return expanded.is_member(which);
+    }
+}
+
 
 /* Write a line of a file after substituting any id keywords in it.
    Returns true if an error occurs. */
@@ -45,7 +63,8 @@ static const char rcs_id[] = "CSSC $Id: writesubst.cc,v 1.2 2001/09/29 19:39:41 
 int
 sccs_file::write_subst(const char *start,
                        struct subst_parms *parms,
-                       const delta& d) const
+                       const delta& d,
+		       bool force_expansion) const
 {
   FILE *out = parms->out;
 
@@ -61,10 +80,32 @@ sccs_file::write_subst(const char *start,
               return 1;
             }
 
+          int err = 0;
+	  if (!force_expansion
+	      && false == expand_keyletter(c, flags.substitued_flag_letters))
+	    {
+	      // We do not expand this key letter.   Just emit the raw
+	      // characters.
+	      err = fputc_failed(fputc('%', out))
+		||  fputc_failed(fputc(c,   out))
+		||  fputc_failed(fputc('%', out));
+	      
+	      if (err)
+		{
+		  return 1;
+		}
+	      else
+		{
+		  start = percent+3;
+		  percent = strchr(start, '%');
+		  continue;
+		}
+	    }
           percent += 3;
 
-          int err = 0;
-
+	  
+	  
+	  // We need to expand the keyletter.
           switch (c)
             {
               const char *s;
@@ -194,7 +235,7 @@ sccs_file::write_subst(const char *start,
                    * 
                    */
                   s = "%Z" "%%M" "%\t%" "I%";
-                  /* NB: strange foroatting of the string above is 
+                  /* NB: strange formatting of the string above is 
                    * to preserve it unchanged even if this source code does 
                    * itself get checked into SCCS or CSSC.
                    */
@@ -204,7 +245,7 @@ sccs_file::write_subst(const char *start,
                   /* protect against recursion */
                   parms->wstring = 0; 
                 }
-              err = write_subst(s, parms, d);
+              err = write_subst(s, parms, d, true);
               if (0 == parms->wstring)
                 {
                   parms->wstring = s;
@@ -214,7 +255,7 @@ sccs_file::write_subst(const char *start,
             case 'A':
               err = write_subst("%Z""%%Y""% %M""% %I"
                                 "%%Z""%",
-                                parms, d);
+                                parms, d, true);
               break;
 
             default:

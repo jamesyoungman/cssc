@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.37 2003/03/01 15:38:26 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.38 2004/10/10 11:38:51 james_youngman Exp $";
 #endif
 
 bool
@@ -421,7 +421,7 @@ sccs_file::get(mystring gname, class seq_state &state,
                 // 2001-07-30: get rid of all the cruft by using a boolean
                 //             flag instead of a function pointer, for all
                 //             systems. 
-                err = write_subst(plinebuf->c_str(), &parms, parms.delta);
+                err = write_subst(plinebuf->c_str(), &parms, parms.delta, false);
               
               if (fputc_failed(fputc('\n', out)))
                 err = 1;

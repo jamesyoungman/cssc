@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.53 2004/10/03 10:37:57 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.54 2004/10/10 11:38:51 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -36,6 +36,7 @@
 #include "sid.h"
 #include "sccsdate.h"
 #include "mylist.h"
+#include "myset.h"
 // #include "linebuf.h"
 #include "rel_list.h"
 
@@ -88,6 +89,7 @@ private:
     
     int encoded;
     int executable;
+    myset<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
   } flags;
 
   mylist<mystring> comments;
@@ -171,11 +173,14 @@ private:
            int show_sid = 0, int show_module = 0, int debug = 0,
            bool no_decode = false, bool for_edit = false);
   enum { GET_NO_DECODE = true };
+  bool print_subsituted_flags_list(FILE *out, const char* separator) const;
+  static bool is_known_keyword_char(char c);
   
   /* sf-get2.c */
   int write_subst(const char *start,
                   struct subst_parms *parms,
-                  struct delta const& gotten_delta) const;
+                  struct delta const& gotten_delta,
+		  bool force_expansion) const;
 
   bool sid_matches(const sid& requested,
 		   const sid& found,
@@ -260,6 +265,7 @@ public:
   void set_module_flag(const char *s);
   void set_user_flag(const char *s);
   void set_reserved_flag(const char *s);
+  void set_expanded_keyword_flag(const char *s);
   void set_type_flag(const char *s);
 
 

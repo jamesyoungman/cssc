@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.56 2004/10/03 10:37:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.57 2004/10/10 11:38:51 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -922,6 +922,14 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	flags.executable = 1;
 	break;
 	
+      case 'y':
+	// The 'y' flag is supported by Solaris 8 and above.
+	// It controls the expansion of '%' keywords.  If the 
+	// y flag is set, its value is a list of keywords that will 
+	// be expanded.  Otherwise, all known keywords will be expanded.
+	set_expanded_keyword_flag(arg);
+	break;
+	
       case 'e':
 	if (got_arg && '1' == *arg)
 	  flags.encoded = 1;
@@ -1076,6 +1084,23 @@ set_reserved_flag(const char *s)
 }
 
 
+void sccs_file::
+set_expanded_keyword_flag(const char *s)
+{
+  // Clear any existing contents.
+  flags.substitued_flag_letters = myset<char>();
+
+  // The list of keyword letters is space-separated, but all of the
+  // keywords are one character long.
+  while (*s)
+    {
+      if (!isspace((unsigned char)*s))
+	{
+	  flags.substitued_flag_letters.add(*s);
+	}
+      ++s;
+    }
+}
 
 int
 sccs_file::read_line_param(FILE *f)
@@ -1212,6 +1237,34 @@ void sccs_file::saw_unknown_feature(const char *fmt, ...) const
       break;
     }
 }
+
+bool sccs_file::
+print_subsituted_flags_list(FILE *out, const char* separator) const
+{
+  const mylist<char> members = flags.substitued_flag_letters.list();
+  for (int i=0; i<members.length(); ++i)
+    {
+      // print a space separator if one is required.
+      if (i > 0)
+	{
+	  if (printf_failed(fprintf(out, "%s", separator)))
+	    return false;
+	}
+
+	  
+      // print the keyword letter.
+      if (printf_failed(fprintf(out, "%c", members[i])))
+	return false;
+    }
+}
+
+bool sccs_file::
+is_known_keyword_char(char c)
+{
+  return strchr("MIRLBSDHTEGUYFPQCZWA", c) != NULL;
+}
+
+
 
 /* Local variables: */
 /* mode: c++ */

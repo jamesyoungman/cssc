@@ -26,7 +26,7 @@
  *
  */
 #ifndef CSSC__MYSETLIST_H__
-#define CSSC__MYSET_H__
+#define CSSC__MYSETLIST_H__
 
 template <class TYPE>
 class myset
@@ -44,12 +44,12 @@ public:
             return members.length();
         }
 
-    const mylist<TYPE>& list()
+    const mylist<TYPE>& list() const
         {
             return members;
         }
     
-    bool is_member(TYPE const &ent)
+    bool is_member(TYPE const &ent) const
         {
             const int n = count();
             for (int i=0; i<n; ++i)

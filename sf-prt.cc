@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.24 2004/10/03 10:37:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.25 2004/10/10 11:38:51 james_youngman Exp $";
 #endif
 
 static void
@@ -469,7 +469,7 @@ sccs_file::prt(FILE *out,
 	}
 
       // The 'x' flag is a SCO extension.
-      print_flag(out, "\texecutable\t", flags.executable, flag_count);
+      print_flag(out, "\texecutable\t\n", flags.executable, flag_count);
       
       print_flag(out, "\tfloor\t", flags.floor, flag_count);
       if (flags.no_id_keywords_is_fatal)
@@ -500,6 +500,18 @@ sccs_file::prt(FILE *out,
       print_flag(out, "\ttype\t%s\n", flags.type, flag_count);
       print_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count);
 
+      if (flags.substitued_flag_letters.count() > 0)
+	{
+	  ++flag_count;
+
+	  // Unusually, Solaris "prt" just launches into the list of 
+	  // expanded keyletters, without a leading flag name.
+	  fprintf(out, "\t\t");
+	  (void) print_subsituted_flags_list(out, " ");
+	  fprintf(out, "\n");
+	}
+      
+      
       if (0 == flag_count)
 	fprintf(out, "\tnone\n");
     }

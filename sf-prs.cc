@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.36 2003/03/01 15:38:26 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.37 2004/10/10 11:38:51 james_youngman Exp $";
 #endif
 
 inline bool
@@ -177,6 +177,13 @@ sccs_file::print_flags(FILE *out) const
   print_flag2(out, (const char *) "validate MRs",
               (flags.mr_checker ? flags.mr_checker->c_str()
                : (const char*) 0));
+
+  if (flags.substitued_flag_letters.count() > 0)
+    {
+      fputs("substituted keywords\t", out);
+      print_subsituted_flags_list(out, " ");
+      fputs("\n", out);
+    }
 }
 
 

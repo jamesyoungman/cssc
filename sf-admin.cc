@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.32 2004/10/03 10:37:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.33 2004/10/10 11:38:51 james_youngman Exp $";
 #endif
 
 
@@ -203,6 +203,35 @@ sccs_file::admin(const char *file_comment,
 	  flags.executable = 1;
 	  break;
 	  
+	case 'y':
+	  // Argument is a comma-separated list of keyword letters to expand.
+	  warning("The 'y' (expanded keywords) flag is a Sun extension present only in Solaris 8 and later, and is not supported by other versions of SCCS.");
+	  set_expanded_keyword_flag(""); // delete any existing ones.
+	  while (*s)
+	    {
+	      char c = *s++;
+	      if (',' != c)
+		{
+		  if (isalpha((unsigned char)c))
+		    {
+		      if (!is_known_keyword_char(c))
+			{
+			  warning("'%%%c%%' is not a recognised SCCS keyword, "
+				  "but remembering that we want to expand it "
+				  "anyway, for the future.", c);
+			}
+	  
+		      flags.substitued_flag_letters.add(c);
+		    }
+		  else
+		    {
+		      errormsg("Unexpected character '%c' in argument to option '-fy'.", c);
+		      return false;
+		    }
+		}
+	    }
+	  break;
+	  
 	default:
 	  // TODO: this will fail for every file, so should probably
 	  // be a "hard" error.
@@ -287,6 +316,12 @@ sccs_file::admin(const char *file_comment,
 	  
 	case 'x':
 	  flags.executable = 0;
+	  break;
+	  
+	case 'y':
+	  // Set the expanded-keyword flag to the empty string, which 
+	  // means 'all' rather than none.
+	  set_expanded_keyword_flag("");
 	  break;
 	  
 	default:

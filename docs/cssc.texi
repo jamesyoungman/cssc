@@ -12,9 +12,9 @@
 @setchapternewpage odd
 @c %**end of header
 
-@set EDITION 1.06
+@set EDITION 1.07
 @set VERSION 0.16alpha-pl0
-@set UPDATED Sun Dec  7 22:42:11 2003
+@set UPDATED Sun Oct 10 09:18:13 2004
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -145,9 +145,6 @@ This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
 
 The GNU @sc{cssc} program is designed to be a compatible replacement for
 the traditional Unix @sc{sccs} suite.
-
-This documentation is horrendously incomplete since this package is
-still under development.
 
 @cindex CVS
 While it is strongly suggested that new projects not use this package,
@@ -321,9 +318,13 @@ set (@pxref{Flags}).  If the @var{v} flag is set but has no value
 fail.
 
 @item -n
-Create a new @sc{sccs} file.  Unless @option{-i} is also used, the 
-new file will contain control information but the body will be initially
-empty.
+Create a new @sc{sccs} file.  Unless @option{-i} is also used, the new
+file will contain control information but the body will be initially
+empty.  Some versions of @sc{sccs} require the @option{-i} option to
+be specified if @samp{-n} is used.  Therefore for greatest
+portability, specify @samp{-i/dev/null} if you want an empty initial
+body. @ref{Interoperability}.
+
 
 @item -r@var{N}
 @cindex initial release number
@@ -331,9 +332,10 @@ Set the initial release number to @var{N}.  The initial level within
 that release is always 1.  Some versions of SCCS allow you to specify
 actual an actual @sc{sid} here (for example @samp{1.2} or
 @samp{1.8.2.1}).  @sc{cssc} also allows this, but emits a warning.  If
-you use this option, you must also use the @option{-i} option or the
-@option{-n} option.  If the initial @sc{sid} you specify is not on the
-trunk, some tools will fail to work with the resulting file.
+you use the @option{-r} option, you must also use the @option{-i}
+option (not just the @option{-n} option).  If the initial @sc{sid} you
+specify is not on the trunk, some tools will fail to work with the
+resulting file.  See also @xref{SCCS Version Differences}.
 
 @item -t@var{desc}
 Read in descriptive text for this file from @file{@var{desc}}.  This replaces
@@ -352,6 +354,7 @@ to most Unix programs, but is the same as the behaviour of traditional
 @sc{sccs}}.
 
 @item -z
+@cindex BitKeeper
 Fix the checksum information.  The @sc{sccs} file is still validated
 by CSSC; apart from possibly having an incorrect checksum, the s-file
 must be valid.  If you use this option on an @sc{sccs} file which
@@ -383,10 +386,12 @@ the time the file is created (or if admin takes it upon itself to set
 this flag automatically), and cannot be unset.  The circumstances under
 which this can happen are discussed in @ref{Interoperability}.
 @item f
+@cindex BitKeeper
 This flag is specific to the @emph{BitKeeper} suite, and is only
 supported if @sc{cssc} has recognised the file as a BitKeeper file.
 @sc{cssc} does not understand the significance of this flag.
 @item i
+@cindex Keyword Substitution
 Make @code{get} and @code{delta} exit unsuccessfully when the
 @samp{Warning: No id keywords} message is issued.
 @cindex Concurrent editing
@@ -400,12 +405,13 @@ Create empty releases when the @option{-r} option to @code{get} is used to
 skip releases.   These empty releases can later serve as branch
 points.
 @item x
-Sets the executable bit on the g-file.   This flag is a SCO extension 
-and is not supported by other versions of @sc{sccs}.  Setting this
-flag with @code{admin -fx} generates a warning to this effect.
-If @sc{cssc} is simply processing a file which already has this flag
-set, no message will be generated.
-See @ref{Interoperability} for more information on compatibility between
+@cindex SCO
+Sets the executable bit on the g-file.  This flag is a SCO OpenServer
+extension and is not supported by other versions of @sc{sccs}.
+Setting this flag with @code{admin -fx} generates a warning to this
+effect.  If @sc{cssc} is simply processing a file which already has
+this flag set, no message will be generated.  See
+@ref{Interoperability} for more information on compatibility between
 @sc{cssc} and other implementations of @sc{sccs}.
 @end table
 
@@ -426,14 +432,17 @@ defined in @ref{get}.
 Set the locked release list.  These releases cannot be checked out with
 @code{get -e}.   The special value @samp{a} denotes all releases.
 @item q
+@cindex Keyword Substitution
 Sets the value substituted for the @samp{%Q%} keyword as described in
 @ref{Keyword Substitution}.  This flag is referred to in the output of
 @sc{sccs} as @samp{csect name}, and is variously referred to here as
 that, or the ``user flag'' or the ``Q flag''.
 @item m
+@cindex Keyword Substitution
 Sets the overridden value for the @samp{%M%} keyword as described in
 @ref{Keyword Substitution}.
 @item t
+@cindex Keyword Substitution
 Sets the value for the @samp{%Y%} keyword as described in @ref{Keyword
 Substitution}.
 @item v
@@ -442,6 +451,21 @@ request) numbers; @sc{mr}s are described in @ref{Modification Request
 Numbers}.  This flag can be set to the empty string, in which case
 @sc{mr}s are allowed and the validation silently succeeds without any
 program being run.
+@item y
+@cindex Keyword Substitution
+@cindex Solaris
+By default, all keywords are expanded in the gotten file.   
+See @ref{Keyword Substitution} for a list of such keywords.  This flag
+can be set to a list of letters separated by commas, in which case
+keyword expansion will be limited to the specified keywords.  For
+example, @samp{admin -fyQ,M,Y} restricts keyword expansion so that
+@samp{%Q%}, @samp{%M%} and @samp{%Y%} are expanded, while other
+keywords such as @samp{%Z%} are not.  
+This flag is an extension introduced by Sun Solaris 8.  See
+@ref{Interoperability} for a discussion of the interoperability of
+@sc{cssc} with other @sc{sccs} implementations.
+
+
 @end table
 
 @node Modification Request Numbers, , Flags, admin
@@ -559,10 +583,10 @@ already stored in an @sc{sccs} file.  Before being able to do this you
 need to run @kbd{get -e} to check the file out for editing.
 
 @cindex SID
-@cindex release
-@cindex level
-@cindex branch
-@cindex sequence
+@cindex release number
+@cindex level number
+@cindex branch number
+@cindex sequence number
 A new revision is created by the @code{delta} program.  These revisions
 are each identified by a unique @dfn{SID}.  A @sc{sid} looks like
 @samp{1.2.3.4}, where the four numbers are the @dfn{release},
@@ -653,8 +677,6 @@ command.
 Display the differences between the old and new versions of the file
 during processing.  The output of @code{diff} is echoed on the standard
 output.
-Untested.
-@c TODO: Write the test cases.
 
 @item -r
 If several versions are checked out, the @option{-r} command-line option is
@@ -673,13 +695,11 @@ One identifies the version forming the basis of the change, and the
 other specifies the @sc{sid} that the new version will be assigned once
 it is checked in again.  Either of these two @sc{sid}s (in this case,
 3.1 or 3.2) can be used for the @option{-r} option of @code{delta}.
-Untested.
-@c TODO: Write the test cases.
 
 @item -s
 Suppress warning or confirmation messages.  Error messages go to
-standard error.  Untested.
-@c TODO: Write the test cases.
+standard error.  This option is not covered in the test suite.
+@c TODO: Write the test cases.   Untested.
 
 @item -y
 Specify a comment for the revision log.  This option is usually quoted
@@ -801,6 +821,7 @@ Name the gotten file @file{@var{foo}}, instead of the default name.
 Include the deltas for the listed @sc{sid}s.  See also @option{-x}.
 
 @item -k
+@cindex Keyword Substitution
 Avoid doing keyword substitution (@pxref{Keyword Substitution}).  This
 is assumed when @option{-e} is specified.  The gotten file is writable.
 
@@ -845,6 +866,7 @@ BSD (@pxref{sccs}).
 Show version information.
 
 @item -w@var{XXX}
+@cindex Keyword Substitution
 When performing keyword substitution (@pxref{Keyword Substitution}), use
 @var{XXX} rather than @samp{%Z%%M% <@sc{tab}> %I%} as the substitution
 value for %W%.
@@ -858,7 +880,7 @@ specifying the @sc{sid} at which they arrived in the file.
 
 @node branches, Keyword Substitution, get options, get
 @subsection Making Branches
-@cindex branches
+@cindex Branching
 @cindex forking
 @cindex modifying released code
 @cindex bug-fixing released code
@@ -939,11 +961,9 @@ Name of the @sc{sccs} file, for example @samp{s.foo.c}.
 @item G
 @cindex Year 2000
 As for %E%, but in the US format @i{mm/dd/yy}.  
-
 @item H
 @cindex Year 2000
 As for %D%, but in the US format @i{mm/dd/yy}.
-
 @item I
 Expands to the same as %R%.%L%.%B%.%S%, that is, the @sc{sid} of the
 retrieved version.
@@ -973,6 +993,12 @@ Value of the @code{t} (module type) flag.
 The literal string @code{@@(#)}.  @xref{what}.
 @end table
 
+Some of the keywords listed above have expansions that are described
+in terms of the contents of other keywords.  This expansion is
+performed as if the @samp{y} flag in the @sc{sccs} file is not set.
+For example, @samp{admin -fyA} will cause the @samp{%I%} keyword not
+to be expanded, but the @samp{%A%} keyword is still fully expanded,
+even though it is defined in terms of @samp{%I%}.
 
 @node Included Excluded and Ignored deltas, , Keyword Substitution, get
 @section Included, Excluded and Ignored deltas
@@ -1864,15 +1890,34 @@ delta creation time is measured in local time, and so if two
 developers with different time locale settings both edit the file in a
 short period of time, this can happen.  If all the developers who
 create deltas in a history file use the same timezone settings, this
-should not happen.
+should not happen.  
+
+@cindex time travel
+Some versions of @sc{sccs}, but not @sc{cssc} exhibit a peculiar
+behaviour in these circumstances, and do not include in the gotten
+file any lines apparently inserted after the date of the delta which
+has been selected.  This applies to @code{get} but more importantly
+also applies to the temporary file generated by @sc{delta} which is
+compared with the working copy of tyhe file.  Once this has happened
+there is no way to recover from this problem other than to hand-edit
+the @sc{sccs} file.
 
 @item Unknown special comment intro
+@cindex BitKeeper
 This message is displayed when a ``c'' control line is seen in the
 body of the @sc{sccs} file in which the initial ``c'' is not followed
 immediately by a space.  Lines of this type are used as an extension
 mechanism by some other SCCS implementations, notably the
 @emph{BitKeeper} suite, and @sc{cssc} knows about this, but if it sees
 a construction it doesn't recognise, this warning is issued.
+
+@item The 'y' flag specifies a keyword letter 'X' but %X% is not a recognised SCCS keyword
+@cindex Keyword Substitution
+This message is displayed when the @samp{y} flag of the @sc{sccs} file
+is set to a value which includes a keyword letter which is not known.
+This is harmless unless you intended to set the flag to some other value.
+@ref{Flags}.
+
 @end table
 
 @node Return Value, Paranoia, Validation Warnings, val
@@ -2151,6 +2196,7 @@ characters appear to be considered negative.  This seems to mean that
 these two types of machines will not agree on the correctness of an
 @sc{sccs} file's checksum.
 
+@cindex BitKeeper
 The @emph{BitKeeper} suite uses @samp{^AH} to introduce its checksum
 line rather than @samp{^Ah}, but the checksum is computed in the same
 way.
@@ -2269,6 +2315,7 @@ CSSC is currently slightly incorrect in this area.  If the comment is
 suppressed with the @code{-y} option, it emits no @samp{^Ac} lines at
 all.
 
+@cindex BitKeeper
 The @emph{BitKeeper} suite uses comment lines of the form @samp{^AcX}
 (where @samp{X} is a non-blank character) to store data which is
 specific to BitKeeper.  This data is ignored by @sc{cssc}, which
@@ -2347,14 +2394,34 @@ possible flag letters and their meanings.  See @ref{Interoperability}
 for information about sharing @sc{sccs} files with other implementations
 of @sc{sccs}.
 
+The @samp{e} flag is a boolean flag but is stored within the @sc{sccs}
+file with a value, as shown in the example above.  When @sc{cssc}
+initially writes the @sc{sccs} file header for a new @sc{sccs} fiel
+created with @code{admin -i}, it does not know if the initial body of
+the file is binary or not, so @samp{^Af f e 0} is written into the
+header and if the file turns out to need encoding, @code{admin} will
+seek back to the header and change @samp{^Af f e 0} to @samp{^Af f e
+1}.  If binary file support is disabled (@pxref{Binary File Support},
+@samp{^Af f e 0} is still used but will never be changed to @samp{^Af
+f e 1}.
+
+@cindex Solaris
+The value for the @samp{y} flag is stored as a space-separated list of
+keyword letters, even though the letters were separated by commas when
+they were passed to @code{admin -fy}.  This flag is an extension
+introduced by Sun Solaris 8.  See @ref{Interoperability} for a
+discussion of the interoperability of @sc{cssc} with other @sc{sccs}
+implementations.
+
 
 @node File Description, Example Header, Global Flags Section, The Header
 @subsection File Description
 The flags section is followed by the descriptive text for the history
 file.  This section is intended to contain text which might contain a
-copyright statement, or might indicate the purpose of a file or contain
-special instructions, and so on.  This section starts with a @samp{^At}
-control line and is terminated with a @samp{^AT} control line:-
+copyright statement, or might indicate the purpose of a file or
+contain special instructions, and so on.  This section starts with a
+@samp{^At} control line and is terminated with a @samp{^AT} control
+line:-
 
 @example
 ^At
@@ -2468,6 +2535,7 @@ but do not need to be turned off.
 * Bug-for-Bug::              We go to great lengths to be compatible
 * Incompatibilities::        Sometimes we cannot be fully compatible
 * SCCS Version Differences:: Versions of @sc{sccs} behave inconsistently
+* CSSC Extensions::          Behaviour which is specific to CSSC.
 @end menu
 
 @node Binary File Support, Executable File Support, , Interoperability
@@ -2502,6 +2570,7 @@ be binary files.  It's common to control shell scripts with
 @sc{cssc}, for example.  Shell scripts are normaly executable but not
 binary.  
 
+@cindex SCO
 If the @code{x} flag is set, @sc{cssc} will generate a g-file whose
 execute bits are set.  This feature exists for compatibility with SCO
 OpenServer's @sc{sccs}.  Do not use this feature if you wish to
@@ -2510,6 +2579,7 @@ flag with @code{admin -fx} generates a warning about this.
 
 @node BitKeeper, Maximum Line Length, Executable File Support, Interoperability
 @section BitKeeper
+@cindex BitKeeper
 
 Read-only support is provided for files produced by the BitKeeper
 suite.  Flags and information which are specific to BitKeeper is
@@ -2533,7 +2603,7 @@ not).
 
 @node Maximum Line Length, Limitations of diff, BitKeeper, Interoperability
 @section Maximum Line Length
-
+@cindex Line length
 By default, CSSC enforces no line length limits.  The @sc{cssc} tools
 will correctly process input files containing lines of arbitrary
 length, subject to the limits of available memory.  The system command
@@ -2587,6 +2657,7 @@ long lines into the history file.
 @node Limitations of diff, Configuration, Maximum Line Length, Interoperability
 @section Limitations of diff
 
+@cindex Line length
 The @code{diff} utility may have limits on the lengths of lines that
 it can process, though the GNU @code{diff} program has no such limits.
 This means that if you are using @sc{cssc} in combination with a
@@ -2621,6 +2692,7 @@ is used by @sc{cssc}.
 
 @node Configuration, Bug-for-Bug, Limitations of diff, Interoperability
 @section Checking the Current Configuration
+@cindex Line length
 To discover how a particular installation of @sc{cssc} is configured,
 pass the @code{-V} option to any of the @sc{cssc} tools.  The
 ``configure'' script defaults to not limiting the maximum line length,
@@ -2651,6 +2723,7 @@ message.  The fault is corrected if the SCCS file is being modified.
 @xref{Year 2000 Issues}.
 
 @item
+@cindex Data General
 Some versions of the Data General implementation were changed to use
 four-digit years in the p-file instead of two-digit years, apparently
 as part of a Y2K-fix.  While arguably this in fact might have been the
@@ -2690,6 +2763,7 @@ exhibit those problems (then again, some of them are not able to read
 their own output in these circumstances, either).
 
 @item
+@cindex BitKeeper
 The BitSCCS product, part of the BitKeeper suite, uses special comment
 lines in the delta table, of the form ``^Ac_'' where ``_'' is some
 character other than a space.  When @sc{cssc} sees these, it will
@@ -2699,7 +2773,7 @@ ignored).  File flags which are specific to BitKeeper are also treated
 in this way.
 @end itemize
 
-@node SCCS Version Differences,, Incompatibilities, Interoperability
+@node SCCS Version Differences, CSSC Extensions, Incompatibilities, Interoperability
 @section SCCS Version Differences
 
 This section outlines some of the ways in which various versions of
@@ -2707,7 +2781,7 @@ This section outlines some of the ways in which various versions of
 @sc{cssc}.  
 
 @subsection Binary file support and line lengths
-
+@cindex Line length
 The various versions of @sc{sccs} differ in their level of support for
 binary files (@pxref{Binary File Support}), and in the maximum line
 length that they will support (@pxref{Maximum Line Length}.
@@ -2719,6 +2793,7 @@ of @code{sccsdiff} behave.  These are outlined in the table below :-
 
 @table @asis
 @item Solaris 8
+@cindex Solaris
 Prints a separator line between the @code{diff} output for each
 s-file.  This separator is output before the first set of diff output, 
 even if only one s-file has been named on the command line.
@@ -2734,6 +2809,7 @@ command across the various SCCS Implementations :-
 
 @table @asis
 @item The @option{-n} option
+@cindex Dynix
 Some versions of Dynix do not allow the use of the @option{-n} option
 without the @option{-i} option.  A workaround is to use @code{-n
 -i/dev/null} instead.
@@ -2745,15 +2821,17 @@ option to @code{admin}.  See @ref{Binary File Support}, for more
 information.
 
 @item Executable file support
+@cindex SCO
 The SCO OpenServer implementation of @sc{sccs} provides an @code{x}
 flag, which turns on the executable bits of the mode of the g-file
 when it is created.  Other versions of @sc{sccs} do not have this
 feature.  While @sc{csssc} provides this feature also, its use is not
-recommended.
+recommended.  The @code{prt -f} command does not indicate the value of
+the @code{x} flag.
 
 @item Initial delta
 The @option{-r} option is used to specify the release of the initial
-delta.  Some implementations of @sc{sccs} allow this to use used to
+delta.  Some implementations of @sc{sccs} allow this to be used to
 specify more components of a @sc{sid} than just the release number.
 The @sc{cssc} version of @code{admin} allows this usage but issues a
 warning message.  If the @option{-r} option is used to specify a
@@ -2767,6 +2845,108 @@ If the ``encoded'' flag is set, some versions of @code{prt} (but not
 the @sc{cssc} version) omit a newline in the output and so the next
 thing follows immediately on the same line.
 
+@subsection get
+@cindex Solaris
+Sun Solaris 8 features a @code{y} flag.  If the @code{y} flag is set
+in the @sc{sccs} file, only the specified @sc{sccs} keywords will be
+expanded in the gotten file (assuming that the @option{-k} and
+@option{-e} options are not used).  
+
+@cindex SCO
+The @code{get} command on SCO OpenServer honours the setting of the
+@code{x} flag.  This is described above.
+
+For a discussion of the interoperability of @sc{cssc} with other
+@sc{sccs} implementations, see @ref{Interoperability}.  For a
+description of the @code{x} and @code{y} flags, see @ref{Flags}.
+
+@node CSSC Extensions,, SCCS Version Differences, Interoperability
+@section CSSC Extensions
+@cindex Extensions
+There are some respects in which @sc{cssc} behaves unlike other
+versions of @sc{sccs}.  These differences mainly relate to the removal
+of arbitrary limits or problems, and generally do not pose an
+interoperability problem.  The most important extensions are
+listed below.
+
+@table @asis
+@item Line Length
+@cindex Line length
+By default, CSSC enforces no line length limits.  @xref{Maximum Line
+Length}.
+
+@item Date handling
+The @option{-c} option to @code{get} supports four-digit years.  
+@xref{The Good News}.
+
+@item Binary file handling
+@cindex Pipes
+When you generate a new @sc{sccs} file with @code{admin -i}, the
+@code{admin} command will automatically determine if the file needs to
+be encoded.  Other versions of @sc{sccs} which do this rely on being
+able to seek in the input file specified as the argument to the
+@option{-i} option, which means that this is not possible if the
+initial file body is being read by a pipe.  The @sc{cssc}
+implementation of @code{admin} does not have this limitation, since it
+seeks on the file being created instead.  @xref{Unemulated Features}
+
+@item Combinations of features
+Various other @sc{sccs} implementations have extensions (for example
+the @code{x} and @code{y} flags and binary file encoding).  The
+@sc{cssc} suite attempts to honour all of these extensions, and is
+probably the only implementation which has all these features.  If you
+try to use a feature which is specific to only one implementation of
+@sc{sccs}, @sc{cssc} will issue a warning that what you are doing is
+not portable.  
+
+If you use features of @sc{cssc} which are extensions originating in
+more than one other @sc{sccs} implementation, for example both the
+@code{x} and the @code{y} flags, you have effectively tied yourself to
+@sc{cssc}.  Once you are in that position, you are no longer able to
+interoperate with any other version of @sc{sccs} (since, in this
+example, any other version of @sc{sccs} will fail to understand either
+the @code{x} or the @code{y} flag).  If interoperability with other
+versions of @sc{sccs} is no longer an issue, you might as well bite
+the bullet and migrate to a more modern configuration control system
+entirely.  @xref{Overview}.
+
+@item Validation
+The @sc{cssc} implementation of @code{val} implements some checks that
+other implementations lack.  Howver, it is not complete, and so there
+are also checks that other implementations make that @sc{cssc} does
+not.
+
+@item Error Messages
+The error messages issued by @sc{cssc} are intended to be
+self-explanatory and so lack reference numbers like @samp{(ge4)}.  
+
+@item Closed File Descriptors
+If you invoke @sc{cssc} with file descriptor 0, 1 or 2 closed, that
+file descriptor is attached to @file{/dev/null}.  This prevents error
+messages going into a file opened by @sc{cssc} for writing (for
+example an @sc{sccs} file).
+
+@item Read-only reaction to unsupported features
+If @sc{cssc} discovers a construct in an @sc{sccs} file which it
+doesn't understand, it will avoid modifying the file (though read-only
+tools like @code{prt} and @code{get} will still work).
+
+@item Invoking other tools
+It is usual for @sc{cssc} to invoke other programs, for example
+@code{diff} and the MR-validator specified by the @code{v} flag.
+However, with the exception of the @code{sccsdiff} shell script, the
+tools within the @sc{cssc} suite do not invoke each other.  For
+example, @code{delta} does not invoke @code{get}.  This behaviour is
+different to the traditional architecture of @sc{sccs} and might
+introduce subtle differences of behaviour.  Any such differences are
+bugs; see @ref{Problems, Reporting Bugs}.
+
+@item Environment
+Some environment variables are specific to @sc{cssc}.
+@xref{Environment,Environment Variables}.
+@end table
+
+See also @ref{Incomplete,Missing Features and other Problems}.
 
 @node Environment, Incomplete, Interoperability, Top
 @chapter Environment Variables
@@ -3075,7 +3255,7 @@ the maintainer know and it will be fixed.
 
 
 @node Unemulated Features, ,Known Problems, Incomplete
-@section Unemulated features
+@section Unemulated Features
 
 There are some features of (some implementations of) the traditional
 @sc{sccs} suite which it may not be desirable to copy.
@@ -3092,9 +3272,13 @@ part of the body, before the offending segment of the file.  The exit
 value of the @code{admin} program is nevertheless still zero.  Tests for
 this situation are in @file{tests/binary/seeking.sh} but these tests are
 only carried out if the program under test seems to be @sc{cssc} rather
-than the genuine @sc{sccs} suite.
+than the genuine @sc{sccs} suite.   The @sc{cssc} suite does not have
+this problem, and will always detect the need to encode the file, and
+will successfully complete the process (it does not try to seek on the
+input pipe).
 
 @item
+@cindex Line length
 The normal configuration for @sc{cssc} is that it supports binary files
 and has no limit on line length in file with which it deals.  Both of
 these features may be different to the features of some version of
@@ -3176,6 +3360,7 @@ two-digit year fields in the @sc{sccs} files are correctly dealt with
 according to the strategy mandated by X/Open.  The command-line options
 are also dealt with similarly.
 
+@cindex Extensions
 @sc{cssc} provides an additional feature for your convenience.  If the
 argument to the @option{-c} option of @code{get}, @code{prt}, or
 @code{prs} contains more than twelve digits, the first two are
@@ -3971,7 +4156,6 @@ SID.  Normally these are the main sequence of changes to the file.
 @unnumbered Concept Index
 
 @printindex cp
-@cindex tail recursion
 
 @shortcontents
 @contents

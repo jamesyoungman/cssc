@@ -29,13 +29,13 @@ then
     docommand L5 "${get} -g ${s}"        1 IGNORE IGNORE
 
     # For some reason the SCCS version of "val" does not make this check.
-    # We do, but I don;t think this functional difference is very 
+    # We do, but I don't think this functional difference is very 
     # important. 
     # expect_fail=true
     # docommand L6 "${val} ${s}"           1 IGNORE IGNORE
     # expect_fail=false
 else
-    echo "Your OS or your the filesystem do not support had links - some tests skipped"
+    echo "Your OS or your the filesystem do not support hard links - some tests skipped"
 fi
 
 

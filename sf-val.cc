@@ -31,7 +31,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.5 2002/04/04 19:32:05 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.6 2004/10/10 11:38:51 james_youngman Exp $";
 #endif
 
 const mystring
@@ -105,6 +105,12 @@ sccs_file::validate_isomorphism() const
   // TODO: write this later.
   return true;
 }
+
+static bool
+validate_substituted_flags_list(const mylist<char> entries)
+{
+}
+
 
 bool 
 sccs_file::validate() const
@@ -286,6 +292,21 @@ sccs_file::validate() const
   
   
   // for the flags section:-
+
+  // Check that the 'y' flag specifies only known keywords.
+  const mylist<char> entries = flags.substitued_flag_letters.list();
+  for (int i=0; i<entries.length(); ++i)
+    {
+      char flag = entries[i];
+      if (!is_known_keyword_char(flag))
+	{
+	  warning("The 'y' flag specifies a keyword letter '%c', "
+		  "but %%%c%% is not a recognised SCCS keyword" ,
+		  flag, flag);
+	}
+    }
+
+  
   // TODO: check for unknown flags
   // TODO: check for boolean flags with non-numeric value.
 

@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.36 2004/10/03 10:37:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.37 2004/10/10 11:38:51 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -353,6 +353,19 @@ sccs_file::write(FILE *out) const
         {
           return 1;
         }
+    }
+        
+  // y - substituted keywords (a Sun Solaris 8+ extension)
+  if (flags.substitued_flag_letters.count() > 0)
+    {
+      if (printf_failed(fprintf(out, "\001f y ")))
+	return 1;
+
+      if (!print_subsituted_flags_list(out, " "))
+	return 1;
+      
+      if (printf_failed(fprintf(out, "\n")))
+	return 1;
     }
         
   if (flags.reserved)
