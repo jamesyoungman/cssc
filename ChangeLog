@@ -1,4 +1,151 @@
+1998-06-06  James Youngman  <jay@gnu.org>
+
+	* configure.in: Bumped to version 0.07.
+
+	* auxfiles/CSSC.spec: *** empty log message ***
+
+	* tests/common/command-names:
+	Set ${sccs} here in tests/bsd-driver/*, and not this file.  We keep it
+	out of command-names since we currently need to run sccs in order to
+	decide if we need to pass it the --prefix option.  That would slow all
+	the other tests down.
+
+	* tests/bsd-sccs/driver-basic.sh:
+	Set ${sccs} here in this file.  We keep it out of common/command-names
+	since we currently need to run sccs in order to decide if we need to
+	pass it the --prefix option.  That would slow all the other tests
+	down.
+
+	* tests/prt/nodel.sh, tests/prt/default.sh:
+	Remove s.testfile when the test is complete.
+
+	* bsd/sccs.c, bsd/sccs.1:
+	Modified to work with portability hints provided by Automake
+	(e.g. sys_siglist[], struct dirent vs. struct direct, and so on); also
+	other portability enhancements.
+
+	Modifued some of the string handling for greater protection against
+	buffer-overflow.
+
+	Added extra options to sccs (--cssc, --prefix) to allow the
+	program to be tested before the sub-programs (edmin, get, etc.)
+	are installed in their final positions.  Added --version and -V
+	options (which do the same thing).
+
+	Documented this in the manpage; also added a COPYING section and
+	added some more entries in the SEE ALSO section.
+
+	Folded pathnames.h into sccs.c.
+
+	* bsd/Makefile.am: Rolled pathnames.h into sccs.c.
+
+	* bsd/.ispell_english:
+	Removed entries containing punctuation or digits; ispell doesn't like them.
+
+	* bsd/pathnames.h: Rolled the few remaining definitions into sccs.c
+
+	* bsd/pathnames.h:
+	Don't use absolute paths for the locations of the subcommands.
+
+1998-05-30  James Youngman  <jay@gnu.org>
+
+	* tests/bsd-sccs/driver-basic.sh: Added tests for "sccs check".
+
+	* tests/bsd-sccs/driver-basic.sh:
+	Added tests for deledit, delget, fix, tell, rmdel, what, enter, edit,
+	clean, unedit and info.
+
+	* configure.in, acconfig.h:
+	Detect sys_suglist, for bsd/sccs.  Also detect <locale.h>.  Bump
+	patchlevel to 9 (though we may end up making a new release instead).
+
+	* sccsfile.cc:
+	find_any_delta(sid id): will find even removed deltas.  This is part
+	of the "sccs fix" bugfix.
+
+	* tests/common/command-names:
+	Oops.  Set sccs=sccs as a last resort if we can't find it.
+
+	* delta-table.cc, sf-get2.cc, sccsfile.h, delta-table.h:
+	When getting a delta for editing, and the trunk successor has been
+	rmdel'ed, reuse it (this is required for "sccs fix" to work properly,
+	and it's the way real-sccs works).
+
+	* tests/rmdel/edit.sh:
+	Tests that do "delta" after an "rmdel" to make sure the right things
+	happen.
+
+1998-05-28  James Youngman  <jay@gnu.org>
+
+	* bsd/sccs.c:
+	Cope in a more portable way with the status return from a child.
+
+	* bsd/sccs.c: Allow "sccs -V -V -V" without generating a coredump.
+
+	* bsd/sccs.c:
+	Some portability improvements; don't need sig_t; cope without
+	sys_siglist if we don't have it.   This mostly affects Linux with libc
+	version 5 and below, I think.
+
+1998-05-27  James Youngman  <jay@gnu.org>
+
+	* bsd/sccs.c, bsd/.ispell_english, bsd/pathnames.h:
+	Some range chacking corrections, correctiosn to the PREFIX macro, etc.
+
+	* bsd/COPYING.bsd:
+	Explained why part of CSSC is published under the BSD license
+
+	* docs/TODO:
+	Added note about considering the use of getpwuid() in preference to getlogin().
+	Removed TODO entries from some stuff that's been done.
+
+	* README:
+	We now support binary files; remove the statement that we do not...
+
+	* what.cc, sccsfile.cc, bodyio.cc, cssc.h:
+	Removed some unused configuration macros.
+	Renamed CONFIG_BINARY_FILE to CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE.
+
+	* scripts/change-suffix, unused/change-suffix:
+	change-suffix should be in scripts, not unused :-)
+
+	* unused/change-suffix: Moved change-suffix into "unused".
+
+	* change-suffix: Moved change-suffix unti "unused".
+
+	* tests/bsd-sccs/driver-basic.sh, tests/Makefile.am:
+	Added tests for the driver program "sccs".
+
+	* tests/common/test-common: Use ../../testutils/ekko as a fallback.
+
+	* tests/common/command-names: Added entry for the "sccs" command.
+
+1998-05-25  James Youngman  <jay@gnu.org>
+
+	* defaults.h: Removed some unused features.
+
+	* docs/CREDITS:
+	Added info about the BSD-derived code (sccs.c and friends).
+
+	* AUTHORS: Added info about the BSD-derived code (sccs.c and firends).
+
+	* docs/cssc.texi:
+	Added documentation about sccs.c, the BSD copyright notice, and added
+	some more concept index entries.
+
+1998-05-23  James Youngman  <jay@gnu.org>
+
+	* bsd/sccs.c:
+	Some attempts at increased security and portability.  No tests for
+	this program yet though, so no certainty that this works.
+
 1998-05-12  James Youngman  <jay@gnu.org>
+
+	* tests/prt/inputs/s.reportmr.1:
+	Oops.  I'd been working with a different file in the compilation
+	directory.
+
+	* ChangeLog: *** empty log message ***
 
 	* configure.in: Moved to 0.06alpha.pl8
 
