@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.34 2001/07/10 21:54:54 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.35 2001/07/10 23:13:00 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -323,9 +323,19 @@ main(int argc, char **argv)
 		  retval = 1;
 		  continue; // continue with next file...
 		}
-	      
+
+	      int failed = 0;
 	      new_delta = file.find_next_sid(rid, retrieve,
-					     branch, *pfile);
+					     branch, *pfile,
+					     &failed);
+	      if (failed)
+		{
+		  /* sccs_file::find_next_sid() has returned NULL.
+		   * This is a rare case.
+		   */
+		  retval = 1;
+		  continue; // continue with next file...
+		}
 	    }
 
 	  real_file = false;

@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.40 2000/11/12 10:27:54 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.41 2001/07/10 23:13:00 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -152,7 +152,8 @@ bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
 sid
 sccs_file::find_next_sid(sid requested, sid got,
 			 int want_branch,
-			 sccs_pfile &pfile) const
+			 sccs_pfile &pfile,
+			 int *pfailed) const
 {
   if (!flags.branch)
     want_branch = false;	// branches not allowed!
@@ -195,10 +196,51 @@ sccs_file::find_next_sid(sid requested, sid got,
       // have we collided with an existing SID?
       bool branch_again;
       const delta *pnext = find_any_delta(next);
-      if (pnext && !pnext->removed() && !requested.partial_sid())
-	branch_again = true;
+      if (pnext)
+	{
+	  if (!pnext->removed() && !requested.partial_sid())
+	    {
+	      branch_again = true;
+	    }
+	  else
+	    {
+	      branch_again = false;
+	    }
+	}
       else
-	branch_again = false;
+	{
+	  /* Whew, the SID is not already used in the SCCS file; 
+	   * check the p-file also though...
+	   */
+	  if (sid_in_use(next, pfile))
+	    {
+	      if (flags.joint_edit)
+		{
+		  errormsg("Warning: %s: creating a branch "
+			   "due to concurrent edit",
+			   name.c_str());
+		  branch_again = true;
+		}
+	      else
+		{
+		  /* If the requested SID is already being edited, 
+		   * and the joint edit flag is not set, I think that
+		   * the attempt to edit the file shpuld already have been 
+		   * thrown out by sccs_file::test_locks().
+		   */
+		  errormsg("Warning: %s: requested SID is "
+			   "already being edited; this should not happen",
+			   name.c_str());
+		  *pfailed = 1;
+		  return next; // FAILURE
+		}
+	    }
+	  else
+	    {
+	      branch_again = false;
+	    }
+	}
+
 	
       // If we have the revision sequence 1.1 -> 1.2 -> 2.1, then we
       // get 1.2 for editing, we must create a branch (1.2.1.1),
