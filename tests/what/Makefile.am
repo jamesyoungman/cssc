@@ -1,4 +1,4 @@
-EXTRA_DIST = Makefile.am keywords.sh
+EXTRA_DIST = Makefile.am whatbasic.sh
 
 
 check: 
