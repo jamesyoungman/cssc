@@ -41,46 +41,19 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.27 2001/12/02 20:32:53 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.28 2002/03/25 00:00:01 james_youngman Exp $";
 #endif
-
-#ifdef CONFIG_BORLANDC
-#ifdef __STDC__
-extern "C" char * CDECL strlwr(char *);
-#endif
-#include <dir.h>
-#endif /* CONFIG_BORLANDC */
 
 const char *prg_name = NULL;
 
 void
 set_prg_name(const char *name) {
-#ifdef CONFIG_BORLANDC
-
-        static char file[MAXFILE + MAXEXT];
-        char ext[MAXEXT];
-
-        fnsplit(name, NULL, NULL, file, ext);
-        strlwr(file);
-        strlwr(ext);
-
-        if (strcmp(ext, ".exe") != 0 && strcmp(ext, ".com") != 0) {
-                strcat(file, ext);
-        }
-        prg_name = file;
-
-#else /* CONFIG_BORLANDC */
-
         prg_name = name;
-
-#endif /* CONFIG_BORLANDC */
 }
 
-void
+static void
 v_errormsg(const char *fmt, va_list ap)
 {
-  /* putc('\n', stderr); */
-        
   if (prg_name != NULL)
     fprintf(stderr, "%s: ", prg_name);
 
@@ -133,16 +106,10 @@ v_quit(int err, const char *fmt, va_list ap) {
 
         fflush(stdout);
 
-
-        if (err == -2) {
-          putc('\n', stderr);
-          usage();
-        }
-        else
-          {
-            putc('\n', stderr);
-          }
-
+	// We used to call usage() is err was -2, but
+	// nobody ever actually used that.
+	
+	putc('\n', stderr);
         if (fmt)
           {
             v_errormsg(fmt, ap);
@@ -183,20 +150,6 @@ v_quit(int err, const char *fmt, va_list ap) {
         }
 #endif  
 }
-
-
-NORETURN
-quit(int err, const char *fmt, ...) {
-        va_list ap;
-
-
-        va_start(ap, fmt);
-        v_quit(err, fmt, ap);
-        va_end(ap);
-        
-        ASSERT(0);              // not reached.
-}
-
 
 // We eventually want to change the code to eliminate most calls
 // to quit (because processing should continue with the next input
@@ -297,13 +250,25 @@ s_missing_quit(const char *fmt, ...) {
 NORETURN
 s_unrecognised_feature_quit(const char *fmt, va_list ap)
 {
+  if (prg_name != NULL)
+    fprintf(stderr, "%s: Warning: unknown feature: ", prg_name);
+  
 #ifdef HAVE_EXCEPTIONS  
-  v_errormsg(fmt, ap);
+  vfprintf(stderr, fmt, ap);
   putc('\n', stderr);
   throw CsscUnrecognisedFeatureException();
 #else
   v_quit(-1, fmt, ap);
 #endif
+}
+
+void
+v_unknown_feature_warning(const char *fmt, va_list ap)
+{
+  if (prg_name != NULL)
+    fprintf(stderr, "%s: Warning: unknown feature: ", prg_name);
+
+  vfprintf(stderr, fmt, ap);
 }
 
 

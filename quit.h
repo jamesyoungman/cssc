@@ -89,8 +89,9 @@ void set_prg_name(const char *name);
 // errormsg(): emit an error message preceded by the program name.
 //             then return to the caller (don't exit).
 void errormsg(const char *fmt, ...);
-void v_errormsg(const char *fmt, va_list ap);
+// void v_errormsg(const char *fmt, va_list ap);
 
+void v_unknown_feature_warning(const char *fmt, va_list ap);
 
 // errormsg_with_errno(): emits 
 //   prog: your-text-here: errno-error-message \n 
