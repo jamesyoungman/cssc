@@ -57,15 +57,15 @@ docommand I10 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
 
 # One MR -- v flag unset, should fail.
 remove $s
-docommand I13 "${admin} -mI13 -ifoo $s" 1 "" IGNORE
+docommand I13 "${admin} -m13 -ifoo $s" 1 "" IGNORE
 test  -f $s && fail I13b stage I13 should not have created $s.
 
 # Set MR flag -- should work.
 remove $s
-docommand I14 "${admin} -fv -mI13 -ifoo $s" 0 "" IGNORE
+docommand I14 "${admin} -fv -m13 -ifoo $s" 0 "" IGNORE
 # Check for correct MRs
 docommand I15 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
-    0  "MRs:\nI13\nCOMMENTS:\n" ""
+    0  "MRs:\n13\nCOMMENTS:\n" ""
 
 # Check that the MR validation flag is ON.
 docommand I16 "${prs} -d:MF: $s" 0 "yes\n" ""
@@ -81,12 +81,12 @@ docommand I18 "${prs} -d:MP: $s" 0 "/bin/true\n" ""
 
 # Make sure validation checks can succeed, ever.
 remove $s
-docommand I19 "${admin} -fv/bin/true -mI19 -ifoo $s" 0 "" ""
+docommand I19 "${admin} -fv/bin/true -m19 -ifoo $s" 0 "" ""
 
 # Check compatible behaviour with regard to MR validation 
 # failure at initialisation.
 remove $s
-docommand I20 "${admin} -fv/bin/false -mI20 -ifoo $s" 1 "" IGNORE
+docommand I20 "${admin} -fv/bin/false -m20 -ifoo $s" 1 "" IGNORE
 test  -f $s && fail I21 stage I20 should not have created $s.
 
 rm -rf test 
