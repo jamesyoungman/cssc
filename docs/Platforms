@@ -8,7 +8,7 @@ James Youngman  <jay@gnu.org>    		    Red Hat Linux (x86)
 						    6.0, 6.2, 7.0, 7.1, 7.1.93
 James Youngman  <jay@gnu.org>                       Debian GNU/Linux versions
 						    2.2 (SPARC64, Alpha), 
-						    3.0 (x86)
+						    3.0 (x86), 3.1 (x86)
 James Youngman  <jay@gnu.org>    		    HPUX 9 (PA-RISC)
 James Youngman  <jay@gnu.org>    		    Solaris 2.6 (SPARC),
 						    Solaris 2.8 (SPARC)
@@ -60,17 +60,22 @@ Automake useful.
 CSSC has not, as far as I know, been widely tested with C++ compilers
 other than GCC:-
 
-GCC (2.7,2.8,EGCS)		Compiles, test suite passes
-GCC (3.0)    		        Compiles, test suite passes
+Sun CC 5.5                      Compiles, test suite unreported
 EPC C++                         Compiles, test suite passes
 IRIX CC				Fails to compile (see below)
+
+Older versions of CSSC have been built and tested with most of the
+versions of GCC between 2.7 and 3.3, including EGCS.  At the time, the
+code built correctly and the test suite passes.  This does nto mean
+that if you try to compile the code with GCC 2.7 now, everything will
+be fine.  However, you should not have too many problems, even so.
 
 
 Notes for specific platforms
 ============================
 
-Linux
------
+GNU/Linux
+---------
 
 The code should build without problems as-is.  There is a workaround
 for a bug in a few versions of glibc.  See "GNU libc" below for more
@@ -122,7 +127,7 @@ NetBSD
 ------
 
 The Texinfo feature @env{} is not supported by version 1.68 of
-Makeinfo which comes with some versoins of NetBSD.  To work around
+Makeinfo which comes with some versions of NetBSD.  To work around
 this problem, you could apply the following sed command to
 "cssc.texi":-
 
@@ -158,8 +163,8 @@ it falls short :-
    the relevant program changes the mode of the output file to the
    correct value immediately after closing the file. 
 
-2. The "Atomic" NFS locking support (which is done on Unix with the use
-   of link(2) requires the ability to use link(2) on an open file; this 
+2. The "Atomic" NFS locking support is done on Unix with the use of 
+   link(2) and requires the ability to use link(2) on an open file; this 
    is a feature which is not supported under the Cygwin environment.
    For this reason, it is unsafe to use the Cygwin version of CSSC on
    SCCS files which are mounted via an NT NFS client.  If, on the other hand,
