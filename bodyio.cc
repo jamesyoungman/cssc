@@ -2,7 +2,7 @@
  * bodyio.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ body_insert_text(const char iname[], const char oname[],
 
   // Make sure we don't already think it is binary -- if so, this 
   // function should never have been called.
-  assert(false == *binary);
+  ASSERT(false == *binary);
   
   while ( EOF != (ch=getc(in)) )
     {

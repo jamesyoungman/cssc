@@ -1,7 +1,7 @@
 /*
  * my-getopt.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -59,14 +59,18 @@
 #include <stdio.h>
 #endif
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>      /* for exit() */
+#endif
+
 #ifdef HAVE_STRING_H
-#include <string.h>
+#include <string.h>      /* for strchr() */
 #endif
 
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.5 1998/02/23 21:01:12 james Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.6 1999/03/19 23:58:34 james Exp $";
 #endif
 
 int

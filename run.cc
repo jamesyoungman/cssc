@@ -33,7 +33,7 @@
 #include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.18 1999/03/13 11:57:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.19 1999/03/19 23:58:34 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -69,7 +69,7 @@ static bool call_system(const char *s)
       errormsg_with_errno("call_system(\"%s\") failed.", s, ret);
       return false;
     }
-  return true;
+  return failed ? true : false;
 }
 
 /* Runs a programme and returns its exit status. */

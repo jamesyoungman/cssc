@@ -2,7 +2,7 @@
  * quit.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -111,7 +111,8 @@ NORETURN ctor_fail(int err, const char *fmt, ...)
 NORETURN quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 #endif
 
-NORETURN s_corrupt_quitquit(const char *fmt, ...)  POSTDECL_NORETURN;
+NORETURN s_missing_quit(const char *fmt, ...) POSTDECL_NORETURN;
+NORETURN s_corrupt_quit(const char *fmt, ...)  POSTDECL_NORETURN;
 NORETURN p_corrupt_quit(const char *fmt, ...)  POSTDECL_NORETURN;
 NORETURN fatal_quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 NORETURN ctor_fail(int err, const char *fmt, ...)  POSTDECL_NORETURN;

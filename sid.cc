@@ -2,7 +2,7 @@
  * sid.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.14 1998/12/09 23:36:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.15 1999/03/19 23:58:35 james Exp $";
 #endif
 
 
@@ -305,7 +305,7 @@ sid::printf(FILE *out, char c, int force_zero /*=0*/) const {
 		break;
 
 	default:
-	  assert(0);
+          ASSERT(0);
 	}
 	return printf_failed(fprintf(out, "%d", n));
 }

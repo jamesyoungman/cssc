@@ -42,7 +42,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.31 1999/03/14 14:58:21 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.32 1999/03/19 23:58:35 james Exp $";
 #endif
 
 class diff_state
@@ -95,7 +95,7 @@ public:
     {
       ASSERT(_state == INSERT);
       ASSERT(linebuf[0] == '>' && linebuf[1] == ' ');
-      return linebuf + 2;
+      return linebuf.c_str() + 2;
     }
   
   int in_line() { return in_lineno; }

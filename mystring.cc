@@ -1,7 +1,8 @@
+
 /*
  * mystring.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997, 1998, 1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -48,7 +49,7 @@
 #ifndef USE_STANDARD_STRING
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.12 1998/06/19 07:12:16 james Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.13 1999/03/19 23:58:34 james Exp $";
 #endif
 
 
@@ -244,6 +245,12 @@ bool
 mystring::operator==(const mystring &s) const
 {
   return compare(s) == 0;
+}
+
+bool
+mystring::operator!=(const mystring &s) const
+{
+  return compare(s) != 0;
 }
 
 void mystring::prepare_for_writing()

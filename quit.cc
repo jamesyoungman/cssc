@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.19 1999/03/13 11:57:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.20 1999/03/19 23:58:34 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -190,7 +190,7 @@ quit(int err, const char *fmt, ...) {
 	v_quit(err, fmt, ap);
 	va_end(ap);
 	
-	assert(0);		// not reached.
+        ASSERT(0);              // not reached.
 }
 
 

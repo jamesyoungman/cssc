@@ -2,7 +2,7 @@
  * mystring.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997, 1998, 1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Defines the class mystring.
  *
- * $Id: mystring.h,v 1.13 1998/05/04 21:51:52 james Exp $
+ * $Id: mystring.h,v 1.14 1999/03/19 23:58:34 james Exp $
  *
  */
 
@@ -107,6 +107,7 @@ public:
   // Operators...
   mystring operator+(const mystring&) const;
   bool operator==(const mystring&) const;
+  bool operator!=(const mystring&) const;
 
 
   // Searching..

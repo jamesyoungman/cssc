@@ -40,12 +40,16 @@
 #include <string.h>
 #endif
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
 #include "err_no.h"
 #include "defaults.h"
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.16 1999/03/13 11:57:24 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.17 1999/03/19 23:58:35 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 

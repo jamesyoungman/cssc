@@ -2,7 +2,7 @@
  * sf-get2.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.32 1998/10/20 17:27:29 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.33 1999/03/19 23:58:35 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -485,94 +485,82 @@ sccs_file::write_subst(const char *start,
 sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	       sid_list include, sid_list exclude,
 	       int keywords, const char *wstring,
-	       int show_sid, int show_module, int debug) {
-
-	/* Set the return status. */
-	struct get_status status;
-	status.success = true;
-	
-	ASSERT(0 != delta_table);
-	
-	seq_state state(highest_delta_seqno());
-	const delta *d = find_delta(id);
-	ASSERT(d != NULL);
-
-	ASSERT(0 != delta_table);
-	if (!prepare_seqstate(state, d->seq))
-	  {
-	    status.success = false;
-	    return status;
-	  }
-	
-
-	ASSERT(0 != delta_table);
-	if (!prepare_seqstate(state, include, exclude, cutoff_date))
-	  {
-	    status.success = false;
-	    return status;
-	  }
-
-	// The subst_parms here may not be the Whole Truth since
-	// the cutoff date may affect which version is actually
-	// gotten.  That's taken care of; the correct delta is
-	// passed as a parameter to the substitution function.
-	// (eugh...)
-	struct subst_parms parms(out, wstring, *d,
-				 0, sccs_date::now());
-
-#ifdef __GNUC__
-    if (keywords)
-        {
-        status.success = get(gname, state, parms, &sccs_file::write_subst,
-            show_sid, show_module, debug);
-        }
-    else
-        {
-        status.success = get(gname, state, parms, (subst_fn_t) 0,
-            show_sid, show_module, debug);
-        }
-#else
-    if (keywords)
-        {
-        status.success = get(gname, state, parms,
-            (int (sccs_file::*)(const char *, struct subst_parms *) const) 0,
-            show_sid, show_module, debug);
-        }
-    else
-        {
-        status.success = get(gname, state, parms, &sccs_file::write_subst,
-	    show_sid, show_module, debug);
-        }
-#endif
-	if (status.success == false)
-	  {
-	    return status;
-	  }
-    // only issue a warning about there being no keywords
-    // substituted, IF keyword substitution was being done.
-	if (keywords && !parms.found_id)
-	  {
-	    no_id_keywords(name.c_str());
-	    // this function normally returns.
-	  }
-				     
-	status.lines = parms.out_lineno;
-	
-	seq_no seq;	
-	for(seq = 1; seq <= highest_delta_seqno(); seq++)
-	  {
-	    const sid id = seq_to_sid(seq);
-	    
-	    if (state.is_explicit(seq))
-	      {
-		if (state.is_included(seq))
-		  status.included.add(id);
-		else if (state.is_excluded(seq))
-		  status.excluded.add(id);
-	      }
-	  }
-			
-	return status;
+	       int show_sid, int show_module, int debug)
+{
+  
+  /* Set the return status. */
+  struct get_status status;
+  status.success = true;
+  
+  ASSERT(0 != delta_table);
+  
+  seq_state state(highest_delta_seqno());
+  const delta *d = find_delta(id);
+  ASSERT(d != NULL);
+  
+  ASSERT(0 != delta_table);
+  if (!prepare_seqstate(state, d->seq))
+    {
+      status.success = false;
+      return status;
+    }
+  
+  
+  ASSERT(0 != delta_table);
+  if (!prepare_seqstate(state, include, exclude, cutoff_date))
+    {
+      status.success = false;
+      return status;
+    }
+  
+  // The subst_parms here may not be the Whole Truth since
+  // the cutoff date may affect which version is actually
+  // gotten.  That's taken care of; the correct delta is
+  // passed as a parameter to the substitution function.
+  // (eugh...)
+  struct subst_parms parms(out, wstring, *d,
+			   0, sccs_date::now());
+  
+  
+  if (keywords)
+    {
+      status.success = get(gname, state, parms, &sccs_file::write_subst,
+			   show_sid, show_module, debug);
+    }
+  else
+    {
+      status.success = get(gname, state, parms, (subst_fn_t) 0,
+			   show_sid, show_module, debug);
+    }
+  if (status.success == false)
+    {
+      return status;
+    }
+  // only issue a warning about there being no keywords
+  // substituted, IF keyword substitution was being done.
+  if (keywords && !parms.found_id)
+    {
+      no_id_keywords(name.c_str());
+      // this function normally returns.
+    }
+  
+  status.lines = parms.out_lineno;
+  
+  seq_no seq;	
+  for(seq = 1; seq <= highest_delta_seqno(); seq++)
+    {
+      const sid id = seq_to_sid(seq);
+      
+      if (state.is_explicit(seq))
+	{
+	  if (state.is_included(seq))
+	    status.included.add(id);
+	  else if (state.is_excluded(seq))
+	    status.excluded.add(id);
+	}
+    }
+  
+  return status;
 }
 
 /* Local variables: */

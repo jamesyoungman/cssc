@@ -1,7 +1,7 @@
 /*
  * cdc.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include "delta.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.19 1998/11/12 23:54:57 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.20 1999/03/19 23:58:34 james Exp $";
 
 void
 usage()
@@ -59,7 +59,6 @@ main(int argc, char *argv[])
   int c;
   sid rid = NULL;
   mystring mrs;
-  int got_mrs = 0;
   mystring comments;
   int got_comments = 0;
   int retval = 0;
@@ -89,7 +88,6 @@ main(int argc, char *argv[])
 	  
 	case 'm':
 	  mrs = opts.getarg();
-	  got_mrs = 1;
 	  break;
 	  
 	case 'y':

@@ -2,7 +2,7 @@
  * delta-iterator.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: delta-iterator.cc,v 1.2 1997/12/26 18:25:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: delta-iterator.cc,v 1.3 1999/03/19 23:58:34 james Exp $";
 #endif
 
 delta_iterator::delta_iterator(cssc_delta_table *d)
@@ -43,7 +43,7 @@ delta_iterator::delta_iterator(cssc_delta_table *d)
 }
 
 int
-delta_iterator::next(int all = 0)
+delta_iterator::next(int all)
 {
   ASSERT(0 != dtbl);
   
