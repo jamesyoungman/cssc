@@ -23,3 +23,5 @@ EXTRA_DIST = BUGS FIXED TODO CREDITS TESTING \
 # The .ispell_english file is included in the distribution because it
 # is useful for the list of correct spellings in this document to
 # accompany the document itself.
+
+MOSTLYCLEANFILES = cssc.info
