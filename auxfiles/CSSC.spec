@@ -1,20 +1,24 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
-Version: 0.06alpha.pl7
+Version: 0.07alpha.pl0
 Release: 1
 URL: http://www.myth.co.uk/~jay/cssc/
-Copyright: GPL
+Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
-Source: ftp://alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.06alpha.pl7.tar.gz
+Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-0.07alpha.pl0.tar.gz
+Prereq: /sbin/install-info
 Requires: /usr/bin/diff
+
+# You must set BuildRoot to a previously nonexistent directory,
+# because we start by doing "rm -rf $RPM_BUILD_ROOT"!
 BuildRoot: /var/tmp/cssc-root
 
 %description
 CSSC is a clone for the traditional Unix version control suite SCCS.
 It aims for near-total compatibility with SCCS.  CSSC stands for
-"Compatibly Stupid Source Control".  The BSD driver program sccs(1) is
-not included.  You can get that from ftp.freebsd.org.
+"Compatibly Stupid Source Control".  
+
 
 %prep
 %setup
@@ -22,7 +26,7 @@ not included.  You can get that from ftp.freebsd.org.
 %build
 rm -rf $RPM_BUILD_ROOT
 rm -f docs/cssc.info
-./configure --prefix=/usr --infodir=/usr/info
+./configure --prefix=/usr
 make
 
 %install
@@ -45,6 +49,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
+* Sat May 23 09:54:26 1998 interran@crd.GE.COM <John Interrante>
+Don't use --infodir since that breaks the BuildRoot.  "--infodir" is
+set by setting "--prefix" anyway.
+
 * Fri May  8 1998 interran@crd.GE.COM <John Interrante>
 Use a build-root.   Also use install-info.  Use install-strip 
 rather than just "strip *".
@@ -62,9 +70,12 @@ First RPMed version (0.05alpha-pl0)
 %files
 %attr(-, root, root) %doc README AUTHORS COPYING ChangeLog INSTALL NEWS 
 %attr(-, root, root) %doc docs/BUGS docs/CREDITS docs/FIXED docs/Platforms 
-%attr(-, root, root) %doc docs/TESTING docs/TODO docs/missing.txt docs/patches.txt
+%attr(-, root, root) %doc docs/TESTING docs/TODO docs/missing.txt 
+%attr(-, root, root) %doc docs/patches.txt
+%attr(-, root, root) %doc bsd/COPYING.bsd bsd/sccs.me
 %attr(-, root, root) %doc /usr/info/cssc.info
 %attr(-, root, root) %doc /usr/info/cssc.info-1
 %attr(-, root, root) %doc /usr/info/cssc.info-2
 %attr(755, root, root) /usr/libexec/cssc
 %attr(-, root, root) /usr/sccs
+%attr(-, root, root) /usr/bin/sccs
