@@ -5,7 +5,7 @@
  * This file is derived from xc/config/util/lndir.c in the X11R6 distribution.
  * It's been changed to make use of GNU Autoconf rather than xmkmf (imake)
  * for portability.
- *   -- James Youngman <JYoungman@vggas.com>
+ *   -- James Youngman <jay@gnu.org>
  */
 
 
@@ -181,6 +181,27 @@ int equivalent(char *lname, const char *rname)
     return !strcmp(lname, rname);
 }
 
+static int is_dir(const struct stat *p)
+{
+#ifdef S_ISDIR
+    return S_ISDIR(p->st_mode);
+#else
+    return p->st_mode & S_IFDIR;
+#endif
+}
+
+static int ignored(const char *n)
+{
+  const char *histdirs[] = {"SCCS","RCS","CVS.adm","CVS", (const char*)0};
+  const char **p;
+  for (p=histdirs; *p; ++p)
+    {
+      if (0 == strcmp(*p, n))
+	return 1;
+    }
+  return 0;
+}
+
 
 /* Recursively create symbolic links from the current directory to the "from"
    directory.  Assumes that files described by fs and ts are directories. */
@@ -232,11 +253,8 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
 		continue;
 	    }
 
-#ifdef S_ISDIR
-	    if(S_ISDIR(sb.st_mode))
-#else
-	    if (sb.st_mode & S_IFDIR) 
-#endif
+
+	    if (is_dir(&sb))
 	    {
 		/* directory */
 		n_dirs--;
@@ -244,12 +262,10 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
 		    (dp->d_name[1] == '\0' || (dp->d_name[1] == '.' &&
 					       dp->d_name[2] == '\0')))
 		    continue;
-		if (!strcmp (dp->d_name, "RCS"))
+
+		if (ignored(dp->d_name))
 		    continue;
-		if (!strcmp (dp->d_name, "SCCS"))
-		    continue;
-		if (!strcmp (dp->d_name, "CVS.adm"))
-		    continue;
+		
 		ocurdir = rcurdir;
 		rcurdir = buf;
 		curdir = silent ? buf : (char *)0;
@@ -322,23 +338,18 @@ main (int ac, char *av[])
     /* to directory */
     if (stat (tn, &ts) < 0)
 	quiterr (1, tn);
-#ifdef S_ISDIR
-    if (!(S_ISDIR(ts.st_mode)))
-#else
-    if (!(ts.st_mode & S_IFDIR))
-#endif
+
+    if (!is_dir(&ts))
 	quit (2, "%s: Not a directory", tn);
+    
     if (chdir (tn) < 0)
 	quiterr (1, tn);
 
     /* from directory */
     if (stat (fn, &fs) < 0)
 	quiterr (1, fn);
-#ifdef S_ISDIR
-    if (!(S_ISDIR(fs.st_mode)))
-#else
-    if (!(fs.st_mode & S_IFDIR))
-#endif
+
+    if (!is_dir(&fs))
 	quit (2, "%s: Not a directory", fn);
 
     return dodir (fn, &fs, &ts, 0);
