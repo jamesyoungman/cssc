@@ -1,11 +1,11 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
-Version: 0.06alpha_pl0
+Version: 0.06alpha.pl0
 Release: 1
 Copyright: GPL
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
-Source: alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.05alpha-pl0.tar.gz 
+Source: alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.06alpha.pl0.tar.gz 
 Requires: /usr/bin/diff
 
 %description
@@ -15,7 +15,7 @@ It aims for near-total compatibility with SCCS.  CSSC stands for
 not included.  You can get that from ftp.freebsd.org.
 
 %prep
-%setup -n CSSC-0.05alpha-pl0
+%setup
 
 %build
 ./configure --prefix=/usr --infodir=/usr/info
