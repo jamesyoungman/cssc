@@ -42,7 +42,7 @@ public:
 	sid(const char *s);
 	sid(release);		/* Defined below */
 
-  	bool is_null() const { return rel < 0; }
+  	bool is_null() const { return rel <= 0; }
 
 #if 1
 	sid(sid const &id): rel(id.rel), level(id.level),
