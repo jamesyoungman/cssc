@@ -132,7 +132,7 @@ public:
 	enum find_status find_sid(sid id);
 	int  print_lock_sid(FILE *fp);  	
 	void delete_lock() { edit_locks.select(pos).deleted = 1; }
-	bool update();
+	bool update( bool pfile_already_exists );
 
 };
 

@@ -34,7 +34,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.21 2001/07/10 21:54:54 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.22 2001/09/16 10:10:11 james_youngman Exp $";
 
 void
 usage() {
@@ -127,7 +127,7 @@ main(int argc, char **argv)
 	      fputc('\n', stdout);
 	      
 	      pfile.delete_lock();
-	      if (!pfile.update())
+	      if (!pfile.update(true))
 		retval = 1;
 	      
 	      if (!keep_gfile)

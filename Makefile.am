@@ -71,7 +71,7 @@ prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc sf-get.cc writesubst.cc \
 get_SOURCES = get.cc pf-add.cc pfile.cc sf-chkid.cc canonify.cc sf-kw.cc \
 	sf-get.cc sf-get2.cc writesubst.cc sf-get3.cc rl-merge.cc \
 	bodyio.cc encoding.cc \
-	seqstate.cc \
+	seqstate.cc pf-del.cc \
 	$(common_sources) $(sname_srcs) $(sfile_srcs)
 
 rmdel_SOURCES = rmdel.cc sf-rmdel.cc \

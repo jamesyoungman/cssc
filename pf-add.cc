@@ -30,7 +30,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.12 2001/09/16 09:35:24 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.13 2001/09/16 10:10:11 james_youngman Exp $";
 #endif
 
 
@@ -90,9 +90,15 @@ bool
 sccs_pfile::add_lock(sid got, sid delta, 
 		     sid_list &included, sid_list &excluded) {
 	ASSERT(mode == APPEND);
-
 	struct edit_lock new_lock;
+	bool pfile_already_exists;
 	
+
+	if (edit_locks.length() == 0)
+	  pfile_already_exists = false;
+	else
+	  pfile_already_exists = true;
+
 	new_lock.got = got;
 	new_lock.delta = delta;
 	new_lock.user = get_user_name();
@@ -103,7 +109,7 @@ sccs_pfile::add_lock(sid got, sid delta,
 
 	edit_locks.add(new_lock);
 
-	return update();
+	return update( pfile_already_exists );
 }
 #endif
 

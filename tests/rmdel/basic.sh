@@ -11,7 +11,7 @@ z=z.$g
 x=x.$g
 p=p.$g
 
-remove command.log log log.stdout log.stderr $g $s $z $x $p $d
+remove command.log log log.stdout log.stderr $g $s $z $x $p $d q.$g
 
 remove $g
 echo "hello, this is a test file" > $g

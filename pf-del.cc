@@ -32,7 +32,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.12 2001/07/10 21:54:54 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.13 2001/09/16 10:10:11 james_youngman Exp $";
 #endif
 
 /* enum */ sccs_pfile::find_status
@@ -64,7 +64,7 @@ sccs_pfile::find_sid(sid id) {
 }
 
 bool
-sccs_pfile::update()
+sccs_pfile::update(bool pfile_already_exists)
 {
   const mystring q_name(name.qfile());
   const char* qname = q_name.c_str();
@@ -110,11 +110,14 @@ sccs_pfile::update()
     }
 #endif  
 
-  
-  if (remove(pname.c_str()) != 0)
+
+  if (pfile_already_exists)
     {
-      errormsg_with_errno("%s: Can't remove old p-file.", pname.c_str());
-      return false;
+      if (remove(pname.c_str()) != 0)
+	{
+	  errormsg_with_errno("%s: Can't remove old p-file.", pname.c_str());
+	  return false;
+	}
     }
   
   if (count == 0)		// no locks left -> no pfile rewuired.
