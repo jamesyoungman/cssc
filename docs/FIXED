@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <97/11/05 19:12:40 james>
+Time-stamp: <1997-12-12 20:43:04 james>
 
 List of fixed bugs 
 
@@ -28,6 +28,20 @@ Sun May  4 18:03:20 1997: (fixed in version 1.4 of sf-get.cc)
 Selection of the correct SID to get is still wrong in get.  For
 example if you specify -r1 you should get the last 1.x release, but
 you don't.
+
+Thu Nov 20 22:29:33 1997: Richard Polton <rap@maths.soton.ac.uk>
+ CSSC's "admin" adds users to the SCCS in the reverse order
+ compared to SCCS.
+
+Mon Nov 17 18:01:05 1997: Richard Polton <rap@maths.soton.ac.uk>
+In version 0.03-pl2.  Unfixed.
+ If you create an SCCS file using "-i" from a file with (say)
+ 500000 lines, real SCCS does it, but puts "99999" in the 
+ summary line for that delta.  Currently, CSSC puts the "correct"
+ number of lines, and then fails when reading the file back in
+ for some other purpose, giving the error "Number too big".
+ The correct behaviour would be to follow what SCCS does.
+
 
 
 Local Variables:
