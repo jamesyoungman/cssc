@@ -34,7 +34,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: delta-iterator.cc,v 1.1 1997/11/30 21:08:07 james Exp $";
+static const char rcs_id[] = "CSSC $Id: delta-iterator.cc,v 1.2 1997/12/26 18:25:24 james Exp $";
 #endif
 
 delta_iterator::delta_iterator(cssc_delta_table *d)
@@ -45,6 +45,8 @@ delta_iterator::delta_iterator(cssc_delta_table *d)
 int
 delta_iterator::next(int all = 0)
 {
+  ASSERT(0 != dtbl);
+  
   while (++pos < dtbl->length())
     {
       if (all || !dtbl->select(pos).removed())
@@ -63,12 +65,14 @@ int delta_iterator::index() const
 delta const *
 delta_iterator::operator ->() const
 {
+  ASSERT(0 != dtbl);
   return &dtbl->select(pos);
 }
 
 delta *
 delta_iterator::operator ->()
 {
+  ASSERT(0 != dtbl);
   return &dtbl->select(pos);
 }
 
@@ -84,6 +88,7 @@ const_delta_iterator::const_delta_iterator(cssc_delta_table const *d)
 int
 const_delta_iterator::next(int all = 0)
 {
+  ASSERT(0 != dtbl);
   while (++pos < dtbl->length())
     {
       if (all || !dtbl->select(pos).removed())
@@ -102,6 +107,7 @@ int const_delta_iterator::index() const
 delta const *
 const_delta_iterator::operator ->() const
 {
+  ASSERT(0 != dtbl);
   return &dtbl->select(pos);
 }
 
