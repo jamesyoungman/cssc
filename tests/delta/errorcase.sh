@@ -3,6 +3,7 @@
 
 # Import common functions & definitions.
 . ../common/test-common
+. ../common/real-thing
 
 remove command.log log log.stdout log.stderr
 mkdir test 2>/dev/null
@@ -120,44 +121,46 @@ chmod +r $g
 docommand E18 "${delta} -yNoComment $s" 0 IGNORE IGNORE
 
 
-# Failure to create the d-file should also cause a failure. 
+# Failure to create the d-file should NOT cause a failure. 
 docommand E19 "${get} -e $s"                0 IGNORE IGNORE
 remove $x
 createfile $d
-docommand E20 "${delta} -yNoComment $s" 1 IGNORE IGNORE
+docommand E20 "${delta} -yNoComment $s" 0 IGNORE IGNORE
 
 # This should not leave any other temporary file lying about
-# but it should also not delete the s-file or the g-file, or 
-# delete that existing d-file.
+# but it should also not delete the s-file
 docommand E22 "test -r $x" 1 "" ""
 docommand E23 "test -r $q" 1 "" ""
 
-docommand E23 "test -r $d" 0 "" ""
-docommand E24 "test -r $s" 0 "" "" 
-docommand E25 "test -w $g" 0 "" "" 
+# The d-file would have been deleted (without causing an error) in E20.
+# Since there was no error the g-file should no longer be there either.
+docommand E24 "test -r $d" 1 "" ""
+docommand E25 "test -r $s" 0 "" "" 
+docommand E26 "test -w $g" 1 "" "" 
 
-remove $d
-docommand E26 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+# Since E20 was successful, no need to do the delta again
+#remove $d
+#docommand E27 "${delta} -yNoComment $s" 0 IGNORE IGNORE
 
 # %A as the last two characters of the file to be checked in 
 # should not cause the world to end. 
 remove $s
-if $TESTIG_CSSC
+if ${TESTING_CSSC}
 then
-    docommand E27 "${admin} -b -n $s" 0 IGNORE IGNORE 
+    docommand E28 "${admin} -b -n $s" 0 IGNORE IGNORE 
     
-    docommand E28 "${get} -e $s"                0 IGNORE IGNORE
+    docommand E29 "${get} -e $s"                0 IGNORE IGNORE
     echo_nonl "%A" > $g
     cp $g $g.saved || miscarry "could not back up $g"
-    docommand E29 "${delta} -yNoComment $s" 0 IGNORE IGNORE
-    docommand E30 "${get} -k $s"                0 IGNORE IGNORE
+    docommand E30 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+    docommand E31 "${get} -k $s"                0 IGNORE IGNORE
     
-    echo_nonl E31...
+    echo_nonl E32...
     if diff $g.saved $g 
     then
         echo passed
     else
-        fail "E31: Expcected to get the same contents back, did we did not" 
+        fail "E32: Expcected to get the same contents back, did we did not" 
     fi
     remove $g
 
@@ -168,8 +171,8 @@ then
     # This test is specific to CSSC because SCCS doesn't rename the x-file...
     mkdir $x.bak
     createfile $x
-    docommand E32 "${get} -e $s"                0 IGNORE IGNORE
-    docommand E33 "${delta} -yNoComment $s"     0 IGNORE IGNORE
+    docommand E33 "${get} -e $s"                0 IGNORE IGNORE
+    docommand E34 "${delta} -yNoComment $s"     0 IGNORE IGNORE
     removedirs $x.bak
 
 else
@@ -182,18 +185,18 @@ remove $s
 # SCCS file. 
 
 # Create deltas 1.1 and 1.2
-docommand E34 "${admin} -n $s"     0 IGNORE IGNORE
-docommand E35 "${get} -e $s"       0 IGNORE IGNORE
-docommand E36 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+docommand E35 "${admin} -n $s"     0 IGNORE IGNORE
+docommand E36 "${get} -e $s"       0 IGNORE IGNORE
+docommand E37 "${delta} -yNoComment $s" 0 IGNORE IGNORE
 
 # Edit delta 1.2 and then remove delta 1.2
-docommand E37 "${get} -e $s"       0 IGNORE IGNORE
+docommand E38 "${get} -e $s"       0 IGNORE IGNORE
 rename $p saved.$p
-docommand E38 "${rmdel} -r1.2 $s" 0 IGNORE IGNORE
+docommand E39 "${rmdel} -r1.2 $s" 0 IGNORE IGNORE
 rename saved.$p $p
 
 # Try to check in the file - this should fail. 
-docommand E39 "${delta} -yNoComment $s" 1 "" IGNORE
+docommand E40 "${delta} -yNoComment $s" 1 "" IGNORE
 remove $p
 
 remove $files

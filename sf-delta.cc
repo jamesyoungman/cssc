@@ -48,7 +48,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.50 2002/03/28 18:55:49 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.51 2002/04/02 17:20:02 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -505,9 +505,28 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   
   /* The d-file is created in the SCCS directory (XXX: correct?) */
   mystring dname(name.sub_file('d'));
-  
-//FILE *get_out = fopen(dname.c_str(), "wt");
+
+  /* We used to use fcreate here but as shown by the tests in 
+   * tests/delta/errorcase.sh, the prior existence of the 
+   * d-file doesn't cause an error.
+   *
+   * XXX: slight departure from SCCS behaviour here.  The real thing
+   * appears to issue an unlink(2) followed by a create(2) to create
+   * the file.  If there is a setuid wrapper, but some ordinary user
+   * has sufficient priveleges to create a symlink in the project
+   * directory, it should be possible to exploit that race condition
+   * to create a file of their choice with contents of their choice,
+   * as the user to which the wrapper program is set-user or set-group
+   * ID.  I believe that using the flag O_EXCL as fcreate() does resolves
+   * that problem. 
+   */
   FILE *get_out = fcreate(dname, CREATE_EXCLUSIVE);
+  if (NULL == get_out)
+    {
+      remove(dname.c_str());
+      get_out = fcreate(dname, CREATE_EXCLUSIVE);
+    }
+
   if (NULL == get_out)
     {
       errormsg_with_errno("Cannot create file %s", dname.c_str());
