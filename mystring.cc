@@ -1,5 +1,5 @@
 /*
- * mystring.c: Part of GNU CSSC.
+ * mystring.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
@@ -30,114 +30,258 @@
 // code here if USE_STANDARD_STRING is not defined.
 
 
-#include "cssc.h"
-#include "mystring.h"
-
-#ifndef USE_STANDARD_STRING
-
 #ifdef __GNUC__
 #pragma implementation "mystring.h"
 #endif
 
+#include "cssc.h"
+#include "mystring.h"
+
+
+// If we have a standard <string> header we do not need to define the
+// class mystring since it is just a typedef for the standard string
+// class.  To find out if we're using that string class, we include
+// "mystring.h", which checks the macro HAVE_STRING from config.h,
+// which tells us if we have a <string> header.
+
+
+#ifndef USE_STANDARD_STRING
+
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.8 1997/11/18 23:22:22 james Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.9 1997/11/23 18:52:14 james Exp $";
 #endif
 
 
-void
-mystring::create(const char *s) {
-	if (s == NULL) {
-		str = NULL;
-		return;
-	}
-
-	ptr *p = (ptr *) xmalloc(STR_OFFSET + strlen(s) + 1);
-	strcpy(p->str, s);
-	p->refs = 1;
-
-	str = (char *) p + STR_OFFSET;
-}
 
 
-void
-mystring::create(const char *s1, const char *s2) {
-	if (s1 == NULL) {
-		create(s2);
-		return;
-	}
-	if (s2 == NULL) {
-		create(s1);
-		return;
-	}
-
-	int len1 = strlen(s1);
-	ptr *p = (ptr *) xmalloc(STR_OFFSET + len1 + strlen(s2) + 1);
-	strcpy(p->str, s1);
-	strcpy(p->str + len1, s2);
-	p->refs = 1;
-
-	str = (char *) p + STR_OFFSET;
-}
-
-mystring::mystring(const char *s, size_t len)
+struct mystring::MyStrRep
 {
-  ptr *p = (ptr *) xmalloc(STR_OFFSET + len + 1);
-  memcpy(p->str, s, len);
-  p->str[len] = '\0';
-  p->refs = 1;
-  str = (char *) p + STR_OFFSET;
+public:
+  char *data;
+  int  refs;
+  size_type len;
+  
+  MyStrRep(const char *s, size_type sl) // length already measured.
+  {
+    data = new charT[sl+1];
+    len = sl;
+    memcpy(data, s, len);
+    data[sl] = 0;		// terminate.
+    refs = 1;
+  }
+  
+  ~MyStrRep()
+  {
+    delete[] data;
+    data = 0;
+    refs = 0;
+    len = 0;
+  }
+
+  // We don't want the default copy methods.
+private:
+  MyStrRep(const MyStrRep&);
+  MyStrRep& operator=(const MyStrRep&);
+  MyStrRep() : data(0), refs(0) { }
+};
+
+mystring::mystring()
+{
+  rep = new MyStrRep("", 0);
 }
 
-const mystring& mystring::operator+=(const mystring& s)
+mystring::mystring(const charT* s, size_type len)
 {
-  size_t newlen = strlen(str) + strlen(s.str) + 1;
-  ptr *p = (ptr *) xmalloc(STR_OFFSET + newlen);
-  strcpy(p->str, str);
-  strcat(p->str, s.str);
-  destroy();
-  create(p->str);
-  free(p);
+  rep = new MyStrRep(s, len);
+}
+
+mystring::mystring(const charT* s)
+{
+  rep = new MyStrRep(s, strlen(s));
+}
+
+mystring::mystring(const mystring& from)
+{
+  rep = from.rep;
+  rep->refs++;
+}
+
+mystring& 
+mystring::operator=(const mystring& from)
+{
+  if (&from != this)
+    {
+      if (1 == rep->refs--)
+	delete rep;
+
+      rep = from.rep;
+      rep->refs++;
+    }
   return *this;
 }
 
-
-mystring mystring::operator+(const mystring& s)
+mystring&
+mystring::assign(const mystring &s, size_type pos)
 {
-  mystring ret(str);
-  ret += s;
-  return ret;
-}
-
-
-void
-mystring::destroy() {
-	if (str != NULL && --STR_PTR(str)->refs == 0) {
-		free(STR_PTR(str));
+  // We _could_ cope with pos being zero specially,
+  // but we do not.
+  size_type flen = s.length();
+  if (pos < flen)
+    {
+      MyStrRep* new_rep = new MyStrRep(s.rep->data + pos, flen-pos);
+      if (1 == rep->refs--)
+	{
+	  delete rep;
 	}
-}
-
-mystring &
-mystring::operator =(mystring const &s) {
-	if (this != &s) {
-		destroy();
-		copy(s);
+      rep = new_rep;
+    }
+  else
+    {
+      // Tried to copy the bit of string beyond the end...
+      if (1 == rep->refs--)
+	{
+	  delete rep;
 	}
-	return *this;
+      rep = new MyStrRep("", 0);
+    }
+  return *this;
 }
 
-mystring &
-mystring::operator =(const char *s) {
-	ASSERT(s == NULL || str != s);
-	destroy();
-	create(s);
-	return *this;
-}
-
-const char&
-mystring::operator[](size_t n) const
+bool mystring::valid() const
 {
-  return str[n];
+  return rep != 0;
 }
+
+bool mystring::empty() const
+{
+  return length() == 0;
+}
+
+mystring::size_type 
+mystring::length() const
+{
+  return rep->len;
+}
+
+mystring::charT
+mystring::at(size_type pos) const
+{
+  ASSERT(pos < length());	// TODO: throw exception??
+  return rep->data[pos];
+}
+
+mystring::ModifiableReference mystring::at(mystring::size_type pos)
+{
+  ASSERT(pos < length());	// TODO: throw exception??
+  return ModifiableReference(*this, pos);
+}
+
+const char* mystring::c_str() const
+{
+  return rep->data;		// already terminated.
+}
+
+mystring
+mystring::substr(size_type first, size_type last) const
+{
+  ASSERT(length() > first);
+
+  if (last > length())
+    last = length();
+ 
+  return mystring(rep->data + first, last-first);
+}
+
+
+// Not very efficient but this is a get-you-home implementation 
+// anyway; the header <string> should provide the Real Thing anyway.
+mystring mystring::operator+(const mystring &s) const
+{
+  size_type newlen = length() + s.length();
+  charT *newdata = new charT[newlen];
+  memcpy(newdata, rep->data, rep->len);
+  memcpy(newdata+rep->len, s.rep->data, s.rep->len);
+
+  return mystring(newdata, newlen);
+}
+
+int
+mystring::compare(const mystring &s) const
+{
+  if (rep == s.rep)
+    {
+      return 0;			// no difference
+    }
+  else
+    {
+      // Compare the two strings, up to the smaller of the two lengths.
+      bool me_longer = length() > s.length();
+      size_type minlen;
+      
+      if (me_longer)
+	minlen = s.length();
+      else
+	minlen = length();
+      
+      const int cmp = memcmp(rep->data, s.rep->data, minlen);
+      if (cmp)
+	return cmp;
+
+      // If the strings are of different length, and one is
+      // a prefix of the other, the longer string is "greater".
+      if (me_longer)
+	return 1;
+      else if (s.length() > length())
+	return -1;
+      else
+	return 0;
+    }
+}
+
+bool
+mystring::operator==(const mystring &s) const
+{
+  return compare(s) == 0;
+}
+
+void mystring::prepare_for_writing()
+{
+  if (rep->refs > 1)
+    {
+      MyStrRep *oldrep = rep;
+      rep = new MyStrRep(rep->data, rep->len);
+      --oldrep->refs;
+    }
+}
+
+mystring::charT &
+mystring::ModifiableReference::operator=(charT ch)
+{
+  if (ch != s.rep->data[pos])
+    {
+      s.prepare_for_writing();
+      s.rep->data[pos] = ch;
+    }
+  return s.rep->data[pos];
+}
+
+mystring::ModifiableReference::operator char() const
+{
+  return s.rep->data[pos];
+}
+
+
+mystring::size_type
+mystring::find_last_of(charT needle) const
+{
+  const char *p = rep->data;
+
+  for (size_type i=0; i<rep->len; ++i)
+    if (*p++ == needle)
+      return i;
+  return npos;
+}
+
 
 
 #endif /* USE_STANDARD_STRING */
