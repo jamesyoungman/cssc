@@ -206,6 +206,15 @@ main(int argc, char **argv) {
 	return 0;
 }
 
+#undef EARLY_GXX
+#ifdef __GNUG__
+#if (__GNUG__ <= 2)
+#if (__GNUC_MINOR__ <= 6)
+#define EARLY_GXX
+#endif
+#endif
+#endif
+
 // Explicit template instantiations.
 template class list<mystring>;
 template class list<seq_no>;
@@ -215,9 +224,10 @@ template class list<char const *>;
 template list<mystring>& operator+=(list<mystring> &, list<mystring> const &);
 template list<mystring>& operator-=(list<mystring> &, list<mystring> const &);
 template class range_list<release>;
+#ifndef EARLY_GXX
 template range_list<release> & range_list<release>::merge(range_list<release> const &);
 template range_list<release> & range_list<release>::remove(range_list<release> const &);
-
+#endif
 /* Local variables: */
 /* mode: c++ */
 /* End: */
