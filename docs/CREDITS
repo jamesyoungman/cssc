@@ -1,8 +1,13 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-05-09 14:49:20 james>
+Time-stamp: <1998-05-25 20:10:47 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
+
+The "sccs" program and its accompanying documentation were written by
+Eric Allman, and are copyright (C) 1980, 1993 The Regents of the
+University of California.  See the file ``bsd/COPYING.bsd'' for more
+information.
 
 This package was for all intents and purposes written (that is,
 updated for modern C++ compilers, fixed, enhanced, made more portable,
