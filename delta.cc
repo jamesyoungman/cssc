@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.12 1998/01/17 11:42:39 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.13 1998/02/21 14:03:53 james Exp $";
 
 void
 usage() {
@@ -115,7 +115,7 @@ main(int argc, char **argv) {
 		}
 	}
 
-	sccs_file_iterator iter(argc, argv, opts.get_index());
+	sccs_file_iterator iter(opts);
 
      	if (silent) {
 		stdout_to_null();

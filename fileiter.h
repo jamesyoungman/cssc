@@ -62,9 +62,11 @@
 #pragma interface
 #endif
 
+class getopt;
+
+
 /* This class is used to iterate over the list of SCCS files as
    specified on the command line. */
-
 class sccs_file_iterator
 {
 public:
@@ -84,7 +86,8 @@ private:
   sccs_name name;
 
 public:
-  sccs_file_iterator(int ac, char **av, int ind = 1);
+  // sccs_file_iterator(int ac, char **av, int ind = 1);
+  sccs_file_iterator(const getopt&);
   
   int next();
 

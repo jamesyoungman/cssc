@@ -12,7 +12,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.6 1997/11/30 21:05:48 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.7 1998/02/21 14:03:57 james Exp $";
 
 void
 usage()
@@ -133,7 +133,7 @@ main(int argc, char **argv)
   if (do_default)		// none of -uftb specified...
     print_delta_table = 1;	// ...so assume -d.
 
-  sccs_file_iterator iter(argc, argv, opts.get_index());
+  sccs_file_iterator iter(opts);
 
   // exclude.print(stdout);
   

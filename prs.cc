@@ -32,7 +32,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.11 1998/01/17 11:42:41 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.12 1998/02/21 14:03:57 james Exp $";
 
 void
 usage() {
@@ -123,7 +123,7 @@ main(int argc, char **argv) {
 		selected = sccs_file::EARLIER;
 	}
 
-	sccs_file_iterator iter(argc, argv, opts.get_index());
+	sccs_file_iterator iter(opts);
 
 	while(iter.next()) {
 		sccs_name &name = iter.get_name();

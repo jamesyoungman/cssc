@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.9 1998/01/17 11:42:42 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.10 1998/02/21 14:03:58 james Exp $";
 
 void
 usage() {
@@ -79,7 +79,7 @@ main(int argc, char **argv) {
 		quit(-2, "A SID must be specified on the command line.");
 	}
 
-	sccs_file_iterator iter(argc, argv, opts.get_index());
+	sccs_file_iterator iter(opts);
 
 	int tossed_privileges = 0;
 

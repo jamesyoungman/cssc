@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.18 1998/01/25 22:33:01 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.19 1998/02/21 14:03:55 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -223,7 +223,7 @@ main(int argc, char **argv) {
 		out = open_null();
 	}
 
-	sccs_file_iterator iter(argc, argv, opts.get_index());
+	sccs_file_iterator iter(opts);
 
 	while(iter.next()) {
 		sccs_name &name = iter.get_name();

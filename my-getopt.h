@@ -52,13 +52,15 @@ public:
   int opterr;
   char *arg;
 
+private:
+  void reorder();		// reorder argv so that options come first.
+
 public:
-  getopt(int ac, char **av, const char *s, int err = 1)
-    : argc(ac), argv(av), index(1),
-      cindex(0), opts(s), opterr(err) {}
+  getopt(int ac, char **av, const char *s, int err = 1);
   int next(void);
-  
   int get_index(void) const;
+  int get_argc(void) const;
+  char **get_argv(void) const;
   char *getarg (void) const;
 };
 

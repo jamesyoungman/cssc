@@ -1,7 +1,7 @@
 /*
  * admin.c: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -35,7 +35,23 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.19 1998/01/25 22:32:58 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.20 1998/02/21 14:03:52 james Exp $";
+
+
+bool well_formed_sccsname(const sccs_name& n)
+{
+  const char *s;
+  
+  if (s = strchr(n.c_str(), '/'))
+    {
+      s++;
+    }
+  else
+    {
+      s = n.c_str();
+    }
+  return ('s' == s[0]) && ('.' == s[1]);
+}
 
 void
 usage() {
@@ -155,7 +171,7 @@ main(int argc, char **argv) {
 	
 	list<mystring> mr_list, comment_list;
 	int first = 1;
-	sccs_file_iterator iter(argc, argv, opts.get_index());
+	sccs_file_iterator iter(opts);
 
 	while(iter.next()) {
 		sccs_name &name = iter.get_name();
@@ -168,7 +184,14 @@ main(int argc, char **argv) {
 			sccs_file::update_checksum(name.c_str());
 			continue;
 		}
-			
+
+		if (!well_formed_sccsname(name))
+		  {
+		    quit(-1, "%s is an invalid name."
+			 "  SCCS file names must begin `s.'\n",
+			 name.c_str());
+		  }
+		
 		/* enum */ sccs_file::_mode mode = sccs_file::UPDATE;
 #if 0
 		if (check) {

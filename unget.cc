@@ -32,7 +32,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.10 1998/01/17 11:42:43 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.11 1998/02/21 14:04:00 james Exp $";
 
 void
 usage() {
@@ -81,7 +81,7 @@ main(int argc, char **argv) {
 		}
 	}
 
-	sccs_file_iterator iter(argc, argv, opts.get_index());
+	sccs_file_iterator iter(opts);
 
      	if (silent) {
 		stdout_to_null();

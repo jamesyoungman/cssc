@@ -33,11 +33,13 @@
 #include "sccsname.h"
 #include "fileiter.h"
 #include "linebuf.h"
+#include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.10 1997/12/26 18:29:11 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.11 1998/02/21 14:03:54 james Exp $";
 #endif
 
+#if 0
 sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 	: argv(av + ind), argc(ac - ind) {
 
@@ -98,6 +100,70 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 	source = ARGS;
 	is_unique = (1 == argc);
 }
+#else
+sccs_file_iterator::sccs_file_iterator(const getopt &opts)
+	: argv(opts.get_argv() + opts.get_index()),
+	  argc(opts.get_argc() - opts.get_index()) {
+
+	if (argc < 1) {
+		quit(-2, "No SCCS file specified.");
+	}
+
+	char *first = argv[0];
+
+	if (strcmp(first, "-") == 0) {
+		source = STDIN;
+		return;
+	}
+
+#ifndef CONFIG_NO_DIRECTORY
+	if (first[0] != '\0') {
+		DIR *dir = opendir(first);
+		if (dir != NULL) {
+			const char *slash = NULL;
+			int len = strlen(first);
+
+#ifdef CONFIG_MSDOS_FILES
+			if (first[len - 1] != '/' && first[len - 1] != '\\') {
+				if (strchr(first, '/') == NULL) {
+					slash = "\\";
+				} else {
+					slash = "/";
+				}
+			}
+#else
+			if (first[len - 1] != '/') {
+				slash = "/";
+			}
+#endif
+			
+			mystring dirname(mystring(first) + mystring(slash));
+
+			struct dirent *dent = readdir(dir);
+			while(dent != NULL) {
+				mystring name = mystring(dirname) + mystring(dent->d_name, NAMLEN(dent));
+				
+				if (sccs_name::valid_filename(name.c_str())
+				    && is_readable(name.c_str())) {
+					files.add(name);
+				}
+				dent = readdir(dir);
+			}
+
+			closedir(dir);
+
+			source = DIRECTORY;
+			pos = 0;
+			return;
+		}
+	}
+#endif /* CONFIG_NO_DIRECTORY */
+
+	source = ARGS;
+	is_unique = (1 == argc);
+}
+#endif
+
 
 int
 sccs_file_iterator::unique() const

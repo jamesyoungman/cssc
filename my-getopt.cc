@@ -66,7 +66,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.2 1998/01/17 11:42:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.3 1998/02/21 14:03:56 james Exp $";
 #endif
 
 int
@@ -194,6 +194,106 @@ char *getopt::getarg(void) const
 {
   return arg;
 }
+
+/*
+ * reorder: rearrange the argv[] array so that the options
+ *          come before the filenames.  The internal ordering
+ *          of the options and of the filenames is unchanged.
+ */
+void getopt::reorder(void)
+{
+  int i;
+  char **files, **options;
+  files   = new char*[argc];
+  options = new char*[argc];
+  
+  // separate the options from the files.
+  // we lease argv[0] alone...
+  for (i=1; i<argc; ++i)
+    {
+      if ('-' == argv[i][0])
+	{
+	  if ('-' == argv[i][1])
+	    {
+	      // -- signals end of options; stuff the remaining options
+	      // into the files list.
+	      files[i] = 0;
+	      options[i] = 0;
+	      for(++i; i<argc; ++i)
+		{
+		  files[i] = argv[i];
+		  options[i] = 0;
+		}
+	    }
+	  else
+	    {
+	      // normal option.
+	      options[i] = argv[i];
+	      files[i] = 0;
+	    }
+	}
+      else
+	{
+	  files[i] = argv[i];
+	  options[i] = 0;
+	}
+    }
+
+  // now merge them, options first then files.
+  // we leave argv[0] alone.
+  int n = 1;
+  for (i=1; i<argc; ++i)
+    {
+      if (options[i])
+	argv[n++] = options[i];
+    }
+  for (i=1; i<argc; ++i)
+    {
+      if (files[i])
+	argv[n++] = files[i];
+    }
+  for (i=n; i<argc; ++i)
+    {
+      argv[i] = 0;
+    }
+  
+  argc = n;			// we might have removed some...
+
+#if 0  
+  fprintf(stderr, "** args [%d]: ", argc);
+  for (i=0; i<argc; i++)
+    {
+      fprintf(stderr, "%s ", argv[i]);
+    }
+  fprintf(stderr, "\n");
+#endif
+  
+  delete[] files;
+  delete[] options;
+  
+}
+
+getopt::getopt(int ac, char **av, const char *s, int err = 1)
+  : argc(ac),
+    argv(av),
+    index(1),
+    cindex(0),
+    opts(s),
+    opterr(err)
+{
+  reorder();
+}
+
+int getopt::get_argc(void) const
+{
+  return argc;
+}
+
+char **getopt::get_argv(void) const
+{
+  return argv;
+}
+
 
 /* Local variables: */
 /* mode: c++ */
