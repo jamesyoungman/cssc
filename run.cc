@@ -32,7 +32,7 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.15 1998/10/20 17:27:27 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.16 1998/11/01 22:30:44 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -65,7 +65,7 @@ static bool call_system(const char *s)
   
   if (errno)
     {
-      errormsg_with_errno("call_system(\"%s\") failed.", s, ret);
+      errormsg_with_errno(errno, "call_system(\"%s\") failed.", s, ret);
       return false;
     }
   return true;
@@ -119,7 +119,7 @@ run(const char *prg, list<const char *> const &args) {
 	int ret = spawnvp(P_WAIT, (char *) prg, (char **) argv);
 	if (ret == -1)
 	  {
-	    errormsg_with_errno("spawnvp(\"%s\") failed.", prg);
+	    errormsg_with_errno(errno, "spawnvp(\"%s\") failed.", prg);
 	  }
 
 #else /* HAVE_FORK */
