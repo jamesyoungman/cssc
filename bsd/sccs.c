@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.40 2003/12/10 00:09:39 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.41 2004/10/03 10:57:35 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -399,7 +399,7 @@ const struct sccsprog SccsProg[] =
   {"unedit", UNEDIT, NO_SDOT, NULL, 0 },
   {"diffs", DIFFS, NO_SDOT | REALUSER, NULL, 0 },
   {"-diff", DODIFF, NO_SDOT | REALUSER, _PATH_SCCSBDIFF, 0 },
-  {"print", CMACRO, 0, "prs -e/get -p -m -s", 0 },
+  {"print", CMACRO, NO_SDOT, "prs -e/get -p -m -s", 0 },
   {"branch", CMACRO, NO_SDOT, "get:ixrc -e -b/delta: -s -n -ybranch-place-holder/get:pl -e -t -g", 0 },
   {"enter", ENTER, NO_SDOT, NULL, 0 },
   {"create", CMACRO, NO_SDOT, "enter/get:ixeskcl -t", 0 },
@@ -1676,6 +1676,7 @@ isdir (const char *name)
 bool
 safepath (register const char *p)
 {
+  const char *arg = p;
   if (*p != '/')
     {
       while (strncmp (p, "../", 3) != 0 && strcmp (p, "..") != 0)
@@ -1687,7 +1688,7 @@ safepath (register const char *p)
         }
     }
 
-  printf ("You may not use full pathnames or \"..\"\n");
+  printf ("You may not use full pathnames or \"..\" but you specifed '%s'\n", arg);
   return FALSE;
 }
   
