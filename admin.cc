@@ -38,7 +38,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.31 1998/11/21 08:56:22 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.32 1998/11/21 20:14:01 james Exp $";
 
 
 static bool
@@ -234,7 +234,9 @@ main(int argc, char **argv)
 		
 	  sccs_file::_mode mode;
 
-	  if (new_sccs_file)
+	  if (check_checksum)
+	    mode = sccs_file::READ;
+	  else if (new_sccs_file)
 	    mode = sccs_file::CREATE;
 	  else if (reset_checksum)
 	    mode = sccs_file::FIX_CHECKSUM;
@@ -243,16 +245,8 @@ main(int argc, char **argv)
 	  
 	  sccs_file file(name, mode);
 
-
-	  if (reset_checksum)
-	    {
-	      if (!file.update_checksum())
-		retval = 1; // some kind of error.
-	      
-	      continue;
-	    }
-
-	  
+	  // The -h option (check_checksum) overrides all the other options;
+	  // if you specify the -h flag, no other action will take place.
 	  if (check_checksum)
 	    {
 	      if (!file.checksum_ok())
@@ -262,6 +256,15 @@ main(int argc, char **argv)
 	    }
 		
 		
+	  if (reset_checksum)
+	    {
+	      if (!file.update_checksum())
+		retval = 1; // some kind of error.
+	      
+	      continue;
+	    }
+
+
 	  if (!file.admin(file_comment,
 			  force_binary, set_flags, unset_flags,
 			  add_users, erase_users))
