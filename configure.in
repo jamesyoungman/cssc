@@ -107,7 +107,6 @@ AC_CHECK_FUNCS(abort wait)
 dnl Check for symlink() and readlink(), which lndir uses.
 AC_CHECK_FUNCS(symlink readlink) 
 
-AC_CHECK_FUNCS(abort wait)
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid pipe spawn geteuid getegid)
 AC_CHECK_FUNCS(fsetpos)
 AC_REPLACE_FUNCS(strerror remove rename strstr)
