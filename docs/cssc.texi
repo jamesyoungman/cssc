@@ -13,8 +13,8 @@
 @c %**end of header
 
 @set EDITION 1.0
-@set VERSION 0.06alpha-pl9
-@set UPDATED Mon May 25 19:40:06 1998
+@set VERSION 0.09alpha-pl1
+@set UPDATED Thu Nov 12 23:42:28 1998
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -446,10 +446,6 @@ If the @samp{-y} option is not given, the user is prompted for comments.
 
 @end table 
 
-
-@c TODO: if SCCS-file iterator is using stdin, it is an error 
-@c not to use -y; at the moment this is not detected, and 
-@c cdc probably goes on to do silly things.
 
 @node comb, delta, cdc, Invoking Programs
 @section @code{comb}
@@ -1542,8 +1538,9 @@ program has the paths hard-coded in as @file{/usr/sccs/*}, the version
 accompanying @code{CSSC} first searches for them on the PATH, and then
 falls back on @file{/usr/sccs/*}.  If the executable is running
 set-user-id, the @code{PATH} environment variable is ignored.  The
-@code{sccs} program itself should be fairly secure, the other programs
-in the suite are not.  See @xref{Known Problems} for more information.
+@code{sccs} program itself should be fairly secure, but the other
+programs in the suite are not.  See @xref{Known Problems} for more
+information.
 
 The @code{sccs} program is documented in its online manual page, and
 also in @cite{An Introduction to the Source Code Control System} by Eric
@@ -1564,8 +1561,42 @@ on BSD mirrors, for example @url{ftp://ftp.freebsd.org/}.
 @cindex sccs-sccsdiff
 @cindex differences between revisions
 @cindex change summary
-Nothing here, sorry.
-@c TODO: Write the test cases, and document it.
+The @code{sccsdiff} command compares two revisions stored in an
+@sc{sccs} file, using the system utility @code{diff}.  Options can be
+passed on to @code{diff}, for example to set the output format.  As with
+the other utilities in the suite, @code{sccsdiff} will operate on a list
+of s-files, but unlike most of the others, it will not process
+directories named on the command line.
+
+If you wish to compare the working copy of a file with a version stored
+in the s-file, you should use the command @code{sccs diffs}
+(@pxref{sccs}).
+
+The options for @code{sccsdiff} are described below.
+
+@table @samp
+@item --help
+This option is provided by CSSC but not by other SCCS implementations.
+It briefly describes the usage of the program.
+
+@item --version
+Indicates the version information for the @code{sccsdiff} program.
+
+@item -p
+The differences are piped through pr, rather than just being output
+directly.
+
+@item -rSID
+This option is used to select a revision from the s-file.   It must be
+specified exactly twice, in order to select a pair of revisions to
+compare.
+@end table
+
+All other options not appearing above are passed on to the @code{diff}
+program.  All the non-option arguments will be processed in turn as
+@sc{sccs} files.
+
+
 
 @node unget, val, sccsdiff, Invoking Programs
 @section @code{unget}
