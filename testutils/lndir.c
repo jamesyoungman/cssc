@@ -1,3 +1,14 @@
+/* lndir.c; part of GNU CSSC.
+ *
+ *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ * 
+ * This file is derived from xc/config/util/lndir.c in the X11R6 distribution.
+ * It's been changed to make use of GNU Autoconf rather than xmkmf (imake)
+ * for portability.
+ *   -- James Youngman <JYoungman@vggas.com>
+ */
+
+
 /* $XConsortium: lndir.c,v 1.13 94/04/17 20:10:42 rws Exp $ */
 /* Create shadow link tree (after X11R4 script of the same name)
    Mark Reinhold (mbr@lcs.mit.edu)/3 January 1990 */
@@ -43,103 +54,79 @@ in this Software without prior written authorization from the X Consortium.
    	%  lndir ../X
 */
 
-#include <X11/Xos.h>
-#include <X11/Xfuncproto.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/param.h>
 #include <errno.h>
 
-#ifndef X_NOT_POSIX
-#include <dirent.h>
+#if HAVE_DIRENT_H
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-#ifdef SYSV
-#include <dirent.h>
-#else
-#ifdef USG
-#include <dirent.h>
-#else
-#include <sys/dir.h>
-#ifndef dirent
-#define dirent direct
+# define dirent direct
+# define NAMLEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# endif
 #endif
+
+#ifdef STAT_MACROS_BROKEN
+#undef S_ISDIR
 #endif
-#endif
-#endif
+
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 2048
 #endif
 
-#if NeedVarargsPrototypes
 #include <stdarg.h>
-#endif
 
-#ifdef X_NOT_STDC_ENV
-extern int errno;
-#endif
+
 int silent;
 
 char *rcurdir;
 char *curdir;
 
 void
-quit (
-#if NeedVarargsPrototypes
-    int code, char * fmt, ...)
-#else
-    code, fmt, a1, a2, a3)
-    char *fmt;
-#endif
+quit (int code, char * fmt, ...)
 {
-#if NeedVarargsPrototypes
     va_list args;
     va_start(args, fmt);
     vfprintf (stderr, fmt, args);
     va_end(args);
-#else
-    fprintf (stderr, fmt, a1, a2, a3);
-#endif
     putc ('\n', stderr);
     exit (code);
 }
 
 void
-quiterr (code, s)
-    char *s;
+quiterr (int code, const char *s)
 {
     perror (s);
     exit (code);
 }
 
 void
-msg (
-#if NeedVarargsPrototypes
-    char * fmt, ...)
-#else
-    fmt, a1, a2, a3)
-    char *fmt;
-#endif
+msg (char * fmt, ...)
 {
-#if NeedVarargsPrototypes
     va_list args;
-#endif
     if (curdir) {
 	fprintf (stderr, "%s:\n", curdir);
 	curdir = 0;
     }
-#if NeedVarargsPrototypes
     va_start(args, fmt);
     vfprintf (stderr, fmt, args);
     va_end(args);
-#else
-    fprintf (stderr, fmt, a1, a2, a3);
-#endif
     putc ('\n', stderr);
 }
 
 void
-mperror (s)
-    char *s;
+mperror (const char *s)
 {
     if (curdir) {
 	fprintf (stderr, "%s:\n", curdir);
@@ -149,9 +136,7 @@ mperror (s)
 }
 
 
-int equivalent(lname, rname)
-    char *lname;
-    char *rname;
+int equivalent(char *lname, const char *rname)
 {
     char *s;
 
@@ -168,11 +153,11 @@ int equivalent(lname, rname)
 /* Recursively create symbolic links from the current directory to the "from"
    directory.  Assumes that files described by fs and ts are directories. */
 
-dodir (fn, fs, ts, rel)
-char *fn;			/* name of "from" directory, either absolute or
-				   relative to cwd */
-struct stat *fs, *ts;		/* stats for the "from" directory and cwd */
-int rel;			/* if true, prepend "../" to fn before using */
+int
+dodir (const char *fn, /* name of "from" directory, either absolute or relative to cwd */
+       const struct stat *fs, /* stats for the "from" directory */
+       const struct stat *ts, /* stats for the cwd */
+       int rel)
 {
     DIR *df;
     struct dirent *dp;
@@ -203,7 +188,7 @@ int rel;			/* if true, prepend "../" to fn before using */
     *p++ = '/';
     n_dirs = fs->st_nlink;
     while (dp = readdir (df)) {
-	if (dp->d_name[strlen(dp->d_name) - 1] == '~')
+	if (dp->d_name[NAMLEN(dp) - 1] == '~')
 	    continue;
 	strcpy (p, dp->d_name);
 
@@ -276,10 +261,8 @@ int rel;			/* if true, prepend "../" to fn before using */
     return 0;
 }
 
-
-main (ac, av)
-int ac;
-char **av;
+int
+main (int ac, char *av[])
 {
     char *fn, *tn;
     struct stat fs, ts;
@@ -319,5 +302,5 @@ char **av;
 #endif
 	quit (2, "%s: Not a directory", fn);
 
-    exit (dodir (fn, &fs, &ts, 0));
+    return dodir (fn, &fs, &ts, 0);
 }
