@@ -1,13 +1,10 @@
-Sat Nov 15 17:55:10 1997  James Youngman  <jay@gnu.org>
+1998-01-11  James Youngman  <jay@gnu.org>
 
-	* Get rid of xalloc.h (it contains an incorrect declaration of
-	new and delete -- the exception specification is wrong).  
-
-	* Get rid of the horrible current definition of mystring.h.
+	* Write documentation for sccsdiff in cssc.texi
 
 Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
 
-	* Write test cases for admin's -a, -h, -l, -r, -V, -z and -e
+	* Write test cases for admin's -h, -l, -r, -V, and -z
  	flags.
 
 	* Write code and test cases for admin's -b flag.
@@ -18,8 +15,6 @@ Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
 
 	* Write code and test cases for "sccs", val and sccs-comb.
 
-	* Write documentation for sact, prt and rmdel.
-	
 	* Write test cases for cdc.
 
 	* Write documentation and test cases for sccsdiff.
@@ -54,8 +49,6 @@ Mon May 26 14:56:52 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 Sun May 25 16:27:05 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
-	* Add "installdocs" target and "install" target.
-
 	* Complete the test cases in admin/flags.sh.
 
 Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
@@ -77,11 +70,6 @@ Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
 
 	* sccs-val is not yet provided.   Useful for testing.
 
-	* When the Makefile is updated using configure, under control of
- 	make, the CXXFLAGS macro grows to contain multiple copies of
- 	$(CXXFLAGS), presumably because it is exported to configure by
- 	make.  Refer to some other autoconf-using program to see how this
- 	stuff should be done.
 
 
 
