@@ -1,0 +1,144 @@
+#! /bin/sh
+
+# This file is part of CSSC.
+# # @configure_input@
+
+# Usage:
+# sccsdiff [-p] -rsid -rsid [diff-options] s.filename
+#
+
+# $Id: sccsdiff.sh.in,v 1.1 1997/05/04 14:49:22 james Exp $
+# $Log: sccsdiff.sh.in,v $
+# Revision 1.1  1997/05/04 14:49:22  james
+# Initial revision
+#
+
+# Values substituted by configure:-
+pr=@PR@			   # The location of the   pr(1) command:
+diff=@CONFIG_DIFF_COMMAND@ # The location of the diff(1) command:
+get=get
+
+version="$Revision: 1.1 $ $State: Exp $"
+usage() {
+cat <<EOF
+$0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
+EOF
+}
+
+use_pr=false
+first_sid=
+second_sid=
+diff_options=
+sccs_files=
+
+while test $# -gt 0
+do
+	case $1 in 
+	    --help)
+		usage
+		exit 0
+		;;
+	    --version)
+		echo $version
+		exit 0
+		;;
+	    -p) use_pr=true 
+		shift
+		;;
+	    -r*) 
+		if test ${#first_sid} -eq 0 
+		then 
+		    first_sid=$1
+		else
+		    if test ${#second_sid} -eq 0
+		    then
+			second_sid=$1
+		    else
+			exec >&2
+			usage
+			echo "Too many -r options."
+			exit 1
+		    fi
+		fi
+		shift
+		;;
+	    -*)
+		diff_options="${diff_options} $1"
+		shift
+		;;
+	    *)  
+		# That's an SCCS file, leave it and everything 
+		# following it in $*.
+		break
+		;;
+	esac
+done
+
+# Show what we got...
+## echo "use_pr=" $use_pr
+## echo "first SID=" $first_sid
+## echo "second SID=" $second_sid
+## echo "diff options=" $diff_options
+## echo "SCCS files=" $*
+## echo \$\# = $#
+
+if test ${#second_sid} -eq 0
+then
+    exec >&2
+    echo Two SIDs must be specified with the -r option.
+    usage
+    exit 1
+fi
+
+getprefix=/tmp/get.$$.
+g1=${getprefix}${first_sid}
+g2=${getprefix}${second_sid}
+dfile=${getprefix}d${first_sid}${second_sid}
+
+while test $# -gt 0
+do
+    rm -f $g1 $g2 $dfile
+    sccsfile=$1
+    shift
+
+    ${get} -s $first_sid -G${g1} ${sccsfile} || {
+	exec >&2
+	echo Failed to get first specified version from $sccsfile
+	exit 2
+    }
+    ${get} -s $second_sid -G${g2} ${sccsfile} || {
+	rm -f $g1
+	exec >&2
+	echo Failed to get second specified version from $sccsfile
+	exit 2
+    }
+    # in case noclobber is set...
+    rm -f $dfile
+
+    # Ignore return value of diff since it just tells us
+    # if the two files are different.
+    $diff $diff_options $g1 $g2 >$dfile
+    if test ! -f $dfile 
+    then				  # Output file does not exist.
+        echo $diff produced no output. >&2
+        exit 2
+    else				  # Output file exists.
+        if test ! -s $dfile 
+        then				  # Output file is empty.
+	    echo No differences.
+        else
+	    if $use_pr
+	    then
+		$pr < $dfile		  # Pipe through pr(1).
+	    else
+		cat < $dfile
+	    fi
+	fi
+    fi
+done					  # Loop over all named SCSC files.
+rm -f $g1 $g2 $dfile
+exit 0
+
+# Local Variables:
+# Mode: shell
+# End:
