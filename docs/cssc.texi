@@ -1473,7 +1473,7 @@ Nothing here, sorry.
 @cindex sccs-unget
 The @code{unget} command is used to reverse the effect of @code{get
 -e}.  Typically you might do this when you embark on an edit of a
-file. and it all goes horribly wrong.  Using @code{unget} allows you to
+file, and it all goes horribly wrong.  Using @code{unget} allows you to
 revert to a previously-known state.  In fact, if you have exercised some
 care in checking in new revisions, perhaps using a test suite, then
 @code{unget} can be used to return you to the last working version.
@@ -1543,9 +1543,9 @@ foo:
 @end example
 
 If the executable is linked from several source files, you will get a
-line of output for each string containing the identification string.
-This is useful for finding out exactly what code went into an
-executable.  This technique also works on object files, archive
+line of output for each string containing the identification string
+@samp{@@(#)}.  This is useful for finding out exactly what code went into
+an executable.  This technique also works on object files, archive
 libraries, text files, and in fact any sorts of files at all.
 
 Unlike the @code{strings} command, there is no way to make @code{what}
