@@ -9,7 +9,7 @@ AC_INIT(sccsfile.h)
 # ...at least according to the "Gnits" rules outlined
 # in the Automake manual.
 # previous version was 0.08alpha.pl1
-AM_INIT_AUTOMAKE(CSSC,0.09alpha.pl0)
+AM_INIT_AUTOMAKE(CSSC,0.09alpha.pl1)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)
