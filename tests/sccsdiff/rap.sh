@@ -34,6 +34,17 @@ docommand prep2 "${get} -e $s " 0 IGNORE  IGNORE
 echo two >> $g
 docommand prep3 "${delta} -ycomment $s" 0 IGNORE  IGNORE 
 
+
+## Avoid any current locale setting - because we delete lines
+## including the word "Page" below, so we must use the C or POSIX
+## locale, or some implementation-defined English locale, in order 
+## to see that string. 
+
+unset  LANGUAGE LC_ALL LC_CTYPE LC_COLLATE LANG
+# counterexample for Debian GNU/Linux: LANG=de_DE.ISO-8859-1
+# export LANGUAGE LC_ALL LC_CTYPE LC_COLLATE LANG
+
+
 echo_nonl "D1..."
 remove  $g
 ${sccsdiff} -r1.1 -r1.2 $s 2>errs | 
