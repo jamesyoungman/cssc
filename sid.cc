@@ -1,5 +1,5 @@
 /*
- * sid.c: Part of GNU CSSC.
+ * sid.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -26,19 +26,13 @@
  *
  */
 
-#ifdef __GNUC__
-//#pragma implementation "sid.h"
-//#pragma implementation "sid_list.h"
-//#pragma implementation "sid_list.c"
-#endif
-
 #include "cssc.h"
 #include "sid.h"
 
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.11 1998/02/28 14:49:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.12 1998/05/09 16:10:59 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an

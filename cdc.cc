@@ -1,5 +1,5 @@
 /*
- * cdc.c: Part of GNU CSSC.
+ * cdc.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
@@ -32,7 +32,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.13 1998/02/23 21:01:09 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.14 1998/05/09 16:10:52 james Exp $";
 
 void
 usage()

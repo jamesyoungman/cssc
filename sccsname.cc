@@ -1,5 +1,5 @@
 /* 
- * sccsname.c: Part of GNU CSSC.
+ * sccsname.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.7 1997/11/23 18:49:47 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.8 1998/05/09 16:10:58 james Exp $";
 #endif
 
 #ifdef CONFIG_MSDOS_FILES 

@@ -1,5 +1,5 @@
 /*
- * delta.c: Part of GNU CSSC.
+ * delta.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.15 1998/02/23 21:01:10 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.16 1998/05/09 16:10:53 james Exp $";
 
 void
 usage() {

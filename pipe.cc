@@ -38,10 +38,10 @@ class Pipe;
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.12 1998/02/28 14:49:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.13 1998/05/09 16:10:56 james Exp $";
 #endif
 
-extern int create(mystring name, int mode); /* file.c */
+extern int create(mystring name, int mode);
 
 #ifndef USE_PIPE
 

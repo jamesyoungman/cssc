@@ -1,5 +1,5 @@
 /*
- * fsync.c: Part of GNU CSSC.
+ * fsync.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
@@ -22,8 +22,6 @@
  *
  *
  * Defines the function fsync for MS-DOS systems.
- *
- * @(#) CSSC fsync.c 1.1 93/11/09 17:17:54
  *
  */
 

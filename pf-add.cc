@@ -1,5 +1,5 @@
 /*
- * pf-add.c: Part of GNU CSSC.
+ * pf-add.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
@@ -28,7 +28,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.7 1997/11/18 23:22:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.8 1998/05/09 16:10:55 james Exp $";
 #endif
 
 void

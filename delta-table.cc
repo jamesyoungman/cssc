@@ -1,5 +1,5 @@
 /*
- * sccsfile.c: Part of GNU CSSC.
+ * delta-table.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 

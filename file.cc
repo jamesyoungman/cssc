@@ -1,5 +1,5 @@
 /*
- * file.c: Part of GNU CSSC.
+ * file.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.14 1998/03/14 13:43:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.15 1998/05/09 16:10:54 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS

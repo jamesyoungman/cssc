@@ -1,5 +1,5 @@
 /*
- * quit.c: Part of GNU CSSC.
+ * quit.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
@@ -38,7 +38,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.11 1997/11/18 23:22:29 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.12 1998/05/09 16:10:57 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC

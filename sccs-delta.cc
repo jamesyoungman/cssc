@@ -1,5 +1,5 @@
 /*
- * sf-delta2.c: Part of GNU CSSC.
+ * sccs-delta.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -31,7 +31,7 @@
 #include "delta.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccs-delta.cc,v 1.1 1997/11/30 21:10:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccs-delta.cc,v 1.2 1998/05/09 16:10:58 james Exp $";
 #endif
 
 delta &

@@ -1,5 +1,5 @@
 /*
- * sf-rmdel.c: Part of GNU CSSC.
+ * sf-rmdel.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -34,7 +34,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.8 1998/03/11 18:19:51 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.9 1998/05/09 16:10:59 james Exp $";
 #endif
 
 static int
