@@ -1,9 +1,32 @@
+1999-04-21  James Youngman  <jay@gnu.org>
+
+	* docs/Makefile.am: Added texinfo.tex to the distribution.
+
+	* configure.in, sccsfile.cc, sf-delta.cc, sf-get.cc, sf-get2.cc,
+	sf-get3.cc, sf-prs.cc, sf-prt.cc, sf-rmdel.cc, NEWS: Removed some
+	dead code.
+
+	* seqstate.h, seqstate.cc: Removed dependency on the STL <list> header.
+
 1999-04-18  James Youngman  <jay@gnu.org>
+
+	* docs/texinfo.tex: Automake likes texinfo.tex to be present.
+
+	* delta.h, dtbl-prepend.cc, fileiter.h, prs.cc, prt.cc,
+	rel_list.cc, rel_list.h, rl-merge.cc, rmdel.cc, run.h, sact.cc,
+	seqstate.cc, seqstate.h, sf-cdc.cc, sf-chkmr.h, sf-get.cc,
+	sf-get3.cc, sf-prs.cc, sf-prt.cc, sf-rmdel.cc, sf-write.cc,
+	unget.cc, ChangeLog, delta-table.cc, delta-table.h: Updated
+	copyright statements for those files modified this weekend.
+
+	* configure.in:
+	Commented out AM_PROG_INSTALL, since automake seems not to like it
+	any more.
 
 	* tests/bsd-sccs/driver-basic.sh:
 	Disable test h2, since currently we don't pass it.   FIXME!
 
-	* tests/rmdel/basic.sh: Better cleanup.
+	* tests/rmdel/basic.sh: *** empty log message ***
 
 	* tests/bsd-sccs/driver-basic.sh:
 	Added test for "sccs unedit" ensuring we delete the gotten file.
@@ -18,9 +41,9 @@
 	sf-get3.cc, sf-prs.cc, sf-prt.cc, sf-rmdel.cc, sf-write.cc,
 	unget.cc, admin.cc, cdc.cc, delta-table.cc, delta-table.h,
 	delta.cc, delta.h, dtbl-prepend.cc, fileiter.h, get.cc,
-	l-split.cc, list.cc, mylist.h, mystring.h: 
-	Changes for correct support of included deltas in branches (a
-	rewrite of seqstate.cc and seqstate.h).
+	l-split.cc, list.cc, mylist.h, mystring.h: Changes for correct
+	support of included deltas in branches (a rewrite of seqstate.cc
+	and seqstate.h).
 
 	* tests/get/included.sh:
 	Enable the test, now that we support included non-ancestor branches.
