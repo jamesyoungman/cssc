@@ -37,10 +37,11 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 
 
-#define UUDEC(c)	(((c) - 040) & 077)
+#define UUDEC(c)        (((c) - 040) & 077)
 #define UUENC(c)        (((c) & 077) + 040)
 
 static inline void
@@ -96,7 +97,7 @@ decode_line(const char in[], char out[])
   if (len <= 0)
     return 0;
 
-  ++in;				/* step over byte count. */
+  ++in;                         /* step over byte count. */
   
   for (n=0; n<len; n+=3)
     {
@@ -146,50 +147,84 @@ encode_stream(FILE *fin, FILE *fout)
 
 
 int
-test_encode(void)
+test_encode(const char *arg)
 {
-  return encode_stream(stdin, stdout);
+    /* Rather than figure out if we support stat, just lie.
+     * the test suite never uses this anyway.
+     */
+    int rv;
+    
+    printf("begin 600 %s\n", arg);
+    rv = encode_stream(stdin, stdout);
+    printf("end\n");
+    return rv;
 }
 
 int
-test_decode(void)
+test_decode(const char *arg)
 {
   char inbuf[80], outbuf[80];
-  int mode, nf;
+  int mode, nf, expect_end_line;
   FILE *fp_output;
   
   if ( 0 != fgets(inbuf, sizeof(inbuf)-1, stdin))
     {
       nf = sscanf(inbuf, "begin %o %[^\n]", &mode, outbuf);
       if (nf < 1)
-	{
-	  fprintf(stderr, "No \"begin\" line\n");
-	  return 1;
-	}
+        {
+          fprintf(stderr, "No \"begin\" line\n");
+          return 1;
+        }
       if (nf != 2)
-	{
-	  fprintf(stderr, "No filename on \"begin\" line\n");
-	  return 1;
-	}
+        {
+          fprintf(stderr, "No filename on \"begin\" line\n");
+          return 1;
+        }
       else
-	{
-	  fp_output = fopen(outbuf, "wb");
-	  if (NULL == fp_output)
-	    {
-	      perror(outbuf);
-	      return 1;
-	    }
-	  fchmod(fileno(fp_output), mode);
-	}
+        {
+          fp_output = fopen(outbuf, "wb");
+          if (NULL == fp_output)
+            {
+              perror(outbuf);
+              return 1;
+            }
+          fchmod(fileno(fp_output), mode);
+        }
     }
 
+  expect_end_line = 0;
   while ( 0 != fgets(inbuf, sizeof(inbuf)-1, stdin) )
     {
-      int len = decode_line(inbuf, outbuf);
-      if (0 == len)
-	return 0;
-      fwrite(outbuf, 1, len, fp_output);
+        if (expect_end_line)
+        {
+            if (0 != strcmp(inbuf, "end\n"))
+            {
+                fprintf(stderr, "Expected \"end\" line\n");
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            int len = decode_line(inbuf, outbuf);
+            if (0 == len)
+            {
+                expect_end_line = 1;
+            }
+            else
+            {
+                fwrite(outbuf, 1, len, fp_output);
+            }
+        }
     }
+  
+  if (errno)
+      perror("Error reading input file");
+  else
+      fprintf(stderr, "Unexcpectedly reached end-of-file\n");
   return 1;
 }
 
@@ -197,7 +232,7 @@ test_decode(void)
 /* Test all possible inputs for encode(); decode its
  * outputs and check that they decode back to the correct value.
  */
-int test_all(void)
+int test_all(const char *arg)
 {
   union lunch { long l; char ch[4]; } in, out;
   long l0, l1, l2, lo;
@@ -209,10 +244,10 @@ int test_all(void)
   for (i=0; i<=maxval; i++)
     {
       if ( 0x7FFFF == (i & 0x7FFFF) )
-	{
-	  double completed = (100.0 * i) / dmaxval;
-	  printf("%06lx %3.0f%%...\n", i, completed);
-	}
+        {
+          double completed = (100.0 * i) / dmaxval;
+          printf("%06lx %3.0f%%...\n", i, completed);
+        }
       
       
       in.ch[0] = (i & 0x0000ff) >>  0;
@@ -228,20 +263,20 @@ int test_all(void)
       lo = l0 | l1<<8 | l2<<16;
 
       if (lo != i)
-	{
-	  fprintf(stderr,
-		  "Asymmetry!\n"
-		  "Input was %06lx, output was %05lx\n",
-		  i, lo);
-	  return 1;
-	}
+        {
+          fprintf(stderr,
+                  "Asymmetry!\n"
+                  "Input was %06lx, output was %05lx\n",
+                  i, lo);
+          return 1;
+        }
     }
   printf("Success!\n");
   return 0;
 }
 
 const char *options[] = { "--encode", "--decode", "--all" };
-int (* const actions[])(void) = { test_encode, test_decode, test_all };
+int (* const actions[])(const char *) = { test_encode, test_decode, test_all };
 
 #define NELEM(array)   (sizeof(array)/sizeof(array[0]))
 
@@ -250,7 +285,7 @@ static void
 usage(const char *prog)
 {
   size_t i;
-  fprintf(stderr, "Usage: %s [", prog);
+  fprintf(stderr, "Usage: %s [", prog ? prog : "uu_decode");
   for (i=0; i<NELEM(options); ++i)
     {
       fprintf(stderr, "%s %s", (i>0) ? " |" : "", options[i]);
@@ -262,13 +297,33 @@ int
 main(int argc, char *argv[])
 {
   size_t i;
-
-  if (2 == argc)
-    for (i=0; i<NELEM(options); ++i)
-      if (0 == strcmp(options[i], argv[1]))
-	return (actions[i])();
+  const char *argument;
   
-  usage(argv[0] ? argv[0] : "encoding-test");
+  if (argc == 3)
+  {
+      argument = argv[2];
+  }
+  else if (argc == 2)
+  {
+      argument = NULL;
+  }
+  else 
+  {
+      usage(argv[0]);
+      return 1;
+  }
+  
+  for (i=0; i<NELEM(options); ++i)
+  {
+      if (0 == strcmp(options[i], argv[1]))
+      {
+          return (actions[i])(argument);
+      }
+  }
+  
+
+  fprintf(stderr, "Unknown option %s\n", argv[1]);
+  usage(argv[0]);
   return 1;
 }
 
