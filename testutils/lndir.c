@@ -189,10 +189,12 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
     int symlen;
     char *ocurdir;
 
-    if ((fs->st_dev == ts->st_dev) && (fs->st_ino == ts->st_ino)) {
-	msg ("%s: From and to directories are identical!", fn);
-	return 1;
-    }
+    if ((fs->st_dev == ts->st_dev) && (fs->st_ino == ts->st_ino))
+      {
+	msg("%s: From and to directories are identical, hence no work to do!",
+	    fn);
+	return 0;		/* nothing to do! */
+      }
 
     if (rel)
 	strcpy (buf, "../");
