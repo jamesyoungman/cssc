@@ -5,27 +5,30 @@ expect_fail=false
 
 # Call fail when a test failed.
 fail () { 
+name=`basename $0`
 if ${expect_fail:-false}
 then
-	echo XFAIL $0 $* 
+	echo XFAIL $name $* 
 	# but don't exit...
 else
-	echo FAIL $0 $* ; exit 2; 
+	echo FAIL $name $* ; exit 2; 
 fi
 }
 
+
 # Call success when a test succeeded.
 success () { 
+name=`basename $0`
 if ${expect_fail:-false}
 then
-	echo XPASS $0: $* ; exit 0; 
+	echo XPASS $name: $* ; exit 0; 
 else
-	echo PASS $0:  $* ; exit 0; 
+	echo PASS $name:  $* ; exit 0; 
 fi
 }
 
 # Call miscarry wen a test could not be completed.
-miscarry () { echo $0: Test could not be completed. exit 1; }
+miscarry () { echo `basename $0`: Test could not be completed; exit 1; }
 
 
 remove () { rm -rf $* || miscarry Could not remove $* }
