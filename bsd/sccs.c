@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.33 2002/03/17 12:40:46 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.34 2002/03/19 18:03:00 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -336,6 +336,7 @@ struct sccsprog
     short sccsoper;             /* opcode, see below */
     short sccsflags;            /* flags, see below */
     const char *sccspath;       /* pathname of binary implementing */
+    int   clean_mode;		/* mode for do_clean(). */
   };
 
 /* values for sccsoper */
@@ -374,35 +375,35 @@ struct sccsprog
 
 const struct sccsprog SccsProg[] =
 {
-  {"admin", PROG, REALUSER, _PATH_SCCSADMIN},
-  {"cdc", PROG, 0, _PATH_SCCSCDC},
-  {"comb", PROG, WARN_MISSING, _PATH_SCCSCOMB},
-  {"delta", PROG, 0, _PATH_SCCSDELTA},
-  {"get", PROG, 0, _PATH_SCCSGET},
-  {"unget", PROG, 0, _PATH_SCCSUNGET},
-  {"help", PROG, NO_HELP_HERE | NO_SDOT, _PATH_SCCSHELP},
-  {"prs", PROG, 0, _PATH_SCCSPRS},
-  {"prt", PROG, 0, _PATH_SCCSPRT},
-  {"rmdel", PROG, REALUSER, _PATH_SCCSRMDEL},
-  {"val", PROG, 0, _PATH_SCCSVAL},
-  {"what", PROG, NO_SDOT, _PATH_SCCSWHAT},
-  {"sccsdiff", PROG, REALUSER, _PATH_SCCSDIFF},
-  {"edit", CMACRO, NO_SDOT, "get -e"},
-  {"delget", CMACRO, NO_SDOT, "delta:mysrp/get:ixbeskcl -t"},
-  {"deledit", CMACRO, NO_SDOT, "delta:mysrp -n/get:ixbskcl -e -t -g"},
-  {"fix", FIX, NO_SDOT, NULL},
-  {"clean", CLEAN, REALUSER | NO_SDOT, (char *) CLEANC},
-  {"info", CLEAN, REALUSER | NO_SDOT, (char *) INFOC},
-  {"check", CLEAN, REALUSER | NO_SDOT, (char *) CHECKC},
-  {"tell", CLEAN, REALUSER | NO_SDOT, (char *) TELLC},
-  {"unedit", UNEDIT, NO_SDOT, NULL},
-  {"diffs", DIFFS, NO_SDOT | REALUSER, NULL},
-  {"-diff", DODIFF, NO_SDOT | REALUSER, _PATH_SCCSBDIFF},
-  {"print", CMACRO, 0, "prs -e/get -p -m -s"},
-  {"branch", CMACRO, NO_SDOT, "get:ixrc -e -b/delta: -s -n -ybranch-place-holder/get:pl -e -t -g"},
-  {"enter", ENTER, NO_SDOT, NULL},
-  {"create", CMACRO, NO_SDOT, "enter/get:ixeskcl -t"},
-  {NULL, -1, 0, NULL},
+  {"admin", PROG, REALUSER, _PATH_SCCSADMIN, 0 },
+  {"cdc", PROG, 0, _PATH_SCCSCDC, 0 },
+  {"comb", PROG, WARN_MISSING, _PATH_SCCSCOMB, 0 },
+  {"delta", PROG, 0, _PATH_SCCSDELTA}, 0 ,
+  {"get", PROG, 0, _PATH_SCCSGET, 0 },
+  {"unget", PROG, 0, _PATH_SCCSUNGET, 0 },
+  {"help", PROG, NO_HELP_HERE | NO_SDOT, _PATH_SCCSHELP, 0 },
+  {"prs", PROG, 0, _PATH_SCCSPRS, 0 },
+  {"prt", PROG, 0, _PATH_SCCSPRT, 0 },
+  {"rmdel", PROG, REALUSER, _PATH_SCCSRMDEL, 0 },
+  {"val", PROG, 0, _PATH_SCCSVAL, 0 },
+  {"what", PROG, NO_SDOT, _PATH_SCCSWHAT, 0 },
+  {"sccsdiff", PROG, REALUSER, _PATH_SCCSDIFF, 0 },
+  {"edit", CMACRO, NO_SDOT, "get -e", 0 },
+  {"delget", CMACRO, NO_SDOT, "delta:mysrp/get:ixbeskcl -t", 0 },
+  {"deledit", CMACRO, NO_SDOT, "delta:mysrp -n/get:ixbskcl -e -t -g", 0 },
+  {"fix", FIX, NO_SDOT, NULL, 0 },
+  {"clean", CLEAN, REALUSER | NO_SDOT, (char *) NULL, CLEANC, 0 },
+  {"info", CLEAN, REALUSER | NO_SDOT, (char *) NULL, INFOC, 0 },
+  {"check", CLEAN, REALUSER | NO_SDOT, (char *) NULL, CHECKC, 0 },
+  {"tell", CLEAN, REALUSER | NO_SDOT, (char *) NULL, TELLC, 0 },
+  {"unedit", UNEDIT, NO_SDOT, NULL, 0 },
+  {"diffs", DIFFS, NO_SDOT | REALUSER, NULL, 0 },
+  {"-diff", DODIFF, NO_SDOT | REALUSER, _PATH_SCCSBDIFF, 0 },
+  {"print", CMACRO, 0, "prs -e/get -p -m -s", 0 },
+  {"branch", CMACRO, NO_SDOT, "get:ixrc -e -b/delta: -s -n -ybranch-place-holder/get:pl -e -t -g", 0 },
+  {"enter", ENTER, NO_SDOT, NULL, 0 },
+  {"create", CMACRO, NO_SDOT, "enter/get:ixeskcl -t", 0 },
+  {NULL, -1, 0, NULL, 0 },
 };
 
 /* one line from a p-file */
@@ -1180,7 +1181,7 @@ command (char *argv[], bool forkflag, const char *arg0)
 
     case CLEAN:
       {
-        rval = clean ((int) cmd->sccspath, ap);
+        rval = clean ( cmd->clean_mode, ap );
       }
       break;
 
