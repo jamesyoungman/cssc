@@ -14,8 +14,12 @@
 
 #include <ctype.h>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>		// SEEK_SET on SunOS.
+#endif
+
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.10 1997/06/27 18:51:22 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.11 1997/07/02 07:07:38 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -432,7 +436,7 @@ sccs_file::read_delta() {
 // JAY: use fgetpos()/fsetpos() instead?
 void
 sccs_file::seek_to_body() {
-	if (fseek(f, body_offset, 0) != 0) {
+	if (fseek(f, body_offset, SEEK_SET) != 0) {
 		quit(errno, "%s: fseek() failed!", (const char *) name);
 	}
 	lineno = body_lineno;

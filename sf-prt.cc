@@ -14,8 +14,12 @@
 #include "seqstate.h"
 #include "filepos.h"
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>		// SEEK_SET on SunOS.
+#endif
+
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.6 1997/07/02 06:47:10 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.7 1997/07/02 07:07:16 james Exp $";
 #endif
 
 static void
