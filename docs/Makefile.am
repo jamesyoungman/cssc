@@ -4,7 +4,7 @@ info_TEXINFOS = cssc.texi
 cssc_TEXINFOS = gpl.texi config-info.texi
 
 EXTRA_DIST = BUGS FIXED TODO CREDITS TESTING \
-	get-spec.txt missing.txt patches.txt \
+	missing.txt patches.txt \
 	Platforms mailing-list.txt style.txt \
 	texinfo.tex \
 	.ispell_english
