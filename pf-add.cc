@@ -30,61 +30,9 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.14 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.15 2005/04/04 21:28:26 james_youngman Exp $";
 #endif
 
-
-#if 0 
-/* This is the old add_lock code. 
- * The p-file is supposed to have mode 0644.  This means
- * that we need to reqrite the pfile, instead of just appending
- * to it. 
- */
-bool
-sccs_pfile::add_lock(sid got, sid delta, 
-		     sid_list &included, sid_list &excluded) {
-	ASSERT(mode == APPEND);
-
-	struct edit_lock new_lock;
-	
-	new_lock.got = got;
-	new_lock.delta = delta;
-	new_lock.user = get_user_name();
-	new_lock.date = sccs_date::now();
-	new_lock.include = included;
-	new_lock.exclude = excluded;
-	new_lock.deleted = 0;
-
-	edit_locks.add(new_lock);
-
-	FILE *pf = fopen(pname.c_str(), "a");
-	if (pf == NULL)
-	  {
-	    perror(pname.c_str());
-	    return false;
-	  }
-#ifdef HAVE_EXCEPTIONS
-	try
-	  {
-#endif	    
-	    if (write_edit_lock(pf, new_lock) || fclose_failed(fclose(pf)))
-	      {
-		perror(pname.c_str());
-		return false;
-	      }
-	    return true;
-#ifdef HAVE_EXCEPTIONS
-	  }
-	catch (CsscException)
-	  {
-	    remove(pname.c_str());
-	    throw;
-	  }
-#endif
-}
-
-
-#else
 
 bool
 sccs_pfile::add_lock(sid got, sid delta, 
@@ -111,8 +59,6 @@ sccs_pfile::add_lock(sid got, sid delta,
 
 	return update( pfile_already_exists );
 }
-#endif
-
 
 /* Local variables: */
 /* mode: c++ */
