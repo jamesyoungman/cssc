@@ -1,1 +1,2 @@
-EXTRA_DIST = CSSC.spec
+dist-hook: CSSC.spec
+	cp CSSC.spec $(distdir)/CSSC.spec
