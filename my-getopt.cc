@@ -25,6 +25,27 @@
  *
  */
 
+/* SCCS insists that options taking arguments have their arguments
+ * immediately following the keyletter.  Most Unix programs allow the
+ * argument to appear as the following element in argv[], but SCCS is
+ * different.  We aim for total compatibility with SCCS (except the
+ * error messages and any size limitations wwe might find).  So we
+ * expect the same.  This means that the usual character used in
+ * getopt() to indicate that the keyletter takes an argument (":") is
+ * not supported.  We use "!" instead, to indicate that this is not
+ * the traditional Unix behaviour.  You can define
+ * INCOMPATIBLE_OPTIONS if you wish to support a new option that has
+ * the traditional Unix semantics rather than the normal SCCS
+ * semantics, but I [jay@gnu.org]do not reccomend this.
+ */
+#undef INCOMPATIBLE_OPTIONS
+
+
+/* We do, however, support the POSIX idiom of "--" signifying the end
+ * of the options and the beginning of the filename list.  I don't
+ * think that this presents a real incompatibility problem.
+ */
+
 #ifdef __GNUC__
 #pragma implementation "my-getopt.h"
 #endif
@@ -45,7 +66,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.1 1997/11/30 14:35:09 james Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.2 1998/01/17 11:42:40 james Exp $";
 #endif
 
 int
@@ -67,7 +88,7 @@ getopt::next()
 	}
       index++;
 
-      // The ragument "--" is the POSIX signal for end-of-args.
+      // The argument "--" is the POSIX signal for end-of-args.
       if (cindex[1] == '-' && cindex[2] == '\0')
 	{
 	  return END_OF_ARGUMENTS;
@@ -99,22 +120,35 @@ getopt::next()
   int takes_arg;
   int arg_catenated;
 
+  takes_arg = arg_catenated = 0;
+
+#if INCOMPATIBLE_OPTIONS
   if (match[1] == ':')		// option takes an argument.
     {
       takes_arg = 1;
       arg_catenated = 0;
     }
-  else if (match[1] == '!')	// option takes a concatenated argument.
+#else
+  // Check for and warn about colons in the argument spec!
+  if (NULL != strchr(opts, ':'))
+    {
+      fprintf(stderr,
+	      "Programmer error: option list contains a colon.\n"
+	      "This is illegal for SCCS. Please see "
+	      __FILE__
+	      ", line number %d in the source code\n", 
+	      __LINE__);
+      exit(3);
+    }
+#endif
+
+  if (match[1] == '!')	// option takes a concatenated argument.
     {
       takes_arg = 1;
       arg_catenated = 1;
     }
-  else				// no argument.
-    {
-      takes_arg = arg_catenated = 0;
-    }
   
-  
+
   if (takes_arg)
     {
       if (*cindex == '\0' && (!arg_catenated) )

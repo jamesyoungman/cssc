@@ -35,7 +35,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.17 1997/11/30 21:05:43 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.18 1998/01/17 11:42:38 james Exp $";
 
 void
 usage() {
@@ -67,7 +67,7 @@ main(int argc, char **argv) {
 		set_prg_name("admin");
 	}
 
-	class getopt opts(argc, argv, "ni!r!t!f!d:a:e:m!y!hzV");
+	class getopt opts(argc, argv, "ni!r!t!f!d!a!e!m!y!hzV");
 	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
 		switch (c) {
 		default:
