@@ -37,12 +37,12 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.32 2002/04/03 14:15:55 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.33 2002/11/02 12:19:46 james_youngman Exp $";
 
 void
 usage() {
 	fprintf(stderr,
-"usage: %s [-nsV] [-m MRs] [-r SID] [-y comments] file ...\n",
+"usage: %s [-nsVp] [-m MRs] [-r SID] [-y comments] file ...\n",
 		prg_name);
 }
 
