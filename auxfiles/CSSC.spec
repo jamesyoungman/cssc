@@ -5,7 +5,7 @@ Release: 1
 Copyright: GPL
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
-Source: alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.06alpha.pl0.tar.gz 
+Source: alpha.gnu.org:/pub/gnu/CSSC/CSSC-0.06alpha.pl1.tar.gz 
 Requires: /usr/bin/diff
 
 %description
