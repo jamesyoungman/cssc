@@ -1,8 +1,12 @@
 The Time-stamp: line indicated when this file was last modified.
-Time-stamp: <97/11/17 18:04:12 james>
+Time-stamp: <97/11/20 22:30:07 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
+
+Thu Nov 20 22:29:33 1997: Richard Polton <rap@maths.soton.ac.uk>
+ CSSC's "admin" adds users to the SCCS in the reverse order
+ compared to SCCS.
 
 Mon Nov 17 18:01:05 1997: Richard Polton <rap@maths.soton.ac.uk>
 In version 0.03-pl2.  Unfixed.
