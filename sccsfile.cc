@@ -15,7 +15,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.9 1997/06/01 15:55:07 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.10 1997/06/27 18:51:22 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &
@@ -43,6 +43,12 @@ bool sccs_file::delta::removed() const
 }
 
 
+seq_no sccs_file::_delta_table::next_seqno() const
+{
+  return highest_seqno() + 1u;
+}
+
+
 /* Builds the seq_no to delta table index table. */
 
 void
@@ -59,7 +65,7 @@ sccs_file::_delta_table::build_seq_table() {
 		seq_no seq = iter->seq;
 		if (seq_table[seq] != -1) {
 			quit(-1, "Sequence number %u is duplicated"
-			         " in delta table.", seq);
+			         " in delta table [build].", seq);
 		}
 		seq_table[seq] = iter.index();
 	}
@@ -70,6 +76,7 @@ void
 sccs_file::_delta_table::update_highest(struct delta const &it) 
 {
   seq_no seq = it.seq;
+  
   if (seq > high_seqno) 
     {
       if (seq_table != NULL) 
@@ -91,8 +98,7 @@ sccs_file::_delta_table::update_highest(struct delta const &it)
    */
   if (high_release.is_null())
     {
-      int on_trunk = sid("1.1").is_trunk_successor(it.id);
-      if (on_trunk)
+      if (it.id.on_trunk())
 	high_release = it.id;
     }
   else if (it.id > high_release)
@@ -104,8 +110,30 @@ sccs_file::_delta_table::update_highest(struct delta const &it)
     {
       if (seq_table[seq] != -1) 
 	{
-	  quit(-1, "Sequence number %u is duplicated"
-	       " in delta table.", seq);
+	  sid sid_using_this_seqno = (*this)[seq_table[seq]].id;
+
+	  fprintf(stderr, "[<");
+	  sid_using_this_seqno.print(stderr);
+	  fprintf(stderr, " ## ");
+	  it.id.print(stderr);
+	  fprintf(stderr, ">]\n");
+
+	  if (it.id != sid_using_this_seqno)
+	    {
+	      // diagnose...
+	      for (int i = 1; i < high_seqno + 1; i++) 
+		fprintf(stderr, "%u ", (unsigned)seq_table[i]);
+
+	      fprintf(stderr,
+		      "Sequence number %u is duplicated"
+		      " in delta table [update] "
+		      "(already used by entry %u: ", seq, seq_table[seq]);
+	      sid_using_this_seqno.print(stderr);
+	      fprintf(stderr, ")\n");
+	  
+	      quit(-1, "Sequence number %u is duplicated"
+		   " in delta table [update]", seq);
+	    }
 	}
       seq_table[seq] = length() - 1;
     }
@@ -119,6 +147,8 @@ sccs_file::_delta_table::add(struct delta const &it) {
 	list<struct delta>::add(it);
 	update_highest(it);
 }
+
+/* for the prepend() operation, see sf-add.cc. */
 
 
 /* Finds a delta in the delta table by its SID. */
@@ -431,6 +461,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 		quit(-1, "%s: Not an SCCS file.", (const char *) name);
 	}
 
+	flags.no_id_keywords_is_fatal = 0;
 	flags.branch = 0;
 	flags.floor = NULL;
 	flags.ceiling = NULL;
