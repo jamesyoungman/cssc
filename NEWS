@@ -1,3 +1,9 @@
+New in CSSC-0.06alpha-pl5
+
+	* Bugfix for rmdel; it now no longer corrupts the SCCS file
+  	  it operates on (previously all the delta control lines had
+	  been stripped out).
+	
 New in CSSC-0.06alpha-pl4
 	
 	* admin's -n and -i options now work correctly with absolute

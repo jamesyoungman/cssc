@@ -1,4 +1,26 @@
+1998-03-11  James Youngman  <jay@gnu.org>
+
+	* auxfiles/CSSC.spec, configure.in: Bumped patchlevel to 5.
+
+	* docs/FIXED, docs/BUGS: Oops.  Left a fixed bug in eocs/BUGS --
+	and the patchlevel number for the first fixed version was wrong.
+	All better now.
+
+	* tests/rmdel/basic.sh:
+	Make sure that the revision we tried to remove is actually now absent.
+
+	* tests/common/command-names, tests/rmdel/basic.sh, docs/BUGS,
+	docs/CREDITS, docs/Platforms, tests/Makefile.am, sf-rmdel.cc:
+	Fixed bug in "rmdel" reported by Peter Kjellerstedt.  "rmdel" had
+	been deleting all the control lines.
+
 1998-03-10  James Youngman  <jay@gnu.org>
+
+	* docs/FIXED, auxfiles/CSSC.spec, NEWS, configure.in, ChangeLog:
+	Miscellaneous updates for 0.06-pl4.
+
+	* tests/Makefile.am:
+	Don't export CVS directories into the distribution.
 
 	* admin.cc:
 	Absolute pathnames now work; bug reported by Wolfhard Straehle.
