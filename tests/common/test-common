@@ -41,7 +41,7 @@ fi
 
 # Function for echoing without a newline, with escape chars enabled.
 echo_nonl () {
-echo $ac_n $ac_e "$@" $ac_c ;
+echo $ac_n $ac_e "$@$ac_c" ;
 }
 
 
