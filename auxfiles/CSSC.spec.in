@@ -1,7 +1,7 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
 Version: @VERSION@
-Release: 2
+Release: 1
 URL: http://cssc.sourceforge.net/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: James Youngman <jay@gnu.org>
@@ -9,10 +9,7 @@ Group: Development/Version Control
 Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-%{PACKAGE_VERSION}.tar.gz
 Prereq: /sbin/install-info
 Requires: /usr/bin/diff
-
-# You must set BuildRoot to a previously nonexistent directory,
-# because we start by doing "rm -rf $RPM_BUILD_ROOT"!
-BuildRoot: /var/tmp/cssc-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
 CSSC is a clone for the traditional Unix version control suite SCCS.
@@ -23,44 +20,43 @@ It aims for near-total compatibility with SCCS.  CSSC stands for
 %setup
 
 %build
-if test x"$RPM_BUILD_ROOT" = x/
-then
-    cat >&2 <<EOF
-\$RPM_BUILD_ROOT is $RPM_BUILD_ROOT.   
-Did you do something unwise with the --buildroot option?
-EOF
-    exit 1
-fi
-if test -d $RPM_BUILD_ROOT
-then
-	echo "Build root directory $RPM_BUILD_ROOT already exists" >&2
-	echo "I'm too scared to delete (rm -rf) it." >&2
-	exit 1
-fi
-rm -rf $RPM_BUILD_ROOT
-rm -f docs/cssc.info
-./configure --prefix=/usr --enable-binary
+autoconf
+%configure --enable-binary
 make
 
 %install
-make prefix=$RPM_BUILD_ROOT/usr install-strip
-# [ -L /usr/sccs ] && rm -f /usr/sccs
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
+%makeinstall
 ln -s libexec/cssc $RPM_BUILD_ROOT/usr/sccs
 cd $RPM_BUILD_ROOT/usr/bin 
 ln -s ../libexec/cssc/* .
+gzip $RPM_BUILD_ROOT/%{_infodir}/cssc* || true
+rm -f $RPM_BUILD_ROOT/%{_infodir}/dir
 
 %post
-/sbin/install-info /usr/share/info/cssc.info /usr/share/info/dir
+/sbin/install-info %{_infodir}/cssc.info.gz %{_infodir}/dir --entry="* cssc: (cssc)."
 
 %preun
 if [ $1 = 0 ]; then
-    /sbin/install-info --delete /usr/share/info/cssc.info /usr/share/info/dir
+    /sbin/install-info --delete %{_infodir}/cssc.info.gz %{_infodir}/dir --entry="* cssc: (cssc)."
 fi
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
-
+%files
+%defattr(-,root,root)
+%doc README AUTHORS COPYING ChangeLog INSTALL NEWS 
+%doc docs/BUGS docs/CREDITS docs/FIXED docs/Platforms 
+%doc docs/TESTING docs/TODO docs/missing.txt 
+%doc docs/patches.txt docs/mailing-list.txt
+%doc docs/style.txt
+%doc bsd/COPYING.bsd bsd/sccs.me
+%dir %{_libexecdir}/cssc
+%{_libexecdir}/cssc
+%{_bindir}/sccs
+%{_mandir}/man*/*
+%{_infodir}/*.info*
 
 %changelog
 
@@ -99,16 +95,3 @@ Added sccsdiff to the file list.
 * Sat Jan 17 1998 jay@gnu.org <James Youngman>
 
 First RPMed version (0.05alpha-pl0)
-
-%files
-%attr(-, root, root) %doc README AUTHORS COPYING ChangeLog INSTALL NEWS 
-%attr(-, root, root) %doc docs/BUGS docs/CREDITS docs/FIXED docs/Platforms 
-%attr(-, root, root) %doc docs/TESTING docs/TODO docs/missing.txt 
-%attr(-, root, root) %doc docs/patches.txt docs/mailing-list.txt
-%attr(-, root, root) %doc docs/style.txt
-%attr(-, root, root) %doc bsd/COPYING.bsd bsd/sccs.me
-%attr(-, root, root) %doc /usr/share/info/cssc.info*
-%attr(755, root, root) /usr/libexec/cssc
-%attr(-, root, root) /usr/sccs
-%attr(-, root, root) /usr/bin/sccs
-%attr(-, root, root) /usr/man/man1/sccs.1*
