@@ -1,15 +1,8 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-02-23 21:17:14 james>
+Time-stamp: <1998-03-03 22:14:43 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
-
-Thu Feb 19 21:50:39 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
-In version 0.06-pl0.  Unfixed. 
- Trying to run tests/admin/i-option.sh with the CSSC files on
- the sun machine [Solaris; SunOS 5.5] causes the test I3 to fail with
- ../../admin: fgetpos() failed!
- 29 - Illegal seek
 
 Thu Feb 19 21:50:49 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
 In version 0.06-pl0.  Unfixed. 
