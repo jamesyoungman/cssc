@@ -1,3 +1,21 @@
+New in CSSC-1.0.1
+
+	* "admin -h" now actually validates the SCCS file.
+          (SourceForge bug 1043880)
+
+	* Compilation fixes for GCC version 3.4. (SourceForge bug
+          1045768).
+
+	* Cross-references in the manual are now more consistently named.
+	  (SourceForge bug 1043893).
+
+	* "sccs sccsdiff" now accepts "-r X" as well as
+          "-rX". (SourceForge bug 966010)
+
+	* "get -e" could experience an assertion failure with some branch 
+          arrangements in history files.  This is now fixed.  Files without 
+	  branches were not affected. (SourceForge bug 865422).
+
 New in CSSC-1.00
 
 	* We now support the "x" (make g-file executable) and "y" 
