@@ -6,15 +6,6 @@ the package on older machines and perhaps even incorrect operation.
 
 
 
-STOP PRESS!
-
-         CSSC is now hosted on SourceForge, and so a bug reporting and
-         technical support system is available on
-	 http://sourceforge.net/projects/CSSC
-
-
-
-
 ==============================================================================
 			Quick Start
 ------------------------------------------------------------------------------
@@ -68,6 +59,8 @@ STOP PRESS!
 
 
 1.	Compiling
+
+ You will probably need to compile the software with GNU make.
 
  The default installation directory for the binaries is 
  /usr/local/libexec/cssc, except for the sccs comand, which gets
@@ -144,8 +137,9 @@ See the file INSTALL for information on how to compile this package.
 Send any questions or bug reports by e-mail to the current maintainer,
 <jay@gnu.org>.  After you have compiled CSSC, _PLEASE_ run the test
 suite, as described in docs/TESTING, unless you are using GCC or EGCS
-under Linux, in which case please don't bother sending success
-reports [since I already know that works].
+under Linux, in which case please don't bother sending success reports
+[since I already know that works].  I'm particularly intersested in
+success reports for platforms not in the "docs/Platforms" file.
 
 To generate the manual, type "make dvi".  For the PostScript version,
 type "cd docs ; make cssc.ps".  If you don't have TeX, you can read
