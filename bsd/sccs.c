@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.12 1998/06/06 13:35:55 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.13 1998/06/06 17:15:00 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -177,6 +177,11 @@ static const char filever[] = "$Id: sccs.c,v 1.12 1998/06/06 13:35:55 james Exp 
    **   knows to not run setuid for certain programs in order
    **   to preserve security, and so forth.
    **
+   **   Note that this is not the original version of the code and so
+   **   any assumptions you might make about the code security of the
+   **   original code do not apply to this version.  Think twice (and
+   **   define SCCSDIR) before installing this program setuid.
+   **
    **   Usage:
    **           sccs [flags] command [args]
    **
@@ -197,6 +202,18 @@ static const char filever[] = "$Id: sccs.c,v 1.12 1998/06/06 13:35:55 james Exp 
    **                           "SCCS/s.prog.c".  In both cases, the
    **                           "s." gets automatically prepended.
    **           -r              run as the real user.
+   **
+   **   Flags peculiar to the GNU version of this program:
+   **
+   **           --cssc           Print "yes", and exit successfully.
+   **           --version        Show version information.
+   **           --prefix=foo     Prepend ``foo'' to the names of the
+   **                            sccs programs before running them.
+   **                            If --prefix is not used, there is a
+   **                            default, usually "/usr/sccs".  Use the 
+   **                            --version flag to discover the default
+   **                            prefix.
+   **           -V               Synonymous with --version.
    **
    **   Commands:
    **           admin,
@@ -233,12 +250,24 @@ static const char filever[] = "$Id: sccs.c,v 1.12 1998/06/06 13:35:55 james Exp 
    **                   this value.  This is so that the setuid
    **                   aspects of this program cannot be abused.
    **                   This flag also disables the -p flag.
+   **                   Setuid execution is only supported if this
+   **                   flag is set.
    **           SCCSPATH -- the default for the -p flag.
    **           MYNAME -- the title this program should print when it
    **                   gives error messages.
    **
    **           UIDUSER -- removed since we cannot trust $USER
    **                      or getlogin in setuid programs.
+   **           
+   **           PREFIX  -- Sets the default prefix which allows us to
+   **                      find the SCCS subcommands.  Unless you overrride
+   **                      this on the compiler command line or by editing
+   **                      the source, this defaults to "/usr/sccs".  Using
+   **                      the --version flag will tell you what the setting
+   **                      is.   This macro is available only in the GNU
+   **                      version of this program.
+   **                      
+   **                      
    **                      
    **   Compilation Instructions:
    **           cc -O -n -s sccs.c
@@ -458,10 +487,22 @@ set_prefix(const char *pfx)
   else
     {
       fprintf(stderr,
+	      "%s",
 	      "Option --prefix is incompatible with setuid "
 	      "execution.  Sorry.\n");
       exit (EX_USAGE);
     }
+}
+
+static void
+setuid_warn(void)
+{
+  const char *str =
+    "If you want to install this program set-user-id, you must compile it\n"
+    "with the SCCSDIR macro defined, in order to prevent abuse.  Even so,\n"
+    "abuse is probably not impossible.  This is not a reccomended mode of\n"
+    "operation for this program.\n";
+  fprintf(stderr, "%s", str);
 }
 
 static void 
@@ -482,9 +523,17 @@ main (int argc, char **argv)
   &copyright;			/* prevent warning about unused variable. */
 
   if (getuid() != geteuid())
-    TrustEnvironment = 0;	/* running setuid, ignore $PATH etc. */
+    {
+      TrustEnvironment = 0;	/* running setuid, ignore $PATH etc. */
+#ifndef SCCSDIR
+      setuid_warn();
+      exit(EX_NOPERM);
+#endif      
+    }
   else
-    TrustEnvironment = 1;
+    {
+      TrustEnvironment = 1;
+    }
 
   if (TrustEnvironment)
     {
@@ -498,11 +547,11 @@ main (int argc, char **argv)
 	}
     }
 
-  /* If we do not trust the environment, should we trust PROJECTDIR?
-   * I think yes, because the setuid mechanism may be being used
-   * to conrol access to source.
-   */
 #ifndef SCCSDIR
+
+  /* Setuid execution is only allowed if SCCSDIR is defined,
+   * so we can "trust" the PROJECTDIR environment variable.
+   */
   
   /* pull "SccsDir" out of the environment (possibly) */
   p = getenv("PROJECTDIR");
@@ -563,8 +612,8 @@ main (int argc, char **argv)
 	      ++p;
 	      if (0 == *p)	/* just "--" */
 		{
-		  fprintf(stderr,
-			  "End-of-arguments option -- not "
+		  fprintf(stderr, "%s",
+			  "End-of-arguments option \"--\" not "
 			  "supported, sorry.\n");
 		  exit (EX_USAGE);
 		}
@@ -630,7 +679,8 @@ main (int argc, char **argv)
 #ifdef DEBUG
 	      Debug++;
 #else
-	      fprintf(stderr, "The -T option has been disabled.  Sorry.\n");
+	      fprintf(stderr, "%s",
+		      "The -T option has been disabled.  Sorry.\n");
 	      exit(EX_USAGE);
 #endif
 	      break;
@@ -1198,7 +1248,7 @@ callprog (const char *progpath,
 #ifdef DEBUG
   if (Debug)
     {
-      printf ("callprog:\n");
+      printf ("%s\n", "callprog:");
       for (i = 0; argv[i] != NULL; i++)
 	printf ("\t\"%s\"\n", argv[i]);
     }
@@ -1215,7 +1265,7 @@ callprog (const char *progpath,
     {
 #ifdef DEBUG
       if (Debug)
-	printf ("Forking\n");
+	printf ("%s", "Forking\n");
 #endif
       i = do_fork ();
       if (i < 0)
@@ -1240,7 +1290,8 @@ callprog (const char *progpath,
 		{
 		  char sigmsgbuf[11];
 		  fprintf (stderr,
-			   "sccs: %s: %s%s",
+			   "%s: %s: %s%s\n",
+			   MyName,
 			   argv[0],
 			   get_sig_name(sigcode, sigmsgbuf),
 			   (WCOREDUMP(st) ? " (core dumped)" : "") );
