@@ -877,7 +877,7 @@ is set to one.  Hence the first branch from version 1.1 will be version
 1.1.2.1.
 
 Branches are made from any given version when that version already has a
-successor (for example, a @code{get -e} on version 1.1 will result in a
+successor.  For example, a @code{get -e} on version 1.1 will result in a
 branch (1.1.1.1) if version 1.2 exists, and a @code{get -e} on version
 1.2.1.1 will result in a branch (1.2.2.1) if version 1.2.1.2 exists.
 
@@ -2225,7 +2225,7 @@ numbers, denoting whole groups of users (as listed in @file{/etc/group}
 on many systems).  The authorised-users list is terminated with a
 @samp{^AU} line.  Some broken implementations emit lines of the form
 @samp{^AU 0} here instead; the polite thing to do is to ignore gaffes of
-this sort.
+this sort.  This is of course what CSSC does.
 
 @node Global Flags Section, File Description, Authorised User List, The Header
 @subsection The Global Flags Section
@@ -2660,10 +2660,10 @@ The @code{sccsdiff} program is a shell script, and invokes
 not be installed set-user-id.
 @end table
 
-The driver program @code{sccs} takes a number of precautionary steps if it
-detects that is running set-user-id or set-group-id.  These steps are
-described below, as part of the discussion of each environment
-variable. 
+The driver program @code{sccs} takes a number of precautionary steps
+if it detects that it is running set-user-id or set-group-id.  These
+steps are described below, as part of the discussion of each
+environment variable.
 
 @node Configuration Variables, Other Variables, Child Processes, Environment
 @section Configuration Variables
@@ -2835,7 +2835,7 @@ them (@pxref{Problems}).
 @item 
 @cindex Known bugs 
 Known bugs are listed on the bug tracking system at 
-@url{http://sourceforge.net/bugs/?group_id=8064}.  Some historical known
+@uref{http://sourceforge.net/bugs/?group_id=8064}.  Some historical known
 issues are listed in the file @file{docs/BUGS}.  Once this file has
 become obsolete it will be removed from the distribution.   
 
@@ -3242,16 +3242,16 @@ flags.sh: Test could not be completed
 @end example
 
 @noindent
-The part before the colon (@code{flags.sh}) indicates which script could
-not be completed.  No further tests will be attempted.  Diagnosing the
-problem may or may not be simple.  In this case, it's not hard; the
-problem is that the test suite is trying to clear away any temporary
-files but it can't remove the file ``foo'' (because the current
-directory was made read-only to force the test to miscarry, in this
-contrived case).  When the test suite miscarries like this and you can't
-find the problem, please follow the bug-reporting procedure
-(@pxref{Problems}), but please indicate that its a miscarriage in the
-test suite rather than a concrete test failure.
+The part before the colon (@code{flags.sh}) indicates which script
+could not be completed.  No further tests will be attempted.
+Diagnosing the problem may or may not be simple.  In this case, it's
+not hard; the problem is that the test suite is trying to clear away
+any temporary files but it can't remove the file ``foo'' (because the
+current directory was made read-only to force the test to miscarry, in
+this contrived case).  When the test suite miscarries like this and
+you can't find the problem, please follow the bug-reporting procedure
+(@pxref{Problems}), but please indicate that it is a miscarriage in
+the test suite rather than a concrete test failure.
 
 
 @node Writing new test cases, , Running the tests, Testing
@@ -3348,7 +3348,7 @@ starts.  If all goes according to plan, it is followed by
 @samp{...done}.
 
 @item command
-This is the command to be executed, will all the required arguments.
+This is the command to be executed, with all the required arguments.
 
 @item retval
 This is the expected return value.  If @var{command} exits returning any
