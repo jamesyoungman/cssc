@@ -12,9 +12,9 @@
 @setchapternewpage odd
 @c %**end of header
 
-@set EDITION 1.02
-@set VERSION 0.11alpha-pl4
-@set UPDATED Mon Jul 24 22:45:46 2000
+@set EDITION 1.03
+@set VERSION 0.13alpha-pl0
+@set UPDATED Sat Jul 14 13:51:00 2001
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -25,7 +25,7 @@
 This file documents the the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
-Copyright (C) 1997,1998,1999,2000 Free Software Foundation, Inc.
+Copyright (C) 1997,1998,1999,2000,2001 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -58,7 +58,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1997,1998,1999,2000 Free Software Foundation, Inc.
+Copyright @copyright{} 1997,1998,1999,2000,2001 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -88,6 +88,7 @@ a work-alike for the traditional Unix SCCS suite.
 * Invoking Programs::	How to run the individual CSSC programs.
 * Filenames::		Names of files used by CSSC.
 * File Format::         Description of the @sc{sccs} file format
+* Interoperability::    Interoperating with other versions of @sc{sccs}.
 * Incomplete::		Missing Features.
 * Year 2000 Issues::    Status of CSSC with regard to the Millennium.
 * Testing::             How to run the test suite and write new cases.
@@ -223,7 +224,9 @@ because the @sc{cssc} suite is not secure (@pxref{Known Problems}).
 @item -b
 @cindex Binary files
 Ensure that the file is encoded as a binary file.  This option only
-works in conjunction with the @code{-n} or @code{-i} options.
+works in conjunction with the @code{-n} or @code{-i} options.  This
+option is not available if @sc{cssc} is configured without binary file
+support (@pxref{Interoperability}).
 
 @item -d@var{F}
 Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
@@ -330,7 +333,8 @@ This flag indicates that the file controlled by this @sc{sccs} file is a
 binary file, and hence the body of the @sc{sccs} file is uuencoded.
 This flag can only be set with the @samp{-b} option of @code{admin} at
 the time the file is created (or if admin takes it upon itself to set
-this flag automatically), and cannot be unset.
+this flag automatically), and cannot be unset.  The circumstances under
+which this can happen are discussed in @ref{Interoperability}.
 @item i
 Make @code{get} and @code{delta} exit unsuccessfully when the
 @samp{Warning: No id keywords} message is issued.
@@ -1763,7 +1767,7 @@ but they do not.  If you are the super-user, they can use this feature
 to overwrite any file on the system.
 
 
-@node File Format, Incomplete, Filenames, Top
+@node File Format, Interoperability, Filenames, Top
 @chapter File Format
 
 This chapter provides a description of the format of @sc{sccs} files.
@@ -2002,7 +2006,9 @@ The @samp{e} flag, if set to a nonzero value, indicates that the
 controlled file is binary and is therefore stored in uuencoded form in
 the file body.  If this flag is set to zero or is missing, then the file
 body is not encoded.  See @ref{Flags} for information about the other
-possible flag letters and their meanings.
+possible flag letters and their meanings.  See @ref{Interoperability}
+for information about sharing @sc{sccs} files with other implementations
+of @sc{sccs}.
 
 
 @node File Description, Example Header, Global Flags Section, The Header
@@ -2099,7 +2105,68 @@ let me (@email{jay@@gnu.org}) know.
 @c TODO: complete this seciton.
 
 
-@node Incomplete, Year 2000 Issues, File Format, Top
+@node Interoperability, Incomplete, File Format, Top
+@chapter Interoperability
+
+In order to interoperate better with other implementations of @sc{sccs}, 
+the @sc{cssc} suite can be configured to turn off several features which 
+provide flexibility beyond that which is available in some other
+implementations of @sc{sccs}.
+
+@menu
+* Binary file support:: Enabling or disabling support for binary files.
+* Maximum line length:: Limiting the length of lines in the SCCS file.
+* Configuration::       Viewing the current configuration.
+@end menu
+
+@node Binary file support, Maximum line length, , Interoperability
+@section Binary File Support
+Binary file support can be turned off when you run ``configure'' by
+specifying the @code{--disable-binary} option.  This will cause
+@code{admin} to refuse to create an SCCS file whose ``e'' flag is set
+(@pxref{Flags}).  The @code{admin} program would normally do this if the
+user requested it via the @code{-b} option or if it discovered that the
+file could not safely be stored in the normal @sc{sccs} file format.
+
+If you use @sc{cssc} with support for encoded SCCS files turned off,
+encoded files will still be handled; @sc{cssc} will just refuse to
+create a new one.  This provides as great a degree of interoperability
+with other implementations of @sc{sccs} as possible.
+
+@node Maximum line length, Configuration, Binary file support, Interoperability
+@section Maximum Line Length
+Most other implementations of @sc{sccs} also have an upper limit on the
+maximum length of line that can be handled in a text file (that is,
+those versions of @sc{sccs} which have such a limit do not apply this
+limit for binary files).  To set such a limit in @sc{cssc}, use the
+@code{--enable-max-line-length=N} option to ``configure''.  This sets
+the limit to the specified value.
+
+If @sc{cssc} is adding a new delta to an existing file, and it finds an
+input line which is longer than N characters, if will fail with an
+explanatory message (the alternative would be that an SCCS file would be
+generated that could not be read with other versions of @sc{sccs}).  
+
+If, on the other hand, @sc{cssc} is creating a new SCCS file in response
+to the @code{admin -i} command, one of two things will happen when an
+over-length line is found.  If binary file support is enabled, the
+@sc{sccs} file will automatically be created as an encoded file.
+Otherwise, @code{admin} will fail with an explanatory message.
+
+@node Configuration,, Maximum line length, Interoperability
+@section Checking the Current Configuration
+To discover how a particular installation of @sc{cssc} is configured,
+pass the @code{-V} option to any of the @sc{cssc} tools.  The
+``configure'' script defaults to not limiting the maximum line length,
+but you must specifically indicate if binary file support is to be 
+enabled or not when running ``configure''.
+
+The configuration options in effect at the time this file was formatted
+are as below :-
+
+@include config-info.texi
+
+@node Incomplete, Year 2000 Issues, Interoperability, Top
 @chapter Missing Features and other Problems
 @cindex missing features
 
@@ -2251,6 +2318,13 @@ this situation are in @file{tests/binary/seeking.sh} but these tests are
 only carried out if the program under test seems to be @sc{cssc} rather
 than the genuine @sc{sccs} suite.
 
+@item
+The normal configuration for @sc{cssc} is that it supports binary files
+and has no limit on line length in file with which it deals.  Both of
+these features may be different to the features of some version of
+@sc{sccs} with which you want to interoperate.  See
+@ref{Interoperability} for more information on how to achieve better
+interoperability with other implementations of @sc{sccs}.
 @end enumerate
 
 

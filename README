@@ -18,6 +18,34 @@ STOP PRESS!
 ==============================================================================
 			Quick Start
 ------------------------------------------------------------------------------
+0.      Configuring the package
+
+ To configure CSSC before compiling it, run the "configure" script.
+ See the file INSTALL for the generic options you can use with "configure".
+ Options for "configure" that are specific to CSSC are detailed below.
+
+ Please note that you MUST specify either --enable-binary or --disable-binary.
+
+
+--enable-binary		   
+
+    Enables support for creating "binary" SCCS files (required for
+    interoperability with Solaris).  If binary support is disabled,
+    encoded SCCS files can still be read, but not created.  You should
+    disable this feature only if you need to interoperate with a
+    version of SCCS which lacks binary file support.
+
+--enable-max-line-length=N 
+
+    Sets the maximum line length allowed in SCCS files to N.  By
+    default, CSSC has no limit.  Use this option only if you need to
+    make CSSC interoperate with other versions of SCCS.  This limit
+    applies only to the actual body lines in the file, and are not 
+    checked for (e.g.) comments.  This means that by entering a 
+    very long comment, you can make CSSC produce an SCCS file which 
+    cannot be read by some other versions of SCCS.
+
+
 1.	Compiling
 
  The default installation directory for the binaries is 

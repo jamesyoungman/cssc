@@ -3,7 +3,16 @@
 
 # Import common functions & definitions.
 . ../common/test-common
+. ../common/real-thing
+. ../common/config-data
 
+if $binary_support
+then
+    true
+else
+    echo "Skipping these tests -- no binary file support."
+    exit 0
+fi 
 
 
 

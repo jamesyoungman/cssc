@@ -4,7 +4,7 @@
 # Import common functions & definitions.
 . ../common/test-common
 . ../common/real-thing
-
+. ../common/config-data
 
 
 
@@ -88,6 +88,9 @@ remove command.log log  base [sxzp].$g
 expect_fail=false
 adminflags=""
 
+if $binary_support
+then
+
 test_ascii a1 "foo\n" 
 test_ascii a2 "foo\nbar\n" 
 test_ascii a3 ""			# an empty input file should be OK.
@@ -111,5 +114,10 @@ else
 fi
 
 remove command.log $s $p $g $z $x infile
+
+else
+echo "No binary file support -- tests skipped"
+fi # binary support. 
+
 success 
 

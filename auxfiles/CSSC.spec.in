@@ -25,11 +25,21 @@ It aims for near-total compatibility with SCCS.  CSSC stands for
 %build
 if test x"$RPM_BUILD_ROOT" = x/
 then
+    cat >&2 <<EOF
+\$RPM_BUILD_ROOT is $RPM_BUILD_ROOT.   
+Did you do something unwise with the --buildroot option?
+EOF
     exit 1
+fi
+if test -d $RPM_BUILD_ROOT
+then
+	echo "Build root directory $RPM_BUILD_ROOT already exists" >&2
+	echo "I'm too scared to delete (rm -rf) it." >&2
+	exit 1
 fi
 rm -rf $RPM_BUILD_ROOT
 rm -f docs/cssc.info
-./configure --prefix=/usr
+./configure --prefix=/usr --enable-binary
 make
 
 %install
@@ -54,8 +64,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
+* Sat Jul 14 2001 James Youngman <jay@gnu.org>
+Pass the --enable-binary flag to enable binary file support.
+This was previously the default, but it is now mandatory to 
+supply the option (or --disable-binary).
+
 * Tue Jul 18 2000 James Youngman <jay@gnu.org>
-UPdated URL.
+Updated URL.
 
 * Mon Jun 15 1998 Aron Griffis <agriffis@coat.com>
 Added symbolic links in /usr/bin to call programs directly

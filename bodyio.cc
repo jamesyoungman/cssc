@@ -35,6 +35,51 @@
 #include <stdio.h>
 #endif
 
+
+#if CONFIG_MAX_BODY_LINE_LENGTH	  
+/* Check if we have exceeded the maximum line length. 
+ * CONFIG_MAX_BODY_LINE_LENGTH is 0 if there is no limit. 
+ */
+static bool check_line_len(int column,
+			   int ch,
+			   FILE *in,
+			   bool *binary)
+{
+  if (column > CONFIG_MAX_BODY_LINE_LENGTH)
+    {
+      ungetc(ch, in);	// push back the character.
+      
+#if CONFIG_DISABLE_BINARY_SUPPORT
+      errormsg("%s: line length exceeds %d characters, "
+	       "and binary file support is disabled.\n",
+	       iname,
+	       (int) CONFIG_MAX_BODY_LINE_LENGTH
+	       );
+#else
+      errormsg("%s: line length exceeds %d characters, "
+	       "treating as binary.\n",
+	       iname,
+	       (int) CONFIG_MAX_BODY_LINE_LENGTH);
+      *binary = true;
+#endif	      
+      return false;	
+    }
+}
+
+#else
+/* No maximum line length. */
+static bool check_line_len(int column,
+			   int ch,
+			   FILE *in,
+			   bool *binary)
+{
+  return true;
+}
+
+#endif
+
+
+
 /* body_insert_text()
  *
  * Insert a file into an SCCS file (e.g. for admin).
@@ -63,7 +108,8 @@ body_insert_text(const char iname[], const char oname[],
   int ch, last;
   unsigned long int nl;		// number of lines.
   bool found_id;
-
+  int column;			// current column in ouutput file.
+  
   // If we fail, rewind these files to try binary encoding.
   FilePosSaver o_saver(out);
 
@@ -75,23 +121,37 @@ body_insert_text(const char iname[], const char oname[],
   // Make sure we don't already think it is binary -- if so, this 
   // function should never have been called.
   ASSERT(false == *binary);
-  
+
+  column = 0;
   while ( EOF != (ch=getc(in)) )
     {
       if (CONFIG_EOL_CHARACTER == ch)
 	++nl;
 
       // check for ^A at start of line.
-      if ('\n' == last && '\001' == ch)
+      if ('\n' == last)
 	{
-	  errormsg("%s: control character at start of line, "
-		   "treating as binary.\n",
-		   iname);
-	  ungetc(ch, in);	// push back the control character.
-	  *binary = true;
-	  return false;		// output file pointer implicitly rewound
+	  column = 0;
+	  
+	  if ('\001' == ch)
+	    {
+	      errormsg("%s: control character at start of line, "
+		       "treating as binary.\n",
+		       iname);
+	      ungetc(ch, in);	// push back the control character.
+	      *binary = true;
+	      return false;	// output file pointer implicitly rewound
+	    }
 	}
-
+      else
+	{
+	  ++column;
+	  if (!check_line_len(++column, ch, in, binary))
+	    {
+	      return false; // output file pointer implicitly rewound
+	    }
+	}
+      
       
       // FIXME TODO: if we get "disk full" while trying to write the
       // body of an SCCS file, we will retry with binary (which of
@@ -263,7 +323,12 @@ body_insert(bool *binary,
 	{
 	  if (io_failure)
 	    return false;
-	  
+
+#if CONFIG_DISABLE_BINARY_SUPPORT
+	  // We an't try again with a binary file, because that 
+	  // feature is disabled.
+	  return false;
+#endif	  
 	  // It wasn't text after all.  We may be reading from
 	  // stdin, so we can't seek on it.  But we have 
 	  // the first segment of the file written to the x-file

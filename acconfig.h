@@ -21,6 +21,20 @@
 /* Package version. */
 #undef VERSION
 
+/* Is it safe to rely on POSIX saved IDs? */
+#undef SAVED_IDS_OK
+
+/* Do we disallow the creation of "binary" (encoded) SCCS files? */
+/* This is controlled by the --enable-binary and --disable-binary */
+/* options to configure. */ 
+#undef CONFIG_DISABLE_BINARY_SUPPORT
+
+/* What is the maximum length of line which we will allow CSSC to put
+ * into an SCCS file?   Zero means that there is no limit. 
+ * This is controlled by the --enable-max-line-length option to 
+ * configure.   
+ */
+#undef CONFIG_MAX_BODY_LINE_LENGTH
 
 @BOTTOM@
 

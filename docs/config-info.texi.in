@@ -1,0 +1,7 @@
+@multitable @columnfractions .5 .5
+@item Binary SCCS file creation allowed
+@tab @enable_binary@
+@item Maximum SCCS file line length
+@tab @max_line_length_description@
+@end multitable
+

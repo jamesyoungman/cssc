@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.41 2001/07/10 23:13:00 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.42 2001/07/14 18:30:51 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -487,12 +487,35 @@ sccs_file::write_subst(const char *start,
 	      s = parms->wstring;
 	      if (0 == s)
 		{
-		  /* TODO: SunOS 4.1.4 apparently uses 
-		   * a space rather than a tab here.
-		   * I want to find a third opinion before
-		   * comitting myself...
+		  /* At some point I had been told that SunOS 4.1.4
+		   * apparently uses a space rather than a tab here.
+		   * However, a test on 4.1.4 shows otherwise.
+		   *
+		   * From: "Carl D. Speare" <carlds@attglobal.net>
+		   * Subject: RE: SunOS 4.1.4 
+		   * To: 'James Youngman' <jay@gnu.org>,
+		   * 	     "cssc-users@gnu.org" <cssc-users@gnu.org>
+		   * Date: Wed, 11 Jul 2001 01:07:36 -0400
+		   * 
+		   * Ok, here's what I got:
+		   * 
+		   * %W% in a file called test.c expanded to:
+		   * 
+		   * @(#)test.c<TAB>1.1
+		   * 
+		   * Sorry, but my SunOS machine is lacking a network
+		   * connection, so I can't bring it over into
+		   * mail-land. But, there you are, for what it's
+		   * worth.
+		   * 
+		   * --Carl
+		   * 
 		   */
 		  s = "%Z" "%%M" "%\t%" "I%";
+		  /* NB: strange foroatting of the string above is 
+		   * to preserve it unchanged even if this source code does 
+		   * itself get checked into SCCS or CSSC.
+		   */
 		}
 	      else
 		{

@@ -43,7 +43,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.37 2001/07/10 21:54:54 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.38 2001/07/14 18:30:51 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -404,6 +404,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		     mylist<mystring> mrs, mylist<mystring> comments,
 		     bool display_diff_output)
 {
+  const char *pline;
+  size_t len;
   ASSERT(mode == UPDATE);
 
   if (!check_keywords_in_file(gname.c_str()))
@@ -746,7 +748,30 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		  fflush(df);
 #endif
 		  new_delta.inserted++;
-		  fputs(dstate.get_insert_line(), out);
+		  
+		  pline = dstate.get_insert_line();
+		  len = strlen(pline);
+		  if (len)
+		    len -= 1;	// newline char should not contribute.
+		  
+		  if (0 == CONFIG_MAX_BODY_LINE_LENGTH
+		      || len < CONFIG_MAX_BODY_LINE_LENGTH
+		      )
+		    {
+		      if (fputs_failed(fputs(pline, out)))
+			{
+			  return false;
+			}
+		    }
+		  else
+		    {
+		      // The line is too long.
+		      errormsg("Input line is %d characters long but "
+			       "the maximum allowed SCCS file line length "
+			       "is %d characters (see output of delta -V)\n",
+			       (int) len - 1,
+			       (int) CONFIG_MAX_BODY_LINE_LENGTH);
+		    }
 		  break;
 
 		case diff_state::END:
@@ -789,7 +814,30 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	  while (diff_state::INSERT == dstate.process(out, new_delta.seq))
 	    {
 	      new_delta.inserted++;
-	      fputs(dstate.get_insert_line(), out);
+	      
+	      pline = dstate.get_insert_line();
+	      len = strlen(pline);
+	      if (len)
+		len -= 1;	// newline char should not contribute.
+	      
+	      if (0 == CONFIG_MAX_BODY_LINE_LENGTH
+		  || len < CONFIG_MAX_BODY_LINE_LENGTH
+		  )
+		{
+		  if (fputs_failed(fputs(pline, out)))
+		    {
+		      return false;
+		    }
+		}
+	      else
+		{
+		  // The line is too long.
+		  errormsg("Input line is %d characters long but "
+			   "the maximum allowed SCCS file line length "
+			   "is %d characters (see output of delta -V)\n",
+			   (int) len - 1,
+			   (int) CONFIG_MAX_BODY_LINE_LENGTH);
+		}
 	    }
 	  
 	  break;

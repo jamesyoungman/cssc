@@ -27,7 +27,7 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	relvbr.h
 
 # Sources required by everybody.
-common_SOURCES = my-getopt.cc version.cc fdclosed.cc
+common_SOURCES = my-getopt.cc version.cc fdclosed.cc showconfig.cc
 
 # Sources required by programs working with lists of SCCS files.
 sname_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc \
