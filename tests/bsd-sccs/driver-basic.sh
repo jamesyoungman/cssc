@@ -5,6 +5,39 @@
 # Import common functions & definitions.
 . ../common/test-common
 
+
+
+# Find the sccs driver program.   It's not done in 
+# tests/common/command-names because we have to run the candidate 
+# to find out if it accepts the --prefix option.
+#
+if test x${sccs} = x
+then
+    if test -f ${dir}/sccs
+    then
+	sccsprog="${dir}/sccs"
+    else
+	case ${dir} in 
+	    ../..) sccsprog="${dir}/bsd/sccs"
+		    ;;
+	    *) sccsprog="sccs"
+		    ;;
+	esac
+    fi
+
+    # Find out if it takes the --prefix option.  If so,
+    # use it.
+    if ${sccsprog} --cssc >/dev/null 2>&1
+    then
+	sccsargs="--prefix=${dir}/"
+    else
+	sccsargs=""
+    fi
+
+    sccs="${sccsprog} ${sccsargs}"
+fi
+
+
 remove command.log log log.stdout log.stderr SCCS
 mkdir SCCS 2>/dev/null
 
@@ -131,11 +164,11 @@ docommand g2 "test -f foo"   0 "" ""
 docommand g3 "test -f tfile" 0 "" ""
 docommand g4 "test -w foo"   0 "" ""
 docommand g5 "test -w tfile" 1 "" ""
-
 docommand g6 "${sccs} clean" 0 IGNORE ""
 # Make sure tfile is now gone and foo is not.
 docommand g7 "test -f tfile" 1 "" ""
 docommand g8 "test -f foo"   0 "" ""
+docommand g9 "test -w foo"   0 "" ""
 
 #
 # unedit 
