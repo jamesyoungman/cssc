@@ -17,12 +17,20 @@ see docs/FIXED.
 
 2.	Testing 
  cd work/tests
- if make all-tests 
+ if make all-tests 2>&1 | tee make.log 
  then
-	uname -a | mail -s "CSSC success" jay@gnu.ai.mit.edu 
+	uname -a | mail -s "CSSC success" jay@gnu.org
  else
-	uname -a | mail -s "CSSC failure" jay@gnu.ai.mit.edu 
+	echo FAILED, please send full details to 'jay@gnu.org.'
+	(uname -a ; cat make.log) | mail -s "CSSC failure" jay@gnu.org 
  fi
+
+
+ If the tests failed, I'll definitely need some more information and
+ so it would be best to keep the test outputs in case I need them in
+ order to fix the bug ("tar cf failed-tests.tar tests" should do fine
+ for that).  I may need to ask you to send a comressed version of this
+ to me.
 
 
 3.	Installing
@@ -64,7 +72,7 @@ deltas (get -i -x) have been implemented but not extensively tested.
 
 See the file INSTALL for information on how to compile this package.
 Send any questions or bug reports by e-mail to the current maintainer,
-<jay@gnu.ai.mit.edu>.  After you have compiled CSSC, _PLEASE_ run the
-test suite, as described in docs/TESTING.
+<jay@gnu.org>.  After you have compiled CSSC, _PLEASE_ run the test
+suite, as described in docs/TESTING.
 
 
