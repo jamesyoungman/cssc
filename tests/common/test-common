@@ -145,7 +145,7 @@ fi
 
 if test "$3" != "IGNORE"
 then
-    echo_nonl $3 > expected.stdout
+    echo_nonl "$3" > expected.stdout
     # diff can fail if the file does not end in newline.
     echo        >>expected.stdout
     echo        >>     got.stdout
@@ -154,7 +154,7 @@ fi
 
 if test "$4" != "IGNORE"
 then
-    echo_nonl $4 > expected.stderr
+    echo_nonl "$4" > expected.stderr
     # diff can fail if the file does not end in newline.
     echo        >>expected.stderr
     echo        >>     got.stderr
