@@ -45,7 +45,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.13 1998/02/23 21:01:16 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.14 1998/05/27 20:33:05 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -57,7 +57,7 @@ const XFILE XOPEN_FAILURE = 0;
 
 inline XFILE
 xopen(const char *name) {
-#ifdef CONFIG_BINARY_FILE
+#ifdef CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
 	return fopen(name, "rb");
 #else
 	return fopen(name, "r");
@@ -95,7 +95,7 @@ const XFILE XOPEN_FAILURE = -1;
 
 inline XFILE
 xopen(const char *name) {
-#ifdef CONFIG_BINARY_FILE
+#ifdef CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
 	return open(name, O_RDONLY | O_BINARY);
 #else
 	return open(name, O_RDONLY);
@@ -193,6 +193,10 @@ print_what(char *s, char *end, XFILE f) {
 
 	return 0;
 }
+
+#ifndef CONFIG_WHAT_BUFFER_SIZE
+#define CONFIG_WHAT_BUFFER_SIZE (16*1024)
+#endif
 
 int
 main(int argc, char **argv)

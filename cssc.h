@@ -23,7 +23,7 @@
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.16 1998/02/28 14:49:35 james Exp $
+ * $Id: cssc.h,v 1.17 1998/05/27 20:33:02 james Exp $
  *
  */
 
@@ -38,12 +38,12 @@
 #include <config.h>
 #endif
 
-#define CONFIG_NO_TIMEZONE_VAR
 
 
-#undef  CONFIG_DECLARE_ERRNO
-#undef  CONFIG_DECLARE_STRERROR
-#undef  CONFIG_DECLARE_MALLOC
+
+
+
+
 #undef  CONFIG_DECLARE_STAT
 #undef  CONFIG_DECLARE_GETPWUID
 #undef  CONFIG_DECLARE_GETLOGIN
@@ -65,8 +65,12 @@
 /* pass special switches to GNU diff (e.g. heuristic mode).  Later maybe. */
 #undef  CONFIG_DIFF_SWITCHES
 
-/* Enable support for binary files.  I haven't done this yet anyway. */
-#undef	CONFIG_BINARY_FILE
+/* Define if you want to open SCCS files in binary instead of text mode.
+ * If you do this, you will probably need to jump through hoops on
+ * Microsoft systems, in order to avoid falling over all those
+ * carriage returns.
+ */
+#undef	CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
 
 
 

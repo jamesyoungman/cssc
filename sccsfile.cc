@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.25 1998/05/08 07:52:44 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.26 1998/05/27 20:33:04 james Exp $";
 #endif
 
 
@@ -52,7 +52,7 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
 {
   FILE *f;
 
-#ifdef CONFIG_BINARY_FILE
+#ifdef CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
   f = fopen(name, "rb");
 #else
   if (mode == UPDATE)
@@ -89,7 +89,7 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   
   *sump = sum & 0xFFFFu;
   
-#ifdef CONFIG_BINARY_FILE
+#ifdef CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
   fclose(f);
   if (mode == UPDATE)
     f = fopen(name, "r+");

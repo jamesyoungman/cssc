@@ -74,7 +74,7 @@ body_insert_text(const char iname[], const char oname[],
 	++nl;
 
       // check for ^A at start of line.
-      if ('\n' == last && CONFIG_CONTROL_CHARACTER == ch)
+      if ('\n' == last && '\001' == ch)
 	{
 	  fprintf(stderr,
 		  "%s: control character at start of line, "
