@@ -42,10 +42,10 @@
 
 #include "err_no.h"
 #include "defaults.h"
-#include "getopt.h"
+#include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.8 1997/11/23 18:48:50 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.9 1997/11/30 14:35:13 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 

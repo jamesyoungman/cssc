@@ -29,10 +29,10 @@
 #include "fileiter.h"
 #include "sccsfile.h"
 #include "pfile.h"
-#include "getopt.h"
+#include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.13 1997/11/18 23:22:19 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.14 1997/11/30 14:35:07 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 

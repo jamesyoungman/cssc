@@ -1,5 +1,5 @@
 /*
- * getopt.h: Part of GNU CSSC.
+ * my-getopt.h: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -24,12 +24,10 @@
  *
  * Defines the class getopt.
  *
- * @(#) CSSC getopt.h 1.1 93/11/09 17:17:47
- *
  */
 
-#ifndef CSSC__GETOPT_H__
-#define CSSC__GETOPT_H__
+#ifndef CSSC__MY_GETOPT_H__
+#define CSSC__MY_GETOPT_H__
 
 #ifdef __GNUC__
 #pragma interface
@@ -64,7 +62,7 @@ public:
   char *getarg (void) const;
 };
 
-#endif /* CSSC__GETOPT_H__ */
+#endif /* CSSC__MY_GETOPT_H__ */
 
 /* Local variables: */
 /* mode: c++ */

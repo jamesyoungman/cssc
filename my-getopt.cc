@@ -26,7 +26,7 @@
  */
 
 #ifdef __GNUC__
-#pragma implementation "getopt.h"
+#pragma implementation "my-getopt.h"
 #endif
 
 //#include "cssc.h"
@@ -42,10 +42,10 @@
 #include <string.h>
 #endif
 
-#include "getopt.h"
+#include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: getopt.cc,v 1.7 1997/11/23 18:56:08 james Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.1 1997/11/30 14:35:09 james Exp $";
 #endif
 
 int

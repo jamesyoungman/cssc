@@ -29,10 +29,10 @@
 #include "cssc.h"
 #include "fileiter.h"
 #include "pfile.h"
-#include "getopt.h"
+#include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.8 1997/11/18 23:22:48 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.9 1997/11/30 14:35:12 james Exp $";
 
 void
 usage() {

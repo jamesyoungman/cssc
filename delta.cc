@@ -26,14 +26,14 @@
  */
 
 #include "cssc.h"
-#include "getopt.h"
+#include "my-getopt.h"
 #include "fileiter.h"
 #include "pfile.h"
 #include "sccsfile.h"
 #include "sf-chkmr.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.9 1997/11/18 23:22:15 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.10 1997/11/30 14:35:06 james Exp $";
 
 void
 usage() {

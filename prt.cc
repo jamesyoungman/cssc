@@ -8,10 +8,10 @@
 #include "cssc.h"
 #include "fileiter.h"
 #include "sccsfile.h"
-#include "getopt.h"
+#include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.4 1997/11/18 23:22:28 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.5 1997/11/30 14:35:11 james Exp $";
 
 void
 usage()

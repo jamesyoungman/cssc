@@ -15,17 +15,17 @@ csscutil_SCRIPTS = sccsdiff
 BUILT_SOURCES = version.cc
 
 noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
-	filepos.h getopt.h linebuf.h list.h mystring.h pfile.h pipe.h \
+	filepos.h my-getopt.h linebuf.h list.h mystring.h pfile.h pipe.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
 	sysnerr.h version.h xalloc.h ioerr.h err_no.h
 
-common_SOURCES = quit.cc getopt.cc version.cc
+common_SOURCES = quit.cc my-getopt.cc version.cc
 
 sfile_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc xalloc.cc \
 		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc
 
-what_SOURCES = what.cc getopt.cc version.cc
+what_SOURCES = what.cc my-getopt.cc version.cc
 get_SOURCES = get.cc pf-add.cc pfile.cc sccsfile.cc rel_list.cc \
 	sf-chkid.cc sf-get.cc sf-get2.cc sf-get3.cc rl-merge.cc \
 	canonify.cc sf-kw.cc $(common_SOURCES) $(sfile_SOURCES)

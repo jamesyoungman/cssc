@@ -31,10 +31,10 @@
 #include "fileiter.h"
 #include "sid_list.h"
 #include "sl-merge.h"
-#include "getopt.h"
+#include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.15 1997/11/18 23:22:11 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.16 1997/11/30 14:35:05 james Exp $";
 
 void
 usage() {

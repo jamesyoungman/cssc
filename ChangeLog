@@ -1,3 +1,12 @@
+Sun Nov 30 14:10:45 1997  James Youngman  <jay@gnu.org>
+
+	* my-getopt.h: Renamed getopt.h because it conflicts with the Unix
+	include file of the same name.  On some systems (e.g. IRIX),
+	<stdio.h> includes <getopt.h>.  Since autoconf required that we
+	use the preprocessor flag -I., this meant that our C++ header was
+	being included by the C programs in testutils.  Hence they did not
+	compile.  
+
 Sun Nov 23 12:05:32 1997  James Youngman  <jay@gnu.org>
 
 	* getopt.cc: small changes to eliminate unruseful dependence on
