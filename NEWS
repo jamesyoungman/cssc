@@ -5,6 +5,10 @@ New in CSSC-0.16alpha-pl1
 	  options to diff and the -a, -B, -d, -H, -p, -q, -s, -v ad
           -y options to GNU diff.
 
+	* Some changes to support compilation with Sun CC 5.5.
+	  (this was a suggestion by Thomas Duffy, who has just taken on 
+          responsibility for the RPM and SRPM packages of CSSC).
+
 New in CSSC-0.16alpha-pl0
 
 	* We now honour the user's choice of umask (which fixes 

@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.39 2003/12/09 23:59:30 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.40 2003/12/10 00:09:39 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -661,8 +661,9 @@ main (int argc, char **argv)
   if (TrustEnvironment)
     {
 #ifndef __ultrix
-      // Mark Reynolds <mark@aoainc.com>: If $LANG is not 
-      // set, setlocale() fails on VAX Ultrix 4.2.
+      /* Mark Reynolds <mark@aoainc.com>: If $LANG is not 
+       * set, setlocale() fails on VAX Ultrix 4.2.
+       */
       if (NULL == setlocale(LC_ALL, ""))
         {
           /* If we can't set the locale as the user wishes,

@@ -71,7 +71,7 @@
 #include "cssc.h" // basically, just for the declaration of quit().
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.10 2002/03/25 00:05:46 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.11 2003/12/10 00:09:39 james_youngman Exp $";
 #endif
 
 int
@@ -104,7 +104,7 @@ CSSC_Options::next()
   char c = *cindex++;
 
   // Look for the argument character in the option list.
-  char *match = strchr(opts, c);
+  const char *match = strchr(opts, c);
 	
   if (0 == c || 0 == match)
     {
