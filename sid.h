@@ -32,10 +32,6 @@
 #ifndef CSSC__SID_H__
 #define CSSC__SID_H__
 
-#ifdef __GNUC__
-//#pragma interface
-#endif
-
 #include "sid_list.h"
 
 #include "release.h"
@@ -226,10 +222,8 @@ inline int operator !=(sid const &i1, release i2) { return release(i1) != i2; }
 
 #endif
 
-#pragma warn -inl
-//typedef range_list<release> release_list;
 typedef range_list<sid> sid_list;
-#pragma warn .inl
+
 
 #endif /* __SID_H__ */
 	

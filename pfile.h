@@ -99,7 +99,7 @@ public:
 
 	void rewind() { pos = -1; }
 
-#pragma warn -inl
+
 
 	int
 	next() {
@@ -111,7 +111,7 @@ public:
 		return 0;
 	}
 
-#pragma warn .inl
+
 
 	struct edit_lock const *
 	operator ->() const {
