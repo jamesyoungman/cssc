@@ -48,7 +48,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.52 2004/10/03 10:37:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.53 2004/10/17 11:34:17 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -536,8 +536,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
       return false;
     }
   FileDeleter another_cleaner(dname, false);
-  
-  struct subst_parms parms(get_out, NULL, delta(), 
+
+  const struct delta blankdelta;
+  struct subst_parms parms(get_out, (const char*)NULL, blankdelta, 
                            0, sccs_date()); // XXX: was sccs_date(NULL) (bad!)
   seq_state gsstate(sstate);
 

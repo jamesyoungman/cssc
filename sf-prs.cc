@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.39 2004/10/10 12:19:16 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.40 2004/10/17 11:34:28 james_youngman Exp $";
 #endif
 
 inline bool
@@ -47,7 +47,8 @@ sccs_file::get(FILE *out, mystring name, seq_no seq, bool for_edit)
   if (!edit_mode_ok(for_edit))
     return false;
   
-  struct subst_parms parms(out, NULL, delta(), 0,
+  delta blankdelta;
+  struct subst_parms parms(out, (const char*)0, blankdelta, 0,
                            sccs_date());  // XXX: was sccs_date(NULL) (bad!)
   class seq_state state(highest_delta_seqno());
   
