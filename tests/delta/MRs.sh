@@ -2,7 +2,7 @@
 # MRs.sh:  Testing for MR numbers.
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 remove command.log log log.stdout log.stderr base
 mkdir test 2>/dev/null

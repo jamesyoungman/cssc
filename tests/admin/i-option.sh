@@ -3,7 +3,7 @@
 # i-option.sh:  Testing for correct operation of admin -i.
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 remove s.bar foo bar
 

@@ -3,7 +3,7 @@
 # Tests with only one revision in the SCCS file.
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 
 f=1test

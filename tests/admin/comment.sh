@@ -3,7 +3,7 @@
 # comment.sh:  Testing for comments at initialisation time.
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 s=s.new.txt
 remove foo $s new.txt s.1 s.2 command.log

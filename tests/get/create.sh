@@ -2,7 +2,7 @@
 # sid-select.sh:  Do we select the correct SIDs?
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 remove command.log log log.stdout log.stderr
 mkdir test 2>/dev/null

@@ -3,7 +3,7 @@
 # comment.sh:  Testing for correct expansion of formats for prs -d.
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 expands_to () {
     # $1 -- label

@@ -4,7 +4,7 @@
 #
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 g1=new1.txt
 g2=new2.txt

@@ -2,7 +2,7 @@
 # writable.sh:  Will get over-write a writable file?
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 remove command.log log log.stdout log.stderr
 
