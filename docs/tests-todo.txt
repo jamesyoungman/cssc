@@ -86,9 +86,6 @@ get
 
 delta
 =====
-	No ID keywords when this is a fatal error (see file flags)
-	Authorised groups
-	Use of delta when a q-file already exists.
 	Running delta on an SCCS file with an unrecognised feature
 	Over-long line in the file we are checking in.
 	Unreadable g-file
