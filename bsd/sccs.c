@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.35 2002/03/19 18:14:44 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.36 2003/12/09 18:51:39 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -2142,7 +2142,7 @@ dodiff (char * getv[], const char *gfile)
           syserr ("dodiff: magic failed");
           exit (CSSC_EX_OSERR);
         }
-      command (&getv[1], FALSE, "-diff:elsfhbC");
+      command (&getv[1], FALSE, "-diff:elsfhbCu");
     }
   return rval;
 }
