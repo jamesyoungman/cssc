@@ -1,0 +1,20 @@
+New in CSSC-0.02-devel-pl6
+
+	* The -m and -n options of get had been the wrong way around.
+          This is now fixed.
+
+	* Fixed "what": the marker '@(#)' is no longer printed.
+
+	* Added documentation for prs.
+
+	* Fixes to get (keywords %I% %R% %L% %B% %S%, plus 
+	  correct subsitution when the "-c" option is used).
+
+New in CSSC-0.02-devel-pl5	
+
+	* FreeBSD support (+ SMP build as a side effect, probably)
+
+	* Support for G++ 2.6.3 (as well as 2.7.x)
+
+	* Relocatable info directory.
+

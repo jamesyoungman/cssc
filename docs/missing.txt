@@ -1,0 +1,13 @@
+The Time-stamp: line indicated when this file was last modified.
+Time-stamp: <97/06/30 18:54:51 james>
+
+This file points out features of SCCS that are missing from CSSC, by
+accident or design, but are not currently listed in the TODO file.
+The reason they're not listed in the TODO file is generally either
+that they involve a lot of work or that I don't think they're
+important.
+
+
+sccs-help is not implemented.
+Binary files are not handled (support for ^A f e 0 -- files with the
+encoded flag whose value is 0, is present).
