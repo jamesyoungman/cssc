@@ -158,14 +158,11 @@ private:
 
   void get(mystring name, class seq_state &state,
 	   struct subst_parms &parms,
-#ifdef __GNUC__
 	   subst_fn_t subst_fn = 0,
-#else
-	   int (sccs_file::*subst_fn)(const char *,
-				      struct subst_parms *) const = 0,
-#endif
-	   int show_sid = 0, int show_module = 0, int debug = 0);
-
+	   int show_sid = 0, int show_module = 0, int debug = 0,
+	   bool no_decode = false);
+  enum { GET_NO_DECODE = true };
+  
   /* sf-get2.c */
   int write_subst(const char *start,
 		  struct subst_parms *parms,
@@ -191,10 +188,6 @@ public:
 			int keywords = 0, const char *wstring = NULL,
 			int show_sid = 0, int show_module = 0,
 			int debug = 0);
-
-  /* sf-chkid.c */
-  static int check_id_keywords(const char *s);
-
 
   /* sf-get3.c */
 private:
