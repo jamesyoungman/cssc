@@ -3,7 +3,7 @@
 # default.sh:  Tests for prt no involving several deltas.
 
 # Import common functions & definitions.
-. ../common/test-common
+. test-common
 
 s=s.testfile
 

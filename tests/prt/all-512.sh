@@ -1,5 +1,5 @@
 #! /bin/sh
-. ../common/test-common
+. test-common
 export prt
 
 sh all-variations.txt >got.stdout
