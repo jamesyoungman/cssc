@@ -45,6 +45,7 @@ class FilePosSaver;		// filepos.h
 
 struct delta;
 class cssc_delta_table;
+class delta_iterator;
 
 class sccs_file
 {
@@ -305,8 +306,9 @@ public:
   bool rmdel(sid rid);
 
   /* sf-val.cc */
-  bool validate();
-
+  bool validate() const;
+  bool validate_seq_lists(const delta_iterator& d) const;
+  bool validate_isomorphism() const;
   
   // Implementation is protected; in the existing [MySC]
   // implementation some of the implementation is private where
