@@ -1,16 +1,21 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <97/07/15 19:49:49 james>
+Time-stamp: <97/08/04 23:24:23 james>
 
 The MySC package provides the bulk of the functionality of this
 package, compiled under GCC 2.4.5, and was written by Ross Ridge.
 
 This package was updated for modern C++ compilers, fixed, enhanced,
-and sparingly documented by James Youngman, <JYoungman@vggas.com>.
+and sparingly documented by James Youngman, <jay@gnu.ai.mit.edu>.
 
 Lars Hecking <lhecking@nmrc.ucc.ie> provided valuable help with
 Autoconf and portability information for Solaris, SunOS, AmigaOS, and
 IRIX.  Plus, lots and *lots* of testing and useful bug reports.
 
+
+Dave Bodenstab <imdave@mcs.net> is to be thanked for providing patches
+for FreeBSD-2.0.5 support -- these were largely to fix silly
+assumptions (location of "true", GCC-2.6.3 support), nothing catering
+to FreeBSD especially.
 
 
 Local Variables:

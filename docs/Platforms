@@ -3,12 +3,14 @@ Porting People
 The following people have helped ensure that CSSC has worked on
 these platforms (at some stage):
 
-Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] Solaris
-Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] SunOS 4
-Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] IRIX 6.3 (configured
+Lars Hecking	<lhecking@nmrc.ucc.ie>		    Solaris-2.5.1
+Lars Hecking	<lhecking@nmrc.ucc.ie>		    IRIX 6.3 (GCC configured
 						    for IRIX 5.3)
+James Youngman  <jay@gnu.ai.mit.edu>		    Linux
+Dave Bodenstab  <imdave@mcs.net>		    FreeBSD-2.0.5
+
+Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] SunOS 4
 Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] AmigaOS (ixemul)
-James Youngaman <JYoungman@vggas.com>		    Linux
 Andrew Bardsley <bardslea@cs.man.ac.uk>		[*] Hurd
 
 [*] These entries denote that CSSC compiled successfully but the test
