@@ -1,5 +1,8 @@
 1998-02-12  James Youngman  <jay@gnu.org>
 
+	* auxfiles/CSSC.spec: Updated RPM spec-file for version
+	0.06alpha.pl0.
+
 	* docs/cssc.texi, docs/Platforms, docs/TODO, auxfiles/CSSC.spec,
 	sf-write.cc, configure.in, sccsfile.cc, NEWS: Binary file support.
 
@@ -14,8 +17,6 @@
 	guesses if the original file is binary or not.
 
 	* configure.in: Updated the patchlevel.
-
-1998-02-11  James Youngman  <jay@gnu.org>
 
 	* NEWS: Added the latest news.
 
