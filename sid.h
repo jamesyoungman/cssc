@@ -15,7 +15,7 @@
 #define __SID_H__
 
 #ifdef __GNUC__
-#pragma interface
+//#pragma interface
 #endif
 
 #include "sid_list.h"
