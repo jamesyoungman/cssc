@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.34 2003/05/29 17:47:12 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.35 2003/12/08 11:46:00 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -527,8 +527,9 @@ sccs_file::end_update(FILE **pout)
   
 #if defined(__CYGWIN__)
   int dummy_sum;
+  
   mystring sfile_name = name.sfile();
-  f = open_sccs_file(sfile_name.c_str(), READ, &dummy_sum);
+  f = open_sccs_file(sfile_name.c_str(), READ, &dummy_sum, &dummy_bk_flag);
   if (0 == f)
     {
       s_missing_quit("Cannot re-open SCCS file %s for reading", name.c_str());
