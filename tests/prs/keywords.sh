@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# comment.sh:  Testing for comments at initialisation time.
+# comment.sh:  Testing for correct expansion of formats for prs -d.
 
 # Import common functions & definitions.
 . test-common
@@ -12,12 +12,12 @@ expands_to () {
 docommand $1 "${prs} \"-d$2\" -r1.1 s.1" 0 "$3"
 }
 
-remove s.1 s.2
+remove s.1 
 
 # Create two files
-docommand P1 "${admin} -n s.1 s.2" 0 "" ""
+docommand P1 "${admin} -n s.1" 0 "" ""
 
-docommand P2 "${prs} -d':M:\n' s.1 s.2" 0 "1\n\n2\n\n" ""
+docommand P2 "${prs} -d':M:\n' s.1" 0 "1\n\n" ""
 
 expands_to X1  :B:      "\n"
 expands_to X2  :BF:     "no\n"
@@ -46,5 +46,5 @@ test -s got.stderr && fail expected empty stderr output
 remove got.stderr got.stdout expected.stdout 
 echo passed
 
-remove s.1 s.2 command.log
+remove s.1 command.log
 success
