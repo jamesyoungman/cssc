@@ -34,12 +34,13 @@
 #include "version.h"
 #include "except.h"
 #include "err_no.h"
+#include "file.h"
 
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.48 2003/03/01 15:38:25 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.49 2003/12/07 22:37:49 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -430,7 +431,7 @@ main(int argc, char **argv)
               fclose(out);
               if (suppress_keywords)
               {
-                  if (!set_gfile_mode(gname, 0644))
+                  if (!set_gfile_writable(gname, true))
                       retval = 1;
               }
               else
@@ -440,7 +441,7 @@ main(int argc, char **argv)
                  * will have to temporarily set EUID=RUID.
                  */
                 give_up_privileges();
-                if (!set_gfile_mode(gname, 0444))
+                if (!set_gfile_writable(gname, false))
                     status.success = false;
                 restore_privileges();
                 

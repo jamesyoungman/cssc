@@ -32,6 +32,7 @@
 #include "cssc.h"
 #include "sysdep.h"
 #include "err_no.h"
+#include "file.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -44,7 +45,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.34 2002/03/19 16:13:37 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.35 2003/12/07 22:37:49 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -518,18 +519,45 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 /* CYGWIN seems to be unable to create a file for writing, with mode
  * 0444, so this code resets the mode after we have closed the g-file. 
  */
-bool set_file_mode(const mystring &gname, int mode)
+bool set_file_mode(const mystring &gname, bool writable)
 {
   const char *name = gname.c_str();
+  struct stat statbuf;
+  int fd = open(name, O_RDONLY);
   
-  if (0 == chmod(name, mode))
+  if (fd < 0)
     {
-      return true;
-    }
-  else
-    {
-      errormsg_with_errno("%s: cannot set mode of file to 0%o", name, mode);
+      errormsg_with_errno("%s: cannot open file in order to change its mode",
+			  name);
       return false;
+    }
+  else 
+    {
+      if (0 == fstat(fd, &statbuf))
+	{
+	  int mode = statbuf.st_mode & 0666;
+	  if (writable)
+	    mode |= 0200;
+	  else
+	    mode &= (~0200);
+	  
+	  if (0 == fchmod(fd, mode))
+	    {
+	      close(fd);
+	      return true;
+	    }
+	  else
+	    {
+	      errormsg_with_errno("%s: cannot set mode of file to 0%o",
+				  name, mode);
+	      close(fd);
+	      return false;
+	    }
+	}
+      else
+	{
+	  errormsg_with_errno("%s: cannot stat file", name);
+	}
     }
 }
 
@@ -539,12 +567,12 @@ bool set_file_mode(const mystring &gname, int mode)
  * the real user's files.  However, we need to do this (for example, 
  * for get -k).  This is SourceForge bug 451519.
  */
-bool set_gfile_mode(const mystring& gname, int mode)
+bool set_gfile_writable(const mystring& gname, bool writable)
 {
 #ifdef CONFIG_UIDS
   give_up_privileges();
 #endif
-  bool rv = set_file_mode(gname, mode);
+  bool rv = set_file_mode(gname, writable);
 #ifdef CONFIG_UIDS
   restore_privileges();
 #endif
