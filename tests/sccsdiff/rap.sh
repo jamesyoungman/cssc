@@ -8,7 +8,7 @@
 
 # Import common functions & definitions.
 . ../common/test-common
-
+export get
 
 # invariant label file1 file2 
 #
@@ -36,7 +36,7 @@ docommand prep3 "${delta} -ycomment $s" 0 IGNORE  IGNORE
 
 echo_nonl "D1..."
 remove  $g
-${sccsdiff} -r1.1 -r1.2 $s 2>/dev/null | 
+${sccsdiff} -r1.1 -r1.2 $s 2>errs | 
     sed '/lines/d' | 
     sed '/1\./d'   > diff.out
 
@@ -47,13 +47,14 @@ EOF
 
 # Expect success
 invariant D1 diff.out diff.test
+remove errs
 
 #
 # sccsdiff output to pipe through pr
 #
 echo_nonl "D2..."
 remove diff.out
-${sccsdiff} -p -r1.1 -r1.2 $s 2>/dev/null | 
+${sccsdiff} -p -r1.1 -r1.2 $s 2>errs | 
     sed '/lines/d' | 
     sed '/1\./d'   | 
     sed '/Page/d'  > diff.out
@@ -64,7 +65,8 @@ pr diff.test | sed '/Page/d' > diff.test1
 
 # Expect success
 invariant D2 diff.out diff.test1
-remove  diff.test1
+remove  diff.test1 errs
+
 
 #
 # Try to sccsdiff non-existent deltas
@@ -85,6 +87,7 @@ EOF
 
 # Expect success
 invariant D3  diff.out diff.test
+remove errs
 
 
 #
