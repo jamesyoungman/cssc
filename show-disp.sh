@@ -21,7 +21,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# $Id: show-disp.sh,v 1.6 2000/08/05 19:35:20 james_youngman Stab $
+# $Id: show-disp.sh,v 1.7 2000/09/17 09:28:48 james_youngman Exp $
 # 
 
 cvs -z3 status "$@" 2>&1 </dev/null |
@@ -98,7 +98,7 @@ END {
 	  prefix = sprintf("%s: %d: ",
 			disposition,
 			count[disposition]);
-	  printf("\n%s", prefix);
+	  printf("%s", prefix);
 	  output(file_list[disposition], length(prefix));
 	}
     }
