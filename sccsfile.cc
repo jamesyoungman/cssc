@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.23 1998/03/14 13:43:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.24 1998/05/04 21:59:02 james Exp $";
 #endif
 
 
@@ -48,7 +48,7 @@ static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.23 1998/03/14 13:43:38 j
 /* Static member for opening a SCCS file and then calculating its checksum. */
 
 FILE *
-sccs_file::open_sccs_file(const char *name, enum _mode mode, unsigned *sump)
+sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
 {
   FILE *f;
 
@@ -70,7 +70,7 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, unsigned *sump)
     }
   
   if (getc(f) != '\001' || getc(f) != 'h')
-    quit(-1, "%s: Bad magic number", name);
+    quit(-1, "%s: Bad magic number.  Did you specify the right file?", name);
   
   int c;
   while ( (c=getc(f)) != CONFIG_EOL_CHARACTER)
@@ -79,10 +79,10 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, unsigned *sump)
 	quit(errno, "%s: Unexpected EOF.", name);
     }
   
-  unsigned sum = 0u;
+  int sum = 0u;
   
   while( (c=getc(f)) != EOF)
-    sum += (signed char) c;	// Yes, I mean signed, not unsigned.
+    sum += (char) c;	// Yes, I mean plain char, not signed, not unsigned.
   
   if (ferror(f))
     quit(errno, "%s: Read error.", name);
@@ -301,6 +301,8 @@ sccs_file::read_delta() {
 				seq_no seq = strict_atous(start);
 				switch(c) {
 				case 'i':
+				  fprintf(stderr, "adding seq %hd\n",
+					  (unsigned short)seq);
 					tmp.included.add(seq);
 					break;
 
@@ -336,6 +338,7 @@ sccs_file::read_delta() {
 	}
 
 	check_noarg();
+
 
 	ASSERT(0 != delta_table);
 	delta_table->add(tmp);
@@ -380,7 +383,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   
   if (!name.valid())
     {
-      quit(-1, "%s: Not an SCCS file.", name.c_str());
+      quit(-1, "%s: Not an SCCS file.  Did you specify the right file?",
+	   name.c_str());
     }
   
   flags.no_id_keywords_is_fatal = 0;
@@ -412,20 +416,31 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       return;
     }
   
-  unsigned sum;
+  signed int sum = 0;
   f = open_sccs_file(name.c_str(), READ, &sum);
   
   int c = read_line();
   ASSERT(c == 'h');
 
-  unsigned given_sum = strict_atous(plinebuf->c_str() + 2);
-  given_sum &= 0xFFFFu;
-
-  if (given_sum != sum)
+  /* the checksum is represented in the file as decimal.
+   */
+  signed int given_sum = 0u;
+  if (1 != sscanf(plinebuf->c_str(), "%*ch%d", &given_sum))
     {
-      fprintf(stderr, "%s: Warning bad checksum "
-	      "(expected=%x, calculated %x).\n",
-	      name.c_str(), given_sum, sum);
+      fprintf(stderr,
+	      "Expected checksum line, found line beginning '%.3s'\n",
+	      plinebuf->c_str());
+    }
+  else
+    {
+      given_sum &= 0xFFFFu;
+      
+      if (given_sum != sum)
+	{
+	  fprintf(stderr, "%s: Warning bad checksum "
+		  "(expected=%d, calculated %d).\n",
+		  name.c_str(), given_sum, sum);
+	}
     }
   
   c = read_line();
