@@ -1,0 +1,50 @@
+#! /bin/sh
+
+# body.sh:  Testing for :GB: keyword of prs.
+
+# Import common functions & definitions.
+. ../common/test-common
+
+remove s.1 p.1 z.1 1 command.log DESC
+
+# Create file
+echo "hello" > DESC
+docommand b1 "${admin} -n -iDESC s.1" 0 "" IGNORE
+remove DESC
+
+# get -p should just emit the body.
+docommand b2 "${get} -p s.1" 0 "hello
+" IGNORE
+
+# get -d :GB: should emit the body followed by a newline
+docommand b3 "${prs} -d:GB: s.1" 0 "hello
+
+" IGNORE
+
+
+# Also, keyword expansion should occur too. 
+remove s.1 p.1 z.1 1 command.log DESC
+
+# Create file again
+echo "%Z%" > DESC
+docommand b4 "${admin} -n -iDESC s.1" 0 "" IGNORE
+remove DESC
+
+
+# get -p should just emit the body, with kw expansion
+docommand b5 "${get} -p s.1" 0 "@(#)
+" IGNORE
+
+# get -d :GB: should emit the body followed by a newline with kw expansion
+docommand b6 "${prs} -d:GB: s.1" 0 "@(#)
+
+" IGNORE
+
+# get -p -k should just emit the body, without kw expansion
+# we have to make this check to ensure that prs was really
+# going keyword expansion
+docommand b6 "${get} -p -k s.1" 0 "%Z%
+" IGNORE
+
+remove s.1 p.1 z.1 1 command.log
+success

@@ -1239,7 +1239,9 @@ than 2068 (@pxref{Year 2000 Issues}).
 @item :GB:
 The body for this version, as distinct from the 
 body of the @sc{sccs} file itself, which is obtained
-with @samp{:BD:}.
+with @samp{:BD:}.  Keyword expansion will be performed 
+in the same way as if @code{get} had been used.
+
 
 @item :I:
 The @sc{sid} of this version.
