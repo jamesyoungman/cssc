@@ -1,4 +1,114 @@
+1998-06-16  James Youngman  <jay@gnu.org>
+
+	* docs/FIXED: Added a report of the mystring::find_last_of() bug.
+
+	* docs/CREDITS: Added apology to Achim Hoffmann.
+
+	* docs/style.txt:
+	"f()" vs. "f ()": added plea for any reason to prefer one over the
+	other.
+
+	* docs/cssc.texi:
+	Indicate that the fatal-exit-on-error problem is being worked on.
+
+	* docs/cssc.texi:
+	Added a short remark about Emacs's VC-mode in the section on delta; if
+	an SCCS file has the V flag set, you need to put an -m option in
+	vc-checkin-flags in order to be able to check in revisions within
+	Emacs.
+
+	* sccsfile.cc:
+	Oops.  Include <ctype.h> if STDC_HEADERS is defined, because
+	HAVE_CTYPE_H is not defined by our configure.in.
+
+	* mystring.cc:
+	Fixed find_last_of().  We were finding the FIRST occurrence of the
+	target rather than the last.  Argh!  How stupid is that?
+
+	* tests/prs/keywords.sh: Make sure prs accepts an empty "-r" option.
+
+1998-06-15  James Youngman  <jay@gnu.org>
+
+	* fileiter.cc:
+	When reading a list of filenames from stdin, trim off the newline that
+	separates the filenames.
+
+	* sf-write.cc, sf-prs.cc, sf-prt.cc, sf-rmdel.cc, sf-get.cc,
+	sf-get2.cc, sf-cdc.cc, sf-delta.cc, sccsfile.h, sf-add.cc,
+	sf-admin.cc, quit.cc, quit.h, rmdel.cc, file.cc, get.cc, prt.cc,
+	cdc.cc, delta.cc, admin.cc:
+	Don't use quit(); rather, use errormsg() and make a fatal exit
+	from the function which we are now executing.  When this
+	propagates up to the top level, remember the error so we cal later
+	exit with a return value of 1, but nevertheless continue to
+	process command-line arguments.
+
+	* prs.cc:
+	Allow the -r option to have no argument, without producing an error.
+	When processing SCCS files, allow any of them to fail without this
+	causing the whole operation to abort, but remember the fact and exit
+	with a return value of 1 (hence use errormsg() rather than quit() for
+	producing error messages).
+
+1998-06-14  James Youngman  <jay@gnu.org>
+
+	* unused/Makefile.am, unused/README, quit.cc, configure.in,
+	Makefile.am:
+	Moved some files into the "unused" directory, which we now add into
+	the distribution.   They may be useful for ports or something.
+
+	* unused/sid_list.cc, unused/pipe.cc, unused/pipe.h,
+	unused/ffsync.cc, unused/fsync.cc, unused/move-if-change,
+	unused/dosfile.cc, unused/dummy.cc, unused/_chmod.cc, dosfile.cc,
+	ffsync.cc, move-if-change, pipe.cc, pipe.h, sid_list.cc,
+	_chmod.cc, dummy.cc, fsync.cc: 
+	Moved some files into the "unused" directory; we don't use them
+	any more and keeping them aroung means that they have to be
+	considered during global search and replace operations.  That's
+	just making more work for myself.  These files are the contents of
+	the $(rainyday_src) macro in the makefile.
+
+	* unget.cc, sccsfile.cc, sact.cc, rmdel.cc, run.cc, quit.cc,
+	quit.h, prt.cc, pipe.cc, prs.cc, pf-add.cc, pfile.h, get.cc,
+	file.cc, delta.cc, admin.cc, cdc.cc:
+	Changes to avoid using quit(); rather, we want to emit an error
+	message and return an error status to the caller.  This allows an
+	SCCS program to process a list of files without quitting
+	prematurely because there was somethign wrong with some file early
+	in the list.  More changes remain to be done for this to be
+	complete.
+
+	* Makefile.am: Added dosfile.cc and ffsync.cc.
+
+	* dosfile.cc, ffsync.cc:
+	Moved some system-dependent code out of file.cc.
+
+	* delta.cc:
+	Use errormsg() rather than quit() so that if the first file fails, the
+	second may still be processed.
+
+1998-06-13  James Youngman  <jay@gnu.org>
+
+	* README:
+	Added some basic remarks about configuuring the destination directory
+	to the "QuickStart" section of the file.  Also, change the sample test
+	script to send the version information too.
+
+	* fdclosed.cc:
+	Fixed copyright date and removed extraneous #include of err_no.h.
+
+	* fdclosed.cc: Fixed the comments.
+
+	* Makefile.am, fdclosed.cc:
+	Provide a static object constructor that ensures that file descriptors
+	0, 1 and 2 are not closed at the start.  Otherwise we might printf()
+	to stdout and accidentally modify a file we fopened() for writing.
+
+	* bsd/Makefile.am: Define PREFIX to be $(csscutildir) by default.
+
 1998-06-11  James Youngman  <jay@gnu.org>
+
+	* ChangeLog, NEWS: Final additions for 0.07alpha.pl3.
 
 	* bsd/Makefile.am:
 	Even though sccs.1 is in man_MANS, we still need to get it added to
