@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-03-10 23:02:28 james>
+Time-stamp: <1998-03-11 18:25:11 james>
 
 List of fixed bugs 
 
@@ -16,6 +16,12 @@ it's easier to just fix the bug than list it in BUGS _and_ I do it
 promptly, it does not get listed.  If you don't like this (lack of?)
 policy, let me know.  All bugfixes are listed in ChangeLog, in some
 fashion.
+
+Wed Mar 11 18:01:54 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl4.  Fixed in version 0.06-pl5.
+ If you use rmdel, your s.-file will end up totally corrupted.
+ This is due to the fact that all the lines which specify
+ what should be included/excluded for each SID are removed...
 
 Tue Mar 10 23:00:45 1998: Wolfhard Straehle <straehle@ee.hnt.heller-machines.com>
 In version 0.06-pl3.  Fixed in version 0.06-pl4.
