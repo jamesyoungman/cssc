@@ -36,13 +36,14 @@
 #
 for echocmd in echo /bin/echo /usr/bin/echo /usr/5bin/echo ../../testutils/ekko
 do
-if test -f $echocmd
+# Unless we're using the builtin, check that the command exists as a file.
+if test -f $echocmd || test "$echocmd" = "echo"
 then
   # The second echo here ensures that the parenthesised command 
   # succeeds and the output ends with a newline.
   if ($echocmd "testing\c"; echo 1,2,3) | grep c >/dev/null
     then
-    # The trailing \c option does not work without -e.
+    # Trailing \c option does not work without -e (it produces a literal c).
     if ($echocmd -e "testing\c"; echo 1,2,3) | grep c >/dev/null
     then
       # \c does not work even with -e.
@@ -86,7 +87,9 @@ if ($echocmd -e) >/dev/null 2>&1
 then
   if ($echocmd -e) | sed s/-e/xe/ | grep xe >/dev/null
   then
-    ac_e=''
+    # Fallback position: use our own replacement which supports -e.
+    echocmd="../../testutils/ekko"
+    ac_e='-e'
   else
     ac_e='-e'
   fi
