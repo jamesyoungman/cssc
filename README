@@ -4,7 +4,8 @@ control system SCCS.  It is based on the MySC package by Ross Ridge.
 CSSC is currently under development so expect problems with compiling
 the package on older machines and perhaps even incorrect operation.
 
-
+Specific information about compiling CSSC on particular platforms is
+provided in the file "docs/Platforms".
 
 ==============================================================================
 			Quick Start
