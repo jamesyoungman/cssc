@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.9 1998/05/28 21:26:44 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.10 1998/05/28 21:59:57 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -368,6 +368,12 @@ show_version(void)
   fprintf(stderr, "GNU CSSC %s\n%s\n", VERSION, filever);
 }
 
+static void 
+usage(void)
+{
+  fprintf (stderr, "Usage: %s [flags] command [flags]\n", MyName);
+}
+
 #define	PFILELG	120
 
 int 
@@ -375,7 +381,8 @@ main (int argc, char **argv)
 {
   register char *p;
   register int i;
-
+  int hadver = 0;
+  
   &copyright;			/* prevent warning about unused variable. */
 
   if (getuid() != geteuid())
@@ -401,7 +408,7 @@ main (int argc, char **argv)
 
   if (argc < 2)
     {
-      fprintf (stderr, "Usage: %s [flags] command [flags]\n", MyName);
+      usage();
       exit (EX_USAGE);
     }
   argv[argc] = NULL;
@@ -415,7 +422,9 @@ main (int argc, char **argv)
 	  switch (*++p)
 	    {
 	    case 'V':
-	      show_version();
+	      if (!hadver)
+		show_version();
+	      hadver = 1;
 	      if (2 == argc)	/* If -V was the only arg, return success. */
 		return 0;
 	      break;		/* Otherwise, process the remaining options. */
@@ -447,15 +456,34 @@ main (int argc, char **argv)
 
 	    default:
 	      usrerr ("unknown option -%s", p);
+	      usage();
 	      exit (EX_USAGE);
 	    }
 	}
       if (SccsPath[0] == '\0')
 	SccsPath = ".";
     }
-
-  i = command (argv, FALSE, "");
-  exit (i);
+  
+  if (NULL == argv[0])
+    {
+      /* No remaining args!
+       */
+      if (!hadver)
+	{
+	  /* Not sure what went on, but it wasn't a useful command line. */
+	  usage();
+	}
+      else
+	{
+	  /* Just "sccs -V" is valid. */
+	  exit(0);
+	}
+    }
+  else
+    {
+      i = command (argv, FALSE, "");
+      exit (i);
+    }
 }
 
 /* Warning in do_enter*/
@@ -620,6 +648,7 @@ command (char *argv[], bool forkflag, const char *arg0)
       if (cmd == NULL)
 	{
 	  usrerr ("Unknown command \"%s\"", *ap);
+	  usage();
 	  return (EX_USAGE);
 	}
 
