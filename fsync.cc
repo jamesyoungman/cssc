@@ -1,8 +1,6 @@
 /*
  * fsync.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify

@@ -1,8 +1,6 @@
 /*
  * prompt.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
@@ -30,7 +28,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.4 1997/07/02 18:02:22 james Exp $";
+static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.5 1997/07/02 18:18:38 james Exp $";
 #endif
 
 /* Prompts the user for input. */

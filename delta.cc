@@ -1,8 +1,6 @@
 /*
  * delta.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
@@ -35,7 +33,7 @@
 #include "sf-chkmr.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.7 1997/07/02 17:56:55 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.8 1997/07/02 18:17:53 james Exp $";
 
 void
 usage() {

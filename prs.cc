@@ -1,8 +1,6 @@
 /*
  * prs.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
@@ -33,7 +31,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.6 1997/07/02 18:02:28 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.7 1997/07/02 18:18:41 james Exp $";
 
 void
 usage() {

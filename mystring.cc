@@ -1,8 +1,6 @@
 /*
  * mystring.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
@@ -35,7 +33,7 @@
 #include "mystring.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.5 1997/07/02 18:00:02 james Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.6 1997/07/02 18:18:20 james Exp $";
 #endif
 
 

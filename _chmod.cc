@@ -1,8 +1,6 @@
 /*
  * _chmod.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
@@ -22,7 +20,7 @@
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
  *
- * $Id: _chmod.cc,v 1.4 1997/07/02 17:54:45 james Exp $
+ * $Id: _chmod.cc,v 1.5 1997/07/02 18:17:30 james Exp $
  *
  */
 

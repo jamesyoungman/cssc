@@ -1,8 +1,6 @@
 /*
  * admin.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
@@ -34,7 +32,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.11 1997/07/02 17:55:25 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.12 1997/07/02 18:17:46 james Exp $";
 
 void
 usage() {

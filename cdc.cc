@@ -1,8 +1,6 @@
 /*
  * cdc.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
@@ -33,7 +31,7 @@
 #include "sf-chkmr.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.5 1997/07/02 17:55:46 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.6 1997/07/02 18:17:50 james Exp $";
 
 void
 usage() {

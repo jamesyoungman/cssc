@@ -1,8 +1,6 @@
 /*
  * quit.c: Part of GNU CSSC.
  * 
- * Defines the function _chmod for MS-DOS systems.
- * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
@@ -39,7 +37,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.8 1997/07/02 18:02:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.9 1997/07/02 18:18:44 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
