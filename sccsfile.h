@@ -243,6 +243,10 @@ public:
   void set_reserved_flag(const char *s);
   void set_type_flag(const char *s);
 
+
+  /* Used by get.cc (implemented in sccsfile.cc) */
+  bool branches_allowed() const;
+  
   /* sf-admin.c */
   void admin(const char *file_comment,
 	     list<mystring> set_flags, list<mystring> unset_flags,

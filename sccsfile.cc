@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.16 1997/12/26 18:35:20 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.17 1998/01/24 14:06:37 james Exp $";
 #endif
 
 
@@ -779,6 +779,12 @@ char sccs_file::bufchar(int pos) const
 }
 
 
+bool sccs_file::branches_allowed() const
+{
+  return 0 != flags.branch;
+}
+
+  
 /* Local variables: */
 /* mode: c++ */
 /* End: */
