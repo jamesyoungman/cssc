@@ -86,6 +86,12 @@ type "cd docs ; make cssc.ps".  If you don't have TeX, you can read
 the "info" documentation with either the GNU "info" program, or Emacs.
 
 
+To regenerate all the machine-generated files from their ultimate
+sources (for example, after checking the controlled sources out of a
+CVS repository), use
+	clocal && autoheader && automake && autoconf 
+followed by the usual invocation of "configure" and "make".
+
 
 The most helpful thing you could possibly do for this project would be
 to contribute a new test case.  It isn't hard; the test scripts are
