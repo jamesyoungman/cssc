@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.16 1998/06/19 07:11:23 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.17 1999/03/14 14:56:07 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -575,6 +575,14 @@ main (int argc, char **argv)
   
   &copyright;			/* prevent warning about unused variable. */
 
+  if (!absolute_pathname(PREFIX))
+    {
+      fprintf(stderr,
+	      "Compiled-in program name prefix %s is not absolute.\n"
+	      "Please recompile this program using an absolute path.\n");
+      exit(CSSC_EX_CONFIG);
+    }
+  
   if ( (getuid() != geteuid()) || (getgid() != getegid()))
     {
       TrustEnvironment = 0;	/* running setuid, ignore $PATH etc. */
@@ -827,6 +835,7 @@ try_to_exec(const char *prog, char * const argv[])
     printf ("try_to_exec: %s\n", prog);
 #endif
 
+  /* subprogram_exec_prefix is always NULL if we are runnign setuid. */
   if (subprogram_exec_prefix)
     {
       prefix = subprogram_exec_prefix;
@@ -865,6 +874,7 @@ try_to_exec(const char *prog, char * const argv[])
    */
   if (absolute_pathname(prog))	
     {
+      execv(prog, argv);
       perror(prog);
     }
   else
