@@ -205,7 +205,7 @@ dnl AC_OUTPUT(shorter/Makefile)
 dnl *** NOTE:
 dnl There can be only ONE call to AC_OUTPUT in each configure.in,
 dnl otherwise you get an error when you run configure.  AC_OUTPUT
-dnl deletes confdefs.h and to the second invocation couldn't find it
+dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_OUTPUT(Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/Makefile auxfiles/Makefile auxfiles/CSSC.spec unused/Makefile version.cc)
+AC_OUTPUT(version.cc Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/Makefile auxfiles/Makefile auxfiles/CSSC.spec unused/Makefile)
