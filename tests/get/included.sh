@@ -48,10 +48,23 @@ docommand I13 "$delta  -y $s" 0 IGNORE IGNORE
 
 # Create a branch.
 docommand B1 "$get -s -e -r1.2 $s" 0 IGNORE IGNORE
-docommand B2 "mv $g $g.old"        0 IGNORE IGNORE
-docommand B3 "sed -e  '1 a\\
-seq=8 1.2.1.1'  < $g.old > $g"     0 IGNORE IGNORE
-remove $g.old
+
+## docommand B2 "mv $g $g.old"        0 IGNORE IGNORE
+## docommand B3 "sed -e  '1 a\\
+## seq=8 1.2.1.1'  < $g.old > $g"     0 IGNORE IGNORE
+## remove $g.old
+
+# SourceForge bug number 441423: on NetBSD-1.5W, the sed "a" command
+# appears to eat the newline.  Hence we replace the old single-step
+# sed command above with the three-step approach below.
+( 
+mv $g $g.old                            &&
+sed -n -e '1p'        < $g.old  > $g    &&
+echo "seq=8 1.2.1.1"           >> $g    &&
+sed -n -e '2,$ p'     < $g.old >> $g    &&
+remove                  $g.old
+) || miscarry "Failed to prepare new version of $g"
+
 docommand I14 "$delta  -y $s" 0 IGNORE IGNORE
 
 # Add to the head of the revision tree a delta which includes the
