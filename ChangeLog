@@ -1,6 +1,61 @@
+1998-03-10  James Youngman  <jay@gnu.org>
+
+	* admin.cc:
+	Absolute pathnames now work; bug reported by Wolfhard Straehle.
+
+	* tests/admin/abspath.sh:
+	Test for bug reported by Wolfhard Str\"ahle; admin -n /abs/path/s.foo
+	fails because the "admin" code checks for an "s." after the first
+	slash when in fact it should check for an "s." after the LAST one.
+
+1998-03-10  James Youngman  <jay@gnu.org>
+
+	* get.cc:
+	Fixes from Peter Kjellerstedt.  First, correct output when a direcory
+	is specified on the command line (get should always print the name of
+	the current s-file).  Second, when multiple files are specified on the
+	command line, don't corrupt the requested SID value by updating it
+	with an actual SID value from some particular s-file.
+
+	* sccsdiff.sh.in: Support for filenames containing spaces.
+
+	* filediff.cc, filediff.h, sf-delta.cc:
+	Better support for files whose names have spaces in them.
+
+1998-03-09  James Youngman  <jay@gnu.org>
+
+	* filediff.h, filediff.cc:
+	finish() returns a bool; false if the child process returned nonzero.
+
+	* sf-delta.cc, fileiter.cc:
+	Make FileDiff::finish() return a bool; it returns false if pclose()
+	indicates that the spawned process returned a nonzero exit status.
+	[ REVERSED -- this was a BAD idea, diff returns 1 if the 
+	  files differ! ]
+	
+	* sccsdiff.sh.in:
+	Bug report from Richard Polton: IRIX's pr(1) requires a space between
+	the "-h" and its argument.
+
+1998-03-04  James Youngman  <jay@gnu.org>
+
+	* tests/common/real-thing: Define TESTING_CSSC if $dir points at
+	CSSC programs rather than SCCS programs.
+
+	* tests/binary/auto.sh: Use $TESTING_CSSC to determine of we
+	should run those tests that CSSC should pass but (some verisions
+	of) SCCS cannot, instead of abusing $expect_fail.
+
+	* docs/BUGS, docs/FIXED: Some entries moved from BUGS to FIXED.
+
 1998-03-01  James Youngman  <jay@gnu.org>
 
 	* Version 0.06alpha-pl3
+
+	* auxfiles/CSSC.spec: 0.06alpha-pl3
+
+	* configure.in, ChangeLog, NEWS:
+	Updated the NEWS and ChangeLog files (0.06alpha-pl3)
 
 	* tests/binary/auto.sh, tests/binary/seeking.sh:
 	Tests for binary files and the "-i" option of admin.

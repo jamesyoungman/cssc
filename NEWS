@@ -1,3 +1,10 @@
+New in CSSC-0.06alpha-pl4
+	
+	* admin's -n and -i options now work correctly with absolute
+	  pathnames.
+
+	* Fixes for support of SCCS files whose names contain a space.
+
 New in CSSC-0.06alpha-pl3
 
 	* "admin -i" now works when the input file turns out 
