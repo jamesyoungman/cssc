@@ -16,7 +16,7 @@
 #include "sf-chkmr.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.4 1997/05/10 14:49:48 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.5 1997/05/17 12:17:39 james Exp $";
 
 void
 usage() {
@@ -140,17 +140,34 @@ main(int argc, char **argv) {
 			abort();
 		}
 
-		if (file.mr_required()) {
-			if (mr_list.length() == 0) {
-				quit(-1, "%s: MR number(s) must be supplied.",
-				     (const char *) name);
-			}
-			if (file.check_mrs(mr_list)) {
-				quit(-1, "%s: Invalid MR number(s).",
-				     (const char *) name);
-			}
-		}
-
+		if (file.mr_required())
+		  {
+		    if (mr_list.length() == 0)
+		      {
+			quit(-1, "%s: MR number(s) must be supplied.",
+			     (const char *) name);
+		      }
+		    if (file.check_mrs(mr_list))
+		      {
+			/* In this case, _real_ SCCS prints the ID anyway.
+                         */
+			pfile->delta.print(stdout);
+			putchar('\n');
+			quit(-1, "%s: Invalid MR number(s).",
+			     (const char *) name);
+		      }
+		  }
+		else if (mr_list.length())
+		  {
+		    // MRs were specified and the MR flag is turned off.
+		    pfile->delta.print(stdout);
+		    putchar('\n');
+		    quit(-1,
+			 "%s: MR verification ('v') flag not set, MRs"
+			 " are not allowed.\n",
+			 (const char *) name);
+		  }
+		
 		mystring gname = name.gfile();
 
 		file.add_delta(gname, pfile, mr_list, comment_list);
