@@ -14,7 +14,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.4 1997/06/01 00:30:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.5 1997/06/28 14:39:06 james Exp $";
 #endif
 
 static void
@@ -27,19 +27,22 @@ print_string_list(FILE *out,
   const int len = list.length();
   if (0 == len)
     {
-      fprintf(out, "%s%s%s",
+      fprintf(out, "%s%s",
 	      (const char *)pre,
-	      (const char *)dflt,
-	      (const char *)post);
+	      (const char *)dflt);
     }
   else
     {
       for(int i = 0; i < len; i++)
 	{
-	  fprintf(out, "%s%s%s",
+	  fprintf(out, "%s%s",
 		  (const char *)pre,
-		  (const char *)list[i],
-		  (const char *)post);
+		  (const char *)list[i]);
+	  if (i < len-1)
+	    {
+	      fprintf(out, "%s", (const char *)post);
+	    }
+	  
 	}
     }
 }
@@ -285,6 +288,8 @@ sccs_file::prt(FILE *out,
 	       int print_users) const // -u
 
 {
+  putc('\n', out);
+  
   if (print_body)
     {
       print_delta_table = 0;
@@ -321,14 +326,14 @@ sccs_file::prt(FILE *out,
 	  if (exclude.enabled)	// -y, -c, or -r option.
 	    fprintf(out, "%s:\t", (const char *)name);
 	  else
-	    fprintf(out, "\n");
+	    putc('\n', out);
       
 	  // Print the stuff from the delta...
 	  fprintf(out, "%c ", iter->type);
 	  iter->id.print(out);
-	  fprintf(out, "\t");
+	  putc('\t', out);
 	  iter->date.printf(out, 'D');
-	  fprintf(out, " ");
+	  putc(' ', out);
 	  iter->date.printf(out, 'T');
 	  fprintf(out, " %s\t%hu %hu",
 		  (const char*)iter->user,
@@ -341,19 +346,40 @@ sccs_file::prt(FILE *out,
 	    {
 	      if (incl_excl_ignore)
 		{
-		  fprintf(out, "Included:\t");
-		  print_seq_list(out, iter->included);
-		  fprintf(out, "\nExcluded:\t");
-		  print_seq_list(out, iter->excluded);
-		  fprintf(out, "\n");
+		  // TODO: find an elegant solution to this problem.
+		  //
+		  // REAL SCCS prints an "Included" line in the output
+		  // if it sees "^Ai " and "an "Excluded" line if it
+		  // sees "^Ax ", even of the rest of the lines was
+		  // blank.  For CSSC, the rest of these lines is
+		  // built into a list of "seq_no"s. and so if the
+		  // line is blank the data structure is empty and
+		  // nothing is printed.  This is a behavioural
+		  // difference that to fix seems to require a real
+		  // kludge.
+		  if (iter->included.length())
+		    {
+		      fprintf(out, "Included:\t");
+		      print_seq_list(out, iter->included);
+		      putc('\n', out);
+		    }
+		  if (iter->excluded.length())
+		    {
+		      fprintf(out, "Excluded:\t");
+		      print_seq_list(out, iter->excluded);
+		      putc('\n', out);
+		    }
 		}
 	      // Print any MRs and then the comments.
 	      if (iter->mrs.length())
-		print_string_list(out, iter->mrs, "MRs:\t", " ", "");
+		{
+		  print_string_list(out, iter->mrs, "MRs:\t", " ", "");
+		  putc('\n', out);
+		}
 	      if (iter->comments.length())
 		{
-		  fprintf(out, "\n");
 		  print_string_list(out, iter->comments, "", "\n", "");
+		  putc('\n', out);
 		}
 	    }
 	}
@@ -364,6 +390,7 @@ sccs_file::prt(FILE *out,
     {
       fprintf(out, "\nUsers allowed to make deltas --\n");
       print_string_list(out, users, "\t", "\n", "everyone");
+      putc('\n', out);
     }
   if (print_flags)
     {
@@ -371,7 +398,8 @@ sccs_file::prt(FILE *out,
       fprintf(out, "\nFlags --\n");
       if (flags.branch)
 	{
-	  fprintf(out, "\tbranch\n");
+	  // "Real" SCCS prints a TAB after "branch", so we do too.
+	  fprintf(out, "\tbranch\t\n");
 	  ++flag_count;
 	}
       
@@ -403,11 +431,15 @@ sccs_file::prt(FILE *out,
       print_flag(out, "\tcsect name\t%s\n", flags.user_def, flag_count);
       print_flag(out, "\ttype\t%s\n", flags.type, flag_count);
       print_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count);
+
+      if (0 == flag_count)
+	fprintf(out, "\tnone\n");
     }
   if (print_desc)
     {
       fprintf(out, "\nDescription --\n");
       print_string_list(out, comments, "\t", "\n", "none");
+      putc('\n', out);
     }
 
   if (print_body)
