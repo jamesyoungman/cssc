@@ -70,7 +70,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.6 1999/03/19 23:58:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.7 2000/11/26 20:51:46 james_youngman Exp $";
 #endif
 
 int
@@ -277,7 +277,7 @@ void CSSC_Options::reorder(void)
   
 }
 
-CSSC_Options::CSSC_Options(int ac, char **av, const char *s, int err = 1)
+CSSC_Options::CSSC_Options(int ac, char **av, const char *s, int err)
   : argc(ac),
     argv(av),
     index(1),

@@ -40,7 +40,7 @@ struct range
 {
   TYPE from;
   TYPE to;
-  struct range *next;
+  range<TYPE> *next;
 };
 
 template <class TYPE>

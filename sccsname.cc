@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.8 1998/05/09 16:10:58 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.9 2000/11/26 20:51:47 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_MSDOS_FILES 
@@ -95,13 +95,15 @@ sccs_name::create()
 
   if (basename.length() >= 2)
     {
+      const char *s = basename.c_str();
+      
       // name_rear does not contain the "s" 
       // of the "s." but does contain the dot itself.
-      name_rear.assign(basename, 1);
+      name_rear = mystring(s+1);
 
       // The gname does not include the directory part,
       // or the leading "s.".
-      gname.assign(basename, 2);
+      gname = mystring(s+2);
     }
   else
     {

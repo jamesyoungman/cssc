@@ -34,7 +34,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: delta-iterator.cc,v 1.3 1999/03/19 23:58:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: delta-iterator.cc,v 1.4 2000/11/26 20:51:46 james_youngman Exp $";
 #endif
 
 delta_iterator::delta_iterator(cssc_delta_table *d)
@@ -86,7 +86,7 @@ const_delta_iterator::const_delta_iterator(cssc_delta_table const *d)
 }
 
 int
-const_delta_iterator::next(int all = 0)
+const_delta_iterator::next(int all)
 {
   ASSERT(0 != dtbl);
   while (++pos < dtbl->length())

@@ -1,7 +1,7 @@
 /*
  * fdclosed.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1998,2000, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -33,14 +33,14 @@
  */
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fdclosed.cc,v 1.3 1998/06/13 23:16:21 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fdclosed.cc,v 1.4 2000/11/26 20:51:46 james_youngman Exp $";
 #endif
 
 #include "cssc.h"
 #include "sysdep.h"
 
-#ifdef HANVE_UNISTD_H
-#inlcude <unistd.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
 #ifdef HAVE_STDIO_H

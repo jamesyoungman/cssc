@@ -2,7 +2,7 @@
  * cap.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,2000 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: cap.cc,v 1.1 1997/11/18 23:22:12 james Stab $";
+static const char rcs_id[] = "CSSC $Id: cap.cc,v 1.2 2000/11/26 20:51:46 james_youngman Exp $";
 #endif
 
-template<class T> const T& min(const T& a, const T& b)
+template<class T> const T& cap_min(const T& a, const T& b)
 {
   return (a < b) ? a : b;
 }
@@ -45,5 +45,5 @@ template<class T> const T& min(const T& a, const T& b)
 unsigned long 
 cap5(unsigned long n)
 {
-  return min(n, 99999uL);
+  return cap_min(n, 99999uL);
 }

@@ -39,7 +39,7 @@ class stack {
 	int len;
 
 	void
-	copy(class stack<TYPE> const &it) {
+	copy(stack<TYPE> const &it) {
 		len = it.len;
 		array = new TYPE[len];
 		memcpy(array, it.array, sizeof(TYPE) * len);
@@ -55,8 +55,8 @@ public:
 		copy(it);
 	}
 
-	class stack<TYPE> &
-        operator =(class stack<TYPE> const &it) {
+	stack<TYPE> &
+        operator =(stack<TYPE> const &it) {
 		if (this != &it) {
 		  delete [] array;
 			copy(it);
