@@ -4,12 +4,13 @@
 ## into Makefile.in, and become the first line.
 # Running ./configure will generate a Makefile from this file.
 
+csscutildir = $(libexecdir)/cssc
 
 SUBDIRS = docs testutils tests
 
 
-bin_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt
-bin_SCRIPTS = sccsdiff 
+csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt
+csscutil_SCRIPTS = sccsdiff 
 
 BUILT_SOURCES = version.cc
 
