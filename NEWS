@@ -1,3 +1,17 @@
+New in CSSC-0.09alpha-pl2
+
+	* Initial support for "admin -h" (at the moment we just check
+          the checksum).
+
+	* "admin -z" now works better; it doesn't complain if the s-file is 
+          read-only (because it should be read only in any case).
+
+	* It is now posible to unset the "m" flag using admin.
+
+	* An implementation of "val" is now included.  It is not complete.
+	  You can invoke it and it behaves like "val", but it doesn't check
+	  everything it should yet.
+
 New in CSSC-0.09alpha-pl1
 
 	* sccsdiff is now documented.

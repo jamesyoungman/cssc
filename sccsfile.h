@@ -102,8 +102,6 @@ private:
   void read_delta();
   bool seek_to_body();
 
-  mystring get_module_name() const;
-
 public:
 
   // sccs_file::sccs_file(sccs_name&, enum _mode) MUST 
@@ -246,6 +244,10 @@ public:
 
   /* Used by get.cc (implemented in sccsfile.cc) */
   bool branches_allowed() const;
+
+
+  /* val.cc */
+  const mystring  get_module_type_flag();
   
   /* sf-admin.c */
   bool admin(const char *file_comment,
@@ -291,7 +293,9 @@ public:
 	   int print_body, int print_delta_table, int print_flags,
 	   int incl_excl_ignore, int first_line_only, int print_desc,
 	   int print_users) const;
-  
+
+  mystring get_module_name() const;
+
   /* sf-cdc.c */
 
   bool cdc(sid id, list<mystring> mrs, list<mystring> comments);
@@ -300,6 +304,10 @@ public:
 
   bool rmdel(sid rid);
 
+  /* sf-val.cc */
+  bool validate();
+
+  
   // Implementation is protected; in the existing [MySC]
   // implementation some of the implementation is private where
   // it might better be protected.

@@ -13,7 +13,7 @@ csscutildir = $(libexecdir)/cssc
 SUBDIRS = bsd docs testutils auxfiles unused tests
 
 
-csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt
+csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
 csscutil_SCRIPTS = sccsdiff 
 
 BUILT_SOURCES = version.cc
@@ -23,7 +23,7 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
 	sysnerr.h version.h ioerr.h err_no.h delta-table.h delta.h \
-	delta-iterator.h bodyio.h filediff.h except.h
+	delta-iterator.h bodyio.h filediff.h except.h valcodes.h
 
 # Sources required by everybody.
 common_SOURCES = my-getopt.cc version.cc fdclosed.cc
@@ -93,6 +93,8 @@ delta_SOURCES = delta.cc sf-delta.cc \
 	$(moddelta_SOURCES) $(newdelta_SOURCES)\
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
 
+val_SOURCES = val.cc sf-val.cc \
+	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
 
 get_LDADD = @LIBOBJS@
 delta_LDADD = @LIBOBJS@
@@ -104,6 +106,7 @@ sact_LDADD = @LIBOBJS@
 cdc_LDADD = @LIBOBJS@
 rmdel_LDADD = @LIBOBJS@
 prt_LDADD = @LIBOBJS@
+val_LDADD = @LIBOBJS@
 
 # $(testcode) is test code that isn't normally used.
 testcode = list.cc 

@@ -87,6 +87,7 @@ a work-alike for the traditional Unix SCCS suite.
 * Interface::		How to use the suite.
 * Invoking Programs::	How to run the individual CSSC programs.
 * Filenames::		Names of files used by CSSC.
+* File Format::         Description of the @sc{sccs} file format
 * Incomplete::		Missing Features.
 * Year 2000 Issues::    Status of CSSC with regard to the Millennium.
 * Testing::             How to run the test suite and write new cases.
@@ -212,17 +213,17 @@ example @samp{^A}, the character whose code is 1.
 @cindex Restricting access to history files
 @item -a @var{xxx}
 Add user or group @var{xxx} to the list of those authorized to check
-revisions in or out.  Users must be specified by name and groups by
-numeric @sc{id}.
+revisions in.  Users must be specified by name and groups by numeric
+@sc{id}.
 
-If the file can be read by ordinary users, this restriction is easy to
-defeat, and yet avoiding this by making the @code{sccs} program setuid
-(@pxref{sccs}) is not a good idea either because the @sc{CSSC} suite is
-not secure (@pxref{Known Problems}).
+This feature is often used in conjunction with a setuid installation of
+the @code{sccs} driver program (@pxref{sccs}). This is not a good idea
+because the @sc{CSSC} suite is not secure (@pxref{Known Problems}).
 
 @item -b
 @cindex Binary files
-Ensure that the file is encoded as a binary file.   
+Ensure that the file is encoded as a binary file.  This option only
+works in conjunction with the @code{-n} or @code{-i} options.
 
 @item -d@var{F}
 Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
@@ -237,8 +238,18 @@ flags (@pxref{Flags}).
 
 @cindex checksum
 @item -h
-Check the @sc{sccs} file's checksum.  Unimplemented.
-@c TODO: Write the test cases.
+Check the @sc{sccs} file.  The exit value will be 0 if the file is
+valid, and not 0 otherwise.
+
+Warning messages may be emitted, indicating things that may or may not
+be wrong (e.g. time apparently going backwards), but if no actual errors
+are encountered, the exit value will still be zero.  The genuine SCCS
+suite invokes @code{val} (@pxref{val}) to perform this validation, but
+at the moment, @code{admin} only checks the checksum.
+
+This option is silently incompatible with all the other options; the
+specified @sc{sccs} files will not be modified by @code{admin} if the
+@samp{-h} flag is used.
 
 @item -i@var{foo}
 Initialize the @sc{sccs} file with the contents of the file @var{foo}.
@@ -309,6 +320,12 @@ Flags are set and cleared with the @code{admin} program.  @xref{admin}.
 @item b
 Enable branch deltas: this enables the @samp{-b} option of get
 (@pxref{get}).
+@item e
+This flag indicates that the file controlled by this @sc{sccs} file is a
+binary file, and hence the body of the @sc{sccs} file is uuencoded.
+This flag can only be set with the @samp{-b} option of @code{admin} at
+the time the file is created (or if admin takes it upon itself to set
+this flag automatically), and cannot be unset.
 @item i
 Make @code{get} and @code{delta} exit unsuccessfully when the
 @samp{Warning: No id keywords} message is issued.
@@ -343,7 +360,7 @@ Set the locked release list.  These releases cannot be checked out with
 Sets the value substituted for the @samp{%Q%} keyword as described in
 @ref{Keyword Substitution}.  This flag is referred to in the output of
 @sc{sccs} as @samp{csect name}, and is variously referred to here as
-that, or the "user flag" or the "Q flag".
+that, or the ``user flag'' or the ``Q flag''.
 @item m
 Sets the overridden value for the @samp{%M%} keyword as described in
 @ref{Keyword Substitution}.
@@ -887,11 +904,11 @@ The literal string @code{@@(#)}.  @xref{what}.
 This module is not implemented, and it probably will never be, because
 it exists to translate the sometimes obscure error messages produced by
 (genuine) @sc{sccs}.  These messages come with identifying codes (like
-``(ge4)''); one might type @samp{help ge4} to translate an obscure
+``(ge4)''); one might type @kbd{help ge4} to translate an obscure
 message into a more readable message detailing what has gone wrong.  The
 problem with this approach is that it results in a program called
-``help'' on the user's path.  When a naive user types "help" they are
-probably not looking for an explanation of an obscure message from
+@code{help} on the user's path.  When a naive user types @kbd{help} they
+are probably not looking for an explanation of an obscure message from
 @sc{sccs}.  In fact, @code{help} is in any case a shell builtin for GNU
 Bash.  Explanations of any obscure or unusual error messages belong in
 this manual, and so no @code{sccs-help} program is provided or planned.
@@ -907,12 +924,12 @@ this manual, and so no @code{sccs-help} program is provided or planned.
 @cindex Dumping @sc{sccs} files
 @cindex Whodunit
 @cindex Audit trailing
-The @code{prs} command (mnemonic: "print revision summary") prints
+The @code{prs} command (mnemonic: ``print revision summary'') prints
 information about an @sc{sccs} file in a user-defined format.  There are
 options for selecting which deltas are reported on; selection is
 possible by check-in time or by @sc{sid}.  The format of the output can
 also be specified on the command line.  All parts of an @sc{sccs} file
-can be dumped with @code{prs}.   Those parts which appear once per delta
+can be dumped with @code{prs}.  Those parts which appear once per delta
 can be uniquely identified by @sc{sid} or by time.
 
 Typical uses for @code{prs} are 
@@ -1199,8 +1216,8 @@ The release number of the @sc{sid} (the first number).
 
 @item :S:
 The sequence number of the @sc{sid}.  Don't confuse this with the delta
-sequence numbers, which are internal identifiers for deltas which are
-output by the keywords :DI:, :Dn:, :Dx: and :Dg:.
+sequence numbers (@pxref{Delta Table}), which are internal identifiers
+for deltas which are output by the keywords :DI:, :Dn:, :Dx: and :Dg:.
 
 @item :T:       
 Time that this version was checked in (@samp{:Th:::Tm:::Ts:}).
@@ -1541,7 +1558,7 @@ accompanying @code{CSSC} first searches for them on the PATH, and then
 falls back on @file{/usr/sccs/*}.  If the executable is running
 set-user-id, the @code{PATH} environment variable is ignored.  The
 @code{sccs} program itself should be fairly secure, but the other
-programs in the suite are not.  See @xref{Known Problems} for more
+programs in the suite are not.  @xref{Known Problems} for more
 information.
 
 The @code{sccs} program is documented in its online manual page, and
@@ -1634,8 +1651,8 @@ indicate which edit is to be aborted.
 @cindex validating @sc{sccs} files
 @cindex Validity checking
 @cindex Checking sccs files for validity
-This program is not yet implemented, and hence not yet documented here.
-@c TODO: write the code, write the test cases, and document it.
+This program is included with the suite but not yet documented, sorry.
+@c TODO: finish the code, write the test cases, and document it.
 
 @node what, , val, Invoking Programs
 @section @code{what}
@@ -1695,7 +1712,7 @@ is that sometimes compilers or lint-pickers complain that the variable
 remove these @sc{id}s and thus silence the warnings.
 
 
-@node Filenames, Incomplete, Invoking Programs, Top
+@node Filenames, File Format, Invoking Programs, Top
 @chapter Filenames
 
 Temporary files are used during normal operation of @sc{cssc} (and
@@ -1740,8 +1757,343 @@ but they do not.  If you are the super-user, they can use this feature
 to overwrite any file on the system.
 
 
+@node File Format, Incomplete, Filenames, Top
+@chapter File Format
 
-@node Incomplete, Year 2000 Issues, Filenames, Top
+This chapter provides a description of the format of @sc{sccs} files.
+It is @emph{not authoritative}, and may not match some of the
+peculiarities of your vendor's implementation.
+
+@menu
+* File Format Overview::	An overview of the file format
+* The Header::			Format of the header of @sc{sccs} files
+* The Body::			Format of the body of @sc{sccs} files 
+@end menu
+
+@node File Format Overview, The Header, , File Format
+@section Overview
+An @sc{sccs} file contains two parts, the header and the body.  The
+header contains information about both the file as a whole and also
+information about each version stored in the file.  After this comes the
+body itself, which is a stream of fragments from the controlled file
+interspersed with control information which indicates which versions
+these framents appear in.
+
+Most of the control information for @sc{sccs} files appears on lines
+which are marked as special by the character whose value is 1 (ASCII
+SOH); this is usually referred to as @samp{^A}.  Lines in @sc{sccs}
+files always end with a line feed (ASCII LF) rather than a carriage
+return (ASCII CR) followed by a line feed.
+
+
+@node The Header, The Body, File Format Overview, File Format
+@section The Header
+
+There are several parts to the @sc{sccs} file header:-
+
+@iftex
+@enumerate
+@item The checksum line
+@item The delta table 
+@item The authorised users section
+@item The file flags
+@item The file description            
+@end enumerate
+@end iftex
+
+@menu
+* Checksum Line::
+* Delta Table::
+* Authorised User List::
+* Global Flags Section::
+* File Description::
+* Example Header::
+@end menu
+
+@node Checksum Line, Delta Table, , The Header
+@subsection Checksum
+The first line of an @sc{sccs} file contains the checksum, preceded by
+@samp{^Ah}.  The checksum is in decimal and is generated by adding
+together the values of all the characters in the file, and taking the
+result modulo 65536.  A checksum line might look like this:-
+
+@example
+^Ah36650
+@end example
+
+On systems whose C implementation considers the @code{char} type to be
+unsigned, characters with their highest bit set appear to be considered
+positive, and on machines with a signed @code{char} type, these
+characters appear to be considered negative.  This seems to mean that
+these two types of machines will not agree on the correctness of an
+@sc{sccs} file's checksum.
+
+@node Delta Table, Authorised User List, Checksum Line, The Header
+@subsection The Delta Table
+The checksum is followed by the delta table.  Each entry describes one
+version stored in the history file, and is composed of three lines plus
+some comment lines.  The first line introduces a new delta table entry
+and has the form
+
+@example
+@code{^As 00001/00000/00010}
+@end example
+
+The three numbers represent the numbers of lines inserted, deleted and
+unchanged in this version (with respect to its predecessor).  For the
+oldest version in the history file, the numbers of lines deleted and
+unchanged should be zero and the number of lines inserted is the number
+of lines in the intial version of the working file.  These numbers are
+always five digits long.  If the true count of inserted, deleted or
+unchanged lines is greater than 99999, then the fields will still only
+contain 99999.   
+
+The second line has the form
+
+@example
+@code{^AD 1.5 68/12/31 23:59:59 james 5 4}
+@end example
+
+@noindent
+Here, the @samp{D} indicates that this is a normal delta.  The only
+other type of delta is the removed delta.  Removed deltas are created
+with the @code{rmdel} program and are labelled with an @samp{R} instead
+of a @samp{D}.  This is followed by the @sc{sid}, which will have either
+two or four fields separated by a decimal point (ASCII code 46 decimal).
+A @sc{sid} with only two fields (release and level) is said to be on the
+trunk of the revision tree.  A @sc{sid} with the full four fields (the
+last two are the branch number and the sequence number) is said to be a
+``branch revisison''.  Each field in the @sc{sid}, if present, must
+contain a positive integer no larger than 9999.  This means that
+@samp{1.0} would not be a valid version number, for example.
+
+The third and fourth fields on this line are the date and time at which
+this delta was added to the history file (rather than, for example, the
+modification time of the working file which was checked in).  The year
+is represented with only two digits, and is deemed to be in the range
+1969 to 2068 (@pxref{Year 2000 Issues}).  Despite having only two year
+digits, the date is in ISO order (year/month/day).  The time is
+indicated using 24-hour clock notation.  The date in the above example
+is the latest date it is possible to represent in an @sc{sccs} file.
+
+The fifth field is the name of the user who checked this version in.
+For the gratification of pedants, it should be noted that this is the
+name associated with the @emph{actual} user-id rather than the
+@emph{effective} user-id, or the name appearing in the system log as the
+user who logged in on the controlling terminal.
+
+The final two fields are called @dfn{delta sequence numbers}, or
+@dfn{seqnos}.  They are for the internal use of the implementation and
+should not be confused with ``sequence numbers'', which are the final
+fields of four-field (``branch'') @sc{sids}.  The seqno of the delta
+added last will be larger than that of any other delta.  Each delta has
+a unique seqno.  The first of these two fields is the seqno of this
+delta itself, and the second field is the seqno of its predecessor (that
+is, the version which had been checked out with @code{get -e}).  The
+seqno 0 is special and appears only as the (nonexistent) predecessor of
+the first delta.
+
+Since the delta table entries appear in reverse order of addition
+(i.e. new entries are always added at the top), the initial delta appears
+at the foot of the delta table.  Many of the @sc{sccs} utilities define
+their cutoffs in such a way that they can stop traversing the delta
+table when they find a delta which is too old.
+
+After the @samp{^Ad} line there may be several lines which indicate
+lists of included, excluded or ignored sequence numbers for this delta.
+I don't understand this area of the functionality of @sc{sccs} very
+well, so any description here may be vague or incorrect.  The CSSC
+implementation may also be incomplete in this area.
+
+The list of included seqnos is introduced with @samp{^Ai }, the
+excluded seqnos with @samp{^Ax}, and ignored seqnos with @samp{^Ag}.
+These are followed by a space character, and then the list itself, which
+is a space-separated list of integers.
+
+If the @sc{mr}-validation flag (@pxref{Flags}) was turned on at the time
+of the creation of this delta, one or more lines of the form
+
+@example
+^Am mr1
+^Am mr2
+^Am mr3
+^Am mr4
+@end example
+
+These lines constitute a list of Modification Request numbers, one on
+each line.
+
+The next part of the delta table entry is the the delta commentary.
+This comment is intended to contain a description of the changes made in
+this delta, and is written and read by humans.  This may extend over one
+or many lines, each introduced with @samp{^Ac}, like this:-
+
+@example
+^Ac The end of the world
+^Ac as we know it
+@end example
+
+If there is no comment for a particular delta, because it was supressed
+with the @code{-y} option to @code{delta} or @code{cdc}, or because the
+user was presented with a prompt for comments but just typed the return
+key, an empty @samp{^Ac} contol line will appear at this point.  The
+comment block, and in fact the whole delta table entry, is terminated by
+a control line of the form
+
+@example
+^Ae
+@end example
+
+CSSC is currently slightly incorrect in this area.  If the comment is
+suppressed with the @code{-y} option, it emits no @samp{^Ac} lines at
+all.
+
+
+To illustrate this further, here are two more delta table entries from
+an @sc{sccs} file:-
+
+@example
+^As 00001/00000/00007
+^Ad D 1.2 99/12/31 23:59:59 lm 2 1
+^Ac Added an extra line
+^Ae
+^As 00007/00000/00000
+^Ad D 1.1 69/01/01 00:00:00 dmr 1 0
+^Ac created at the dawn of time
+^Ae
+@end example
+
+@node Authorised User List, Global Flags Section, Delta Table, The Header
+@subsection Authorised User List
+Next, there is the list of authorised users, intorduced by a @samp{^Au}
+line.  Only users in the authorised users list can modify the @sc{sccs}
+file.  This list always appears (though many implementations will not
+complain if you remove it with an editor) but is often empty.  One user
+login name appears on each line.  Lines can alternatively contain
+numbers, denoting whole groups of users (as listed in @file{/etc/group}
+on many systems).  The authorised-users list is terminated with a
+@samp{^AU} line.  Some broken implementations emit lines of the form
+@samp{^AU 0} here instead; the polite thing to do is to ignore gaffes of
+this sort.
+
+@node Global Flags Section, File Description, Authorised User List, The Header
+@subsection The Global Flags Section
+
+The file flags section occurs after the authorised-users list.  Each
+file flag occurs on a separate line and are possibly followed by their
+values (except the boolean flags, whose mere presence is sufficient).
+These lines look like this:-
+
+@example
+^Af f e 0
+^Af f n 
+^Af f q Q-flag-value
+^Af f v /bin/true
+@end example
+
+
+The @samp{e} flag, if set to a nonzero value, indicates that the
+controlled file is binary and is therefore stored in uuencoded form in
+the file body.  If this flag is set to zero or is missing, then the file
+body is not encoded.  See @ref{Flags} for information about the other
+possible flag letters and their meanings.
+
+
+@node File Description, Example Header, Global Flags Section, The Header
+@subsection File Description
+The flags section is followed by the descriptive text for the history
+file.  This section is intended to contain text which might contain a
+copyright statement, or might indicate the purpose of a file or contain
+special instructions, and so on.  This section starts with a @samp{^At}
+control line and is terminated with a @samp{^AT} control line:-
+
+@example
+^At
+This is the blah blah...
+... blah.
+^AT
+@end example
+
+The @samp{^AT} control line marks the end of the @sc{sccs} file's
+header.  The following line is the first line of the file body.
+
+
+@node Example Header, , File Description, The Header
+@subsection Example @sc{sccs} File Header
+
+This example also includes the file body, since the body is short.
+
+@example
+^Ah38213
+^As 00002/00000/00000
+^Ad D 1.3 98/11/22 18:25:43 james 3 2
+^Ax 2
+^Am 99
+^Ac This delta was produced using "get -e -x1.2 s.foo" and 
+^Ac then "delta s.foo".
+^Ae
+^As 00001/00000/00000
+^Ad D 1.2 98/11/22 18:22:56 james 2 1
+^Am mr1
+^Am mr2
+^Am 
+^Ac comment goes here.
+^Ae
+^As 00000/00000/00000
+^Ad D 1.1 98/11/22 18:21:11 james 1 0
+^Ac date and time created 98/11/22 18:21:11 by james
+^Ae
+^Au
+^AU
+^Af e 0
+^Af n
+^Af q UMSP
+^Af v /bin/true
+^At
+Descriptive text
+^AT
+^AI 3
+this delta was made from a working file which was gotten for editing
+but excluded the delta named 1.2.
+^AE 3
+^AI 2
+blurg
+^AE 2
+^AI 1
+^AE 1
+@end example
+
+
+
+
+
+@node The Body, , The Header, File Format
+@section The Body
+
+The body of an @sc{sccs} file is usually much longer than its header,
+but contains fewer ingredients.  It contains control lines, which signal
+the beginning or end of a chunk of user data, and the user data itself.
+If, for example, you added the text @samp{I was here} to the controlled
+file as a delta whose delta sequence number was 7, the history might
+contain these lines:-
+
+@example
+^AI 7 
+I was here
+^AE 7
+@end example
+
+I currently have no clear understanding of the interaction of excluded,
+included or excluded revisions with the normal check-in processing.
+Hence I can't thouroughly explain the precise meaning of the @samp{^AI},
+@samp{^AE} and @samp{^AD} control lines.  This section will be completed
+at a future date.  If you have an understanding of these issues, please
+let me (@email{jay@@gnu.org}) know.
+
+@c TODO: complete this seciton.
+
+
+@node Incomplete, Year 2000 Issues, File Format, Top
 @chapter Missing Features and other Problems
 @cindex missing features
 
@@ -1762,14 +2114,15 @@ Documentation is incomplete or missing.  That includes this document.
 Some programs are missing, that is, some programs are present in the
 @sc{sccs} suite and absent from this one.
 
-@item 
-@cindex Multiple-file processing bug
-When processing a list of @sc{sccs} files, @sc{cssc} will often make a
-fatal exit on encountering an error, whereas the original @sc{sccs}
-would issue an error message and continue on with the next file.  This
-is currently being corrected.  Many of the common cases of this have
-already been fixed.  To find cases where it has not been fixed, just
-grep the source for calls to the function @code{quit()}.
+@c I think this bug has been fixed -- JAY, Sun Nov 22 17:46:55 1998.
+@c @item 
+@c @cindex Multiple-file processing bug
+@c When processing a list of @sc{sccs} files, @sc{cssc} will often make a
+@c fatal exit on encountering an error, whereas the original @sc{sccs}
+@c would issue an error message and continue on with the next file.  This
+@c is currently being corrected.  Many of the common cases of this have
+@c already been fixed.  To find cases where it has not been fixed, just
+@c grep the source for calls to the function @code{quit()}.
 
 @item 
 @cindex Warning messages
@@ -1957,14 +2310,14 @@ separated with other (non-digit) characters, and so
 digits).
 
 @sc{cssc} represents dates internally in a way that works for Gregorian
-dates up to at least the year 32767 AD.  Some countries didn't recognize
-the Gregorian calendar system until the early twentieth century but this
-of course is not really a problem now.  The useful life of @sc{sccs} is
-from 1969 until 2068.  Years are stored in two-digit form in @sc{sccs}
-files and so although @sc{cssc} has no limits internally, it's not
-possible to indicate a year outside this range in an @sc{sccs} file.
-All the @sc{cssc} programs will successfully work with any date in this
-range, all the way up to 2068, on all systems.
+dates up to at least the year 32767 AD on all systems.  Some countries
+didn't recognize the Gregorian calendar system until the early twentieth
+century but this of course is not really a problem now.  The useful life
+of @sc{sccs} is from 1969 until 2068.  Years are stored in two-digit
+form in @sc{sccs} files and so although @sc{cssc} has no such limits
+internally, it's not possible to indicate a year outside this range in
+an @sc{sccs} file.  All the @sc{cssc} programs will successfully work
+with any date in this range, all the way up to 2068, on all systems.
 
 @node The Bad News, Year 2000 Summary, The Good News,  Year 2000 Issues
 @section The Bad News
@@ -2047,7 +2400,7 @@ make check
 
 @noindent
 The full test suite takes just over five minutes to run on a 486 running
-Unix.  If everything works correctly, you will see messages like:-
+Linux.  If everything works correctly, you will see messages like:-
 
 @smallexample
 cd tests && make all-tests
@@ -2211,7 +2564,7 @@ docommand [--silent] @var{label} @var{command} @var{retval} @var{stdout} @var{st
 
 The @code{docommand} function normally prints the label to indicate what
 stage the current test script has reached, followed by ``done'' when it
-has finished.  The @var{--silent} option turns off this behavior, so
+has finished.  The @code{--silent} option turns off this behavior, so
 that if nothing goes wrong, no progress message is printed.  This is
 occasionally used for commands that have already been tested by a script
 and are known to work, but which must be repeated several times in order

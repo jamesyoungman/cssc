@@ -44,10 +44,6 @@
 	  with admin -i.   Especially important for text files;
 	  we probably want to avoid retrying with binary encoding.
 
-1998-01-11  James Youngman  <jay@gnu.org>
-
-	* Write documentation for sccsdiff in cssc.texi
-
 Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
 
 	* Write test cases for admin's -h, -l, -r, -V, and -z
@@ -56,10 +52,6 @@ Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
 	* Write test cases for delta's -g, -n, -p, -r, -s flags.
 
 	* Write test cases for get's -i, -l, -lp flags.
-
-	* Write code and test cases for "sccs", val and sccs-comb.
-
-	* Write documentation and test cases for sccsdiff.
 
 Mon Aug  4 23:33:16 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
@@ -81,10 +73,6 @@ Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
  	library, the intent is just to conserve disk space and perhaps
  	system memory too.
 
-Fri Jun 27 19:40:22 1997  James Youngman  <jay@gnu.ai.mit.edu>
-
-	* Make sure we can make a branch at a null delta after making it.
-
 Mon May 26 14:56:52 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Write tests for comb, sact, val.
@@ -103,7 +91,3 @@ Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
 	by RMS].
 
 	* sccs-val is not yet provided.   Useful for testing.
-
-
-
-
