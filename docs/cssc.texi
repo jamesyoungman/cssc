@@ -972,7 +972,7 @@ After compiling:-
 @example
 $ what foo
 foo:
-        @@(#)foo.c       1.3
+        foo.c       1.3
 @end example
 
 If the executable is linked from several source files, you will get a
@@ -1007,10 +1007,11 @@ SCCS suite and absent from this one.
 When processing a list of @sc{sccs} files, @sc{cssc} will make a fatal
 exit on encountering an error, for example an SCCS file with a bad magic
 number, whereas the original SCCS would issue an error message and
-continue on with the next file.   It is planned that @sc{cssc} will
+continue on with the next file.  It is planned that @sc{cssc} will
 recover from errors of this kind using C++ exceptions.  Support for
-exceptions is poor in current versions of the GNU C++ compiler; once this
-improves, @sc{cssc} will recover properly from this situation.
+exceptions is poor in current versions of the GNU C++ compiler; once
+this improves, the relevant code will be added, and @sc{cssc} will
+recover properly from this situation.
 
 @item 
 Some programs behave subtly differently to their original counterparts.
