@@ -22,8 +22,10 @@
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-cvs status "$@" 2>&1 | sed -n \
-	-e 's/^File: \([^ 	]*\).*Status: \(.*\)$/\1:\2/p' \
+cvs status "$@" 2>&1 |
+ sed \
+	-e 's/^File: no file/File:/'  | 
+ sed -n -e 's/^File: \([^ 	]*\).*Status: \(.*\)$/\1:\2/p' \
 	-e '/^cvs/p' | awk --posix --lint '
 
 BEGIN { FS=":"; dir=""; }
