@@ -3,7 +3,7 @@
 # default.sh:  Tests for prt no involving several deltas.
 
 # Import common functions & definitions.
-. test-common
+. ../common/test-common
 
 s=s.testfile
 
@@ -20,4 +20,5 @@ do_output d5 "${prt} -u -f $s" 0 expected/nodel.-u-f ""
 do_output d6 "${prt} -t -b $s" 0 expected/nodel.-t-b ""
 do_output d7 "${prt} -u -f -t -b $s" 0 expected/nodel.-u-f-t-b ""
 
+remove $s
 success
