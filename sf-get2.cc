@@ -81,10 +81,8 @@ sccs_file::find_requested_sid(sid requested, sid &found) const {
 	      }
 	  }
 	
-	if (got_best || !requested.release_only())
+	if ( got_best || !requested.release_only() )
 	  {
-	    // JAY TODO: if !got_best,
-	    // should we return best at all?
 	    found = best;
 	    return true;
 	  }
@@ -93,20 +91,25 @@ sccs_file::find_requested_sid(sid requested, sid &found) const {
 	   only mentions a release then look for the delta with 
            the highest SID that's lower than the requested SID. */
 
+	sid root("1.1");
 	best = sid();
 	got_best = false;
 	
 	iter.rewind();
-	while(iter.next()) {
-		sid const &id = iter->id;
-		if (!got_best) {
-		  got_best = true;
-		  best = id;
-		} else if (id > best && id < requested) {
-		  got_best = true;
-		  best = id;
-		}
-	}
+	while(iter.next())
+	  {
+	    sid const &id = iter->id;
+	    if (!got_best && root.is_trunk_successor(id))
+	      {
+		got_best = true;
+		best = id;
+	      }
+	    else if (id > best && id < requested)
+	      {
+		got_best = true;
+		best = id;
+	      }
+	  }
 	if (got_best)
 	  {
 	    found = best;
@@ -123,45 +126,57 @@ sccs_file::find_requested_sid(sid requested, sid &found) const {
 
 sid
 sccs_file::find_next_sid(sid requested, sid got, int branch,
-			 sccs_pfile &pfile) const {
-	branch = branch && flags.branch;
+			 sccs_pfile &pfile) const
+{
+  branch = branch && flags.branch;
 
-	if (!branch
-	    && !got.is_trunk_successor(delta_table.highest_release()))  {
-		if (requested > delta_table.highest_release()) {
-			assert(requested.release_only());
-			return requested.successor();
-		}
-
-		sid next = got.successor();
-
-		if (!pfile.is_to_be_created(next)
-		    && delta_table.find(next) == NULL) {
-			return next;
-		}
-	}
-
-	sid highest = got;
-
-	delta_iterator iter(delta_table);
-	while(iter.next()) {
-		sid const &id = iter->id;
-
-		if (id.branch_greater_than(highest)) {
-			highest = id;
-		}
-	}
-
-	pfile.rewind();
-	while(pfile.next()) {
-		sid const &id = pfile->delta;
+  if (!branch)
+    {
+      /* Not sure what the point of the test whose result is succ is.
+       */
+      int succ = got.is_trunk_successor(delta_table.highest_release());
+      if (!succ)
+	{
+	  if (requested > delta_table.highest_release())
+	    {
+	      assert(requested.release_only());
+	      return requested.successor();
+	    }
 		
-		if (id.branch_greater_than(highest)) {
-			highest = id;
-		}
+	  sid next = got.successor();
+		
+	  if (!pfile.is_to_be_created(next) && delta_table.find(next) == NULL)
+	    {
+	      return next;
+	    }
 	}
+    }
+	
+  sid highest = got;
 
-	return highest.next_branch();
+  delta_iterator iter(delta_table);
+  while(iter.next())
+    {
+      sid const &id = iter->id;
+
+      if (id.branch_greater_than(highest))
+	{
+	  highest = id;
+	}
+    }
+	
+  pfile.rewind();
+  while(pfile.next())
+    {
+      sid const &id = pfile->delta;
+		
+      if (id.branch_greater_than(highest))
+	{
+	  highest = id;
+	}
+    }
+	
+  return highest.next_branch();
 }
 
 
