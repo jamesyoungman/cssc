@@ -26,7 +26,7 @@ rv=0
 # 
 get_sid_list () { 
     # Lists the SIDs in the named file, on stdout.
-    "$dir1/prs" -a -l -r1.1 -d:I: "$1" | nl -ba | sort -rn | awk '{print $2;}'
+    "$dir1/prs" -l -r1.1 -d:I: "$1" | nl -ba | sort -rn | awk '{print $2;}'
 }
 
 # compare_sid_getting 
