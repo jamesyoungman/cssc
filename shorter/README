@@ -1,0 +1,30 @@
+These files are designed to include all the files required to form a
+complete executable.  This produces slightly smaller executables:-
+
+$ ls -l ./{admin,cdc,delta,get,prs,rmdel,sact,unget,what}.x
+-rwxr-xr-x   1 james    users      232731 Jun 29 11:35 ./admin.x
+-rwxr-xr-x   1 james    users      210372 Jun 29 11:28 ./cdc.x
+-rwxr-xr-x   1 james    users      323103 Jun 29 11:30 ./delta.x
+-rwxr-xr-x   1 james    users      279914 Jun 29 11:22 ./get.x
+-rwxr-xr-x   1 james    users      240364 Jun 29 11:25 ./prs.x
+-rwxr-xr-x   1 james    users      230075 Jun 29 11:33 ./rmdel.x
+-rwxr-xr-x   1 james    users      132772 Jun 29 11:18 ./sact.x
+-rwxr-xr-x   1 james    users      142857 Jun 29 11:17 ./unget.x
+-rwxr-xr-x   1 james    users       35139 Jun 29 11:17 ./what.x
+
+$ ls -l ../{admin,cdc,delta,get,prs,rmdel,sact,unget,what}
+-rwxr-xr-x   1 james    users      255872 Jun 29 11:00 ../admin
+-rwxr-xr-x   1 james    users      238418 Jun 29 11:00 ../cdc
+-rwxr-xr-x   1 james    users      358739 Jun 29 11:39 ../delta
+-rwxr-xr-x   1 james    users      311912 Jun 29 11:18 ../get
+-rwxr-xr-x   1 james    users      261948 Jun 29 11:00 ../prs
+-rwxr-xr-x   1 james    users      252077 Jun 29 11:00 ../rmdel
+-rwxr-xr-x   1 james    users      151073 Jun 29 11:00 ../sact
+-rwxr-xr-x   1 james    users      162260 Jun 29 11:00 ../unget
+-rwxr-xr-x   1 james    users       42284 Jun 29 11:00 ../what
+
+
+To produce smaller output we will support GNU "libtool", and so use a
+shared library in order to reduce the size of these executables on
+systems supporting these.  These *.cs files aren't really intended to
+be supported.
