@@ -10,7 +10,7 @@
 
 @set EDITION 1.0
 @set VERSION 0.01-devel
-@set UPDATED Sat May 10 17:04:15 1997
+@set UPDATED Tue May 13 19:28:42 1997
 
 @ifinfo
 This file documents the the GNU @code{cssc} package for working with
@@ -100,6 +100,9 @@ impractical.   See the documentation for CVS and RCS.
 @xref{What is CVS?, ,What is CVS?, cvs, The CVS Manual}.  See also the
 manual pages for RCS.
 
+@cindex Ross Ridge
+@cindex MySC
+@cindex author
 GNU @code{CSSC} was originally based on the public-domain package
 @code{MySC}, which was written by Ross Ridge.   The enhancement work was
 done by James Youngman. 
@@ -108,11 +111,19 @@ done by James Youngman.
 @node Interface, Invoking Programs, Overview, Top
 @chapter How to use the suite
 @cindex interface
+@cindex Emacs
+@cindex VC-mode
 
 By far the easiest way to use @code{CSSC} (or indeed @code{SCCS}) is 
 to use VC-mode in GNU Emacs.  @xref{Version Systems, ,Version
 Systems,emacs,The GNU Emacs manual}.
 
+If you can't use VC-mode, the @sc{bsd} command @code{sccs} is a good
+interface to the @sc{sccs} suite (and hence @sc{cssc}).  However, it is
+not yet integrated into this package. 
+
+Failing that, you will need to use each of the programs in the suite
+individually.  
 
 @node Invoking Programs, Incomplete, Interface, Top
 @chapter Invoking CSSC programs
@@ -153,6 +164,8 @@ Ordered by the frequency with which I use them, they are:-
 @section @code{admin}
 @cindex admin
 @cindex sccs-admin
+@cindex ctreating SCCS files
+
 To create an SCCS archive of a source file @file{foo.c}, do
 @example
 admin -ifoo.c s.foo.c
@@ -188,6 +201,7 @@ check revisions in or out.  Untested.
 Add the flag @samp{F} (with optional value @samp{xxx}) to the file's 
 flags (@pxref{flags}).  Untested.
 
+@cindex checksum
 @item -h
 Check the SCCS file's checksum.  Untested.
 
@@ -248,18 +262,74 @@ Fix the checksum information.  Untested.
 @node flags, mr-numbers, ,admin
 @subsection SCCS file flags
 @cindex flags
-Nothing here, sorry.
+
+Flags are set and cleared with the @code{admin} program.  @xref{admin}.
+
+@unnumberedsubsubsec Boolean Flags 
+@table @samp
+@item b
+Enable branch deltas: this enables the @samp{-b} option of get
+(@pxref{get}).
+@item i
+Make @code{get} and @code{delta} exit unsuccessfully when the
+@samp{Warning: No id keywords} message is issued.
+@item j
+Enables concurrent updates: if you try to get a revision for editing,
+this normally fails if another user already has the file locked.
+Setting the @samp{j} flag overrides this.
+@item n
+Create empty relases when the @samp{-r} option to @code{get} is used to
+skip releases.   These empty releases can later serve as branch points.
+@end table
+
+@unnumberedsubsubsec Boolean Flags 
+@table @samp
+@item c
+Set the release ceiling.  Releases higher than the ceiling cannot be
+checked out.
+@item f
+Set the release floor.  Releases lower then the release floor cannot be
+checked out.
+@item d
+Set the default delta which is used when the @code{get} command is given
+without the @samp{-r} option.   The default behaviour for @code{get} is
+defined in @ref{get}.
+@item l
+Set the locked release list.  These releases cannot be checked out with
+@code{get -e}.   The special value @samp{a} denotes all releases.
+@item q
+Sets the value substituted for the @samp{%Q%} keyword as described in
+@ref{keyword substitution}.  
+@item m
+Sets the overridden value for the @samp{%M%} keyword as described in
+@ref{keyword substitution}.
+@item t
+Sets the value for the @samp{%Y%} keyword as described in @ref{keyword
+substitution}.
+@item v
+Sets the name of the program used to validate @sc{mr} (modification
+request) numbers; @sc{mr}s are described in @ref{mr-numbers}.
+@end table
 
 @node mr-numbers, , flags, admin
 @subsection Modification Request numbers
 @cindex mr-numbers
-Nothing here, sorry.
+@sc{mr}s are identifiers that can be specified when checking in a
+revision using @samp{delta} (or even using @samp{admin}, when creating a
+file). 
+
+If the @samp{v} (``validate'') flag is set, the user running
+@samp{delta} is prompted for @sc{mr} numbers as well as revision
+comments.  If this flag is not set, no validation is performed and no
+@sc{mr} numbers are prompted for.  If the @samp{-m} option is given on
+the command line for @samp{delta}, the user is not prompted.
 
 
 @node cdc, comb, admin, Invoking Programs
 @section @code{cdc}
 @cindex cdc
 @cindex sccs-cdc
+@cindex change delta commentary
 Nothing here, sorry.
 
 @node comb, delta, cdc, Invoking Programs
@@ -272,6 +342,7 @@ Nothing here, sorry.
 @section @code{delta}
 @cindex delta
 @cindex sccs-delta
+@cindex checking in new revisions
 The @code{delta} command is used to add a new revision to the ones
 already stored in an SCCS file.  Before being able to do this you need
 to run @kbd{get -e} to check the file out for editing.
@@ -293,6 +364,10 @@ sequence numbers and so just have two numbers (@samp{1.2}, for example).
 @section @code{get}
 @cindex get
 @cindex sccs-get
+@cindex checking-out previous revisions
+@cindex retrieving previous revisions
+@cindex locking revisions for update
+@cindex new versions
 The @code{get} command is to retrieve previous revisions from an SCCS
 file.  With the @samp{-e} option, it also locks the gotten revision so
 that a modified version can be checked in later using @code{delta}.  
@@ -339,6 +414,7 @@ Retrieve the version corresponding to the delta sequence number
 Create a new branch when the resulting file is checked back in.  Used
 with the @samp{-e} option.
 
+@cindex time travel
 @item -c@i{when}
 Get the version that was current at the time specified by @i{when}.  The
 format of the argument is yy[mm[dd[hh[mm[ss]]]]].  Any fields omitted
@@ -419,6 +495,8 @@ specifying the @sc{sid} at which they arrived in the file.
 Keyword substitution is performed unless the @samp{-k} option or the
 @samp{-e} option is given to @code{get}.
 
+@ref{what} contains a keyword substitution example.
+
 The keywords are all of the form @samp{%@i{x}%} where @i{x} stands for
 an upper-case letter, one of:
 
@@ -466,10 +544,7 @@ flag, if given.
 Value of the @code{t} (moudule type) flag.
 @item Z
 The literal string @code{@@(#)}.  @xref{what}.
-
 @end table
-
-
 
 @node help, prs, get, Invoking Programs
 @section @code{help}
@@ -481,6 +556,7 @@ Nothing here, sorry.
 @section @code{prs}
 @cindex prs
 @cindex sccs-prs
+@cindex revision summary
 Nothing here, sorry.
 
 @node prt, rmdel, prs, Invoking Programs
@@ -493,6 +569,8 @@ This program is not yet implemented, and hence not yet documented here.
 @section @code{rmdel}
 @cindex rmdel
 @cindex sccs-rmdel
+@cindex backing out of changes
+@cindex censoring revisions
 Nothing here, sorry.
 
 @node sact, sccs, rmdel, Invoking Programs
@@ -512,6 +590,7 @@ Eventually, @code{sccs} will be integrated, though.
 @section @code{sccsdiff}
 @cindex sccsdiff
 @cindex sccs-sccsdiff
+@cindex dufferences between revisions
 Nothing here, sorry.
 
 @node unget, val, sccsdiff, Invoking Programs
@@ -524,11 +603,14 @@ Nothing here, sorry.
 @section @code{val}
 @cindex val
 @cindex sccs-val
+@cindex validating SCCS files
 This program is not yet implemented, and hence not yet documented here.
 
 @node what, , val, Invoking Programs
 @section @code{what}
 @cindex what
+@cindex @@(#)
+@cindex identification string
 The @code{what} program is designed to search in files for the
 recognition string @samp{@@(#)}.  All the strings it finds matching this
 are printed on standard output.
