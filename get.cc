@@ -1,5 +1,5 @@
 /*
- * get.c: Part of GNU CSSC.
+ * get.cc: Part of GNU CSSC.
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.16 1998/01/17 11:42:40 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.17 1998/01/24 14:13:52 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -206,6 +206,15 @@ main(int argc, char **argv) {
 		}
 	}
 
+	if (branch && !for_edit)
+	  {
+	    fprintf(stderr,
+		    "Warning: there is not a lot of point in using the "
+		    "-b option unless you want to check the file out for "
+		    "editing (using the -e option).\n");
+	  }
+	
+
 	FILE *out = stdin;	/* The output file.  It's initialized with
 				   stdin so if it's accidently used before
 				   being set it will quickly cause an error. */
@@ -239,6 +248,8 @@ main(int argc, char **argv) {
 		}
 
 		sccs_file file(name, sccs_file::READ);
+
+		
 		sid new_delta;
 		
 		sid retrieve;
@@ -253,11 +264,21 @@ main(int argc, char **argv) {
 		      rid = retrieve;
 		    }
 
-		if (for_edit) {
-			file.test_locks(retrieve, *pfile);
-			new_delta = file.find_next_sid(rid, retrieve,
-						       branch, *pfile);
-		}
+		
+		if (for_edit)
+		  {
+		    if (branch && !file.branches_allowed())
+		      {
+			fprintf(stderr,
+				"%s: Warning: Branch-enable flag not set, "
+				"option -b ignored.\n",
+				name.c_str());
+		      }
+		    
+		    file.test_locks(retrieve, *pfile);
+		    new_delta = file.find_next_sid(rid, retrieve,
+						   branch, *pfile);
+		  }
 
 		if (!use_stdout && !no_output) {
 			ASSERT(name.valid());
@@ -280,8 +301,9 @@ main(int argc, char **argv) {
 
 			if (out == NULL)
 			  {
-			    quit(errno, "%s: Can't open file for writing",
-				 gname.c_str());
+			    quit(errno, "%s: %s",
+				 gname.c_str(),
+				 "Can't open file for writing");
 			  }
 		}
 		const int keywords = !suppress_keywords;
