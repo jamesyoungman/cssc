@@ -23,7 +23,8 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
 	sysnerr.h version.h ioerr.h err_no.h delta-table.h delta.h \
-	delta-iterator.h bodyio.h filediff.h except.h valcodes.h
+	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
+	relvbr.h
 
 # Sources required by everybody.
 common_SOURCES = my-getopt.cc version.cc fdclosed.cc
