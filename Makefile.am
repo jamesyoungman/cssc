@@ -15,7 +15,7 @@ csscutil_SCRIPTS = sccsdiff
 BUILT_SOURCES = version.cc
 
 noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
-	filepos.h my-getopt.h linebuf.h list.h mystring.h pfile.h pipe.h \
+	filepos.h my-getopt.h linebuf.h mylist.h mystring.h pfile.h pipe.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
 	sysnerr.h version.h xalloc.h ioerr.h err_no.h delta-table.h delta.h \
@@ -103,7 +103,7 @@ testcode = list.cc
 rainyday_src = dummy.cc fsync.cc _chmod.cc sid_list.cc \
 	move-if-change 
 
-EXTRA_DIST = ChangeLog $(testcode) $(rainyday_src)
+EXTRA_DIST = ChangeLog $(testcode) $(rainyday_src) show-disp.sh
 
 
 sccsdiff: sccsdiff.sh
