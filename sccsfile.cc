@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.35 1998/11/21 08:59:57 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.36 1998/12/09 23:36:22 james Exp $";
 #endif
 
 
@@ -545,11 +545,22 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	{
 	  corrupt("Bad flag arg.");
 	}
-      
+
+      // We have to be careful to not crash on input lines like 
+      // "^Af v".  That is, bufchar[4] may well be zero!
+      // Thanks to William W. Austin <bill@baustin.alph.att.com>
+      // for this diagnosis.
       const char *arg = 0;
-      if (bufchar(4) == ' ') {
-	arg = plinebuf->c_str() + 5;
-      }
+      bool got_arg = false;
+      if (bufchar(4) == ' ')
+	{
+	  arg = plinebuf->c_str() + 5;
+	  got_arg = true;
+	}
+      else
+	{
+	  arg = "";
+	}
       
       switch (bufchar(3)) {
       case 't':
@@ -605,7 +616,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	break;
 	
       case 'l':
-	if (arg != NULL && strcmp(arg, "a") == 0)
+	if (got_arg && strcmp(arg, "a") == 0)
 	  {
 	    flags.all_locked = 1;
 	  }
@@ -623,9 +634,9 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	set_reserved_flag(arg);
 	break;
       case 'e':
-	if ('1' == *arg)
+	if (got_arg && '1' == *arg)
 	  flags.encoded = 1;
-	else if ('0' == *arg)
+	else if (got_arg && '0' == *arg)
 	  flags.encoded = 0;
 	else
 	  corrupt("Bad value for 'e' flag.");
