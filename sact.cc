@@ -31,8 +31,9 @@
 #include "pfile.h"
 #include "version.h"
 #include "my-getopt.h"
+#include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.10 1998/06/14 15:26:59 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.11 1998/09/03 22:21:37 james Exp $";
 
 void
 usage() {
@@ -62,37 +63,50 @@ main(int argc, char **argv)
 	  break;
 	}
     }
-  
+
+  int retval = 0;
   sccs_file_iterator iter(opts);
   
   while (iter.next())
     {
-      sccs_name &name = iter.get_name();
-      sccs_pfile pfile(name, sccs_pfile::READ);
-      
-      pfile.rewind();
-      bool first = true;
-      
-      while (pfile.next())
+#ifdef HAVE_EXCEPTIONS
+      try
 	{
-	  if (first)		// first lock on this file...
-	    {
-	      printf("\n%s:\n", name.c_str());
-	      first = false;
-	    }
+#endif	  
+	  sccs_name &name = iter.get_name();
+	  sccs_pfile pfile(name, sccs_pfile::READ);
 	  
-	  pfile->got.print(stdout);
-	  putchar(' ');
-	  pfile->delta.print(stdout);
-	  putchar(' ');
-	  fputs(pfile->user.c_str(), stdout);
-	  putchar(' ');
-	  pfile->date.print(stdout);
-	  putchar('\n');
+	  pfile.rewind();
+	  bool first = true;
+	  
+	  while (pfile.next())
+	    {
+	      if (first)		// first lock on this file...
+		{
+		  printf("\n%s:\n", name.c_str());
+		  first = false;
+		}
+	      
+	      pfile->got.print(stdout);
+	      putchar(' ');
+	      pfile->delta.print(stdout);
+	      putchar(' ');
+	      fputs(pfile->user.c_str(), stdout);
+	      putchar(' ');
+	      pfile->date.print(stdout);
+	      putchar('\n');
+	    }
+#ifdef HAVE_EXCEPTIONS
 	}
+      catch (CsscExitvalException e)
+	{
+	  if (e.exitval > retval)
+	    retval = e.exitval;
+	}
+#endif	  
     }
   
-  return 0;
+  return retval;
 }
 
 // Explicit template instantiations.
