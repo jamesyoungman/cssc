@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.21 1998/02/21 14:27:19 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.22 1998/02/23 21:41:25 james Exp $";
 #endif
 
 
@@ -82,12 +82,12 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, unsigned *sump)
   unsigned sum = 0u;
   
   while( (c=getc(f)) != EOF)
-    sum += (unsigned char) c;
+    sum += (signed char) c;	// Yes, I mean signed, not unsigned.
   
   if (ferror(f))
     quit(errno, "%s: Read error.", name);
   
-  *sump = sum & 0xFFFF;
+  *sump = sum & 0xFFFFu;
   
 #ifdef CONFIG_BINARY_FILE
   fclose(f);
@@ -417,11 +417,15 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   
   int c = read_line();
   ASSERT(c == 'h');
-  
-  if (strict_atous(plinebuf->c_str() + 2) != sum)
+
+  unsigned given_sum = strict_atous(plinebuf->c_str() + 2);
+  given_sum &= 0xFFFFu;
+
+  if (given_sum != sum)
     {
-      fprintf(stderr, "%s: Warning bad checksum.\n",
-	      name.c_str());
+      fprintf(stderr, "%s: Warning bad checksum "
+	      "(expected=%lx, calculated %lx).\n",
+	      name.c_str(), given_sum, sum);
     }
   
   c = read_line();

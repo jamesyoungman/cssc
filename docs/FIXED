@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-02-21 08:41:45 james>
+Time-stamp: <1998-02-23 21:21:57 james>
 
 List of fixed bugs 
 
@@ -17,6 +17,24 @@ promptly, it does not get listed.  If you don't like this (lack of?)
 policy, let me know.  All bugfixes are listed in ChangeLog, in some
 fashion.
 
+
+Mon Feb 18 1998: Richard Polton, the Rubber Buccaneer <richardp@scopic.com>
+In version 0.06-pl1.  Fixed in version 0.06-pl2
+ On Irix, we get a warning from GCC: "sfwrite.cc: comparison is always
+ 1 due to limited range of data type" [jay: this is version 1.13 of
+ sf-write.cc, the code is "while ( EOF != (ch=getc(f)) )" and ch is a
+ char].  ch should be an int, not a char. [jay: if only LCLint worked
+ for C++!]
+ [...] 
+ I think I can safely say that something went wrong becaise after a
+ brief pause in the output to the console I took a look at the
+ tests/cdc directory and found a 17MB file called x.testfile!
+ "s.testfile" did not exist.  The last.command is 
+ "admin -i testfile s.testfile".  I get the impression that it did
+ not work as expected!
+ [jay: this is a lightly edited version: rap did not relalise that 
+ he had already given the solution to the problem he was reporting.
+ What a hero!]
 
 Thu Feb 19 21:50:35 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
 In version 0.06-pl0.  Fixed in version 0.06-pl1 

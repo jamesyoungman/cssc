@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.14 1998/02/20 20:57:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.15 1998/02/23 21:41:26 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -381,7 +381,7 @@ sccs_file::rehack_encoded_flag(FILE *f, unsigned *sum) const
 {
   // Find the encoded flag.  Maybe change it.
   // "f" must be opened for update.
-  char ch, last;
+  int ch, last;
   last = '\n';
   const char match[] = "\001f e ";
   const int nmatch = strlen(match);
