@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.17 1999/03/14 14:56:07 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.18 1999/03/15 22:55:37 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -343,7 +343,9 @@ struct sccsprog
 #define FIX		2	/* fix a delta */
 #define CLEAN		3	/* clean out recreatable files */
 #define UNEDIT		4	/* unedit a file */
+#if 0
 #define SHELL		5	/* call a shell file (like PROG) */
+#endif
 #define DIFFS		6	/* diff between sccs & file out */
 #define DODIFF		7	/* internal call to diff program */
 #define ENTER		8	/* enter new files */
@@ -380,7 +382,7 @@ const struct sccsprog SccsProg[] =
   {"rmdel", PROG, REALUSER, _PATH_SCCSRMDEL},
   {"val", PROG, 0, _PATH_SCCSVAL},
   {"what", PROG, NO_SDOT, _PATH_SCCSWHAT},
-  {"sccsdiff", SHELL, REALUSER, _PATH_SCCSDIFF},
+  {"sccsdiff", PROG, REALUSER, _PATH_SCCSDIFF},
   {"edit", CMACRO, NO_SDOT, "get -e"},
   {"delget", CMACRO, NO_SDOT, "delta:mysrp/get:ixbeskcl -t"},
   {"deledit", CMACRO, NO_SDOT, "delta:mysrp -n/get:ixbskcl -e -t -g"},
@@ -901,6 +903,11 @@ try_to_exec(const char *prog, char * const argv[])
       execv(prog, argv);
       perror(prog);
     }
+  
+  if (Debug)
+    {
+      fprintf(stderr, "try_to_exec: exec failed.\n");
+    }
 }
 
 /*
@@ -1027,13 +1034,15 @@ command (char *argv[], bool forkflag, const char *arg0)
 
   switch (cmd->sccsoper)
     {
+#if 0      
     case SHELL:		/* call a shell file */
       {
 	ap[0]  = cmd->sccspath;	/* Warning: discards const */
 	ap[-1] = "sh";
-	rval = callprog (_PATH_BSHELL, cmd->sccsflags, ap, forkflag);
+	rval = callprog (_PATH_BSHELL, cmd->sccsflags, ap-1, forkflag);
       }
       break;
+#endif
 
     case PROG:			/* call an sccs prog */
       {
