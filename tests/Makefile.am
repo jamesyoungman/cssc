@@ -87,9 +87,21 @@ check: all-tests
 
 # When a distribution is being made and all the files that automake
 # knows about have been copied into $(distdir), dist-hook is called.
+
+# This old code copied the CVS directories too, which is awkward
+# for anybody wanting to import the distribution into a local CVS 
+# repository.
+#
+# dist-hook: 
+# 	  ( cd $(srcdir) && find common $(TESTDIRS) -type l -print | \
+#		xargs $(RM) )
+# 	  ( cd $(srcdir)  && tar cf - common $(TESTDIRS) ) | \
+# 	  ( cd $(distdir) && tar xf - )
+# 
 dist-hook: 
-	( cd $(srcdir) && find common $(TESTDIRS) -type l -print| xargs $(RM) )
-	( cd $(srcdir)  && tar cf - common $(TESTDIRS) ) | \
-	( cd $(distdir) && tar xf - )
-
-
+	( cd $(srcdir) && find common $(TESTDIRS) -type l -print | \
+		xargs $(RM) )
+	( cd $(srcdir) && tar cf - \
+		$$( find . \( -type d -name CVS -prune \) -o \
+		-type f -print ) ) | \
+	( cd $(distdir) && tar xfv - ) ; true
