@@ -2,7 +2,7 @@
  * sf-get2.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2002, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.45 2001/11/25 23:08:00 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.46 2002/03/25 22:41:31 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -316,45 +316,8 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
         int i;
         int len;
 
-        const char *user = get_user_name();
-
-        len = users.length();
-        if (len != 0) {
-                int found = 0;
-
-                for(i = 0; i < len; i++) {
-                        const char *s = users[i].c_str();
-                        char c = s[0];
-
-                        if (c == '!') {
-                                s++;
-                                if (isdigit(c)) {
-                                        if (user_is_group_member(atoi(s))) {
-                                                found = 0;
-                                                break;
-                                        }
-                                } else if (strcmp(s, user) == 0) {
-                                        found = 0;
-                                        break;
-                                }
-                        } else {
-                                if (isdigit(c)) {
-                                        if (user_is_group_member(atoi(s))) {
-                                                found = 1;
-                                        }
-                                } else if (strcmp(s, user) == 0) {
-                                        found = 1;
-                                        break;
-                                }
-                        }
-                }
-                
-                if (!found) {
-                        errormsg("%s: You are not authorized to make deltas.",
-                             name.c_str());
-                        return false;
-                }
-        }
+	if (!authorised())
+	  return false;
 
         if (flags.all_locked 
             || (flags.floor.valid() && flags.floor > got)

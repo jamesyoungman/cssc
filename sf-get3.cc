@@ -2,7 +2,7 @@
  * sf-get3.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1999 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1999,2002 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 #include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.15 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.16 2002/03/25 22:41:32 james_youngman Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are to
@@ -72,6 +72,54 @@ sccs_file::prepare_seqstate(seq_state &state, sid_list include,
     }
   ASSERT(0 != delta_table);
   
+  return true;
+}
+
+
+bool
+sccs_file::authorised() const {
+  int i;
+  int len;
+  
+  const char *user = get_user_name();
+  
+  len = users.length();
+  if (len != 0) {
+    int found = 0;
+    
+    for(i = 0; i < len; i++) {
+      const char *s = users[i].c_str();
+      char c = s[0];
+      
+      if (c == '!') {
+	s++;
+	if (isdigit(c)) {
+	  if (user_is_group_member(atoi(s))) {
+	    found = 0;
+	    break;
+	  }
+	} else if (strcmp(s, user) == 0) {
+	  found = 0;
+	  break;
+	}
+      } else {
+	if (isdigit(c)) {
+	  if (user_is_group_member(atoi(s))) {
+	    found = 1;
+	  }
+	} else if (strcmp(s, user) == 0) {
+	  found = 1;
+	  break;
+	}
+      }
+    }
+    
+    if (!found) {
+      errormsg("%s: You are not authorized to make deltas.",
+	       name.c_str());
+      return false;
+    }
+  }
   return true;
 }
 

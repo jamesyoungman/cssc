@@ -2,7 +2,7 @@
  * sf-delta.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2002 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.47 2002/03/21 21:15:25 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.48 2002/03/25 22:41:30 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -438,7 +438,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   if (!check_keywords_in_file(gname.c_str()))
     return false;
 
-
+  if (!authorised())
+     return false;
+  
   /*
    * At this point, encode the contents of "gname", and pass
    * the name of this encoded file to diff, instead of the 

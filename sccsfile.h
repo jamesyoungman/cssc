@@ -2,7 +2,7 @@
  * sccsfile.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2002 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.45 2002/03/10 17:54:57 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.46 2002/03/25 22:41:32 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -171,7 +171,7 @@ private:
   int write_subst(const char *start,
                   struct subst_parms *parms,
                   struct delta const& gotten_delta) const;
-
+  
 public:
   struct get_status
   {
@@ -201,6 +201,7 @@ private:
   /* sf-get3.c */
   bool prepare_seqstate(seq_state &state, sid_list include,
                         sid_list exclude, sccs_date cutoff_date);
+  bool authorised() const;
 
   /* sf-write.c */
 private:
