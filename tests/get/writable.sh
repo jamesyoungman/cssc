@@ -4,6 +4,9 @@
 # Import common functions & definitions.
 . ../common/test-common
 
+# You cannot run the test suite as root.
+. ../common/not-root
+
 remove command.log log log.stdout log.stderr
 
 f=wrtest
@@ -29,6 +32,41 @@ test -f $gfile	    && miscarry could not remove _g.$f
 # Now run get with the -G option and it should work even
 # though the file's usual name is occupied by a writable file.
 docommand W3 "$get -G$gfile s.$f" 0 "1.1\n0 lines\n" IGNORE
+
+
+# If you specify the "-k" option, the gotten file should be read-write.
+# If you don't specify -k or -e, it will be read-only.  -e implies -k.
+remove $gfile $f
+docommand W4 "$get s.$f" 0 "1.1\n0 lines\n" IGNORE
+
+# Make sure the file is read only.
+echo_nonl "W5..."
+if test -w $f 
+then
+    fail W5: "get s.$f created writable $f"
+fi
+echo passed
+
+
+
+# Now do the same again, using the -k option.
+remove $gfile $f
+docommand W6 "$get -k s.$f" 0 "1.1\n0 lines\n" IGNORE
+
+# Make sure the file is read only.
+echo_nonl "W7..."
+if test -w $f 
+then
+    true
+else
+    fail W5: "get -k s.$f created read-only $f.  It should be writable"
+fi
+echo passed
+
+
+
+
+
 remove $f s.$f $gfile
 remove command.log
 success
