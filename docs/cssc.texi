@@ -250,9 +250,9 @@ want to do this because the file actually contains binary data, or just
 characters that have other meanings within an @sc{sccs} file, for
 example @samp{^A}, the character whose code is 1.
 
-@table @samp
+@table @option
 @cindex Restricting access to history files
-@item -a @var{xxx}
+@item -a@var{xxx}
 Add user or group @var{xxx} to the list of those authorised to check
 revisions in.  Users must be specified by name and groups by numeric
 @sc{id}.
@@ -270,16 +270,17 @@ This option is not available if binary file support is turned off
 (@pxref{Interoperability}) though this can be re-enabled if necessary
 with an environment variable (@pxref{Environment}).
 
-@item -d@var{F}
+@item -dF
 Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
 
-@item -e @var{xxx}
+@item -e@var{xxx}
 Erase the specified user or group from the list of those authorised to
 check revisions in or out.  
 
-@item -fF [@var{xxx}]
-Add the flag @samp{F} (with optional value @var{xxx}) to the file's 
-flags (@pxref{Flags}).
+@item -f@var{F}[@var{xxx}]
+Add the flag @var{F} (with optional value @var{xxx}) to the file's 
+flags (@pxref{Flags}).  For example, @option{-fv/tmp/checkit} sets the
+MR-validation flag to @file{/tmp/checkit}.
 
 @cindex checksum
 @item -h
@@ -294,16 +295,16 @@ at the moment, @code{admin} only checks the checksum.
 
 This option is silently incompatible with all the other options; the
 specified @sc{sccs} files will not be modified by @code{admin} if the
-@samp{-h} flag is used.
+@option{-h} flag is used.
 
 @item -i@var{foo}
 Initialise the @sc{sccs} file with the contents of the file @var{foo}.
 If no argument is given, read from standard input.  This implies the
-@samp{-n} option.
+@option{-n} option.
 
 @c XXX: do people actually use this?
 @c @item -l@var{rel1},@var{rel2},...
-@c Unlock the specified releases.   If @samp{a} is specified as the
+@c Unlock the specified releases.   If @option{a} is specified as the
 @c release, that denotes ``all releases''.  Untested.
 @c @c TODO: Write the test cases.
 
@@ -314,11 +315,11 @@ initial version.  This list can be empty.  The specified @sc{mr}s are
 validated according to the setting of the @var{v} flag, which should be
 set (@pxref{Flags}).  If the @var{v} flag is set but has no value
 (i.e. is set to the empty string), validation silently succeeds.  If the
-@var{v} flag is not set, the @samp{-m} option causes @code{delta} to
+@var{v} flag is not set, the @option{-m} option causes @code{delta} to
 fail.
 
 @item -n
-Create a new @sc{sccs} file.  Unless @samp{-i} is also used, the 
+Create a new @sc{sccs} file.  Unless @option{-i} is also used, the 
 new file will contain control information but the body will be initially
 empty.
 
@@ -328,19 +329,20 @@ Set the initial release number to @var{N}.  The initial level within
 that release is always 1.  Some versions of SCCS allow you to specify
 actual an actual @sc{sid} here (for example @samp{1.2} or
 @samp{1.8.2.1}).  @sc{cssc} also allows this, but emits a warning.
-If you use this option, you must also use the @samp{-i} option.
+If you use this option, you must also use the @option{-i} option or the
+@option{-n} option.
 
 @item -t@var{desc}
 Read in descriptive text for this file from @file{@var{desc}}.  This replaces
 any existing description.  If no argument, remove any existing
-description (this is illegal if @samp{-i} or @samp{-n} is used).
+description (this is illegal if @option{-i} or @option{-n} is used).
 
 @item -V 
 Display version information.
 
 @item -y@var{adayada}
 When initialising a file, set the comment for that delta to
-@samp{@var{adayada}}.  If the option is given just as @samp{-y}, the
+@var{adayada}.  If the option is given just as @option{-y}, the
 comment is recorded as empty.  The following word in the argument list
 is not used as the comment.  @emph{Note that this behaviour is different
 to most Unix programs, but is the same as the behaviour of traditional
@@ -363,16 +365,16 @@ but incorrect file}.  Use this option with @emph{extreme} care.
 Flags are set and cleared with the @code{admin} program.  @xref{admin}.
 
 @unnumberedsubsubsec Boolean Flags 
-@table @samp
+@table @option
 @cindex Making branches
 @cindex Branching
 @item b
-Enable branch deltas: this enables the @samp{-b} option of get
+Enable branch deltas: this enables the @option{-b} option of get
 (@pxref{get}).
 @item e
 This flag indicates that the file controlled by this @sc{sccs} file is a
 binary file, and hence the body of the @sc{sccs} file is uuencoded.
-This flag can only be set with the @samp{-b} option of @code{admin} at
+This flag can only be set with the @option{-b} option of @code{admin} at
 the time the file is created (or if admin takes it upon itself to set
 this flag automatically), and cannot be unset.  The circumstances under
 which this can happen are discussed in @ref{Interoperability}.
@@ -386,7 +388,7 @@ Enables concurrent updates: if you try to get a revision for editing,
 this normally fails if another user already has the file locked.
 Setting the @samp{j} flag overrides this.
 @item n
-Create empty releases when the @samp{-r} option to @code{get} is used to
+Create empty releases when the @option{-r} option to @code{get} is used to
 skip releases.   These empty releases can later serve as branch points.
 @end table
 
@@ -401,7 +403,7 @@ Set the release floor.  Releases lower then the release floor cannot be
 checked out.
 @item d
 Set the default delta which is used when the @code{get} command is given
-without the @samp{-r} option.   The default behaviour for @code{get} is
+without the @option{-r} option.   The default behaviour for @code{get} is
 defined in @ref{get}.
 @item l
 Set the locked release list.  These releases cannot be checked out with
@@ -435,8 +437,8 @@ file).
 If the @samp{v} (``validate'') flag is set, the user running
 @samp{delta} is prompted for @sc{mr} numbers as well as revision
 comments.  If this flag is not set, no validation is performed and no
-@sc{mr} numbers are prompted for.  If the @samp{-m} option is given on
-the command line for @samp{delta}, the user is not prompted.
+@sc{mr} numbers are prompted for.  If the @option{-m} option is given on
+the command line for @option{delta}, the user is not prompted.
 
 @sc{mr} numbers are not required by @sc{cssc} to be actual numbers; they
 may contain any non-whitespace printable characters; other
@@ -477,7 +479,7 @@ via standard input.
 
 If the special argument name @samp{-} is being used, this means that a
 list of files to operate on is being read from standard input, and
-therefore the @samp{-y} option is mandatory in this case.
+therefore the @option{-y} option is mandatory in this case.
 
 The new comments are prepended to the existing comment for that delta,
 followed by a line of the form @samp{*** CHANGED *** yy/mm/dd hh:mm:ss
@@ -486,7 +488,7 @@ removed using @code{cdc}, but they can be added.
 
 Only three options are supported:-
 
-@table @samp
+@table @option
 @item -m@var{MR-list}
 The specified (space-separated) list of @sc{mr}s is added to the
 @sc{mr}-list for the relevant delta.  If more than one @sc{mr} number is
@@ -497,7 +499,7 @@ delta.  The file comment is modified to indicate what @sc{mr}s have been
 removed.  If an @sc{mr} to be removed is in fact not present in any
 case, this is silently ignored. and the comment is not updated for that
 @sc{mr}.  If you do not also want to add to the comment for the delta,
-specify an empty comment option (that, is, a bare @samp{-y}).
+specify an empty comment option (that, is, a bare @option{-y}).
 
 @item -r@var{SID}
 This indicates which delta is to be changed.   It must refer to an
@@ -508,10 +510,10 @@ existing delta in the file, which has not been removed with
 This option introduces a comment to be added to the commentary for the
 specified @sc{sid}.  If more than one line is needed, it is a good idea
 to enclose the option in quotation marks to ensure that the shell
-includes them in the argument passed to @code{cdc}.  An empty @samp{-y}
+includes them in the argument passed to @code{cdc}.  An empty @option{-y}
 option can be used to indicate that the commentary for this delta is not
-to be modified (this is only useful when the @samp{-m} option is used).
-If the @samp{-y} option is not given, the user is prompted for comments.
+to be modified (this is only useful when the @option{-m} option is used).
+If the @option{-y} option is not given, the user is prompted for comments.
 
 @end table 
 
@@ -565,7 +567,7 @@ time the file is checked out for editing (@pxref{branches}).
 
 
 @menu
-* Basic Usage: delta usage.         Frequently-used @samp{delta} commands
+* Basic Usage: delta usage.         Frequently-used @code{delta} commands
 * Options: delta options.           Full list of options
 @end menu
 
@@ -596,7 +598,7 @@ umsp.c} for example).
 @node delta options, , delta usage, delta
 @subsection Options for @code{delta}
 
-@table @samp
+@table @option
 @item -g@var{sid-List}
 The specified list of deltas are to be ignored when the version
 being checked in is retrieved using @code{get}.  The list is a list of
@@ -633,7 +635,7 @@ Untested.
 @c TODO: Write the test cases.
 
 @item -r
-If several versions are checked out, the @samp{-r} command-line option is
+If several versions are checked out, the @option{-r} command-line option is
 used to specify which checked-out version this change is in reference
 to.  When @code{get} is used to check out a version for editing, it
 announces two @sc{sid}s:-
@@ -648,7 +650,7 @@ new delta 3.2
 One identifies the version forming the basis of the change, and the
 other specifies the @sc{sid} that the new version will be assigned once
 it is checked in again.  Either of these two @sc{sid}s (in this case,
-3.1 or 3.2) can be used for the @samp{-r} option of @code{delta}.
+3.1 or 3.2) can be used for the @option{-r} option of @code{delta}.
 Untested.
 @c TODO: Write the test cases.
 
@@ -660,7 +662,7 @@ standard error.  Untested.
 @item -y
 Specify a comment for the revision log.  This option is usually quoted
 to protect the spaces contained in it.  An empty comment can be
-specified by just using a naked @samp{-y}.  If this option is not given
+specified by just using a naked @option{-y}.  If this option is not given
 on the command line, @code{delta} will prompt the user for a comment.
 @end table
 
@@ -674,13 +676,13 @@ on the command line, @code{delta} will prompt the user for a comment.
 @cindex locking revisions for update
 @cindex new versions
 The @code{get} command is to retrieve previous revisions from an
-@sc{sccs} file.  With the @samp{-e} option, it also locks the gotten
+@sc{sccs} file.  With the @option{-e} option, it also locks the gotten
 revision so that a modified version can be checked in later using
 @code{delta}.
 
 
 @menu
-* Basic Usage: get usage.           Frequently-used @samp{get} commands
+* Basic Usage: get usage.           Frequently-used @code{get} commands
 * Options: get options.             Full list of options.
 * Branches: branches.               How branches are made.  
 * Keywords: Keyword Substitution.   Keyword Substitution
@@ -688,8 +690,8 @@ revision so that a modified version can be checked in later using
 
 @node get usage, get options, , get
 @subsection Basic Usage for @code{get}
-@table @samp
-There are very few common basic usage patterns for @samp{get}.  Below,
+@table @option
+There are very few common basic usage patterns for @code{get}.  Below,
 @file{s.foo.c} denotes the name of any existing @sc{sccs} file.
 
 @item get s.foo.c
@@ -704,21 +706,21 @@ to as the ``g-file''.
 
 
 @item get -r1.3 s.foo.c
-Get revision 1.3 from @file{s.foo.c} into @file{foo.c}.  The @samp{-G}
+Get revision 1.3 from @file{s.foo.c} into @file{foo.c}.  The @option{-G}
 option can be used to set the name of the gotten file.
 
 @item get -p s.foo.c
 Get the most recent trunk revision, and print it on standard output.
-The @samp{-r} option could also be used to specify some other revision.
+The @option{-r} option could also be used to specify some other revision.
 @end table
 
-Unless you specify the @samp{-k} or @samp{-e} option, the retrieved file
+Unless you specify the @option{-k} or @option{-e} option, the retrieved file
 will be created read-only.
 
 
 @node get options, branches, get usage, get
 @subsection Options for @code{get}
-@table @samp
+@table @option
 Full description of options
 @item -a@i{N}
 Retrieve the version corresponding to the delta sequence number
@@ -727,11 +729,11 @@ Retrieve the version corresponding to the delta sequence number
 
 @item -b
 Create a new branch when the resulting file is checked back in.  Used
-with the @samp{-e} option.  If the @samp{-e} option is not given, or if
-the @samp{b} (branch) flag is not set in the @sc{sccs} file, this option
+with the @option{-e} option.  If the @option{-e} option is not given, or if
+the @option{b} (branch) flag is not set in the @sc{sccs} file, this option
 has no effect; a branch is not made.  If the version to be checked out
 for editing has a successor, a branch is created whether or not the
-@samp{-b} flag is present (@pxref{branches,branches,Making Branches}).
+@option{-b} flag is present (@pxref{branches,branches,Making Branches}).
 
 @item -c@i{when}
 @cindex time travel
@@ -739,7 +741,7 @@ for editing has a successor, a branch is created whether or not the
 Get the version that was current at the time specified by @i{when}.  The
 format of the argument is [cc]yy[mm[dd[hh[mm[ss]]]]].  Any fields
 omitted (except ``cc'') assume their maximum possible values so that if
-you specify @samp{-c92}, you get the latest version which was available
+you specify @option{-c92}, you get the latest version which was available
 in the year 1992.  It is possible to give four digits for the year as a
 @sc{cssc}-specific extension, but only if none of the other fields are
 omitted.  If only two digits are used and the resulting value is less
@@ -772,12 +774,12 @@ the exit status.
 Name the gotten file @file{@var{foo}}, instead of the default name.
 
 @item -i@var{list}
-Include the deltas for the listed @sc{sid}s.  See also @samp{-x}.
+Include the deltas for the listed @sc{sid}s.  See also @option{-x}.
 @c TODO: Write the test cases, and document it.
 
 @item -k
 Avoid doing keyword substitution (@pxref{Keyword Substitution}).  This
-is assumed when @samp{-e} is specified.  The gotten file is writable.
+is assumed when @option{-e} is specified.  The gotten file is writable.
 
 
 @item -l
@@ -790,11 +792,11 @@ Unsupported.
 
 @item -m
 Prepend to each line of the result the @sc{sid} corresponding to the
-@samp{delta} which introduced this line to the file.
+@code{delta} which introduced this line to the file.
 
 @item -n
 Precede each line of output with the module name, before any @sc{sid}
-added with the @samp{-m} option.
+added with the @option{-m} option.
 
 @item -p
 Write the result to the standard output, rather than to a file.  
@@ -808,12 +810,12 @@ Run silently.
 @item -t
 Get the ``top'' delta for the indicated release.  The default behaviour
 of @code{get} is to get the highest revision on the trunk.  The
-@samp{-t} option only modifies this behaviour in the situation where the
-topmost trunk revision is a branch point.  In this case, the @samp{-t}
+@option{-t} option only modifies this behaviour in the situation where the
+topmost trunk revision is a branch point.  In this case, the @option{-t}
 option causes the topmost revision on this branch to be retrieved.  In
-other words, the @samp{-t} option removes the restriction that the
+other words, the @option{-t} option removes the restriction that the
 retrieved version should be on the trunk.  This option is used by
-@samp{comb} (@pxref{comb}) and by the driver program @code{sccs} from
+@code{comb} (@pxref{comb}) and by the driver program @code{sccs} from
 BSD (@pxref{sccs}).
 
 @item -V
@@ -874,7 +876,7 @@ branch (1.1.1.1) if version 1.2 exists, and a @code{get -e} on version
 
 If the ``enable branches'' flag is set, it is also possible to make
 branches for revisions that do not have successors.  This is done with
-the @samp{-b} flag of @code{get}.
+the @option{-b} flag of @code{get}.
 
 
 
@@ -882,8 +884,8 @@ the @samp{-b} flag of @code{get}.
 @subsection Keyword Substitution
 @cindex Keyword Substitution
 @cindex Version identifiers
-Keyword substitution is performed unless the @samp{-k} option or the
-@samp{-e} option is given to @code{get}.
+Keyword substitution is performed unless the @option{-k} option or the
+@option{-e} option is given to @code{get}.
 
 @ref{what} contains a keyword substitution example.
 
@@ -940,7 +942,7 @@ Sequence number of the retrieved version.
 @item T
 Current time (@i{hh:mm:ss}) when the file was retrieved, see %D% and %H%.
 @item W
-Expands to %Z% %M% <@sc{tab}> %I% or the argument for the @samp{-w}
+Expands to %Z% %M% <@sc{tab}> %I% or the argument for the @option{-w}
 flag, if given.
 @item Y
 Value of the @code{t} (module type) flag.
@@ -1004,7 +1006,7 @@ extra checking.
 
 
 @menu
-* Basic Usage: prs usage.           Frequently-used @samp{prs} commands
+* Basic Usage: prs usage.           Frequently-used @code{prs} commands
 * Options: prs options.             Full list of options
 * Keywords: Data Keywords.          Data Keyword Substitution
 @end menu
@@ -1036,7 +1038,7 @@ that have been created since last week.
 @node prs options, Data Keywords, prs usage, prs
 @subsection Options for @code{prs}
 
-@table @samp
+@table @option
 @item -a 
 Include even removed deltas in the output.  Removed deltas have a type
 "R", as output by the :DT: keyword.
@@ -1065,8 +1067,8 @@ rule if a four-digit year is specified.  @xref{Year 2000 Issues}.
 
 
 
-This behaviour is usually not the one required, and hence the @samp{-e}
-or @samp{-l} options are specified too.
+This behaviour is usually not the one required, and hence the @option{-e}
+or @option{-l} options are specified too.
 
 @item -d@var{format}
 This specifies the data format for the output.  Because the default
@@ -1076,17 +1078,17 @@ information which is not shown by default.  See @ref{Data Keywords} for
 the various keywords that can be used.  Any characters in the data
 format which are not part of a keyword are output as well.
 
-If one specifies the @samp{-d} option, @code{prs} by default only gives
+If one specifies the @option{-d} option, @code{prs} by default only gives
 information about the latest delta.  To restore the default behavior of
-showing all the deltas, use the @samp{-e} option as well.
+showing all the deltas, use the @option{-e} option as well.
 
 @item -e
-Makes the @samp{-c} option select deltas created at or earlier than the
-specified time.  Makes the @samp{-r} option select deltas before and
+Makes the @option{-c} option select deltas created at or earlier than the
+specified time.  Makes the @option{-r} option select deltas before and
 including the one specified by the indicated @sc{sid}.  
 
 @item -l
-As the @samp{-e} option, but select only later deltas rather than
+As the @option{-e} option, but select only later deltas rather than
 earlier ones.
 
 
@@ -1097,7 +1099,7 @@ latest delta is selected.
 @end table
 
 @node Data Keywords, , prs options, prs
-@subsection Data Keywords for the @samp{-d} option of @code{prs}
+@subsection Data Keywords for the @option{-d} option of @code{prs}
 
 
 @subsubsection Global Keywords
@@ -1110,7 +1112,7 @@ being examined.  Many of these are @sc{sccs} file flags (@pxref{Flags}).
 Emits the body of the @sc{sccs} file, that is, the part containing all
 the delta information.  Note that since this is dumped verbatim, it
 contains control characters.  If you want a more readable format,
-consider using the @samp{-b} option of @code{prt} (@pxref{prt
+consider using the @option{-b} option of @code{prt} (@pxref{prt
 options}). 
 
 @item :BF: 
@@ -1328,7 +1330,7 @@ prt s.umsp.c
 @end example
 
 @noindent
-If you require more detail, the @samp{-e} (``everything'') option
+If you require more detail, the @option{-e} (``everything'') option
 produces more detail:-
 
 @example
@@ -1346,7 +1348,7 @@ As usual, any argument that is the name of a directory causes all
 @node prt options, prt output, prt usage, prt
 @subsection Options for @code{prt}
 
-@table @samp
+@table @option
 @item -a
 ``All deltas''; this means that the output will include ``removed''
 deltas.  Removed deltas exist after @code{rmdel} has been used to remove
@@ -1367,8 +1369,8 @@ Keywords}.
 Print information about the deltas in the file, as opposed to
 information about the @sc{sccs} file itself (for example the authorised
 users).  This is the default behaviour.  The default behaviour is turned
-off by the @samp{-b}, @samp{-f}, @samp{-t} and @samp{-u} flags, but
-specifying @samp{-d} on the command line again will ensure that the
+off by the @option{-b}, @option{-f}, @option{-t} and @option{-u} flags, but
+specifying @option{-d} on the command line again will ensure that the
 delta information is printed.
 
 @item -e
@@ -1396,7 +1398,7 @@ year in the twenty-first century.  The X/Open document does not mandate
 a four-digit year specifier, but it would not make sense to apply this
 rule if a four-digit year is specified.  @xref{Year 2000 Issues}.
 
-The @samp{-c} and @samp{-r} options are mutually exclusive.
+The @option{-c} and @option{-r} options are mutually exclusive.
 
 @item -f
 Print the flags of the @sc{sccs} file (@pxref{Flags}).
@@ -1405,11 +1407,11 @@ Print the flags of the @sc{sccs} file (@pxref{Flags}).
 Print the serial numbers of included, excluded, and ignored deltas.
 
 @item -r@var{[cc]YYMMDDHHMMSS}
-Specifies a cutoff, as with the @samp{-c} option, but with the opposite
+Specifies a cutoff, as with the @option{-c} option, but with the opposite
 sense; that is, nothing is printed for deltas that are more recent than
 the indicated time.
 
-The @samp{-c} and @samp{-r} options are mutually exclusive.
+The @option{-c} and @option{-r} options are mutually exclusive.
 
 @item -s
 Print only a summary line for each delta (that is, the @sc{mr} list and
@@ -1426,11 +1428,11 @@ line.
 @item -y@var{SID}
 Print only information for deltas as new as the specified @sc{sid}.  If
 the argument part is empty, that is, the option used is simply
-@samp{-y}, the most recent delta is selected.   The oder in which delta
+@option{-y}, the most recent delta is selected.   The oder in which delta
 information is stored within the @sc{sccs} file is such that the
 @sc{sid} selected by this option will be the last one printed.
 
-If the @samp{-y} option is used in conjunction with either the @samp{-c}
+If the @option{-y} option is used in conjunction with either the @option{-c}
 or the @sc{-y} option, processing stops when either condition (date or
 @sc{sid} match) is satisfied.
 
@@ -1452,8 +1454,8 @@ The output format is fixed, though parts of the output can be omitted.
   @end itemize
 
 @item 
-  Delta table information (for @samp{-d}, @samp{-e}, also the default,
-  but not if @samp{-b}, @samp{-f}, @samp{-t}, @samp{-u} are specified).
+  Delta table information (for @option{-d}, @option{-e}, also the default,
+  but not if @option{-b}, @option{-f}, @option{-t}, @option{-u} are specified).
   This section is printed once for each selected delta.
 
   This begins with a newline as a separator (except when a cutoff is
@@ -1484,7 +1486,7 @@ The output format is fixed, though parts of the output can be omitted.
 
 @item Delta detail information @*
   This section is printed once for each selected delta, unless the
-  @samp{-s} option has been specified.
+  @option{-s} option has been specified.
 
   @itemize @bullet
     
@@ -1507,7 +1509,7 @@ global information is printed.   This consists of
         @samp{everyone} is printed)
   @item The @sc{sccs} file flags (@pxref{Flags}) are printed.
   @item The description of the @sc{sccs} file is printed (this 
-        is the description set by the @samp{-t} option of @code{admin}).  
+        is the description set by the @option{-t} option of @code{admin}).  
   @item The body of the @sc{sccs} file is printed, in a readable format.
         The control character @samp{^A} that begins some lines is
         printed as @samp{*** }, and other lines are printed indented 
@@ -1540,7 +1542,7 @@ delta for the fixed version.
 The @sc{sid} of a removed delta is soon re-used by @code{delta}, usually
 for the fixed version.
 
-The @code{rmdel} command takes only one option, @samp{-r}, which
+The @code{rmdel} command takes only one option, @option{-r}, which
 specifies the @sc{sid} of the version to be removed.  This option is
 mandatory.
 
@@ -1646,7 +1648,7 @@ in the s-file, you should use the command @code{sccs diffs}
 
 The options for @code{sccsdiff} are described below.
 
-@table @samp
+@table @option
 @item --help
 This option is provided by CSSC but not by other SCCS implementations.
 It briefly describes the usage of the program.
@@ -1685,7 +1687,7 @@ care in checking in new revisions, perhaps using a test suite, then
 
 @subsection Options for @code{unget}
 
-@table @samp
+@table @option
 @item -n
 Do not delete the g-file which you were editing
 @item -s
@@ -1729,10 +1731,10 @@ val /proj/python/spam/spam/eggs/spam
 
 @node Options for val, Validation Warnings, ,val
 @subsection Options for @code{val}
-@table @samp
+@table @option
 @item -m@var{name}
 Assert that the module name flag of the @sc{sccs} file is set to
-@samp{name}.  The return value of @sc{val} will be zero only if all
+@var{name}.  The return value of @sc{val} will be zero only if all
 the other checks succeed and the history file has its module name flag
 set to this value.  @xref{Flags}, for a description of the @sc{sccs}
 file flags.
@@ -1752,7 +1754,7 @@ and present in the history file.
 
 @item -y@var{type}
 Assert that the module type flag of the @sc{sccs} file is set to
-@samp{type}.  The return value of @sc{val} will be zero only if all
+@var{type}.  The return value of @sc{val} will be zero only if all
 the other checks succeed and the history file has its module name flag
 set to this value.  @xref{Flags}, for a description of the @sc{sccs}
 file flags.
@@ -1798,17 +1800,17 @@ potential problems may exist without causing a non-zero return value;
 see @xref{Validation Warnings}, for more information.
 
 @item 1
-The @samp{-m} option was used but the module name did not match. 
+The @option{-m} option was used but the module name did not match. 
 
 @item 2
-The @samp{-y} option was used but the module type did not match. 
+The @option{-y} option was used but the module type did not match. 
 
 @item 4
-The @samp{-r} option was used but the specified SID was ambiguous, or
+The @option{-r} option was used but the specified SID was ambiguous, or
 not present in the history file.
 
 @item 8
-The @samp{-r} option was used but the specified SID was invalid.
+The @option{-r} option was used but the specified SID was invalid.
 
 @item 16
 Either the named file could not be opened, or it is not an @sc{sccs}
@@ -1899,7 +1901,7 @@ and 1 otherwise.
 
 @subsection Options for @code{what}
 @code{what [-s] [-V] file [file ...]}
-@table @samp
+@table @option
 @item -s
 Exit successfully after finding the first string.
 @item -V
@@ -2139,7 +2141,7 @@ I don't understand this area of the functionality of @sc{sccs} very
 well, so any description here may be vague or incorrect.  The CSSC
 implementation may also be incomplete in this area.
 
-The list of included seqnos is introduced with @samp{^Ai }, the
+The list of included seqnos is introduced with @samp{^Ai}, the
 excluded seqnos with @samp{^Ax}, and ignored seqnos with @samp{^Ag}.
 These are followed by a space character, and then the list itself, which
 is a space-separated list of integers.
@@ -2676,6 +2678,10 @@ even if only one s-file has been named on the command line.
 Does not print a separator.
 @end table
 
+
+@c TODO: Also some versions of SCCS allow admin -n -r2.2.3.4 rather
+@c than just admin -n -r2
+
 @node Incomplete, Year 2000 Issues, Interoperability, Top
 @chapter Missing Features and other Problems
 @cindex missing features
@@ -2822,7 +2828,7 @@ same line.
 
 @cindex Pipes
 @item
-If an @sc{sccs} file is created with the @samp{-i} option, and it turns
+If an @sc{sccs} file is created with the @option{-i} option, and it turns
 out to need encoding, then genuine @sc{sccs} seeks back to the start of
 the file and encodes it.  However, if the input file is not seekable,
 for example if it is a pipe, then this doesn't always work.  The
@@ -2902,7 +2908,7 @@ according to the strategy mandated by X/Open.  The command-line options
 are also dealt with similarly.
 
 @sc{cssc} provides an additional feature for your convenience.  If the
-argument to the @samp{-c} option of @code{get}, @code{prt}, or
+argument to the @option{-c} option of @code{get}, @code{prt}, or
 @code{prs} contains more than twelve digits, the first two are
 understood to be the century part of the year.  For example,
 @samp{971120193000} and @samp{19971120193000} both represent exactly the
@@ -3300,7 +3306,7 @@ newline.  Escape codes as for @code{echo(1)} are understood.  Depending
 on the actual flavour of system that the test suite is running on, this
 might internally use @code{echo -n} or @code{echo -e .....\c}.  
 
-Please do not use either the @samp{-n} or @samp{-e} options for
+Please do not use either the @option{-n} or @option{-e} options for
 @code{echo(1)} directly in test scripts, because they don't work in the
 same way on all machines.  The @code{echo_nonl} function is provided for
 this reason; therefore, please use it.  Please note also that while the
@@ -3342,7 +3348,7 @@ test `cat foo` = '%M%' || miscarry cannot create file foo.
 If you find a bug in GNU @code{CSSC}, please report this via the
 @sc{cssc} bug tracking system at @url{http://sourceforge.net/projects/CSSC}.
 Please include the version number, which you can find by giving the
-option @w{@samp{--version}} to any @code{CSSC} command.  Also include in
+option @w{@option{--version}} to any @code{CSSC} command.  Also include in
 your message the output that the program produced and the output you
 expected.  An @file{s.} file and instructions for reproducing the error
 are almost essential unless the bug is very trivial.  If you are
@@ -3555,7 +3561,7 @@ can be edited into the file which; these are later expanded when the
 file is checked out read-only.  See @xref{Keyword Substitution}.  The
 same name is also sometimes used for the argument following the @code{-d}
 option for @code{prs}.  See @xref{Data Keywords,,
-Data Keywords for the @samp{-d} option of @code{prs}}.
+Data Keywords for the @option{-d} option of @code{prs}}.
 
 
 @item level
