@@ -1,3 +1,20 @@
+1998-02-12  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi, docs/Platforms, docs/TODO, auxfiles/CSSC.spec,
+	sf-write.cc, configure.in, sccsfile.cc, NEWS: Binary file support.
+
+	* docs/missing.txt: Binary file support is now present.
+
+	* tests/binary/binbasic.sh, filediff.h, sf-delta.cc, filediff.cc,
+	Makefile.am, configure.in: First working binary file support.
+
+1998-02-11  James Youngman  <jay@gnu.org>
+
+	* tests/binary/auto.sh: Tests that ensure that admin correctly
+	guesses if the original file is binary or not.
+
+	* configure.in: Updated the patchlevel.
+
 1998-02-11  James Youngman  <jay@gnu.org>
 
 	* NEWS: Added the latest news.
@@ -68,8 +85,6 @@
 	* bodyio.cc:
 	New file; functions for handling the I/O for the body of files
 	(i.e. the bits that might be uuencoded).
-
-	* ChangeLog, docs/TODO: *** empty log message ***
 
 	* scripts/rev-freq.sh:
 	Added rev-freq.sh, which generates a histogram of the distributon of
