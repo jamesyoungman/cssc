@@ -29,8 +29,8 @@
  *
  */
 
-#ifndef __SID_H__
-#define __SID_H__
+#ifndef CSSC__SID_H__
+#define CSSC__SID_H__
 
 #ifdef __GNUC__
 //#pragma interface

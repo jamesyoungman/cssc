@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __SCCSNAME_H__
-#define __SCCSNAME_H__
+#ifndef CSSC__SCCSNAME_H__
+#define CSSC__SCCSNAME_H__
 
 #ifdef __GNUC__
 #pragma interface

@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __SF_CHKMR_H__
-#define __SF_CHKMR_H__
+#ifndef CSSC__SF_CHKMR_H__
+#define CSSC__SF_CHKMR_H__
 
 #include "run.h"
 

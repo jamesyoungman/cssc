@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __SCCSDATE_H__
-#define __SCCSDATE_H__
+#ifndef CSSC__SCCSDATE_H__
+#define CSSC__SCCSDATE_H__
 
 #include <time.h>
 

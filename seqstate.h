@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __SEQSTATE_H__
-#define __SEQSTATE_H__
+#ifndef CSSC__SEQSTATE_H__
+#define CSSC__SEQSTATE_H__
 
 #include "stack.h"
 

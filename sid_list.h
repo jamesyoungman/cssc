@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __SID_LIST_H__
-#define __SID_LIST_H__
+#ifndef CSSC__SID_LIST_H__
+#define CSSC__SID_LIST_H__
 
 #ifdef __GNUC__
 // #pragma this does not work with templates interface

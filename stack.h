@@ -29,8 +29,8 @@
  *
  */
 
-#ifndef __STACK_H__
-#define __STACK_H__
+#ifndef CSSC__STACK_H__
+#define CSSC__STACK_H__
 
 template <class TYPE>
 class stack {

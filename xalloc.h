@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __XALLOC_H__
-#define __XALLOC_H__
+#ifndef CSSC__XALLOC_H__
+#define CSSC__XALLOC_H__
 
 void *xmalloc(size_t size);
 void *xrealloc(void *p, size_t size);

@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef __SYSDEP_H__
-#define __SYSDEP_H__
+#ifndef CSSC__SYSDEP_H__
+#define CSSC__SYSDEP_H__
 
 #ifdef HAVE_FCNTL_H 
 #include <fcntl.h>
