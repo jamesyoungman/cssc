@@ -57,7 +57,7 @@ public:
   char *operator +(int index) const { return buf + index; }
 #endif
 
-  ~cssc_linebuf() { free(buf); }
+  ~cssc_linebuf() { delete[] buf; }
 };
 
 #endif /* __LINEBUF_H__ */

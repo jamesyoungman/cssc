@@ -38,7 +38,7 @@ class Pipe;
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.11 1998/02/21 14:27:13 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.12 1998/02/28 14:49:38 james Exp $";
 #endif
 
 extern int create(mystring name, int mode); /* file.c */
@@ -77,7 +77,7 @@ Pipe::Pipe() {
 	if (s == NULL) {
 		quit(-1, "tempnam() failed.");
 	}
-	free(s);
+	free(s);		// s was allocated by tempnam().
 #else
 	const char *s = tmpnam(NULL);
 	if (NULL == s)

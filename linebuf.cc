@@ -37,11 +37,11 @@
 #define CONFIG_LINEBUF_CHUNK_SIZE (1024)
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.10 1998/02/21 14:27:08 james Exp $";
+static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.11 1998/02/28 14:49:37 james Stab $";
 #endif
 
 cssc_linebuf::cssc_linebuf()
-  : buf((char *) xmalloc(CONFIG_LINEBUF_CHUNK_SIZE)),
+  : buf(new char[CONFIG_LINEBUF_CHUNK_SIZE]),
     buflen(CONFIG_LINEBUF_CHUNK_SIZE)
 {
 }
@@ -59,12 +59,20 @@ cssc_linebuf::read_line(FILE *f)
       if (c == '\0' || c == '\n')
 	return 0;
 
-      buf = (char *) xrealloc(buf, CONFIG_LINEBUF_CHUNK_SIZE + buflen);
+//
+// Add another chunk
+//
+      
+      char *temp_buf = new char[CONFIG_LINEBUF_CHUNK_SIZE + buflen];
+      memcpy( temp_buf, buf, buflen*sizeof( char));
+      delete [] buf;
+      buf = temp_buf;
+      
       s = buf + buflen - 1;
       buflen += CONFIG_LINEBUF_CHUNK_SIZE;
       buf[buflen - 2] = '\0';
 		
-      s = fgets(s, CONFIG_LINEBUF_CHUNK_SIZE + 1, f);
+      s = fgets(s, CONFIG_LINEBUF_CHUNK_SIZE + 1, f); // fill the new chunk
     }
   
   return 1;

@@ -30,7 +30,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: xalloc.cc,v 1.5 1997/11/18 23:22:49 james Exp $";
+static const char rcs_id[] = "CSSC $Id: xalloc.cc,v 1.6 1998/02/28 14:49:43 james Exp $";
 #endif
 
 #ifdef CONFIG_DECLARE_MALLOC
@@ -41,51 +41,6 @@ extern "C" {
 };
 #endif
 
-void *
-xmalloc(size_t size) {
-	void *p = malloc(size);
-	if (p == NULL) {
-		nomem();
-	}
-	return p;
-}
-
-void *
-xrealloc(void *p, size_t size) {
-	p = realloc(p, size);
-	if (p == NULL) {
-		nomem();
-	}
-	return p;
-}
-
-void *
-xcalloc(size_t n, size_t size) {
-	void *p = calloc(n, size);
-	if (p == NULL) {
-		nomem();
-	}
-	return p;
-}
-
-char *
-xstrdup(const char *str)
-{
-  return strcpy((char *) xmalloc(strlen(str) + 1), str);
-}
-
-
-/* Insure that xmalloc and operator new are compatible. */
-
-void *
-operator new(size_t size) {
-	return xmalloc(size);
-}       
-
-void
-operator delete(void *p) {
-	free(p);
-}
 
 /* Local variables: */
 /* mode: c++ */

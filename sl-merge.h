@@ -94,8 +94,7 @@ range_list<TYPE>::remove(range_list<TYPE> const &list) {
 				--dp->to;
 			}
 			if (sp->from > dp->from && sp->to < dp->to) {
-				range<TYPE> *p = (range<TYPE> *) 
-					xmalloc(sizeof(range<TYPE>));
+				range<TYPE> *p = new range<TYPE>;
 				p->from = dp->from;
 				p->to = sp->from;
 				--p->to;

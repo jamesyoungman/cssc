@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-01-11 16:44:16 james>
+Time-stamp: <1998-02-28 13:38:40 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -30,7 +30,9 @@ are exclusive).
 Richard Polton <richardp@scopic.com> provided Solaris testing, plus
 testing with gigantic inputs, and rewrote sccsdiff, also supplying
 test cases for it (in fact the only person so far [as of 1998-01-11]
-to do so!)
+to do so!)  Richard also submitted code to remove the "xalloc"
+wrappers for operator ::new so that all the code now uses new and
+delete rather than a mixture of that and xalloc()/free().
 
 Support for development snapshots of GCC (as of 1997-08-11) was
 contributed by Fila Kolodny <fila@ibi.com>.

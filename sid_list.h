@@ -110,7 +110,7 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
       buf[len] = '\0';
 
       char *dash = strchr(buf, '-');
-      range<TYPE> *p = (range<TYPE> *) xmalloc(sizeof(range<TYPE>));
+      range<TYPE> *p = new range<TYPE>;
 
       if (dash == NULL)
 	{
@@ -184,7 +184,7 @@ range_list<TYPE>::clean()
 		}
 
 	      range<TYPE> *next_dp = dp->next;
-	      free(dp);
+	      delete dp;
 	      dp = next_dp;
 	      if (pdp == NULL)
 		{
@@ -209,7 +209,7 @@ range_list<TYPE>::clean()
       else
 	{
 	  invalidate();
-	  free(sp);
+	  delete sp;
 	}
       sp = next_sp;
     }
@@ -246,7 +246,7 @@ range_list<TYPE>::destroy()
   while(p != NULL)
     {
       range<TYPE> *np = p->next;
-      free(p);
+      delete p;
       p = np;
     }
   head = NULL;
@@ -260,7 +260,7 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
     {
       return NULL;
     }
-  range<TYPE> *copy_head = (range<TYPE>	*) xmalloc(sizeof(range<TYPE>));
+  range<TYPE> *copy_head = new range<TYPE>;
   range<TYPE> *np = copy_head;
   
   while(1)
@@ -274,7 +274,7 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
 	  break;
 	}
 
-      np = np->next = (range<TYPE> *) xmalloc(sizeof(range<TYPE>));
+      np = np->next = new range<TYPE>;
     }
 
   np->next = NULL;

@@ -60,8 +60,7 @@ class seq_state {
 	void
         copy(class seq_state const &it) {
 		last = it.last;
-		p = (unsigned char *) xmalloc(sizeof(unsigned char)
-					      * (last + 1));
+		p = new unsigned char[last + 1];
 		memcpy(p, it.p, sizeof(unsigned char) * (last + 1));
 		deleting = it.deleting;
 		active = it.active;
@@ -69,7 +68,9 @@ class seq_state {
 
 public:
 	seq_state(seq_no l): active_stack(l + 1) {
-		p = (unsigned char *) xcalloc(l + 1, sizeof(unsigned char));
+		p = new unsigned char[l + 1];
+		for( int i=0; i<l+1; i++)
+		  p[i] = '\0';
 		last = l;
 		deleting = 0;
 		active = 0;
@@ -82,7 +83,7 @@ public:
 	class seq_state &
 	operator =(class seq_state const &it) {
 		if (this != &it) {
-			free(p);
+		  delete [] p;
 			copy(it);
 			active_stack = it.active_stack;
 		}
@@ -208,7 +209,7 @@ public:
 	int include_line() const { return deleting == 0; }
 
 	~seq_state() {
-		free(p);
+	  delete [] p;
 	}
 };
 

@@ -38,13 +38,13 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.10 1997/11/18 23:22:44 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.11 1998/02/28 14:49:40 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an
    invalid range. */
 #if 0
-void *invalid_range = xmalloc(1);
+void *invalid_range = new char;
 #endif
 
 static int

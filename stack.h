@@ -41,14 +41,14 @@ class stack {
 	void
 	copy(class stack<TYPE> const &it) {
 		len = it.len;
-		array = (TYPE *) xmalloc(sizeof(TYPE) * len);
+		array = new TYPE[len];
 		memcpy(array, it.array, sizeof(TYPE) * len);
 		top = it.top;
 	}
 	       
 public:
 	stack(int l):
-	  array((TYPE *)xmalloc(l * sizeof(TYPE))),
+	  array(new TYPE[l]),
 	  top(0), len(l) {}
 
 	stack(stack<TYPE> const &it) {
@@ -58,7 +58,7 @@ public:
 	class stack<TYPE> &
         operator =(class stack<TYPE> const &it) {
 		if (this != &it) {
-			free(array);
+		  delete [] array;
 			copy(it);
 		}
 		return *this;
@@ -78,7 +78,7 @@ public:
 
 	int empty() const { return top == 0; }
 
-	~stack() { free(array); }
+	~stack() { delete [] array; }
 };
 
 #endif /* __STACK_H__ */

@@ -47,7 +47,7 @@ cssc_delta_table::~cssc_delta_table()
 {
   ASSERT(0 != this);
   if (seq_table)
-    free(seq_table);
+    delete [] seq_table;
   seq_table = 0;
 }
 
@@ -67,7 +67,7 @@ cssc_delta_table::build_seq_table()
 {
   ASSERT(0 != this);
 
-  seq_table = (int *) xmalloc((high_seqno + 1) * sizeof(int));
+  seq_table = new int[high_seqno + 1];
 
   int i;
   for(i = 0; i < high_seqno + 1; i++)
@@ -98,10 +98,14 @@ cssc_delta_table::update_highest(const delta &it)
     {
       if (seq_table != NULL) 
 	{
-	  seq_table = (int *) xrealloc(seq_table, 
-				       (seq + 1) * sizeof(int));
-	  int i;
-	  for(i = high_seqno + 1; i < seq + 1; i++) 
+//
+// Create a temporary array to hold seq_table
+//
+	  int *temp_seq_table = new int[seq + 1];
+	  memcpy( temp_seq_table, seq_table, (high_seqno+1)*sizeof( int));
+	  delete [] seq_table;
+	  seq_table = temp_seq_table;
+	  for(int i = high_seqno + 1; i < seq + 1; i++) 
 	    {
 	      seq_table[i] = -1;
 	    }

@@ -32,7 +32,7 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.11 1998/02/21 14:27:18 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.12 1998/02/28 14:49:39 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -82,7 +82,7 @@ run(const char *prg, list<const char *> const &args) {
 		cmdlen += strlen(args[i]) + 1;
 	}
 
-	char *s = (char *) xmalloc(cmdlen + 1);
+	char *s = new char[cmdlen+1];
 
 	strcpy(s, prg);
 	
@@ -92,14 +92,13 @@ run(const char *prg, list<const char *> const &args) {
 	}
 
 	call_system(s);
-	free(s);
+	delete [] s;
 	return 0;
 
 #else /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 
-	const char *  *argv = (const char *  *) xmalloc((len + 2) 
-						      * sizeof(const char *  *));
-
+	const char *  *argv = new const char*[len+2];
+	
 	argv[0] = prg;
 
 	for(i = 0; i < len; i++) {
@@ -140,7 +139,7 @@ run(const char *prg, list<const char *> const &args) {
 
 #endif /* CONFIG_NO_FORK */
 
-	free(argv);
+	delete [] argv;
 	return ret;
 	
 #endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */

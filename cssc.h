@@ -23,7 +23,7 @@
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.15 1998/02/21 14:27:03 james Exp $
+ * $Id: cssc.h,v 1.16 1998/02/28 14:49:35 james Exp $
  *
  */
 
@@ -118,7 +118,6 @@
 
 #ifndef NO_COMMON_HEADERS
 #include "quit.h"
-#include "xalloc.h"
 #include "mystring.h"
 #include "file.h"
 

@@ -24,8 +24,6 @@
  *
  * Test code (only!) for sid_list.h.
  *
- * @(#) CSSC sid_list.c 1.1 93/11/09 17:18:03
- *
  */
 
 
@@ -36,7 +34,6 @@
 #include "mylist.h"
 #include "linebuf.h"
 #include "sid.h"
-#include "xalloc.cc"
 #include "linebuf.cc"
 #include "sid.cc"
 
