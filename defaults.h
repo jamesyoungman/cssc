@@ -45,10 +45,10 @@
 
 #ifndef POSTDECL_NORETURN
 #ifdef __GNUC__
-// GNU C
+/* GNU C */
 #define POSTDECL_NORETURN __attribute__ ((noreturn))
 #else
-// Not GNU C
+/* Not GNU C */
 #define POSTDECL_NORETURN /* does not return */
 #endif
 #endif
@@ -62,21 +62,8 @@
 #endif
 #endif /* CDECL */
 
-#if !defined(START_RESULT_DECL) && !defined(END_RESULT_DECL)
-#ifdef __GNUC__
-#define START_RESULT_DECL(type, var)	return var {
-#define END_RESULT_DECL(var)		return; }
-#define RETURN_RESULT(var)		return
-#else
-#define START_RESULT_DECL(type, decl)	{ type decl;
-#define END_RESULT_DECL(var)		return (var); }
-#define RETURN_RESULT(var)		return (var)
-#endif
-#endif /* !defined(START_RESULT_DECL) && !defined(END_RESULT_DECL) */
 
-
-#if !defined(CONFIG_NO_LOCKING) && !defined(CONFIG_SHARE_LOCKING) \
-	&& !defined(CONFIG_PID_LOCKING) && !defined(CONFIG_DUMB_LOCKING)
+#if !defined(CONFIG_NO_LOCKING) && !defined(CONFIG_SHARE_LOCKING) && !defined(CONFIG_PID_LOCKING) && !defined(CONFIG_DUMB_LOCKING)
 #ifdef CONFIG_MSDOS_FILES
 #ifdef CONFIG_DJGPP
 #define CONFIG_DUMB_LOCKING
@@ -87,6 +74,7 @@
 #define CONFIG_PID_LOCKING
 #endif /* CONFIG_MSDOS_FILES */
 #endif /* !defined(CONFIG_NO_LOCKING) && ... */
+  
 
 #ifndef CONFIG_NULL_FILENAME
 #ifdef CONFIG_MSDOS_FILES
@@ -96,16 +84,18 @@
 #endif
 #endif /* CONFIG_NULL_FILENAME */
 
+  
+/* I'm afraid that if you want to change CSSC's idea of what goes at
+ * the end of the line then this macro will not help very much.
+ * Ninety percent of the cases where detecting the end-of-line is
+ * useful are just dealt with tith a literal '\n'.   I'm not sure if
+ * it is useful to open the file in text mode (given the nonprintable
+ * control character \001) but that seems the best plan to me.  Please
+ * let me know how it goes.   Patches, as always, gleefully welcomed!
+ * See docs/patches.txt for further information.
+ */
 #ifndef CONFIG_EOL_CHARACTER
 #define CONFIG_EOL_CHARACTER ('\n')
-#endif
-
-#ifndef CONFIG_CONTROL_CHARACTER
-#define CONFIG_CONTROL_CHARACTER ('\001')
-#endif
-
-#ifndef CONFIG_WHAT_BUFFER_SIZE
-#define CONFIG_WHAT_BUFFER_SIZE (16*1024)
 #endif
 
 #endif /* __DEFAULTS_H__ */
