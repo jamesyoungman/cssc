@@ -21,7 +21,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.7 1997/06/23 22:59:15 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.8 1997/06/27 18:40:10 james Exp $";
 #endif
 
 class diff_state {
@@ -308,17 +308,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	// Remember seq number that will be the predecessor of the 
 	// one for the delta.
 	seq_no predecessor_seq = got_delta->seq;
-#if 0
-	fprintf(stderr, "l> predecessor_seq=%u; highest=%u; got_seq=%u\n",
-		(unsigned)predecessor_seq,
-		(unsigned)delta_table.highest_seqno(),
-		(unsigned)got_delta->seq);
-	
-	fprintf(stderr, "l> about to prepare_seqstate (pred=%u)\n",
-		(unsigned)predecessor_seq);
-#endif	
 
-	// TODO: problem just here if we made null deltas.
 	prepare_seqstate(sstate, predecessor_seq);
 	prepare_seqstate(sstate, pfile->include, pfile->exclude,
 			 sccs_date(NULL));
@@ -384,14 +374,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		}
 	}
 
-	list<struct delta> deltas_to_add;
-	
 	// Create any required null deltas if required.
 	if (flags.null_deltas)
 	  {
-#if 0
-	    fprintf(stderr, "l> null deltas enabled\n");
-#endif
 	    // figure out how many null deltas to make to fill the gap
 	    // between the highest current trunk release and the one
 	    // belonging to the new delta.
@@ -410,40 +395,17 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	    assert(id.valid());
 	    
 	    int infinite_loop_escape = 10000;
-#if 0
-	    fprintf(stderr,
-		    "l> before loop; null_rel=%lu, last_auto_rel=%lu\n",
-		    (unsigned long)null_rel, (unsigned long)last_auto_rel);
-#endif
+
 	    while (null_rel < last_auto_rel)
 	      {
 		assert(id.valid());
-#if 0		
-		fprintf(stderr, "l> top of loop; last_auto_rel=\n");
-		last_auto_rel.print(stderr);
-		fprintf(stderr, ", id=");
-		id.print(stderr);
-		fprintf(stderr, ", null_rel=");
-		null_rel.print(stderr);
-		fprintf(stderr, "\n");
-#endif
 		// add a new automatic "null" release.  Use the same
 		// MRs as for the actual delta (is that right?) but
-		seq_no new_seq = predecessor_seq;
-		++new_seq;
+		seq_no new_seq = delta_table.next_seqno();
 		
 		// Set up for adding the next release.
 		id = release(null_rel);
 		id.next_level();
-#if 0		
-		fprintf(stderr, "l> adding delta (seq %u, pred %u) id ",
-			(unsigned)new_seq, (unsigned)predecessor_seq);
-		id.print(stderr);
-		fprintf(stderr, "\n");
-#endif		
-		
-		//		prepare_seqstate(sstate, predecessor_seq);
-		
 		
 		struct delta null_delta('D', id, sccs_date::now(),
 					get_user_name(), new_seq, predecessor_seq,
@@ -452,7 +414,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		null_delta.deleted = 0;
 		null_delta.unchanged = 0;
 
-		deltas_to_add.add(null_delta);
+		delta_table.prepend(null_delta);
 		
 		predecessor_seq = new_seq;
 
@@ -462,8 +424,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		assert(infinite_loop_escape > 0);
 	      }
 	  }
-	seq_no new_seq = predecessor_seq;
-	++new_seq;
+	seq_no new_seq = delta_table.next_seqno();
 	struct delta new_delta('D', pfile->delta, sccs_date::now(),
 			       get_user_name(), new_seq, predecessor_seq,
 			       included, excluded, mrs, comments);
@@ -471,21 +432,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	new_delta.deleted = 0;
 	new_delta.unchanged = 0;
 
-	deltas_to_add.add(new_delta);
-
+	
 	// Begin the update by writing out the new delta.
-	FILE *out = start_update();
-
-	for (int i=deltas_to_add.length(); i>0; --i)
-	  {
-	    // There is nothing actually in the null deltas...
-	    if (write_delta(out, deltas_to_add[i-1]))
-	      {
-		xfile_error("Write error.");
-	      }
-	  }
-	if (write(out))
-	  xfile_error("Write error.");
+	FILE *out = start_update(new_delta);
 
 	
 #undef DEBUG_FILE
@@ -610,7 +559,6 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	printf("\n"
 	       "%u inserted\n%u deleted\n%u unchanged\n",
 	       new_delta.inserted, new_delta.deleted, new_delta.unchanged);
-	
 }
 
 /* Local variables: */
