@@ -30,7 +30,7 @@ class seq_state {
 		PREDECESSOR = 004,
 		EXPLICIT    = 010,
 		ACTIVE 	    = 020,
-		INSERTING   = 040,
+		INSERTING   = 040
 	};
 
 	unsigned char *p;
