@@ -14,7 +14,7 @@ lines=100002
 
 remove command.log log log.stdout log.stderr $g $s $z $x $p
 
-( yes '%C%' | head -${lines} > $g )  || miscarry Cannot create large input file.
+( ../../testutils/yes '%C%' | head -${lines} > $g )  || miscarry Cannot create large input file.
 
 docommand A1 "${admin} -i${g} ${s}" 0 "" ""
 mv ${g} old.${g} || miscarry "Rename failed"
