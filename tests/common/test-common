@@ -30,11 +30,16 @@ else
   ac_n= ac_c='\c' ac_t=
 fi
 
-if (echo -e) | sed s/-e/xe/ | grep xe >/dev/null
+# If "echo -e" generates an error, don't do that.  Hey, at least
+# /dev/null works!
+if (echo -e) >/dev/null 2>&1
 then
-    ac_e=''
-else
-    ac_e='-e'
+    if (echo -e) | sed s/-e/xe/ | grep xe >/dev/null
+    then
+	ac_e=''
+    else
+	ac_e='-e'
+    fi
 fi
 
 
