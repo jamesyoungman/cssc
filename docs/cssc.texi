@@ -2434,6 +2434,15 @@ environment variable, see @ref{Environment}.  To determine the current
 setting of the line lenght limit, run @code{admin -V} and read the
 output.
 
+When the @sc{cssc} tools are reading a history file, the lines in the
+@sc{sccs} file are not subject to the limits described above; that is,
+@sc{cssc} imposes these limits on lines it puts @emph{into} the
+@sc{sccs} file, but not on lines it reads @emph{from} the @sc{sccs}
+file.  This means that the @sc{cssc} @code{get} utility will cope with
+arbitrarily long lines in the @sc{sccs} file, even if @sc{cssc} has
+been configured in sauch a way that @code{delta} would not put such
+long lines into the history file.
+
 @node Limitations of diff, Configuration, Maximum Line Length, Interoperability
 @section Limitations of diff
 
@@ -2464,10 +2473,10 @@ files being compared does not end in a newline.  To work around this
 you can either encode the file as a binary file (@pxref{admin}) or add
 a terminating newline (which is usually the best course of action).
 
-The @code{diff} program to be used by tghe @sc{cssc} tools is selected
+The @code{diff} program to be used by the @sc{cssc} tools is selected
 when the @code{configure} script is run, before @sc{cssc} is compiled.
-@xref{Configuration} explains how you can
-determine which diff command is used by @sc{cssc}.
+@ref{Configuration} explains how you can determine which diff command
+is used by @sc{cssc}.
 
 @node Configuration, Bug-for-Bug, Limitations of diff, Interoperability
 @section Checking the Current Configuration
