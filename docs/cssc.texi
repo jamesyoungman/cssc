@@ -2417,7 +2417,7 @@ sets the limit to the specified value.
 This setting can be overridden with the environment variable
 @env{CSSC_MAX_LINE_LENGTH}; for a description of how to use this
 environment variable, see @ref{Environment}.  To determine the current
-setting of the line lenght limit, run @code{admin -V} and read the
+setting of the line length limit, run @code{admin -V} and read the
 output.
 
 If (and only if) you have configured CSSC with such a maximum line
