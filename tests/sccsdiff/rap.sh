@@ -75,38 +75,31 @@ remove  diff.test1 errs
 #
 echo_nonl "D3..."
 remove diff.out
-${sccsdiff} -r1.1 -r1.3 $s 2>&1 >/dev/null | 
-    sed '/No id keywords/d' > diff.out
-
-remove diff.test
-cat > diff.test <<EOF
-
-${get}: ${s}: Requested SID not found.
-Failed to get version 1.3 from ${s}
-EOF
-
-# Expect success
-invariant D3  diff.out diff.test
-remove errs
+${sccsdiff} -r1.1 -r1.3 $s 2>errs >/dev/null 
+rv=$?
+sed '/No id keywords/d' > diff.out < errs
+if [ $rv -ne 1 ]; then
+    fail sccsdiff should return value 1, got $rv.
+else
+    echo passed
+fi
+remove diff.out errs
 
 
 #
 # first sid
 #
-
+remove out
 echo_nonl "D4..."
-${sccsdiff} -r1.3 -r1.1 $s 2>&1 >/dev/null |
-    sed '/No id keywords/d' > diff.out
-
-rm -f diff.test
-cat > diff.test <<EOF
-
-${get}: ${s}: Requested SID not found.
-Failed to get version 1.3 from ${s}
-EOF
-
-# Expect success
-invariant D4  diff.out diff.test
+${sccsdiff} -r1.3 -r1.1 $s 2>errs >/dev/null
+rv=$?
+sed '/No id keywords/d' > diff.out < errs
+if [ $rv -ne 1 ]; then
+    fail sccsdiff should return value 1, got $rv.
+else
+    echo passed
+fi
+remove diff.out errs
 
 
 # N.B. The output from solaris sccsdiff is a little different. diff follows:
