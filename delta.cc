@@ -1,7 +1,7 @@
 /*
  * delta.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.24 1999/03/14 14:58:21 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.25 1999/03/20 00:22:31 james Exp $";
 
 void
 usage() {
