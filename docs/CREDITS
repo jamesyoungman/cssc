@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <97/08/04 23:24:23 james>
+Time-stamp: <97/08/11 21:38:17 james>
 
 The MySC package provides the bulk of the functionality of this
 package, compiled under GCC 2.4.5, and was written by Ross Ridge.
@@ -16,6 +16,9 @@ Dave Bodenstab <imdave@mcs.net> is to be thanked for providing patches
 for FreeBSD-2.0.5 support -- these were largely to fix silly
 assumptions (location of "true", GCC-2.6.3 support), nothing catering
 to FreeBSD especially.
+
+Support for development snapshots of GCC (as of 1997-08-11) was
+contributed by Fila Kolodny <fila@ibi.com>.
 
 
 Local Variables:
