@@ -6,7 +6,7 @@
  *
  * Defines the class seqstate.  
  *
- * @(#) MySC seqstate.h 1.2 93/11/13 00:14:54
+ * @(#) CSSC seqstate.h 1.2 93/11/13 00:14:54
  *
  */
 
