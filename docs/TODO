@@ -1,8 +1,15 @@
-Wed Jul  9 18:22:56 1997  James Youngman  <JYoungman@vggas.com>
+Mon Aug  4 23:33:16 1997  James Youngman  <jay@gnu.ai.mit.edu>
+
+	* Check that Dave Bodenstab's changes also provide for running the
+ 	test suite under SunOS, as I suspect -- because all that was
+ 	required was the ability to select a shell other than /bin/sh.
+	
+
+Wed Jul  9 18:22:56 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Migrate from <cstdio> to <iostream> (any nay-sayers?)
 
-Sat Jun 28 12:25:12 1997  James Youngman  <JYoungman@vggas.com>
+Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Allow the utilities to be built with a shared library containing
  	at least $(SFILE_OBJS) and $(COMMON_OBJS).  May have to provide
@@ -11,15 +18,15 @@ Sat Jun 28 12:25:12 1997  James Youngman  <JYoungman@vggas.com>
  	library, the intent is just to conserve disk space and perhaps
  	system memory too.
 
-Fri Jun 27 19:40:22 1997  James Youngman  <JYoungman@vggas.com>
+Fri Jun 27 19:40:22 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Make sure we can make a branch at a null delta after making it.
 
-Mon May 26 14:56:52 1997  James Youngman  <JYoungman@vggas.com>
+Mon May 26 14:56:52 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Write tests for cdc, comb, rmdel, sact, sccsdiff, val.
 
-Sun May 25 16:27:05 1997  James Youngman  <JYoungman@vggas.com>
+Sun May 25 16:27:05 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Add "installdocs" target and "install" target.
 
