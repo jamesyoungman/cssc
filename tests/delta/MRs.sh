@@ -4,7 +4,7 @@
 # Import common functions & definitions.
 . test-common
 
-remove command.log log log.stdout log.stderr
+remove command.log log log.stdout log.stderr base
 mkdir test 2>/dev/null
 
 # Create the input files.
