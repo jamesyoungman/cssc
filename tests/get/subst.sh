@@ -8,11 +8,12 @@
 
 
 # Get a test file...
-s=s.keywords.txt
+f=keywords.txt
+s=s.$f
 output=get.output
 
 
-remove $s
+remove $s $f
 uudecode < keywords.uue || miscarry could not extract test file.
 
 # Expand all the keywords from the s.file and save the format in 
@@ -57,6 +58,22 @@ expands_to Y "_Y_ \n"
 expands_to Z "_Z_ @(#)\n"                      
 
 # TODO: better tests for Q, D, H, T, Y
+
+
+# Test the -k flag, which disables keyword substitution.
+if percents=`${get} -p -k $s 2>/dev/null | tr -dc % | wc -c`
+then
+    if [ $percents -eq 68 ]
+    then
+	echo D1...passed
+    else
+	fail There should be 68 % signs in the gotten output with -k option.
+    fi
+else
+    fail get without substitution should not fail here.
+fi
+
+
 remove $s $output
 
 # Tests to make sure that the keyword substitution gets the right IDs
@@ -70,8 +87,6 @@ docommand K2 "${get} -p -c971025230457 $s" 0 "1.1 1.1\n" \
 
 # TODO: We currently say Excluded: blah... if a version is 
 # excluded because of the cutoff date.  We should not do that.
-#docommand K2 "${get} -p -c971025230457 $s" 0 "1.1 1.1\n" \
-#	"Excluded:\n1.2\n1.2\n1 lines\n"
 
 
 # tests are finished.
