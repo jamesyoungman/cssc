@@ -15,7 +15,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.6 1997/05/10 14:49:48 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.7 1997/05/17 19:02:25 james Exp $";
 
 void
 usage() {
@@ -37,14 +37,16 @@ main(int argc, char **argv) {
 	mystring mrs, comments;			/* -m -M, -y -Y */
 	const int check = 0;			/* -h */
 	int reset_checksum = 0;			/* -z */
-	
+	int suppress_mrs = 0;	                /* -m (no arg), -M */
+	int suppress_comments = 0;              /* -y (no arg), -Y */
+
 	if (argc > 0) {
 		set_prg_name(argv[0]);
 	} else {
 		set_prg_name("admin");
 	}
 
-	class getopt opts(argc, argv, "ni:Irt:Tf:d:a:e:m:y:hzYMV");
+	class getopt opts(argc, argv, "ni!Ir!t:Tf:d:a:e:m!y!hzYMV");
 	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
 		switch (c) {
 		default:
@@ -55,7 +57,10 @@ main(int argc, char **argv) {
 			break;
 
 		case 'i':
-			iname = opts.getarg();
+			if (strlen(opts.getarg()) > 0)
+			  iname = opts.getarg();
+			else
+			  iname = "-";
 			new_sccs_file = 1;
 			break;
 
@@ -65,12 +70,15 @@ main(int argc, char **argv) {
 			break;
 
 		case 'r':
-			first_release = release(opts.getarg());
-			if (!first_release.valid()) {
-				quit(-2, "Invaild release: '%s'",
-				     opts.getarg());
+		        {
+			  const char *rel = opts.getarg();
+			  first_release = release(rel);
+			  if (!first_release.valid())
+			    {
+			      quit(-1, "Invaild release: '%s'", rel);
+			    }
+			  break;
 			}
-			break;
 
 		case 't':
 			file_comment = opts.getarg();
@@ -98,18 +106,22 @@ main(int argc, char **argv) {
 
 		case 'm':
 			mrs = opts.getarg();
+			suppress_mrs = (mrs == "");
 			break;
 
 		case 'M':
 			mrs = "";
+			suppress_mrs = 1;
 			break;
 
 		case 'y':
 			comments = opts.getarg();
+			suppress_comments = (comments == "");
 			break;
 
 		case 'Y':
 			comments = "";
+			suppress_comments = 1;
 			break;
 
 #if 0
@@ -173,19 +185,27 @@ main(int argc, char **argv) {
 			}
 
 			if (first) {
+			  // The real thing does not prompt the user here.
+			  // Hence we don't either.
+#if 0
 				if (stdin_is_a_tty()) {
-					if (mrs == NULL
+					if (!suppress_mrs && mrs == NULL
 					    && file.mr_required()) {
 						mrs = prompt_user("MRs? ");
 					}
 				}
+#endif
+				if (!file.mr_required() && mrs != NULL)
+				  quit(-1, "MRs not enabled with 'v' flag, "
+				       "can't use 'm' keyword.");
+				
 				mr_list = split_mrs(mrs);
 				comment_list = split_comments(comments);
 				first = 0;
 			}
 
 			if (file.mr_required()) {
-				if (mr_list.length() == 0) {
+				if (!suppress_mrs && mr_list.length() == 0) {
 					quit(-1, "%s: MR number(s) must be "
 						 " supplied.",
 					     (const char *) name);
