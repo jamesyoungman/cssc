@@ -72,16 +72,16 @@ a workalike for the traditional Unix SCCS suite.
 @end ifinfo
 
 @menu
-* Copying::		How you can copy and share @code{CSSC}.
 * Overview::		Preliminary information.
 * Interface::		How to use the suite.
 * Invoking Programs::	How to run the individual CSSC programs.
 * Incomplete::		Missing Features.
 * Problems::		Reporting bugs.
+* Copying::		How you can copy and share @code{CSSC}.
 * Concept Index::	Index of concepts.
 @end menu
 
-@node Overview, Interface, Copying, Top
+@node Overview, Interface, , Top
 @chapter Overview
 @cindex overview
 
@@ -97,6 +97,12 @@ conversion to other formats is possible, this is also sometimes
 impractical.   See the documentation for CVS and RCS. 
 @xref{What is CVS?, ,What is CVS?, cvs, The CVS Manual}.  See also the
 manual pages for RCS.
+
+GNU CSSC is published under the GNU General Public License, which is
+designed to protect your rights, as the user of this program.  You have
+the right to modify this program, and distribute it.  You also have
+responsibilities to those to whom you distribute copies, as detailed in
+the license.  @xref{Copying,,GNU General Public License}.
 
 @cindex Ross Ridge
 @cindex MySC
@@ -726,7 +732,7 @@ horrible kludge, this has not been done.  It is not expected that this
 will cause a problem for any users; if this is a problem for you, let
 the maintainer know and it will be fixed.
 
-@node Problems, Concept Index, Incomplete, Top
+@node Problems, Copying, Incomplete, Top
 @chapter Reporting Bugs
 @cindex bugs
 @cindex problems
@@ -744,25 +750,19 @@ Because the author receives electronic mail on the other side of a
 Microsoft Mail gateway, @sc{mime}-encoded mail will be unintelligible by
 the time it reaches him.  Please encode any files with @samp{uuencode}
 first (please also compress them, preferably with GNU @samp{gzip}, if
-they are large files.  ``Microsoft'' is a registered trademark of
+they are large files).  ``Microsoft'' is a registered trademark of
 Microsoft Corporation.@refill
 
 If you have other questions, comments or suggestions about GNU
 @code{CSSC}, contact the maintainer via electronic mail to
 @w{@samp{JYoungman@@vggas.com}}.
 
-@node Copying, Overview, , Top
-@chapter Copying @code{CSSC}
-GNU CSSC is published under the GNU General Public License, which is
-designed to protect your rights, as the user of this program.  You have
-the right to modify this program, and distribute it.  You also have
-responsibilities to those to whom you distribute copies, as detailed in
-the license, below.
-@ignore
+@node Copying, Concept Index, Problems, Top
+@c @ignore
 @include gpl.texi
-@end ignore
+@c @end ignore
 
-@node Concept Index, , Problems, Top
+@node Concept Index, , Copying, Top
 @unnumbered Concept Index
 
 @cindex tail recursion
