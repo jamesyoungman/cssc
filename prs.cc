@@ -32,7 +32,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.16 1998/06/14 15:26:55 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.17 1998/06/15 20:45:16 james Exp $";
 
 void
 usage() {
@@ -72,21 +72,28 @@ main(int argc, char **argv) {
 			default_processing = 0;
 			break;
 
-		case 'D':
+		case 'D':	// obsolete MySC-ism.
 			default_processing = 0;
 			break;
 
 		case 'r':
-			rid = sid(opts.getarg());
-			if (!rid.valid() || rid.partial_sid())
-			  {
-			    errormsg("Invaild SID: '%s'", opts.getarg());
-			    return 2;
-			  }
-			default_processing = 0;
-			break;
+		  if (strlen(opts.getarg()))
+		    {
+		      rid = sid(opts.getarg());
+		      if (!rid.valid() || rid.partial_sid())
+			{
+			  errormsg("Invaild SID: '%s'", opts.getarg());
+			  return 2;
+			}
+		    }
+		  else
+		    {
+		      // default: get the most recent delta.
+		    }
+		  default_processing = 0;
+		  break;
 
-		case 'R':
+		case 'R':	// obsolete MySC-ism.
 			rid = NULL;
 			default_processing = 0;
 			break;
@@ -134,18 +141,23 @@ main(int argc, char **argv) {
 
 	sccs_file_iterator iter(opts);
 
-	while(iter.next()) {
+	int retval = 0;
+	
+	while (iter.next()) {
 		sccs_name &name = iter.get_name();
 		sccs_file file(name, sccs_file::READ);
 
 		if (default_processing) {
 			printf("%s:\n\n", name.c_str());
 		}
-		file.prs(stdout, format, rid, cutoff_date, selected,
-			 all_deltas);
+		if (!file.prs(stdout, format, rid, cutoff_date, selected,
+			      all_deltas))
+		  {
+		    retval = 1;
+		  }
 	}
 
-	return 0;
+	return retval;
 }
 
 
