@@ -1,8 +1,9 @@
 This is the README file for GNU CSSC, a workalike for the source code
 control system SCCS.  It is based on the MySC package by Ross Ridge.
 
-CSSC is currently under development so expect problems with compiling
-the package on older machines and perhaps even incorrect operation.
+Although this is a full public release of CSSC, there are features of
+the SCCS suite which are not fully implemented.  The most important of
+these is excluded deltas.
 
 Specific information about compiling CSSC on particular platforms is
 provided in the file "docs/Platforms".
