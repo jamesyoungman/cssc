@@ -36,7 +36,6 @@
 
 #define _BSD_SOURCE
 #define DEBUG (1)
- 
 
 #ifndef lint
 static const char copyright[] =
@@ -45,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.19 1999/03/20 00:22:42 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.20 1999/03/21 09:23:27 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -435,7 +434,7 @@ int command (char *argv[], bool forkflag, const char *arg0);
 int callprog (const char *progpath, short flags,
 	      char *const argv[], bool forkflag);
 int clean (int mode, char *const argv[]);
-int dodiff (char *const getv[], const char *gfile);
+int dodiff (char * getv[], const char *gfile);
 int isbranch (const char *sid);
 void putpfent (register const struct pfile *pf, register FILE * f);
 bool safepath (register const char *p);
@@ -455,6 +454,7 @@ static char *gstrncat (char *to, const char *from, int n, int length);
 static char *gstrcpy (char *to, const char *from, int length);
 static void gstrbotch (const char *str1, const char *str2);
 static void  gstrbotchn (int avail, const char *, int, const char *, int);
+static int absolute_pathname (const char *);
 
 static char *str_dup (const char *);
 static void childwait(int pid, int *status_ptr, int ignoreintr);
@@ -781,7 +781,6 @@ main (int argc, char **argv)
     }
 }
 
-/* Warning in do_enter*/
 char ** do_enter(char *argv[], char **np, char **ap,
 		 int *rval)
 {
@@ -801,7 +800,7 @@ char ** do_enter(char *argv[], char **np, char **ap,
       strcpy (buf2, "-i");
       gstrcat (buf2, np[0], sizeof (buf2));
       ap[0] = buf2;	/* sccs enter foo --> admin -ifoo */
-      argv[0] = tail_nc (np[0]);	/* ?Warning: discards const */
+      argv[0] = tail_nc (np[0]);
       argv[1] = NULL;
       *rval = command (ap, TRUE, "admin");
 
@@ -963,12 +962,12 @@ command (char *argv[], bool forkflag, const char *arg0)
   if (1)			/* introduce scope for editchs. */
     {
       char *editchs;
-      const char *p;
       
       editchs = NULL;
       if (1)			/* introduce scope */
 	{
 	  char *q;
+	  const char *p;
       
 	  for (p = arg0, q = buf; *p != '\0' && *p != '/';)
 	    {
@@ -1011,18 +1010,20 @@ command (char *argv[], bool forkflag, const char *arg0)
 
       for (; *argv != NULL; argv++)
 	{
+	  char *p;
+
 	  p = *argv;
 	  if (*p == '-')
 	    {
 	      if (p[1] == '\0' || editchs == NULL || index (editchs, p[1]) != NULL)
-		*np++ = p;	/* Warning: discards const */
+		*np++ = p;
 	    }
 	  else
 	    {
 	      if (!bitset (NO_SDOT, cmd->sccsflags))
 		p = makefile (p);	/* MEMORY LEAK (of returned value) */
 	      if (p != NULL)
-		*np++ = p;	/* Warning: discards const */
+		*np++ = p;
 	    }
 	}
       *np = NULL;
@@ -1124,7 +1125,7 @@ command (char *argv[], bool forkflag, const char *arg0)
 
     case DIFFS:		/* diff between s-file & edit file */
       {
-	const char *s;
+	char *s;
 	
 	/* find the end of the flag arguments */
 	for (np = &ap[1]; *np != NULL && **np == '-'; np++)
@@ -1142,7 +1143,7 @@ command (char *argv[], bool forkflag, const char *arg0)
 	    this_ret = dodiff (ap, tail (*argv));
 	    if (rval == 0)
 	      rval = this_ret;
-	    argv[1] = s;	/* Warning: discards const */
+	    argv[1] = s;
 	  }
       }
       break;
@@ -2018,9 +2019,8 @@ unedit (const char *fn)
    **   Side Effects:
    **           none.
  */
-/* Warning in dodiff */
 int 
-dodiff (char *const getv[], const char *gfile)
+dodiff (char * getv[], const char *gfile)
 {
   int pipev[2];
   int rval;
@@ -2048,7 +2048,7 @@ dodiff (char *const getv[], const char *gfile)
       /* in parent; run get */
       OutFile = pipev[1];
       close (pipev[0]);
-      rval = command (&getv[1], TRUE, "get:rcixt -s -k -p"); /* Warning */
+      rval = command (&getv[1], TRUE, "get:rcixt -s -k -p");
 
       childwait(pid, &st, 1);	/* ignore SIGINT while waiting. */
       /* ignore result of diff */
@@ -2062,7 +2062,7 @@ dodiff (char *const getv[], const char *gfile)
 	  syserr ("dodiff: magic failed");
 	  exit (CSSC_EX_OSERR);
 	}
-      command (&getv[1], FALSE, "-diff:elsfhbC"); /* Warning: discards const */
+      command (&getv[1], FALSE, "-diff:elsfhbC");
     }
   return rval;
 }
