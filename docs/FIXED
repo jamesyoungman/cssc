@@ -1,7 +1,24 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <97/06/30 18:56:33 james>
+Time-stamp: <97/11/05 19:12:40 james>
 
 List of fixed bugs 
+
+
+Naturally there are many CSSC bugs that have been fixed but are not
+listed here.  Bugs are only listed here if they have ever been listed
+in the BUGS file.  Bugs that are discovered by the maintainers and
+which are fixed before the next release are also probably not listed
+(even if the big ones are mentioned in the NEWS file).  This doesn't
+mean that the unmentioned bug is not in any released version; it may
+have been present in all previous versions, there just wasn't a
+release made while this bug was KNOWN.  The ``real'' criterion is, if
+it's easier to just fix the bug than list it in BUGS _and_ I do it
+promptly, it does not get listed.  If you don't like this (lack of?)
+policy, let me know.  All bugfixes are listed in ChangeLog, in some
+fashion.
+
+
+
 
 Sun May  4 13:12:57 1997:
 ./get -r2 -e s.foo doesn't create a new release, it just gets the most
