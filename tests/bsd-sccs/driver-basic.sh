@@ -37,6 +37,15 @@ then
     sccs="${sccsprog} ${sccsargs}"
 fi
 
+# If LANG is defined but the system is misconfigured, we will produce
+# the error message "Error setting locale: No such file or directory".
+# If that happens, the test suite will fail.  For this reason, we
+# unset the LANG environment variable.  Of course, things being
+# printed out in the wrong language would also mess up the results of
+# the test suite.
+# We want to prevent setlocale(LC_ALL, "") failing:
+unset LANG
+
 
 remove command.log log log.stdout log.stderr SCCS
 mkdir SCCS 2>/dev/null
