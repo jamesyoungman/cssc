@@ -39,7 +39,7 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.45 2002/08/16 10:53:01 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.46 2002/08/16 10:59:57 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -441,7 +441,7 @@ main(int argc, char **argv)
                  */
                 give_up_privileges();
                 if (!set_gfile_mode(gname, 0444))
-                  retval = 1;
+                    status.success = false;
                 restore_privileges();
                 
                 maybe_clear_archive_bit(gname);
