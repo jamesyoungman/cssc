@@ -5,11 +5,14 @@
 # Import common functions & definitions.
 . ../common/test-common
 
+
+sid=1.1
+
 expands_to () {
     # $1 -- label
     # $2 -- format
     # $3 -- expansion
-docommand $1 "${prs} \"-d$2\" -r1.1 s.1" 0 "$3"
+docommand $1 "${prs} \"-d$2\" -r${sid} s.1" 0 "$3" IGNORE
 }
 
 remove s.1 p.1 1 z.1
@@ -51,6 +54,8 @@ expands_to X16 'x\\ty'   'x\ty\n'
 expands_to X17 'x\\ny'   'x\ny\n'
 expands_to X18 ':FD:'   'Descriptive Text\n\n'
 
+
+
 remove got.stdout expected.stdout
 echo_nonl Z1...
 ${prs}  -d'\\' s.1 > got.stdout 2>got.stderr || fail prs failed.
@@ -64,6 +69,49 @@ echo passed
 # Make sure prs accepts an empty "-r" option.
 docommand Z2 "${prs} -r -d':M:\n' s.1" 0 "1
 " ""
+
+remove s.1
+docommand  K0 "cp sample_foo s.1" 0 IGNORE IGNORE
+docommand  K1 "${admin} -fqQFLAG s.1" 0 IGNORE IGNORE
+
+expands_to K2 ':Dy:'   '02\n'
+expands_to K3 ':Dm:'   '03\n'
+expands_to K4 ':Dd:'   '16\n'
+
+expands_to K5 ':Th:'   '21\n'
+expands_to K6 ':Tm:'   '39\n'
+expands_to K7 ':Ts:'   '36\n'
+
+
+docommand _1 "${get} -e -x1.1 -r1.2 s.1" 0 IGNORE IGNORE
+echo hello >> 1 || miscarry "could not write to file '1'"
+#docommand _2 "${delta} -g1.1 s.1" 0 IGNORE IGNORE
+docommand _2 "${delta} -y'You only Live Twice'  s.1" 0 IGNORE IGNORE
+docommand _3 "${admin} -fi -ftMODULE_TYPE -fl1 s.1" 0 IGNORE IGNORE
+docommand _4 "${admin} -asanta s.1" 0 IGNORE IGNORE
+
+
+sid=1.2.1.1
+# Excluded deltas
+expands_to K8 ':Dx:'   '1.1\n'
+
+# Ignored deltas
+# expands_to K9 ':Dg:'   '1.2\n'
+expands_to K9 ':Dg:'   '\n'
+
+# Authorised user list
+expands_to K10 ':UN:'   'santa\n\n'
+
+# Module type (t) flag
+expands_to K11 ':Y:'   'MODULE_TYPE\n'
+
+# KF - keyword warning flag
+expands_to K12 ':KF:'   'yes\n'
+
+expands_to K13 ':LK:'   '1\n'
+expands_to K14 ':Q:'   'QFLAG\n'
+## 
+## 
 
 remove s.1 p.1 z.1 1 command.log
 success
