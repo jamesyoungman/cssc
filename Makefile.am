@@ -17,6 +17,7 @@ csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
 csscutil_SCRIPTS = sccsdiff 
 
 BUILT_SOURCES = version.cc
+CLEANFILES = sccsdiff
 
 noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	filepos.h my-getopt.h linebuf.h mylist.h mystring.h pfile.h \
