@@ -299,7 +299,7 @@ bool Debug;			/* turn on tracing */
 
 void syserr (const char *fmt,...);
 void usrerr (const char *fmt,...);
-int command (char *const argv[], bool forkflag, const char *arg0);
+int command (char *argv[], bool forkflag, const char *arg0);
 int callprog (const char *progpath, short flags,
 	      char *const argv[], bool forkflag);
 int clean (int mode, char *const argv[]);
@@ -394,6 +394,43 @@ main (int argc, char **argv)
   exit (i);
 }
 
+
+char ** do_enter(char *argv[], char **np, char **ap,
+		 int *rval)
+{
+  char buf2[FBUFSIZ];
+  char *argv_tmp;
+  
+  /* skip over flag arguments */
+  for (np = &ap[1]; *np != NULL && **np == '-'; np++)
+    continue;
+  argv = np;
+  
+  /* do an admin for each file */
+  argv_tmp = argv[1];
+  while (np[0] != NULL)
+    {
+      printf ("\n%s:\n", *np);
+      strcpy (buf2, "-i");
+      gstrcat (buf2, np[0], sizeof (buf2));
+      ap[0] = buf2;	/* sccs enter foo --> admin -ifoo */
+      argv[0] = tail (np[0]);	/* ERR */
+      argv[1] = NULL;	/* ERR */
+      *rval = command (ap, TRUE, "admin");
+
+      argv[1] = argv_tmp;	/* ERR */
+      if (*rval == 0)
+	{
+	  strcpy (buf2, ",");
+	  gstrcat (buf2, tail (np[0]), sizeof (buf2));
+	  if (link (np[0], buf2) >= 0)
+	    unlink (np[0]);
+	}
+      np++;
+    }
+  return np;
+}
+
 /*
    **  COMMAND -- look up and perform a command
    **
@@ -418,25 +455,22 @@ main (int argc, char **argv)
  */
 
 int 
-command (char *const argv[], bool forkflag, const char *arg0)
+command (char *argv[], bool forkflag, const char *arg0)
 {
   const struct sccsprog *cmd;
-  const char *p;
   char buf[FBUFSIZ];
   char *nav[1000];
   char **np;
   char **ap;
-  int i;
-  char *q;
-  int rval = 0;
-  char *editchs;
+  int rval = 0;			/* value to be returned. */
 
 #ifdef DEBUG
   if (Debug)
     {
+      int i;
       printf ("command:\n\t\"%s\"\n", arg0);
-      for (np = argv; *np != NULL; np++)
-	printf ("\t\"%s\"\n", *np);
+      for (i=0; argv[i] != NULL; ++i)
+	printf ("\t\"%s\"\n", argv[i]);
     }
 #endif
 
@@ -447,61 +481,73 @@ command (char *const argv[], bool forkflag, const char *arg0)
    */
 
   np = ap = &nav[1];
-  editchs = NULL;
-  for (p = arg0, q = buf; *p != '\0' && *p != '/';)
+  if (1)			/* introduce scope for editchs. */
     {
-      *np++ = q;
-      while (*p == ' ')		/* wind p to next word. */
-	p++;
-      while (*p != ' ' && *p != '\0' && *p != '/' && *p != ':')
-	*q++ = *p++;
-      *q++ = '\0';
-      if (*p == ':')
+      char *editchs;
+      const char *p;
+      
+      editchs = NULL;
+      if (1)			/* introduce scope */
 	{
-	  editchs = q;
-	  while (*++p != '\0' && *p != '/' && *p != ' ')
-	    *q++ = *p;
-	  *q++ = '\0';
+	  char *q;
+      
+	  for (p = arg0, q = buf; *p != '\0' && *p != '/';)
+	    {
+	      *np++ = q;
+	      while (*p == ' ')		/* wind p to next word. */
+		p++;
+	      while (*p != ' ' && *p != '\0' && *p != '/' && *p != ':')
+		*q++ = *p++;
+	      *q++ = '\0';
+	      if (*p == ':')
+		{
+		  editchs = q;
+		  while (*++p != '\0' && *p != '/' && *p != ' ')
+		    *q++ = *p;
+		  *q++ = '\0';
+		}
+	    }
 	}
-    }
-  *np = NULL;
-  if (*ap == NULL)
-    *np++ = *argv++;
+  
+      *np = NULL;
+      if (*ap == NULL)
+	*np++ = *argv++;
 
-  /*
-     **  Look up command.
-     ** At this point, *ap is the command name.
-   */
+      /*
+      **  Look up command.
+      ** At this point, *ap is the command name.
+      */
 
-  cmd = lookup (*ap);
-  if (cmd == NULL)
-    {
-      usrerr ("Unknown command \"%s\"", *ap);
-      return (EX_USAGE);
-    }
-
-  /*
-     **  Copy remaining arguments doing editing as appropriate.
-   */
-
-  for (; *argv != NULL; argv++)
-    {
-      p = *argv;
-      if (*p == '-')
+      cmd = lookup (*ap);
+      if (cmd == NULL)
 	{
-	  if (p[1] == '\0' || editchs == NULL || index (editchs, p[1]) != NULL)
-	    *np++ = p;		/* ERR */
+	  usrerr ("Unknown command \"%s\"", *ap);
+	  return (EX_USAGE);
 	}
-      else
-	{
-	  if (!bitset (NO_SDOT, cmd->sccsflags))
-	    p = makefile (p);	/* LEAK */
-	  if (p != NULL)
-	    *np++ = p;		/* ERR */
-	}
-    }
-  *np = NULL;
 
+      /*
+      **  Copy remaining arguments doing editing as appropriate.
+      */
+
+      for (; *argv != NULL; argv++)
+	{
+	  p = *argv;
+	  if (*p == '-')
+	    {
+	      if (p[1] == '\0' || editchs == NULL || index (editchs, p[1]) != NULL)
+		*np++ = p;		/* ERR */
+	    }
+	  else
+	    {
+	      if (!bitset (NO_SDOT, cmd->sccsflags))
+		p = makefile (p);	/* LEAK */
+	      if (p != NULL)
+		*np++ = p;		/* ERR */
+	    }
+	}
+      *np = NULL;
+    }
+  
   /*
      **  Interpret operation associated with this command.
    */
@@ -510,8 +556,8 @@ command (char *const argv[], bool forkflag, const char *arg0)
     {
     case SHELL:		/* call a shell file */
       {
-	*ap = cmd->sccspath;	/* ERR */
-	*--ap = "sh";
+	ap[0]  = cmd->sccspath;	/* ERR */
+	ap[-1] = "sh";
 	rval = callprog (_PATH_BSHELL, cmd->sccsflags, ap, forkflag);
       }
       break;
@@ -524,13 +570,15 @@ command (char *const argv[], bool forkflag, const char *arg0)
 
     case CMACRO:		/* command macro */
       {
+	const char *s;
+	
 	/* step through & execute each part of the macro */
-	for (p = cmd->sccspath; *p != '\0'; p++)
+	for (s = cmd->sccspath; *s != '\0'; s++)
 	  {
-	    const char *qq = p;
-	    while (*p != '\0' && *p != '/')
-	      p++;
-	    rval = command (&ap[1], *p != '\0', qq);
+	    const char *qq = s;
+	    while (*s != '\0' && *s != '/')
+	      s++;
+	    rval = command (&ap[1], *s != '\0', qq);
 	    if (rval != 0)
 	      break;
 	  }
@@ -582,22 +630,25 @@ command (char *const argv[], bool forkflag, const char *arg0)
 
     case DIFFS:		/* diff between s-file & edit file */
       {
+	const char *s;
+	
 	/* find the end of the flag arguments */
 	for (np = &ap[1]; *np != NULL && **np == '-'; np++)
 	  continue;
 	argv = np;
 
 	/* for each file, do the diff */
-	p = argv[1];
+	s = argv[1];
 	while (*np != NULL)
 	  {
+	    int this_ret;
 	    /* messy, but we need a null terminated argv */
 	    *argv = *np++;	/* ERR */
 	    argv[1] = NULL;	/* ERR */
-	    i = dodiff (ap, tail (*argv));
+	    this_ret = dodiff (ap, tail (*argv));
 	    if (rval == 0)
-	      rval = i;
-	    argv[1] = p;	/* ERR */
+	      rval = this_ret;
+	    argv[1] = s;	/* ERR */
 	  }
       }
       break;
@@ -628,34 +679,7 @@ command (char *const argv[], bool forkflag, const char *arg0)
       break;
 
     case ENTER:		/* enter new sccs files */
-      {
-	/* skip over flag arguments */
-	for (np = &ap[1]; *np != NULL && **np == '-'; np++)
-	  continue;
-	argv = np;
-
-	/* do an admin for each file */
-	p = argv[1];
-	while (*np != NULL)
-	  {
-	    printf ("\n%s:\n", *np);
-	    strcpy (buf, "-i");
-	    gstrcat (buf, *np, sizeof (buf));
-	    ap[0] = buf;	/* sccs enter foo --> admin -ifoo */
-	    argv[0] = tail (*np);	/* ERR */
-	    argv[1] = NULL;	/* ERR */
-	    rval = command (ap, TRUE, "admin");
-	    argv[1] = p;	/* ERR */
-	    if (rval == 0)
-	      {
-		strcpy (buf, ",");
-		gstrcat (buf, tail (*np), sizeof (buf));
-		if (link (*np, buf) >= 0)
-		  unlink (*np);
-	      }
-	    np++;
-	  }
-      }
+      np = do_enter(argv, np, ap, &rval);
       break;
 
     default:
@@ -670,7 +694,7 @@ command (char *const argv[], bool forkflag, const char *arg0)
   if (Debug)
     printf ("command: rval=%d\n", rval);
 #endif
-  return (rval);
+  return rval;
 }
 
 
@@ -763,7 +787,7 @@ callprog (const char *progpath,
 	  syserr ("cannot fork");
 	  exit (EX_OSERR);
 	}
-      else if (i > 0)
+      else if (i > 0)		/* parent */
 	{
 	  while ((wpid = wait (&st)) != -1 && wpid != i)
 	    ;
@@ -803,6 +827,10 @@ callprog (const char *progpath,
       syserr ("callprog: setting stdout w/o forking");
       exit (EX_SOFTWARE);
     }
+
+  /* 
+   * in child.
+   */
 
   /* set protection as appropriate */
   if (bitset (REALUSER, flags))
