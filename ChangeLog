@@ -1,4 +1,38 @@
-2002-11-02  James Youngman <jay@gnu.org>
+2003-03-01  james_youngman  <jay@gnu.org>
+
+	* sf-write.cc, sccsfile.h:
+	Recognise BitKeeper files by their different checksum lines, and
+	accept also the BK-specific comment lines and extra flags (though
+	don't accept them if the file is not a BK file).
+
+	* sccsfile.cc: Updated copyright years.
+
+	* sccsfile.h, sccsfile.cc:
+	Recognise BitKeeper files by their different checksum lines, and
+	accept also the BK-specific comment lines and extra flags (though
+	don't accept them if the file is not a BK file).
+
+2003-02-13  james_youngman  <jay@gnu.org>
+
+	* tests/get/sf664900.sh, sf-get2.cc:
+	One-line fix for SourceForge bug 664900 by Darren Warner.
+
+	* configure.ac, acconfig.h:
+	Fix CSSC bug 650420 - warnings from autoconf/autoheader about obsolete usage
+	of acconfig.h file.
+
+2002-12-08  james_youngman  <jay@gnu.org>
+
+	* testutils/Makefile.am:
+	Include "decompress_stdin.sh.in" in the distribution.
+
+	* ChangeLog: Updated for 0.15pl0.
+
+	* configure.ac: Bumped to version 0.15pl0.
+
+	* NEWS: Added NEWS items for version 0.15pl0.
+
+2002-11-02  james_youngman  <jay@gnu.org>
 
 	* seqstate.cc, seqstate.h, sf-get2.cc, sf-get.cc:
 	support for ignored deltas
