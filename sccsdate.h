@@ -31,76 +31,47 @@
 #ifndef CSSC__SCCSDATE_H__
 #define CSSC__SCCSDATE_H__
 
-#include <time.h>
-
 #ifdef __GNUC__
 #pragma interface
 #endif
 
-class sccs_date {
-	time_t t;
+class sccs_date
+{
+  int year;
+  int month;
+  int month_day;
+
+  int hour;
+  int minute;
+  int second;
+
+  // derived data
+  int yearday;			// days since start of year.
+  int daysecond;		// seconds since start of day.
 	
-	sccs_date(int, int) {}
-
 public:
-	sccs_date(): t((time_t) -1) {}
-	sccs_date(const char *cutoff);
-	sccs_date(const char *date, const char *time);
+  sccs_date();
+  sccs_date(const char *cutoff);
+  sccs_date(const char *date, const char *time);
+  sccs_date(int yr, int mth, int day,
+	    int hr, int min, int sec);
 
-	int valid() const { return t != -1; }
+  int valid() const;
 
-	static sccs_date now() {
-		sccs_date temp(0, 0);
-		time(&temp.t);
-		return temp;
-	}
+  static sccs_date now();
+  mystring as_string() const;
+  
+  int printf(FILE *f, char fmt) const;
+  int print(FILE *f) const;
 
-	const char *as_string() const;
+  int operator >(sccs_date const &) const;
+  int operator <(sccs_date const &) const;
 
-	int printf(FILE *f, char fmt) const;
-	int print(FILE *f) const;
+  int operator <=(sccs_date const &) const;
 
-#ifdef CONFIG_USE_DIFFTIME
-	int
-	operator >(sccs_date const &d) const {
-		return difftime(t, d.t) > 0;
-	}
-
-	int
-	operator <(sccs_date const &d) const {
-		return difftime(t, d.t) < 0;
-	}
-
-	int
-	operator >=(sccs_date const &d) const {
-		return difftime(t, d.t) >= 0;
-	}
-
-	int
-	operator <=(sccs_date const &d) const {
-		return difftime(t, d.t) <= 0;
-	}
-
-	int
-	operator ==(sccs_date const &d) const {
-		return difftime(t, d.t) == 0;
-	}
-
-	int
-	operator !=(sccs_date const &d) const {
-		return difftime(t, d.t) != 0;
-	}
-
-#else /* CONFIG_USE_DIFFTIME */
-
-	int operator >(sccs_date const &d) const { return t > d.t; }
-	int operator <(sccs_date const &d) const { return t < d.t; }
-	int operator >=(sccs_date const &d) const { return t >= d.t; }
-	int operator <=(sccs_date const &d) const { return t <= d.t; }
-	int operator ==(sccs_date const &d) const { return t == d.t; }
-	int operator !=(sccs_date const &d) const { return t != d.t; }
-
-#endif /* CONFIG_USE_DIFFTIME */
+private:
+  inline int compare(sccs_date const &) const;
+  void update_yearday();
 };
 
 
