@@ -1,15 +1,67 @@
+1998-05-12  James Youngman  <jay@gnu.org>
+
+	* configure.in: Moved to 0.06alpha.pl8
+
+	* NEWS: Additions for 0.06pl8.
+
+1998-05-11  James Youngman  <jay@gnu.org>
+
+	* testutils/README: Fixed typo.
+
+	* tests/prt/inputs/s.reportmr.1, tests/prt/reportmr.sh:
+	New tests for those cases where there are MRs to be reported.
+
+	* sf-prt.cc, prt.cc:
+	Make sure the MR list (etc.) is formatted correctly when we are
+	printing one delta per line.
+
+1998-05-10  James Youngman  <jay@gnu.org>
+
+	* bodyio.cc:
+	Don't store the result of getc() in a char, use an int -- that way, we
+	can detect EOF.
+
+	* sf-write.cc:
+	Remove comment discussing broken behaviour with "admin -i" and
+	nonseekable binary standard input that has now been fixed.
+
+	* testutils/lndir.c: Ignore CVS directories too.
+
+1998-05-09  James Youngman  <jay@gnu.org>
+
+	* sf-rmdel.cc, sid.cc, sccs-delta.cc, sccsname.cc, prs.cc,
+	quit.cc, pipe.cc, fsync.cc, pf-add.cc, file.cc, fileiter.cc,
+	delta.cc, cdc.cc, delta-table.cc: 
+	Get the name of the file right, in each file's comment header.
+
+	* sf-write.cc, sccsfile.h:
+	Fixed some compilation errors; warnings about passing "unsigned *pSum" when "int *pSum" is required.
+
+	* docs/Platforms, docs/CREDITS, docs/FIXED, docs/BUGS:
+	Updated lists of outstanding anb fixed bugs, added people to CREDITS,
+	and did some housekeeping in Platforms.
+
+	* docs/cssc.texi:
+	Added clarification that the file that must be specified on the
+	"delta" command line is that of the s-file, not the working file.
+
 1998-05-08  James Youngman  <jay@gnu.org>
 
 	* CSSC-0.06alpha.pl7 released.
 	
+	* NEWS, configure.in, ChangeLog: Released 0.06alpha.pl7.
+
+	* docs/cssc.texi: Added header for install-info.
+
 	* auxfiles/CSSC.spec:
 	Included mods from John Interrante <interran@crd.ge.com>,
 	except his patch to pathname.h; must apply that RSN.
 
-	* sf-delta.cc, seqstate.cc, seqstate.h, sccsfile.cc, delta-iterator.h, Makefile.am:
-	Fixed bug in seqstate.h that manifested with Codemgr SCCS files.  This
-	required the introduction of seqstate.cc and a modification to
-	sf-delta.cc as well.
+	* sf-delta.cc, seqstate.cc, seqstate.h, sccsfile.cc,
+	delta-iterator.h, Makefile.am: Fixed bug in seqstate.h that
+	manifested with Codemgr SCCS files.  This required the
+	introduction of seqstate.cc and a modification to sf-delta.cc as
+	well.
 
 1998-05-06  James Youngman  <jay@gnu.org>
 
