@@ -1,4 +1,4 @@
-TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff
+TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -66,6 +66,13 @@ test-sccsdiff: links
 
 test-cdc: links
 	$(SHELL) -ec 'cd cdc && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
+test-binary: links
+	$(SHELL) -ec 'cd binary && for i in *.sh ; \
 	do \
 		echo Running test $$i; \
 		$(SHELL) $$i || exit 1; \
