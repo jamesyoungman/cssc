@@ -16,7 +16,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.14 1997/06/02 23:07:11 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.15 1997/06/03 20:18:00 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -279,7 +279,10 @@ sccs_file::find_next_sid(sid requested, sid got,
   bool forced_branch = false;
 
   sid next = requested;
-  ++next;
+  if (next.release_only())
+    next.next_level();
+  else
+    ++next;
   
   if (want_branch)
     {
@@ -291,15 +294,18 @@ sccs_file::find_next_sid(sid requested, sid got,
   else
     {
       // We may be forced to create a branch anyway.
+
+      // have we hit the release ceiling?
       const bool too_high = requested.on_trunk() 
 	&& flags.ceiling.valid() && release(requested) > flags.ceiling;
-      bool branch_again = (4 == ncomponents && sid_in_use(next, pfile));
-      // If joint edits of deltas are not allowed, dont branch to avoid 
-      // collison with planned deltas.
-      if (!flags.joint_edit)
-	branch_again = false;
+
+      // have we collided with an existing SID?
+      const bool branch_again
+	= delta_table.find(next) && !requested.partial_sid();
+      
       if (too_high || branch_again)
 	{
+	  next = got;
 	  next.next_branch();
 	  forced_branch = true;
 	}
@@ -315,7 +321,7 @@ sccs_file::find_next_sid(sid requested, sid got,
 	  next.next_branch();
 	}
     }
-  
+
   assert(!sid_in_use(next, pfile));
   return next;
 }
