@@ -32,46 +32,54 @@
 #define CSSC__LIST_H__
 
 template <class TYPE>
-class list {
+class list
+{
 protected:
-	TYPE *array;
-	int len;
-	int left;
-
-	void destroy();
-	void copy(list const &l);
-
+  TYPE *array;
+  int len;
+  int left;
+  
+  void destroy();
+  void copy(list const &l);
+  
 public:
-	list(): len(0), left(0) {}
-	list(list const &l) { copy(l); }
-	
-	list &operator =(list const &l);
+  list(): len(0), left(0) {}
+  list(list const &l) { copy(l); }
+  
+  list &operator =(list const &l);
+  
+  void
+  operator =(void *p)
+    {
+      ASSERT(p == NULL);
+      destroy();
+      len = 0;
+      left = 0;
+    }
+  
+  void add(TYPE const &ent);
 
-	void
-	operator =(void *p) {
-		ASSERT(p == NULL);
-		destroy();
-		len = 0;
-		left = 0;
-	}
+  int length() const
+    {
+      return len;
+    }
+  
 
-	void add(TYPE const &ent);
+  TYPE const &
+  operator [](int index) const
+    {
+      ASSERT(index >= 0 && index < len);
+      return array[index];
+    }
 
-	int length() const { return len; }
+  TYPE &
+  select(int index) const
+    {
+      ASSERT(index >= 0 && index < len);
+      return array[index];
+    }
 
-	TYPE const &
-	operator [](int index) const {
-		ASSERT(index >= 0 && index < len);
-		return array[index];
-	}
-
-	TYPE &
-	select(int index) const {
-		ASSERT(index >= 0 && index < len);
-		return array[index];
-	}
-
-	~list();
+  ~list();
 };
 
 /* Appends the contents of one list to another. */
