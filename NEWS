@@ -1,5 +1,8 @@
 New in CSSC-0.13alpha-pl1
 
+	* get -e should re-use deltas that have been removed 
+	  (SF bug ID 450900, new test case tests/get/removed-delta.sh)
+
 	* Fixed Debian GNU/Linux bug #120080 (that sccs sccsdiff fails to 
           work if the /usr/sccs symbolic link is missing and the 
           libexecfir is not on the caller's $PATH).
