@@ -16,7 +16,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.11 1997/05/31 22:48:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.12 1997/06/01 12:05:35 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -104,7 +104,7 @@ sccs_file::find_requested_sid(sid requested, sid &found) const
       while(iter.next())
 	{
 	  sid const &id = iter->id;
-	  if (!got_best && root.is_trunk_successor(id))
+	  if (!got_best && (root.is_trunk_successor(id) || root == id) )
 	    {
 	      got_best = true;
 	      best = id;
