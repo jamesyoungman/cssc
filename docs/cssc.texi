@@ -218,7 +218,7 @@ revisions in.  Users must be specified by name and groups by numeric
 
 This feature is often used in conjunction with a setuid installation of
 the @code{sccs} driver program (@pxref{sccs}). This is not a good idea
-because the @sc{CSSC} suite is not secure (@pxref{Known Problems}).
+because the @sc{cssc} suite is not secure (@pxref{Known Problems}).
 
 @item -b
 @cindex Binary files
@@ -232,7 +232,7 @@ Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
 Erase the specified user or group from the list of those authorized to
 check revisions in or out.  
 
-@item -fF @var{[xxx]}
+@item -fF [@var{xxx}]
 Add the flag @samp{F} (with optional value @var{xxx}) to the file's 
 flags (@pxref{Flags}).
 
@@ -2248,7 +2248,7 @@ for example if it is a pipe, then this doesn't always work.  The
 part of the body, before the offending segment of the file.  The exit
 value of the @code{admin} program is nevertheless still zero.  Tests for
 this situation are in @file{tests/binary/seeking.sh} but these tests are
-only carried out if the program under test seems to be @sc{CSSC} rather
+only carried out if the program under test seems to be @sc{cssc} rather
 than the genuine @sc{sccs} suite.
 
 @end enumerate
@@ -2285,8 +2285,8 @@ Values of ``yy'' which range from 00 -- 68 are to be interpreted
 as 2000 -- 2068 respectively.  This interpretation ensures that 
 the year 2000 compliant version of @sc{sccs} will work at least 
 to the year 2068.  By implementing X/Open's standard, Sun has 
-ensured @sc{SCCS} user's compatibility with other providers of
-the @sc{SCCS} utility.  For more information please refer to: 
+ensured @sc{sccs} user's compatibility with other providers of
+the @sc{sccs} utility.  For more information please refer to: 
 @url{http://www.xopen.org/public/tech/base/year2000.html}
 
 @sp 2
