@@ -1,3 +1,7 @@
+New in CSSC-0.06alpha-pl0
+
+	* Binary file support (with test suite support).
+
 New in CSSC-0.05alpha-pl1
 
 	* When root runs "get -e", we used to get a "target file

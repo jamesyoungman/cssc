@@ -7,8 +7,8 @@
 @c %**end of header
 
 @set EDITION 1.0
-@set VERSION 0.05alpha
-@set UPDATED Sun Jan 11 16:52:22 1998
+@set VERSION 0.06alpha
+@set UPDATED Thu Feb 12 21:48:21 1998
 
 @macro authoraddr
 @w{@samp{jay@@gnu.org}}
@@ -197,8 +197,7 @@ Add user or group @var{xxx} the the list of those authorized
 to check revisions in or out.  
 
 @item -b
-Ensure that the file is encoded as a binary file.   Unimplemented.
-@c TODO: write the code, write the test cases, and document it.
+Ensure that the file is encoded as a binary file.   
 
 @item -d@var{F}
 Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
@@ -1214,9 +1213,11 @@ Print the body of the @sc{sccs} file.  This is printed in a readable
 format.  The control character @samp{^A} (Control-A, ASCII code 1) which
 starts some lines of an @sc{sccs} file is printed as three asterisks,
 @samp{***}.  Lines that do not start with the control character are
-indented by one tab stop.   If you want to extract the actual body of
-the @sc{sccs} file, use the @samp{:BD:} keyword of @code{prs}
-(@pxref{Data Keywords}.
+indented by one tab stop.  For encoded (binary) files, the encoded form
+of the file data is printed (this is what actually appears in the
+@sc{sccs} fuile itself).  If you want to extract the actual body of the
+@sc{sccs} file, use the @samp{:BD:} keyword of @code{prs} (@pxref{Data
+Keywords}.
 
 @item -d
 Print information about the deltas in the file, as opposed to
@@ -1366,8 +1367,11 @@ global information is printed.   This consists of
   @item The body of the @sc{sccs} file is printed, in a readable format.
         The control character @samp{^A} that begins some lines is
         printed as @samp{*** }, and other lines are printed indented 
-        by one tab stop.
-@c TODO: what happens here for binary files?     
+        by one tab stop.  Other than that, the body is printed as found 
+        in the @sc{sccs} file.  This means that binary files are left
+        encoded.
+
+
   @end itemize
 
 @end enumerate
@@ -1594,11 +1598,9 @@ fact been fixed, this is a bug in the bug list.  Please report this.
 @item
 Some programs are partially implemented.  Not all programs support all
 the command-line options of their original counterparts.  Also, some
-features are currently missing, for example there is no support for
-encoded binary files (this mainly affects @code{delta} and @code{get}).
-If you would like support for some feature that is missing, please
-request it in the same way you would report a bug; I'd like to know
-which features are required first.
+features are currently missing.  If you would like support for some
+feature that is missing, please request it in the same way you would
+report a bug; I'd like to know which features are required first.
 @end itemize
 
 @section Known Problems

@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.19 1998/02/01 18:03:19 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.20 1998/02/12 23:10:32 james Exp $";
 #endif
 
 
@@ -540,20 +540,11 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	break;
       case 'e':
 	if ('1' == *arg)
-	  {
-	    fprintf(stderr,
-		    "%s: Warning: encoded files not yet fully supported.\n",
-		    name.c_str());
-	    flags.encoded = 1;
-	  }
+	  flags.encoded = 1;
 	else if ('0' == *arg)
-	  {
-	    flags.encoded = 0;
-	  }
+	  flags.encoded = 0;
 	else
-	  {
-	    corrupt("Bad value for 'e' flag.");
-	  }
+	  corrupt("Bad value for 'e' flag.");
 	break;
 	
       default:

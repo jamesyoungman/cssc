@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.12 1998/01/25 22:33:08 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.13 1998/02/12 23:10:33 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -306,22 +306,14 @@ sccs_file::write(FILE *out) const
    * TODO: consider implementing the above fix.
    */
 	
-  // Write the prefix for the "encoded" flag.
-  if (printf_failed(fprintf(out, "\001f e ")))
+  // Write the correct valuie for the "encoded" flag.
+  // We have to write it even if the flag is unset, 
+  // because "admin =i" goes back and updates that byte if the file 
+  // turns out to have been binary.
+  if (printf_failed(fprintf(out, "\001f e %c",
+			    (flags.encoded ? '1' : '0'))))
     return 1;
 
-  if (flags.encoded)
-    {
-      if (putc_failed(putc('1', out)))
-	return 1;
-    }
-  else			// not encoded.
-    {
-      //      encoded_flag_pos_saver = new FilePosSaver(out);
-	
-      if (putc_failed(putc('0', out)))
-	return 1;
-    }
 	
   if (printf_failed(fprintf(out, "\n")))
     return 1;
