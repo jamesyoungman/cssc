@@ -1,17 +1,135 @@
-2001-07-14  james_youngman  <jay@gnu.org>
+2001-09-23  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/get.cc:
+	Give up privileges while manipulating the g-file, because the g-file
+	is owned by the euid of the process which invoked "get", not by the
+	set-user-id ownfer of the "get" file.  This is related to Sourceforge
+	bug ID 458485.
+
+	* /cvsroot/cssc/gnu/CSSC/file.cc:
+	Minor correction to error message in set_file_mode() (don't have a
+	newline in the middle of it).
+
+2001-09-16  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/Makefile.am, /cvsroot/cssc/gnu/CSSC/pf-add.cc, /cvsroot/cssc/gnu/CSSC/pf-del.cc, /cvsroot/cssc/gnu/CSSC/pfile.h, /cvsroot/cssc/gnu/CSSC/sf-delta.cc, /cvsroot/cssc/gnu/CSSC/tests/rmdel/basic.sh, /cvsroot/cssc/gnu/CSSC/unget.cc:
+	Cope correctly in sccs_pfile::update() if there was no previously existing p-file
+
+	* /cvsroot/cssc/gnu/CSSC/pf-add.cc:
+	SF bug #444221: Create the p-file with mode 0644 (not 0666) but still allow concurrent edits
+
+	* /cvsroot/cssc/gnu/CSSC/docs/CREDITS, /cvsroot/cssc/gnu/CSSC/docs/CREDITS.short.txt:
+	(Credits for) patch to fix malloc()ed buffer size from Jeff Sheinberg
+
+	* /cvsroot/cssc/gnu/CSSC/bsd/sccs.c:
+	Patch to fix malloc()ed buffer size from Jeff Sheinberg
+
+2001-08-30  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/tests/binary/binbasic.sh:
+	Executables have different names under Windows.
+
+2001-08-29  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/testutils/decompress_stdin.sh.in:
+	Shell script which decompresses its input.
+
+	* /cvsroot/cssc/gnu/CSSC/tests/binary/eightbit.sh, /cvsroot/cssc/gnu/CSSC/tests/get/sf111140.sh, /cvsroot/cssc/gnu/CSSC/tests/get/sid-select.sh, /cvsroot/cssc/gnu/CSSC/tests/get/subst.sh, /cvsroot/cssc/gnu/CSSC/tests/prt/all-512.sh, /cvsroot/cssc/gnu/CSSC/tests/prt/default.sh, /cvsroot/cssc/gnu/CSSC/tests/prt/nodel.sh, /cvsroot/cssc/gnu/CSSC/autogen.sh, /cvsroot/cssc/gnu/CSSC/configure.in, /cvsroot/cssc/gnu/CSSC/cssc.h, /cvsroot/cssc/gnu/CSSC/docs/Platforms, /cvsroot/cssc/gnu/CSSC/docs/texinfo.tex, /cvsroot/cssc/gnu/CSSC/file.cc, /cvsroot/cssc/gnu/CSSC/file.h, /cvsroot/cssc/gnu/CSSC/get.cc, /cvsroot/cssc/gnu/CSSC/Makefile.am, /cvsroot/cssc/gnu/CSSC/README, /cvsroot/cssc/gnu/CSSC/sccsfile.cc, /cvsroot/cssc/gnu/CSSC/sccsfile.h, /cvsroot/cssc/gnu/CSSC/sf-add.cc, /cvsroot/cssc/gnu/CSSC/sf-admin.cc, /cvsroot/cssc/gnu/CSSC/sf-delta.cc, /cvsroot/cssc/gnu/CSSC/sf-rmdel.cc, /cvsroot/cssc/gnu/CSSC/sf-write.cc:
+	Changes to support CYGWIN (compiles and builds with B20.1).
+
+	* /cvsroot/cssc/gnu/CSSC/tests/bsd-sccs/driver-basic.sh:
+	Altered test case h1 to account for buffering differences on CYGWIN.
+
+	* /cvsroot/cssc/gnu/CSSC/testutils/uu_decode.c:
+	Changes for file format compatibility with uuencode.
+
+	* /cvsroot/cssc/gnu/CSSC/INSTALL:
+	Updated INSTALL file from automake distribution.
+
+	* /cvsroot/cssc/gnu/CSSC/missing, /cvsroot/cssc/gnu/CSSC/mkinstalldirs:
+	Updated the utilities which are distributed but come from the automake
+	distribytion (automake -a -c copies them in).
+
+	* /cvsroot/cssc/gnu/CSSC/COPYING:
+	Updated address of FSF from COPYING file in automake distribution.
+
+2001-08-28  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/testutils/Makefile.am, /cvsroot/cssc/gnu/CSSC/testutils/uu_decode.c:
+	Added uu_decode.c, replacing the system uudecode utility, since not all
+	systems have the latter.
+
+2001-08-25  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/docs/Platforms:
+	Added remarks about "printf" macro bug in glibc 2.2.3.
+
+	* /cvsroot/cssc/gnu/CSSC/unused/.cvsignore, /cvsroot/cssc/gnu/CSSC/bsd/.cvsignore, /cvsroot/cssc/gnu/CSSC/auxfiles/.cvsignore:
+	ignore Makefile.in
+
+	* /cvsroot/cssc/gnu/CSSC/.cvsignore, /cvsroot/cssc/gnu/CSSC/tests/.cvsignore, /cvsroot/cssc/gnu/CSSC/testutils/.cvsignore:
+	Added some .cvsignore files to reduce the noise in the output of the update command
+
+	* /cvsroot/cssc/gnu/CSSC/docs/.cvsignore, /cvsroot/cssc/gnu/CSSC/docs/Platforms, /cvsroot/cssc/gnu/CSSC/docs/URLs:
+	Added info about how to patch cssc.texi to format it with old versions of Makefinfo, for example on NetBSD
+
+	* /cvsroot/cssc/gnu/CSSC/acconfig.h, /cvsroot/cssc/gnu/CSSC/configure.in, /cvsroot/cssc/gnu/CSSC/Makefile.am, /cvsroot/cssc/gnu/CSSC/mystring.h:
+	Changes to permit compilation with GCC v3 and GLIBC 2.2.3
+
+2001-08-18  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/docs/mailing-list.txt:
+	Updated the installation instructions to bring them into line with the
+	actual method for subscribing to a Mailman mailng list.
+
+2001-07-31  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/docs/Platforms:
+	Added updated info about which versions of Red Hat Linux this has been
+	tested on.
+
+	* /cvsroot/cssc/gnu/CSSC/docs/cssc.texi, /cvsroot/cssc/gnu/CSSC/testutils/ekko.c, /cvsroot/cssc/gnu/CSSC/testutils/seeker.c, /cvsroot/cssc/gnu/CSSC/testutils/yammer.c, /cvsroot/cssc/gnu/CSSC/bsd/sccs.c, /cvsroot/cssc/gnu/CSSC/docs/Makefile.am, /cvsroot/cssc/gnu/CSSC/fatalsig.cc, /cvsroot/cssc/gnu/CSSC/file.cc, /cvsroot/cssc/gnu/CSSC/get.cc, /cvsroot/cssc/gnu/CSSC/Makefile.am, /cvsroot/cssc/gnu/CSSC/pfile.cc, /cvsroot/cssc/gnu/CSSC/quit.cc, /cvsroot/cssc/gnu/CSSC/quit.h, /cvsroot/cssc/gnu/CSSC/run.cc, /cvsroot/cssc/gnu/CSSC/sccsfile.h, /cvsroot/cssc/gnu/CSSC/sf-delta.cc, /cvsroot/cssc/gnu/CSSC/sf-get2.cc, /cvsroot/cssc/gnu/CSSC/sf-get.cc, /cvsroot/cssc/gnu/CSSC/sf-prs.cc, /cvsroot/cssc/gnu/CSSC/sf-write.cc, /cvsroot/cssc/gnu/CSSC/writesubst.cc:
+	Eliminated some compiler warnings (gcc version 2.96 2000073).
+
+2001-07-15  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/admin.cc, /cvsroot/cssc/gnu/CSSC/bodyio.cc, /cvsroot/cssc/gnu/CSSC/bsd/sccs.c, /cvsroot/cssc/gnu/CSSC/configure.in, /cvsroot/cssc/gnu/CSSC/cssc.h, /cvsroot/cssc/gnu/CSSC/defaults.h, /cvsroot/cssc/gnu/CSSC/docs/cssc.texi, /cvsroot/cssc/gnu/CSSC/environment.cc, /cvsroot/cssc/gnu/CSSC/file.cc, /cvsroot/cssc/gnu/CSSC/Makefile.am, /cvsroot/cssc/gnu/CSSC/NEWS, /cvsroot/cssc/gnu/CSSC/README, /cvsroot/cssc/gnu/CSSC/sf-delta.cc, /cvsroot/cssc/gnu/CSSC/showconfig.cc, /cvsroot/cssc/gnu/CSSC/tests/common/config-data, /cvsroot/cssc/gnu/CSSC/what.cc:
+	As well as allowing binary file support to be turned off and a maximum
+	line length setting to be used, allow these to be overridden with
+	environment vvariables.
+
+	* /cvsroot/cssc/gnu/CSSC/tests/get/included.sh:
+	SourceForge bug number 441423: on NetBSD-1.5W, the sed "a" command
+	appears to eat the newline.  Hence we replace the old single-step sed
+	command above with a three-step approach which doesn't use "a".
+
+	* /cvsroot/cssc/gnu/CSSC/docs/cssc.texi:
+	Added sensible header to HTML output; indicate the version number in
+	the top node of the Info file.
+
+2001-07-14  james_youngman  <james_youngman@periwinkle>
+
+	* /cvsroot/cssc/gnu/CSSC/docs/TODO:
+	Added all the tasks to the SourceForge task tracker (each task in the
+	TODO file is now annotated with its SourceForge task ID).
+
+	* /cvsroot/cssc/gnu/CSSC/NEWS:
+	Added SourceForge bug id for the concurrent-edit problem.
+
+	* /cvsroot/cssc/gnu/CSSC/ChangeLog:
+	Updated wrt newest checking comments.
 
 	* /cvsroot/cssc/gnu/CSSC/README: Add remark about "--disable-binary".
 
 	* /cvsroot/cssc/gnu/CSSC/acconfig.h, /cvsroot/cssc/gnu/CSSC/admin.cc, /cvsroot/cssc/gnu/CSSC/auxfiles/CSSC.spec.in, /cvsroot/cssc/gnu/CSSC/bodyio.cc, /cvsroot/cssc/gnu/CSSC/docs/config-info.texi.in, /cvsroot/cssc/gnu/CSSC/docs/cssc.texi, /cvsroot/cssc/gnu/CSSC/docs/Makefile.am, /cvsroot/cssc/gnu/CSSC/Makefile.am, /cvsroot/cssc/gnu/CSSC/NEWS, /cvsroot/cssc/gnu/CSSC/README, /cvsroot/cssc/gnu/CSSC/sf-delta.cc, /cvsroot/cssc/gnu/CSSC/sf-get2.cc, /cvsroot/cssc/gnu/CSSC/showconfig.cc, /cvsroot/cssc/gnu/CSSC/tests/binary/auto.sh, /cvsroot/cssc/gnu/CSSC/tests/binary/binbasic.sh, /cvsroot/cssc/gnu/CSSC/tests/binary/diff.sh, /cvsroot/cssc/gnu/CSSC/tests/binary/eightbit.sh, /cvsroot/cssc/gnu/CSSC/tests/binary/seeking.sh, /cvsroot/cssc/gnu/CSSC/tests/common/config-data, /cvsroot/cssc/gnu/CSSC/val.cc, /cvsroot/cssc/gnu/CSSC/version.h:
-	Provide new configure option, --disable-binary, which removes
-	support for creating binary SCCS files.  If we find an existing
-	binary SCCS file, we can still work with it.  Also allow the
-	setting of a maximum line length in order to provide better
-	interoperability with other SCCS implementations.
+	Provide new configure option, --disable-binary, which removes support
+	for creating binary SCCS files.  If we find an existing binary SCCS file,
+	we can still work with it.   Also allow the setting of a maximum line length
+	in order to provide better interoperability with other SCCS implementations.
 
 	* /cvsroot/cssc/gnu/CSSC/configure.in:
-	Allow the disabling of binary file support and the setting of a
-	maximum SCCS file line length (for interoperability).
+	Allow the disabling of binary file support and the setting of a maximum
+	SCCS file line length (for interoperability).
 
 2001-07-10  james_youngman  <jay@gnu.org>
 
