@@ -10,6 +10,7 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_SUBST(GXX)dnl
 AC_PROG_CPP
+AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
@@ -116,4 +117,4 @@ AC_CHECK_DECL_IN_HEADER(sys_nerr,stdio.h)
 fi
 
 dnl What about saved setuid?
-AC_OUTPUT(Makefile sccsdiff.sh)
+AC_OUTPUT(Makefile sccsdiff.sh tests/Makefile docs/Makefile)
