@@ -15,11 +15,11 @@ remove f
 echo  > f
 
 # "what" ignores stdin.
-docommand w1 "${what} < f" 0 IGNORE IGNORE
-docommand w2 "${what} < f" 0 "" ""
+docommand w1 "${what} < f" 1 IGNORE IGNORE
+docommand w2 "${what} < f" 1 "" ""
 
 # Check basic operation when no match.
-docommand w3 "${what}   f" 0 "f:\n" ""
+docommand w3 "${what}   f" 1 "f:\n" ""
 
 
 echo "${trigger}foo" > f
@@ -57,17 +57,17 @@ docommand w9 "${what} f" 0 "f:\n\tfoo${trigger}\n" ""
 
 remove f
 echo "@hello@" > f
-docommand w10 "${what} f" 0 "f:\n" ""
+docommand w10 "${what} f" 1 "f:\n" ""
 
 # Various forms of incomplete trigger
 ../../testutils/ekko -n "@" > f
-docommand w11 "${what} f" 0 "f:\n" ""
+docommand w11 "${what} f" 1 "f:\n" ""
 
 ../../testutils/ekko -n "@(" > f
-docommand w12 "${what} f" 0 "f:\n" ""
+docommand w12 "${what} f" 1 "f:\n" ""
 
 ../../testutils/ekko -n "@(#" > f
-docommand w13 "${what} f" 0 "f:\n" ""
+docommand w13 "${what} f" 1 "f:\n" ""
 
 # A match but with nothing to show for it...
 ../../testutils/ekko -n "@(#)" > f
@@ -76,7 +76,7 @@ docommand w14 "${what} f" 0 "f:\n\t\n" ""
 
 # Provoke a usage error - make sure we get a failure return
 # Note the different return value.
-docommand w15 "${what} -Z" 2 IGNORE IGNORE
+docommand w15 "${what} -Z" 1 IGNORE IGNORE
 
 
 # What-string terminated by a backslash...
