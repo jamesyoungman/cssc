@@ -57,7 +57,7 @@ unget_SOURCES = unget.cc pfile.cc pf-del.cc \
 prt_SOURCES = prt.cc sf-prt.cc \
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
 prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc sf-get.cc \
-	bodyio.cc encoding.cc \
+	bodyio.cc encoding.cc canonify.cc \
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
 
 

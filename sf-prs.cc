@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.14 1998/01/25 22:33:07 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.15 1998/02/21 13:58:18 james Exp $";
 #endif
 
 inline void
@@ -556,7 +556,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 	  break;
 
 	case KEY2('P','N'):
-	  fputs(name.c_str(), out);
+	  fputs(canonify_filename(name.c_str()).c_str(), out);
 	  break;
 	}
     }
