@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <2001-11-29 20:30:39 james>
+Time-stamp: <2003-12-10 00:07:20 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -108,6 +108,9 @@ and cutoff dates.
 
 Jeff Sheinberg provided a patch to sccs.c, fixing an incorrect
 allocation size for a buffer. 
+
+Thomas Duffy has taken on the role of building RPM and SRPM packages
+for CSSC.
 
 
 Local Variables:
