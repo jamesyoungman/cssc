@@ -70,17 +70,21 @@ sccs_file::get(mystring gname, class seq_state &state, struct subst_parms &parms
 
 	seek_to_body();
 
+	/* The following statement is not correct. */
 	/* "@I 1" should start the body of the SCCS file */
 
 	if (read_line() != 'I') {
 		corrupt("Expected '@I'");
 	}
 	check_arg();
-	if (strict_atous(linebuf + 3) != 1) {
-		corrupt("First delta missing?!?");
-	}
-		
-	state.start(1, 1);
+
+	/* The check on the following line is certainly wrong, since
+	 * the first body line need not refer to the first delta.  For
+	 * example, SunOS 4.1.1's SCCS implementation donesn't always
+	 * start with ^AI 1.
+	 */
+	unsigned short first_delta = strict_atous(linebuf + 3);
+	state.start(first_delta, 1); /* 1 means "insert". */
 
 	FILE *out = parms.out;
 
