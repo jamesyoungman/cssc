@@ -32,7 +32,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.11 1997/07/02 18:18:06 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.12 1997/10/26 17:40:06 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -163,11 +163,11 @@ main(int argc, char **argv) {
 			break;
 
 		case 'm':
-			show_module = 1;
+			show_sid = 1;
 			break;
 
 		case 'n':
-			show_sid = 1;
+			show_module = 1;
 			break;
 
 		case 'g':
