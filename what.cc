@@ -33,7 +33,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.5 1997/10/26 14:13:01 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.6 1997/11/15 20:06:40 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -54,7 +54,7 @@ xopen(const char *name) {
 
 inline int
 xclose(XFILE f) {
-	return fclose(f) == EOF ? -1 : 0;
+	return fclose_failed(fclose(f));
 }
 
 inline int

@@ -19,7 +19,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.9 1997/07/10 20:17:31 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.10 1997/11/15 20:06:17 james Exp $";
 #endif
 
 static void
@@ -206,7 +206,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
   int ch;
   bool ret = true;
   
-  if (EOF == putc('\n', out))
+  if (putc_failed(putc('\n', out)))
     ret = false;
   
   while ( ret && (ch=getc(fp)) != EOF )
@@ -216,7 +216,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
       
       if ('\001' == ch)
 	{
-	  if (EOF == fputs("*** ", out))
+	  if (fputs_failed(fputs("*** ", out)))
 	    {
 	      ret = false;	// write error
 	      break;
@@ -229,19 +229,19 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 	  if ('\001' == peek)
 	    {
 	      ungetc(peek, fp);
-	      if (EOF == putc('\n', out))
+	      if (putc_failed(putc('\n', out)))
 		ret = false;
 	    }
 	  else if (EOF == peek)
 	    {
-	      if (EOF == putc('\n', out))
+	      if (putc_failed(putc('\n', out)))
 		ret = false;
 	      break;
 	    }
 	  else 
 	    {
 	      ungetc(peek, fp);
-	      if (EOF == fputs("\n\t", out))
+	      if (fputs_failed(fputs("\n\t", out)))
 		{
 		  ret = false;	// write error
 		  break;
@@ -250,7 +250,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 	}
       else
 	{
-	  if (EOF == putc(ch, out))
+	  if (putc_failed(putc(ch, out)))
 	    {
 	      ret = false;	// write error
 	      break;

@@ -28,7 +28,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.5 1997/07/02 18:18:25 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.6 1997/11/15 20:06:58 james Exp $";
 #endif
 
 void
@@ -63,7 +63,7 @@ sccs_pfile::add_lock(sid got, sid delta,
 	}
 
 	if (write_edit_lock(pf, new_lock)
-	    || fclose(pf) == EOF) {
+	    || fclose_failed(fclose(pf))) {
 		quit(errno, "%s: Write error.", (const char *) pname);
 	}
 }

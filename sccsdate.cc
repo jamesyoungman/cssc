@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.6 1997/07/02 18:04:22 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.7 1997/11/15 20:05:45 james Exp $";
 #endif
 
 static int
@@ -185,34 +185,39 @@ sccs_date::printf(FILE *f, char fmt) const {
 
 	switch(fmt) {
 	case 'D':
-		return fprintf(f, "%02d/%02d/%02d", tm->tm_year % 100,
-			       tm->tm_mon + 1, tm->tm_mday) == EOF;
+		return printf_failed(fprintf(f, "%02d/%02d/%02d",
+					     tm->tm_year % 100,
+					     tm->tm_mon + 1,
+					     tm->tm_mday) );
 
 	case 'H':
-		return fprintf(f, "%02d/%02d/%02d", tm->tm_mon + 1,
-			       tm->tm_mday, tm->tm_year % 100) == EOF;
+		return printf_failed(fprintf(f, "%02d/%02d/%02d",
+					     tm->tm_mon + 1,
+					     tm->tm_mday,
+					     tm->tm_year % 100));
 
 	case 'T':
-		return fprintf(f, "%02d:%02d:%02d", tm->tm_hour,
-			       tm->tm_min, tm->tm_sec) == EOF;
+		return printf_failed(fprintf(f, "%02d:%02d:%02d",
+					     tm->tm_hour,
+					     tm->tm_min, tm->tm_sec));
 
 	case 'y':
-		return fprintf(f, "%02d", tm->tm_year % 100) == EOF;
+		return printf_failed(fprintf(f, "%02d", tm->tm_year % 100));
 	
 	case 'o':
-		return fprintf(f, "%02d", tm->tm_mon + 1) == EOF;
+		return printf_failed(fprintf(f, "%02d", tm->tm_mon + 1));
 		
 	case 'd':
-		return fprintf(f, "%02d", tm->tm_mday) == EOF;
+		return printf_failed(fprintf(f, "%02d", tm->tm_mday));
 
 	case 'h':
-		return fprintf(f, "%02d", tm->tm_hour) == EOF;
+		return printf_failed(fprintf(f, "%02d", tm->tm_hour));
 
 	case 'm':
-		return fprintf(f, "%02d", tm->tm_min) == EOF;
+		return printf_failed(fprintf(f, "%02d", tm->tm_min));
 
 	case 's':
-		return fprintf(f, "%02d", tm->tm_sec) == EOF;
+		return printf_failed(fprintf(f, "%02d", tm->tm_sec));
 
 	default:
 		assert(!"sccs_date::printf: Invalid format");
@@ -223,7 +228,10 @@ sccs_date::printf(FILE *f, char fmt) const {
 
 int
 sccs_date::print(FILE *f) const {
-	return printf(f, 'D') || putc(' ', f) == EOF || printf(f, 'T');
+	return
+	  printf_failed(printf(f, 'D')) ||
+	  putc_failed(putc(' ', f)) ||
+	  printf_failed(printf(f, 'T'));
 }
 
 

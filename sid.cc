@@ -38,7 +38,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.8 1997/10/25 16:50:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.9 1997/11/15 20:06:29 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an
@@ -253,15 +253,17 @@ sid::print(FILE *out) const {
 	assert(valid());
 	assert(rel != 0);
 
-	if (fprintf(out, "%d", rel) == EOF
+	if (printf_failed(fprintf(out, "%d", rel))
 	    || (level != 0 
-		&& (fprintf(out, ".%d", level) == EOF
+		&& (printf_failed(fprintf(out, ".%d", level))
 	            || (branch != 0
-			&& (fprintf(out, ".%d", branch) == EOF
+			&& (printf_failed(fprintf(out, ".%d", branch))
 			    || (sequence != 0
-				&& fprintf(out, ".%d", sequence) == EOF)))))) {
-		return 1;
-	}
+				&& printf_failed(fprintf(out, ".%d",
+							 sequence))))))))
+	  {
+	    return 1;
+	  }
 	return 0;
 }
 
@@ -298,7 +300,7 @@ sid::printf(FILE *out, char c, int force_zero /*=0*/) const {
 	default:
 		quit(-1, "sid::printf: Invalid format.");
 	}
-	return fprintf(out, "%d", n) == EOF;
+	return printf_failed(fprintf(out, "%d", n));
 }
 
 release::release(const sid &s) :  rel( (short)s.rel )

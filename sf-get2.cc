@@ -34,7 +34,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.18 1997/10/27 19:26:32 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.19 1997/11/15 20:06:10 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -439,7 +439,7 @@ sccs_file::write_subst(const char *start,
 			case 'M':
 			{
 				mystring module = get_module_name();
-				err = (fputs(module, out) == EOF);
+				err = fputs_failed(fputs(module, out));
 			}
 				break;
 			
@@ -490,38 +490,37 @@ sccs_file::write_subst(const char *start,
 			case 'Y':
 				s = flags.type;
 				if (s != NULL) {
-					err = fputs(s, out) == EOF;
+					err = fputs_failed(fputs(s, out));
 				}
 				break;
 
 			case 'F':
-				err = fputs(base_part(name), out)
-				      == EOF;
+			  err = fputs_failed(fputs(base_part(name), out));
 				break;
 
 			case 'P':
 			  	if (1) // introduce new scope...
 				  {
 				    mystring path(canonify_filename(name));
-				    err = fputs(path, out) == EOF;
+				    err = fputs_failed(fputs(path, out));
 				  }
 				break;
 
 			case 'Q':
 				s = flags.user_def;
 				if (s != NULL) {
-					err = fputs(s, out) == EOF;
+					err = fputs_failed(fputs(s, out));
 				}
 				break;
 
 			case 'C':
-				err = fprintf(out, "%d",
-					      parms->out_lineno) == EOF;
+			  err = printf_failed(fprintf(out, "%d",
+						      parms->out_lineno));
 				break;
 
 			case 'Z':
-				if (fputc('@', out) == EOF
-				    || fputs("(#)", out) == EOF) {
+				if (fputc_failed(fputc('@', out))
+				    || fputs_failed(fputs("(#)", out))) {
 					err = 1;
 				} else {
 					err = 0;
@@ -566,7 +565,7 @@ sccs_file::write_subst(const char *start,
 		percent = strchr(percent, '%');
 	}
 
-	return fputs(start, out) == EOF;
+	return fputs_failed(fputs(start, out));
 }
 
 /* Output the specified version to a file with possible modifications.

@@ -31,7 +31,7 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.4 1997/07/02 18:04:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.5 1997/11/15 20:05:53 james Exp $";
 #endif
 
 /* Insert a delta at the start of the delta table. */
@@ -81,14 +81,15 @@ sccs_file::start_update(struct delta const &new_delta) {
 
 void
 sccs_file::end_update(FILE *out, struct delta const &delta) {
-	if (fflush(out) == EOF) {
+	if (fflush_failed(fflush(out))) {
 		xfile_error("Write error.");
 	}
 
 	rewind(out);
 
-	if (fprintf(out, "\001h-----\n\001s %05u/%05u/%05u",
-		    delta.inserted, delta.deleted, delta.unchanged) == EOF) {
+	if (printf_failed(fprintf(out, "\001h-----\n\001s %05u/%05u/%05u",
+				  delta.inserted, delta.deleted,
+				  delta.unchanged))) {
 		xfile_error("Write error.");
 	}
 

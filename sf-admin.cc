@@ -37,7 +37,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.13 1997/11/11 23:23:58 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.14 1997/11/15 20:05:59 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -276,7 +276,8 @@ sccs_file::create(release first_release, const char *iname,
     while(!read_line_param(in))
       {
 	new_delta.inserted++;
-	if (fputs(linebuf, out) == EOF || putc('\n', out) == EOF)
+	if (fputs_failed(fputs(linebuf, out)) ||
+	    putc_failed(putc('\n', out)))
 	  {
 	    mystring zname = name.zfile();
 	    quit(errno, "%s: Write error.",

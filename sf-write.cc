@@ -30,7 +30,7 @@
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.7 1997/07/02 18:05:33 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.8 1997/11/15 20:06:23 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -72,15 +72,15 @@ print_seqs(FILE *out, char control, list<seq_no> const &seqs) {
 	int len = seqs.length();
 
 	if (len != 0) {
-		if (fprintf(out, "\001%c", control) == EOF) {
+		if (printf_failed(fprintf(out, "\001%c", control))) {
 			return 1;
 		}
 		for(i = 0; i < len; i++) {
-			if (fprintf(out, " %u", seqs[i]) == EOF) {
+			if (printf_failed(fprintf(out, " %u", seqs[i]))) {
 				return 1;
 			}
 		}
-		if (putc('\n', out) == EOF) {
+		if (putc_failed(putc('\n', out))) {
 			return 1;
 		}
 	}
@@ -95,14 +95,16 @@ sccs_file::write_delta(FILE *out, struct delta const &delta) const {
 	int len;
 	int i;
 
-	if (fprintf(out, "\001s %05u/%05u/%05u\n",
-	            delta.inserted, delta.deleted, delta.unchanged) == EOF
-	    || fprintf(out, "\001d %c ", delta.type) == EOF
+	if (printf_failed(fprintf(out, "\001s %05u/%05u/%05u\n",
+				  delta.inserted, delta.deleted,
+				  delta.unchanged))
+	    || printf_failed(fprintf(out, "\001d %c ", delta.type))
 	    || delta.id.print(out)
-            || putc(' ', out) == EOF
+            || putc_failed(putc(' ', out))
             || delta.date.print(out)
-            || fprintf(out, " %s %u %u\n", (const char *) delta.user,
-		       delta.seq, delta.prev_seq) == EOF) {
+            || printf_failed(fprintf(out, " %s %u %u\n",
+				     (const char *) delta.user,
+				     delta.seq, delta.prev_seq))) {
 		return 1;
 	}
 
@@ -114,21 +116,21 @@ sccs_file::write_delta(FILE *out, struct delta const &delta) const {
 
 	len = delta.mrs.length();
 	for(i = 0; i < len; i++) {
-		if (fprintf(out, "\001m %s\n",
-			    (const char *) delta.mrs[i]) == EOF) {
+		if (printf_failed(fprintf(out, "\001m %s\n",
+					  (const char *) delta.mrs[i]))) {
 			return 1;
 		}
 	}
 
 	len = delta.comments.length();
 	for(i = 0; i < len; i++) {
-		if (fprintf(out, "\001c %s\n",
-			    (const char *) delta.comments[i]) == EOF) {
+		if (printf_failed(fprintf(out, "\001c %s\n",
+					  (const char *) delta.comments[i]))) {
 			return 1;
 		}
 	}
 
-	return fputs("\001e\n", out) == EOF;
+	return fputs_failed(fputs("\001e\n", out));
 }
 
 
@@ -152,7 +154,7 @@ sccs_file::write(FILE *out) const {
 		}
 	}
 
-	if (fputs("\001u\n", out) == EOF) {
+	if (fputs_failed(fputs("\001u\n", out))) {
 		return 1;
 	}
 
@@ -160,75 +162,85 @@ sccs_file::write(FILE *out) const {
 	for(i = 0; i < len; i++) {
 		s = users[i];
 		assert(s[0] != '\001');
-		if (fprintf(out, "%s\n", s) == EOF) {
+		if (printf_failed(fprintf(out, "%s\n", s))) {
 			return 1;
 		}
 	}
 
-	if (fputs("\001U\n", out) == EOF) {
+	if (fputs_failed(fputs("\001U\n", out))) {
 		return 1;
 	}
 
 	s = flags.type;
-	if (s != NULL && fprintf(out, "\001f t %s\n", s) == EOF) {
+	if (s != NULL && printf_failed(fprintf(out, "\001f t %s\n", s))) {
 		return 1;
 	}
        
 	s = flags.mr_checker;
-	if (s != NULL && fprintf(out, "\001f v %s\n", s) == EOF) {
+	if (s != NULL && printf_failed(fprintf(out, "\001f v %s\n", s))) {
 		return 1;
 	}
 
 	if (flags.no_id_keywords_is_fatal) {
-		if (fputs("\001f i\n", out) == EOF) {
+		if (fputs_failed(fputs("\001f i\n", out))) {
 			return 1;
 		}
 	}
 
-	if (flags.branch && fputs("\001f b\n", out) == EOF) {
+	if (flags.branch && fputs_failed(fputs("\001f b\n", out))) {
 		return 1;
 	}
 		
 	s = flags.module;
-	if (s != NULL && fprintf(out, "\001f m %s\n", s) == EOF) {
+	if (s != NULL && printf_failed(fprintf(out, "\001f m %s\n", s))) {
 		return 1;
 	}
 
-	if (flags.floor.valid()
-	    && (fputs("\001f f ", out) == EOF
+	if (flags.floor.valid())
+	  {
+	    if (fputs_failed(fputs("\001f f ", out))
 		|| flags.floor.print(out)
-		|| putc('\n', out) == EOF)) {
+		|| putc_failed(putc('\n', out)))
+	      {
 		return 1;
-	}
+	      }
+	  }
+	
+	if (flags.ceiling.valid())
+	  {
+	    if(fputs_failed(fputs("\001f c ", out))
+	       || flags.ceiling.print(out)
+	       || putc_failed(putc('\n', out)))
+	      {
+		return 1;
+	      }
+	  }
+	
+	if (flags.null_deltas)
+	  {
+	    if (fputs_failed(fputs("\001f n\n", out)))
+	      return 1;
+	  }
 
-	if (flags.ceiling.valid()
-	    && (fputs("\001f c ", out) == EOF
-		|| flags.ceiling.print(out)
-		|| putc('\n', out) == EOF)) {
-		return 1;
-	}
-
-	if (flags.null_deltas && fputs("\001f n\n", out) == EOF) {
-		return 1;
-	}
-
-	if (flags.joint_edit && fputs("\001f j\n", out) == EOF) {
-		return 1;
-	}
+	if (flags.joint_edit)
+	  {
+	    if (fputs_failed(fputs("\001f j\n", out)))
+	      return 1;
+	  }
 
 	if (flags.all_locked) {
-		if (fputs("\001f l a\n", out) == EOF) {
-			return 1;
+		if (fputs_failed(fputs("\001f l a\n", out))) {
+		  return 1;
 		}
 	} else if (!flags.locked.empty()
-		   && (fputs("\001f l ", out) == EOF
+		   && (fputs_failed(fputs("\001f l ", out))
 		       || flags.locked.print(out)
-		       || putc('\n', out) == EOF)) {
+		       || putc_failed(putc('\n', out)))) {
 		return 1;
 	}
 
 	s = flags.user_def;
-	if (s != NULL && fprintf(out, "\001f q %s\n", s) == EOF) {
+	if (s != NULL && printf_failed(fprintf(out, "\001f q %s\n", s))) {
 		return 1;
 	}
 	
@@ -238,31 +250,35 @@ sccs_file::write(FILE *out) const {
 	 * to upset broken implementations, for example our own for the 
 	 * time being.
 	 */
-	if (flags.encoded && fprintf(out, "\001f e 1") == EOF) {
-                return 1;
-	}
+	if (flags.encoded)
+	  {
+	    if (printf_failed(fprintf(out, "\001f e 1")))
+	      return 1;
+	  }
 	
 	s = flags.reserved;
-	if (s != NULL && fprintf(out, "\001f z %s\n", s) == EOF) {
+	if (s != NULL && printf_failed(fprintf(out, "\001f z %s\n", s))) {
 		return 1;
 	}
 
-	if (fputs("\001t\n", out) == EOF) {
-		return 1;
-	}
+	if (fputs_failed(fputs("\001t\n", out)))
+	  {
+	    return 1;
+	  }
 
 	len = comments.length();
 	for(i = 0; i < len; i++) {
 		s = comments[i];
 		assert(s[0] != '\001');
-		if (fprintf(out, "%s\n", s) == EOF) {
+		if (printf_failed(fprintf(out, "%s\n", s))) {
 			return 1;
 		}
 	}
 
-	if (fputs("\001T\n", out) == EOF) {
-		return 1;
-	}
+	if (fputs_failed(fputs("\001T\n", out)))
+	  {
+	    return 1;
+	  }
 
 	return 0;
 }
@@ -274,9 +290,9 @@ sccs_file::write(FILE *out) const {
 void
 sccs_file::end_update(FILE *out) const {
 #ifdef CONFIG_SYNC_BEFORE_REOPEN
-	if (fflush(out) == EOF || ffsync(out) == EOF) {
+	if (fflush_failed(fflush(out)) || ffsync(out) == EOF) {
 #else
-	if (fflush(out) == EOF) {
+	if (fflush_failed(fflush(out))) {
 #endif
 
 		xfile_error("Write error.");
@@ -285,14 +301,15 @@ sccs_file::end_update(FILE *out) const {
 
 	unsigned sum;
 	mystring xname = name.xfile();
-	if (fclose(open_sccs_file(xname, READ, &sum)) == EOF) {
+	if (fclose_failed(fclose(open_sccs_file(xname, READ, &sum)))) {
 		xfile_error("Error closing file.");
 	}
 
-	if (fprintf(out, "\001h%05u", sum) == EOF
-	    || fclose(out) == EOF) {
-		xfile_error("Write error.");
-	}
+	if (printf_failed(fprintf(out, "\001h%05u", sum))
+	    || fclose_failed(fclose(out)))
+	  {
+	    xfile_error("Write error.");
+	  }
 
 #ifndef TESTING	
 
@@ -317,11 +334,12 @@ sccs_file::update_checksum(const char *name) {
 	unsigned sum;
 	FILE *out = open_sccs_file(name, UPDATE, &sum);
 
-	if (fprintf(out, "\001h%05u", sum) == EOF
-	    || fclose(out) == EOF) {
-		quit(errno, "%s: Write error.",
-		     (const char *) name);
-	}
+	if (fprintf_failed(fprintf(out, "\001h%05u", sum))
+	    || fclose_failed(fclose(out)))
+	  {
+	    quit(errno, "%s: Write error.",
+		 (const char *) name);
+	  }
 }
 
 
@@ -338,8 +356,8 @@ sccs_file::update() {
 
 	seek_to_body();
 	while(read_line() != -1) {
-		if (fputs(linebuf, out) == EOF
-		    || putc('\n', out) == EOF) {
+		if (fputs_failed(fputs(linebuf, out))
+		    || putc_failed(putc('\n', out))) {
 			xfile_error("Write error.");
 		}
 	}

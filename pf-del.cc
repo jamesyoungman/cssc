@@ -30,7 +30,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.5 1997/07/02 18:18:29 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.6 1997/11/15 20:07:03 james Exp $";
 #endif
 
 /* enum */ sccs_pfile::find_status
@@ -88,7 +88,7 @@ sccs_pfile::update() {
 		count++;
 	}
 
-	if (fclose(pf) == EOF) {
+	if (fclose_failed(fclose(pf))) {
 		quit(errno, "%s: Write error.", (const char *) qname);
 	}
 

@@ -41,7 +41,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.9 1997/11/09 13:57:52 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.10 1997/11/15 20:06:04 james Exp $";
 #endif
 
 void
@@ -153,14 +153,14 @@ sccs_file::get(mystring gname, class seq_state &state,
 			  err = (this->*subst_fn)(linebuf, &parms,
 						  gotten_delta);
 			} else {
-				err = fputs(linebuf, out) == EOF;
+				err = fputs_failed(fputs(linebuf, out));
 				if (!parms.found_id 
 				    && check_id_keywords(linebuf)) {
 					parms.found_id = 1;
 				}
 			} 
 
-			if (err || fputc('\n', out) == EOF) {
+			if (err || fputc_failed(fputc('\n', out))) {
 				quit(errno, "%s: Write error.",
 				     (const char *) gname);
 			}
