@@ -20,9 +20,11 @@ enum create_mode {
 	CREATE_READ_ONLY     = 002,
 	CREATE_AS_REAL_USER  = 004,
 	CREATE_FOR_UPDATE    = 010,
-	CREATE_FOR_GET       = 020,
+	CREATE_FOR_GET       = 020
 #ifdef CONFIG_SHARE_LOCKING
-	CREATE_WRITE_LOCK    = 040,
+	// Avoid trailing comma at end of enum...
+	,
+	CREATE_WRITE_LOCK    = 040
 #endif
 };
 
