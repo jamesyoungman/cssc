@@ -1,23 +1,35 @@
 New in CSSC-0.09alpha-pl2
+	
+	* I have upgraded my C++ compiler to EGCS 1.0.3, and there are
+	  related modifications (presumably for better standard 
+	  compliance).  If CSSC now no longer compiles on your system, 
+	  please either send me hate-mail, or a fix if you have one.
 
 	* Initial support for "admin -h" (at the moment we just check
-          the checksum).
+          the checksum and a few other simple things).  The -h option is
+	  not yet well tested.
 
 	* "admin -z" now works better; it doesn't complain if the s-file is 
           read-only (because it should be read only in any case).
 
-	* It is now posible to unset the "m" flag using admin.
+	* It is now posible to unset the "m" flag using admin.  Previously
+	  this was not possible, due to an oversight.
 
 	* An implementation of "val" is now included.  It is not complete.
 	  You can invoke it and it behaves like "val", but it doesn't check
 	  everything it should yet.
 
+	* We now cope cirrectly with SCCS files where a flag which normally
+	  has an argument is set, but without an argument.  This does
+	  happen.
+
+
 New in CSSC-0.09alpha-pl1
 
-	* sccsdiff is now documented.
-
 	* We now correctly return an exit status of 1 when we run out
-          of disk space in get or prs.
+          of disk space in get or prs.  
+
+	* sccsdiff is now documented.
 
 	* We no longer coredump when no SCCS file is specified on the
           command line.
