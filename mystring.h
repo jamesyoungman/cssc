@@ -24,7 +24,7 @@
  *
  * Defines the class mystring.
  *
- * $Id: mystring.h,v 1.10 1997/11/23 22:08:37 james Exp $
+ * $Id: mystring.h,v 1.11 1998/01/15 22:50:17 james Exp $
  *
  */
 
@@ -32,7 +32,7 @@
 #define CSSC__MYSTRING_H__
 
 // If we have the header file <string>, then
-// ue that rather than mystring.
+// use that rather than mystring.
 #ifdef HAVE_STRING
 #define USE_STANDARD_STRING
 #endif
