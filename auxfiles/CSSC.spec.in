@@ -2,7 +2,7 @@ Summary: GNU CSSC - An SCCS clone
 Name: CSSC
 Version: @VERSION@
 Release: 1
-URL: http://www.free-lunch.demon.co.uk/CSSC/
+URL: http://cssc.sourceforge.net/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
@@ -53,6 +53,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Tue Jul 18 2000 James Youngman <jay@gnu.org>
+UPdated URL.
 
 * Mon Jun 15 1998 Aron Griffis <agriffis@coat.com>
 Added symbolic links in /usr/bin to call programs directly
