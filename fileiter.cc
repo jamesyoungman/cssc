@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.7 1997/07/02 18:17:59 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.8 1997/11/11 23:23:41 james Exp $";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
@@ -72,7 +72,10 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 				slash = "/";
 			}
 #endif
-			mystring dirname(first, slash);
+			// GCC 2.6.3 requires the (char*) cast on the
+			// following line,  according to Dave
+			// Bodenstab <imdave@mcs.net>.
+			mystring dirname(first, (char*) slash);
 
 			struct dirent *dent = readdir(dir);
 			while(dent != NULL) {
