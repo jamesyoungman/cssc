@@ -37,12 +37,12 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.30 2001/12/04 21:53:14 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.31 2002/03/24 19:45:34 james_youngman Exp $";
 
 void
 usage() {
 	fprintf(stderr,
-"usage: %s [-nsMYV] [-m MRs] [-r SID] [-y comments] file ...\n",
+"usage: %s [-nsV] [-m MRs] [-r SID] [-y comments] file ...\n",
 		prg_name);
 }
 
@@ -70,7 +70,7 @@ delta_main(int argc, char **argv)
     set_prg_name("delta");
   }
 
-  class CSSC_Options opts(argc, argv, "r!sng!m!My!YpV");
+  class CSSC_Options opts(argc, argv, "r!sng!m!y!pV");
   for(c = opts.next();
       c != CSSC_Options::END_OF_ARGUMENTS;
       c = opts.next()) {
@@ -104,24 +104,28 @@ delta_main(int argc, char **argv)
       suppress_mrs = (mrs == "");
       got_mrs = 1;
       break;
-
+#if 0
+      /* not a standard option */
     case 'M':
       mrs = "";
       suppress_mrs = 1;
       got_mrs = 1;
       break;
-
+#endif
     case 'y':
       comments = opts.getarg();
       suppress_comments = (comments == "");
       got_comments = 1;
       break;
 
+#if 0
+      /* not a standard option */
     case 'Y':
       comments = "";
       suppress_comments = 1;
       got_comments = 1;
       break;
+#endif
 
     case 'V':
       version();
