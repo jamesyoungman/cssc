@@ -6,7 +6,11 @@
 
 csscutildir = $(libexecdir)/cssc
 
-SUBDIRS = bsd auxfiles docs testutils tests
+# We keep "tests" as the last named subdirectory in SUBDIRS,
+# so that when we do "make check", the "Tests passed" message
+# is emitted last (we wouldn't want "entering directory unused"
+# messages to make that scroll offf the screen).
+SUBDIRS = bsd docs testutils auxfiles unused tests
 
 
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt
@@ -15,7 +19,7 @@ csscutil_SCRIPTS = sccsdiff
 BUILT_SOURCES = version.cc
 
 noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
-	filepos.h my-getopt.h linebuf.h mylist.h mystring.h pfile.h pipe.h \
+	filepos.h my-getopt.h linebuf.h mylist.h mystring.h pfile.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
 	sysnerr.h version.h ioerr.h err_no.h delta-table.h delta.h \
@@ -104,14 +108,7 @@ prt_LDADD = @LIBOBJS@
 # $(testcode) is test code that isn't normally used.
 testcode = list.cc 
 
-# rainyday_src is code that we don't currently need, and would be
-# in the "unused" directory but might be needed for a port (e.g. 
-# to DOS or something).
-rainyday_src = dummy.cc fsync.cc _chmod.cc sid_list.cc pipe.h pipe.cc \
-	move-if-change \
-	dosfile.cc ffsync.cc
-
-EXTRA_DIST = ChangeLog $(testcode) $(rainyday_src) show-disp.sh
+EXTRA_DIST = ChangeLog ChangeLog.1 $(testcode) show-disp.sh
 
 
 sccsdiff: sccsdiff.sh

@@ -33,12 +33,12 @@
 #include "sysdep.h"
 #include "quit.h"
 #include "sysnerr.h"
-#include "pipe.h"
+// #include "pipe.h"
 
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.13 1998/06/14 15:26:57 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.14 1998/06/14 17:23:47 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
