@@ -1,0 +1,410 @@
+general
+=======
+	determine situation with respect to the usage() functions.
+
+admin
+=====
+	usage error
+	no argv[0]
+	unsupported option letter
+	-b specified with binary file support disabled (env var)
+	invalid initial release for admin -n -r.
+	No sccs file specified
+	sccs_file::admin() failed -- HOW TO DO THIS?
+	Failed to update checksum for -z option -- HOW TO DO THIS?
+	New SCCS file, with -fv, needs -m but didn't get it
+	New SCCS file - revert to binary file mode due to line length
+	Disk full during admin -i (both binary and text mode).
+	SCCS keywords present in the encoded form of the SCCS file 
+	Write error when copying data in copy_data() (bodyio.cc)
+	admin -i trying to go to binary mode when that mode is
+	disabled
+	When encoding a binary file, fail to open g-file for reading
+	When encoding a binary file, fail to open d-file for writing
+	Operation with binary file creation explicitly allowed by env
+	Operation with binary file creation explicitly disallowed by env
+	$CSSC_BINARY_SUPPORT set to an illegal value
+	$CSSC_MAX_LINE_LENGTH set/unset/non-numeric
+	Use of -t option
+	Setting invalid release ceiling, floor, default SID
+	Setting "i" flag with arg (it should not have one)
+	Setting m, n, q, e, t flags
+	Unsetting b, c, f, d, i, j, m, n, q, e, t flags
+	
+
+cdc
+===
+	MR numbers provided but validation fails.
+	MR numbers required but not provided
+	cdc on a valid but nonexistent SID
+		
+get
+===
+	Duplicate sequence numbers in the SCCS file (one being R, the
+	other D) (leading to lack of coverage in delta-table.cc.gcov).
+	Operation on directory names	
+	Operation on directory names containing trailing slashes
+	Unsupported option character
+	Invalid SID used for -r
+	Invalid SID used for -i
+	Invalid SID used for -x
+	Invalid cutoff date for -c
+	Use of -w option
+	Use of -b without -e (valid but pointless).
+	Use of both -g and -p.
+	sccs_file::find_next_sid() fails (release 99999?)
+	Failure to create g-file
+	sccs_file::get() returns a failure status
+	Failure to add extra lock to the p-file
+	Use of get -e when a q-file already exists.
+	Cannot remove old p-file
+	Cannot open p-file for reading
+	Corrupt p-file (more than 7 fields, for example)
+	Use of -i or -x in p-file with no following args
+	Use of -i AND -x in p-file with only one following arg
+	Invalid SID or invalid date in p-file
+	Invalid include/exclude list in p-file
+	Running get on a corrupt SCCS file
+	Running get -e on an SCCS file with an unrecognised feature
+	Cannot read from SCCS file (cannot open it for reading but it exists)
+	A delta in the SCCS file which includes itself?
+	A delta in the SCCS file which excludes itself?
+	get -e with forced branch (sid in use in p-file) j flag set
+	get -e with forced branch (sid in use in p-file) j flag unset
+	get -e when user is member of authorised user list
+	get -e when user is NOT member of authorised user list
+	get -e when user is member of a group in the authorised user list
+	get -e when user is NOT member of a group in the authorised user list
+	get -e when user is member of the FORBIDDEN user list
+	get -e when user is member of a group in the FORBIDDEN user list
+	Use of %Y%, %Q%, %Z% 
+	Use of %W%
+	Use of %W% with the w flag set
+	Use of %_% where _ is not a valid flag char (just output it)
+	
+
+
+delta
+=====
+	Deletion of some lines in the file! ("right start line [case 1]")
+	Deletion of some lines in the file when lines were also deleted in
+	previous change
+	Use of delta without previous get -e (i.e. missing p-file)
+	Use of delta when p-file exists but specified SID is not in it
+	Use of delta without -r when two edits are outstanding
+	Use of delta -r specifying SID which is not being edited
+	Failure to supply MR numbers
+	No ID keywords when this is a fatal error (see file flags)
+	Authorised groups
+	Use of delta when a q-file already exists.
+	Running delta on an SCCS file with an unrecognised feature
+	Over-long line in the file we are checking in.
+	Unreadable g-file
+	p-file lists a delta which does not exist in the s-file (this
+	is an error)
+	Cannot create d-file
+	%A as last characters in the g-file being checked in
+	x-file already exists 
+	Fail to create x-file
+	Writing out a SCCS file with included/excluded/ignored deltas
+	Writing out a SCCS file with a release floor flag
+	Writing out a SCCS file with i, j, m, q, t, v, z flags
+	Writing out a SCCS file with l flag equal to a
+	Writing out a SCCS file with l flag which is set and not equal
+	to "a"
+	Can't remove old SCCS file
+	Can't rename the x-file
+	
+
+prs
+===
+	Unsupported option
+	Invalid SID for -r option	
+	Valid but nonexistent SID
+	Use of -c option
+	Use of -e, -l, -a options
+	Use of -e or -l without -c
+	No sccs files named on command line
+	Failure of sccs_file::prs
+	Included/excluded seq list
+	Printing the module flag (when set)
+	Data keywords :Dy: :Dm: :Dd: :Th: :Tm: :Ts: :Dx: Dg:
+	Data keywords :Y: :KF: :ND: :W: :A: :F:
+	Data keyword :LK: when there are locked deltas
+	Data keyword :FB: when there is a floor 
+	data keywords :DI: where there are included deltas
+	Data keyword :Q: when there is a user_def flag set
+	Data keyword :M: when there is a module flag set
+	Using -e or -l with -r and not finding the specified SID.
+	Using -e and finding SIDs in the file earlier than the cutoff date
+	Using -l and finding SIDs in the file later than the cutoff date
+
+prt
+===
+	No SCCS file specified
+	Unsupported option
+	Use of option -y
+	Use of option -y with invalid SID
+	Use of -c option
+	Use of -r option
+	Use of -r option with -c option (which is invalid)
+	Use of -c with an invalid date
+	Failure of sccs_file::prt
+	Included/excluded seq list
+	Printing the module flag (when set)
+	"earlier" cutoff 
+	"later" cutoff 
+	Removed delta in the file 
+	Removed delta in the file but -a option is in effect
+	Lists of included and exclded deltas are not empty
+	Flags set: i, j	
+
+rmdel
+=====
+	Use of rmdel on a release which is locked for editing
+	Use of rmdel -r with an invalid SID
+	Use of rmdel -r with a valid but nonexistent SID
+	Use of rmdel with no SCCS file specified.
+	Delete a delta which is derived from one which delted stuff
+	Delete a SID which has a derived SID (which should be an error)
+	Delete a SID which has no successor but is included by
+	some other delta
+	val with -y option (module type flag)
+
+sact
+====
+	sact -V
+	No SCCS file specified
+
+unget
+=====
+	Unsupported option
+	Invalid SID for -r option	
+	Valid but nonexistent SID
+	No sccs file specified
+	No p-file present
+	p-file present but your SID is not in it
+	p-file present but your SID is ambiguous
+	
+
+			
+
+Date processing
+================
+	Parsing dates in Feb where year is divisible by 100
+	Parsing dates in Feb where year is divisible by 400
+	Parsing dates in Feb where year is NOT divisible by 100
+	Parsing dates in Feb where year is NOT divisible by 400
+	Single-digit fields in dates (try on command line)
+	Non-numeric year fields on command line.
+	More than 12 digits in date spec on command line.
+	Years after 2000 with 2-digit years spec.   
+	Second digit o year is ':' - the auto-fix.
+	sccs_date::format specifiers y,o,d,h,m,s - used?
+	date comparison in sccs_date::compare() where 
+		the year is different
+		the year is the same but the day is different
+
+Generic
+=======
+	Receipt of fatal signal (cleanups etc.)
+	::get_user_name() called when UID not in password file
+	z-file cannot be created since one already exists
+	Reduce CONFIG_LINEBUF_CHUNK_SIZE in order to increase test
+	coverage?
+	Option requiring an argument is used, but last on the argument
+	list
+	Use of "--" in the options list
+	Successful return case for sccs_pfile::is_to_be_created()
+	Use of release_list::release_list with a range specified (invalid)
+	Use of release_list::release_list with commas in the argument
+	Use of release_list::print with a non-empty list
+	fork() fails 
+	@i by itself on a line in an SCCS file (valid but is a no-op)
+	BitKeeper style comment @cX
+	Pass the name of a file other than an SCCS file on cmd line
+	List of authorised users exists in the SCCS file.
+	SCCS file with i,m,f,c,d,q,z flags
+	Attempt to provide a SID which starts with a dot.
+	Attempt to provide a SID which contains a non-digit non-dot
+	character
+	SID Trailing garbage ("1.1.1.1.1" or "1.1.1a")
+
+
+Various kinds of corrupt SCCS file
+==================================
+	Missing magic number clause at start of SCCS file
+	SCCS file containing no newline character
+	sccs_file::check_arg finds that the argument is missing.
+	sccs_file::check_noarg finds that the argument is present
+	Non-digit in the lines-changed field (strict_atoul)
+	Number >99999 in the lines-changed field (strict_atoul)
+	Non-digit in the sequence number field (strict_atous)
+	More than 2 / chars in a delta table header line ("Two /'s
+	expected")
+	Missing @d after delta table header
+	Delta type not R or D
+	Delta has invalid date
+	Delta has invalid SID
+	Missing @e
+	Fetching module name (prs/prt/keyword)
+	Second letter of file is not "h" for "get"		
+	Missing @u
+	Empty line between @u and @U.
+	@f with no following letter
+	@f with following letter but no space after that
+	Value for "e" (encoded) flag other than 1.
+	Unknown flag letter (e.g. y)
+	Valid flags table but is not followed by @t.
+	@t but not followed by @T.
+	Body control line other than @I or @D at start
+	@E N without preceding @I N.
+	Invalid sequence number found while doing delta
+	delta - control line in body other than I,E,D
+	
+		
+
+Interactive tests required
+==========================
+	Issue SCCS command while the file is already locked
+	delta prompting for MRs.
+
+CSSC only   
+=========
+	version (-V) option
+	Full range of config options	
+
+
+Weird Stuff
+===========
+	Corrupt diff ouptut
+	Non-seekable s-file (!)
+
+	
+
+Obsolete features
+=================
+	delta -M
+	delta -Y
+	get -D
+	prs -D
+	prs -R
+	open_sccs_file() with UPDATE flag.
+	Make a policy decision about CONFIG_FILE_NAME_GUESSING
+
+
+Unused object methods
+=====================
+
+- Find what uses them and add a test case - or remove them!
+
+	delta_iterator::operator->()
+	const_delta_iterator::index()
+	cssc_delta_table::delta_at_seq_exists(seq_no seq)
+	cssc_delta_table::find(sid id) const
+	cssc_delta_table::highest_seqno()
+	delta::delta() [that is, no args]
+	::eaccess()
+	::stdout_to_stderr()
+	::unlink_file_if_present()
+	file_lock::do_cleanup()
+	FilePosSaver::FilePosSaver()
+	FilePosSaver::~FilePosSaver()
+	FilePosSaver::disarm()
+	mylist::~mylist() appears never to run.
+	release::valid
+	release::print
+	release_list::remove(const release_list& rm) where the remove
+	list does not include all the entries in the original list
+	validate_seq_lists() in sf-val.cc appears untested.  Why?
+	sccs_file::validate_isomorphism()
+	sccs_file::validate()
+	relvbr::relvbr(const char *s)
+	release::release(NULL)
+	sid::comparable() when one SID is not valid.	
+	sid::comparable() when the branch numbers are the same but the
+	release numbers are different
+	sid::comparable() when the branch numbers are the same but the
+	level numbers are different
+	sid::gte() when the level of the 2nd is higher than the first.
+	sid::partial_match()
+	sid::successor() when this-> branch is nonzero
+	sid::matches() with input value of nfields equal to zero 
+	sid::matches() with input value of nfields equal to 4
+	sid::matches() with input value of nfields equal to 5
+	sid::sid() (no args)
+	sid::sid(sid const &)
+	sid::operator>(sid const&,sid const&)
+	sid::operator<(sid const&,sid const&)
+	sid::operator++()
+	sid::operator--()
+	range_list::range_list(const char*)
+	range_list::clean()
+	range_list::destroy()
+	range_list::valid()
+	range_list::invalidate()
+	range_list::merge()
+	range_list::remove()
+	class stack
+	
+	
+	
+	
+
+
+Major feature areas not yet tested
+==================================
+	set-user-id behaviour
+	Configured without exceptions.
+
+
+
+Not yet analysed
+================
+
+------------------------------------------------------------------
+from sf-delta.cc :-
+          67      for (seq = 1; seq < highest_delta_seqno(); seq++)
+                    {
+         110        if (sstate.is_explicitly_tagged(seq))
+           1          {
+           1          if (sstate.is_included(seq))
+      ######            {
+      ######            included.add(seq);
+                        }
+           1          else if (sstate.is_excluded(seq))
+           1            {
+           1              excluded.add(seq);
+                        }
+                      }
+         110        }
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+from sf-delta.cc :-
+                                case diff_state::END:
+                #ifdef JAY_DEBUG          
+                          fprintf(stderr, "diff_state::END\n");
+                #endif    
+          43                      if (c == -1)
+      ######                        {
+      ######                          break;
+      ######                        }
+------------------------------------------------------------------
+                                    
+------------------------------------------------------------------
+from sf-rmdel.cc :-
+                static int
+          57    is_seqlist_member(seq_no seq, mylist<seq_no> const &seq_list) {
+                        int i;
+          57            int len = seq_list.length();
+          57            for(i = 0; i < len; i++) {
+      ######                    if (seq == seq_list[i]) {
+      ######                            return 1;
+                                }
+      ######            }
+          57            return 0;
+                }
+                
+------------------------------------------------------------------
