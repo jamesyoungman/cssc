@@ -2466,7 +2466,7 @@ a terminating newline (which is usually the best course of action).
 
 The @code{diff} program to be used by tghe @sc{cssc} tools is selected
 when the @code{configure} script is run, before @sc{cssc} is compiled.
-@xref{Checking the Current Configuration} explains how you can
+@xref{Configuration} explains how you can
 determine which diff command is used by @sc{cssc}.
 
 @node Configuration, Bug-for-Bug, Limitations of diff, Interoperability
