@@ -1,6 +1,6 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
-Version: 0.08alpha.pl1
+Version: 0.09alpha.pl0
 Release: 1
 URL: http://www.myth.co.uk/~jay/cssc/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
