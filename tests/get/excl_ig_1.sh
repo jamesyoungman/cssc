@@ -38,13 +38,13 @@ This line was added in version 1.4
 This line was added in version 1.5
 " IGNORE
 
-#FAILS# # Revision 1.6 ignores SID 1.2.
-#FAILS# docommand xg6 "${get} -r1.6 -p $s"      0 \
-#FAILS# "This line was added in version 1.3
-#FAILS# This line was added in version 1.4
-#FAILS# This line was added in version 1.5
-#FAILS# This line was added in version 1.6; that version also ignores 1.2" \
-#FAILS# IGNORE
+# Revision 1.6 ignores SID 1.2.
+docommand xg6 "${get} -r1.6 -p $s"      0 \
+"This line was added in version 1.3
+This line was added in version 1.4
+This line was added in version 1.5
+This line was added in version 1.6; that version also ignores 1.2\n" \
+IGNORE
 
 remove $g $s $x $z $p
 success
