@@ -17,7 +17,7 @@ see docs/FIXED.
  If you want to change this, you will need to read the file INSTALL.
 
  If, for example, you want to install the files in /usr/libexec/cssc
- and so on rather thatn in /usr/local/..., you just need to pass the 
+ and so on rather than in /usr/local/..., you just need to pass the 
  argument "prefix=/usr" to make.    
 
  If, on the other hand, all you wanted to do was to install the binaries
