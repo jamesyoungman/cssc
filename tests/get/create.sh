@@ -1,10 +1,10 @@
 #! /bin/sh
-# sid-select.sh:  Do we select the correct SIDs?
+# create.sh:  Testing for "get -e" -- the making of new deltas.
 
 # Import common functions & definitions.
 . ../common/test-common
 
-remove command.log log log.stdout log.stderr
+remove command.log log log.stdout log.stderr passwd
 mkdir test 2>/dev/null
 
 # Create the input files.
@@ -51,6 +51,6 @@ do_output L16 "${get} -r1.5 -p test/s.passwd"      0 test/passwd.5 IGNORE
 do_output L17 "${get} -r1.3.1.1 -p test/s.passwd"  0 test/passwd.6 IGNORE
 
 rm -rf test
-remove command.log
+remove passwd command.log
 success
 
