@@ -555,14 +555,337 @@ The literal string @code{@@(#)}.  @xref{what}.
 @section @code{help}
 @cindex help
 @cindex sccs-help
-Nothing here, sorry.
+This module is not implemented, and it probably will never be, because
+it exists to translate the sometimes obscure error messages produced by
+(genuine) SCCS.  These messages come with identifying codes (like
+``(ge4)''); one might type @samp{help ge4} to translate an obscure
+message into a more readable message detailing what has gone wrong.  The
+problem with this approach is that it results in a program called
+``help'' on the user's path.  When a naive user types "help" they are
+probably not looking for an explanation of an obscure message from SCCS.
+In fact, @code{help} is in any case a shell builtin for GNU Bash.
+Explanations of any obscure or unusual error messages belong in this
+manual, and so no @code{sccs-help} program is provided or planned.
+
+
 
 @node prs, prt, help, Invoking Programs
 @section @code{prs}
 @cindex prs
 @cindex sccs-prs
 @cindex revision summary
-Nothing here, sorry.
+@cindex Summary of SCCS file
+@cindex Dumping SCCS files
+
+The @code{prs} command (mnemonic: "print revision summary") prints
+information about an @sc{sccs} file in a user-defined format.  There are
+options for selecting which deltas are reported on; selection is
+possible by check-in time or by @sc{sid}.  The format of the output can
+also be specified on the command line.  All parts of an @sc{sccs} file
+can be dumped with @code{prs}.   Those parts which appear once per delta
+can be uniquely identified by @sc{sid} or by time.
+
+Typical uses for @code{prs} are 
+
+@itemize @bullet
+
+@item 
+Producing an audit trail of who changed what, and why, for example for 
+a software release report, or for ISO 9000 documentation.
+
+@item 
+Discovering how a particular piece of code became broken, and deducing
+which change broke it (@code{get -m} is also useful for this, see
+@ref{get options}).
+
+@item 
+Listing all changes made on Friday afternoons, as a preparation for
+extra checking.
+@end itemize
+
+
+@menu
+* Basic Usage: prs usage.           Frequently-used @samp{prs} commands
+* Options: prs options.             Full list of options
+* Keywords: Data Keywords.          Data Keyword Substitution
+@end menu
+
+
+@node prs usage, prs options, , prs
+@subsection Basic Usage for @code{prs}
+
+Here are some examples of the use of prs, with explanations of what they
+do.
+
+@table @samp
+@item prs s.myfile.c
+Show information about all the versions of myfile.c.
+
+@item prs SCCS
+Show information about all the SCCS files in the directory SCCS.
+
+@item prs -e -d:P: s.main.c | sort -u
+Show which users have made changes to main.c.
+
+@item prs -l -c`date +%y%m%d --date "last week"` SCCS
+Examine all the @sc{sccs} files in the directory @file{SCCS}. Show any deltas
+that have been created since last week.
+@end table
+
+
+@node prs options, Data Keywords, prs usage, prs
+@subsection Options for @code{prs}
+
+@table @samp
+@item -a 
+Include even removed deltas in the output.  Removed deltas have a type
+"R", as output by the :DT: keyword.
+
+@item -cYYMMDDHHMMSS
+Specifies the time of the ``cutoff''.  When this option is given, the
+delta selected by @code{prs} is the last one checked in before the
+cutoff.  The format of the cutoff is yymmddhhmmss.  As usual, any fields
+left unspecified in the cutoff are given the maximum legal value (for
+example, the seconds field defaults to 59).
+
+This behaviour is usually not the one required, and hence the @samp{-e}
+or @samp{-l} options are spefified too.
+
+@item -dFORMAT
+This specifies the data format for the output.  Because the default
+output format is sensible, this is typically used either in a shell
+script which will process the output further, or by a human to retrieve
+information which is not shown by default.  See @ref{Data Keywords} for
+the various keywords that can be used.  Any characters in the data
+format which are not part of a keyword are output as well.
+
+If one specifies the @samp{-d} option, @code{prs} by default only gives
+information about the latest delta.  To restore the default behaviour of
+showing all the deltas, use the @samp{-e} option as well.
+
+@item -e
+Makes the @samp{-c} option select deltas created at or earlier than the
+specified time.  Makes the @samp{-r} option select deltas before and
+including the one specified by the indicated @sc{sid}.  
+
+@item -l
+As the @samp{-e} option, but select only later deltas rather than
+earlier ones.
+
+
+@item -rSID
+Specifies the @sc{sid} for which information is provided.  If blank, the
+latest delta is selected.
+
+@end table
+
+@node Data Keywords, , prs options, prs
+@subsection Data Keywords for the @samp{-d} option of @code{prs}
+
+
+@subsubsection Global Keywords
+
+These keywords expand to the same thing, no matter which version is
+being examined.  Many of these are @sc{sccs} file flags (@pxref{flags}).
+
+@table @code
+@item :BD: 
+Emits the body of the @sc{sccs} file, that is, the part containing all
+the delta information.  Note that since this is dumped verbatim, it
+contains control characters.
+
+@item :BF: 
+Indicates the setting (@samp{yes} or @samp{no}) of the branch flag.
+
+@item :CB:
+Indicates the value of the release number ceiling flag.
+
+@item :Ds:
+The default @sc{sid} to check out (See @ref{flags} and @ref{get}).
+
+@item :F:
+Name of the @sc{sccs} file.
+
+@item :FB:
+Indicates the value of the release floor boundary flag.
+
+@item :FD:
+File descriptive text (@pxref{admin}).
+
+@item :FL:
+List of @sc{sccs} file flags.
+
+@item :J:
+Value (@samp{yes} or @samp{no}) of the joint-edit flag.       
+
+@item :KF:
+Value (@samp{yes} or @samp{no}) of the keyword-warning flag (@pxref{admin}). 
+
+@item :LK:
+Value of the locked-releases flag.
+
+@item :M:
+The module name (the value of the @samp{m} flag).
+
+@item :MF:
+The value (@samp{yes} or @samp{no}) of the @sc{mr} validation flag
+(@pxref{delta}).
+
+@item :MP:
+The value of the @sc{mr} validation program flag (@pxref{delta}).  This
+is usually the name of an executable file.
+
+@item :ND:
+The value of the null-delta (@samp{n}) flag (@samp{yes} or @samp{no}).
+
+@item :Q:
+The value of the (user-defined) Q flag (arbitrary one-line text).
+
+@item :PN:
+The full path name of the @sc{sccs} file.       
+
+@item :UN:
+List of users authorised to make deltas to this file (one per line).
+
+@item :Y:
+Value of the module-type flag.
+@end table
+
+
+The @samp{:BD:}, @samp{:FD:}, @samp{:FL:} and @samp{:UN:} keywords from
+this section may expand to strings containing newlines.
+
+
+@subsubsection Version-specific Keywords
+
+These keywords expand to data that is specific to a particular version.
+
+
+@table @code
+@item :A:   
+                Expands to @samp{:Z::Y: :M: :I::Z:}, useful for @code{what}.
+@item :B:   
+                Branch number of @sc{sid}
+
+@item :C:
+                Comments for this delta.  These may extend over several
+                lines.
+
+@item :D:
+                Date (yy/mm/dd) that this version was checked in.
+                Expands to @samp{:Dy:/:Dm:/:Dd:}.
+
+@item :Dd:
+                Day-of-month on which the delta was checked in (two
+                digits).
+
+@item :Dg:    
+                Sequence numbers of ignored deltas (separated by white
+                space).
+
+@item :DI:    
+                Expands to @samp{:Dn:/:Dx:/:Dg:} (sequence numbers
+                included/excluded/ignored).
+
+@item :DL:      
+                 Expands to @samp{:Li:/:Ld:/:Lu:} (lines
+                 inserted/deleted/unchanged).
+ 
+@item :Dm:      
+                Month when this version as checked in (two digits).
+
+@item :Dn:      
+                Sequence numbers of included deltas (separated by white
+                space).
+
+@item :DP:      
+                Sequence number of the delta that precedes this
+                one.
+
+@item :DS:
+                Sequence number of this delta.
+
+@item :Dt:
+                Expands to @samp{:DT: :I: :D: :T: :P: :DS: :DP:}. 
+
+@item :DT:      
+                Delta type: @samp{R} (removed) or @samp{D} (normal).
+
+@item :Dx:      
+                Sequence numbers of excluded deltas (separated by white
+                space).
+
+@cindex Year 2000
+@item :Dy:  
+                Year when this version was checked in.  Currently this
+                produces two digits; this is a 
+                Year-2000 issue. 
+
+@item :GB:
+                The body for this version, as distinct from the 
+                body of the @sc{sccs} file itself, which is obtained
+                with @samp{:BD:}.
+
+@item :I:
+                The @sc{sid} of this version.
+
+@item :L:
+                The level component of the @sc{sid} (that is, the second
+                number).
+
+@item :Ld:
+                Number of lines deleted in this version, with respect to
+                its predecessor.
+
+@item :Li:
+                Number of lines inserted in this version, with respect to
+                its predecessor.
+
+@item :Lu:
+                Number of lines unchanged in this version, with respect to
+                its predecessor.
+
+@item :MR:
+                The MR numbers specified when this delta was created.
+
+@item :P:
+                Perpetrator: the login name of the user who created this
+                delta.
+
+@item :R:
+                The release number of the @sc{sid} (the first number).
+
+@item :S:
+                The sequence number of the @sc{sid}.  Don't confuse this
+                with the delta sequence numbers, which are internal
+                identifiers for deltas which are output by the keywords
+                :DI:, :Dn:, :Dx: and :Dg:.
+
+@item :T:       
+                Time that this version was checked in
+                (@samp{:Th:::Tm:::Ts:}).
+
+@item :Th:
+                Hours component of checkin time (@samp{:T:}).
+
+@item :Tm:
+                Minutes  component of checkin time (@samp{:T:}).
+
+@item :Ts:
+                Seconds  component of checkin time (@samp{:T:}).
+
+@item :W:
+                Shorthand for @samp{:Z::M:<@sc{tab}>:I:}, suitable for
+                @code{what} (@pxref{what}).
+
+@item :Z:       
+                Expands to @samp{@@(#)} (@pxref{what}).
+@end table
+
+The @samp{:C:}, @samp{:GB:} and @samp{:MR:} keywords from this section
+may expand to strings containing newlines.
+
+
 
 @node prt, rmdel, prs, Invoking Programs
 @section @code{prt}
@@ -679,6 +1002,15 @@ Documentation is incomplete or missing.  That includes this document.
 @item
 Some programs are missing, that is, some programs are present in the
 SCCS suite and absent from this one.
+
+@item 
+When processing a list of @sc{sccs} files, @sc{cssc} will make a fatal
+exit on encountering an error, for example an SCCS file with a bad magic
+number, whereas the original SCCS would issue an error message and
+continue on with the next file.   It is planned that @sc{cssc} will
+recover from errors of this kind using C++ exceptions.  Support for
+exceptions is poor in current versions of the GNU C++ compiler; once this
+improves, @sc{cssc} will recover properly from this situation.
 
 @item 
 Some programs behave subtly differently to their original counterparts.
