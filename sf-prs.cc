@@ -465,6 +465,14 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
 	}
 }
 
+// Explicit template instantiations.
+template void print_flag2(FILE *out, const char *s, release);
+template void print_flag2(FILE *out, const char *s, sid);
+template void print_flag2(FILE *out, const char *s, range_list<release>);
+template void print_flag (FILE *out, range_list<release>);
+template void print_flag (FILE *out, release);
+template void print_flag (FILE *out, sid);
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */

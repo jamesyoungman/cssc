@@ -278,6 +278,21 @@ main(int argc, char **argv) {
 	return 0;
 }
 
+
+// Explicit template instantiations.
+template class range_list<sid>;
+template class list<sid>;
+template class list<mystring>;
+template class list<seq_no>;
+template class list<sccs_file::delta>;
+template class list<sccs_pfile::edit_lock>;
+
+#include "stack.h"
+template class stack<unsigned short>;
+
+#include "sid_list.h"
+template class range_list<release>;
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */

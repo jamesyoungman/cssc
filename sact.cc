@@ -57,7 +57,10 @@ main(int argc, char **argv) {
 	return 0;
 }
 
+// Explicit template instantiations.
 template class range_list<sid>;
+template class list<sccs_pfile::edit_lock>;
+template class list<mystring>;
 
 /* Local variables: */
 /* mode: c++ */

@@ -206,6 +206,16 @@ main(int argc, char **argv) {
 	return 0;
 }
 
+// Explicit template instantiations.
+template class list<mystring>;
+template class list<seq_no>;
+template class list<sccs_file::delta>;
+template class range_list<release>;
+template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
+template class list<char const *>;
+template list<mystring>& operator+=(list<mystring> &, list<mystring> const &);
+template list<mystring>& operator-=(list<mystring> &, list<mystring> const &);
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */
