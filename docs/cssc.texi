@@ -13,8 +13,8 @@
 @c %**end of header
 
 @set EDITION 1.0
-@set VERSION 0.10beta-pl1
-@set UPDATED Sun Mar 21 10:11:20 1999
+@set VERSION 0.11alpha-pl0
+@set UPDATED Sun Apr 18 18:23:23 1999
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -727,7 +727,7 @@ the exit status.
 Name the gotten file @file{@var{foo}}, instead of the default name.
 
 @item -i@var{list}
-Include the deltas for the listed @sc{sid}s.  See also @samp{-x}.  Untested.
+Include the deltas for the listed @sc{sid}s.  See also @samp{-x}.
 @c TODO: Write the test cases, and document it.
 
 @item -k
