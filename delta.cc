@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.14 1998/02/21 14:27:04 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.15 1998/02/23 21:01:10 james Exp $";
 
 void
 usage() {
@@ -65,8 +65,10 @@ main(int argc, char **argv) {
 		set_prg_name("delta");
 	}
 
-	class getopt opts(argc, argv, "r!sng!m!My!YpV");
-	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
+	class CSSC_Options opts(argc, argv, "r!sng!m!My!YpV");
+	for(c = opts.next();
+	    c != CSSC_Options::END_OF_ARGUMENTS;
+	    c = opts.next()) {
 		switch (c) {
 		default:
 			quit(-2, "Unsupported option: '%c'", c);

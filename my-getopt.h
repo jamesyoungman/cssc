@@ -22,7 +22,7 @@
  * placed in the Public Domain.
  *
  *
- * Defines the class getopt.
+ * Defines the class CSSC_Options.
  *
  */
 
@@ -33,7 +33,7 @@
 #pragma interface
 #endif
 
-class getopt
+class CSSC_Options
 {
 public:
   enum
@@ -56,7 +56,7 @@ private:
   void reorder();		// reorder argv so that options come first.
 
 public:
-  getopt(int ac, char **av, const char *s, int err = 1);
+  CSSC_Options(int ac, char **av, const char *s, int err = 1);
   int next(void);
   int get_index(void) const;
   int get_argc(void) const;

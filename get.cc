@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.20 1998/02/21 14:27:07 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.21 1998/02/23 21:01:12 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -90,8 +90,10 @@ main(int argc, char **argv) {
 		set_prg_name("get");
 	}
 
-	class getopt opts(argc, argv, "r!c!i!x!ebklpsmngtw!a!DVG!");
-	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
+	class CSSC_Options opts(argc, argv, "r!c!i!x!ebklpsmngtw!a!DVG!");
+	for(c = opts.next();
+	    c != CSSC_Options::END_OF_ARGUMENTS;
+	    c = opts.next()) {
 		switch (c) {
 		default:
 			quit(-2, "Unsupported option: '%c'", c);

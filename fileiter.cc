@@ -36,7 +36,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.11 1998/02/21 14:03:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.12 1998/02/23 21:01:10 james Exp $";
 #endif
 
 #if 0
@@ -101,7 +101,7 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 	is_unique = (1 == argc);
 }
 #else
-sccs_file_iterator::sccs_file_iterator(const getopt &opts)
+sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	: argv(opts.get_argv() + opts.get_index()),
 	  argc(opts.get_argc() - opts.get_index()) {
 

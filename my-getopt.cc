@@ -21,7 +21,7 @@
  * placed in the Public Domain.
  *
  * 
- * Members of the class getopt.
+ * Members of the class CSSC_Options.
  *
  */
 
@@ -66,11 +66,11 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.4 1998/02/21 14:27:09 james Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.5 1998/02/23 21:01:12 james Exp $";
 #endif
 
 int
-getopt::next()
+CSSC_Options::next()
 {
   if (cindex == 0 || *cindex == '\0')
     {
@@ -185,12 +185,12 @@ getopt::next()
   return c;
 }
 
-int getopt::get_index(void) const
+int CSSC_Options::get_index(void) const
 {
   return index;
 }
 
-char *getopt::getarg(void) const
+char *CSSC_Options::getarg(void) const
 {
   return arg;
 }
@@ -200,7 +200,7 @@ char *getopt::getarg(void) const
  *          come before the filenames.  The internal ordering
  *          of the options and of the filenames is unchanged.
  */
-void getopt::reorder(void)
+void CSSC_Options::reorder(void)
 {
   int i;
   char **files, **options;
@@ -273,7 +273,7 @@ void getopt::reorder(void)
   
 }
 
-getopt::getopt(int ac, char **av, const char *s, int err = 1)
+CSSC_Options::CSSC_Options(int ac, char **av, const char *s, int err = 1)
   : argc(ac),
     argv(av),
     index(1),
@@ -284,12 +284,12 @@ getopt::getopt(int ac, char **av, const char *s, int err = 1)
   reorder();
 }
 
-int getopt::get_argc(void) const
+int CSSC_Options::get_argc(void) const
 {
   return argc;
 }
 
-char **getopt::get_argv(void) const
+char **CSSC_Options::get_argv(void) const
 {
   return argv;
 }

@@ -60,7 +60,7 @@
 #pragma interface
 #endif
 
-class getopt;
+class CSSC_Options;
 
 
 /* This class is used to iterate over the list of SCCS files as
@@ -85,7 +85,7 @@ private:
 
 public:
   // sccs_file_iterator(int ac, char **av, int ind = 1);
-  sccs_file_iterator(const getopt&);
+  sccs_file_iterator(const CSSC_Options&);
   
   int next();
 

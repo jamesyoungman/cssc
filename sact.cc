@@ -32,7 +32,7 @@
 #include "version.h"
 #include "my-getopt.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.8 1998/02/21 14:27:19 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.9 1998/02/23 21:01:15 james Exp $";
 
 void
 usage() {
@@ -50,9 +50,9 @@ main(int argc, char **argv)
     set_prg_name("sact");
 
 
-  class getopt opts(argc, argv, "V");
+  class CSSC_Options opts(argc, argv, "V");
   int c;
-  for (c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next())
+  for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS; c = opts.next())
     {
       switch (c)
 	{

@@ -45,7 +45,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.12 1998/02/21 14:27:28 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.13 1998/02/23 21:01:16 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -204,8 +204,8 @@ main(int argc, char **argv)
 
   
   int c;
-  class getopt opts(argc, argv, "r!snV");
-  for (c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next())
+  class CSSC_Options opts(argc, argv, "r!snV");
+  for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS; c = opts.next())
     {
       switch (c)
 	{

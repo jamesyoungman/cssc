@@ -35,7 +35,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.20 1998/02/21 14:03:52 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.21 1998/02/23 21:01:09 james Exp $";
 
 
 bool well_formed_sccsname(const sccs_name& n)
@@ -84,8 +84,10 @@ main(int argc, char **argv) {
 		set_prg_name("admin");
 	}
 
-	class getopt opts(argc, argv, "bni!r!t!f!d!a!e!m!y!hzV");
-	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
+	class CSSC_Options opts(argc, argv, "bni!r!t!f!d!a!e!m!y!hzV");
+	for(c = opts.next();
+	    c != CSSC_Options::END_OF_ARGUMENTS;
+	    c = opts.next()) {
 		switch (c) {
 		default:
 			quit(-2, "Unsupported option: '%c'", c);

@@ -32,7 +32,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.12 1998/02/21 14:27:27 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.13 1998/02/23 21:01:16 james Exp $";
 
 void
 usage() {
@@ -42,97 +42,106 @@ usage() {
 }
 
 int
-main(int argc, char **argv) {
-	int c;
-	sid rid = NULL;
-	int silent = 0;
-	int keep_gfile = 0;
+main(int argc, char **argv)
+{
+  int c;
+  sid rid = NULL;
+  int silent = 0;
+  int keep_gfile = 0;
+  
+  if (argc > 0)
+    set_prg_name(argv[0]);
+  else
+    set_prg_name("unget");
 
-	if (argc > 0) {
-		set_prg_name(argv[0]);
-	} else {
-		set_prg_name("unget");
+  class CSSC_Options opts(argc, argv, "r!snV");
+  for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS; c = opts.next())
+    {
+      switch (c)
+	{
+	default:
+	  quit(-2, "Unsupported option: '%c'", c);
+	  
+	case 'r':
+	  rid = sid(opts.getarg());
+	  if (!rid.valid())
+	    {
+	      quit(-2, "Invaild SID: '%s'", opts.getarg());
+	    }
+	  break;
+	  
+	case 's':
+	  silent = 1;
+	  break;
+	  
+	case 'n':
+	  keep_gfile = 1;
+	  break;
+	  
+	case 'V':
+	  version();
+	  break;
+	}
+    }
+
+  sccs_file_iterator iter(opts);
+  
+  if (silent)
+    {
+      stdout_to_null();
+    }
+
+  while (iter.next())
+    {
+      sccs_name &name = iter.get_name();
+      sccs_pfile pfile(name, sccs_pfile::UPDATE);
+      
+      switch (pfile.find_sid(rid))
+	{
+	case sccs_pfile::FOUND:
+	  break;
+
+	case sccs_pfile::NOT_FOUND:
+	  if (!rid.valid())
+	    {
+	      quit(-1, "%s: You have no edits outstanding.", name.c_str());
+	    }
+	  quit(-1, "%s: Specified SID hasn't been locked for"
+	       " editing by you.",
+	       name.c_str());
+	  break;
+	  
+	case sccs_pfile::AMBIGUOUS:
+	  if (!rid.valid())
+	    {
+	      quit(-1, "%s: Specified SID is ambiguous.",
+		   name.c_str());
+	    }
+	  quit(-1, "%s: You must specify a SID on the"
+	       " command line.", name.c_str());
+	  break;
+	  
+	default:
+	  abort();
 	}
 
-	class getopt opts(argc, argv, "r!snV");
-	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
-		switch (c) {
-		default:
-			quit(-2, "Unsupported option: '%c'", c);
-
-		case 'r':
-			rid = sid(opts.getarg());
-			if (!rid.valid()) {
-				quit(-2, "Invaild SID: '%s'", opts.getarg());
-			}
-			break;
-
-		case 's':
-			silent = 1;
-			break;
-
-		case 'n':
-			keep_gfile = 1;
-			break;
-
-		case 'V':
-			version();
-			break;
-		}
+      if (!iter.unique())
+	printf("\n%s:\n", name.c_str());
+      
+      pfile.print_lock_sid(stdout);
+      fputc('\n', stdout);
+      
+      pfile.delete_lock();
+      pfile.update();
+      
+      if (!keep_gfile)
+	{
+	  mystring gname = name.gfile();
+	  remove(gname.c_str());
 	}
-
-	sccs_file_iterator iter(opts);
-
-     	if (silent) {
-		stdout_to_null();
-	}
-
-	while(iter.next()) {
-		sccs_name &name = iter.get_name();
-		sccs_pfile pfile(name, sccs_pfile::UPDATE);
-
-		switch(pfile.find_sid(rid)) {
-		case sccs_pfile::FOUND:
-			break;
-
-		case sccs_pfile::NOT_FOUND:
-			if (!rid.valid()) {
-				quit(-1, "%s: You have no edits outstanding.",
-				     name.c_str());
-			}
-			quit(-1, "%s: Specified SID hasn't been locked for"
-			         " editing by you.",
-			     name.c_str());
-			break;
-
-		case sccs_pfile::AMBIGUOUS:
-			if (!rid.valid()) {
-				quit(-1, "%s: Specified SID is ambiguous.",
-				     name.c_str());
-			}
-			quit(-1, "%s: You must specify a SID on the"
-			         " command line.", name.c_str());
-			break;
-
-		default:
-			abort();
-		}
-		if (!iter.unique())
-		  printf("\n%s:\n", name.c_str());
-		pfile.print_lock_sid(stdout);
-		fputc('\n', stdout);
-
-		pfile.delete_lock();
-		pfile.update();
-
-		if (!keep_gfile)
-		  {
-		    mystring gname = name.gfile();
-		    remove(gname.c_str());
-		  }
-	}
-
-	return 0;
+    }
+  
+  return 0;
 }
 
 
