@@ -342,6 +342,7 @@ const struct sccsprog *lookup (const char *name);
 bool unedit (const char *fn);
 char *makefile (const char *name);
 const char *tail (register const char *fn);
+char *tail_nc (register char *fn);
 const struct pfile *getpfent (FILE * pfp);
 const char *username (void);
 char *nextfield (register char *p);
@@ -351,12 +352,15 @@ static char *gstrcat (char *to, const char *from, int length);
 static char *gstrncat (char *to, const char *from, int n, int length);
 static char *gstrcpy (char *to, const char *from, int length);
 static void gstrbotch (const char *str1, const char *str2);
-static void  gstrbotchn (const char *, int, const char *, int);
+static void  gstrbotchn (int avail, const char *, int, const char *, int);
 
 static char *str_dup (const char *);
 
 
-#define	FBUFSIZ	BUFSIZ
+/* #define	FBUFSIZ	BUFSIZ */
+
+#define FBUFSIZ 100
+
 
 #define	PFILELG	120
 
@@ -442,7 +446,7 @@ main (int argc, char **argv)
   exit (i);
 }
 
-
+/* Warning in do_enter*/
 char ** do_enter(char *argv[], char **np, char **ap,
 		 int *rval)
 {
@@ -462,11 +466,11 @@ char ** do_enter(char *argv[], char **np, char **ap,
       strcpy (buf2, "-i");
       gstrcat (buf2, np[0], sizeof (buf2));
       ap[0] = buf2;	/* sccs enter foo --> admin -ifoo */
-      argv[0] = tail (np[0]);	/* ERR */
-      argv[1] = NULL;	/* ERR */
+      argv[0] = tail_nc (np[0]);	/* ?Warning: discards const */
+      argv[1] = NULL;
       *rval = command (ap, TRUE, "admin");
 
-      argv[1] = argv_tmp;	/* ERR */
+      argv[1] = argv_tmp;
       if (*rval == 0)
 	{
 	  strcpy (buf2, ",");
@@ -535,12 +539,12 @@ try_to_exec(const char *prog, char * const argv[])
    **   Side Effects:
    **           none.
  */
-
+/* Warning in command () */
 int 
 command (char *argv[], bool forkflag, const char *arg0)
 {
   const struct sccsprog *cmd;
-  char buf[FBUFSIZ];
+  char buf[FBUFSIZ]; /* BUG: access to this is not bounds-checked. */
   char *nav[1000];
   char **np;
   char **ap;
@@ -617,14 +621,14 @@ command (char *argv[], bool forkflag, const char *arg0)
 	  if (*p == '-')
 	    {
 	      if (p[1] == '\0' || editchs == NULL || index (editchs, p[1]) != NULL)
-		*np++ = p;		/* ERR */
+		*np++ = p;	/* Warning: discards const */
 	    }
 	  else
 	    {
 	      if (!bitset (NO_SDOT, cmd->sccsflags))
-		p = makefile (p);	/* LEAK */
+		p = makefile (p);	/* MEMORY LEAK (of returned value) */
 	      if (p != NULL)
-		*np++ = p;		/* ERR */
+		*np++ = p;	/* Warning: discards const */
 	    }
 	}
       *np = NULL;
@@ -638,7 +642,7 @@ command (char *argv[], bool forkflag, const char *arg0)
     {
     case SHELL:		/* call a shell file */
       {
-	ap[0]  = cmd->sccspath;	/* ERR */
+	ap[0]  = cmd->sccspath;	/* Warning: discards const */
 	ap[-1] = "sh";
 	rval = callprog (_PATH_BSHELL, cmd->sccsflags, ap, forkflag);
       }
@@ -725,12 +729,12 @@ command (char *argv[], bool forkflag, const char *arg0)
 	  {
 	    int this_ret;
 	    /* messy, but we need a null terminated argv */
-	    *argv = *np++;	/* ERR */
-	    argv[1] = NULL;	/* ERR */
+	    *argv = *np++;
+	    argv[1] = NULL;
 	    this_ret = dodiff (ap, tail (*argv));
 	    if (rval == 0)
 	      rval = this_ret;
-	    argv[1] = s;	/* ERR */
+	    argv[1] = s;	/* Warning: discards const */
 	  }
       }
       break;
@@ -1136,7 +1140,7 @@ form_gname(char *buf, int bufsize, struct dirent *dir)
 {
   if (NAMLEN(dir)-2 >= bufsize)
     {
-      gstrbotchn(dir->d_name, NAMLEN(dir), (char*)0, 0);
+      gstrbotchn(bufsize, dir->d_name, NAMLEN(dir), (char*)0, 0);
     }
   else
     {
@@ -1165,13 +1169,17 @@ form_gname(char *buf, int bufsize, struct dirent *dir)
    **           Prints information regarding files being edited.
    **           Exits if a "check" command.
  */
+static void oom(void)
+{
+  perror("malloc failed");
+  exit(EX_TEMPFAIL);
+}
 
 int 
-clean (int mode, char *const *argv)
+do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
 {
   struct dirent *dir;
   register DIR *dirp;
-  char buf[FBUFSIZ];
   char *bufend;
   register char *basefile;
   bool gotedit;
@@ -1223,15 +1231,15 @@ clean (int mode, char *const *argv)
      **  Find and open the SCCS directory.
    */
 
-  gstrcpy (buf, SccsDir, sizeof (buf));
+  gstrcpy (buf, SccsDir, FBUFSIZ);
   if (buf[0] != '\0')
-    gstrcat (buf, "/", sizeof (buf));
+    gstrcat (buf, "/", FBUFSIZ);
   if (subdir != NULL)
     {
-      gstrcat (buf, subdir, sizeof (buf));
-      gstrcat (buf, "/", sizeof (buf));
+      gstrcat (buf, subdir, FBUFSIZ);
+      gstrcat (buf, "/", FBUFSIZ);
     }
-  gstrcat (buf, SccsPath, sizeof (buf));
+  gstrcat (buf, SccsPath, FBUFSIZ);
   bufend = &buf[strlen (buf)];
 
   dirp = opendir (buf);
@@ -1254,9 +1262,9 @@ clean (int mode, char *const *argv)
 	continue;
 
       /* got an s. file -- see if the p. file exists */
-      gstrcat (buf, "/p.", sizeof (buf));/* XXX: BUG: wrong size limit. */
+      gstrcat (buf, "/p.", FBUFSIZ);/* XXX: BUG: wrong size limit. */
       basefile = bufend + 3;
-      form_gname(basefile, sizeof(buf)-strlen(buf), dir);
+      form_gname(basefile, FBUFSIZ-strlen(buf), dir);
 
 
       /*
@@ -1293,7 +1301,7 @@ clean (int mode, char *const *argv)
       if (mode == CLEANC && !gotpfent)
 	{
 	  char unlinkbuf[FBUFSIZ];
-	  form_gname(unlinkbuf, sizeof(unlinkbuf), dir);
+	  form_gname(unlinkbuf, FBUFSIZ, dir);
 	  unlink (unlinkbuf);
 	}
     }
@@ -1313,6 +1321,23 @@ clean (int mode, char *const *argv)
   if (mode == CHECKC)
     exit (gotedit);
   return (EX_OK);
+}
+
+int 
+clean (int mode, char *const *argv)
+{
+  int retval = EX_OK;
+  char *buf = malloc(FBUFSIZ);
+  if (NULL == buf)
+    {
+      oom();
+    }
+  else
+    {
+      retval = do_clean(mode, argv, buf);
+      free(buf);
+    }
+  return retval;
 }
 
 /*
@@ -1381,7 +1406,7 @@ unedit (const char *fn)
   char buf[PFILELG];
 
   /* make "s." filename & find the trailing component */
-  pfn = makefile (fn);		/* LEAK */
+  pfn = makefile (fn);		/* returned value must be freed. */
   if (pfn == NULL)
     return (FALSE);
   q = rindex (pfn, '/');
@@ -1390,6 +1415,7 @@ unedit (const char *fn)
   if (q[1] != 's' || q[2] != '.')
     {
       usrerr ("bad file name \"%s\"", fn);
+      free(pfn);
       return (FALSE);
     }
 
@@ -1400,6 +1426,7 @@ unedit (const char *fn)
   if (pfp == NULL)
     {
       printf ("%12s: not being edited\n", fn);
+      free(pfn);
       return (FALSE);
     }
 
@@ -1409,6 +1436,8 @@ unedit (const char *fn)
   if (tfp == NULL)
     {
       usrerr ("cannot create \"%s\"", tfn);
+      fclose(pfp);
+      free(pfn);
       exit (EX_OSERR);
     }
 
@@ -1459,6 +1488,7 @@ unedit (const char *fn)
 	    fclose (tfp);
 	    fclose (pfp);
 	    unlink (tfn);
+	    free(pfn);
 	    return (FALSE);
 	  }
     }
@@ -1469,11 +1499,13 @@ unedit (const char *fn)
       if (freopen (tfn, "r", tfp) == NULL)
 	{
 	  syserr ("cannot reopen \"%s\"", tfn);
+	  free(pfn);
 	  exit (EX_OSERR);
 	}
       if (freopen (pfn, "w", pfp) == NULL)
 	{
 	  usrerr ("cannot create \"%s\"", pfn);
+	  free(pfn);
 	  return (FALSE);
 	}
       while (fgets (buf, sizeof buf, tfp) != NULL)
@@ -1503,11 +1535,13 @@ unedit (const char *fn)
        */
       if (unlink (cp) >= 0)
 	printf ("%12s: removed\n", cp);
+      free(pfn);
       return (TRUE);
     }
   else
     {
       printf ("%12s: not being edited by you\n", fn);
+      free(pfn);
       return (FALSE);
     }
 }
@@ -1525,7 +1559,7 @@ unedit (const char *fn)
    **   Side Effects:
    **           none.
  */
-
+/* Warning in dodiff */
 int 
 dodiff (char *const getv[], const char *gfile)
 {
@@ -1556,7 +1590,7 @@ dodiff (char *const getv[], const char *gfile)
       /* in parent; run get */
       OutFile = pipev[1];
       close (pipev[0]);
-      rval = command (&getv[1], TRUE, "get:rcixt -s -k -p");
+      rval = command (&getv[1], TRUE, "get:rcixt -s -k -p"); /* Warning */
       osig = signal (SIGINT, SIG_IGN);
       while (((i = wait (&st)) >= 0 && i != pid) || errno == EINTR)
 	errno = 0;
@@ -1572,7 +1606,7 @@ dodiff (char *const getv[], const char *gfile)
 	  syserr ("dodiff: magic failed");
 	  exit (EX_OSERR);
 	}
-      command (&getv[1], FALSE, "-diff:elsfhbC");
+      command (&getv[1], FALSE, "-diff:elsfhbC"); /* Warning: discards const */
     }
   return rval;
 }
@@ -1595,6 +1629,31 @@ const char *
 tail (register const char *fn)
 {
   register const char *p;
+
+  for (p = fn; *p != 0; p++)
+    if (*p == '/' && p[1] != '\0' && p[1] != '/')
+      fn = &p[1];
+  return fn;
+}
+
+/*
+   **  TAIL_NC -- return tail of filename (non-const version).
+   **
+   **   Parameters:
+   **           fn -- the filename.
+   **
+   **   Returns:
+   **           a pointer to the tail of the filename; e.g., given
+   **           "cmd/ls.c", "ls.c" is returned.
+   **
+   **   Side Effects:
+   **           none.
+ */
+
+char *
+tail_nc (register char *fn)
+{
+  register char *p;
 
   for (p = fn; *p != 0; p++)
     if (*p == '/' && p[1] != '\0' && p[1] != '/')
@@ -1824,9 +1883,10 @@ gstrbotch (const char *str1, const char *str2)
 }
 
 static void 
-gstrbotchn (const char *str1, int len1, const char *str2, int len2)
+gstrbotchn (int navail,
+	    const char *str1, int len1, const char *str2, int len2)
 {
-  fprintf(stderr, "Filename(s) too long: ");
+  fprintf(stderr, "Filename%s too long: ", (str1 && str2) ? "s" :"");
   if (str1)
     {
       fwrite(str1, len1, 1, stderr);
@@ -1837,6 +1897,7 @@ gstrbotchn (const char *str1, int len1, const char *str2, int len2)
       fwrite(str2, len2, 1, stderr);
     }
   putc('\n', stderr);
+  fprintf(stderr, "Only %d characters available.\n", navail);
   exit(EX_SOFTWARE);
 }
 

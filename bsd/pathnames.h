@@ -2,6 +2,9 @@
  * Copyright (c) 1989, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
+ * Copyright (C) 1998, Free Software Foundation, Inc.
+ *      
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -31,11 +34,16 @@
  * SUCH DAMAGE.
  *
  *	@(#)pathnames.h	8.1 (Berkeley) 6/6/93
+ *
+ * Note that this is not the original version of the file.  It has 
+ * been modified but of course still keeps the same license.
  */
 
 #include <paths.h>
 
-#define PREFIX "../"
+#ifndef PREFIX
+#define PREFIX ""
+#endif
 
 #define PASTE(a,b) a##b
 
