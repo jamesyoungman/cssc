@@ -1,5 +1,5 @@
 /*
- * canonify.cc: Part of GNU CSSC.
+ * realpwd.cc: Part of GNU CSSC.
  * 
  * 
  *    Copyright (C) 1997, Free Software Foundation, Inc. 
@@ -18,7 +18,7 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  * 
- * Functions for canonifying filenames.
+ * Program for getting the canonical form of the current directory.
  */
 
 #include <config.h>
