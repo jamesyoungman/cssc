@@ -37,29 +37,29 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.44 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.45 2001/11/25 23:08:00 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
    requested SID. */
 bool
-sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) const
+sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) const
 {
   if (requested.is_null())      // no sid specified?
     {                           // get the default.
       requested = flags.default_sid; 
       if (requested.is_null())  // no default?
         {                       // get the latest.
-          requested = sid(release::LARGEST);
+          requested = (release)delta_table->highest_release();
         }
     }
 
   // Giving a SID of two components is a request for 
-  // an exact match on the trunk, unless include_branches
+  // an exact match on the trunk, unless get_top_delta
   // is specified, in which case it is a request for
   // the latest SID of the specified release and level.
   int ncomponents = requested.components();
-  if (2 == ncomponents && !include_branches)
+  if (2 == ncomponents && !get_top_delta)
     ncomponents = 4;            // want an exact match.
 
   ASSERT(ncomponents != 0);
@@ -74,18 +74,35 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
   if (1 == ncomponents)
     {
       // find highest SID of any level, which is less than or equal to
-      // the requested one.  If include_branches is true, they don't
+      // the requested one.  If get_top_delta is true, they don't
       // have to be on the trunk.
       while (iter.next())
         {
           if ( (release)iter->id > (release)requested )
             continue;
-          else if (!include_branches && !iter->id.on_trunk())
+          else if (!get_top_delta && !iter->id.on_trunk())
             continue;
+
           if (!got_best || iter->id.gte(best))
             {
               best = iter->id;
               got_best = true;
+
+	      /* The -t option to get was specified.
+	       * This means that the user wants to find the "top"
+	       * delta - this is the one most recently added to the 
+	       * SCCS file, that is the one closest to the beginning 
+	       * of the file.  It is not possible to determine which 
+	       * SID this is by looking at the tree of SIDs alone.
+	       * The addition of this conditional fixed SourceForge bug 
+	       * number 479916.
+	       */
+	      if (get_top_delta
+		  && iter->id.matches(requested, ncomponents))
+		{
+		  found = best;
+		  return true;
+		}
             }
         }
     }
@@ -125,7 +142,11 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
                 {
                   best = iter->id;
                   got_best = true;
-                }
+		  if (get_top_delta)
+		  {
+		    break;
+		  }
+		}
             }
         }
     }

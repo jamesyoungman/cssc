@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.39 2001/09/29 19:39:41 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.40 2001/11/25 23:08:00 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -100,7 +100,7 @@ main(int argc, char **argv)
 #if 0
   int seq_no = 0;                       /* -a */
 #endif
-  int include_branches = 0;             /* -t */
+  int get_top_delta = 0;                /* -t */
   bool real_file;
   
   if (argc > 0)
@@ -210,7 +210,7 @@ main(int argc, char **argv)
 #endif
           
         case 't':
-          include_branches = 1;
+          get_top_delta = 1;
           break;
 
         case 'G':
@@ -295,7 +295,7 @@ main(int argc, char **argv)
           sid retrieve;
 
           rid = org_rid;
-          if (!file.find_requested_sid(rid, retrieve, include_branches))
+          if (!file.find_requested_sid(rid, retrieve, get_top_delta))
             {
               errormsg("%s: Requested SID not found.", name.c_str());
               retval = 1;

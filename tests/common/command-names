@@ -13,3 +13,15 @@ rmdel=${rmdel:-${dir}/rmdel}
 
 
 DIFF=${DIFF:-diff}
+
+for f in ${get} ${admin} ${csc} ${prs} ${prt} \
+	${delta} ${sact} ${sccsdiff} ${unget} ${what} ${rmdel}
+do
+	case $f in 
+		/*)
+			test -x $f || echo "WARNING: cannot execute $f" >&2
+			;;
+		*)
+			;;
+	esac
+done
