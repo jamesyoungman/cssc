@@ -113,9 +113,9 @@ the license.  @xref{Copying,,GNU General Public License}.
 @cindex Ross Ridge
 @cindex MySC
 @cindex author
-GNU @code{CSSC} was originally based on the public-domain package
-@code{MySC}, which was written by Ross Ridge.   The enhancement work was
-done by James Youngman. 
+GNU CSSC was originally based on the public-domain package MySC, which
+was written by Ross Ridge.  The enhancement work was done by James
+Youngman.
 
 
 @node Interface, Invoking Programs, Overview, Top
@@ -128,9 +128,9 @@ By far the easiest way to use @sc{cssc} (or indeed @sc{sccs}) is to use
 VC-mode in GNU Emacs.  @xref{Version Systems, ,Version Systems,emacs,The
 GNU Emacs manual}.
 
-If you can't use VC-mode, the @sc{bsd} command @code{sccs} is a good
+If you can't use VC-mode, the BSD command @code{sccs} is a good
 interface to the @sc{sccs} suite (and hence @sc{cssc}).  However, it is
-not yet integrated into this package. 
+not yet integrated into this package.
 
 Failing that, you will need to use each of the programs in the suite
 individually.  
@@ -552,12 +552,13 @@ with the @samp{-e} option.
 @cindex Year 2000
 Get the version that was current at the time specified by @i{when}.  The
 format of the argument is [cc]yy[mm[dd[hh[mm[ss]]]]].  Any fields
-omitted assume their maximum possible values so that if you specify
-@samp{-c92}, you get the latest version which was available in the year
-1992.  It is possible to give four digits for the year as a
-@sc{cssc}-specific extension, but if only two digits are used and the
-resulting value is less than 69, the year is assumed to be in the
-twenty-first century (@pxref{prs options}).
+omitted (except ``cc'') assume their maximum possible values so that if
+you specify @samp{-c92}, you get the latest version which was available
+in the year 1992.  It is possible to give four digits for the year as a
+@sc{cssc}-specific extension, but only if none of the other fields are
+omitted.  If only two digits are used and the resulting value is less
+than 69, the year is assumed to be in the twenty-first century
+(@pxref{prs options} and @ref{Year 2000 Issues}).
 
 
 @item -D
@@ -813,7 +814,7 @@ In line with the X/Open CAE Specification, Commands and Utilities
 @emph{not} given and the year is less than 69, it is assumed to be a
 year in the twenty-first century.  The X/Open document does not mandate
 a four-digit year specifier, but it would not make sense to apply this
-rule if a four-digit year is specified.
+rule if a four-digit year is specified.  @xref{Year 2000 Issues}.
 
 
 
@@ -1264,6 +1265,7 @@ year 2000.  Sun Microsystems, for example, state in their Year 2000 FAQ
 
 @quotation
 
+@sp 1
 @bullet{}
 @strong{Does Sun see any problems with the source code control system
 (@sc{sccs})?}
@@ -1287,6 +1289,7 @@ the @sc{SCCS} utility.  For more information please refer to:
 Copyright @copyright{} 1994 -- 1997 Sun Microsystems, Inc.,
 901 San Antonio Road, Palo Alto, CA 94303 USA.
 All rights reserved.
+@sp 2
 
 @end quotation
 
@@ -1315,7 +1318,7 @@ compliant even if your vendor's @sc{sccs} implementation cannot be
 updated for some reason, I'd like you to remember the conversion effort
 that this has saved you.  I'd also like to urge to to actually use that
 effort to convert your existing projects from @sc{sccs} to a more modern
-version control system, for example GNU @sc{cvs}.  There are other
+version control system, for example GNU cvs.  There are other
 considerations besides year 2000 compliance, after all.  @sc{cssc} is
 not called ``Compatibly Stupid Source Control'' for nothing.
 
@@ -1502,7 +1505,7 @@ script.  At this stage the best strategy is to test the test script
 itself by running against a genuine edition of @sc{sccs}, if you have
 one available (before running @code{make check}, set the environment
 variable @samp{dir} to point to the directory containing the programs to
-be tested; this should usually be @w{@file{/usr/lib/sccs}}).  When you
+be tested; this should usually be @w{@file{/usr/sccs}}).  When you
 are sure that the test script is expecting the correct behavior from
 programs under test, you can then run it against @sc{cssc}.  After all,
 if you're going to set out writing your test by assuming that @sc{cssc}
@@ -1708,7 +1711,6 @@ If you have other questions, comments or suggestions about GNU
 @node Concept Index, , Copying, Top
 @unnumbered Concept Index
 
-@cindex tail recursion
 @printindex cp
 
 @shortcontents
