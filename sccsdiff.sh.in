@@ -7,8 +7,11 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.3 1997/12/19 20:40:35 james Exp $
+# $Id: sccsdiff.sh.in,v 1.4 1998/01/24 14:15:13 james Exp $
 # LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.4  1998/01/24 14:15:13  james
+# LOG   SCCS compatibility fix -- When "get" fails, exit with value 1, not 2.
+# LOG
 # LOG   Revision 1.3  1997/12/19 20:40:35  james
 # LOG   Modified version of sccsdiff arrived from Richard Polton; took the
 # LOG   ideas onboard for a rewrite of sccsdiff.
@@ -34,7 +37,7 @@ then
     fi
 fi
 
-version='$Revision: 1.3 $ $State: Exp $'
+version='$Revision: 1.4 $ $State: Exp $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
@@ -129,13 +132,13 @@ do
     ${get:-get} -r$first_sid -s -k -G${g1} ${sccsfile} || {
 	exec >&2
 	echo Failed to get version $first_sid from $sccsfile
-	exit 2
+	exit 1
     }
     ${get:-get} -r$second_sid -s -k -G${g2} ${sccsfile} || {
 	rm -f $g1
 	exec >&2
 	echo Failed to get version $second_sid from $sccsfile
-	exit 2
+	exit 1
     }
     # in case noclobber is set...
     rm -f $dfile
