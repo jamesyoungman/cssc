@@ -90,8 +90,8 @@ docommand M20 "${delta} -mmr.M20 -ycomment.M20 test/s.passwd" 0 \
 docommand M21 "${get} -e test/s.passwd" 0 "1.4\nnew delta 1.5\n2 lines\n" ""
 
 # Check the file out again.  Require MRs.  Try to check in without MRs
-docommand M22 "${admin} -fvtrue test/s.passwd" 0 "" ""
-docommand M23 "${delta} -ycomment.M23 test/s.passwd </dev/null" 1 ""  IGNORE
+docommand M22 "${admin} -fv'test -n' test/s.passwd" 0 "" ""
+docommand M23 "${delta} -ycomment.M23 test/s.passwd </dev/null" 1 IGNORE  IGNORE
 docommand M24 "test -f test/p.passwd" 0 "" ""
 
 rm -rf test
