@@ -5,7 +5,7 @@ these platforms (at some stage):
 
 James Youngman  <jay@gnu.org>    		    Red Hat Linux, version
 						    4.1, 4.2, 5.0.
-James Youngman  <jay@gnu.org>    		[!] HPUX 9
+James Youngman  <jay@gnu.org>    		    HPUX 9
 Lars Hecking    <lhecking@nmrc.ucc.ie>              Solaris-2.5.1
 Malcolm Boff    <Malcolm_Boff@compuserve.com>       Solaris-2.5.1
 Lars Hecking    <lhecking@nmrc.ucc.ie>              IRIX 6.3 (GCC 2.7.x
@@ -21,9 +21,7 @@ Andrew Bardsley <bardslea@cs.man.ac.uk>		[*] GNU Hurd
 [*] These entries denote that CSSC compiled successfully but the test
 suite was not run.
 
-[!] To compile on HPUX 9 you have to use GNU make and /bin/posix/sh:
-$ SHELL=/bin/posix/sh $SHELL ./configure
-$ gmake SHELL=/bin/posix/sh 
+
 
 
 Because GNU CSSC uses GNU "autoconf" to generate configuration
@@ -42,7 +40,8 @@ Project's FTP site, ftp.gnu.org.  You will probably also find GNU
 Automake useful.
 
 As far as I know however, CSSC has not yet been tested with any C++
-compiler other than GCC, so I *do* expect portability problems there.
+compiler other than GCC and IRIX's CC (but that failed, see below), so
+I *do* expect portability problems there.
 
 
 Notes for specific platforms
@@ -57,4 +56,7 @@ $ gmake SHELL=/bin/posix/sh
 
 IRIX
 ----
-To compile on IRIX it appears that GNU make is required.
+To compile on IRIX it appears that GNU make is required.  CSSC also
+does not compile with IRIX's native cc, "CC".  The IRIX compiler seems
+not to support static template instantiation.  (Thanks to Achim
+Hoffmann <hoffmann@tebis.de> for this information).

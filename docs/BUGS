@@ -1,13 +1,9 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-03-11 18:24:50 james>
+Time-stamp: <1998-05-09 14:43:39 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
 
-
-Thu Feb 19 21:50:49 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
-In version 0.06-pl0.  Unfixed. 
- The -t option is missing from get.   BSD's sccs.c uses it.
 
 Mon Feb  9 23:41:03 1998: Lars Hecking <lhecking@nmrc.ucc.ie>
 In version 0.05-pl0.  Unfixed.

@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-03-11 18:25:11 james>
+Time-stamp: <1998-05-09 14:45:18 james>
 
 List of fixed bugs 
 
@@ -16,6 +16,10 @@ it's easier to just fix the bug than list it in BUGS _and_ I do it
 promptly, it does not get listed.  If you don't like this (lack of?)
 policy, let me know.  All bugfixes are listed in ChangeLog, in some
 fashion.
+
+Thu Feb 19 21:50:49 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl0.  Fixed in version 0.06-pl6.
+ The -t option is missing from get.   BSD's sccs.c uses it.
 
 Wed Mar 11 18:01:54 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
 In version 0.06-pl4.  Fixed in version 0.06-pl5.
