@@ -14,7 +14,7 @@
 
 @set EDITION 1.05
 @set VERSION 0.14alpha-pl1
-@set UPDATED Thu Apr  4 20:36:38 2002
+@set UPDATED Fri Sep 20 11:41:10 2002
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
