@@ -123,6 +123,11 @@ fi ;
 # Call success when a test succeeded.
 success () { 
 name=`basename $0`
+
+remove got.stdout           got.stderr 
+remove expected.stdout expected.stderr 
+remove command.log last.command
+
 if ${expect_fail:-false}
 then
 	echo XPASS $name: $* ; exit 0; 
