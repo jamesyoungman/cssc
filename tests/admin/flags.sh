@@ -99,6 +99,17 @@ docommand b11 "${prs} -r2.1 -d:I: $s" 0 "2.1\n" IGNORE
 docommand b12 "${prs} -r2.1 '-d:C:|:DI:|:DP:|:DS:|:DT:' $s" 0 \
   'AUTO NULL DELTA\n||1|2|D\n' IGNORE
 
+
+###
+### Tests for the d flag
+###
+remove $s
+docommand d1 "${admin} -n -fd1.1 $s" 0 "" ""
+docommand d2 "${prs} -d:FL: $s" 0 "default SID\t1.1\n\n" ""
+remove $s
+
+
+
 ###
 ### Cleanup and exit.
 ###
