@@ -231,7 +231,7 @@ body_insert_binary(const char iname[], const char oname[],
 	  // For some odd reason, SCCS seems to check
 	  // the encoded form for ID keywords!  We know
 	  // that strlen() on the UUENCODEd data is safe.
-	  if (check_id_keywords(inbuf, strlen(inbuf)))
+	  if (check_id_keywords(outbuf, strlen(outbuf)))	// XXX used to check inbuf
 	    *idkw = kw = true;
 	}
       
