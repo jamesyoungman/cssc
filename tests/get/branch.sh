@@ -22,7 +22,9 @@ remove $g
 # Try making a branch when the "b" flag is not set.
 # This should suceed (really!), but a branch should not be 
 # made.
-docommand B2 "$get -e -b $s" 0 "1.1\nnew delta 1.2\n1 lines\n" ""
+docommand B2 "$get -e -b $s" 0 "1.1\nnew delta 1.2\n1 lines\n" IGNORE
+# When the -b flag is ignored, CSSC emits a warning but SCCS is silent.
+
 docommand B3 "$unget $s" 0 "1.2\n" ""
 
 # Set the branch flag and make sure everything still works,

@@ -54,8 +54,10 @@ docommand b1 "${admin} -ifoo $s" 0 "" ""
 
 # By default branch creation should fail, and we just get a delta
 # further down the trunk -- the invocation does not  fail,
-# we just don't get a branch.
-docommand b2 "${get} -e -b -r1.1 $s" 0 "1.1\nnew delta 1.2\n1 lines\n" ""
+# we just don't get a branch.   In this situation, CSSC emits a warning
+# to indicate to the user why their apparent intention has not been 
+# carried out.
+docommand b2 "${get} -e -b -r1.1 $s" 0 "1.1\nnew delta 1.2\n1 lines\n" IGNORE
 
 # echo testing -- early exit.
 # exit 1
