@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.27 1998/05/30 08:56:27 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.28 1998/06/09 20:01:14 james Exp $";
 #endif
 
 
@@ -465,10 +465,15 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       c = read_line();
     }
 
-  check_noarg();
+  /* Sun's Code Manager sometimes emits lines of the form "^AU 0" and
+   * so these lines fail the "no argument" check.  So we no longer do
+   * that check for "^AU" lines.  A file including lines of this type
+   * was provided by Marko Rauhamaa <marko@tekelec.com>.
+   */
+  /* check_noarg(); */
   
   c = read_line();
-  while(c == 'f')
+  while (c == 'f')
     {
       check_arg();
 
@@ -575,7 +580,12 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       corrupt("Expected '@t'");
     }
   
-  check_noarg();
+  /* Sun's Code Manager sometimes emits lines of the form "^At 0" and
+   * so these lines fail the "no argument" check.  So we no longer do
+   * that check for "^At" lines.  A file including lines of this type
+   * was provided by Marko Rauhamaa <marko@tekelec.com>.
+   */
+  /*check_noarg();*/
   
   c = read_line();
   while(c == 0)
@@ -589,7 +599,12 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       corrupt("Expected '@T'");
     }
   
-  check_noarg();
+  /* Sun's Code Manager sometimes emits lines of the form "^AT 0" and
+   * so these lines fail the "no argument" check.  So we no longer do
+   * that check for "^AT" lines.  A file including lines of this type
+   * was provided by Marko Rauhamaa <marko@tekelec.com>.
+   */
+  /*check_noarg();*/
   
   body_offset = ftell(f);
   if (body_offset == -1L)
