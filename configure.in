@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 dnl 
-dnl $Id: configure.in,v 1.79 2002/03/23 15:28:28 james_youngman Exp $
+dnl $Id: configure.in,v 1.80 2002/03/25 00:08:52 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -445,4 +445,4 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_OUTPUT(version.cc Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh testutils/Makefile auxfiles/Makefile auxfiles/CSSC.spec unused/Makefile docs/config-info.texi)
+AC_OUTPUT(version.cc Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh testutils/Makefile auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile unused/Makefile docs/config-info.texi)
