@@ -1,5 +1,37 @@
 2004-10-10  james_youngman  <james_youngman@orbital>
 
+	* README: Fixed typo
+
+	* docs/cssc.texi: Added missing full stop.
+
+	* configure.ac:
+	Indicate that this is once again the CVS development version.
+
+	* CSSC 1.00 released.
+
+	* configure.ac: This is release 1.00.
+
+	* docs/URLs:
+	Added GNU FTP site URL in preparation for official 1.0 release.
+
+	* docs/TODO: Added disclaumer about the obsoleteness of the file.
+
+	* docs/tests-todo.txt:
+	Removed a couple of entries for tests that now exist.
+
+	* docs/Platforms: Minor updates and corrections to typos.
+
+	* README: Updated the status of the release.
+
+	* NEWS, configure.ac, myset.h, sccsfile.cc, sccsfile.h, sf-admin.cc, sf-get.cc, sf-prs.cc, sf-prt.cc, sf-val.cc, sf-write.cc, writesubst.cc, ChangeLog:
+	update copyright years
+
+	* docs/cssc.texi:
+	The file was also changed in 2003 and 2004.  Hence update the
+	copyright years.
+
+	* docs/cssc.texi: Updated edition - to be released with CSSC 1.00!
+
 	* sf-prs.cc:
 	SF bug 1040827: Solaris 9's "prs" does not produce any output for the
 	"y" flag.  Hence for compatibility nor should we.
