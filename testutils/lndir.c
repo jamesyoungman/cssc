@@ -54,11 +54,27 @@ in this Software without prior written authorization from the X Consortium.
    	%  lndir ../X
 */
 
-#include <stdio.h>
+#ifdef STDC_HEADERS
+#include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/param.h>
+#endif
+
+#include <stdio.h>
 #include <errno.h>
+
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#if HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+
+#if HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 
 #if HAVE_DIRENT_H
 # include <dirent.h>
@@ -77,6 +93,14 @@ in this Software without prior written authorization from the X Consortium.
 # endif
 #endif
 
+#ifndef HAVE_SYMLINK
+#error I need to be patched to support either hard links or copying.
+#endif
+#ifndef HAVE_READLINK
+#error I need to be patched to support either hard links or copying.
+#endif
+
+
 #ifdef STAT_MACROS_BROKEN
 #undef S_ISDIR
 #endif
@@ -84,9 +108,6 @@ in this Software without prior written authorization from the X Consortium.
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 2048
 #endif
-
-#include <stdarg.h>
-
 
 int silent;
 
@@ -268,9 +289,14 @@ main (int ac, char *av[])
     struct stat fs, ts;
 
     silent = 0;
-    if (ac > 1 && !strcmp(av[1], "-silent")) {
-	silent = 1;
-    }
+    if (ac > 1)
+      {
+	if (!strcmp(av[1], "--silent"))	/* GNU-style long options. */
+	  silent = 1;
+	else if (!strcmp(av[1], "-silent")) /* X11R4 compatibility. */
+	  silent = 1;
+      }
+    
     if (ac < silent + 2 || ac > silent + 3)
 	quit (1, "usage: %s [-silent] fromdir [todir]", av[0]);
 
@@ -304,3 +330,6 @@ main (int ac, char *av[])
 
     return dodir (fn, &fs, &ts, 0);
 }
+
+
+
