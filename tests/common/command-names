@@ -3,6 +3,7 @@ get=${get:-${dir}/get}
 admin=${admin:-${dir}/admin}
 cdc=${cdc:-${dir}/cdc}
 prs=${prs:-${dir}/prs}
+prt=${prt:-${dir}/prt}
 delta=${delta:-${dir}/delta}
 sact=${sact:-${dir}/sact}
 sccsdiff=${sccsdiff:-${dir}/sccsdiff}
