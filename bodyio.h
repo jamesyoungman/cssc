@@ -2,7 +2,7 @@
  * bodyio.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
  *
  */
 #ifndef CSSC_INC_BODYIO_H
-#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.2 1998/02/11 07:49:17 james Exp $"
+#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.3 1998/02/21 14:27:02 james Exp $"
 
 bool body_insert_text(const char iname[], const char oname[],
 		      FILE *in, FILE *out,

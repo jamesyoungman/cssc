@@ -1,7 +1,7 @@
 /*
  * prs.c: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.12 1998/02/21 14:03:57 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.13 1998/02/21 14:27:15 james Exp $";
 
 void
 usage() {

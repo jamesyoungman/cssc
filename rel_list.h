@@ -1,8 +1,8 @@
 /* 
- * sf-prt.cc: Part of GNU CSSC.
+ * rel_list.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -20,9 +20,6 @@
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
- *
- *
- * Members of the class sccs_file for doing sccs-prt.
  *
  */
 

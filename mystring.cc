@@ -1,7 +1,7 @@
 /*
  * mystring.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@
 #ifndef USE_STANDARD_STRING
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.9 1997/11/23 18:52:14 james Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.10 1998/02/21 14:27:11 james Exp $";
 #endif
 
 

@@ -2,7 +2,7 @@
  * mystring.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Defines the class mystring.
  *
- * $Id: mystring.h,v 1.11 1998/01/15 22:50:17 james Exp $
+ * $Id: mystring.h,v 1.12 1998/02/21 14:27:12 james Exp $
  *
  */
 

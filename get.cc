@@ -1,7 +1,7 @@
 /*
  * get.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.19 1998/02/21 14:03:55 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.20 1998/02/21 14:27:07 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 

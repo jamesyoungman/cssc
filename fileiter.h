@@ -2,7 +2,7 @@
  * fileiter.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,8 +23,6 @@
  *
  *
  * Defines the class sccs_file_iter.
- *
- * @(#) CSSC fileiter.h 1.1 93/11/09 17:17:46
  *
  */
 

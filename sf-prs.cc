@@ -1,8 +1,8 @@
 /*
- * sf-prs.c: Part of GNU CSSC.
+ * sf-prs.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.15 1998/02/21 13:58:18 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.16 1998/02/21 14:27:25 james Exp $";
 #endif
 
 inline void

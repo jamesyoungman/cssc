@@ -1,8 +1,8 @@
 /*
- * unget.c: Part of GNU CSSC.
+ * unget.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.11 1998/02/21 14:04:00 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.12 1998/02/21 14:27:27 james Exp $";
 
 void
 usage() {

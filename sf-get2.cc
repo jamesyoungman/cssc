@@ -2,7 +2,7 @@
  * sf-get2.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.24 1998/01/25 22:33:05 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.25 1998/02/21 14:27:24 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
