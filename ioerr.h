@@ -37,5 +37,5 @@
 #define  printf_failed(n) (n < 0)
 #define fprintf_failed(n) (n < 0)
 
-
+#define  fwrite_failed(n,desired) (n < desired)
 #endif 
