@@ -6,9 +6,9 @@ AC_INIT(sccsfile.h)
 
 # The package version should match the regexp
 # ([0-9]+)\.([0-9]+)([a-z])?
-# For this reason I put the "devel" at the start of the 
-# version number (the regexp is not anchored at either end).  
-AM_INIT_AUTOMAKE(CSSC,devel-0.03a-pl0)
+# ...at least according to the "Gnits" rules outlined
+# in the Automake manual.
+AM_INIT_AUTOMAKE(CSSC,0.03alpha-pl1)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)
