@@ -32,14 +32,22 @@ remove () { rm -rf $* || miscarry Could not remove $* }
 
 ##############
 docommand () {
-# $1 is the label.
+# $1 is the label.  
 # $2 is the command to execute.
 # $3 is the return value to expect
 # $4 is what to expect on stdout
 # $5 is what to expect on stderr.
+#
+# If --silent is specified before the label, no output is notmally made.
+#
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
 label=$1
-echo -n "$label..."
+case $1 in
+--silent) silent=true ; shift ; label=$1 ;;
+       *) silent=false  ;;
+esac
+eval "$silent" || echo -n "$label..."
+
 shift
 
 echo -ne $4 > expected.stderr
@@ -73,7 +81,7 @@ then
 fi
 
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
-echo "passed "
+eval "$silent" || echo "passed "
 true
 }
 
