@@ -125,6 +125,7 @@ This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
 * Interface::		How to use the suite.
 * Invoking Programs::	How to run the individual CSSC programs.
 * Filenames::		Names of files used by CSSC.
+@c add chapter on branches and included/excluded deltas?
 * File Format::         Description of the @sc{sccs} file format
 * Interoperability::    Interoperating with other versions of @sc{sccs}.
 * Environment::         How environment variables affect CSSC.
@@ -689,10 +690,11 @@ revision so that a modified version can be checked in later using
 
 
 @menu
-* Basic Usage: get usage.           Frequently-used @code{get} commands
-* Options: get options.             Full list of options.
-* Branches: branches.               How branches are made.  
-* Keywords: Keyword Substitution.   Keyword Substitution
+* Basic Usage: get usage.                 Frequently-used @code{get} commands
+* Options: get options.                   Full list of options.
+* Branches: branches.                     How branches are made.  
+* Keywords: Keyword Substitution.         Keyword Substitution
+* Included Excluded and Ignored deltas:: Here Be Dragons...
 @end menu
 
 @node get usage, get options, , get
@@ -887,7 +889,7 @@ the @option{-b} flag of @code{get}.
 
 
 
-@node Keyword Substitution, , branches, get
+@node Keyword Substitution, Included Excluded and Ignored deltas, branches, get
 @subsection Keyword Substitution
 @cindex Keyword Substitution
 @cindex Version identifiers
@@ -956,6 +958,61 @@ Value of the @code{t} (module type) flag.
 @item Z
 The literal string @code{@@(#)}.  @xref{what}.
 @end table
+
+
+@node Included Excluded and Ignored deltas, , Keyword Substitution, get
+@section Included, Excluded and Ignored deltas
+
+This section describes how included, excluded and ignored deltas are
+handled by @sc{cssc}.  Little documentation is available on how
+@sc{sccs} handles this, and so while this section describes how
+@sc{cssc} works, it may in fact not be an accurate description of how
+@sc{cssc} @emph{should} work.  
+
+If you spot a defect in this section (or of course any other section)
+of the @sc{cssc} manual, please report this as a bug
+(@pxref{Problems}).
+
+
+@subsection The Usual Case
+The usual case is where none of the deltas in the @sc{sccs} file has
+any included, excluded or ignored deltas.  All the lines in the body
+of the @sc{sccs} file are there because they were first inserted by a
+particular delta.  All of these lines are copied through to the gotten
+file, unless they are deleted by a later delta.  For example if an
+@sc{sccs} file contains deltas 1.1 and 1.2, then all the lines from
+delta 1.2 will be included, and all the lines from delta 1.1 which are
+not deteled in version 1.2 are also included. 
+
+@subsection Included Deltas
+Normally the contents of the gotten delta is included in the output,
+along with all the non-deleted lines of its ancestors.  However, a
+delta can also specify that some other delta should be included.  This
+really only makes a difference when there is a branch in the file.
+
+For example, if delta 1.5 includes 1.3.1.5, then the gotten file will
+include the contents of versions 1.1 through to 1.5, plus the contents
+of the 1.3.1 branch up to and including 1.3.1.5.  Lines which were
+(say) added in 1.2 but delted in 1.3.1.1 will not appear in the
+output, since we have included a delta that deletes them. 
+
+@subsection Excluded Deltas
+Excluding a delta is, unsurprisingly, more or less the opposite of
+including one.  The exclusion of a delta supercedes the inclusion of a
+delta.  One might specify, for example, that delta 1.6 should exclude
+delta 1.5 (for example to back out of any changes it made).  Exclusion
+can also be used to reverse the effect of an inclusion.  Suppose that
+delta 1.6 in the example from the section above excludes 1.3.1.5, then
+1.6 will include the contents of deltas 1.1 through to 1.4, plus the
+contents of delta 1.5 itself, but it will not include the data from
+the 1.3.1 branch that would have been used if we had gotten delta 1.5.
+
+@subsection Ignored Deltas
+Ignored deltas are ``silent''; that is, lines which are added by a
+delta which is (explicitly or implcitly) included will not appear in
+the gotten file.  Conversely, lines deleted by an ignored delta will
+still appear in the gotten file. 
+
 
 @node help, prs, get, Invoking Programs
 @section @code{help}
