@@ -20,7 +20,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.6 1997/05/31 10:24:22 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.7 1997/06/03 20:22:43 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -126,8 +126,19 @@ nomem() {
 }
 
 NORETURN
-assert_failed(const char *file, int line, const char *test) {
-	quit(-3, "Assertion failed: %s\nFile: %s  Line: %d", test, file, line);
+assert_failed(const char *file, int line,
+	      const char *func,
+	      const char *test)
+{
+  if (func[0])
+    {
+      quit(-3, "Assertion failed in %s:\nFile: %s  Line: %d: assert(%s)",
+	   func, file, line, test);
+    }
+  else
+    {
+      quit(-3, "Assertion failed: %s\nFile: %s  Line: %d", test, file, line);
+    }
 }
 
 

@@ -57,10 +57,17 @@ NORETURN quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 #endif
 
 NORETURN nomem()  POSTDECL_NORETURN;
-NORETURN assert_failed(const char *file, int line, const char *test) POSTDECL_NORETURN;
+NORETURN assert_failed(const char *file, int line, const char *func,
+		       const char *test) POSTDECL_NORETURN;
 
+#ifdef __GNUC__
 #define assert(test) ((test) ? (void) 0					\
-		             : assert_failed(__FILE__, __LINE__, #test))
+		             : assert_failed(__FILE__, __LINE__,        \
+					     __PRETTY_FUNCTION__, #test))
+#else
+#define assert(test) ((test) ? (void) 0					\
+		             : assert_failed(__FILE__, __LINE__, "", #test))
+#endif
 
 extern void usage();
 
