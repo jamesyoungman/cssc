@@ -21,7 +21,7 @@
  * Functions for canonifying filenames.
  */
 
-#include "config.h"
+#include <config.h>
 
 #ifdef STDC_HEADERS
 #include <stddef.h>
