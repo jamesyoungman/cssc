@@ -18,6 +18,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
 static const char sccs_id[] = "@(#) MySC file.c 1.1 93/11/09 17:17:53";
@@ -72,11 +73,13 @@ eaccess(const char *name, int perm) {
 /* Redirects stdout to a "null" file (eg. /dev/null). */
 		
 void
-stdout_to_null() {
-	if (freopen(CONFIG_NULL_FILENAME, "w", stdout)) {
-		quit(errno, "Can't redirect stdout to "
-		            CONFIG_NULL_FILENAME ".");
-	}
+stdout_to_null()
+{
+  if (NULL == freopen(CONFIG_NULL_FILENAME, "w", stdout))
+    {
+      quit(errno, "Can't redirect stdout to "
+	   CONFIG_NULL_FILENAME ".");
+    }
 }
 
 
