@@ -38,7 +38,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.15 1998/06/15 20:50:00 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.16 1998/08/13 18:10:56 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -118,11 +118,8 @@ static void print_err(int err)
 #endif
 }
 
-NORETURN
-quit(int err, const char *fmt, ...) {
-	va_list ap;
-
-
+static NORETURN
+v_quit(int err, const char *fmt, va_list ap) {
 	fflush(stdout);
 	cleanup::run_cleanups();
 
@@ -138,9 +135,7 @@ quit(int err, const char *fmt, ...) {
 	    putc('\n', stderr);
 	  }
 	
-	va_start(ap, fmt);
 	v_errormsg(fmt, ap);
-	va_end(ap);
 
 	putc('\n', stderr);
 
@@ -172,6 +167,39 @@ quit(int err, const char *fmt, ...) {
 		exit(-err);
 	}
 }
+
+
+NORETURN
+quit(int err, const char *fmt, ...) {
+	va_list ap;
+
+
+	va_start(ap, fmt);
+	v_quit(err, fmt, ap);
+	va_end(ap);
+	
+	assert(0);		// not reached.
+}
+
+// We eventually want to change the code to eliminate most calls
+// to quit (because processing should continue with the next input
+// file).  We just use this differently-named function to indicate
+// the places where a failure odducrs in a constructor, which cannot
+// return a failure status.  When they become commonly supported,
+// we'll use exceptions.
+NORETURN
+ctor_quit(int err, const char *fmt, ...) {
+	va_list ap;
+
+
+	va_start(ap, fmt);
+	v_quit(err, fmt, ap);
+	va_end(ap);
+	
+	assert(0);		// not reached.
+}
+
+
 
 NORETURN
 nomem() {
@@ -215,7 +243,7 @@ cleanup::~cleanup() {
 		return;
 	}
 
-	while(p->next != this) {
+	while (p->next != this) {
 		p = p->next;
 		ASSERT(p != NULL);
 	}
@@ -231,7 +259,7 @@ cleanup::run_cleanups() {
 	running = 1;
 
 	class cleanup *p = head;
-	while(p != NULL) {
+	while (p != NULL) {
 		p->do_cleanup();
 		p = p->next;
 	}

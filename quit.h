@@ -93,8 +93,11 @@ void errormsg_with_errno(const char *fmt, ...);
 #ifdef __GNUC__
 NORETURN quit(int err, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
+NORETURN ctor_quit(int err, const char *fmt, ...)
+	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
 #else
 NORETURN quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
+NORETURN ctor_quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 #endif
 
 NORETURN nomem()  POSTDECL_NORETURN;
