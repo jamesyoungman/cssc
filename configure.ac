@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 dnl 
-dnl $Id: configure.ac,v 1.3 2002/12/08 13:21:57 james_youngman Exp $
+dnl $Id: configure.ac,v 1.4 2003/02/13 13:34:31 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -63,7 +63,7 @@ enable_binary=yes
 if test "$enable_binary" = yes; then
 	AC_MSG_RESULT(no)
 else
-	AC_DEFINE(CONFIG_DISABLE_BINARY_SUPPORT)
+	AC_DEFINE(CONFIG_DISABLE_BINARY_SUPPORT, 1, [Define if support for "binary" (encoded) files is to be disabled])
 	AC_MSG_RESULT(yes)
 fi
 if test "$binary_defaulted" = "yes"; then
@@ -104,7 +104,8 @@ max_line_length_description=$enable_max_line_length
 AC_MSG_RESULT(no limit)
 enable_max_line_length=0
 )
-AC_DEFINE_UNQUOTED(CONFIG_MAX_BODY_LINE_LENGTH,$enable_max_line_length)
+AC_DEFINE_UNQUOTED(CONFIG_MAX_BODY_LINE_LENGTH,$enable_max_line_length,
+[Maximum length of line which CSSC will create in an SCCS file])
 
 
 if test $enable_max_line_length -eq 0 
@@ -200,14 +201,15 @@ dnl It would be a good idea to default the path for diff
 dnl to install_dir/diff-program so the installer can 
 dnl add a symlink later.   TODO.
 AC_PATH_PROG(CONFIG_DIFF_COMMAND,diff,/usr/bin/diff)
-AC_DEFINE_UNQUOTED(CONFIG_DIFF_COMMAND,"$ac_cv_path_CONFIG_DIFF_COMMAND")
+AC_DEFINE_UNQUOTED(CONFIG_DIFF_COMMAND,"$ac_cv_path_CONFIG_DIFF_COMMAND",
+[Path to the diff command])
 
 
 AC_MSG_CHECKING([for GNU diff])
 if $ac_cv_path_CONFIG_DIFF_COMMAND --version 2>/dev/null | grep "GNU diff" >/dev/null
 then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE_UNQUOTED(HAVE_GNU_DIFF)	
+	AC_DEFINE_UNQUOTED(HAVE_GNU_DIFF,1,[Define if we are using GNU diff])
 else
 	AC_MSG_RESULT(no)
 fi
@@ -262,7 +264,9 @@ AC_LANG([C])
 AC_HEADER_STDC
 
 AC_LANG([C++])
+echo "Start checking accessibility of C headers while compiling as C++"
 AC_CHECK_HEADERS(stdarg.h stdlib.h string.h stdio.h errno.h locale.h limits.h ctype.h stddef.h)
+echo "Done checking accessibility of C headers while compiling as C++"
 
 dnl Posix/Unix header files:-
 AC_CHECK_HEADERS(fcntl.h prototypes.h io.h process.h pwd.h unistd.h)
@@ -289,7 +293,8 @@ dnl Can we use exceptions?
 AC_MSG_CHECKING([for support for C++ exceptions])
 AC_TRY_COMPILE( ,
 	[throw int(1);],
-	AC_DEFINE_UNQUOTED(HAVE_EXCEPTIONS)
+	AC_DEFINE_UNQUOTED(HAVE_EXCEPTIONS,1,
+             [Define if C++ exceptions are supported])
 	AC_MSG_RESULT(yes),
 	AC_MSG_RESULT(no))
 
@@ -303,10 +308,10 @@ AC_TRY_COMPILE(
 #endif
 ,
 	[std::string s;],
-	AC_DEFINE_UNQUOTED(HAVE_STD_NAMESPACE)
-	AC_DEFINE(STD_NAMESPACE,std::)
+	AC_DEFINE_UNQUOTED(HAVE_STD_NAMESPACE,1,[Define if the C++ compiler supports the "std" namespace correctly])
+	AC_DEFINE(STD_NAMESPACE,std::,[Name of the C++ std namespace])
 	AC_MSG_RESULT(yes),
-	AC_DEFINE(STD_NAMESPACE,/*nothing*/)
+	AC_DEFINE(STD_NAMESPACE,/*nothing*/,[Name of the C++ std namespace])
 	AC_MSG_RESULT(no))
 
 
@@ -323,7 +328,7 @@ eval "ac_cv_decl_$ac_tr_define=no")])dnl
 if eval "test \"`echo '$ac_cv_decl_'$ac_tr_define`\" = yes"; then
 	 AC_MSG_RESULT(yes)
 	 # echo 'defining' $ac_tr_define
-	 AC_DEFINE_UNQUOTED($ac_tr_define)
+	 AC_DEFINE_UNQUOTED($ac_tr_define,1,Define if we have header file $1)
 else
 	 # echo 'NOT defining' $ac_tr_define 
 	 AC_MSG_RESULT(no)
@@ -347,7 +352,7 @@ cssc_cv_sys_savedids_set=no
 ))
 if test "$cssc_cv_sys_savedids_set" = "yes"; then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(SAVED_IDS_OK)
+	AC_DEFINE(SAVED_IDS_OK,1,[Define if _POSIX_SAVED_IDS is provided])
 else
 	AC_MSG_RESULT(no)
 fi
@@ -395,7 +400,7 @@ then
 	AC_MSG_RESULT([avoiding fork() on AmigaOS]),
 else
 	AC_MSG_RESULT(no)
-	AC_CHECK_FUNC(fork,AC_DEFINE_UNQUOTED(HAVE_FORK))
+	AC_CHECK_FUNC(fork,AC_DEFINE_UNQUOTED(HAVE_FORK,1,[Define if the fork() function is provided and it works]))
 fi
 
 
@@ -423,7 +428,7 @@ do
    )
   if eval "test \"`echo '$ac_cv_global_'$ac_global`\" = yes"; then
     AC_MSG_RESULT(yes)
-    AC_DEFINE_UNQUOTED($ac_tr_global)
+    AC_DEFINE_UNQUOTED($ac_tr_global,1,Define if the global variable $ac_global is available)
   else
     AC_MSG_RESULT(no)
   fi
