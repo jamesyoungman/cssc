@@ -8,6 +8,9 @@
 
 #include "cssc.h"
 
+#ifndef CSSC__FILEPOS_H
+#define CSSC__FILEPOS_H
+
 // SunOS requires <unistd.h> for SEEK_SET, for some bizarre reason.
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -67,11 +70,6 @@ FilePosSaver::~FilePosSaver()
 }
 
 
-
-
-
-
-
-
 #endif
 
+#endif
