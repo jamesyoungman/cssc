@@ -27,7 +27,11 @@
  *
  */
 
-#include "cssc.h"
+#include <config.h>
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 char *
 strstr(const char *s1, const char *s2) {
@@ -38,7 +42,7 @@ strstr(const char *s1, const char *s2) {
 	}
 
 	s1 = strchr(s1, c);
-	while(s1 != NULL && strcmp(s1 + 1, s2 + 1) != 0) {
+	while(s1  && strcmp(s1 + 1, s2 + 1) != 0) {
 		s1 = strchr(s1 + 1, c);
 	}
 
