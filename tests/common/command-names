@@ -1,4 +1,6 @@
 
+dir=${dir:-../..}
+
 # Get the canonical directory name
 case "$dir" in 
 	/*)   
@@ -9,7 +11,6 @@ case "$dir" in
 esac
 # echo "Directory under test is $dir"
 
-dir=${dir:-../..}
 get=${get:-${dir}/get}
 admin=${admin:-${dir}/admin}
 cdc=${cdc:-${dir}/cdc}
