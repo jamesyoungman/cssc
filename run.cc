@@ -32,7 +32,7 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.13 1998/06/14 15:26:58 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.14 1998/09/02 21:03:29 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -49,7 +49,7 @@ static const char rcs_id[] = "CSSC $Id: run.cc,v 1.13 1998/06/14 15:26:58 james 
 // MR validation will never fail (that is, it won't fail when it is
 // supposed to, it will instead succeed all the time).
 //
-void call_system(const char *s)
+static bool call_system(const char *s)
 {
   int failed;
   int ret;
@@ -64,7 +64,11 @@ void call_system(const char *s)
 #endif
   
   if (errno)
-    quit(errno, "call_system(\"%s\") failed, returning errno=%d.", s, ret);
+    {
+      errormsg_with_errno(errno, "call_system(\"%s\") failed.", s, ret);
+      return false;
+    }
+  return true;
 }
 
 /* Runs a programme and returns its exit status. */
@@ -91,9 +95,12 @@ run(const char *prg, list<const char *> const &args) {
 		strcat(s, args[i]);
 	}
 
-	call_system(s);
+	bool sysfail = !call_system(s);
 	delete [] s;
-	return 0;
+	if (sysfail)
+	  return -1;
+	else
+	  return 0;
 
 #else /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 
@@ -110,22 +117,23 @@ run(const char *prg, list<const char *> const &args) {
 #ifndef HAVE_FORK
 	// Use spawn() instead then
 	int ret = spawnvp(P_WAIT, (char *) prg, (char **) argv);
-	if (ret == -1) {
-		quit(errno, "spawnvp(\"%s\") failed.", prg);
-	}
+	if (ret == -1)
+	  {
+	    errormsg_with_errno(errno, "spawnvp(\"%s\") failed.", prg);
+	  }
 
 #else /* HAVE_FORK */
 	// We _do_ have fork().
 	fflush(NULL);
 	pid_t pid = fork(); 
 	if (pid < 0) {
-		quit(errno, "fork() failed.");
+		fatal_quit(errno, "fork() failed.");
 	}
 
 	if (pid == 0) {
 		cleanup::set_in_child();
 		execvp(prg, (char **) argv);
-		quit(errno, "execvp(\"%s\") failed.", prg);
+		fatal_quit(errno, "execvp(\"%s\") failed.", prg);
 	}
 
 	int ret;

@@ -81,7 +81,7 @@ cssc_delta_table::build_seq_table()
       seq_no seq = iter->seq;
       if (seq_table[seq] != -1)
 	{
-	  quit(-1, "Sequence number %u is duplicated"
+	  s_corrupt_quit("Sequence number %u is duplicated"
 	       " in delta table [build].", seq);
 	}
       seq_table[seq] = iter.index();
@@ -152,8 +152,8 @@ cssc_delta_table::update_highest(const delta &it)
 	      sid_using_this_seqno.print(stderr);
 	      fprintf(stderr, ")\n");
 	  
-	      quit(-1, "Sequence number %u is duplicated"
-		   " in delta table [update]", seq);
+	      s_corrupt_quit("Sequence number %u is duplicated"
+			     " in delta table [update]", seq);
 	    }
 	}
       seq_table[seq] = l.length() - 1;

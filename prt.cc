@@ -33,8 +33,10 @@
 #include "my-getopt.h"
 #include "version.h"
 #include "delta.h"
+#include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.12 1998/06/15 20:49:59 james Exp $";
+
+const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.13 1998/09/02 21:03:27 james Exp $";
 
 void
 usage()
@@ -173,28 +175,40 @@ main(int argc, char **argv)
   int retval = 0;
   while (iter.next())
     {
-      sccs_name &name = iter.get_name();
-
-      if (!exclude.enabled)
-	fprintf(stdout, "\n%s:", name.c_str());
-
-      fprintf(stdout, "\n");
-	
-      sccs_file file(name, sccs_file::READ);
-
-      if (!file.prt(stdout,
-		    exclude,		  // -y, -c, -r
-		    all_deltas,		  // -a
-		    print_body,		  // -b
-		    print_delta_table,	  // -d
-		    print_flags,	  // -f
-		    incl_excl_ignore,	  // -i
-		    first_line_only,	  // -s
-		    print_desc,		  // -t
-		    print_users))	  // -u
+#ifdef HAVE_EXCEPTIONS
+      try
 	{
-	  retval = 1;
+#endif	  
+	  sccs_name &name = iter.get_name();
+	  
+	  if (!exclude.enabled)
+	    fprintf(stdout, "\n%s:", name.c_str());
+	  
+	  fprintf(stdout, "\n");
+	  
+	  sccs_file file(name, sccs_file::READ);
+	  
+	  if (!file.prt(stdout,
+			exclude,		  // -y, -c, -r
+			all_deltas,		  // -a
+			print_body,		  // -b
+			print_delta_table,	  // -d
+			print_flags,	  // -f
+			incl_excl_ignore,	  // -i
+			first_line_only,	  // -s
+			print_desc,		  // -t
+			print_users))	  // -u
+	    {
+	      retval = 1;
+	    }
+#ifdef HAVE_EXCEPTIONS
 	}
+      catch (CsscExitvalException e)
+	{
+	  if (e.exitval > retval)
+	    retval = e.exitval;
+	}
+#endif      
     }
   return retval;
 }

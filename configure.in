@@ -32,6 +32,8 @@ dnl add a symlink later.   TODO.
 AC_PATH_PROG(CONFIG_DIFF_COMMAND,diff,/usr/bin/diff)
 AC_DEFINE_UNQUOTED(CONFIG_DIFF_COMMAND,"$ac_cv_path_CONFIG_DIFF_COMMAND")
 
+
+
 dnl Checks for libraries.
 
 dnl Checks for header files.
@@ -57,7 +59,13 @@ AC_TYPE_MODE_T
 AC_TYPE_PID_T
 AC_TYPE_UID_T
 
-
+dnl Can we use exceptions?
+AC_MSG_CHECKING([for support for C++ exceptions])
+AC_TRY_COMPILE( ,
+	[throw int(1);],
+	AC_DEFINE_UNQUOTED(HAVE_EXCEPTIONS)
+	AC_MSG_RESULT(yes),
+	AC_MSG_RESULT(no))
 
 dnl AC_CHECK_DECL_IN_HEADER(IDENTIFIER, HEADERS)
 AC_DEFUN(AC_CHECK_DECL_IN_HEADER,

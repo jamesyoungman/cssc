@@ -33,8 +33,10 @@
 #include "my-getopt.h"
 #include "version.h"
 #include "delta.h"
+#include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.14 1998/06/15 20:50:00 james Exp $";
+
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.15 1998/09/02 21:03:28 james Exp $";
 
 void
 usage() {
@@ -106,34 +108,45 @@ main(int argc, char **argv)
   
   while (iter.next())
     {
-      if (tossed_privileges)
+#ifdef HAVE_EXCEPTIONS
+      try 
 	{
-	  restore_privileges();
-	  tossed_privileges = 0;
-	}
-      
-      sccs_name &name = iter.get_name();
-      sccs_file file(name, sccs_file::UPDATE);
-
-      if (is_locked(name, rid))
-	{
-	  errormsg("%s: Requested SID is locked for editing.",
-		   name.c_str());
-	  retval = 1;
-	}
-      else
-	{
-	  if (!file.is_delta_creator(get_user_name(), rid))
+#endif	  
+	  if (tossed_privileges)
 	    {
-	      give_up_privileges();
-	      tossed_privileges = 1;
+	      restore_privileges();
+	      tossed_privileges = 0;
 	    }
 	  
-	  if (!file.rmdel(rid))
-	    retval = 1;
+	  sccs_name &name = iter.get_name();
+	  sccs_file file(name, sccs_file::UPDATE);
+	  
+	  if (is_locked(name, rid))
+	    {
+	      errormsg("%s: Requested SID is locked for editing.",
+		       name.c_str());
+	      retval = 1;
+	    }
+	  else
+	    {
+	      if (!file.is_delta_creator(get_user_name(), rid))
+		{
+		  give_up_privileges();
+		  tossed_privileges = 1;
+		}
+	      
+	      if (!file.rmdel(rid))
+		retval = 1;
+	    }
+#ifdef HAVE_EXCEPTIONS
 	}
+      catch (CsscExitvalException e)
+	{
+	  if (e.exitval > retval)
+	    retval = e.exitval;
+	}
+#endif      
     }
-  
   return retval;
 }
 

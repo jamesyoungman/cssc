@@ -31,8 +31,10 @@
 #include "my-getopt.h"
 #include "version.h"
 #include "delta.h"
+#include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.17 1998/06/15 20:45:16 james Exp $";
+
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.18 1998/09/02 21:03:26 james Exp $";
 
 void
 usage() {
@@ -42,122 +44,139 @@ usage() {
 }
 
 int
-main(int argc, char **argv) {
-	Cleaner arbitrary_name;
-	int c;
-	mystring format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
-	sid rid = NULL;
-	/* enum */ sccs_file::when selected = sccs_file::SIDONLY;
-	int all_deltas = 0;
-	sccs_date cutoff_date;
-	int default_processing = 1;
+main(int argc, char **argv)
+{
+  Cleaner arbitrary_name;
+  int c;
+  mystring format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
+  sid rid = NULL;
+  /* enum */ sccs_file::when selected = sccs_file::SIDONLY;
+  int all_deltas = 0;
+  sccs_date cutoff_date;
+  int default_processing = 1;
 
-	if (argc > 0) {
-		set_prg_name(argv[0]);
-	} else {
-		set_prg_name("prs");
-	}
+  if (argc > 0)
+    set_prg_name(argv[0]);
+  else
+    set_prg_name("prs");
 
-	class CSSC_Options opts(argc, argv, "d!Dr!Relc!aV");
-	for(c = opts.next();
-	    c != CSSC_Options::END_OF_ARGUMENTS;
-	    c = opts.next()) {
-		switch (c) {
-		default:
-			errormsg("Unsupported option: '%c'", c);
-			return 2;
-
-		case 'd':
-			format = opts.getarg();
-			default_processing = 0;
-			break;
-
-		case 'D':	// obsolete MySC-ism.
-			default_processing = 0;
-			break;
-
-		case 'r':
-		  if (strlen(opts.getarg()))
-		    {
-		      rid = sid(opts.getarg());
-		      if (!rid.valid() || rid.partial_sid())
-			{
-			  errormsg("Invaild SID: '%s'", opts.getarg());
-			  return 2;
-			}
-		    }
-		  else
-		    {
-		      // default: get the most recent delta.
-		    }
-		  default_processing = 0;
-		  break;
-
-		case 'R':	// obsolete MySC-ism.
-			rid = NULL;
-			default_processing = 0;
-			break;
-			
-		case 'c':
-			cutoff_date = sccs_date(opts.getarg());
-			if (!cutoff_date.valid()) {
-				errormsg("Invalid cutoff date: '%s'",
-					 opts.getarg());
-				return 2;
-			}
-			break;
-
-		case 'e':
-			selected = sccs_file::EARLIER;
-			default_processing = 0;
-			break;
-
-		case 'l':
-			selected = sccs_file::LATER;
-			default_processing = 0;
-			break;
-
-		case 'a':
-			all_deltas = 1;
-			break;
-
-		case 'V':
-			version();
-			break;
+  CSSC_Options opts(argc, argv, "d!Dr!Relc!aV");
+  for(c = opts.next();
+      c != CSSC_Options::END_OF_ARGUMENTS;
+      c = opts.next())
+    {
+      switch (c)
+	{
+	default:
+	  errormsg("Unsupported option: '%c'", c);
+	  return 2;
+	  
+	case 'd':
+	  format = opts.getarg();
+	  default_processing = 0;
+	  break;
+	  
+	case 'D':	// obsolete MySC-ism.
+	  default_processing = 0;
+	  break;
+	  
+	case 'r':
+	  if (strlen(opts.getarg()))
+	    {
+	      rid = sid(opts.getarg());
+	      if (!rid.valid() || rid.partial_sid())
+		{
+		  errormsg("Invaild SID: '%s'", opts.getarg());
+		  return 2;
 		}
-
+	    }
+	  else
+	    {
+	      // default: get the most recent delta.
+	    }
+	  default_processing = 0;
+	  break;
+	  
+	case 'R':	// obsolete MySC-ism.
+	  rid = NULL;
+	  default_processing = 0;
+	  break;
+	  
+	case 'c':
+	  cutoff_date = sccs_date(opts.getarg());
+	  if (!cutoff_date.valid())
+	    {
+	      errormsg("Invalid cutoff date: '%s'",
+		       opts.getarg());
+	      return 2;
+	    }
+	  break;
+	  
+	case 'e':
+	  selected = sccs_file::EARLIER;
+	  default_processing = 0;
+	  break;
+	  
+	case 'l':
+	  selected = sccs_file::LATER;
+	  default_processing = 0;
+	  break;
+	  
+	case 'a':
+	  all_deltas = 1;
+	  break;
+	  
+	case 'V':
+	  version();
+	  break;
 	}
+      
+    }
+  
+  if (selected == sccs_file::SIDONLY && cutoff_date.valid())
+    {
+      errormsg("Either the -e or -l switch must used with a"
+	       " cutoff date.");
+      return 2;
+    }
+  
+  if (default_processing)
+    {
+      selected = sccs_file::EARLIER;
+    }
 
-	if (selected == sccs_file::SIDONLY && cutoff_date.valid())
-	  {
-	    errormsg("Either the -e or -l switch must used with a"
-		     " cutoff date.");
-	    return 2;
-	  }
+  sccs_file_iterator iter(opts);
 
-	if (default_processing) {
-		selected = sccs_file::EARLIER;
+  int retval = 0;
+  
+  while (iter.next())
+    {
+#ifdef HAVE_EXCEPTIONS
+      try 
+	{
+#endif	  
+	  sccs_name &name = iter.get_name();
+	  sccs_file file(name, sccs_file::READ);
+	  
+	  if (default_processing)
+	    {
+	      printf("%s:\n\n", name.c_str());
+	    }
+	  if (!file.prs(stdout, format, rid, cutoff_date, selected,
+			all_deltas))
+	    {
+	      retval = 1;
+	    }
+#ifdef HAVE_EXCEPTIONS
+	} // end of try block.
+      catch (CsscExitvalException e)
+	{
+	  if (e.exitval > retval)
+	    retval = e.exitval;
 	}
-
-	sccs_file_iterator iter(opts);
-
-	int retval = 0;
-	
-	while (iter.next()) {
-		sccs_name &name = iter.get_name();
-		sccs_file file(name, sccs_file::READ);
-
-		if (default_processing) {
-			printf("%s:\n\n", name.c_str());
-		}
-		if (!file.prs(stdout, format, rid, cutoff_date, selected,
-			      all_deltas))
-		  {
-		    retval = 1;
-		  }
-	}
-
-	return retval;
+#endif
+    }
+  return retval;
 }
 
 

@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.31 1998/08/13 18:12:29 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.32 1998/09/02 21:03:30 james Exp $";
 #endif
 
 
@@ -158,8 +158,8 @@ sccs_file::read_line() {
 
 NORETURN
 sccs_file::corrupt(const char *why) const {
-	quit(-1, "%s: line %d: Corrupted SCCS file. (%s)",
-	     name.c_str(), lineno, why);
+	s_corrupt_quit("%s: line %d: Corrupted SCCS file. (%s)",
+		       name.c_str(), lineno, why);
 }
 
 
@@ -370,14 +370,24 @@ sccs_file::read_delta() {
    may be rewritten as fseek() doesn't always work too well on
    text files. */
 // JAY: use fgetpos()/fsetpos() instead?
-void
-sccs_file::seek_to_body() {
-	if (fseek(f, body_offset, SEEK_SET) != 0) {
-		quit(errno, "%s: fseek() failed!", name.c_str());
-	}
-	lineno = body_lineno;
+bool
+sccs_file::seek_to_body()
+{
+  if (fseek(f, body_offset, SEEK_SET) != 0)
+    {
+      // this quit should NOT be fatal; we should proceed 
+      // to the next file if we can.
+      errormsg("%s: fseek() failed!", name.c_str());
+      return false;
+    }
+  lineno = body_lineno;
+  return true;
 }
 
+bool sccs_file::checksum_ok() const
+{
+  return checksum_valid;
+}
 
 
 /* Returns the module name of the SCCS file. */
@@ -404,7 +414,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   
   if (!name.valid())
     {
-      ctor_quit(-1,
+      ctor_fail(-1,
 		"%s: Not an SCCS file.  Did you specify the right file?",
 		name.c_str());
     }
@@ -428,7 +438,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     {
       if (name.lock())
 	{
-	  ctor_quit(-1, "%s: SCCS file is locked.  Try again later.",
+	  ctor_fail(-1, "%s: SCCS file is locked.  Try again later.",
 	       name.c_str());
 	}
     }
@@ -442,7 +452,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   f = open_sccs_file(name.c_str(), READ, &sum);
   if (NULL == f)
     {
-      ctor_quit(-1, "Cannot open SCCS file.\n");
+      ctor_fail(-1, "Cannot open SCCS file.\n");
     }
   
   int c = read_line();
@@ -450,23 +460,29 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 
   /* the checksum is represented in the file as decimal.
    */
-  signed int given_sum = 0u;
+  signed int given_sum = 0;
   if (1 != sscanf(plinebuf->c_str(), "%*ch%d", &given_sum))
     {
       fprintf(stderr,
 	      "Expected checksum line, found line beginning '%.3s'\n",
 	      plinebuf->c_str());
+      checksum_valid = false;
     }
   else
     {
       given_sum &= 0xFFFFu;
+      checksum_valid = (given_sum == sum);
       
-      if (given_sum != sum)
+      if (false == checksum_valid)
 	{
 	  fprintf(stderr, "%s: Warning: bad checksum "
 		  "(expected=%d, calculated %d).\n",
 		  name.c_str(), given_sum, sum);
 	}
+    }
+  if (!checksum_valid)
+    {
+      // TODO: throw exception here?
     }
   
   c = read_line();
@@ -638,7 +654,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   body_offset = ftell(f);
   if (body_offset == -1L)
     {
-      ctor_quit(errno, "ftell() failed.");
+      ctor_fail(errno, "ftell() failed.");
     }
   
   body_lineno = lineno;

@@ -166,7 +166,8 @@ body_insert_binary(const char iname[], const char oname[],
   int len;
   bool kw;
   *idkw = kw = false;
-  
+
+  nl = 0;
   while ( 0 < (len = fread(inbuf, sizeof(char), max_chunk, in)) )
     {
       encode_line(inbuf, outbuf, len); // see encoding.cc.
@@ -205,6 +206,7 @@ body_insert_binary(const char iname[], const char oname[],
     }
 
   *lines = nl;
+  return true;
 }
 
 

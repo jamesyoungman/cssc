@@ -79,4 +79,9 @@
 #undef SYS_SIGLIST_DECLARED
 
 
+/* Define if your C++ compiler can compile a program that uses 
+ * exceptions which will work when it is run.
+ */
+#undef HAVE_EXCEPTIONS
+
 /* Bottom of my file (stop). */

@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.19 1998/08/14 08:23:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.20 1998/09/02 21:03:24 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -232,7 +232,7 @@ give_up_privileges() {
 	if (unprivileged++ == 0) {
 		old_euid = geteuid();
 		if (setuid(getuid()) == -1) {
-			quit(errno, "setuid(%d) failed", getuid());
+			fatal_quit(errno, "setuid(%d) failed", getuid());
 		}
 		ASSERT(getuid() == geteuid());
 	}
@@ -243,7 +243,7 @@ restore_privileges() {
 	if (--unprivileged == 0) {
 	  // XXX TODO: shouldn't this be setuid(old_euid) ?
 		if (setuid(old_euid) == -1) { 
-			quit(errno, "setuid(%d) failed", old_euid);
+			fatal_quit(errno, "setuid(%d) failed", old_euid);
 		}
 		ASSERT(geteuid() == old_euid);
 	}
@@ -264,8 +264,8 @@ give_up_privileges() {
 		old_euid = geteuid();
 
 		if (setreuid(old_euid, old_ruid) == -1) {
-			quit(errno, "setreuid(%d, %d) failed.",
-			     old_euid, old_ruid);
+			fatal_quit(errno, "setreuid(%d, %d) failed.",
+				   old_euid, old_ruid);
 		}
 		ASSERT(geteuid() == old_ruid);
 	}
@@ -275,8 +275,8 @@ void
 restore_privileges() {
 	if (--unprivileged == 0) {
 		if (setreuid(old_ruid, old_euid) == -1) {
-			quit(errno, "setreuid(%d, %d) failed.", 
-			     old_ruid, old_euid);
+			fatal_quit(errno, "setreuid(%d, %d) failed.", 
+				   old_ruid, old_euid);
 		}
 		ASSERT(geteuid() == old_euid);
 	}
@@ -292,7 +292,7 @@ void
 give_up_privileges() {
 	++unprivileged;
 	if (geteuid() != getuid()) {
-		quit(-1, "Set UID not supported.");
+		fatal_quit(-1, "Set UID not supported.");
 	}
 }
 
@@ -322,7 +322,7 @@ get_user_name()
   struct passwd *p = getpwuid(getuid());
   if (0 == p)
     {
-      quit(-1, "UID %d not found in password file.", getuid());
+      fatal_quit(-1, "UID %d not found in password file.", getuid());
     }
   return p->pw_name;
 }
@@ -378,6 +378,7 @@ create(mystring name, int mode) {
 	} else if ((mode & CREATE_FOR_GET)
 		   && is_writable(name.c_str(), mode & CREATE_AS_REAL_USER)) {
 		errormsg("%s: File exists and is writable.", name.c_str());
+		errno = 0;
 		return -1;
 #endif
 	} else if (file_exists(name.c_str()) && unlink(name.c_str()) == -1) {
@@ -471,8 +472,7 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
 	{
 	  return;
 	}
-      ctor_quit(errno, "%s: Can't create lock file.", 
-	   zname.c_str());
+      ctor_fail(errno, "%s: Can't create lock file.", zname.c_str());
     }
 
   if (do_lock(f) != 0 || fclose_failed(fclose(f)))
@@ -480,7 +480,7 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
       // Here, the file is open (i.e. has been created)
       // but we quit without deleting it.  
       // TODO: does this need fixing?
-      ctor_quit(errno, "%s: Write error.", zname.c_str());
+      ctor_fail(errno, "%s: Write error.", zname.c_str());
     }
   
   locked = 1;

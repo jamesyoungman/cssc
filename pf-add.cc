@@ -28,7 +28,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.9 1998/06/14 15:26:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.10 1998/09/02 21:03:26 james Exp $";
 #endif
 
 bool
@@ -37,7 +37,7 @@ sccs_pfile::add_lock(sid got, sid delta,
 	ASSERT(mode == APPEND);
 
 	struct edit_lock new_lock;
-
+	
 	new_lock.got = got;
 	new_lock.delta = delta;
 	new_lock.user = get_user_name();
@@ -48,24 +48,11 @@ sccs_pfile::add_lock(sid got, sid delta,
 
 	edit_locks.add(new_lock);
 
-	FILE *pf;
-	if (edit_locks.length() == 0)
+	FILE *pf = fopen(pname.c_str(), "a");
+	if (pf == NULL)
 	  {
-	    pf = fcreate(pname, CREATE_EXCLUSIVE);
-	    if (pf == NULL)
-	      {
-		perror(pname.c_str());
-		return false;
-	      }
-	  }
-	else
-	  {
-	    pf = fopen(pname.c_str(), "a");
-	    if (pf == NULL)
-	      {
-		perror(pname.c_str());
-		return false;
-	      }
+	    perror(pname.c_str());
+	    return false;
 	  }
 
 	if (write_edit_lock(pf, new_lock) || fclose_failed(fclose(pf)))

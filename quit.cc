@@ -33,12 +33,14 @@
 #include "sysdep.h"
 #include "quit.h"
 #include "sysnerr.h"
+#include "except.h"
+
 // #include "pipe.h"
 
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.16 1998/08/13 18:10:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.17 1998/09/02 21:03:27 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -103,7 +105,8 @@ void errormsg_with_errno(const char *fmt, ...)
   va_end(ap);
   
   errno = saved_errno;
-  perror("");
+  perror(" ");
+  putc('\n', stderr);
 }
 
 static void print_err(int err)
@@ -134,11 +137,13 @@ v_quit(int err, const char *fmt, va_list ap) {
 	  {
 	    putc('\n', stderr);
 	  }
+
+	if (fmt)
+	  {
+	    v_errormsg(fmt, ap);
+	    putc('\n', stderr);
+	  }
 	
-	v_errormsg(fmt, ap);
-
-	putc('\n', stderr);
-
 	if (err >= 1) {
 	  print_err(err);
 	}
@@ -161,11 +166,17 @@ v_quit(int err, const char *fmt, va_list ap) {
 	}
 #endif
 
+#ifdef HAVE_EXCEPTIONS	
+	if (err < 0)
+	  err = -err;
+	throw CsscQuitException(err);
+#else
 	if (err > 0) {
 		exit(1);
 	} else {
 		exit(-err);
 	}
+#endif	
 }
 
 
@@ -181,6 +192,7 @@ quit(int err, const char *fmt, ...) {
 	assert(0);		// not reached.
 }
 
+
 // We eventually want to change the code to eliminate most calls
 // to quit (because processing should continue with the next input
 // file).  We just use this differently-named function to indicate
@@ -188,14 +200,71 @@ quit(int err, const char *fmt, ...) {
 // return a failure status.  When they become commonly supported,
 // we'll use exceptions.
 NORETURN
-ctor_quit(int err, const char *fmt, ...) {
+ctor_fail(int err, const char *fmt, ...) {
 	va_list ap;
 
 
 	va_start(ap, fmt);
+#ifdef HAVE_EXCEPTIONS
+	if (fmt)
+	  {
+	    v_errormsg(fmt, ap);
+	    putc('\n', stderr);
+	  }
+	throw CsscContstructorFailedException(err);
+#else
 	v_quit(err, fmt, ap);
+#endif
+	/*NOTREACHED*/
 	va_end(ap);
-	
+	assert(0);		// not reached.
+}
+
+NORETURN
+s_corrupt_quit(const char *fmt, ...) {
+	va_list ap;
+
+
+	va_start(ap, fmt);
+#ifdef HAVE_EXCEPTIONS	
+	v_errormsg(fmt, ap);
+	putc('\n', stderr);
+	throw CsscSfileCorruptException();
+#else
+	v_quit(-1, fmt, ap);
+#endif
+	/*NOTREACHED*/
+	va_end(ap);
+	assert(0);		// not reached.
+}
+
+NORETURN
+p_corrupt_quit(const char *fmt, ...) {
+	va_list ap;
+
+
+	va_start(ap, fmt);
+#ifdef HAVE_EXCEPTIONS	
+	v_errormsg(fmt, ap);
+	putc('\n', stderr);
+	throw CsscPfileCorruptException();
+#else
+	v_quit(-1, fmt, ap);
+#endif
+	/*NOTREACHED*/
+	va_end(ap);
+	assert(0);		// not reached.
+}
+
+// fatal_quit() is ALWAYS immediately fatal.
+NORETURN
+fatal_quit(int err, const char *fmt, ...) {
+	va_list ap;
+
+	va_start(ap, fmt);
+	v_quit(err, fmt, ap);
+	/*NOTREACHED*/
+	va_end(ap);
 	assert(0);		// not reached.
 }
 
@@ -203,7 +272,7 @@ ctor_quit(int err, const char *fmt, ...) {
 
 NORETURN
 nomem() {
-	quit(-4, "Out of memory!");
+	fatal_quit(-4, "Out of memory!");
 }
 
 NORETURN
@@ -213,12 +282,13 @@ assert_failed(const char *file, int line,
 {
   if (func[0])
     {
-      quit(-3, "Assertion failed in %s:\nFile: %s  Line: %d: assert(%s)",
-	   func, file, line, test);
+      fatal_quit(-3, "Assertion failed in %s:\nFile: %s  Line: %d: assert(%s)",
+		 func, file, line, test);
     }
   else
     {
-      quit(-3, "Assertion failed: %s\nFile: %s  Line: %d", test, file, line);
+      fatal_quit(-3, "Assertion failed: %s\nFile: %s  Line: %d",
+		 test, file, line);
     }
 }
 

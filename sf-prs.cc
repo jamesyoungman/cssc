@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.19 1998/08/14 08:23:42 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.20 1998/09/02 21:03:36 james Exp $";
 #endif
 
 inline bool
@@ -258,7 +258,6 @@ sccs_file::print_delta(FILE *out, const char *format,
 		       struct delta const &d)
 {
   const char *s = format;
-  bool retval = true;
   
   while (1)
     {
@@ -526,11 +525,18 @@ sccs_file::print_delta(FILE *out, const char *format,
 	  break;
 
 	case KEY2('B','D'):
-	  seek_to_body();
-	  while (read_line() != -1)
+	  if (seek_to_body())
 	    {
-	      fputs(plinebuf->c_str(), out);
-	      putc('\n', out);
+	      while (read_line() != -1)
+		{
+		  fputs(plinebuf->c_str(), out);
+		  putc('\n', out);
+		}
+	    }
+	  else
+	    {
+	      // TODO: what should we do if the seek fails?
+	      // do nothing.
 	    }
 	  break;
 

@@ -26,7 +26,7 @@
 
 
 #ifndef CSSC__FILEPOS_H
-#define CSSC__FILEPOS_H "$Id: filepos.h,v 1.6 1998/08/14 08:23:35 james Exp $"
+#define CSSC__FILEPOS_H "$Id: filepos.h,v 1.7 1998/09/02 21:03:25 james Exp $"
 
 #include "cssc.h"
 
@@ -49,7 +49,7 @@ class FilePosSaver		// with fsetpos()...
   FilePosSaver(FILE *fp) : f(fp), disarmed(0)
     {
       if (0 != fgetpos(f, &pos))
-	ctor_quit(errno, "fgetpos() failed!");
+	ctor_fail(errno, "fgetpos() failed!");
       // better, later; throw exception.
     }
 
@@ -57,7 +57,7 @@ class FilePosSaver		// with fsetpos()...
     {
       if (!disarmed)
 	if (0 != fsetpos(f, &pos))
-	  ctor_quit(errno, "fsetpos() failed!");
+	  ctor_fail(errno, "fsetpos() failed!");
     }
 
 #else
@@ -67,14 +67,14 @@ class FilePosSaver		// with fsetpos()...
   FilePosSaver(FILE *fp) : f(fp), disarmed(0)
     {
       if (-1L == (offset = ftell(f)) )
-	ctor_quit(errno, "ftell() failed."); // better, later; throw exception.
+	ctor_fail(errno, "ftell() failed."); // better, later; throw exception.
     }
 
   ~FilePosSaver()		// and restore it in the destructor.
     {
       if (!disarmed)
 	if (0 != fseek(f, offset, SEEK_SET))
-	  ctor_quit(errno, "fseek() failed!");
+	  ctor_fail(errno, "fseek() failed!");
     }
 
 #endif

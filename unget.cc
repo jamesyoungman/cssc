@@ -31,8 +31,10 @@
 #include "pfile.h"
 #include "my-getopt.h"
 #include "version.h"
+#include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.16 1998/08/14 08:23:44 james Exp $";
+
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.17 1998/09/02 21:03:38 james Exp $";
 
 void
 usage() {
@@ -98,57 +100,70 @@ main(int argc, char **argv)
     }
 
   int retval = 0;
+  const char *you = get_user_name();
   
   while (iter.next())
     {
-      sccs_name &name = iter.get_name();
-      sccs_pfile pfile(name, sccs_pfile::UPDATE);
-      
-      switch (pfile.find_sid(rid))
+#ifdef HAVE_EXCEPTIONS
+      try
 	{
-	  // normal case...
-	case sccs_pfile::FOUND:
-	  if (!iter.unique())
-	    printf("\n%s:\n", name.c_str());
+#endif	  
+	  sccs_name &name = iter.get_name();
+	  sccs_pfile pfile(name, sccs_pfile::UPDATE);
 	  
-	  pfile.print_lock_sid(stdout);
-	  fputc('\n', stdout);
-	  
-	  pfile.delete_lock();
-	  if (!pfile.update())
-	    retval = 1;
-	  
-	  if (!keep_gfile)
+	  switch (pfile.find_sid(rid))
 	    {
-	      mystring gname = name.gfile();
-	      remove(gname.c_str());
+	      // normal case...
+	    case sccs_pfile::FOUND:
+	      if (!iter.unique())
+		printf("\n%s:\n", name.c_str());
+	      
+	      pfile.print_lock_sid(stdout);
+	      fputc('\n', stdout);
+	      
+	      pfile.delete_lock();
+	      if (!pfile.update())
+		retval = 1;
+	      
+	      if (!keep_gfile)
+		{
+		  mystring gname = name.gfile();
+		  remove(gname.c_str());
+		}
+	      break;
+	      
+	      // error cases...
+	    case sccs_pfile::NOT_FOUND:
+	      if (!rid.valid())
+		errormsg("%s: You have no edits outstanding.", name.c_str());
+	      else
+		errormsg("%s: Specified SID hasn't been locked for"
+			 " editing by you (%s).",
+			 name.c_str(), you);
+	      retval = 1;
+	      break;
+	      
+	    case sccs_pfile::AMBIGUOUS:
+	      if (!rid.valid())
+		errormsg("%s: Specified SID is ambiguous.", name.c_str());
+	      else
+		errormsg("%s: You must specify a SID on the"
+			 " command line.", name.c_str());
+	      retval = 1;
+	      break;
+	      
+	    default:
+	      abort();
 	    }
-	  break;
-
-	  // error cases...
-	case sccs_pfile::NOT_FOUND:
-	  if (!rid.valid())
-	    errormsg("%s: You have no edits outstanding.", name.c_str());
-	  else
-	    errormsg("%s: Specified SID hasn't been locked for"
-		     " editing by you.", name.c_str());
-	  retval = 1;
-	  break;
-	  
-	case sccs_pfile::AMBIGUOUS:
-	  if (!rid.valid())
-	    errormsg("%s: Specified SID is ambiguous.", name.c_str());
-	  else
-	    errormsg("%s: You must specify a SID on the"
-		     " command line.", name.c_str());
-	  retval = 1;
-	  break;
-	  
-	default:
-	  abort();
+#ifdef HAVE_EXCEPTIONS
 	}
+      catch (CsscExitvalException e)
+	{
+	  if (e.exitval > retval)
+	    retval = e.exitval;
+	}
+#endif
     }
-  
   return retval;
 }
 

@@ -55,6 +55,7 @@ private:
   
   sccs_name& name;
   FILE *f;
+  bool checksum_valid;
   enum _mode mode;
   int lineno;
   long body_offset;
@@ -98,7 +99,7 @@ private:
 
   int read_line();
   void read_delta();
-  void seek_to_body();
+  bool seek_to_body();
 
   mystring get_module_name() const;
 
@@ -111,7 +112,8 @@ public:
   // lock, so if we copy it, either the copy does not
   // have a lock or we have too many locks in total.
   sccs_file(sccs_name &name, enum _mode mode);
-
+  bool checksum_ok() const;
+  
   sid find_most_recent_sid(sid id) const;
   bool find_most_recent_sid(sid& s, sccs_date& d) const;
 

@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.30 1998/08/14 08:23:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.31 1998/09/02 21:03:35 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -284,9 +284,13 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 		return false;
 	}
 	
-	if (pfile.is_locked(got) && !flags.joint_edit) {
-		errormsg("%s: Requested SID locked by '%s'.\n",
-		     name.c_str(), pfile->user.c_str());
+	if (pfile.is_locked(got) && !flags.joint_edit)
+	  {
+	    mystring when(pfile->date.as_string());
+	    errormsg("%s: Requested SID locked by '%s' at %s.\n",
+		     name.c_str(),
+		     pfile->user.c_str(),
+		     when.c_str());
 		return false;
 	}
 	return true;
@@ -545,6 +549,7 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	if (keywords && !parms.found_id)
 	  {
 	    no_id_keywords(name.c_str());
+	    // this function normally returns.
 	  }
 				     
 	status.lines = parms.out_lineno;

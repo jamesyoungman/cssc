@@ -33,8 +33,11 @@
 #include "sf-chkmr.h"
 #include "version.h"
 #include "delta.h"
+#include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.21 1998/08/14 08:23:33 james Exp $";
+
+
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.22 1998/09/02 21:03:23 james Exp $";
 
 void
 usage() {
@@ -44,210 +47,244 @@ usage() {
 }
 
 int
-main(int argc, char **argv) {
-	Cleaner arbitrary_name;
-	int c;
-	sid rid = NULL;		/* -r */
-	int silent = 0;		/* -s */
-	int keep_gfile = 0;	/* -n */
+delta_main(int argc, char **argv)
+{
+  Cleaner arbitrary_name;
+  int c;
+  sid rid = NULL;		/* -r */
+  int silent = 0;		/* -s */
+  int keep_gfile = 0;	/* -n */
 #if 0
-	sid_list ignore;	/* -g */
+  sid_list ignore;	/* -g */
 #endif
-	mystring mrs;		/* -m -M */
-	mystring comments;	/* -y -Y */
-	int suppress_mrs = 0;	// if -m given with no arg.
-	int got_mrs = 0;	// if no need to prompt for MRs.
-	int suppress_comments = 0; // if -y given with no arg.
-	int got_comments = 0;
+  mystring mrs;		/* -m -M */
+  mystring comments;	/* -y -Y */
+  int suppress_mrs = 0;	// if -m given with no arg.
+  int got_mrs = 0;	// if no need to prompt for MRs.
+  int suppress_comments = 0; // if -y given with no arg.
+  int got_comments = 0;
 
-	if (argc > 0) {
-		set_prg_name(argv[0]);
-	} else {
-		set_prg_name("delta");
-	}
+  if (argc > 0) {
+    set_prg_name(argv[0]);
+  } else {
+    set_prg_name("delta");
+  }
 
-	class CSSC_Options opts(argc, argv, "r!sng!m!My!YpV");
-	for(c = opts.next();
-	    c != CSSC_Options::END_OF_ARGUMENTS;
-	    c = opts.next()) {
-		switch (c) {
-		default:
-			errormsg("Unsupported option: '%c'", c);
-			return 2;
+  class CSSC_Options opts(argc, argv, "r!sng!m!My!YpV");
+  for(c = opts.next();
+      c != CSSC_Options::END_OF_ARGUMENTS;
+      c = opts.next()) {
+    switch (c) {
+    default:
+      errormsg("Unsupported option: '%c'", c);
+      return 2;
 			
-		case 'r':
-			rid = sid(opts.getarg());
-			if (!rid.valid()) {
-				errormsg("Invaild SID: '%s'", opts.getarg());
-				return 2;
-			}
-			break;
+    case 'r':
+      rid = sid(opts.getarg());
+      if (!rid.valid()) {
+	errormsg("Invaild SID: '%s'", opts.getarg());
+	return 2;
+      }
+      break;
 
-		case 's':
-			silent = 1;
-			break;
+    case 's':
+      silent = 1;
+      break;
 
-		case 'n':
-			keep_gfile = 1;
-			break;
+    case 'n':
+      keep_gfile = 1;
+      break;
 
-		case 'm':
-			mrs = opts.getarg();
-			suppress_mrs = (mrs == "");
-			got_mrs = 1;
-			break;
+    case 'm':
+      mrs = opts.getarg();
+      suppress_mrs = (mrs == "");
+      got_mrs = 1;
+      break;
 
-		case 'M':
-			mrs = "";
-			suppress_mrs = 1;
-			got_mrs = 1;
-			break;
+    case 'M':
+      mrs = "";
+      suppress_mrs = 1;
+      got_mrs = 1;
+      break;
 
-		case 'y':
-			comments = opts.getarg();
-			suppress_comments = (comments == "");
-			got_comments = 1;
-			break;
+    case 'y':
+      comments = opts.getarg();
+      suppress_comments = (comments == "");
+      got_comments = 1;
+      break;
 
-		case 'Y':
-			comments = "";
-			suppress_comments = 1;
-			got_comments = 1;
-			break;
+    case 'Y':
+      comments = "";
+      suppress_comments = 1;
+      got_comments = 1;
+      break;
 
-		case 'V':
-			version();
-			break;
-		}
+    case 'V':
+      version();
+      break;
+    }
+  }
+
+  sccs_file_iterator iter(opts);
+
+  if (silent)
+    {
+      if (!stdout_to_null())
+	{
+	  return 1;		// fatal error.  Process no files.
 	}
+    }
 
-	sccs_file_iterator iter(opts);
+  list<mystring> mr_list, comment_list;
+  int first = 1;
 
-     	if (silent)
-	  {
-	  if (!stdout_to_null())
+  int retval = 0;
+
+  while (iter.next())
+    {
+#ifdef HAVE_EXCEPTIONS
+      try
+	{
+#endif	    
+	  bool failed = false;
+	  sccs_name &name = iter.get_name();
+	  sccs_file file(name, sccs_file::UPDATE);
+	  sccs_pfile pfile(name, sccs_pfile::UPDATE);
+		
+	  if (first)
 	    {
-	      return 1;		// fatal error.  Process no files.
-	    }
-	}
-
-	list<mystring> mr_list, comment_list;
-	int first = 1;
-
-	int retval = 0;
-	
-	while (iter.next()) {
-		sccs_name &name = iter.get_name();
-		sccs_file file(name, sccs_file::UPDATE);
-		sccs_pfile pfile(name, sccs_pfile::UPDATE);
-		
-		if (first)
-		  {
-		    if (stdin_is_a_tty())
-		      {
-			if (!suppress_mrs && !got_mrs && file.mr_required())
-			  {
-			    mrs = prompt_user("MRs? ");
-			    got_mrs = 1;
-			  }
-			if (!suppress_comments && !got_comments)
-			  {
-			    comments = prompt_user("comments? ");
-			    got_comments = 1;
-			  }
-		      }
-		    mr_list = split_mrs(mrs);
-		    comment_list = split_comments(comments);
-		    first = 0;
-		  }
-
-		switch (pfile.find_sid(rid)) {
-		case sccs_pfile::FOUND:
-			break;
-
-		case sccs_pfile::NOT_FOUND:
-		  if (!rid.valid())
+	      if (stdin_is_a_tty())
+		{
+		  if (!suppress_mrs && !got_mrs && file.mr_required())
 		    {
-		      errormsg("%s: You have no edits outstanding.",
-			       name.c_str());
+		      mrs = prompt_user("MRs? ");
+		      got_mrs = 1;
 		    }
-		  else
+		  if (!suppress_comments && !got_comments)
 		    {
-		      errormsg("%s: Specified SID hasn't been locked for"
-			       " editing by you.",
-			       name.c_str());
+		      comments = prompt_user("comments? ");
+		      got_comments = 1;
 		    }
-		  retval = 1;
-		  break;
-
-		case sccs_pfile::AMBIGUOUS:
-		  if (rid.valid())
-		    {
-		      errormsg("%s: Specified SID is ambiguous.",
-			       name.c_str());
-		    }
-		  else
-		    {
-		      errormsg("%s: You must specify a SID on the"
-			       " command line.", name.c_str());
-		    }
-		  retval = 1;
-		  break;
-
-		default:
-			abort();
 		}
-
-		if (!suppress_mrs && file.mr_required())
-		  {
-		    if (mr_list.length() == 0)
-		      {
-			errormsg("%s: MR number(s) must be supplied.",
-				 name.c_str());
-			retval = 1;
-			continue;
-		      }
-		    if (file.check_mrs(mr_list))
-		      {
-			/* In this case, _real_ SCCS prints the ID anyway.
-                         */
-			pfile->delta.print(stdout);
-			putchar('\n');
-			errormsg("%s: Invalid MR number(s).", name.c_str());
-			retval = 1;
-			continue;
-		      }
-		  }
-		else if (mr_list.length())
-		  {
-		    // MRs were specified and the MR flag is turned off.
-		    pfile->delta.print(stdout);
-		    putchar('\n');
-		    errormsg("%s: MR verification ('v') flag not set, MRs"
-			     " are not allowed.\n",
-			     name.c_str());
-		    retval = 1;
-		    continue;
-		  }
+	      mr_list = split_mrs(mrs);
+	      comment_list = split_comments(comments);
+	      first = 0;
+	    }
 		
-		mystring gname = name.gfile();
-
-		if (!file.add_delta(gname, pfile, mr_list, comment_list))
-		  {
-		    retval = 1;
-		    // if delta failed, don't delete the g-file.
-		  }
-		else
-		  {
-		    if (!keep_gfile)
-		      {
-			remove(gname.c_str());
-		      }
-		  }
+	  switch (pfile.find_sid(rid)) {
+	  case sccs_pfile::FOUND:
+	    break;
+		  
+	  case sccs_pfile::NOT_FOUND:
+	    if (!rid.valid())
+	      {
+		errormsg("%s: You have no edits outstanding.",
+			 name.c_str());
+	      }
+	    else
+	      {
+		errormsg("%s: Specified SID hasn't been locked for"
+			 " editing by you.",
+			 name.c_str());
+	      }
+	    failed = true;
+	    retval = 1;
+	    break;
+		  
+	  case sccs_pfile::AMBIGUOUS:
+	    if (rid.valid())
+	      {
+		errormsg("%s: Specified SID is ambiguous.",
+			 name.c_str());
+	      }
+	    else
+	      {
+		errormsg("%s: You must specify a SID on the"
+			 " command line.", name.c_str());
+	      }
+	    failed = true;
+	    retval = 1;
+	    break;
+		  
+	  default:
+	    abort();
+	  }
+		
+	  if (!failed)
+	    {
+	      if (!suppress_mrs && file.mr_required())
+		{
+		  if (mr_list.length() == 0)
+		    {
+		      errormsg("%s: MR number(s) must be supplied.",
+			       name.c_str());
+		      retval = 1;
+		      continue;
+		    }
+		  if (file.check_mrs(mr_list))
+		    {
+		      /* In this case, _real_ SCCS prints the ID anyway.
+		       */
+		      pfile->delta.print(stdout);
+		      putchar('\n');
+		      errormsg("%s: Invalid MR number(s).",
+			       name.c_str());
+		      retval = 1;
+		      continue;
+		    }
+		}
+	      else if (mr_list.length())
+		{
+		  // MRs were specified and the MR flag is turned off.
+		  pfile->delta.print(stdout);
+		  putchar('\n');
+		  errormsg("%s: MR verification ('v') flag not set, MRs"
+			   " are not allowed.\n",
+			   name.c_str());
+		  retval = 1;
+		  continue;
+		}
+		    
+	      mystring gname = name.gfile();
+		    
+	      if (!file.add_delta(gname, pfile, mr_list, comment_list))
+		{
+		  retval = 1;
+		  // if delta failed, don't delete the g-file.
+		}
+	      else
+		{
+		  if (!keep_gfile)
+		    {
+		      remove(gname.c_str());
+		    }
+		}
+	    }
+#ifdef HAVE_EXCEPTIONS
 	}
-
-	return retval;
+      catch (CsscReallyFatalException e)
+	{
+	  exit(e.exitval);
+	}
+      catch (CsscExitvalException e)
+	{
+	  if (e.exitval > retval)
+	    retval = e.exitval;	// continue with next file.
+	}
+#endif	
+    }
+  return retval;
 }
+
+
+int
+main(int argc, char **argv)
+{
+  int ret;
+  ret = delta_main(argc, argv);
+  return ret;
+}
+
 
 // Explicit template instantiations.
 template class range_list<sid>;
@@ -265,3 +302,4 @@ template class stack<unsigned short>;
 /* Local variables: */
 /* mode: c++ */
 /* End: */
+

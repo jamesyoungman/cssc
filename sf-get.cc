@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.22 1998/08/14 08:23:39 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.23 1998/09/02 21:03:34 james Exp $";
 #endif
 
 bool
@@ -96,8 +96,6 @@ sccs_file::get(mystring gname, class seq_state &state,
 	       bool no_decode /* = false */)
 {
   ASSERT(mode != CREATE);
-  bool binary_keyword_warned = false;
-  
 
   int (*outputfn)(FILE*,const cssc_linebuf*);
   if (flags.encoded && false == no_decode)
@@ -106,7 +104,9 @@ sccs_file::get(mystring gname, class seq_state &state,
     outputfn = output_body_line_text;
 	
 
-  seek_to_body();
+  if (!seek_to_body())
+    return false;
+  
 
   /* The following statement is not correct. */
   /* "@I 1" should start the body of the SCCS file */

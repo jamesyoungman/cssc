@@ -34,6 +34,7 @@
 #endif
 
 
+
 // Cleaner is a class that you should have in scope in main;
 // it ensures that al; required cleanups are run even if you don't
 // call quit().
@@ -91,13 +92,27 @@ void errormsg_with_errno(const char *fmt, ...);
 
 
 #ifdef __GNUC__
+#if 0
 NORETURN quit(int err, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
-NORETURN ctor_quit(int err, const char *fmt, ...)
+#endif
+NORETURN fatal_quit(int err, const char *fmt, ...)
+	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
+NORETURN p_corrupt_quit(const char *fmt, ...)
+	__attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
+NORETURN s_corrupt_quit(const char *fmt, ...)
+	__attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
+NORETURN ctor_fail(int err, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
 #else
+#if 0
 NORETURN quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
-NORETURN ctor_quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
+#endif
+
+NORETURN s_corrupt_quitquit(const char *fmt, ...)  POSTDECL_NORETURN;
+NORETURN p_corrupt_quit(const char *fmt, ...)  POSTDECL_NORETURN;
+NORETURN fatal_quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
+NORETURN ctor_fail(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 #endif
 
 NORETURN nomem()  POSTDECL_NORETURN;

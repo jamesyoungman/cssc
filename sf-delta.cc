@@ -41,7 +41,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.26 1998/08/14 08:23:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.27 1998/09/02 21:03:33 james Exp $";
 #endif
 
 class diff_state
@@ -58,8 +58,8 @@ private:
 	FILE *in;
 	cssc_linebuf linebuf;
 
-	NORETURN corrupt() POSTDECL_NORETURN;
-	NORETURN corrupt(const char *msg) POSTDECL_NORETURN;
+	NORETURN diff_output_corrupt() POSTDECL_NORETURN;
+	NORETURN diff_output_corrupt(const char *msg) POSTDECL_NORETURN;
 
 	void next_state();
 	int read_line() { return linebuf.read_line(in); }
@@ -90,11 +90,11 @@ public:
    on the diff output fails. */
 
 NORETURN
-diff_state::corrupt() {
+diff_state::diff_output_corrupt() {
 	if (ferror(in)) {
-		quit(errno, "(diff output): Read error.");
+		fatal_quit(errno, "(diff output): Read error.");
 	}
-	quit(-1, "(diff output): Unexpected EOF.");
+	fatal_quit(-1, "(diff output): Unexpected EOF.");
 }
 
 
@@ -102,9 +102,9 @@ diff_state::corrupt() {
    is wrong with the diff output. */
 
 NORETURN
-diff_state::corrupt(const char *msg)
+diff_state::diff_output_corrupt(const char *msg)
 {
-  quit(-1, "Diff output corrupt. (%s)", msg);
+  fatal_quit(-1, "Diff output corrupt. (%s)", msg);
 }
 
 
@@ -118,7 +118,7 @@ diff_state::next_state()
     {
       if (read_line())
 	{
-	  corrupt();
+	  diff_output_corrupt();
 	}
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): read %s", linebuf.c_str());
@@ -126,7 +126,7 @@ diff_state::next_state()
       
       if (strcmp(linebuf.c_str(), "---\n") != 0)
 	{
-	  corrupt("---");
+	  diff_output_corrupt("expected ---");
 	}
       lines_left = change_left;
       change_left = 0;
@@ -143,7 +143,7 @@ diff_state::next_state()
 	{
 	  if (ferror(in))
 	    {
-	      corrupt();
+	      diff_output_corrupt();
 	    }
 	  _state = END;
 #ifdef JAY_DEBUG
@@ -162,11 +162,11 @@ diff_state::next_state()
 	{
 	  if (!read_line())
 	    {
-	      corrupt("Expected EOF");
+	      diff_output_corrupt("Expected EOF");
 	    }
 	  if (ferror(in))
 	    {
-	      corrupt();
+	      diff_output_corrupt();
 	    }
 	  _state = END;
 #ifdef JAY_DEBUG
@@ -188,7 +188,7 @@ diff_state::next_state()
       line2 = (int) strtol(s + 1, &s, 10);
       if (line2 <= line1)
 	{
-	  corrupt("left end line");
+	  diff_output_corrupt("left end line");
 	}
     }
 
@@ -209,7 +209,7 @@ diff_state::next_state()
 	}
       if (line1 + 1 != in_lineno)
 	{
-	  corrupt("left start line [case 1]");
+	  diff_output_corrupt("left start line [case 1]");
 	}
     }
   else
@@ -225,7 +225,7 @@ diff_state::next_state()
 	}
       if (line1 != in_lineno)
 	{
-	  corrupt("left start line [case 2]");
+	  diff_output_corrupt("left start line [case 2]");
 	}
     }
 
@@ -234,14 +234,14 @@ diff_state::next_state()
     {
       if (line3 != out_lineno)
 	{
-	  corrupt("right start line [case 1]");
+	  diff_output_corrupt("right start line [case 1]");
 	}
     }
   else
     {
       if (line3 != out_lineno + 1)
 	{
-	  corrupt("right start line [case 2]");
+	  diff_output_corrupt("right start line [case 2]");
 	}
     }
   
@@ -251,13 +251,13 @@ diff_state::next_state()
       line4 = (int) strtol(s + 1, &s, 10);
       if (line4 <= line3)
 	{
-	  corrupt("right end line");
+	  diff_output_corrupt("right end line");
 	}
     }
 
   if (*s != '\n')
     {
-      corrupt("EOL");
+      diff_output_corrupt("EOL");
     }
 
   switch (c)
@@ -288,7 +288,7 @@ diff_state::next_state()
       break;
       
     default:
-      corrupt("unknown operation");
+      diff_output_corrupt("unknown operation");
     }
 }
 
@@ -330,11 +330,11 @@ diff_state::process(FILE *out, seq_no seq)
     {
       if (read_line())
 	{
-	  corrupt();
+	  diff_output_corrupt();
 	}
       if (linebuf[0] != '<' || linebuf[1] != ' ')
 	{
-	  corrupt("<");
+	  diff_output_corrupt("expected <");
 	}
     }
   else
@@ -343,11 +343,11 @@ diff_state::process(FILE *out, seq_no seq)
 	{
 	  if (read_line())
 	    {
-	      corrupt();
+	      diff_output_corrupt();
 	    }
 	  if (linebuf[0] != '>' || linebuf[1] != ' ')
 	    {
-	      corrupt(">");
+	      diff_output_corrupt("expected >");
 	    }
 	}
       out_lineno++;
@@ -355,6 +355,26 @@ diff_state::process(FILE *out, seq_no seq)
   
   return _state;
 }
+
+class FileDeleter
+{
+  mystring name;
+  bool armed;
+  
+public:
+  FileDeleter(const mystring& s) : name(s), armed(true) { }
+  
+  ~FileDeleter()
+    {
+      if (armed)
+	{
+	  const char *s = name.c_str();
+	  if (0 != remove(s))
+	    perror(s);
+	}
+    }
+  disarm() { armed = false; }
+};
 
 
 /* Adds a new delta to the SCCS file.  It doesn't add the delta to the
@@ -390,7 +410,14 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
     {
       file_to_diff = gname;
     }
-	
+
+  /* When this function exits, delete the temporary file.
+   */
+  FileDeleter the_cleaner(file_to_diff);
+  if (!flags.encoded)
+    the_cleaner.disarm();
+
+  
   seq_state sstate(highest_delta_seqno());
   const delta *got_delta = find_delta(pfile->got);
   if (got_delta == NULL)
@@ -412,6 +439,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
   
   mystring dname(name.sub_file('d'));
+  FileDeleter another_cleaner(dname);
+  
   FILE *get_out = fopen(dname.c_str(), "wt");
   if (NULL == get_out)
     {
@@ -445,8 +474,10 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   //    modifying it as indicated by the output of the diff
   //    program.
 	
-  seek_to_body();		// prepare to read the body for predecessor.
+  if (false == seek_to_body())	// prepare to read the body for predecessor.
+    return false;
 
+  
   // The new delta header includes info about what deltas
   // are included, excluded, ignored.   Compute that now.
   list<seq_no> included, excluded;
@@ -721,25 +752,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
   // The order of things that we do at this point is quite
   // important; we want only to update the s- and p- files if
-  // everything worked; if something failed though we still want
-  // to delete the temporary files.
+  // everything worked.
   diff_out = 0;
-  if (0 != remove(dname.c_str()))
-    {
-      perror(dname.c_str()); // TODO: should we quit?
-    }
 	
-  // If we had created a temporary file, delete it now.
-  // We should probably not exit fatally if we fail to
-  // unlink the temporary file.
-  if (flags.encoded)
-    {
-      if (0 != remove(file_to_diff.c_str()))
-	{
-	  perror(file_to_diff.c_str());
-	}
-    }
-
   // It would be nice to know if the diff failed, but actually 
   // diff's return value indicates if there was a difference 
   // or not.

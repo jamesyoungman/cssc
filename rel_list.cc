@@ -27,7 +27,7 @@
 #include <stdlib.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.4 1998/08/14 08:23:36 james Exp $";
+static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.5 1998/09/02 21:03:28 james Exp $";
 #endif
 
 // Because we use member() all the time, this
@@ -44,7 +44,7 @@ release_list::release_list(const char *s)
 	break;			// not numeric.
 
       if (n < 0)
-	ctor_quit(-1, "ranges not allowed in release lists");
+	ctor_fail(-1, "ranges not allowed in release lists");
       
       // add the entry if not already a member.
       const release r(n);

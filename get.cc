@@ -32,8 +32,10 @@
 #include "pfile.h"
 #include "my-getopt.h"
 #include "version.h"
+#include "except.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.26 1998/08/14 08:23:35 james Exp $";
+
+const char main_rcs_id[] = "$Id: get.cc,v 1.27 1998/09/02 21:03:25 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -247,6 +249,10 @@ main(int argc, char **argv) {
 	sccs_file_iterator iter(opts);
 
 	while (iter.next()) {
+#ifdef HAVE_EXCEPTIONS
+	  try
+	    {
+#endif	      
 		sccs_name &name = iter.get_name();
 
 		sccs_pfile *pfile = NULL;
@@ -316,7 +322,8 @@ main(int argc, char **argv) {
 
 			if (NULL == out)
 			  {
-			    perror(gname.c_str());
+			    if (errno)
+			      perror(gname.c_str());
 			    retval = 1;
 			    continue;	// with next file....
 			  }
@@ -372,6 +379,14 @@ main(int argc, char **argv) {
 		if (!no_output) {
 			printf("%d lines\n", status.lines);
 		}
+#ifdef HAVE_EXCEPTIONS
+	    }
+	  catch (CsscExitvalException e)
+	    {
+	      if (e.exitval > retval)
+		retval = e.exitval;
+	    }
+#endif		
 	}
 
 	return retval;

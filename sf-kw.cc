@@ -28,7 +28,7 @@
 
 #include "cssc.h"
 #include "sccsfile.h"
-
+#include "except.h"
 
 
 void sccs_file::
@@ -36,11 +36,17 @@ no_id_keywords(const char name[]) const
 {
   if (flags.no_id_keywords_is_fatal)
     {
-      quit(-1, "%s: No id keywords.", name);
+      // TODO: Just what does "fatal" mean for no_id_keywords_is_fatal ?
+#ifdef HAVE_EXCEPTIONS
+      errormsg("%s: Warning: No id keywords.", name);
+      throw CsscNoKeywordsException();
+#else
+      fatal_quit(-1, "%s: Warning: No id keywords.", name);
+#endif      
     }
   else
     {
-      fprintf(stderr, "%s: Warning: No id keywords.\n", name);
+      errormsg("%s: Warning: No id keywords.", name);
     }
 }
 
@@ -52,7 +58,7 @@ sccs_file::check_keywords_in_file(const char *name)
   FILE *f = fopen(name, "r");
   if (NULL == f)
     {
-      errormsg_with_errno("%s: Can't open file for reading.", name);
+      errormsg_with_errno("%s: Can't open file for reading", name);
       return false;
     }
   else

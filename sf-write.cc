@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.21 1998/08/22 17:52:51 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.22 1998/09/02 21:03:37 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -514,16 +514,22 @@ sccs_file::update()
 {
   ASSERT(mode != CREATE);
   
+  if (!seek_to_body())
+    return false;
+  
   FILE *out = start_update();
   if (NULL == out)
-    return false;
+    return false;		// don't start writing the x-file.
   
   if (write(out))
     {
       xfile_error("Write error.");
     }
-  
-  seek_to_body();
+
+  // assume that since the earlier seek_to_body() worked,
+  // this one will top.
+  if (!seek_to_body())
+    return false;
   
   while (read_line() != -1)
     {
