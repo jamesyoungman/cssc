@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.54 2003/03/08 15:03:19 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.55 2003/03/08 15:14:11 james_youngman Exp $";
 #endif
 
 
@@ -54,7 +54,7 @@ bool sccs_file::sid_matches(const sid& requested,
   if (2 == ncomponents && !get_top_delta)
     ncomponents = 4;            // want an exact match.
 
-  ASSERT(ncomponents != 0);
+  // ASSERT(ncomponents != 0);
   ASSERT(ncomponents <= 4);
 
   if (1 == ncomponents)
@@ -65,13 +65,6 @@ bool sccs_file::sid_matches(const sid& requested,
 	return false;
       else
 	return true;
-    }
-  else if (3 == ncomponents)
-    {
-      if (found.on_trunk())
-	return false;
-      else
-	return found.matches(requested, ncomponents);
     }
   else
     {
@@ -93,7 +86,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
         {                       // get the latest.
           requested = (release)delta_table->highest_release();
 
-          if (requested.is_null())
+          if (!get_top_delta && requested.is_null())
           {
               return false; // no latest on the trunk.(SF bug 664900)
           }
@@ -108,7 +101,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
   if (2 == ncomponents && !get_top_delta)
     ncomponents = 4;            // want an exact match.
 
-  ASSERT(ncomponents != 0);
+  // ASSERT(ncomponents != 0);
   ASSERT(ncomponents <= 4);
 
   // Remember the best so far.
