@@ -50,7 +50,7 @@
 #include "cssc.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.20 2002/03/18 20:55:44 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.21 2002/03/18 21:57:28 james_youngman Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -190,7 +190,11 @@ print_what(char *s, char *end, XFILE f) {
 #endif			
 		case '\\':
 		case '\0':
-			return end;
+		  /* Note that only one test case currently covers this line 
+		   * of the code.   Test w22 of whatbasic.sh exercises this,
+		   * but nothing else does.
+		   */
+		  return end;
 		}
 		putchar(c);
 		c = xgetc(f);
