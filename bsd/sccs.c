@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.24 2000/03/19 11:19:01 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.25 2000/07/18 20:49:34 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -138,6 +138,7 @@ static const char filever[] = "$Id: sccs.c,v 1.24 2000/03/19 11:19:01 james Exp 
 #define	_PATH_SCCSDELTA	("delta")
 #define	_PATH_SCCSDIFF	("sccsdiff")
 #define	_PATH_SCCSGET	("get")
+#define	_PATH_SCCSUNGET	("unget")
 #define	_PATH_SCCSHELP	("help")
 #define	_PATH_SCCSPRS	("prs")
 #define	_PATH_SCCSPRT	("prt")
@@ -248,6 +249,7 @@ static const char filever[] = "$Id: sccs.c,v 1.24 2000/03/19 11:19:01 james Exp 
    **   Commands:
    **           admin,
    **           get,
+   **           unget,
    **           delta,
    **           rmdel,
    **           cdc,
@@ -375,6 +377,7 @@ const struct sccsprog SccsProg[] =
   {"comb", PROG, 0, _PATH_SCCSCOMB},
   {"delta", PROG, 0, _PATH_SCCSDELTA},
   {"get", PROG, 0, _PATH_SCCSGET},
+  {"unget", PROG, 0, _PATH_SCCSUNGET},
   {"help", PROG, NO_SDOT, _PATH_SCCSHELP},
   {"prs", PROG, 0, _PATH_SCCSPRS},
   {"prt", PROG, 0, _PATH_SCCSPRT},
