@@ -87,7 +87,7 @@ private:
   list<mystring> comments;
 
   static FILE *open_sccs_file(const char *name, enum _mode mode,
-			      unsigned *sump);
+			      int *sump);
   NORETURN corrupt(const char *why) const POSTDECL_NORETURN;
   void check_arg() const;
   void check_noarg() const;
