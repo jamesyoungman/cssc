@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.17 1998/08/13 18:16:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.18 1998/12/09 23:37:55 james Exp $";
 #endif
 
 static void
@@ -80,7 +80,10 @@ void print_flag(FILE *out, const char *fmt, mystring flag, int& count)
 
 void print_flag(FILE *out, const char *fmt, const mystring* pflag, int& count)
 {
-  if (pflag && !pflag->empty())
+  // We consider a flag which is set to an empty string still to be set.
+  // An example is the v flag; lines of the form "^Af v" should still set
+  // the v flag to an empty string.
+  if (pflag)
     {
       ++count;
       fprintf(out, fmt, pflag->c_str());
