@@ -1,4 +1,4 @@
-/* Top of my file */
+/* Top of my file (acconfig.h is the ultimate source file) */
 @TOP@
 
 
@@ -71,6 +71,12 @@
 
 /* define if <stdlib.h> declares sys_errlist. */
 #undef STDLIB_H_DECLARES_SYS_ERRLIST
+
+/* define if either signal.h or unistd.h declares 
+ * sys_siglist[].   This is a BSD-ism, I think.
+ * This corresponds to the AC_DECL_SIGLIST Autoconf macro.
+ */
+#undef SYS_SIGLIST_DECLARED
 
 
 /* Bottom of my file (stop). */
