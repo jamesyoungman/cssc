@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl 
-dnl $Id: configure.in,v 1.71 2001/08/29 17:17:02 james_youngman Exp $
+dnl $Id: configure.in,v 1.72 2001/09/23 13:35:41 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -30,7 +30,7 @@ AC_INIT(sccsfile.h)
 # in the Automake manual.
 #   usually use -CVSDEVEL to indicate that the person who compiled 
 #   the code got it from CVS.
-AM_INIT_AUTOMAKE(CSSC,0.13alpha.pl0-CVSDEVEL)
+AM_INIT_AUTOMAKE(CSSC,0.13alpha.pl0)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)
