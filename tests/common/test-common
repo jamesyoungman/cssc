@@ -1,5 +1,6 @@
+#!/bin/sh
 # Common function definitions.
-. command-names
+. ../common/command-names
 
 expect_fail=false
 
