@@ -1,8 +1,17 @@
 The Time-stamp: line indicated when this file was last modified.
-Time-stamp: <97/11/05 18:57:45 james>
+Time-stamp: <97/11/17 18:04:12 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
+
+Mon Nov 17 18:01:05 1997: Richard Polton <rap@maths.soton.ac.uk>
+In version 0.03-pl2.  Unfixed.
+ If you create an SCCS file using "-i" from a file with (say)
+ 500000 lines, real SCCS does it, but puts "99999" in the 
+ summary line for that delta.  Currently, CSSC puts the "correct"
+ number of lines, and then fails when reading the file back in
+ for some other purpose, giving the error "Number too big".
+ The correct behaviour would be to follow what SCCS does.
 
 
 Wed Nov  5 18:56:06 1997: James Youngman <jay@gnu.org>
