@@ -62,7 +62,7 @@ body_insert_text(const char iname[], const char oname[],
   bool found_id;
 
   // If we fail, rewind these files to try binary encoding.
-  FilePosSaver i_saver(in), o_saver(out);
+  FilePosSaver o_saver(out);
   
   *idkw = found_id = false;
   nl = 0uL;
@@ -80,7 +80,8 @@ body_insert_text(const char iname[], const char oname[],
 		  "%s: control character at start of line, "
 		  "treating as binary.\n",
 		  iname);
-	  return false;		// file pointers implicitly rewound
+	  ungetc(ch, in);	// push back the control character.
+	  return false;		// output file pointer implicitly rewound
 	}
 
       
@@ -115,8 +116,7 @@ body_insert_text(const char iname[], const char oname[],
       return false;		// file pointers implicitly rewound
     }
 
-  // Success; do not rewind the input and output files.
-  i_saver.disarm();
+  // Success; do not rewind the output file.
   o_saver.disarm();
   *lines = nl;
   return true;
@@ -179,6 +179,24 @@ body_insert_binary(const char iname[], const char oname[],
   *lines = nl;
 }
 
+
+void
+copy_data(FILE *in, FILE *out)
+{
+  char buf[BUFSIZ];
+  size_t n, nout;
+
+  while ( 0u < (n=fread(buf, 1, BUFSIZ, in)))
+    {
+      nout = fwrite(buf, 1, n, out);
+      if (nout < n)
+	quit(errno, "copy_data: write error.");
+    }
+  if (ferror(in))
+    quit(errno, "copy_data: read error.");
+}
+
+
 void
 body_insert(bool *binary,
 	    const char iname[], const char oname[],
@@ -187,14 +205,48 @@ body_insert(bool *binary,
 	    bool *idkw)
 {
   // If binary mode has not been forced, try text mode.
-  if (!*binary)
+  if (*binary)
     {
-      if (body_insert_text(iname, oname, in, out, lines, idkw))
-	return;			// Success.
+      body_insert_binary(iname, oname, in, out, lines, idkw);
+      return;
     }
-
-  *binary = true;
-  body_insert_binary(iname, oname, in, out, lines, idkw);
+  else
+    {
+      // body_insert_text() takes care of rewinding the output
+      // file; we may not even be able to rewind the input file.
+      if (body_insert_text(iname, oname, in, out, lines, idkw))
+	{
+	  return;			// Success.
+	}
+      else
+	{
+	  // It wasn't text after all.  We may be reading from
+	  // stdin, so we can't seek on it.  But we have 
+	  // the first segment of the file written to the x-file
+	  // already, and the remainder is still waiting to be
+	  // read, so we can recover all the data.
+	  *binary = true;
+	  FILE *tmp = tmpfile();
+	  if (tmp)
+	    {
+	      // Recover the data already written to the output
+	      // file and then rewind it, so that we can overwrite
+	      // it with the encoded version.
+	      FilePosSaver *fp_out = new FilePosSaver(out);
+	      copy_data(out, tmp);
+	      copy_data(in,  tmp); // encode the unread remainder of the data.
+	      
+	      delete fp_out;	// rewind the file OUT.
+	      rewind(tmp);
+	      body_insert_binary("temporary file", oname, tmp, out, lines, idkw);
+	      fclose(tmp);
+	    }
+	  else
+	    {
+	      quit(errno, "Could not create temporary file\n");
+	    }
+	}
+    }
 }
 
 int output_body_line_text(FILE *fp, const cssc_linebuf* plb)

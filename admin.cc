@@ -36,7 +36,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.22 1998/02/28 14:47:43 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.23 1998/03/01 14:30:18 james Exp $";
 
 
 static bool
@@ -177,7 +177,8 @@ main(int argc, char **argv) {
 
 		case 'V':
 			version();
-			break;
+			if (2 == argc)
+			  return 0; // "admin -V" should succeed.
 		}
 	}
 
