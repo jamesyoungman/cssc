@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 1998
+ *	Free Software Foundation, Inc.  All rights reserved.
+ *
  * Copyright (c) 1980, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -35,13 +38,23 @@
 
 #ifndef lint
 static char copyright[] =
-"@(#) Copyright (c) 1980, 1993\n\
-	The Regents of the University of California.  All rights reserved.\n";
+"@(#) Copyright (c) 1980, 1993\n"
+	"The Regents of the University of California.  All rights reserved.\n"
+"@(#) Copyright (c) 1998\n"
+	"Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
 
-#ifndef lint
-static char sccsid[] = "@(#)sccs.c	8.1 (Berkeley) 6/6/93";
-#endif /* not lint */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
+#ifdef HAVE_STDARG_H
+#include <stdarg.h>
+#endif
 
 #include <sys/cdefs.h>
 #include <sys/param.h>
@@ -51,7 +64,8 @@ static char sccsid[] = "@(#)sccs.c	8.1 (Berkeley) 6/6/93";
 #include <sysexits.h>
 #include <errno.h>
 #include <pwd.h>
-#include <stdio.h>
+
+
 #include "pathnames.h"
 
 /*
@@ -205,42 +219,34 @@ struct sccsprog
 */
 
 struct sccsprog SccsProg[] = {
-	"admin",	PROG,	REALUSER,	_PATH_SCCSADMIN,
-	"cdc",		PROG,	0,		_PATH_SCCSRMDEL,
-	"comb",		PROG,	0,		_PATH_SCCSCOMB,
-	"delta",	PROG,	0,		_PATH_SCCSDELTA,
-	"get",		PROG,	0,		_PATH_SCCSGET,
-	"help",		PROG,	NO_SDOT,	_PATH_SCCSHELP,
-	"prs",		PROG,	0,		_PATH_SCCSPRS,
-	"prt",		PROG,	0,		_PATH_SCCSPRT,
-	"rmdel",	PROG,	REALUSER,	_PATH_SCCSRMDEL,
-	"val",		PROG,	0,		_PATH_SCCSVAL,
-	"what",		PROG,	NO_SDOT,	_PATH_SCCSWHAT,
-	"sccsdiff",	SHELL,	REALUSER,	_PATH_SCCSDIFF,
-	"edit",		CMACRO,	NO_SDOT,	"get -e",
-	"delget",	CMACRO,	NO_SDOT,	"delta:mysrp/get:ixbeskcl -t",
-	"deledit",	CMACRO,	NO_SDOT,
-					"delta:mysrp -n/get:ixbskcl -e -t -g",
-	"fix",		FIX,	NO_SDOT,	NULL,
-	"clean",	CLEAN,	REALUSER|NO_SDOT,
-						(char *) CLEANC,
-	"info",		CLEAN,	REALUSER|NO_SDOT,
-						(char *) INFOC,
-	"check",	CLEAN,	REALUSER|NO_SDOT,
-						(char *) CHECKC,
-	"tell",		CLEAN,	REALUSER|NO_SDOT,
-						(char *) TELLC,
-	"unedit",	UNEDIT,	NO_SDOT,	NULL,
-	"diffs",	DIFFS,	NO_SDOT|REALUSER,
-						NULL,
-	"-diff",	DODIFF,	NO_SDOT|REALUSER,
-						_PATH_SCCSBDIFF,
-	"print",	CMACRO,	0,		"prs -e/get -p -m -s",
-	"branch",	CMACRO,	NO_SDOT,
-	    "get:ixrc -e -b/delta: -s -n -ybranch-place-holder/get:pl -e -t -g",
-	"enter",	ENTER,	NO_SDOT,	NULL,
-	"create",	CMACRO,	NO_SDOT,	"enter/get:ixbeskcl -t",
-	NULL,		-1,	0,		NULL
+{ "admin",	PROG,	REALUSER,	  _PATH_SCCSADMIN  },
+{ "cdc",	PROG,	0,		  _PATH_SCCSRMDEL  },
+{ "comb",	PROG,	0,		  _PATH_SCCSCOMB  },
+{ "delta",	PROG,	0,		  _PATH_SCCSDELTA  },
+{ "get",	PROG,	0,		  _PATH_SCCSGET  },
+{ "help",	PROG,	NO_SDOT,	  _PATH_SCCSHELP  },
+{ "prs",	PROG,	0,		  _PATH_SCCSPRS  },
+{ "prt",	PROG,	0,		  _PATH_SCCSPRT  },
+{ "rmdel",	PROG,	REALUSER,	  _PATH_SCCSRMDEL  },
+{ "val",	PROG,	0,		  _PATH_SCCSVAL  },
+{ "what",	PROG,	NO_SDOT,	  _PATH_SCCSWHAT  },
+{ "sccsdiff",	SHELL,	REALUSER,	  _PATH_SCCSDIFF  },
+{ "edit",	CMACRO,	NO_SDOT,	  "get -e"  },
+{ "delget",	CMACRO,	NO_SDOT,	  "delta:mysrp/get:ixbeskcl -t"  },
+{ "deledit",	CMACRO,	NO_SDOT,          "delta:mysrp -n/get:ixbskcl -e -t -g"  },
+{ "fix",	FIX,	NO_SDOT,	  NULL  },
+{ "clean",	CLEAN,	REALUSER|NO_SDOT, (char *) CLEANC  },
+{ "info",	CLEAN,	REALUSER|NO_SDOT, (char *) INFOC  },
+{ "check",	CLEAN,	REALUSER|NO_SDOT, (char *) CHECKC  },
+{ "tell",	CLEAN,	REALUSER|NO_SDOT, (char *) TELLC  },
+{ "unedit",	UNEDIT,	NO_SDOT,	  NULL  },
+{ "diffs",	DIFFS,	NO_SDOT|REALUSER, NULL  },
+{ "-diff",	DODIFF,	NO_SDOT|REALUSER, _PATH_SCCSBDIFF  },
+{ "print",	CMACRO,	0,		  "prs -e/get -p -m -s"  },
+{ "branch",	CMACRO,	NO_SDOT,          "get:ixrc -e -b/delta: -s -n -ybranch-place-holder/get:pl -e -t -g"  },
+{ "enter",	ENTER,	NO_SDOT,	  NULL  },
+{ "create",	CMACRO,	NO_SDOT,	  "enter/get:ixbeskcl -t"  },
+{ NULL,		-1,	0,		  NULL  },
 };
 
 /* one line from a p-file */
@@ -270,56 +276,22 @@ bool	Debug;			/* turn on tracing */
 extern char	*getenv();
 # endif V6
 
-char *gstrcat(), *strcat();
-char *gstrncat(), *strncat();
-char *gstrcpy(), *strcpy();
+void syserr(const char *fmt, ...);
+void usrerr(const char *fmt, ...);
+
+static char *gstrcat(), *strcat();
+static char *gstrncat(), *strncat();
+static char *gstrcpy(), *strcpy();
+
 #define	FBUFSIZ	BUFSIZ
+
 #define	PFILELG	120
 
-main(argc, argv)
-	int argc;
-	char **argv;
+int main(int argc, char **argv)
 {
 	register char *p;
 	extern struct sccsprog *lookup();
 	register int i;
-# ifndef V6
-# ifndef SCCSDIR
-	register struct passwd *pw;
-	extern struct passwd *getpwnam();
-	char buf[FBUFSIZ];
-
-	/* pull "SccsDir" out of the environment (possibly) */
-	p = getenv("PROJECTDIR");
-	if (p != NULL && p[0] != '\0')
-	{
-		if (p[0] == '/')
-			SccsDir = p;
-		else
-		{
-			pw = getpwnam(p);
-			if (pw == NULL)
-			{
-				usrerr("user %s does not exist", p);
-				exit(EX_USAGE);
-			}
-			gstrcpy(buf, pw->pw_dir, sizeof(buf));
-			gstrcat(buf, "/src", sizeof(buf));
-			if (access(buf, 0) < 0)
-			{
-				gstrcpy(buf, pw->pw_dir, sizeof(buf));
-				gstrcat(buf, "/source", sizeof(buf));
-				if (access(buf, 0) < 0)
-				{
-					usrerr("project %s has no source!", p);
-					exit(EX_USAGE);
-				}
-			}
-			SccsDir = buf;
-		}
-	}
-# endif SCCSDIR
-# endif V6
 
 	/*
 	**  Detect and decode flags intended for this program.
@@ -367,7 +339,7 @@ main(argc, argv)
 
 			  default:
 				usrerr("unknown option -%s", p);
-				break;
+				exit(EX_USAGE);
 			}
 		}
 		if (SccsPath[0] == '\0')
@@ -1501,15 +1473,19 @@ putpfent(pf, f)
 **		none.
 */
 
-/*VARARGS1*/
-usrerr(f, p1, p2, p3)
-	char *f;
+void
+usrerr(const char *fmt, ...)
 {
-	fprintf(stderr, "\n%s: ", MyName);
-	fprintf(stderr, f, p1, p2, p3);
-	fprintf(stderr, "\n");
+  va_list ap;
 
-	return (-1);
+  
+  fprintf(stderr, "\n%s: ", MyName);
+  
+  va_start(ap, fmt);
+  vfprintf(stderr, fmt, ap);
+  va_end(ap);
+  
+  fprintf(stderr, "\n");
 }
 
 /*
@@ -1526,22 +1502,30 @@ usrerr(f, p1, p2, p3)
 **		none.
 */
 
-/*VARARGS1*/
-syserr(f, p1, p2, p3)
-	char *f;
+
+void
+syserr(const char *fmt, ...)
 {
 	extern int errno;
-
+	va_list ap;
+	
 	fprintf(stderr, "\n%s SYSERR: ", MyName);
-	fprintf(stderr, f, p1, p2, p3);
+
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	
 	fprintf(stderr, "\n");
+	
 	if (errno == 0)
-		exit(EX_SOFTWARE);
+	  {
+	    exit(EX_SOFTWARE);
+	  }
 	else
-	{
-		perror(NULL);
-		exit(EX_OSERR);
-	}
+	  {
+	    perror(NULL);
+	    exit(EX_OSERR);
+	  }
 }
 /*
 **  USERNAME -- return name of the current user
@@ -1586,7 +1570,8 @@ username()
 **	is the length of the buffer into which the strcpy or strcat
 **	is to be done.
 */
-char *gstrcat(to, from, length)
+static char *
+gstrcat(to, from, length)
 	char	*to, *from;
 	int	length;
 {
@@ -1596,6 +1581,7 @@ char *gstrcat(to, from, length)
 	return(strcat(to, from));
 }
 
+static
 char *gstrncat(to, from, n, length)
 	char	*to, *from;
 	int	n;
@@ -1607,7 +1593,8 @@ char *gstrncat(to, from, n, length)
 	return(strncat(to, from, n));
 }
 
-char *gstrcpy(to, from, length)
+static char *
+gstrcpy(to, from, length)
 	char	*to, *from;
 	int	length;
 {
@@ -1616,8 +1603,11 @@ char *gstrcpy(to, from, length)
 	}
 	return(strcpy(to, from));
 }
+static void 
 gstrbotch(str1, str2)
 	char	*str1, *str2;
 {
-	usrerr("Filename(s) too long: %s %s", str1, str2);
+  usrerr("Filename(s) too long: %s %s",
+	 (str1 ? str1 : ""),
+	 (str2 ? str2 : "") );
 }
