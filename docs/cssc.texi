@@ -12,9 +12,9 @@
 @setchapternewpage odd
 @c %**end of header
 
-@set EDITION 1.04
-@set VERSION 0.14alpha-pl0
-@set UPDATED Mon Mar  4 00:13:48 2002
+@set EDITION 1.05
+@set VERSION 0.14alpha-pl1
+@set UPDATED Thu Apr  4 20:36:38 2002
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -730,8 +730,8 @@ will be created read-only.
 Full description of options
 @item -a@i{N}
 Retrieve the version corresponding to the delta sequence number
-@i{N}.  Mainly for use by other programs in the suite.   Untested.
-@c TODO: Write the test cases.
+@i{N}.  Mainly for use by other programs in the suite.
+
 
 @item -b
 Create a new branch when the resulting file is checked back in.  Used
