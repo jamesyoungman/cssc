@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl 
-dnl configure.in: Part of GNU CSSC.
+dnl configure.ac: Part of GNU CSSC.
 dnl 
 dnl    Copyright (C) 1997,1998,1999,2000,2001,2002 Free Software Foundation, Inc. 
 dnl 
@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 dnl 
-dnl $Id: configure.ac,v 1.1 2002/07/26 17:21:00 james_youngman Exp $
+dnl $Id: configure.ac,v 1.2 2002/11/02 12:16:00 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -262,7 +262,7 @@ AC_LANG([C])
 AC_HEADER_STDC
 
 AC_LANG([C++])
-AC_CHECK_HEADERS(stdarg.h stdlib.h string.h stdio.h errno.h locale.h limits.h)
+AC_CHECK_HEADERS(stdarg.h stdlib.h string.h stdio.h errno.h locale.h limits.h ctype.h stddef.h)
 
 dnl Posix/Unix header files:-
 AC_CHECK_HEADERS(fcntl.h prototypes.h io.h process.h pwd.h unistd.h)
@@ -453,7 +453,7 @@ dnl AC_CONFIG_FILES([shorter/Makefile])
 AC_OUTPUT
 
 dnl *** NOTE:
-dnl There can be only ONE call to AC_OUTPUT in each configure.in,
+dnl There can be only ONE call to AC_OUTPUT in each configure.ac,
 dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
