@@ -12,26 +12,32 @@
 #include "cssc.h"
 #include "list.h"
 
+#include <string.h>
+
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.3 1997/05/10 14:49:50 james Exp $";
+static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.4 1997/05/15 21:51:57 james Exp $";
 #endif
 
 list<mystring>
-split_mrs(mystring mrs) {
-	list<mystring> mr_list;
-
-	if (mrs != NULL) {
-		char *s = mrs.xstrdup();
-
-		s = strtok(s, " \t\n");
-		while(s != NULL) {
-			mr_list.add(s);
-			s = strtok(s, NULL);
-		}
-		free(s);
+split_mrs(mystring mrs)
+{
+  list<mystring> mr_list;
+  const char *delims = " \t\n";
+  
+  if (mrs != NULL)
+    {
+      char *s = mrs.xstrdup();
+      char *p = strtok(s, delims);
+      
+      while(p)
+	{
+	  mr_list.add(p);
+	  p = strtok(NULL, delims);
 	}
+      free(s);
+    }
 
-	return mr_list;
+  return mr_list;
 }
 
 list<mystring>
