@@ -32,41 +32,54 @@
 #include "cssc.h"
 #include "linebuf.h"
 
+
+// Use a small chunk size for testing...
+#define CONFIG_LINEBUF_CHUNK_SIZE (1024)
+
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.7 1997/12/26 18:30:20 james Exp $";
+static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.8 1998/02/01 17:57:04 james Exp $";
 #endif
 
-int
-cssc_linebuf::read_line(FILE *f) {
-	buf[buflen - 2] = '\0';
-
-	char *s = fgets(buf, buflen, f);
-	while(s != NULL) {
-		char c = buf[buflen - 2];
-		if (c == '\0' || c == '\n') {
-#if 0
-			printf("%s", buf);
-#endif
-			return 0;
-		}
-
-		buf = (char *) xrealloc(buf,
-					CONFIG_LINEBUF_CHUNK_SIZE + buflen);
-		s = buf + buflen - 1;
-		buflen += CONFIG_LINEBUF_CHUNK_SIZE;
-		buf[buflen - 2] = '\0';
-		
-#if 1
-		fprintf(stderr, "buflen = %d\n", buflen);
-
-#endif		
-		s = fgets(s, CONFIG_LINEBUF_CHUNK_SIZE + 1, f);
-	}
-
-	return 1;
+cssc_linebuf::cssc_linebuf()
+  : buf((char *) xmalloc(CONFIG_LINEBUF_CHUNK_SIZE)),
+    buflen(CONFIG_LINEBUF_CHUNK_SIZE)
+{
 }
 
 
+int
+cssc_linebuf::read_line(FILE *f)
+{
+  buf[buflen - 2] = '\0';
+
+  char *s = fgets(buf, buflen, f);
+  while (s != NULL)
+    {
+      char c = buf[buflen - 2];
+      if (c == '\0' || c == '\n')
+	return 0;
+
+      buf = (char *) xrealloc(buf, CONFIG_LINEBUF_CHUNK_SIZE + buflen);
+      s = buf + buflen - 1;
+      buflen += CONFIG_LINEBUF_CHUNK_SIZE;
+      buf[buflen - 2] = '\0';
+		
+#if 1
+      fprintf(stderr, "buflen = %d\n", buflen);
+
+#endif		
+      s = fgets(s, CONFIG_LINEBUF_CHUNK_SIZE + 1, f);
+    }
+  
+  return 1;
+}
+
+
+int cssc_linebuf::write(FILE *f) const
+{
+  size_t len = strlen(buf);
+  return fwrite_failed(fwrite(buf, sizeof(char), len, f), len);
+}
 
 int
 cssc_linebuf::split(int offset, char **args, int len, char c)

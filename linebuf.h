@@ -37,27 +37,26 @@
 
 /* This class is used to read lines of unlimited length from a file. */
 
-class cssc_linebuf {
-	char *buf;
-	int buflen;
-
+class cssc_linebuf
+{
+  char *buf;
+  int buflen;
+  
 public:
-	cssc_linebuf()
-	  : buf((char *) xmalloc(CONFIG_LINEBUF_CHUNK_SIZE)),
-	    buflen(CONFIG_LINEBUF_CHUNK_SIZE)
-    {
-    }
+  cssc_linebuf();
 
-	int read_line(FILE *f);
+  int read_line(FILE *f);
 
   const char *c_str() const { return buf; }
   const char *c_str() { return buf; }
   int split(int offset, char **args, int len, char c);
+  int check_id_keywords() const;
+  int write(FILE*) const;
   
-	char &operator [](int index) const { return buf[index]; }
+  char &operator [](int index) const { return buf[index]; }
 
 #ifdef __GNUC__
-	char *operator +(int index) const { return buf + index; }
+  char *operator +(int index) const { return buf + index; }
 #endif
 
   ~cssc_linebuf() { free(buf); }
