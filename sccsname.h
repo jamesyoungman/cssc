@@ -69,8 +69,9 @@ class sccs_name {
 
 public:
 	static int valid_filename(const char *name);
-
-/*	sccs_name(mystring n): name(n), lock_cnt(0) { create(n); } /**/
+#if 0
+	sccs_name(mystring n): name(n), lock_cnt(0) { create(n); }
+#endif
 	sccs_name(): _name(NULL), lock_cnt(0) {}
 
 	int valid() const { return _name != NULL; }
@@ -85,7 +86,9 @@ public:
 
 	mystring pfile() const { return _file('%'); }
 	mystring qfile() const { return _file('^'); }
-/*	mystring lfile() const { return base_part(_file('!')); } /**/
+#if 0
+	mystring lfile() const { return base_part(_file('!')); }
+#endif
 	mystring xfile() const { return _file('\''); }
 	mystring zfile() const { return _file('&'); }
 
@@ -95,7 +98,9 @@ public:
 
 	mystring pfile() const { return _file('p'); }
 	mystring qfile() const { return _file('q'); }
-/*	mystring lfile() const { return base_part(_file('l')); } /**/
+#if 0
+	mystring lfile() const { return base_part(_file('l')); }
+#endif
 	mystring xfile() const { return _file('x'); }
 	mystring zfile() const { return _file('z'); }
 
