@@ -71,11 +71,8 @@ public:
 		return array[index];
 	}
 
-	~list() { destroy(); }
+	~list();
 };
-
-#include "list.cc"
-
 
 /* Appends the contents of one list to another. */
 
@@ -93,6 +90,74 @@ operator +=(list<T1> &l1, list<T2> const &l2) {
 	}
 	return l1;
 }
+
+
+#ifndef __LIST_C__
+#define __LIST_C__
+
+template <class TYPE>
+list<TYPE>::~list()
+{
+  destroy();
+}
+
+template <class TYPE>
+void
+list<TYPE>::destroy() {
+	if (len != 0) {
+		delete[] array;
+	}
+}
+
+template <class TYPE>
+void
+list<TYPE>::copy(list<TYPE> const &l) {
+	len = l.len;
+	left = l.left;
+	if (len + left > 0) {
+		array = new TYPE[len + left];
+		int i;
+		for(i = 0; i < len; i++) {
+			array[i] = l.array[i];
+		}
+	}
+}
+
+template <class TYPE>
+list<TYPE> &
+list<TYPE>::operator =(list<TYPE> const &l) {
+	if (this != &l) {
+		destroy();
+		copy(l);
+	}
+	return *this;
+}
+
+template <class TYPE>
+void
+list<TYPE>::add(TYPE const &ent) {
+	if (left == 0) {
+		TYPE *new_array = new TYPE[len + CONFIG_LIST_CHUNK_SIZE];
+		if (len != 0) {
+			int i;
+			for(i = 0; i < len; i++) {
+				new_array[i] = array[i];
+			}
+			delete[] array;
+		}
+		array = new_array;
+		left = CONFIG_LIST_CHUNK_SIZE;
+	}
+	array[len++] = ent;
+	left--;
+}
+
+
+#endif /* __LIST_C__ */
+
+/* Local variables: */
+/* mode: c++ */
+/* End: */
 
 
 /* Deletes the contents of one list from another. */
