@@ -2414,6 +2414,12 @@ this limit for binary files).  To set such a limit in @sc{cssc}, use
 the @code{--enable-max-line-length=N} option to ``configure''.  This
 sets the limit to the specified value.
 
+This setting can be overridden with the environment variable
+@env{CSSC_MAX_LINE_LENGTH}; for a description of how to use this
+environment variable, see @ref{Environment}.  To determine the current
+setting of the line lenght limit, run @code{admin -V} and read the
+output.
+
 If (and only if) you have configured CSSC with such a maximum line
 length limitation, the lengths of input lines are checked as they are
 being read.  When @sc{cssc} is adding a new delta to an existing file,
@@ -2422,17 +2428,11 @@ fail with an explanatory message (the alternative would be that an
 SCCS file would be generated that could not be read by other 
 implementations of @sc{sccs} having a lower line length limit).
 
-If, on the other hand, @sc{cssc} is creating a new SCCS file in response
-to the @code{admin -i} command, one of two things will happen when an
+When @sc{cssc} is creating a new SCCS file in response to the
+@code{admin -i} command, one of two things will happen when an
 over-length line is found.  If binary file support is enabled, the
 @sc{sccs} file will automatically be created as an encoded file.
 Otherwise, @code{admin} will fail with an explanatory message.
-
-This setting can be overridden with the environment variable
-@env{CSSC_MAX_LINE_LENGTH}; for a description of how to use this
-environment variable, see @ref{Environment}.  To determine the current
-setting of the line lenght limit, run @code{admin -V} and read the
-output.
 
 When the @sc{cssc} tools are reading a history file, the lines in the
 @sc{sccs} file are not subject to the limits described above; that is,
