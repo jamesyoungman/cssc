@@ -1,3 +1,7 @@
+New in CSSC-0.07alpha-pl2
+	
+	* Bugfixes for Sun Code Manager compatibility.
+
 New in CSSC-0.07alpha-pl1
 
 	* get: eliminated spurious warning about keyword expansion and
