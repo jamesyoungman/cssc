@@ -16,9 +16,12 @@ echo "Using the driver program ${sccs}"
 
 # Create the input file.
 cat > $g <<EOF
-This is a test file containing nothing interesting.
+%M%: This is a test file containing nothing interesting.
 EOF
 
+#
+# Creating the s-file. 
+#
 # Create the s-file the traditional way...
 docommand a1 "${sccs} admin -i$g $s" 0 \
     ""                                              IGNORE
@@ -33,25 +36,133 @@ docommand a4 "test -f $s"  0 "" ""
 docommand a5 "test -f ,$g" 0 "" ""
 remove ,$g
 
+#
+# Making deltas.
+#
+
+# First the traditional way.
+docommand b1 "${sccs} get -e $s" 0 \
+    "1.1\nnew delta 1.2\n1 lines\n"                 IGNORE
+
+echo "hello" >>$g
+docommand b2 "${sccs} delta -y\"\" $s" 0 \
+    "1.2\n1 inserted\n0 deleted\n1 unchanged\n"     IGNORE
 
 
+# Now with edit and delget.    
+docommand b3 "${sccs} edit $s"  0 \
+    "1.2\nnew delta 1.3\n2 lines\n"                 IGNORE
+
+
+echo "there" >>$g
+docommand b4 "${sccs} deledit -y'' $s" IGNORE \
+ "1.3\n1 inserted\n0 deleted\n2 unchanged\n1.3\nnew delta 1.4\n" \
+ IGNORE
+# g-file should now exist and be writable.
+docommand b5 "test -w $g" 0 "" ""
+
+
+echo '%A%' >>$g
+docommand b6 "${sccs} delget -y'' $s" 0 \
+ "1.4\n1 inserted\n0 deleted\n3 unchanged\n1.4\n4 lines\n" \
+ IGNORE
+# g-file should now exist but not be writable.
+docommand b7 "test -w $g" 1 "" ""
+docommand b8 "test -f $g" 0 "" ""
+
+
+
+#
+# fix
+#
+docommand c1 "${sccs} fix -r1.4 $s" 0 \
+ "1.4\n4 lines\n1.3\nnew delta 1.4\n" \
+ IGNORE
+
+docommand c2 "${sccs} tell" 0 "tfile\n" ""
+
+docommand c3 "${sccs} delget -y'' $s" 0 \
+ "1.4\n1 inserted\n0 deleted\n3 unchanged\n1.4\n4 lines\n" \
+ IGNORE
+
+
+#
+# rmdel
+#
+# Make sure rmdel on its own works OK.
+docommand d1 "${sccs} rmdel -r1.4 $s" 0 "" ""
+
+# Make sure that revision is not still present.
+docommand d2 "${sccs} get -p -r1.4 $s" 1 "" IGNORE
+
+# Make sure that previous revision is still present.
+docommand d3 "${sccs} get -p -r1.3 $s" 0 IGNORE "1.3\n3 lines\n"
+
+
+#
+# what
+#
+docommand e1 "${sccs} what $g" 0 "${g}:\n\t ${g} 1.4@(#)\n" ""
+
+
+# 
+# enter
+# 
+remove "foo" ",foo" "SCCS/s.foo"
+echo "%Z%" >foo
+docommand f1 "test -f ,foo" 1 "" ""
+docommand f2 "${sccs} enter foo" 0 "\nfoo:\n" ""
+docommand f3 "test -f ,foo" 0 "" ""
+docommand f4 "test -f SCCS/s.foo" 0 "" ""
+remove ",foo"
+
+#
+# clean
+# 
+docommand g1 "${sccs} edit SCCS/s.foo" 0 \
+				    "1.1\nnew delta 1.2\n1 lines\n" ""
+
+# Make sure foo and tfile exist but only foo is writable.
+docommand g2 "test -f foo"   0 "" ""
+docommand g3 "test -f tfile" 0 "" ""
+docommand g4 "test -w foo"   0 "" ""
+docommand g5 "test -w tfile" 1 "" ""
+
+docommand g6 "${sccs} clean" 0 IGNORE ""
+# Make sure tfile is now gone and foo is not.
+docommand g7 "test -f tfile" 1 "" ""
+docommand g8 "test -f foo"   0 "" ""
+
+#
+# unedit 
+#
+docommand h1 "${sccs} unedit foo" 0 \
+ "1.1\n1 lines\n         foo: removed\n" ""
+# That's 9 spaces.
+
+
+#
+# info
+#
+docommand i1 "${sccs} info -b" 0 "Nothing being edited (on trunk)\n" ""
+docommand i2 "${sccs} info"    0 "Nothing being edited\n" ""
+remove SCCS/s.foo foo
+
+remove {expected,got}.std{out,err} last.command 
 success
 
+#
+# Still need to test:-
 
+# cdc, comb, help, prs, prt, val, sccsdiff, check, diffs, -diff,
+# branch, create
 
-docommand a2 "test -f $s" 0 "" ""
+#
+# Tests that would need a canned SCCS file:-
+#
+# print, info
 
-
-docommand B2 "${get} -e $s" 0 \
-    "1.1\nnew delta 1.2\n2 lines\n"                 IGNORE
-cp test/passwd.2 passwd
-docommand B3 "${delta} -y\"\" $s" 0 \
-    "1.2\n1 inserted\n1 deleted\n1 unchanged\n"     IGNORE
-docommand B4 "${get} -e $s"  0 \
-    "1.2\nnew delta 1.3\n2 lines\n"                 IGNORE
-cp test/passwd.3 passwd
-docommand B5 "${delta} -y'' $s" 0 \
-    "1.3\n1 inserted\n1 deleted\n1 unchanged\n"     IGNORE
+	    
 docommand B6 "${get} -e $s" 0 \
     "1.3\nnew delta 1.4\n2 lines\n"                 IGNORE
 cp test/passwd.4 passwd
