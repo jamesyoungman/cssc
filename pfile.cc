@@ -1,7 +1,7 @@
 /*
  * pfile.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -28,9 +28,10 @@
 #include "cssc.h"
 #include "linebuf.h"
 #include "pfile.h"
+#include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.12 1998/09/02 21:03:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.13 1999/03/13 11:57:23 james Exp $";
 #endif
 
 NORETURN

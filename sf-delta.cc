@@ -2,7 +2,7 @@
  * sf-delta.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -36,12 +36,13 @@
 #include "delta-table.h"
 #include "bodyio.h"
 #include "filediff.h"
+#include "err_no.h"
 
 #undef JAY_DEBUG
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.29 1998/09/06 20:22:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.30 1999/03/13 11:57:24 james Exp $";
 #endif
 
 class diff_state

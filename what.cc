@@ -2,7 +2,7 @@
  * what.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.15 1998/12/09 23:38:40 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.16 1999/03/13 11:57:24 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 

@@ -1,7 +1,7 @@
 /*
  * file.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 
 #include "cssc.h"
 #include "sysdep.h"
+#include "err_no.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -43,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.25 1998/12/12 15:09:11 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.26 1999/03/13 11:57:23 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS

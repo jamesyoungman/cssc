@@ -1,3 +1,9 @@
+New in CSSC-0.09alpha-pl3
+
+	* You can specify a full SID in the argument for the -r option
+          of admin.  Some SCCS implementations allow this, and others 
+          do not.  We now allow it, but with a warning.
+	
 New in CSSC-0.09alpha-pl2
 	
 	* I have upgraded my C++ compiler to EGCS 1.0.3, and there are

@@ -2,7 +2,7 @@
  * sf-admin.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.24 1998/11/29 19:45:10 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.25 1999/03/13 11:57:24 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -284,7 +284,8 @@ sccs_file::admin(const char *file_comment,
 /* Creates a new SCCS file. */
 
 bool
-sccs_file::create(release first_release, const char *iname,
+sccs_file::create(const sid &id,
+		  const char *iname,
 		  list<mystring> mrs, list<mystring> comments,
 		  int suppress_comments, bool force_binary)
 {
@@ -298,7 +299,6 @@ sccs_file::create(release first_release, const char *iname,
 		   + get_user_name());
     }
 
-  sid id = sid(first_release).successor();
 
   delta new_delta('D', id, now, get_user_name(), 1, 0,
 		  mrs, comments);

@@ -2,7 +2,7 @@
  * sccsfile.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #include "delta-iterator.h"
 #include "linebuf.h"
 #include "quit.h"
+#include "err_no.h"
 
 #ifdef STDC_HEADERS
 #include <ctype.h>
@@ -43,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.37 1998/12/12 15:09:12 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.38 1999/03/13 11:57:24 james Exp $";
 #endif
 
 

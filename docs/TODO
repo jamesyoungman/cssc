@@ -46,8 +46,7 @@
 
 Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
 
-	* Write test cases for admin's -h, -l, -r, -V, and -z
- 	flags.
+	* Write test cases for admin's -h, -l, -V, and -z flags.
 
 	* Write test cases for delta's -g, -n, -p, -r, -s flags.
 

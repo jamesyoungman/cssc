@@ -2,7 +2,7 @@
  * sccsfile.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -255,9 +255,12 @@ public:
 	     bool force_binary,
 	     list<mystring> set_flags, list<mystring> unset_flags,
 	     list<mystring> add_users, list<mystring> erase_users);
-  bool create(release first_release, const char *iname,
-	      list<mystring> mrs, list<mystring> comments,
-	      int suppress_comments, bool force_binary);
+  bool create(const sid &initial_sid,
+	      const char *iname,
+	      list<mystring> mrs,
+	      list<mystring> comments,
+	      int suppress_comments,
+	      bool force_binary);
 
   /* sf-prs.c */
 private:

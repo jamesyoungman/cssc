@@ -13,8 +13,8 @@
 @c %**end of header
 
 @set EDITION 1.0
-@set VERSION 0.09alpha-pl1
-@set UPDATED Thu Nov 12 23:42:28 1998
+@set VERSION 0.09alpha-pl3
+@set UPDATED Sat Mar 13 10:50:20 1999
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -25,7 +25,7 @@
 This file documents the the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
-Copyright (C) 1997,1998 Free Software Foundation, Inc.
+Copyright (C) 1997,1998,1999 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -279,8 +279,10 @@ empty.
 @item -r@var{N}
 @cindex initial release number
 Set the initial release number to @var{N}.  The initial level within
-that release is always 1.  Untested.
-@c TODO: Write the test cases.
+that release is always 1.  Some versions of SCCS allow you to specify
+actual an actual @sc{sid} here (for example @samp{1.2} or
+@samp{1.8.2.1}).  @sc{cssc} also allows this, but emits a warning.
+If you use this option, you must also use the @samp{-i} option.
 
 @item -t@var{desc}
 Read in descriptive text for this file from @file{@var{desc}}.  This replaces
@@ -2238,6 +2240,12 @@ value of the @code{admin} program is nevertheless still zero.  Tests for
 this situation are in @file{tests/binary/seeking.sh} but these tests are
 only carried out if the program under test seems to be @sc{CSSC} rather
 than the genuine @sc{sccs} suite.
+
+@item
+Some versions of SCCS allow a normal @sc{sid} such as @samp{1.4} to be
+specified in the @samp{-r} option of @code{admin}.  Since the SCCS
+documentation indicates that this should not be possible, this feature
+is not emulated.
 
 @end enumerate
 

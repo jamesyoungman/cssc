@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-02-12 21:48:52 james>
+Time-stamp: <1999-03-13 11:52:17 james>
 
 This file points out features of SCCS that are missing from CSSC, by
 accident or design, but are not currently listed in the TODO file.
@@ -9,7 +9,5 @@ important.
 
 
 sccs-comb is not implemented.
-
-sccs-val is not implemented.
 
 sccs-help is not implemented.  It won't be, either (see the manual).

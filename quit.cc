@@ -1,7 +1,7 @@
 /*
  * quit.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -34,13 +34,14 @@
 #include "quit.h"
 #include "sysnerr.h"
 #include "except.h"
+#include "err_no.h"
 
 // #include "pipe.h"
 
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.18 1998/12/12 15:09:12 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.19 1999/03/13 11:57:23 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC

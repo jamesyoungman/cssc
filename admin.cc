@@ -1,7 +1,7 @@
 /*
  * admin.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or
  *    modify it under the terms of the GNU General Public License as
@@ -36,9 +36,10 @@
 #include "version.h"
 #include "delta.h"
 #include "except.h"
+#include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.32 1998/11/21 20:14:01 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.33 1999/03/13 11:57:23 james Exp $";
 
 
 static bool
@@ -70,18 +71,19 @@ main(int argc, char **argv)
 {
   int c;
   Cleaner arbitrary_name;
-  release first_release = NULL;		/* -r */
+  sid first_sid("1.1");		                /* -r */
+  bool got_r_option = false;	
   int new_sccs_file = 0;			/* -n */
-  bool force_binary = false;              /* -b */
-  const char *iname = NULL;		/* -i -I */
-  const char *file_comment = NULL;	/* -t */
+  bool force_binary = false;			/* -b */
+  const char *iname = NULL;			/* -i -I */
+  const char *file_comment = NULL;		/* -t */
   list<mystring> set_flags, unset_flags;	/* -f, -d */
   list<mystring> add_users, erase_users;	/* -a, -e */
   mystring mrs, comments;			/* -m, -y */
   int check_checksum = 0;	                /* -h */
   int reset_checksum = 0;			/* -z */
-  int suppress_mrs = 0;	                /* -m (no arg) */
-  int suppress_comments = 0;              /* -y (no arg) */
+  int suppress_mrs = 0;				/* -m (no arg) */
+  int suppress_comments = 0;			/* -y (no arg) */
   int empty_t_option = 0;	                /* -t (no arg) */
   int retval;
 	
@@ -133,12 +135,29 @@ main(int argc, char **argv)
 
     case 'r':
       {
-	const char *rel = opts.getarg();
-	first_release = release(rel);
-	if (!first_release.valid())
+	got_r_option = true;
+	
+	const char *rel_str = opts.getarg();
+	release r(rel_str);
+	if (r.valid())
 	  {
-	    errormsg("Invaild release: '%s'", rel);
-	    return 1;
+	    first_sid = sid(r).successor();
+	  }
+	else
+	  {
+	    // The user make have specified (e.g.) "1.1" or "1.2" or "1.1.1.1",
+	    // which the SCCS manpages don't state is supported, but in fact
+	    // some implementations do support this.
+	    
+	    errormsg("Warning: some SCCS implementations allow only "
+		     "a release number for the -r option.\n");
+
+	    first_sid = sid(rel_str);
+	    if (!first_sid.valid())
+	      {
+		errormsg("Invaild initial release: '%s'", rel_str);
+		return 1;
+	      }
 	  }
 	break;
       }
@@ -208,6 +227,14 @@ main(int argc, char **argv)
       return 1;
     }
 
+
+  if (got_r_option && !iname)
+    {
+      errormsg("You must use the -i option if you use the -r option.");
+      return 1;
+    }
+  
+  
   while (iter.next())
     {
 #ifdef HAVE_EXCEPTIONS
@@ -318,7 +345,7 @@ main(int argc, char **argv)
 		    }
 		}
 	      errno = 0;
-	      if (!file.create(first_release, iname,
+	      if (!file.create(first_sid, iname,
 			       mr_list, comment_list,
 			       suppress_comments, force_binary))
 		{
