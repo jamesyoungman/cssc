@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.30 2001/11/25 12:59:53 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.31 2002/03/17 11:10:41 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -450,6 +450,8 @@ char *tail_nc (register char *fn);
 const struct pfile *getpfent (FILE * pfp);
 const char *username (void);
 char *nextfield (register char *p);
+char *my_rindex(const char *s, int ch);
+char *my_index(const char *s, int ch);
 
 
 static char *gstrcat (char *to, const char *from, int length);
@@ -605,6 +607,19 @@ usage(void)
 {
   fprintf (stderr, "Usage: %s [flags] command [flags]\n", MyName);
 }
+
+char * my_rindex(const char *p, int ch)
+{
+  return strrchr(p, ch);
+}
+
+
+char * my_index(const char *p, int ch)
+{
+  return strchr(p, ch);
+}
+
+
 
 #define PFILELG 120
 
@@ -1064,7 +1079,7 @@ command (char *argv[], bool forkflag, const char *arg0)
           p = *argv;
           if (*p == '-')
             {
-              if (p[1] == '\0' || editchs == NULL || index (editchs, p[1]) != NULL)
+              if (p[1] == '\0' || editchs == NULL || my_index (editchs, p[1]) != NULL)
                 *np++ = p;
             }
           else
@@ -1532,7 +1547,7 @@ makefile (const char *name)
   register char *q;
   int left;
   
-  p = rindex (name, '/');
+  p = my_rindex (name, '/');
   if (p == NULL)
     p = name;
   else
@@ -1639,7 +1654,7 @@ safepath (register const char *p)
     {
       while (strncmp (p, "../", 3) != 0 && strcmp (p, "..") != 0)
         {
-          p = index (p, '/');
+          p = my_index (p, '/');
           if (p == NULL)
             return TRUE;
           p++;
@@ -1917,7 +1932,7 @@ unedit (const char *fn)
   pfn = makefile (fn);          /* returned value must be freed. */
   if (pfn == NULL)
     return (FALSE);
-  q = rindex (pfn, '/');
+  q = my_rindex (pfn, '/');
   if (q == NULL)
     q = &pfn[-1];
   if (q[1] != 's' || q[2] != '.')
