@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-06-09 21:03:04 james>
+Time-stamp: <1998-06-16 22:12:29 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -35,7 +35,7 @@ are exclusive).
 
 Richard Polton <richardp@scopic.com> provided Solaris testing, plus
 testing with gigantic inputs, and rewrote sccsdiff, also supplying
-test cases for it (in fact the only person so far [as of 1998-05-09]
+test cases for it (in fact the only person so far [as of 1998-06-16]
 to do so!)  Richard also submitted code to remove the "xalloc"
 wrappers for operator ::new so that all the code now uses new and
 delete rather than a mixture of that and xalloc()/free().
@@ -52,7 +52,13 @@ John Interrante <interran@crd.ge.com> added support in cssc.texi for
 Marko Rauhamaa <marko@tekelec.com> provided useful bug reports for 
 SCCS files produced by Sun's Code manager; it produces artefacts in 
 SCCS files not produced by "ordinary" SCCS.  Examples include lines 
-of the form "^AU 0" and "^At 0".
+of the form "^AU 0" and "^At 0".  (Stop Press: these lines were
+prodiced by (a bug in) Sun's Code Manager).
+
+Achim Hoffann did his best to help me find a bug that was staring me
+right in the face.  Many apologies for making him gather all sorts of
+information which wasn't in the end neccesary.  I'm sorry!
+
 
 Local Variables:
 mode: Text
