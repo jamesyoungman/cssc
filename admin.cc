@@ -38,7 +38,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.30 1998/10/20 17:27:20 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.31 1998/11/21 08:56:22 james Exp $";
 
 
 static bool
@@ -195,7 +195,10 @@ main(int argc, char **argv)
 	       "if -n or -i is used.");
       return 1;
     }
-	
+
+  if (check_checksum)
+      reset_checksum = false;
+  
   list<mystring> mr_list, comment_list;
   int was_first = 1;
   sccs_file_iterator iter(opts);
@@ -220,18 +223,6 @@ main(int argc, char **argv)
 	  sccs_name &name = iter.get_name();
 
 
-	  if (reset_checksum && !check_checksum)
-	    {
-	      if (!name.valid()) {
-		errormsg("%s: Not a SCCS file.", name.c_str());
-		retval = 1;
-		continue; // with next file
-	      }
-	      if (!sccs_file::update_checksum(name.c_str()))
-		retval = 1; // some kind of error.
-	      continue;
-	    }
-
 	  if (!well_formed_sccsname(name))
 	    {
 	      errormsg("%s is an invalid name."
@@ -241,15 +232,27 @@ main(int argc, char **argv)
 	      continue;	// with next file
 	    }
 		
-	  /* enum */ sccs_file::_mode mode = sccs_file::UPDATE;
+	  sccs_file::_mode mode;
 
-	  if (new_sccs_file) {
+	  if (new_sccs_file)
 	    mode = sccs_file::CREATE;
-	  }
-
+	  else if (reset_checksum)
+	    mode = sccs_file::FIX_CHECKSUM;
+	  else
+	    mode = sccs_file::UPDATE;
+	  
 	  sccs_file file(name, mode);
 
 
+	  if (reset_checksum)
+	    {
+	      if (!file.update_checksum())
+		retval = 1; // some kind of error.
+	      
+	      continue;
+	    }
+
+	  
 	  if (check_checksum)
 	    {
 	      if (!file.checksum_ok())
@@ -268,57 +271,59 @@ main(int argc, char **argv)
 	    }
 		
 
-	  if (new_sccs_file) {
-	    if (iname != NULL && !me_first) {
-	      errormsg("The 'i' keyletter can't be used with"
-		       " multiple files.");
-	      return 1;
-	    }
+	  if (new_sccs_file)
+	    {
+	      if (iname != NULL && !me_first)
+		{
+		  errormsg("The 'i' keyletter can't be used with"
+			   " multiple files.");
+		  return 1;
+		}
 
-	    if (me_first)
-	      {
-		// The real thing does not prompt the user here.
-		// Hence we don't either.
-		if (!file.mr_required() && !mrs.empty())
-		  {
-		    errormsg("MRs not enabled with 'v' flag, "
-			     "can't use 'm' keyword.");
-		    retval = 1;
-		    continue; // with next file
-		  }
+	      if (me_first)
+		{
+		  // The real thing does not prompt the user here.
+		  // Hence we don't either.
+		  if (!file.mr_required() && !mrs.empty())
+		    {
+		      errormsg("MRs not enabled with 'v' flag, "
+			       "can't use 'm' keyword.");
+		      retval = 1;
+		      continue; // with next file
+		    }
 			    
-		mr_list = split_mrs(mrs);
-		comment_list = split_comments(comments);
-	      }
+		  mr_list = split_mrs(mrs);
+		  comment_list = split_comments(comments);
+		}
 
-	    if (file.mr_required())
-	      {
-		if (!suppress_mrs && mr_list.length() == 0)
-		  {
-		    errormsg("%s: MR number(s) must be "
-			     " supplied.", name.c_str());
-		    retval = 1;
-		    continue; // with next file
+	      if (file.mr_required())
+		{
+		  if (!suppress_mrs && mr_list.length() == 0)
+		    {
+		      errormsg("%s: MR number(s) must be "
+			       " supplied.", name.c_str());
+		      retval = 1;
+		      continue; // with next file
 		
-		  }
-		if (file.check_mrs(mr_list))
-		  {
-		    errormsg("%s: Invalid MR number(s).",
-			     name.c_str());
-		    retval = 1;
-		    continue; // with next file
-		  }
-	      }
-	    errno = 0;
-	    if (!file.create(first_release, iname,
-			     mr_list, comment_list,
-			     suppress_comments, force_binary))
-	      {
-		retval = 1;
-		continue;
-	      }
+		    }
+		  if (file.check_mrs(mr_list))
+		    {
+		      errormsg("%s: Invalid MR number(s).",
+			       name.c_str());
+		      retval = 1;
+		      continue; // with next file
+		    }
+		}
+	      errno = 0;
+	      if (!file.create(first_release, iname,
+			       mr_list, comment_list,
+			       suppress_comments, force_binary))
+		{
+		  retval = 1;
+		  continue;
+		}
 	
-	  }
+	    }
 	  else
 	    {
 	      if (!file.update())
