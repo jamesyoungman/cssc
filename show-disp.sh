@@ -21,8 +21,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-
-cvs status "$@" 2>&1 |
+cvs status "$@" 2>&1 </dev/null |
  sed \
 	-e 's/^File: no file/File:/'  | 
  sed -n -e 's/^File: \([^ 	]*\).*Status: \(.*\)$/\1:\2/p' \
@@ -32,9 +31,10 @@ BEGIN { FS=":"; dir=""; }
 
 ## Take note when we change directory.
 #
-/^cvs status: Examining/ { 
+/^cvs (status|server): Examining/ { 
 	dir = $0;
 	gsub("cvs status: Examining ", "", dir);
+	gsub("cvs server: Examining ", "", dir);
 
 	if (dir == ".") {
 		dir = "";
