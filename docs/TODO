@@ -1,3 +1,7 @@
+This file is mostly obsolete.  One day I will go through it and remove
+the tasks that have been done, and convert any remaining tasks to
+enhancement requests or bugs on SourceForge.
+
 2001-07-14  James Youngman  <jay@gnu.org>
 
 	* Does "delta" handle disk-full gracefully?  (SourceForge task id
