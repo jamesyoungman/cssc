@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.23 1998/10/21 06:04:13 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.24 1998/11/21 08:53:35 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -375,7 +375,7 @@ user_is_group_member(int) {
 static long get_nlinks(const char *name)
 {
   struct stat st;
-  st.st_nlink = -1;
+
   if (0 == stat(name, &st))
     {
       return (long)st.st_nlink;
