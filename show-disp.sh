@@ -21,7 +21,15 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-cvs status "$@" 2>&1 </dev/null |
+# -z1: 4.77 
+# -z2: 5.40 
+# -z3: 5.35 
+# -z4: 5.07 
+# -z5: 6.15 5.36 	
+# -z9: 6.01 
+# No compression: 17.8 seconds
+
+cvs -z3 status "$@" 2>&1 </dev/null |
  sed \
 	-e 's/^File: no file/File:/'  | 
  sed -n -e 's/^File: \([^ 	]*\).*Status: \(.*\)$/\1:\2/p' \
