@@ -11,6 +11,7 @@ AC_PROG_CXX
 AC_SUBST(GXX)dnl
 AC_PROG_CPP
 AC_PROG_INSTALL
+AC_PROG_RANLIB
 
 dnl It would be a good idea to default the path for diff
 dnl to install_dir/diff-program so the installer can 
@@ -45,8 +46,10 @@ eval "ac_cv_decl_$ac_tr_define=yes",
 eval "ac_cv_decl_$ac_tr_define=no")])dnl
 if eval "test \"`echo '$ac_cv_decl_'$ac_tr_define`\" = yes"; then
 	 AC_MSG_RESULT(yes)
-	 AC_DEFINE($ac_tr_define,1)
+	 echo 'defineing' $ac_tr_define
+	 AC_DEFINE_UNQUOTED($ac_tr_define)
 else
+	 echo 'NOT defineing' $ac_tr_define 
 	 AC_MSG_RESULT(no)
 fi
 )
@@ -54,17 +57,15 @@ fi
 
 
 dnl Look for declarations in headers.
-AC_CHECK_DECL_IN_HEADER(sys_errlist,errno.h)
-AC_CHECK_DECL_IN_HEADER(sys_errlist,stdlib.h)
-AC_CHECK_DECL_IN_HEADER(sys_errlist,stdio.h)
 
 
 dnl Checks for library functions.
 dnl AC_FUNC_MEMCMP
 dnl The "select" that autoscan found was a method. AC_CHECK_FUNCS(select)
-AC_CHECK_FUNCS(mktime remove rename strerror strstr abort)
+AC_CHECK_FUNCS(mktime abort wait)
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid fork pipe spawn geteuid getegid)
-AC_CHECK_FUNCS(wait)
+AC_REPLACE_FUNCS(strerror remove rename strstr)
+AC_SUBST(LIBOBJS)dnl
 
 
 
@@ -94,10 +95,24 @@ done
 
 
 dnl Search for the global variables timezone, sys_nerr, sys_errlist.
+
+dnl Cope with not having a mktime() function
+if test "$ac_cv_func_mktime" != yes; then
 AC_CHECK_GLOBAL(timezone)
+fi
+
+dnl Cope with not having a strerror() function
+if test "$ac_cv_func_strerror" != yes; then
 AC_CHECK_GLOBAL(sys_nerr)
 AC_CHECK_GLOBAL(sys_errlist)
+AC_CHECK_DECL_IN_HEADER(sys_errlist,errno.h)
+AC_CHECK_DECL_IN_HEADER(sys_errlist,stdlib.h)
+AC_CHECK_DECL_IN_HEADER(sys_errlist,stdio.h)
 
+AC_CHECK_DECL_IN_HEADER(sys_nerr,errno.h)
+AC_CHECK_DECL_IN_HEADER(sys_nerr,stdlib.h)
+AC_CHECK_DECL_IN_HEADER(sys_nerr,stdio.h)
+fi
 
 dnl What about saved setuid?
-AC_OUTPUT(Makefile,[echo timestamp > stamp-h; echo updated stamp-h])
+AC_OUTPUT(Makefile)
