@@ -1,30 +1,38 @@
+2001-07-14  James Youngman  <jay@gnu.org>
+
+	* Does "delta" handle disk-full gracefully?  (SourceForge task id
+	34497).
+
 1999-04-05  James Youngman  <jay@gnu.org>
 
 	* If the user specifies a list of included deltas and one of the
 	manually-included deltas is NEWER than the supplied cutoff date,
-	do we get the delta, or not?
+	do we get the delta, or not?  (This is SourceForge task id 34490)
 
 1998-06-02  James Youngman  <jay@gnu.org>
 
 	* Determine if execv("foo", argv) under glibc2 on Linux will run a
 	  "foo" in the current directory.  See if unsetting $PATH makes a
 	  difference.  There may be security implications here for
-	  bsd/sccs.c (see try_to_exec).
+	  bsd/sccs.c (see try_to_exec).  (This is SourceForge task id 34491).
 
 1998-04-08  James Youngman  <jay@gnu.org>
 
 	* Find out if SCO's "unget" produces any output.  We currently
 	  output a SID but it looks like SCO's does not.
+	  (This is SourceForge task ID 34492).
 
 	* also, tests/prt/all-512.txt suffers from the fact that 
 	  SCO does not have "prt"!    No idea if it exists
-	  but lives in a funny place, etc.
+	  but lives in a funny place, etc.  
+	  (This is SourceForge task ID 34493).
 
 1998-02-08  James Youngman  <jay@gnu.org>
 
 	* Find out if genuine SCCS works when the s-file's name
 	  contains a space.  Find out particularly if the right
 	  thing happens when delta invokes diff.
+	  (This is SourceForge task ID 34494)
 
 1998-02-01  James Youngman  <jay@gnu.org>
 
@@ -32,20 +40,25 @@
 	OK, check that "prs -d:GB:", "prs -d:BD:" and "prt -b" work OK.  
 	Also check zero-length files, keyword substitution, large
 	binary files.
-
+	(SourceForge task ID 34498).
+        
 
 1998-01-25  James Youngman  <jay@gnu.org>
 
 	* bodyio.cc: Test what happens if the text input ends with
 	  "%A", that is, the peeked character is EOF.  At the moment,
 	  we ungetc(EOF); is that valid?
+	  (This is SourceForge task id 34495)
 
 	* bodyio.cc: Test for sane behaviour if we get a disk-full
 	  condition while writing the body part of an SCCS file
 	  with admin -i.   Especially important for text files;
 	  we probably want to avoid retrying with binary encoding.
+          (This is SourceForge task ID 34496)
 
 Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
+
+	(This is SourceForge task ID 34487)
 
 	* Write test cases for admin's -h, -l, -V, and -z flags.
 
@@ -58,6 +71,7 @@ Mon Aug  4 23:33:16 1997  James Youngman  <jay@gnu.ai.mit.edu>
 	* Check that Dave Bodenstab's changes also provide for running the
  	test suite under SunOS, as I suspect -- because all that was
  	required was the ability to select a shell other than /bin/sh.
+	(This is SourceForge task id 34499)
 	
 
 Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
@@ -69,20 +83,24 @@ Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
  	library, the intent is just to conserve disk space and perhaps
  	system memory too. [ 2000-12-03: JY: not certain if this is a 
         good plan ]
+	(This is SourceForge task id 34500)
 
 Mon May 26 14:56:52 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
-	* Write tests for comb, sact, val.
+	* Write tests for sact and val. (SourceForge task ID 34488).
 
 Sun May 25 16:27:05 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 	* Complete the test cases in admin/flags.sh.
+	(This is SourceForge task ID 34501).
 
 Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
 
 	* Check the interaction between any -r option to get and the
-	release floors and ceilings.
+	release floors and ceilings.  (SourceForge task ID 34489).
 
 	* Write a shell script for converting SCCS files to RCS files; use
 	the Bourne shell, since not everybody has the C shell [suggested
 	by RMS].
+	(This is SourceForge task ID 34503).
+	
