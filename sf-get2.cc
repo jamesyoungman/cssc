@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.55 2003/03/08 15:14:11 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.56 2003/05/05 11:24:05 james_youngman Exp $";
 #endif
 
 
@@ -185,11 +185,15 @@ sccs_file::find_next_sid(sid requested, sid got,
   if (!flags.branch)
     want_branch = false;        // branches not allowed!
   
+  if (flags.default_sid)
+    {
+      requested = flags.default_sid;
+    }
+
   const int ncomponents = requested.components();
   bool forced_branch = false;
 
   sid next = requested;
-  
   if (requested.release_only())
     {
       next.next_level();
@@ -203,8 +207,7 @@ sccs_file::find_next_sid(sid requested, sid got,
     {
       ++next;
     }
-  
-  
+
   if (want_branch)
     {
       if (ncomponents < 4)
