@@ -15,7 +15,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.6 1997/05/10 14:49:49 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.7 1997/05/13 17:40:15 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -64,7 +64,7 @@ main(int argc, char **argv) {
 	sid rid = NULL;			/* -r */
 	int for_edit = 0;		/* -e */
 	int branch = 0;			/* -b */
-	int keywords = 0;		/* -k */
+	int suppress_keywords = 0;      /* -k */
 	int use_stdout = 0;		/* -p */
 	int silent = 0;			/* -s */
 	int no_output = 0;		/* -g */
@@ -125,7 +125,7 @@ main(int argc, char **argv) {
 
 		case 'e':
 			for_edit = 1;
-			keywords = 1;
+			suppress_keywords = 1;
 			break;
 
 		case 'b':
@@ -133,7 +133,7 @@ main(int argc, char **argv) {
 			break;
 
 		case 'k':
-			keywords = 1;
+			suppress_keywords = 1;
 			break;
 
 		case 'p':
@@ -249,7 +249,7 @@ main(int argc, char **argv) {
 			got_gname = 0;
 			
 			int mode = CREATE_AS_REAL_USER | CREATE_FOR_GET;
-			if (!keywords) {
+			if (!suppress_keywords) {
 				mode |= CREATE_READ_ONLY;
 			}
 
@@ -261,7 +261,7 @@ main(int argc, char **argv) {
 				     (const char *)gname);
 			}
 		}
-
+		const int keywords = !suppress_keywords;
 		struct sccs_file::get_status status
 			= file.get(out, gname, retrieve, cutoff,
 				   include, exclude, keywords, wstring,
