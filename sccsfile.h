@@ -49,7 +49,7 @@ class cssc_delta_table;
 class sccs_file
 {
 public:
-  enum _mode { READ, UPDATE, CREATE };
+  enum _mode { READ, UPDATE, CREATE, FIX_CHECKSUM };
   
 private:
   
@@ -209,7 +209,7 @@ private:
   int rehack_encoded_flag(FILE *out, int *sum) const;
 
 public:
-  static bool update_checksum(const char *name);
+  bool update_checksum();
   bool update();
 
   /* sf-add.c */
