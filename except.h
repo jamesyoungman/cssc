@@ -71,4 +71,10 @@ struct CsscNoKeywordsException : public CsscExitvalException
   CsscNoKeywordsException() : CsscExitvalException(1) { }
 };
 
+struct CsscUnrecognisedFeatureException : public CsscExitvalException
+{
+  CsscUnrecognisedFeatureException() : CsscExitvalException(1) { }
+};
+
+
 #endif

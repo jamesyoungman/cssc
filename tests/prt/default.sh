@@ -11,7 +11,7 @@ remove $s
 ../../testutils/uu_decode --decode < testfile.uue || miscarry could not uudecode testfile.uue.
 
 
-do_output d1 "${prt} $s" 0 expected/default.1 ""
+do_output d1 "${prt} $s" 0 expected/default.1 IGNORE
 
 remove $s
 success

@@ -5,6 +5,10 @@ New in CSSC-0.14alpha-pl0
 	* Fixes for set-user-id operation (which is still not
           recommended - see the CSSC manual for an explanation).
 
+	* Added warning when we see an excluded delta, explaining that 
+          this feature is not fully tested.   The warning includes a pointer 
+          to a document explaining what they should do about this.
+
 New in CSSC-0.13alpha-pl1
 
 	* get -e should re-use deltas that have been removed 

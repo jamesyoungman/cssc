@@ -29,6 +29,8 @@
 #ifndef CSSC__QUIT_H__
 #define CSSC__QUIT_H__
 
+#include <stdarg.h>
+
 #ifdef __GNUC__
 #pragma interface
 #endif
@@ -87,6 +89,7 @@ void set_prg_name(const char *name);
 // errormsg(): emit an error message preceded by the program name.
 //             then return to the caller (don't exit).
 void errormsg(const char *fmt, ...);
+void v_errormsg(const char *fmt, va_list ap);
 
 
 // errormsg_with_errno(): emits 
@@ -119,6 +122,7 @@ NORETURN fatal_quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 NORETURN ctor_fail(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 #endif
 
+NORETURN s_unrecognised_feature_quit(const char *fmt, va_list ap) POSTDECL_NORETURN;
 NORETURN ctor_fail_nomsg(int err)  POSTDECL_NORETURN;
 NORETURN nomem()  POSTDECL_NORETURN;
 NORETURN assert_failed(const char *file, int line, const char *func,

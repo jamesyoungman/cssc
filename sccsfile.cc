@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.45 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.46 2001/12/02 20:32:53 james_youngman Exp $";
 #endif
 
 
@@ -317,7 +317,17 @@ sccs_file::read_delta() {
 		      break;
 
 		    case 'x':
-		      tmp.have_excludes = true;
+		      {
+			const char *url = 
+			  "http://cssc.sourceforge.net/"
+			  "documentation/incl_excl.shtml";
+			errormsg("Warning: feature not fully tested: "
+				 "excluded delta in SID %s "
+				 "(see %s for more details)",
+				 tmp.id.as_string().c_str(),
+				 url);
+			tmp.have_excludes = true;
+		      }
 		      break;
 
 		    case 'g':
@@ -378,42 +388,40 @@ sccs_file::read_delta() {
 	// According to Hyman Rosen <hymie@jyacc.com>, it is sometimes
 	// possible to have ^Am lines after ^Ac lines, as well as the
 	// more usual before.  Hence we now cope with both.
-	while (c == 'm')
-	  {
-	    if (bufchar(2) == ' ')
-	      {
-		tmp.mrs.add(plinebuf->c_str() + 3);
-	      }
-		c = read_line();
-	  }
 
-	while (c == 'c') {
-	  /* Larry McVoy's extensions for BitKeeper and BitSCCS
-	   * add in extra stuff like "^AcSyadayada".  Real SCCS
-	   * doesn't mind about that, so at Larry's request, we
-	   * tolerate it too.   No idea what these lines mean though.
-	   * Ask <lm@bitmover.com> for more information.  Anyway, 
-	   * normal comment lines look like "^Ac yadayada" instead,
-	   * and check_arg() exists to check for the space.   Hence, 
-	   * to support Larry's extensions, we don't call check_arg()
-	   * here.
-	   */
-	  /* check_arg(); */
+	while (c == 'm' || c == 'c')
+	  {
+	    if (c == 'm')
+	      {
+		if (bufchar(2) == ' ')
+		  {
+		    tmp.mrs.add(plinebuf->c_str() + 3);
+		  }
+	      }
+	    else if (c == 'c') 
+	      {
+		/* Larry McVoy's extensions for BitKeeper and BitSCCS
+		 * add in extra stuff like "^AcSyadayada".  Real SCCS
+		 * doesn't mind about that, so at Larry's request, we
+		 * tolerate it too.   No idea what these lines mean though.
+		 * Ask <lm@bitmover.com> for more information.  Anyway, 
+		 * normal comment lines look like "^Ac yadayada" instead,
+		 * and check_arg() exists to check for the space.   Hence, 
+		 * to support Larry's extensions, we don't call check_arg()
+		 * here.
+		 */
+		/* check_arg(); */
+		if (bufchar(2) != ' ')
+		  {
+		    saw_unknown_feature("Special comment intro %c%c",
+					c, bufchar(2));
+		  }
 		tmp.comments.add(plinebuf->c_str() + 3);
-		c = read_line();
-	}
-
-	// According to Hyman Rosen <hymie@jyacc.com>, it is sometimes
-	// possible to have ^Am lines after ^Ac lines, as well as the
-	// more usual before.  Hence we now cope with both.
-	while (c == 'm')
-	  {
-	    if (bufchar(2) == ' ')
-	      {
-		tmp.mrs.add(plinebuf->c_str() + 3);
 	      }
-		c = read_line();
+	    
+	    c = read_line();
 	  }
+	
 
 	if (c != 'e') {
 		corrupt("Expected '@e'");
@@ -938,7 +946,37 @@ bool sccs_file::branches_allowed() const
   return 0 != flags.branch;
 }
 
-  
+
+/* There are some features that we don't properly understand. 
+ * If we see them, we should abandon any attempt to modify the 
+ * file.   We call saw_unknown_feature() when we see one.  It 
+ * checks what mode we're using the SCCS file in, and reacts
+ * accordingly.
+ */
+void sccs_file::saw_unknown_feature(const char *fmt, ...)
+{
+  va_list ap;
+
+  va_start(ap, fmt);
+
+  /* If we are not modifying the file, just issue a warning.  Otherwise, 
+   * abandon the attempt to edit it.
+   */
+  switch (mode)
+    {
+    case READ:
+    case FIX_CHECKSUM:
+      v_errormsg(fmt, ap);
+      break;
+      
+    case UPDATE:
+    case CREATE:
+      s_unrecognised_feature_quit(fmt, ap);
+      /*NOTREACHED*/
+      break;
+    }
+}
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */

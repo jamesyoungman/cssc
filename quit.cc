@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.26 2001/11/29 19:12:34 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.27 2001/12/02 20:32:53 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -76,10 +76,10 @@ set_prg_name(const char *name) {
 #endif /* CONFIG_BORLANDC */
 }
 
-static void
+void
 v_errormsg(const char *fmt, va_list ap)
 {
-  putc('\n', stderr);
+  /* putc('\n', stderr); */
         
   if (prg_name != NULL)
     fprintf(stderr, "%s: ", prg_name);
@@ -288,6 +288,22 @@ s_missing_quit(const char *fmt, ...) {
 #endif
         /*NOTREACHED*/
         ASSERT(0);              // not reached.
+}
+
+
+/* s_unrecognised_feature_quit is usually called by 
+ * sccs_file::saw_unknown_feature().
+ */
+NORETURN
+s_unrecognised_feature_quit(const char *fmt, va_list ap)
+{
+#ifdef HAVE_EXCEPTIONS  
+  v_errormsg(fmt, ap);
+  putc('\n', stderr);
+  throw CsscUnrecognisedFeatureException();
+#else
+  v_quit(-1, fmt, ap);
+#endif
 }
 
 

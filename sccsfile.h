@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.43 2001/09/29 19:39:41 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.44 2001/12/02 20:32:53 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -194,8 +194,11 @@ public:
                         int show_sid = 0, int show_module = 0,
                         int debug = 0);
 
-  /* sf-get3.c */
 private:
+  
+  void saw_unknown_feature(const char *fmt, ...);
+  
+  /* sf-get3.c */
   bool prepare_seqstate(seq_state &state, sid_list include,
                         sid_list exclude, sccs_date cutoff_date);
 
