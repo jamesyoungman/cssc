@@ -221,7 +221,7 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
     p = buf + strlen (buf);
     *p++ = '/';
     n_dirs = fs->st_nlink;
-    while (dp = readdir (df)) {
+    while ( (struct dirent*)0 != (dp = readdir (df)) ) {
 	if (dp->d_name[NAMLEN(dp) - 1] == '~')
 	    continue;
 	strcpy (p, dp->d_name);
