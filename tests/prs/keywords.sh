@@ -12,19 +12,26 @@ expands_to () {
 docommand $1 "${prs} \"-d$2\" -r1.1 s.1" 0 "$3"
 }
 
-remove s.1 
+remove s.1 p.1 1 z.1
 
-# Create two files
+# Create file
 docommand P1 "${admin} -n s.1" 0 "" ""
 
 docommand P2 "${prs} -d':M:\n' s.1" 0 "1\n\n" ""
 
-expands_to X1  :B:      "\n"
+docommand P3 "${get} -e s.1" 0 "1.1\nnew delta 1.2\n0 lines\n" IGNORE
+echo "hello from %M%" >> 1
+docommand P4 "${delta} -y s.1" 0 "1.2\n1 inserted\n0 deleted\n0 unchanged\n" ""
+
+expands_to X1  :I:      "1.1\n"
+expands_to X1r :R:      "1\n"
+expands_to X1l :L:      "1\n"
+expands_to X1b :B:      "\n"
+expands_to X1s :S:      "\n"
 expands_to X2  :BF:     "no\n"
 expands_to X3  :DI:     "\n"
 expands_to X4  :DL:     "00000/00000/00000\n"
 expands_to X5  :DT:     "D\n"
-expands_to X6  :I:      "1.1\n"
 expands_to X7  :J:      "no\n"
 expands_to X8  :LK:     "none\n"
 expands_to X9  :MF:     "no\n"
@@ -46,5 +53,5 @@ test -s got.stderr && fail expected empty stderr output
 remove got.stderr got.stdout expected.stdout 
 echo passed
 
-remove s.1 command.log
+remove s.1 p.1 z.1 1 command.log
 success
