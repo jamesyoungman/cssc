@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.33 2003/03/01 14:16:45 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.34 2003/05/29 17:47:12 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -500,7 +500,11 @@ sccs_file::end_update(FILE **pout)
    * is not NULL, so we reopen the file in this case.
    */
 #if defined(__CYGWIN__)
-  fclose(f);
+  if (f)
+    {
+      /* Only in modes other than create, will f be non-NULL */
+      fclose(f);
+    }
 #endif
 
   bool retval = false;
