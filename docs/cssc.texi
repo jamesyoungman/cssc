@@ -8,7 +8,7 @@
 
 @set EDITION 1.0
 @set VERSION 0.01-devel
-@set UPDATED Sat May 31 11:31:51 1997
+@set UPDATED Mon Oct 27 19:31:38 1997
 
 @ifinfo
 This file documents the the GNU @code{cssc} package for working with
@@ -195,7 +195,7 @@ Ensure that the file is encoded as a binary file.   Unimplemenmted.
 
 @item -dF
 Delete flag @samp{F} from the flags present in the file (@pxref{flags}).
-Untested.
+
 
 @item -e xxx
 Erase the specified user or group from the list of those authorised to
@@ -203,7 +203,7 @@ check revisions in or out.  Untested.
 
 @item -fF [xxx]
 Add the flag @samp{F} (with optional value @samp{xxx}) to the file's 
-flags (@pxref{flags}).  Untested.
+flags (@pxref{flags}).
 
 @cindex checksum
 @item -h
@@ -365,6 +365,100 @@ New revisions on the main sequence (the @dfn{trunk}) have no branch or
 sequence numbers and so just have two number components (@samp{1.2}, for
 example).
 
+When a new version is checked in, @code{delta} usually prompts for
+comments describing the changes just made.  At this point you can enter
+any comments, separating lines with backslash-newline pairs.  An
+unescaped newline terminates the comment, allowing operation to
+continue.
+
+@menu
+* Basic Usage: delta usage.         Frequently-used @samp{delta} commands
+* Options: delta options.           Full list of options
+@end menu
+
+@node delta usage, delta options, , delta
+@subsection Basic usage for @code{delta}
+
+Although there are several valid command-line options for @code{delta},
+they are not frequently used; the most common usage of delta is 
+
+@example
+delta umsp.c
+@end example
+
+@noindent
+and this command simply applies the changes to the file @file{umsp.c} to
+the @sc{sccs} file which tracks it.   Though it is possible to specify
+the comment and MR-number for this change using command-line options,
+it's more common to type them when prompted, unless @code{delta} is
+being driven by another program; either way, it's unusual to specify
+options for @code{delta} on the command line.
+
+If the file specified on the @code{delta} command line is an @sc{sccs}
+file, the name of the g-file (the file gotten with @code{get} which
+should now be checked in) is discovered from the contents of the p-file.
+
+@node delta options, , delta usage, delta
+@subsection Options for @code{delta}
+
+@table @samp
+@item -gSid-List
+The specified list of deltas are to be ignored when the version
+being checked in is retrieved using @code{get}.  The list is a list of
+@sc{sid}s separated by commas, or can contain ranges of @sc{sid}s (these
+are indiated by a dash).  Untested.
+
+@item -mMR-List
+Specify the indicated list of MR numbers (separated by spaces) for this
+change (@pxref{mr-numbers}).  If the @var{v} flag (@pxref{flags}) is
+set, @code{delta} will prompt for MR numbers if none are given on the
+command line.  If the @var{v} flag has a non-empty value, as opposed to
+just being set, then the supplied list of MR numbers will be verified
+using that program.  The requested delta will not be made if this
+validation fails (the validation program returns a nonzero exit status).
+
+
+@item -n
+If this option is given, the edited file is not deleted once processing
+has succeeded.  The edited file is referred to as the ``g-file'', since
+it is the file which was previously ``gotten'' by the @code{get}
+command.  Untested.
+
+@item -p
+Display the differences between the old and new versions of the file
+during processing.  Untested.
+
+@item -r
+If several versions are checked in, the @samp{-r} command-line option is
+used to specify which checked-out version this change is in reference
+to.  When @code{get} is used to check out a version for editing, it
+announces two @sc{sid}s:-
+
+@example
+3.1
+new delta 3.2
+402 lines
+@end example
+@noindent
+
+One identifies the version forming the basis of the change, and the
+other specifies the @sc{sid} that the new version will be assigned once
+it is checked in again.  Either of these two @sc{sid}s (in this case,
+3.1 or 3.2) can be used for the @code{-r} option of @code{delta}.
+Untested.
+
+@item -s
+Suppress warning or confirmation messages.  Error messages go to
+standard error.  Untested.
+
+@item -y
+Specify a comment for the revision log.  This option is usually quoted
+to protect the spaces contained in it.  An empty comment can be
+specified by just using a naked @samp{-y}.  If this option is not given
+on the command line, @code{delta} will prompt the user for a comment.
+@end table
+
+
 @node get, help, delta, Invoking Programs
 @section @code{get}
 @cindex get
@@ -395,8 +489,11 @@ Get a copy of the most recent trunk revision of @file{s.foo.c} into the
 file @file{foo.c}.
 
 @item get -Gbar s.foo.c
+@cindex g-file
 Get a version from @file{s.foo.c}, into @file{bar} rather than the
-default @file{foo.c}.
+default @file{foo.c}.  The file produced by @code{get} is often referred
+to as the ``g-file''.
+
 
 @item get -r1.3 s.foo.c
 Get revision 1.3 from @file{s.foo.c} into @file{foo.c}.  The @samp{-G}
@@ -421,11 +518,12 @@ with the @samp{-e} option.
 
 @cindex time travel
 @item -c@i{when}
+@cindex Year 2000
 Get the version that was current at the time specified by @i{when}.  The
 format of the argument is yy[mm[dd[hh[mm[ss]]]]].  Any fields omitted
 assume their maximum possible values so that if you specify @samp{-c92},
 you get the latest version which was available in the year 1992.  This
-option is obviously not year-2000-proof.  Untested.
+option is obviously not Year-2000-proof.
 
 @item -D
 Turns on debugging output, indicating what is going on as the SCCS file
@@ -433,6 +531,7 @@ is read.  This option may go away or have its behaviour change in the
 near future.
 
 @item -e
+@cindex p-file
 Indicates that the gotten version is for editing.   When checked back in
 the resulting file will have a new revision number.  The gotten file is
 writable, and keyword substitution does not take place.  A @dfn{p-file}
@@ -452,7 +551,7 @@ Include the deltas for the listed @sc{sid}s.  See also @samp{-x}.  Untested.
 
 @item -k
 Avoid doing keyword substitution (@pxref{keyword substitution}).  This
-is assumed when @samp{-e} is specified.  Untested.
+is assumed when @samp{-e} is specified.
 
 @item -l
 Unsupported.
@@ -462,11 +561,11 @@ Unsupported.
 
 @item -m
 Prepend to each line of the result the @sc{sid} correspoding to the
-@samp{delta} which introduced this line to the file.  Untested.
+@samp{delta} which introduced this line to the file.
 
 @item -n
 Precede each line of output with the module name, before any @sc{sid}
-added with the @samp{-m} option.  Untested.
+added with the @samp{-m} option.
 
 @item -p
 Write the result to the standard output, rather than to a file.  
@@ -514,15 +613,23 @@ The branch number of the gotten version
 @item C
 Current line in the output file
 @item D
-The date at the time the file was gotten, in the form @i{yy/mm/dd}
+@cindex Year 2000
+The date at the time the file was gotten, in the form @i{yy/mm/dd}.
+This keyword has a Year-2000 problem.
 @item E
-The date that the newest delta in the gotten file was applied, @i{yy/mm/dd}
+@cindex Year 2000
+The date that the newest delta in the gotten file was applied,
+@i{yy/mm/dd}.  This keyword has a Year-2000 problem.
 @item F
 Name of the SCCS file, for example @samp{s.foo.c}.
 @item G
-As for %E%, but in the US format @i{mm/dd/yy}.  Year-2000-broken.
+@cindex Year 2000
+As for %E%, but in the US format @i{mm/dd/yy}.  This keyword has a
+Year-2000 problem.
 @item H
-As for %D%, but in the US format @i{mm/dd/yy}.  Year-2000-broken.
+@cindex Year 2000
+As for %D%, but in the US format @i{mm/dd/yy}.  This keyword has a
+Year-2000 problem.
 @item I
 Expands to the same as %R%.%L%.%B%.%S%, that is, the @sc{sid} of the
 gotten version.
@@ -642,11 +749,14 @@ Include even removed deltas in the output.  Removed deltas have a type
 "R", as output by the :DT: keyword.
 
 @item -cYYMMDDHHMMSS
+@cindex Year 2000
 Specifies the time of the ``cutoff''.  When this option is given, the
 delta selected by @code{prs} is the last one checked in before the
 cutoff.  The format of the cutoff is yymmddhhmmss.  As usual, any fields
 left unspecified in the cutoff are given the maximum legal value (for
-example, the seconds field defaults to 59).
+example, the seconds field defaults to 59).  This option is not
+Year-2000 proof.
+
 
 This behaviour is usually not the one required, and hence the @samp{-e}
 or @samp{-l} options are spefified too.
@@ -763,123 +873,109 @@ These keywords expand to data that is specific to a particular version.
 
 @table @code
 @item :A:   
-                Expands to @samp{:Z::Y: :M: :I::Z:}, useful for @code{what}.
+Expands to @samp{:Z::Y: :M: :I::Z:}, useful for @code{what}.
 @item :B:   
-                Branch number of @sc{sid}
+Branch number of @sc{sid}
 
-@item :C:
-                Comments for this delta.  These may extend over several
-                lines.
+@item :C: 
+Comments for this delta.  These may extend over several lines.
 
 @item :D:
-                Date (yy/mm/dd) that this version was checked in.
-                Expands to @samp{:Dy:/:Dm:/:Dd:}.
+@cindex Year 2000 
+Date (yy/mm/dd) that this version was checked in.  Expands to
+@samp{:Dy:/:Dm:/:Dd:}. This keyword has a Year-2000 problem.
 
 @item :Dd:
-                Day-of-month on which the delta was checked in (two
-                digits).
+Day-of-month on which the delta was checked in (two digits).
 
 @item :Dg:    
-                Sequence numbers of ignored deltas (separated by white
-                space).
+Sequence numbers of ignored deltas (separated by white space).
 
 @item :DI:    
-                Expands to @samp{:Dn:/:Dx:/:Dg:} (sequence numbers
-                included/excluded/ignored).
+Expands to @samp{:Dn:/:Dx:/:Dg:} (sequence numbers
+included/excluded/ignored).
 
 @item :DL:      
-                 Expands to @samp{:Li:/:Ld:/:Lu:} (lines
-                 inserted/deleted/unchanged).
+Expands to @samp{:Li:/:Ld:/:Lu:} (lines inserted/deleted/unchanged).
  
 @item :Dm:      
-                Month when this version as checked in (two digits).
+Month when this version as checked in (two digits).
 
 @item :Dn:      
-                Sequence numbers of included deltas (separated by white
-                space).
+Sequence numbers of included deltas (separated by white space).
 
 @item :DP:      
-                Sequence number of the delta that precedes this
-                one.
+Sequence number of the delta that precedes this one.
 
 @item :DS:
-                Sequence number of this delta.
+Sequence number of this delta.
 
 @item :Dt:
-                Expands to @samp{:DT: :I: :D: :T: :P: :DS: :DP:}. 
+Expands to @samp{:DT: :I: :D: :T: :P: :DS: :DP:}. 
 
 @item :DT:      
-                Delta type: @samp{R} (removed) or @samp{D} (normal).
+Delta type: @samp{R} (removed) or @samp{D} (normal).
 
 @item :Dx:      
-                Sequence numbers of excluded deltas (separated by white
-                space).
+Sequence numbers of excluded deltas (separated by white space).
 
 @cindex Year 2000
 @item :Dy:  
-                Year when this version was checked in.  Currently this
-                produces two digits; this is a 
-                Year-2000 issue. 
+Year when this version was checked in.  Currently this
+produces two digits; this is a Year-2000 issue. 
 
 @item :GB:
-                The body for this version, as distinct from the 
-                body of the @sc{sccs} file itself, which is obtained
-                with @samp{:BD:}.
+The body for this version, as distinct from the 
+body of the @sc{sccs} file itself, which is obtained
+with @samp{:BD:}.
 
 @item :I:
-                The @sc{sid} of this version.
+The @sc{sid} of this version.
 
 @item :L:
-                The level component of the @sc{sid} (that is, the second
-                number).
+The level component of the @sc{sid} (that is, the second number).
 
 @item :Ld:
-                Number of lines deleted in this version, with respect to
-                its predecessor.
+Number of lines deleted in this version, with respect to its predecessor.
 
 @item :Li:
-                Number of lines inserted in this version, with respect to
-                its predecessor.
+Number of lines inserted in this version, with respect to its predecessor.
 
 @item :Lu:
-                Number of lines unchanged in this version, with respect to
-                its predecessor.
+Number of lines unchanged in this version, with respect to its predecessor.
 
 @item :MR:
-                The MR numbers specified when this delta was created.
+The MR numbers specified when this delta was created.
 
 @item :P:
-                Perpetrator: the login name of the user who created this
-                delta.
+Perpetrator: the login name of the user who created this delta.
 
 @item :R:
-                The release number of the @sc{sid} (the first number).
+The release number of the @sc{sid} (the first number).
 
 @item :S:
-                The sequence number of the @sc{sid}.  Don't confuse this
-                with the delta sequence numbers, which are internal
-                identifiers for deltas which are output by the keywords
-                :DI:, :Dn:, :Dx: and :Dg:.
+The sequence number of the @sc{sid}.  Don't confuse this with the delta
+sequence numbers, which are internal identifiers for deltas which are
+output by the keywords :DI:, :Dn:, :Dx: and :Dg:.
 
 @item :T:       
-                Time that this version was checked in
-                (@samp{:Th:::Tm:::Ts:}).
+Time that this version was checked in (@samp{:Th:::Tm:::Ts:}).
 
 @item :Th:
-                Hours component of checkin time (@samp{:T:}).
+Hours component of checkin time (@samp{:T:}).
 
 @item :Tm:
-                Minutes  component of checkin time (@samp{:T:}).
+Minutes  component of checkin time (@samp{:T:}).
 
 @item :Ts:
-                Seconds  component of checkin time (@samp{:T:}).
+Seconds  component of checkin time (@samp{:T:}).
 
 @item :W:
-                Shorthand for @samp{:Z::M:<@sc{tab}>:I:}, suitable for
-                @code{what} (@pxref{what}).
+Shorthand for @samp{:Z::M:<@sc{tab}>:I:}, suitable for @code{what}
+(@pxref{what}).
 
 @item :Z:       
-                Expands to @samp{@@(#)} (@pxref{what}).
+Expands to @samp{@@(#)} (@pxref{what}).
 @end table
 
 The @samp{:C:}, @samp{:GB:} and @samp{:MR:} keywords from this section
