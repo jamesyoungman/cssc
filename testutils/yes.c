@@ -21,8 +21,6 @@
  * clone of yes(1) -- some systems (e.g. Solaris) lack yes(1).
  */
 
-#include <config.h>
-
 #ifdef STDC_HEADERS
 #include <stdio.h>
 #include <string.h>
@@ -69,19 +67,19 @@ main(int argc, char *argv[])
       l = total_len(argc, argv);
       msg = malloc(l + 1u);
       if (NULL == msg)
-	{
-	  fprintf(stderr, "Ran out of memory.\n");
-	  return EXIT_FAILURE;
-	}
+        {
+          fprintf(stderr, "Ran out of memory.\n");
+          return EXIT_FAILURE;
+        }
       concat(msg, argc, argv);
       
       for (;;)
-	puts(msg);		/* this adds a trailing newline */
+        puts(msg);              /* this adds a trailing newline */
     }
   else
     {
       for (;;)
-	puts("yes");		/* this adds a trailing newline */
+        puts("yes");            /* this adds a trailing newline */
     }
 
   /*NOTREACHED*/

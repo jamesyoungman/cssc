@@ -21,7 +21,7 @@
  * Program for getting the canonical form of the current directory.
  */
 
-#include <config.h>
+#include "../config.h"
 
 #ifdef STDC_HEADERS
 #include <stddef.h>
@@ -46,21 +46,21 @@ get_current_directory()
   for (;;)
     {
       if (NULL != (p = new char[len]))
-	{
-	  if ( NULL != getcwd(p, len) )	// success!
-	    {
-	      return p;
-	    }
-	  else
-	    {
-	      len *= 2;		// try a larger buffer.
-	    }
-	  delete[] p;
-	}
-      else			// allocation failed.
-	{
-	  return ".";	// this is a cop-out really.
-	}      
+        {
+          if ( NULL != getcwd(p, len) ) // success!
+            {
+              return p;
+            }
+          else
+            {
+              len *= 2;         // try a larger buffer.
+            }
+          delete[] p;
+        }
+      else                      // allocation failed.
+        {
+          return ".";   // this is a cop-out really.
+        }      
     }
 }
 

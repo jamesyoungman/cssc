@@ -39,10 +39,6 @@
  * VE3TCP, <gwoods@acm.org>, <woods@planix.com>, <woods@wierd.com>.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #if HAVE_STDIO_H
 #include <stdio.h>
 #endif

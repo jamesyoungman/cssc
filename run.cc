@@ -33,10 +33,10 @@
 #include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.24 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.25 2002/07/26 17:21:00 james_youngman Exp $";
 #endif
 
-#if !(HAVE_FORK) && !(HAVE_SPAWN)
+#if !defined(HAVE_FORK) && !defined(HAVE_SPAWN)
 #define NEED_CALL_SYSTEM
 #else
 #undef NEED_CALL_SYSTEM
@@ -88,7 +88,7 @@ run(const char *prg, mylist<const char *> const &args) {
         int i;
         int len = args.length();
 
-#if NEED_CALL_SYSTEM
+#ifdef NEED_CALL_SYSTEM
 
         int cmdlen = strlen(prg) + 1;
         

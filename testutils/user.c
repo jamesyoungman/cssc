@@ -21,8 +21,6 @@
  * Program for getting the user's login name.
  */
 
-#include <config.h>
-
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -43,7 +41,7 @@ static int duplicate_group(gid_t g, const gid_t *vec, int len)
   while (len--)
     {
       if (*vec == g)
-	return 1;
+        return 1;
     }
   return 0;
 }
@@ -71,37 +69,37 @@ static gid_t *get_group_list(int *ngroups)
     {
       grouplist = malloc((1+len) * sizeof(*grouplist));
       if (grouplist)
-	{
-	  /* We don't know if the effectve group ID is in 
-	   * the list returned by grouplist, so find out 
-	   * and return a list with it included, but only once
-	   */
-	  gid_t egid = getegid();
-	  if (getgroups(len, &grouplist[1]))
-	    {
-	      if (duplicate_group(egid, grouplist+1, len))
-		{
-		  *ngroups = len;
-		  return &grouplist[1];
-		}
-	      else
-		{
-		  grouplist[0] = egid;
-		  *ngroups = len+1;
-		  return &grouplist[0];
-		}
-	    }
-	  else
-	    {
-	      perror("getgroups");
-	      return NULL;
-	    }
-	}
+        {
+          /* We don't know if the effectve group ID is in 
+           * the list returned by grouplist, so find out 
+           * and return a list with it included, but only once
+           */
+          gid_t egid = getegid();
+          if (getgroups(len, &grouplist[1]))
+            {
+              if (duplicate_group(egid, grouplist+1, len))
+                {
+                  *ngroups = len;
+                  return &grouplist[1];
+                }
+              else
+                {
+                  grouplist[0] = egid;
+                  *ngroups = len+1;
+                  return &grouplist[0];
+                }
+            }
+          else
+            {
+              perror("getgroups");
+              return NULL;
+            }
+        }
       else
-	{
-	      perror("malloc");
-	      return NULL;
-	}
+        {
+              perror("malloc");
+              return NULL;
+        }
     }
 }
 
@@ -114,9 +112,9 @@ static void do_groups()
   if (list)
     {
       for (i=0; i<ngroups; ++i)
-	{
-	  fprintf(stdout, "%ld\n", (long) list[i]);
-	}
+        {
+          fprintf(stdout, "%ld\n", (long) list[i]);
+        }
     }
   else
     {
@@ -156,10 +154,10 @@ static gid_t foreign_group(void)
       int nextval = 1+list[i-1];
       
       if (nextval < list[i] )
-	{
-	  /* we have a gap. */
-	  return nextval;
-	}
+        {
+          /* we have a gap. */
+          return nextval;
+        }
     }
 
   /* We can't just add 1 to the value of the last entry in the list
@@ -168,17 +166,17 @@ static gid_t foreign_group(void)
   if (ngroups)
     {
       if (list[0] > 0)
-	return 0;		       
+        return 0;                      
       else 
-	return 1+list[ngroups-1]; 
+        return 1+list[ngroups-1]; 
     }
   else /* not a member of any groups? */
     {
       gid_t last_resort = getegid();
       if (last_resort > 0)
-	return 0;
+        return 0;
       else
-	return 1+last_resort;
+        return 1+last_resort;
     }
 }
 
@@ -188,36 +186,36 @@ int main(int argc, char *argv[])
   if (2 == argc)
     {
       if (0 == strcmp(argv[1], "name"))
-	{
-	  struct passwd *p;
-	  const char *pn = "unknown";
-	  p = getpwuid(getuid());
-	  if (p)
-	    pn = p->pw_name;
-	  
-	  fprintf(stdout, "%s\n", pn);
-	  return 0;
-	}
+        {
+          struct passwd *p;
+          const char *pn = "unknown";
+          p = getpwuid(getuid());
+          if (p)
+            pn = p->pw_name;
+          
+          fprintf(stdout, "%s\n", pn);
+          return 0;
+        }
       else if (0 == strcmp(argv[1], "groups"))
-	{
-	  do_groups();
-	  return 0;
-	}
+        {
+          do_groups();
+          return 0;
+        }
       else if (0 == strcmp(argv[1], "foreigngroup"))
-	{
-	  fprintf(stdout, "%ld\n", (long)foreign_group());
-	  return 0;
-	}
+        {
+          fprintf(stdout, "%ld\n", (long)foreign_group());
+          return 0;
+        }
       else if (0 == strcmp(argv[1], "group"))
-	{
-	  fprintf(stdout, "%ld\n", (long)getgid());
-	  return 0;
-	}
+        {
+          fprintf(stdout, "%ld\n", (long)getgid());
+          return 0;
+        }
       else
-	{
-	  fprintf(stderr, "%s", usage_str);
-	  return 1;
-	}
+        {
+          fprintf(stderr, "%s", usage_str);
+          return 1;
+        }
     }
   else
     {
