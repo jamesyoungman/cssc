@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.15 1998/06/08 20:01:04 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.16 1998/06/19 07:11:23 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -122,8 +122,6 @@ static const char filever[] = "$Id: sccs.c,v 1.15 1998/06/08 20:01:04 james Exp 
 #include <errno.h>		/* TODO: same as in parent directory. */
 #include <pwd.h>		/* getpwuid() */
 
-#include <sysexits.h>		/* TODO: we should probably define our own. */
-
 /* #include "pathnames.h" */
 /* The next few lines inserted from @(#)pathnames.h	8.1 (Berkeley) 6/6/93
  */
@@ -162,6 +160,32 @@ static const char filever[] = "$Id: sccs.c,v 1.15 1998/06/08 20:01:04 james Exp 
 #ifdef STAT_MACROS_BROKEN
 #undef S_ISDIR
 #endif
+
+
+/*
+ * Exit values; the <sysexits.h> file normally defines
+ * EX_*, but on Solaris machines this seems to result
+ * in redefinition of the values (at least in one reported 
+ * case, with GCC as the compiler).  To avoid this we define them
+ * here, but with a name change to avoid clashes.
+ */
+#define CSSC_EX_OK		0  /* successful termination */
+#define CSSC_EX_USAGE	        64 /* command line usage error */
+#define CSSC_EX_DATAERR	        65 /* data format error */
+#define CSSC_EX_NOINPUT	        66 /* cannot open input */
+#define CSSC_EX_NOUSER	        67 /* addressee unknown */
+#define CSSC_EX_NOHOST	        68 /* host name unknown */
+#define CSSC_EX_UNAVAILABLE	69 /* service unavailable */
+#define CSSC_EX_SOFTWARE	70 /* internal software error */
+#define CSSC_EX_OSERR	        71 /* system error (e.g., can't fork) */
+#define CSSC_EX_OSFILE	        72 /* critical OS file missing */
+#define CSSC_EX_CANTCREAT	73 /* can't create (user) output file */
+#define CSSC_EX_IOERR	        74 /* input/output error */
+#define CSSC_EX_TEMPFAIL	75 /* temp failure; user is invited to retry */
+#define CSSC_EX_PROTOCOL	76 /* remote error in protocol */
+#define CSSC_EX_NOPERM	        77 /* permission denied */
+#define CSSC_EX_CONFIG	        78 /* configuration error */
+
 
 
 /*
@@ -450,7 +474,7 @@ show_version(void)
 static void oom(void)
 {
   perror("malloc failed");
-  exit(EX_TEMPFAIL);
+  exit(CSSC_EX_TEMPFAIL);
 }
 
 /* set_prefix()
@@ -497,7 +521,7 @@ set_prefix(const char *pfx)
 	      "%s",
 	      "Option --prefix is incompatible with setuid "
 	      "execution.  Sorry.\n");
-      exit (EX_USAGE);
+      exit (CSSC_EX_USAGE);
     }
 }
 
@@ -519,14 +543,19 @@ drop_privs(void)
   if (0 != setuid (getuid ()))
     {
       perror("setuid");
-      exit(EX_NOPERM);
+      exit(CSSC_EX_NOPERM);
     }
   if (0 != setgid(getgid()))
     {
       perror("setgid");
-      exit(EX_NOPERM);
+      exit(CSSC_EX_NOPERM);
     }
   RealUser++;
+}
+
+static void
+check_data_integrity()
+{
 }
 
 static void 
@@ -551,7 +580,7 @@ main (int argc, char **argv)
       TrustEnvironment = 0;	/* running setuid, ignore $PATH etc. */
 #ifndef SCCSDIR
       setuid_warn();
-      exit(EX_NOPERM);
+      exit(CSSC_EX_NOPERM);
 #endif      
     }
   else
@@ -571,6 +600,8 @@ main (int argc, char **argv)
 	}
     }
 
+  check_data_integrity();
+  
 #ifndef SCCSDIR
 
   /* Setuid execution is only allowed if SCCSDIR is defined,
@@ -593,7 +624,7 @@ main (int argc, char **argv)
 	  if (pw == NULL)
 	    {
 	      usrerr("user %s does not exist", p);
-	      exit(EX_USAGE);
+	      exit(CSSC_EX_USAGE);
 	    }
 	  gstrcpy(buf, pw->pw_dir, sizeof(buf));
 	  gstrcat(buf, "/src", sizeof(buf));
@@ -604,7 +635,7 @@ main (int argc, char **argv)
 	      if (access(buf, 0) < 0)
 		{
 		  usrerr("project %s has no source!", p);
-		  exit(EX_USAGE);
+		  exit(CSSC_EX_USAGE);
 		}
 	    }
 	  SccsDir = buf;
@@ -620,7 +651,7 @@ main (int argc, char **argv)
   if (argc < 2)
     {
       usage();
-      exit (EX_USAGE);
+      exit (CSSC_EX_USAGE);
     }
   argv[argc] = NULL;
 
@@ -639,7 +670,7 @@ main (int argc, char **argv)
 		  fprintf(stderr, "%s",
 			  "End-of-arguments option \"--\" not "
 			  "supported, sorry.\n");
-		  exit (EX_USAGE);
+		  exit (CSSC_EX_USAGE);
 		}
 	      else if (0 == strncmp(p, "prefix=", 7))
 		{
@@ -648,7 +679,7 @@ main (int argc, char **argv)
 	      else if (0 == strcmp(p, "cssc"))
 		{
 		  printf("%s\n", "yes");
-		  exit(EX_OK);
+		  exit(CSSC_EX_OK);
 		}
 	      else if (0 == strcmp(p, "version"))
 		{
@@ -662,7 +693,7 @@ main (int argc, char **argv)
 		{
 		  usrerr ("unknown option --%s", p);
 		  usage();
-		  exit (EX_USAGE);
+		  exit (CSSC_EX_USAGE);
 		}
 	      break;
 	      
@@ -694,7 +725,7 @@ main (int argc, char **argv)
 	    case 'p':
 	    case 'd':
 	      fprintf(stderr, "The %c option has been disabled.\n", *p);
-	      exit(EX_USAGE);
+	      exit(CSSC_EX_USAGE);
 	      break;
 #endif
 
@@ -704,14 +735,14 @@ main (int argc, char **argv)
 #else
 	      fprintf(stderr, "%s",
 		      "The -T option has been disabled.  Sorry.\n");
-	      exit(EX_USAGE);
+	      exit(CSSC_EX_USAGE);
 #endif
 	      break;
 
 	    default:
 	      usrerr ("unknown option -%s", p);
 	      usage();
-	      exit (EX_USAGE);
+	      exit (CSSC_EX_USAGE);
 	    }
 	}
       if (SccsPath[0] == '\0')
@@ -846,7 +877,7 @@ try_to_exec(const char *prog, char * const argv[])
 	{
 	  oom();
 	  /*NOTREACHED*/
-	  exit(EX_TEMPFAIL);
+	  exit(CSSC_EX_TEMPFAIL);
 	}
       sprintf(newprog, "%s%s", prefix, prog);
       prog = newprog;
@@ -954,7 +985,7 @@ command (char *argv[], bool forkflag, const char *arg0)
 	{
 	  usrerr ("Unknown command \"%s\"", *ap);
 	  usage();
-	  return (EX_USAGE);
+	  return (CSSC_EX_USAGE);
 	}
 
       /*
@@ -1022,7 +1053,7 @@ command (char *argv[], bool forkflag, const char *arg0)
 	if (ap[1] == 0 || strncmp (ap[1], "-r", 2) != 0)
 	  {
 	    usrerr ("-r flag needed for fix command");
-	    rval = EX_USAGE;
+	    rval = CSSC_EX_USAGE;
 	    break;
 	  }
 
@@ -1117,7 +1148,7 @@ command (char *argv[], bool forkflag, const char *arg0)
 	  execvp ("diff", ap);
 #endif
 	try_to_exec (cmd->sccspath, argv);
-	exit (EX_OSERR);
+	exit (CSSC_EX_OSERR);
       }
       /*NOTREACHED */
       break;
@@ -1128,8 +1159,8 @@ command (char *argv[], bool forkflag, const char *arg0)
 
     default:
       {
-	syserr ("oper %d", cmd->sccsoper);
-	exit (EX_SOFTWARE);
+	syserr ("Unexpected oper %d", cmd->sccsoper);
+	exit (CSSC_EX_SOFTWARE);
       }
       /*NOTREACHED */
       break;
@@ -1294,7 +1325,7 @@ callprog (const char *progpath,
       if (i < 0)
 	{
 	  syserr ("cannot fork");
-	  exit (EX_OSERR);
+	  exit (CSSC_EX_OSERR);
 	}
       else if (i > 0)		/* parent */
 	{
@@ -1319,7 +1350,7 @@ callprog (const char *progpath,
 			   get_sig_name(sigcode, sigmsgbuf),
 			   (WCOREDUMP(st) ? " (core dumped)" : "") );
 		}
-	      st = EX_SOFTWARE;
+	      st = CSSC_EX_SOFTWARE;
 	    }
 	  
 	  if (OutFile >= 0)
@@ -1331,9 +1362,9 @@ callprog (const char *progpath,
 	}
     }
   else if (OutFile >= 0)
-    {
-      syserr ("callprog: setting stdout w/o forking");
-      exit (EX_SOFTWARE);
+    {				   /* TODO: make this impossible. */
+      syserr ("callprog: setting stdout without forking");
+      exit (CSSC_EX_SOFTWARE);
     }
 
   /* 
@@ -1361,7 +1392,7 @@ callprog (const char *progpath,
 
   /* call real SCCS program */
   try_to_exec (progpath, argv);
-  exit (EX_UNAVAILABLE);
+  exit (CSSC_EX_UNAVAILABLE);
   /*NOTREACHED */
 }
 
@@ -1392,7 +1423,7 @@ str_dup (const char *s)
   else
     {
       perror ("Sccs: no mem");
-      exit (EX_OSERR);
+      exit (CSSC_EX_TEMPFAIL);
     }
   return p;
 }
@@ -1655,7 +1686,7 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
   if (dirp == NULL)
     {
       usrerr ("cannot open %s", buf);
-      return (EX_NOINPUT);
+      return (CSSC_EX_NOINPUT);
     }
 
   /*
@@ -1729,13 +1760,13 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
     }
   if (mode == CHECKC)
     exit (gotedit);
-  return (EX_OK);
+  return (CSSC_EX_OK);
 }
 
 int 
 clean (int mode, char *const *argv)
 {
-  int retval = EX_OK;
+  int retval = CSSC_EX_OK;
   char *buf = malloc(FBUFSIZ);
   if (NULL == buf)
     {
@@ -1847,7 +1878,7 @@ unedit (const char *fn)
       usrerr ("cannot create \"%s\"", tfn);
       fclose(pfp);
       free(pfn);
-      exit (EX_OSERR);
+      exit (CSSC_EX_OSERR);
     }
 
   /* figure out who I am */
@@ -1909,7 +1940,7 @@ unedit (const char *fn)
 	{
 	  syserr ("cannot reopen \"%s\"", tfn);
 	  free(pfn);
-	  exit (EX_OSERR);
+	  exit (CSSC_EX_OSERR);
 	}
       if (freopen (pfn, "w", pfp) == NULL)
 	{
@@ -1986,12 +2017,12 @@ dodiff (char *const getv[], const char *gfile)
   if (pipe (pipev) < 0)
     {
       syserr ("dodiff: pipe failed");
-      exit (EX_OSERR);
+      exit (CSSC_EX_OSERR);
     }
   if ((pid = do_fork ()) < 0)
     {
       syserr ("dodiff: fork failed");
-      exit (EX_OSERR);
+      exit (CSSC_EX_OSERR);
     }
   else if (pid > 0)
     {
@@ -2010,7 +2041,7 @@ dodiff (char *const getv[], const char *gfile)
 	  dup (pipev[0]) != 0 || close (pipev[0]) < 0)
 	{
 	  syserr ("dodiff: magic failed");
-	  exit (EX_OSERR);
+	  exit (CSSC_EX_OSERR);
 	}
       command (&getv[1], FALSE, "-diff:elsfhbC"); /* Warning: discards const */
     }
@@ -2205,12 +2236,12 @@ syserr (const char *fmt,...)
 
   if (errno == 0)
     {
-      exit (EX_SOFTWARE);
+      exit (CSSC_EX_SOFTWARE);
     }
   else
     {
       perror (NULL);
-      exit (EX_OSERR);
+      exit (CSSC_EX_OSERR);
     }
 }
 /*
@@ -2237,7 +2268,7 @@ username (void)
       syserr ("Who are you?\n"
 	      "You don't seem to have an entry in the user database "
 	      "(/etc/passwd) (uid=%d)", (int)getuid ());
-      exit (EX_OSERR);
+      exit (CSSC_EX_OSERR);
     }
   return (pw->pw_name);
 }
@@ -2285,7 +2316,7 @@ gstrbotch (const char *str1, const char *str2)
   usrerr ("Filename(s) too long: %s %s",
 	  (str1 ? str1 : ""),
 	  (str2 ? str2 : ""));
-  exit(EX_SOFTWARE);
+  exit(CSSC_EX_SOFTWARE);
 }
 
 static void 
@@ -2304,6 +2335,6 @@ gstrbotchn (int navail,
     }
   putc('\n', stderr);
   fprintf(stderr, "Only %d characters available.\n", navail);
-  exit(EX_SOFTWARE);
+  exit(CSSC_EX_SOFTWARE);
 }
 
