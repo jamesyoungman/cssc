@@ -25,7 +25,8 @@ public:
   release(): rel(-1) {}
   release(short r): rel(r) {}
   release(const char *s);
-
+  release(const sid& s);
+  
   int valid() const { return rel > 0; }
 
   enum { LARGEST = 9999 };	// largest valid release number.
