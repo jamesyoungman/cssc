@@ -1,3 +1,11 @@
+New in CSSC-0.02-devel-pl7
+
+	* The test scripts now correctly test the %P% keyword.
+
+	* The test scripts now avoid using "echo -n -e" since 
+	  the two options are incompatible on (some versions of?)
+	  FreeBSD.
+
 New in CSSC-0.02-devel-pl6
 
 	* The -m and -n options of get had been the wrong way around.
