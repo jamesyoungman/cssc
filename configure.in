@@ -8,7 +8,7 @@ AC_INIT(sccsfile.h)
 # ([0-9]+)\.([0-9]+)([a-z])?
 # ...at least according to the "Gnits" rules outlined
 # in the Automake manual.
-AM_INIT_AUTOMAKE(CSSC,0.06alpha.pl5)
+AM_INIT_AUTOMAKE(CSSC,0.06alpha.pl6)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)
@@ -173,4 +173,4 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and to the second invocation couldn't find it
 dnl and so things go wrong.
 
-AC_OUTPUT(Makefile sccsdiff.sh tests/Makefile docs/Makefile testutils/Makefile auxfiles/Makefile version.cc)
+AC_OUTPUT(Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/Makefile auxfiles/Makefile version.cc)
