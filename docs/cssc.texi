@@ -10,9 +10,10 @@
 @set VERSION 0.06alpha
 @set UPDATED Thu Feb 12 21:48:21 1998
 
-@macro authoraddr
-@w{@samp{jay@@gnu.org}}
-@end macro
+@c Macros don't work with texi2html!
+@c @macro authoraddr
+@c @w{@samp{jay@@gnu.org}}
+@c @end macro
 
 @ifinfo
 This file documents the the GNU @code{cssc} package for working with
@@ -2173,7 +2174,7 @@ test `cat foo` = '%M%' || miscarry cannot create file foo.
 @cindex maintainer
 
 If you find a bug in GNU @code{CSSC}, please send electronic mail to
-@authoraddr .  Include the version number, which you can find
+@w{@samp{jay@@gnu.org}} .  Include the version number, which you can find
 by giving the option @w{@samp{--version}} to any @code{CSSC} command.
 Also include in your message the output that the program produced and
 the output you expected.  An @file{s.} file and instructions for
@@ -2189,7 +2190,7 @@ Microsoft Corporation.@refill
 
 If you have other questions, comments or suggestions about GNU
 @code{CSSC}, contact the maintainer via electronic mail to
-@authoraddr .
+@w{@samp{jay@@gnu.org}} .
 
 @node Copying, Concept Index, Problems, Top
 @c @ignore
