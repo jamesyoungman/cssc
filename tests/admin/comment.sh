@@ -6,7 +6,7 @@
 . ../common/test-common
 
 s=s.new.txt
-remove foo $s new.txt s.1 s.2 command.log
+remove foo new.txt [xzs].new.txt [xzs].1 [xzs].2 command.log
 
 
 remove foo
