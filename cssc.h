@@ -1,12 +1,9 @@
 /*
- * mysc.h
+ * cssc.h
  *
- * By Ross Ridge
- * Public Domain
+ * Master include file for CSSC.
  *
- * Master include file for MySC.
- *
- * @(#) MySC mysc.h 1.3 93/12/30 19:48:09
+ * $Id: cssc.h,v 1.5 1997/05/10 14:42:01 james Stable $
  *
  */
 
@@ -46,16 +43,6 @@ mystring prompt_user(const char *prompt);
 
 #endif /* NO_COMMON_HEADERS */
 
-extern const char main_sccs_id[];
-extern const char mysc_version[];
-
-inline void
-version() {
-  	fputs(main_sccs_id, stderr);
-	fputc('\n', stderr);
-  	fputs(mysc_version, stderr);
-	fputc('\n', stderr);
-}
 
 #endif /* __MYSC_H__ */
 
