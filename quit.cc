@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.25 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.26 2001/11/29 19:12:34 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -225,12 +225,27 @@ ctor_fail(int err, const char *fmt, ...) {
         ASSERT(0);              // not reached.
 }
 
+
+/* We have to pass a va_list to v_quit, to we have to have 
+ * a varargs function to do it...  
+ */
+
+static NORETURN  ctor_fail_nomsg_helper(int err, ...)
+{
+    va_list ap;
+    va_start(ap, err);
+    v_quit(err, NULL, ap);
+    /*NOTREACHED*/
+    va_end(ap);
+}
+
 NORETURN ctor_fail_nomsg(int err)  
 {
 #ifdef HAVE_EXCEPTIONS
     throw CsscContstructorFailedException(err);
 #else
-    v_quit(err, fmt, ap);
+    ctor_fail_nomsg_helper(err);
+    /*NOTREACHED*/
 #endif
 }
 
