@@ -18,7 +18,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.7 1997/05/31 10:20:09 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.8 1997/06/01 20:33:41 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -268,34 +268,34 @@ sccs_file::create(release first_release, const char *iname,
 		found_id = 1;
 	      }
 	  }
-	if (ferror(in))
-	  {
-	    quit(errno, "%s: Read error.", iname);
-	  }
-	if (in != stdin)
-	  {
-	    fclose(in);
-	  }
+      }
 
-	if (!found_id)
+    if (ferror(in))
+      {
+	quit(errno, "%s: Read error.", iname);
+      }
+    if (in != stdin)
+      {
+	fclose(in);
+      }
+    
+    if (!found_id)
+      {
+	if (flags.no_id_keywords_is_fatal)
 	  {
-	    if (flags.no_id_keywords_is_fatal)
-	      {
-		fprintf(stderr, "%s: Error: No id keywords.\n",
-			(const char *) name);
-	      }
-	    else
-	      {
-		fprintf(stderr, "%s: Warning: No id keywords.\n",
-			(const char *) name);
-	      }
+	    fprintf(stderr, "%s: Error: No id keywords.\n",
+		    (const char *) name);
+	  }
+	else
+	  {
+	    fprintf(stderr, "%s: Warning: No id keywords.\n",
+		    (const char *) name);
 	  }
       }
   }
 	
-
   fprintf(out, "\001E 1\n");
-
+  
   end_update(out, new_delta);
 }
 
