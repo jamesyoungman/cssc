@@ -37,7 +37,7 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.29 2001/09/29 19:39:41 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.30 2001/12/04 21:53:14 james_youngman Exp $";
 
 void
 usage() {
@@ -263,7 +263,15 @@ delta_main(int argc, char **argv)
 		{
 		  if (!keep_gfile)
 		    {
-		      remove(gname.c_str());
+		      /* SourceForge bug 489005: remove the g-file
+		       * as the real user if we are running setuid.
+		       */
+		      if (!unlink_file_as_real_user(gname.c_str()))
+			{
+			  errormsg_with_errno("Failed to remove file %s",
+					      gname.c_str());
+			  retval = 1;
+			}
 		    }
 		}
 	    }
