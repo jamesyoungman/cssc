@@ -4,7 +4,7 @@ Version: @VERSION@
 Release: 1
 URL: http://cssc.sourceforge.net/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
-Packager: James Youngman <jay@gnu.org>
+Packager: Thomas.Duffy.99@alumni.brown.edu
 Group: Development/Version Control
 Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-%{PACKAGE_VERSION}.tar.gz
 Prereq: /sbin/install-info
