@@ -7,8 +7,8 @@
 @c %**end of header
 
 @set EDITION 1.0
-@set VERSION 0.04alpha
-@set UPDATED Sun Nov 23 12:03:39 1997
+@set VERSION 0.05alpha
+@set UPDATED Sun Jan 11 16:52:22 1998
 
 @macro authoraddr
 @w{@samp{jay@@gnu.org}}
@@ -18,7 +18,7 @@
 This file documents the the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
-Copyright (C) 1997, Free Software Foundation, Inc.
+Copyright (C) 1997,1998 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -51,7 +51,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1997 Free Software Foundation, Inc.
+Copyright @copyright{} 1997,1998 Free Software Foundation, Inc.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -194,8 +194,7 @@ example @samp{^A}, the character whose code is 1.
 
 @item -a @var{xxx}
 Add user or group @var{xxx} the the list of those authorized 
-to check revisions in or out.  Untested.
-@c TODO: Write the test cases.
+to check revisions in or out.  
 
 @item -b
 Ensure that the file is encoded as a binary file.   Unimplemented.
@@ -207,8 +206,7 @@ Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
 
 @item -e @var{xxx}
 Erase the specified user or group from the list of those authorized to
-check revisions in or out.  Untested.
-@c TODO: Write the test cases.
+check revisions in or out.  
 
 @item -fF @var{[xxx]}
 Add the flag @samp{F} (with optional value @var{xxx}) to the file's 
@@ -350,10 +348,60 @@ implementations may not be so flexible.
 @cindex cdc
 @cindex sccs-cdc
 @cindex change delta commentary
-This program is implemented but not yet documented here and 
-there are no tests for it in the test suite yet.  Sorry.
-@c TODO: Write the test cases, and document it.
 
+The @code{cdc} command allows you to add comments to the commentary for
+a particular delta in an @sc{sccs} file.  Any delta in the file (other
+than ones removed with @code{rmdel}) can be modified.
+
+If a comment is not specified on the command line, comments are accepted
+via standard input.   
+
+If the special argument name @samp{-} is being used, this means that a
+list of files to operate on is being read from standard input, and
+therefore the @samp{-y} option is mandatory in this case.
+
+The new comments are prepended to the existing comment for that delta,
+followed by a line of the form @samp{*** CHANGED *** yy/mm/dd hh:mm:ss
+who}.  This is followed by the original comment.   Comments cannot be
+removed using @code{cdc}, but they can be added.
+
+Only three options are supported:-
+
+@table @samp
+@item -m@var{MR-list}
+The specified (space-separated) list of @sc{mr}s is added to the
+@sc{mr}-list for the relevant delta.  If more than one @sc{mr} number is
+to be added, the whole option should be quoted, to protect the spaces.
+If an @sc{mr} is prefixed with an exclamation mark (@samp{!}), then the
+indicated delta is removed from the existing list of @sc{mr}s for the
+delta.  The file comment is modified to indicate what @sc{mr}s have been
+removed.  If an @sc{mr} to be removed is in fact not present in any
+case, this is silently ignored. and the comment is not updated for that
+@sc{mr}.  If you do not also want to add to the comment for the delta,
+specify an empty comment option (that, is, a bare @samp{-y}).
+
+@item -r@var{SID}
+This indicates which delta is to be changed.   It must refer to an
+existing delta in the file, which has not been removed with
+@code{rmdel}.
+
+@item -y@var{Comment}
+This option introduces a comment to be added to the commentary for the
+specified @sc{sid}.  If more than one line is needed, it is a good idea
+to enclose the option in quotation marks to ensure that the shell
+includes them in the argument passed to @code{cdc}.  An empty @samp{-y}
+option can be used to indicate that the commentary for this delta is not
+to be modified (this is only useful when the @samp{-m} option is used).
+If the @samp{-y} option is not given, the user is prompted for comments.
+
+@end table 
+
+
+@c TODO: Write the test cases for cdc.
+
+@c TODO: if SCCS-file iterator is using stdin, it is an error 
+@c not to use -y; at the moment this is not detected, and 
+@c cdc probably goes on to do silly things.
 
 @node comb, delta, cdc, Invoking Programs
 @section @code{comb}
@@ -361,7 +409,8 @@ there are no tests for it in the test suite yet.  Sorry.
 @cindex sccs-comb
 This program is not yet implemented or documented in the manual, there
 are no tests for it in the test suite yet, but it is part of @sc{sccs}
-so it will eventually be implemented.
+so it will eventually be implemented. 
+@c sorry!
 @c TODO: write the code, write the test cases, and document it.
 
 
@@ -801,10 +850,10 @@ Include even removed deltas in the output.  Removed deltas have a type
 @cindex Year 2000
 Specifies the time of the ``cutoff''.  When this option is given, the
 delta selected by @code{prs} is the last one checked in before the
-cutoff.  The format of the cutoff is yymmddhhmmss.  As usual, any fields
-left unspecified in the cutoff are given the maximum legal value (for
-example, the seconds field defaults to 59).  The fields can be separated
-by any non-numeric character, for example @samp{-c97/11/02-11:25:42}.
+cutoff.  As usual, any fields left unspecified in the cutoff are given
+the maximum legal value (for example, the seconds field defaults to 59).
+The fields can be separated by any non-numeric character, for example
+@samp{-c97/11/02-11:25:42}.
 
 As an extension specific to @sc{cssc}, if the argument contains more
 than twelve (12) digits, and the first four characters are all digits,
@@ -865,7 +914,9 @@ being examined.  Many of these are @sc{sccs} file flags (@pxref{Flags}).
 @item :BD: 
 Emits the body of the @sc{sccs} file, that is, the part containing all
 the delta information.  Note that since this is dumped verbatim, it
-contains control characters.
+contains control characters.  If you want a more readable format,
+consider using the @samp{-b} option of @code{prt} (@pxref{prt
+options}). 
 
 @item :BF: 
 Indicates the setting (@samp{yes} or @samp{no}) of the branch flag.
@@ -1053,9 +1104,217 @@ may expand to strings containing newlines.
 @section @code{prt}
 @cindex prt
 @cindex sccs-prt
-This program is not yet documented here, even though it has been
-written.  Test cases are provided in the test suite.
-@c TODO: Document it.
+
+The @code{prt} command provides information about an @sc{sccs} file
+without modifying it.  There are many options, though the default
+behavior is usually appropriate.  It is possible to select what
+revisions to print information on, by @sc{sid} or by date.
+
+@menu
+* Basic usage: prt usage.       Frequently-used @code{prt} commands
+* Options:     prt options.     Full list of options
+* Output format: prt output.    The format of @code{prt}'s output
+@end menu
+
+@node prt usage, prt options, , prt
+@subsection Basic usage for @code{prt}
+
+The output provided by @code{prt} when no options are given is
+sufficient most of the time, and so it's common to use it without any
+options:-
+
+@example
+prt s.umsp.c
+@end example
+
+@noindent
+If you require more detail, the @samp{-e} (``everything'') option
+produces more detail:-
+
+@example
+prt -e s.umsp.c
+@end example
+
+@noindent
+As usual, any argument that is the name of a directory causes all
+@sc{sccs} files in that directory to be processed; the special argument
+@file{-} indicates that a list of SCCS files are to be read from
+@code{prt}'s standard input.
+
+
+
+@node prt options, prt output, prt usage, prt
+@subsection Options for @code{prt}
+
+@table @samp
+@item -a
+``All deltas''; this means that the output will include ``removed''
+deltas.  Removed deltas exist after @code{rmdel} has been used to remove
+a delta.
+
+@item -b
+Print the body of the @sc{sccs} file.  This is printed in a readable
+format.  The control character @samp{^A} (Control-A, ASCII code 1) which
+starts some lines of an @sc{sccs} file is printed as three asterisks,
+@samp{***}.  Lines that do not start with the control character are
+indented by one tab stop.   If you want to extract the actual body of
+the @sc{sccs} file, use the @samp{:BD:} keyword of @code{prs}
+(@pxref{Data Keywords}.
+
+@item -d
+Print information about the deltas in the file, as opposed to
+information about the @sc{sccs} file itself (for example the authorized
+users).  This is the default behavior.  The default behavior is turned
+off by the @samp{-b}, @samp{-f}, @samp{-t} and @samp{-u} flags, but
+specifying @samp{-d} on the command line again will ensure that the
+delta information is printed.
+
+@item -e
+``Everything''; Means the same as @samp{-i -u -f -t -d}.
+
+@item -c@var{[cc]YYMMDDHHMMSS}
+@cindex Year 2000
+Specifies the time of the ``cutoff''.  When this option is given,
+@code{prt} stops printing delta information when it reaches a @sc{sid}
+at least as old as the cutoff.  As usual, any fields left unspecified in
+the cutoff are given the maximum legal value (for example, the seconds
+field defaults to 59).  The fields can be separated by any non-numeric
+character, for example @samp{-c97/11/02-11:25:42}.
+
+As an extension specific to @sc{cssc}, if the argument contains more
+than twelve (12) digits, and the first four characters are all digits,
+it is assumed that a four-digit year form has been used.  This means
+that you can say @samp{-c1997/11/02-11:25:42} to mean the same as the
+above.
+
+In line with the X/Open CAE Specification, Commands and Utilities
+(version 2, September 1994, pages 588 and 361), if the century field is
+@emph{not} given and the year is less than 69, it is assumed to be a
+year in the twenty-first century.  The X/Open document does not mandate
+a four-digit year specifier, but it would not make sense to apply this
+rule if a four-digit year is specified.  @xref{Year 2000 Issues}.
+
+The @samp{-c} and @samp{-r} options are mutually exclusive.
+
+@item -f
+Print the flags of the @sc{sccs} file (@pxref{Flags}).
+
+@item -i
+Print the serial numbers of included, excluded, and ignored deltas.
+
+@item -r@var{[cc]YYMMDDHHMMSS}
+Specifies a cutoff, as with the @samp{-c} option, but with the opposite
+sense; that is, nothing is printed for deltas that are more recent than
+the indicated time.
+
+The @samp{-c} and @samp{-r} options are mutually exclusive.
+
+@item -s
+Print only a summary line for each delta (that is, the @sc{mr} list and
+comments and so on are omitted).
+
+@item -t
+Print the text description of the @sc{sccs} file, as set by @code{admin
+-t} (@pxref{admin}).
+
+@item -u
+Print the list of users and group IDs authorized to make deltas, one per
+line.
+
+@item -y@var{SID}
+Print only information for deltas as new as the specified @sc{sid}.  If
+the argument part is empty, that is, the option used is simply
+@samp{-y}, the most recent delta is selected.   The oder in which delta
+information is stored within the @sc{sccs} file is such that the
+@sc{sid} selected by this option will be the last one printed.
+
+If the @samp{-y} option is used in conjunction with either the @samp{-c}
+or the @sc{-y} option, processing stops when either condition (date or
+@sc{sid} match) is satisfied.
+
+@end table
+
+
+@node prt output, , prt options, prt
+@subsection @code{prt} output format
+
+The output format is fixed, though parts of the output can be omitted.
+
+@enumerate 
+@item The header 
+
+  @itemize @bullet
+  @item Newline
+  @item @sc{sccs} file name, followed by a colon
+  @item Two further newlines.
+  @end itemize
+
+@item 
+  Delta table information (for @samp{-d}, @samp{-e}, also the default,
+  but not if @samp{-b}, @samp{-f}, @samp{-t}, @samp{-u} are specified).
+  This section is printed once for each selected delta.
+
+  This begins with a newline as a separator (except when a cutoff is
+  being used, in which case the @sc{sccs} file name is used, followed by
+  a colon and a TAB character).
+
+  @itemize @bullet
+  @item Delta type @*
+        'R' for removed deltas (@pxref{rmdel}), and 'D' for ordinary ones.
+  
+  @item TAB
+
+  @item Delta creation time (YY/MM/DD hh:mm:ss)
+
+  @item The login name of the user who created this delta
+
+  @item Sequence number of this delta
+
+  @item Sequence number of the previous delta
+
+  @item Line statistics @samp{inserted/deleted/unchanged}.  These
+  statistics are capped at 99999, due to a limitation in the file
+  format.
+
+  @item Newline 
+
+  @end itemize
+
+@item Delta detail information @*
+  This section is printed once for each selected delta, unless the
+  @samp{-s} option has been specified.
+
+  @itemize @bullet
+    
+  @item Included deltas  
+  @item Excluded deltas  
+  @item Ignored deltas  
+
+  @item @sc{mr} numbers 
+  @item Delta comments
+
+  @end itemize
+
+
+@item Global information @*
+Once information has been printed for each of the selected deltas, the
+global information is printed.   This consists of 
+
+  @itemize @bullet
+  @item List of authorized users and group IDs (if the list is blank,
+        @samp{everyone} is printed)
+  @item The @sc{sccs} file flags (@pxref{Flags}) are printed.
+  @item The description of the @sc{sccs} file is printed (this 
+        is the description set by the @samp{-t} option of @code{admin}).  
+  @item The body of the @sc{sccs} file is printed, in a readable format.
+        The control character @samp{^A} that begins some lines is
+        printed as @samp{*** }, and other lines are printed indented 
+        by one tab stop.
+@c TODO: what happens here for binary files?     
+  @end itemize
+
+@end enumerate
+
 
 @node rmdel, sact, prt, Invoking Programs
 @section @code{rmdel}
@@ -1063,22 +1322,80 @@ written.  Test cases are provided in the test suite.
 @cindex sccs-rmdel
 @cindex backing out of changes
 @cindex censoring revisions
-Nothing here, sorry.
-@c TODO: Write the test cases, and document it.
+
+The @code{rmdel} (``Remove Delta'') command allows the last version last
+checked in to an @sc{sccs} file to be removed again.  Typically, one
+does this after realizing that newly checked in version doesn't compile,
+or doesn't work, and the fix is simple.  In the author's opinion, it's
+almost always better to be honest about mistakes, and just make a new
+delta for the fixed version.
+
+The @sc{sid} of a removed delta is soon re-used by @code{delta}, usually
+for the fixed version.
+
+The @code{rmdel} command takes only one option, @samp{-r}, which
+specifies the @sc{sid} of the version to be removed.  This option is
+mandatory.
+
+The @code{rmdel} command will fail if you hadn't checked in that
+revision, or if it is in use in some way.  For example, @code{rmdel}
+fails if the specified @sc{sid} is not the latest revision on its
+branch, or if it has been checked out for editing.
+
+As usual, any number of @sc{sccs} files can be named on the command
+line.  The special argument @file{-} indicates that the list of files to
+be operated on should be read from standard input.  If an argument is a
+directory, the @sc{rmdel} command is applied to all @sc{sccs} files in
+that directory.
+
+@c TODO: Write the test cases for rmdel.
 
 @node sact, sccs, rmdel, Invoking Programs
 @section @code{sact}
 @cindex sact
 @cindex sccs-sact
-Nothing here, sorry.
-@c TODO: Write the test cases, and document it.
+The @code{sact} (``Show Editing Activity'') command provides
+a summary of which files are currently checked out for editing. 
+For each checked-out file, a summary line is given.  This line  is of
+the form @samp{old-SID new-SID user date time}.  
+
+@table @samp
+@item old-SID 
+Identifies the revision that was checked out for editing.
+
+@item new-SID
+This is the @sc{sid} that will be allocated by @code{delta} when the
+working file is checked in again.
+
+@item user
+The login name of the user who checked out the file.
+
+@item date time
+The date and time at which the checking-out was done.
+@end table
+
+No output is produced for @sc{sccs} files that are not currently locked
+for editing.  If a directory is specified on the command line, the whole
+directory is examined.  Directory hierarchies are not descended beyond
+this one level.  If @samp{-} is given as an argument, filenames are read
+from standard input.
+
+Note that times in @sc{sccs} files (and lock-files) are stored as local
+time, so if you are collaborating with developers in another time zone,
+the date shown will be in their local time for files that they are
+editing.
+
+@c TODO: Write the test cases.
+
 
 @node sccs, sccsdiff, sact, Invoking Programs
 @section @code{sccs}
 @cindex sccs
 Sorry, @code{sccs} is not integrated into this package, although it is
-available separately in source form.  You may find one on a BSD mirror.
-Eventually, @code{sccs} will be integrated, though.
+available separately in source form.  It can easily be found on BSD
+mirrors, for example @url{ftp://ftp.freebsd.org/}.  Eventually,
+@code{sccs} will be integrated, though, copyright license conditions
+permitting.
 @c TODO: write the code, write the test cases, and document it.
 
 @node sccsdiff, unget, sccs, Invoking Programs
@@ -1315,19 +1632,20 @@ according to the strategy mandated by X/Open.  The command-line options
 are also dealt with similarly.
 
 @sc{cssc} provides an additional feature for your convenience.  If the
-argument to the @samp{-c} option of @code{get} or @code{prs} contains
-more than twelve digits, the first two are understood to be the century
-part of the year.  For example, @samp{971120193000} and
-@samp{19971120193000} both represent exactly the same time (7:30 p.m. on
-November 20, 1997).  The fields of a date can be separated with other
-(non-digit) characters, and so @samp{1997/11/20-19:30:00} also denotes
-the same time (but @samp{1997/11/20} is an error because there are fewer
-than twelve digits).
+argument to the @samp{-c} option of @code{get}, @code{prt}, or
+@code{prs} contains more than twelve digits, the first two are
+understood to be the century part of the year.  For example,
+@samp{971120193000} and @samp{19971120193000} both represent exactly the
+same time (7:30 p.m. on November 20, 1997).  The fields of a date can be
+separated with other (non-digit) characters, and so
+@samp{1997/11/20-19:30:00} also denotes the same time (but
+@samp{1997/11/20} is an error because there are fewer than twelve
+digits).
 
 @sc{cssc} represents dates internally in a way that works for Gregorian
-dates up to at least the year 32767 AD.  Some countries didn't recognise
+dates up to at least the year 32767 AD.  Some countries didn't recognize
 the Gregorian calendar system until the early twentieth century but this
-of course is not really a problem now.  The useful like of @sc{sccs} is
+of course is not really a problem now.  The useful life of @sc{sccs} is
 from 1969 until 2068.  Years are stored in two-digit form in @sc{sccs}
 files and so although @sc{cssc} has no limits internally, it's not
 possible to indicate a year outside this range in an @sc{sccs} file.
@@ -1355,8 +1673,8 @@ produced by @code{admin} when an @sc{sccs} file is created.
 @node Year 2000 Summary, , The Bad News,  Year 2000 Issues
 @section Summary
 
-To summarise, all reporting activities of @sc{cssc} will work correctly
-throughout the range of time representible in an @sc{sccs} file (that
+To summarize, all reporting activities of @sc{cssc} will work correctly
+throughout the range of time representable in an @sc{sccs} file (that
 is, from 1969 to 2068 inclusive).  However, commands which modify
 @sc{sccs} files and need to add dates may fail earlier than this (but
 then again, may not, depending on your operating system).
