@@ -43,11 +43,17 @@ sccs_file::find_requested_sid(sid requested, sid &found) const {
 			found = requested;
 			return true;
 		}
-		if (requested.partial_match(id)
-		    && (!got_best || id > best)) {
-			best = id;
-			got_best = true;
-		}
+
+		if ( !got_best && requested.is_null() )
+		  {
+		    best = id;
+		    got_best = true;
+		  }		
+		else if (requested.partial_match(id) && id > best)
+		  {
+		    best = id;
+		    got_best = true;
+		  }
 	}
 	if (got_best)
 	  {
