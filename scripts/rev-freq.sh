@@ -31,7 +31,7 @@ then
     true
 else
     rm -f $status
-    cvs status 2>/dev/null > $status || { echo \"cvs status\" failed.  ; exit 1 }
+    cvs status 2>/dev/null > $status || { echo \"cvs status\" failed.  ; exit 1; }
 fi
 
 grep "Repository revision" < $status | 
