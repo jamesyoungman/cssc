@@ -7,18 +7,21 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.1 1997/05/04 14:49:22 james Exp $
-# $Log: sccsdiff.sh.in,v $
-# Revision 1.1  1997/05/04 14:49:22  james
-# Initial revision
-#
+# $Id: sccsdiff.sh.in,v 1.2 1997/05/04 14:52:02 james Exp $
+# LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.2  1997/05/04 14:52:02  james
+# LOG   Have to enclose the version string in single rather than double
+# LOG   quotes, to protect the dollar signs from shell expansion.
+# LOG
+# LOG   Revision 1.1  1997/05/04 14:49:22  james
+# LOG   Initial revision
 
 # Values substituted by configure:-
 pr=@PR@			   # The location of the   pr(1) command:
 diff=@CONFIG_DIFF_COMMAND@ # The location of the diff(1) command:
 get=get
 
-version="$Revision: 1.1 $ $State: Exp $"
+version='$Revision: 1.2 $ $State: Exp $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
