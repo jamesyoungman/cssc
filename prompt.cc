@@ -28,7 +28,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.8 1998/02/21 14:27:15 james Exp $";
+static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.9 1998/06/08 21:51:37 james Exp $";
 #endif
 
 
@@ -45,6 +45,7 @@ re_new(char *p, int oldlen, int newlen)
 }
 
 
+
 /* Prompts the user for input. */
 
 mystring
@@ -53,7 +54,7 @@ prompt_user(const char *prompt)
   const int chunk_size = 4;	// TODO: Debug the code, then increase this!
   char *linebuf = new char [chunk_size];
   int buflen = chunk_size;
-  int c;
+  int c, lastc;
   int i = 0;
   
   // Issue the prompt only if stdin is a tty.
@@ -62,17 +63,25 @@ prompt_user(const char *prompt)
       fputs(prompt, stdout);
       fflush(stdout);
     }
-	
-  c = getchar();
-  while(c != EOF && c != '\n')
+
+  lastc = 0;
+  while ( (c=getchar()) != EOF )
     {
+      if ('\n' == c)
+	{
+	  if (lastc == '\\')
+	    --i; /* Overwrite the backslash with the escaped newline */
+	  else
+	    break;
+	}
+      
       if (i == buflen - 1)
 	{
 	  linebuf = re_new(linebuf, buflen, buflen+chunk_size);
 	  buflen += chunk_size;
 	}
       linebuf[i++] = c;
-      c = getchar();
+      lastc = c;
     }
 
   linebuf[i] = '\0';
