@@ -29,9 +29,6 @@
 
 #include "cssc.h"
 
-#ifndef HAVE_STRSTR
-#define strstr LIDENT(strstr)
-
 char *
 strstr(const char *s1, const char *s2) {
 	char c = *s2;
@@ -47,4 +44,3 @@ strstr(const char *s1, const char *s2) {
 
 	return (char *) s1;
 }
-
