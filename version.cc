@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <vernum.h>
+#include "version.h"
+
 #define version_core "GNU CSSC " VERSION "; Patchlevel: " PATCHLEVEL
 
 extern const char cssc_version_rcs[] = "$Version: " version_core " $";
