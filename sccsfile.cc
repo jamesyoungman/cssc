@@ -40,7 +40,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.18 1998/01/25 22:33:02 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.19 1998/02/01 18:03:19 james Exp $";
 #endif
 
 
@@ -542,8 +542,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 	if ('1' == *arg)
 	  {
 	    fprintf(stderr,
-		    "%s: Warning: encoded files not "
-		    "fully supported.\n", name.c_str());
+		    "%s: Warning: encoded files not yet fully supported.\n",
+		    name.c_str());
 	    flags.encoded = 1;
 	  }
 	else if ('0' == *arg)
@@ -703,6 +703,8 @@ sccs_file::read_line_param(FILE *f)
     {
       return 1;
     }
+  // chomp the newline from the end of the line.
+  // TODO: make me 8-bit clean!
   (*plinebuf)[strlen(plinebuf->c_str()) - 1] = '\0';
   return 0;
 }

@@ -30,7 +30,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.8 1997/12/26 18:33:50 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.9 1998/02/01 18:03:01 james Exp $";
 #endif
 
 NORETURN
@@ -66,7 +66,9 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 
 		int lineno = 0;
 		while(!linebuf.read_line(pf)) {
-			linebuf[strlen(linebuf.c_str()) - 1] = '\0';
+		  // chomp the newline 
+		  // TODO: make me 8-bit clean!
+		  linebuf[strlen(linebuf.c_str()) - 1] = '\0';
 			lineno++;
 
 			char *args[7];
