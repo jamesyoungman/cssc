@@ -13,8 +13,8 @@
 @c %**end of header
 
 @set EDITION 1.0
-@set VERSION 0.10beta-pl0
-@set UPDATED Sat Mar 20 11:30:50 1999
+@set VERSION 0.10beta-pl1
+@set UPDATED Sun Mar 21 10:11:20 1999
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
