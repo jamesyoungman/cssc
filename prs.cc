@@ -14,7 +14,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.4 1997/05/10 14:49:52 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.5 1997/05/31 22:48:03 james Exp $";
 
 void
 usage() {
@@ -30,7 +30,7 @@ main(int argc, char **argv) {
 	sid rid = NULL;
 	/* enum */ sccs_file::when selected = sccs_file::SIDONLY;
 	int all_deltas = 0;
-	sccs_date cutoff;
+	sccs_date cutoff_date;
 	int default_processing = 1;
 
 	if (argc > 0) {
@@ -68,8 +68,8 @@ main(int argc, char **argv) {
 			break;
 			
 		case 'c':
-			cutoff = sccs_date(opts.getarg());
-			if (!cutoff.valid()) {
+			cutoff_date = sccs_date(opts.getarg());
+			if (!cutoff_date.valid()) {
 				quit(-2, "Invalid cutoff date: '%s'",
 				     opts.getarg());
 			}
@@ -96,7 +96,7 @@ main(int argc, char **argv) {
 
 	}
 
-	if (selected == sccs_file::SIDONLY && cutoff.valid()) {
+	if (selected == sccs_file::SIDONLY && cutoff_date.valid()) {
 		quit(-2, "Either the -e or -l switch must used with a"
 			 " cutoff date.");
 	}
@@ -114,7 +114,8 @@ main(int argc, char **argv) {
 		if (default_processing) {
 			printf("%s:\n\n", (const char *) name);
 		}
-		file.prs(stdout, format, rid, cutoff, selected, all_deltas);
+		file.prs(stdout, format, rid, cutoff_date, selected,
+			 all_deltas);
 	}
 
 	return 0;

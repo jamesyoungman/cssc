@@ -13,7 +13,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.3 1997/05/10 14:49:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.4 1997/05/31 22:48:43 james Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are
@@ -21,7 +21,7 @@ static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.3 1997/05/10 14:49:56 jam
 
 void
 sccs_file::prepare_seqstate(seq_state &state, sid_list include,
-			    sid_list exclude, sccs_date cutoff) {
+			    sid_list exclude, sccs_date cutoff_date) {
 	delta_iterator iter(delta_table);
 
 	while(iter.next()) {
@@ -33,7 +33,7 @@ sccs_file::prepare_seqstate(seq_state &state, sid_list include,
 		if (exclude.member(id)) {
 			state.exclude(iter->seq);
 		}
-		if (cutoff.valid() && iter->date > cutoff) {
+		if (cutoff_date.valid() && iter->date > cutoff_date) {
 			state.exclude(iter->seq);
 		}
 	}

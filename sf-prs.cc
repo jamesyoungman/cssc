@@ -14,7 +14,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.8 1997/05/31 10:18:09 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.9 1997/05/31 22:48:51 james Exp $";
 #endif
 
 inline void
@@ -461,26 +461,26 @@ sccs_file::print_delta(FILE *out, const char *format,
 /* Prints out parts of the SCCS file.  */
 
 void		
-sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
+sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
 	       enum when when, int all_deltas) {
 	if (!rid.valid()) {
 		rid = find_most_recent_sid(rid);
 	}
 
-	if (when != SIDONLY && !cutoff.valid()) {
+	if (when != SIDONLY && !cutoff_date.valid()) {
 		struct delta const *delta = delta_table.find(rid);
 		if (delta == NULL) {
 			quit(-1, "%s: Requested SID doesn't exist.",
 			     (const char *) name);
 		}
-		cutoff = delta->date;
+		cutoff_date = delta->date;
 	}
 
 	delta_iterator iter(delta_table);
 	while(iter.next(all_deltas)) {
 		switch(when) {
 		case EARLIER:
-			if (iter->date > cutoff) {
+			if (iter->date > cutoff_date) {
 				continue;
 			}
 			break;
@@ -492,7 +492,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
 			break;
 
 		case LATER:
-			if (iter->date < cutoff) {
+			if (iter->date < cutoff_date) {
 				continue;
 			}
 			break;

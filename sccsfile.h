@@ -239,7 +239,7 @@ public:
 	void test_locks(sid got, sccs_pfile &pfile) const;
 
 	struct get_status get(FILE *out, mystring name, sid id,
-			      sccs_date cutoff = NULL,
+			      sccs_date cutoff_date = NULL,
 #ifdef __GNUC__
 			      sid_list include = sid_list(""),
 			      sid_list exclude = sid_list(""),
@@ -254,7 +254,7 @@ public:
 	/* sf-get3.c */
 private:
 	void prepare_seqstate(seq_state &state, sid_list include,
-			      sid_list exclude, sccs_date cutoff);
+			      sid_list exclude, sccs_date cutoff_date);
 
 	/* sf-chkid.c */
 
@@ -325,7 +325,7 @@ public:
   };
   
 
-	void prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
+	void prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
 	         enum when when, int all_deltas);
 
   void prt(FILE *out, struct cutoff exclude, int all_deltas,

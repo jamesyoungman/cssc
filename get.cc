@@ -15,7 +15,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.7 1997/05/13 17:40:15 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.8 1997/05/31 22:47:57 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -70,7 +70,7 @@ main(int argc, char **argv) {
 	int no_output = 0;		/* -g */
 	const char *wstring = NULL;	/* -w */
 	sid_list include, exclude;	/* -i, -x */
-	sccs_date cutoff;		/* -c */
+	sccs_date cutoff_date;		/* -c */
 	int show_sid = 0;		/* -m */
 	int show_module = 0;		/* -n */
 	int debug = 0;			/* -D */
@@ -100,8 +100,8 @@ main(int argc, char **argv) {
 			break;
 
 		case 'c':
-			cutoff = sccs_date(opts.getarg());
-			if (!cutoff.valid()) {
+			cutoff_date = sccs_date(opts.getarg());
+			if (!cutoff_date.valid()) {
 				quit(-2, "Invalid cutoff date: '%s'",
 				     opts.getarg());
 			}
@@ -263,7 +263,7 @@ main(int argc, char **argv) {
 		}
 		const int keywords = !suppress_keywords;
 		struct sccs_file::get_status status
-			= file.get(out, gname, retrieve, cutoff,
+			= file.get(out, gname, retrieve, cutoff_date,
 				   include, exclude, keywords, wstring,
 				   show_sid, show_module, debug);
 
