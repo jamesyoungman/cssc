@@ -1,4 +1,26 @@
+Sat Jun 28 12:25:12 1997  James Youngman  <JYoungman@vggas.com>
+
+	* Allow the utilities to be built with a shared library for at
+	least $(SFILE_OBJS) and $(COMMON_OBJS).  May have to provide two
+	version numbers, one for the library and one for each app.  I
+	don't expect to need/want to support user code linking against the
+	library, the intent is just to conserve disk space and perhaps
+	system memory too.
+
+Fri Jun 27 19:40:22 1997  James Youngman  <JYoungman@vggas.com>
+
+	* Make sure we can make a branch at a null delta after making it.
+
+Mon May 26 14:56:52 1997  James Youngman  <JYoungman@vggas.com>
+
+	* Write tests for cdc, comb, prt (and implement it), rmdel, sact,
+ 	sccsdiff, val.
+
 Sun May 25 16:27:05 1997  James Youngman  <JYoungman@vggas.com>
+
+	* Add "installdocs" target and "install" target.
+
+	* Complete the test cases in admin/flags.sh.
 
 	* Fix unget so that test unget/output.sh/e7 passes.
 
@@ -21,7 +43,7 @@ Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
 
 	* sccsfile.h: get, delta and sccs-diff must use the "encoding" flag.
 
-	* sf-admin.cc: Test setting & removing the 'e' flag.
+	* sf-admin.cc: Test setting & removing the 'e' flag. (is it allowed?)
 
 	* Write a shell script for converting SCCS files to RCS files; use
 	the Bourne shell, since not everybody has the C shell [suggested
