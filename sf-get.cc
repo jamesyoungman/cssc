@@ -35,12 +35,13 @@
 #include "pfile.h"
 #include "seqstate.h"
 
-#ifndef HAVE_STRSTR
-#include "strstr.cc"
-#endif
+// We use @LIBOBJS@ instead now...
+// #ifndef HAVE_STRSTR
+// #include "strstr.cc"
+// #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.8 1997/10/27 19:28:00 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.9 1997/11/09 13:57:52 james Exp $";
 #endif
 
 void

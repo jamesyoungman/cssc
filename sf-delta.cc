@@ -34,12 +34,13 @@
 #include "run.h"
 #include "linebuf.h"
 
-#ifndef HAVE_STRSTR
-#include "strstr.cc"
-#endif
+// We use @LIBOBJS@ instead now.
+// #ifndef HAVE_STRSTR
+// #include "strstr.cc"
+// #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.11 1997/10/27 19:26:50 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.12 1997/11/09 13:57:49 james Exp $";
 #endif
 
 class diff_state {

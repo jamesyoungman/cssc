@@ -31,12 +31,13 @@
 #include "sccsfile.h"
 #include "sl-merge.h"
 
-#ifndef HAVE_STRSTR
-#include "strstr.cc"
-#endif
+// We use @LIBOBJS@ instead now.
+// #ifndef HAVE_STRSTR
+// #include "strstr.cc"
+// #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.11 1997/11/07 23:06:06 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.12 1997/11/09 13:57:46 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
