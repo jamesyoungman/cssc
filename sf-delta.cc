@@ -504,6 +504,12 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	pfile.update();
 
 	end_update(out, new_delta);
+
+	new_delta.id.print(stdout);
+	printf("\n"
+	       "%u inserted\n%u deleted\n%u unchanged\n",
+	       new_delta.inserted, new_delta.deleted, new_delta.unchanged);
+	
 }
 
 /* Local variables: */
