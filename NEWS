@@ -1,3 +1,7 @@
+New in CSSC-0.06alpha-pl6 (unreleased)
+
+	* The "-t" option of the "get" command is now implemented. 
+
 New in CSSC-0.06alpha-pl5
 
 	* Bugfix for rmdel; it now no longer corrupts the SCCS file
@@ -72,7 +76,7 @@ New in CSSC-0.05alpha-pl0
 	  documented in the manual.
 
 	* sccsdiff has been improved by Richard Polton
-	  <rap@scopic.com>, (the code was rewritten my myself).
+	  <rap@scopic.com>, (the code was rewritten by myself).
 
 	* Initial support for extremely long (>99999 line) files.
 	  Also, test scripts for these.
