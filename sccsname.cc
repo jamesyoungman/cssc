@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.6 1997/11/23 11:52:47 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.7 1997/11/23 18:49:47 james Exp $";
 #endif
 
 #ifdef CONFIG_MSDOS_FILES 
@@ -61,7 +61,7 @@ sccs_name::valid_filename(const char *thename)
   if (thename && thename[0])
     {
       mystring base = base_part(mystring(thename));
-      const int valid = (base[0] == 's' && base[1] == '.');
+      const int valid = (base.at(0) == 's' && base.at(1) == '.');
 #if 0
       fprintf(stderr, "valid_filename returning %d\n", valid);
 #endif
