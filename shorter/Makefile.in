@@ -10,41 +10,12 @@
 #
 # Makefile for compiling under Unix.   Uses ./configure.
 #
-# $Id: Makefile.in,v 1.1 1997/06/29 10:46:27 james Exp $
+# $Id: Makefile.in,v 1.2 1997/06/30 22:06:54 james Exp $
 # $Log: Makefile.in,v $
-# Revision 1.1  1997/06/29 10:46:27  james
-# Initial revision
+# Revision 1.2  1997/06/30 22:06:54  james
+# Removed unneccessary features still present in this file only because
+# it was copied from the one in the parent directory.
 #
-# Revision 1.12  1997/06/23 23:02:47  james
-# Added rl-merge.cc.
-#
-# Revision 1.11  1997/06/01 00:36:37  james
-# Bumped the patchlevel to CSSC-0.01-devel-pl6
-#
-# Revision 1.10  1997/06/01 00:32:11  james
-# Updated the dependencies.
-#
-# Revision 1.9  1997/05/31 10:27:10  james
-# New source files rel_list.cc, rl-merge.cc, and sysnerr.h.  Renamed
-# $(LFLAGS) to $(LDFLAGS).
-#
-# Revision 1.8  1997/05/22 23:30:59  james
-# Support version information in a separate module.  Changed the package
-# name.
-#
-# Revision 1.7  1997/05/04 14:56:55  james
-# Added sccsdiff to $(CMDS).
-#
-# Revision 1.6  1997/05/04 14:55:57  james
-# Added a rule for creating sccsdiff.sh from sccsdiff.sh.in.
-#
-# Revision 1.5  1997/05/03 11:21:03  james
-# Added dependencies.
-#
-#
-PACKAGE = CSSC
-VERSION = 0.01-devel
-PATCHLEVEL = 6
 
 SHELL = /bin/sh
 
@@ -63,8 +34,7 @@ CXXCPP = @CXXCPP@
 CC = @CC@
 TEMPLATE_CXXFLAGS = -fno-implicit-templates
 DIFF = @CONFIG_DIFF_COMMAND@
-PKGDIR = $(PACKAGE)-$(VERSION)-pl$(PATCHLEVEL)
-TARFILE = ../$(PKGDIR).tar
+
 
 # Flags for use only with 
 HAVE_GXX = @GXX@
@@ -74,7 +44,7 @@ CXXWARN_GXX = -Wall -Wpointer-arith -Wwrite-strings -Wmissing-prototypes\
 CXXFLAGS_GXX_$(HAVE_GXX) = $(CXXWARN_GXX) $(TEMPLATE_CXXFLAGS) \
 	-fno-omit-frame-pointer $(EXTRA_CXXFLAGS)
 CPPFLAGS = -I.. -I$(srcdir)/.. @CPPFLAGS@
-VERFLAGS = -DVERSION=\"$(VERSION)\" -DPATCHLEVEL=\"$(PATCHLEVEL)\" 
+
 # TODO: When the Makefile is updated using configure, under control of
 # make. the CXXFLAGS macro grows to contain multiple copies of $(CXXFLAGS),
 # presumably because it is exported.   Refer to some other autoconf-using
@@ -99,10 +69,10 @@ DEPFILES = $(SRCS:.cc=.d)
 XCMDS = get.x delta.x admin.x prs.x what.x unget.x sact.x cdc.x rmdel.x
 EXTRA_SRCS = _chmod.cc fsync.cc _chmod.cc list.cc sid_list.cc sl-merge.cc
 XSRCS = $(XCMDS:.x=.cs)
-INCLUDES = version.h defaults.h file.h fileiter.h filelock.h getopt.h linebuf.h \
-	list.h cssc.h mystring.h pfile.h pipe.h quit.h run.h sccsdate.h \
-	sccsfile.h sccsname.h seqstate.h sf-chkmr.h sid.h sid_list.h stack.h \
-	sysdep.h xalloc.h sccsdate.h config.h aconf.h
+INCLUDES = version.h defaults.h file.h fileiter.h filelock.h getopt.h \
+	linebuf.h list.h cssc.h mystring.h pfile.h pipe.h quit.h run.h \
+	sccsdate.h sccsfile.h sccsname.h seqstate.h sf-chkmr.h sid.h \
+	sid_list.h stack.h sysdep.h xalloc.h sccsdate.h config.h aconf.h 
 CONFIG_SRCS = configure.in aconf.h.in acconfig.h
 
 SOURCEFILES = $(SRCS) $(INCLUDES) $(XSRCS) configure.in aconf.h.in
@@ -254,9 +224,7 @@ spotless: clobber
 	-rcsclean
 	$(RM) Makefile 
 
-version.o: $(srcdir)/../version.cc Makefile
-	$(CXX) $(CXXFLAGS) $(VERFLAGS) -c $< -o $@
 
-version.i: $(srcdir)/version.cc Makefile
-	$(CXXCPP) $(CPPFLAGS) $(VERFLAGS) $< > $@ || $(RM) $@
-
+##
+# Prevent GNU make v3 from overflowing arg limit on SysV.
+.NOEXPORT:
