@@ -32,7 +32,7 @@
 #include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.16 2002/03/25 22:41:32 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.17 2002/03/25 23:57:27 james_youngman Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are to
@@ -87,38 +87,59 @@ sccs_file::authorised() const {
   if (len != 0) {
     int found = 0;
     
-    for(i = 0; i < len; i++) {
-      const char *s = users[i].c_str();
-      char c = s[0];
+    for(i = 0; i < len; i++)
+      {
+	const char *s = users[i].c_str();
+	char c = s[0];
       
-      if (c == '!') {
-	s++;
-	if (isdigit(c)) {
-	  if (user_is_group_member(atoi(s))) {
-	    found = 0;
-	    break;
-	  }
-	} else if (strcmp(s, user) == 0) {
-	  found = 0;
-	  break;
+	// Regular SCCS does not underatand the use of "!username" 
+	// to specifically exclude users.  Hence for compatibility 
+	// nor must we.  Hence this next if statement is commented out.
+#if 0	
+      if (c == '!')
+	{
+	  s++;
+	  if (isdigit(c))
+	    {
+	      if (user_is_group_member(atoi(s)))
+		{
+		  found = 0;
+		  break;
+		}
+	    }
+	  else if (strcmp(s, user) == 0)
+	    {
+	      found = 0;
+	      break;
+	    }
+	  else 
+	    {
+	      continue;
+	    }
 	}
-      } else {
-	if (isdigit(c)) {
-	  if (user_is_group_member(atoi(s))) {
-	    found = 1;
-	  }
-	} else if (strcmp(s, user) == 0) {
+#endif
+
+      if (isdigit(c))
+	{
+	  if (user_is_group_member(atoi(s)))
+	    {
+	      found = 1;
+	      break;
+	    }
+	} 
+      else if (strcmp(s, user) == 0) 
+	{
 	  found = 1;
 	  break;
 	}
       }
-    }
     
-    if (!found) {
-      errormsg("%s: You are not authorized to make deltas.",
-	       name.c_str());
-      return false;
-    }
+    if (!found) 
+      {
+	errormsg("%s: You are not authorized to make deltas.",
+		 name.c_str());
+	return false;
+      }
   }
   return true;
 }
