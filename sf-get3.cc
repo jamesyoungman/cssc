@@ -32,45 +32,12 @@
 #include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.11 1999/04/18 17:59:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.12 1999/04/21 22:19:12 james Exp $";
 #endif
 
-/* Prepare a seqstate for use by marking which sequence numbers are
-   to be included and which are to be excluded. */
-
-#ifdef USE_OLD_SEQSTATE
-bool
-sccs_file::prepare_seqstate(seq_state &state, sid_list include,
-			    sid_list exclude, sccs_date cutoff_date)
-{
-  
-  ASSERT(0 != delta_table);
-  delta_iterator iter(delta_table);
-
-  while (iter.next())
-    {
-      sid const &id = iter->id;
-      
-      if (include.member(id))
-	{
-	  state.include(iter->seq);
-	}
-      if (exclude.member(id))
-	{
-	  state.exclude(iter->seq);
-	}
-      if (cutoff_date.valid() && iter->date > cutoff_date)
-	{
-	  state.exclude(iter->seq);
-	}
-      
-      ASSERT(0 != delta_table);
-    }
-  ASSERT(0 != delta_table);
-  
-  return true;
-}
-#else 
+/* Prepare a seqstate for use by marking which sequence numbers are to
+ * be included and which are to be excluded.
+ */
 
 bool
 sccs_file::prepare_seqstate(seq_state &state, sid_list include,
@@ -78,28 +45,26 @@ sccs_file::prepare_seqstate(seq_state &state, sid_list include,
 {
   
   ASSERT(0 != delta_table);
-  delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table);
 
   while (iter.next())
     {
-      // Did the user explicitly include this SID (on the command line)?
-      // Did the user explicitly exclude this SID (on the command line)?
-      
       sid const &id = iter->id;
 
-      if (include.member(id))
+      if (include.member(id))	// explicitly included on command line
 	{
 	  state.set_explicitly_included(iter->seq);
 	}
-      else if (exclude.member(id))
+      else if (exclude.member(id)) // explicitly included on command line
 	{
 	  state.set_explicitly_excluded(iter->seq);
 	}
       else if (cutoff_date.valid() && iter->date > cutoff_date)
 	{
-	  // Delta not explicitly included/excluded by the user, but if it is newer
-	  // than the cutoff date, we don't want it.  This is the feature that allows
-	  // us to retrieve a delta that was current at some time in the past.
+	  // Delta not explicitly included/excluded by the user, but
+	  // if it is newer than the cutoff date, we don't want it.
+	  // This is the feature that allows us to retrieve a delta
+	  // that was current at some time in the past.
 	  state.set_excluded(iter->seq);
 	}
       
@@ -110,7 +75,6 @@ sccs_file::prepare_seqstate(seq_state &state, sid_list include,
   return true;
 }
 
-#endif
 
 /* Local variables: */
 /* mode: c++ */

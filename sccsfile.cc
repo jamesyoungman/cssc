@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.39 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.40 1999/04/21 22:19:12 james Exp $";
 #endif
 
 
@@ -733,21 +733,10 @@ sccs_file::find_most_recent_sid(sid id) const {
 	sid found;
 
 	ASSERT(0 != delta_table);
-	delta_iterator iter(delta_table);
-
-#if 0
-	fputs("find_most_recent_sid(", stderr);
-	id.dprint(stderr);
-	fputs(")\n", stderr);
-#endif
+	const_delta_iterator iter(delta_table);
 
 	while (iter.next()) {
 		if (id.trunk_match(iter->id)) {
-#if 0
-			fputs("match: ", stderr);
-			iter->id.dprint(stderr);
-			putc('\n', stderr);
-#endif
 			if (found.is_null() || newest < iter->date) {
 				newest = iter->date;
 				found = iter->id;
@@ -766,7 +755,7 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
   
   ASSERT(0 != delta_table);
 
-  delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table);
   while (iter.next())
     {
       if (!found || iter->date > d)

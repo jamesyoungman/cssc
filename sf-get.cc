@@ -45,46 +45,8 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.26 1999/04/18 17:59:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.27 1999/04/21 22:19:12 james Exp $";
 #endif
-
-#ifdef USE_OLD_SEQSTATE
-bool
-sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
-{
-  while (seq != 0)
-    {
-      if (state.is_predecessor(seq))
-	{
-	  errormsg("%s: Loop in deltas.", name.c_str());
-	  return false;
-	}
-      state.set_predecessor(seq);
-      
-      int len;
-      int i;
-      
-      const delta &d = delta_table->delta_at_seq(seq);
-      
-      len = d.included.length();
-      for(i = 0; i < len; i++)
-	{
-	  state.pred_include(d.included[i]);
-	} 		
-      
-      len = d.excluded.length();
-      for(i = 0; i < len; i++)
-	{
-	  state.pred_exclude(d.excluded[i]);
-	} 		
-      
-      seq = d.prev_seq;
-    }
-  return true;
-}
-
-#else
-
 
 bool
 sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
@@ -194,7 +156,6 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
   return true;
 }
 
-#endif 
 
 bool
 sccs_file::get(mystring gname, class seq_state &state,

@@ -43,7 +43,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.33 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.34 1999/04/21 22:19:12 james Exp $";
 #endif
 
 class diff_state
@@ -471,11 +471,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   
   struct subst_parms parms(get_out, NULL, delta(), 
 			   0, sccs_date(NULL));
-#ifdef USE_OLD_SEQSTATE
-  seq_state gsstate = sstate;
-#else
   seq_state gsstate(sstate);
-#endif
+
   get(dname, gsstate, parms, 0, 0, 0, 0, GET_NO_DECODE);
 
   if (fclose_failed(fclose(get_out)))
@@ -508,17 +505,6 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   mylist<seq_no> included, excluded;
   seq_no seq;
   
-#ifdef USE_OLD_SEQSTATE
-  for (seq = 1; seq < highest_delta_seqno(); seq++) {
-    if (sstate.is_explicit(seq)) {
-      if (sstate.is_included(seq)) {
-	included.add(seq);
-      } else if (sstate.is_excluded(seq)) {
-	excluded.add(seq);
-      }
-    }
-  }
-#else
   for (seq = 1; seq < highest_delta_seqno(); seq++)
     {
     if (sstate.is_explicitly_tagged(seq))
@@ -533,8 +519,6 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	}
       }
     }
-#endif
-
   
   // Create any required null deltas if we need to.
   if (flags.null_deltas)

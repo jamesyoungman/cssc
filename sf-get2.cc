@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.34 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.35 1999/04/21 22:19:12 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -69,7 +69,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
   bool got_best = false;
   sid best;
   
-  delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table);
 
   if (1 == ncomponents)
     {
@@ -501,22 +501,6 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   
   ASSERT(0 != delta_table);
 
-#ifdef USE_OLD_SEQSTATE  
-  if (!prepare_seqstate(state, d->seq))
-    {
-      status.success = false;
-      return status;
-    }
-  
-  ASSERT(0 != delta_table);
-  if (!prepare_seqstate(state, include, exclude, cutoff_date))
-    {
-      status.success = false;
-      return status;
-    }
-#else
-
-  // So far, this code is the same anyway...
   if (!prepare_seqstate(state, d->seq))
     {
       status.success = false;
@@ -560,9 +544,7 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	    }
 	}
     }
-  
-  
-#endif  
+
   
   // The subst_parms here may not be the Whole Truth since
   // the cutoff date may affect which version is actually
@@ -602,15 +584,6 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
     {
       const sid id = seq_to_sid(seq);
       
-#ifdef USE_OLD_SEQSTATE
-      if (state.is_explicit(seq))
-	{
-	  if (state.is_included(seq))
-	    status.included.add(id);
-	  else if (state.is_excluded(seq))
-	    status.excluded.add(id);
-	}
-#else
       if (state.is_explicitly_tagged(seq))
 	{
 	  if (state.is_included(seq))
@@ -618,7 +591,6 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	  else if (state.is_excluded(seq))
 	    status.excluded.add(id);
 	}
-#endif      
     }
   
   return status;

@@ -34,7 +34,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.12 1999/04/18 17:59:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.13 1999/04/21 22:19:12 james Exp $";
 #endif
 
 static int
@@ -91,7 +91,7 @@ sccs_file::rmdel(sid id)
     }
   seq_no seq = d->seq;
 
-  delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table);
   while (iter.next())
     {
       if (iter->prev_seq == seq)

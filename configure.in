@@ -30,7 +30,7 @@ AC_INIT(sccsfile.h)
 # in the Automake manual.
 # alpha version was 0.09alpha.pl4
 # previons version was 0.10beta.pl0
-AM_INIT_AUTOMAKE(CSSC,0.11alpha.pl1)
+AM_INIT_AUTOMAKE(CSSC,0.11alpha.pl2)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)

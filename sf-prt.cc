@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.20 1999/04/18 17:59:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.21 1999/04/21 22:19:12 james Exp $";
 #endif
 
 static void
@@ -342,7 +342,7 @@ sccs_file::prt(FILE *out,
 	}
       
       bool stop_now = false;
-      delta_iterator iter(delta_table);
+      const_delta_iterator iter(delta_table);
   
       while (!stop_now && iter.next(all_deltas))
 	{

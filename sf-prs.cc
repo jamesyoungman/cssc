@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.23 1999/04/18 17:59:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.24 1999/04/21 22:19:12 james Exp $";
 #endif
 
 inline bool
@@ -591,7 +591,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
       cutoff_date = pd->date;
     }
 
-  delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table);
   while (iter.next(all_deltas))
     {
       switch (when)
