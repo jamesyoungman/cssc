@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.51 2003/03/01 15:38:25 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.52 2003/03/08 15:19:45 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -175,6 +175,10 @@ private:
   int write_subst(const char *start,
                   struct subst_parms *parms,
                   struct delta const& gotten_delta) const;
+
+  bool sid_matches(const sid& requested,
+		   const sid& found,
+		   bool get_top_delta) const;
   
 public:
   struct get_status
