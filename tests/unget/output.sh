@@ -1,6 +1,10 @@
 #! /bin/sh
 
-# output.sh:  Testing for output format.
+# output.sh:  Testing for output format of unget.
+#
+# All these tests pass for "true" SCCS.  The test "e7" fails for CSSC.
+# I don't know why SCCS prints what it does for e7 (and the later
+# ones) but that is what it prints and that is what we should do.
 
 # Import common functions & definitions.
 . test-common
@@ -57,6 +61,11 @@ docommand d8 "${unget} -n -s $s1" 0 "" ""
 
 
 setup_an_edit e
+#
+echo Test e7 is currently expected to fail.  Please fix unget so
+echo that it passes.  See the files expected.stdout and got.stdout,
+echo plus the file last.command.
+#
 docommand e7 "${unget} -r1.1.1.1 $s1 $s2" 0 "\
 \ns.new1.txt:\
 \n1.1.1.1\
