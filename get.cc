@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.42 2002/03/26 20:30:46 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.43 2002/04/03 14:15:55 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -73,6 +73,7 @@ static void maybe_clear_archive_bit(const mystring &)
 #endif
 }
 
+#define EXITVAL_INVALID_OPTION (1)
 
 
 int
@@ -109,7 +110,8 @@ main(int argc, char **argv)
     set_prg_name("get");
 
 
-  class CSSC_Options opts(argc, argv, "r!c!i!x!ebklpsmngtw!a!DVG!");
+  class CSSC_Options opts(argc, argv, "r!c!i!x!ebklpsmngtw!a!DVG!",
+			  EXITVAL_INVALID_OPTION);
   for(c = opts.next();
       c != CSSC_Options::END_OF_ARGUMENTS;
       c = opts.next())
@@ -118,14 +120,14 @@ main(int argc, char **argv)
         {
         default:
           errormsg("Unsupported option: '%c'", c);
-          return 2;
+          return EXITVAL_INVALID_OPTION;
           
         case 'r':
           org_rid = sid(opts.getarg());
           if (!org_rid.valid())
             {
-              errormsg("Invaild SID: '%s'", opts.getarg());
-              return 2;
+              errormsg("Invalid SID: '%s'", opts.getarg());
+              return EXITVAL_INVALID_OPTION;
             }
           break;
           
@@ -135,7 +137,7 @@ main(int argc, char **argv)
             {
               errormsg("Invalid cutoff date: '%s'",
                        opts.getarg());
-              return 2;
+              return EXITVAL_INVALID_OPTION;
             }
           break;
           
@@ -146,7 +148,7 @@ main(int argc, char **argv)
                     {
                         errormsg("Invalid inclusion list: '%s'",
                                  opts.getarg());
-                        return 2;
+                        return EXITVAL_INVALID_OPTION;
                     }
                     include = include_arg;
                 }
@@ -159,7 +161,7 @@ main(int argc, char **argv)
                     {
                         errormsg("Invalid exclusion list: '%s'",
                                  opts.getarg());
-                        return 2;
+                        return EXITVAL_INVALID_OPTION;
                     }
                     exclude = exclude_arg;
                 }

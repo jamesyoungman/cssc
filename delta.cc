@@ -37,7 +37,7 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.31 2002/03/24 19:45:34 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.32 2002/04/03 14:15:55 james_youngman Exp $";
 
 void
 usage() {
@@ -45,6 +45,8 @@ usage() {
 "usage: %s [-nsV] [-m MRs] [-r SID] [-y comments] file ...\n",
 		prg_name);
 }
+
+#define EXITVAL_INVALID_OPTION (1)
 
 int
 delta_main(int argc, char **argv)
@@ -70,20 +72,20 @@ delta_main(int argc, char **argv)
     set_prg_name("delta");
   }
 
-  class CSSC_Options opts(argc, argv, "r!sng!m!y!pV");
+  class CSSC_Options opts(argc, argv, "r!sng!m!y!pV", EXITVAL_INVALID_OPTION);
   for(c = opts.next();
       c != CSSC_Options::END_OF_ARGUMENTS;
       c = opts.next()) {
     switch (c) {
     default:
       errormsg("Unsupported option: '%c'", c);
-      return 2;
+      return EXITVAL_INVALID_OPTION;
 			
     case 'r':
       rid = sid(opts.getarg());
       if (!rid.valid()) {
 	errormsg("Invaild SID: '%s'", opts.getarg());
-	return 2;
+	return EXITVAL_INVALID_OPTION;
       }
       break;
 
@@ -137,7 +139,7 @@ delta_main(int argc, char **argv)
   if (! iter.using_source())
     {
       errormsg("No SCCS file specified.");
-      return 1;
+      return EXITVAL_INVALID_OPTION;
     }
 
   if (silent)
@@ -198,7 +200,7 @@ delta_main(int argc, char **argv)
 			 name.c_str());
 	      }
 	    failed = true;
-	    retval = 1;
+	    retval = EXITVAL_INVALID_OPTION;
 	    break;
 		  
 	  case sccs_pfile::AMBIGUOUS:
@@ -213,7 +215,7 @@ delta_main(int argc, char **argv)
 			 " command line.", name.c_str());
 	      }
 	    failed = true;
-	    retval = 1;
+	    retval = EXITVAL_INVALID_OPTION;
 	    break;
 		  
 	  default:
