@@ -33,7 +33,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include "cssc.h"
-#include "list.h"
+#include "mylist.h"
 #include "linebuf.h"
 #include "sid.h"
 #include "xalloc.cc"

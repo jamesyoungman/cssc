@@ -29,7 +29,7 @@
 #ifndef CSSC__RUN_H__
 #define CSSC__RUN_H__
 
-#include "list.h"
+#include "mylist.h"
 
 /* fork(); problem.
  *

@@ -26,12 +26,12 @@
  */
 
 #include "cssc.h"
-#include "list.h"
+#include "mylist.h"
 
 #include <string.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.7 1997/11/18 23:22:20 james Exp $";
+static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.8 1998/01/10 23:19:45 james Exp $";
 #endif
 
 list<mystring>

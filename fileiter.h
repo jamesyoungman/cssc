@@ -31,7 +31,7 @@
 #ifndef CSSC__FILEITER_H__
 #define CSSC__FILEITER_H__
 
-#include "list.h"
+#include "mylist.h"
 #include "sccsname.h"
 
 #define CONFIG_NO_DIRECTORY

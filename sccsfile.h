@@ -34,7 +34,7 @@
 #include "sccsname.h"
 #include "sid.h"
 #include "sccsdate.h"
-#include "list.h"
+#include "mylist.h"
 // #include "linebuf.h"
 #include "rel_list.h"
 

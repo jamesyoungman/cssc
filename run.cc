@@ -28,11 +28,11 @@
 
 #include "cssc.h"
 #include "run.h"
-#include "list.h"
+#include "mylist.h"
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.9 1997/11/18 23:22:31 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.10 1998/01/10 23:19:47 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()

@@ -30,7 +30,7 @@
 #ifndef INC_REL_LIST_H
 #define INC_REL_LIST_H
 
-#include "list.h" // NOT STL LIST !
+#include "mylist.h" // NOT STL LIST !
 
 #include "release.h"
 

@@ -34,7 +34,7 @@
 #include "sccsname.h"
 #include "sid.h"
 #include "sccsdate.h"
-#include "list.h"
+#include "mylist.h"
 
 class sccs_pfile {
 public:
