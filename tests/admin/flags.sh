@@ -37,11 +37,11 @@ docommand v5 "${admin} -fv -mI13 -ifoo $s" 0 "" IGNORE
 
 # Install MR validating program (setting & getting the 
 # name of the MR validator)
-docommand v6 "${admin} -fv/bin/true $s" 0 "" IGNORE
+docommand v6 "${admin} -fvtrue $s" 0 "" IGNORE
 
 # Make sure validation checks can succeed, ever.
 remove $s
-docommand v7 "${admin} -fv/bin/true -mI19 -ifoo $s" 0 "" ""
+docommand v7 "${admin} -fvtrue -mI19 -ifoo $s" 0 "" ""
 
 remove $s $g
 

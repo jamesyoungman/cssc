@@ -32,13 +32,13 @@ docommand M3 "${prs} -d:MF: test/s.passwd" 0 "no\n" ""
 docommand M4 "${prs} -d:MP: test/s.passwd" 0 "none\n" ""
 
 # Set the MR validator to "true".
-docommand M5 "${admin} -fv/bin/true test/s.passwd" 0 "" ""
+docommand M5 "${admin} -fvtrue test/s.passwd" 0 "" ""
 
 # Check that the MR validation flag is ON.
 docommand M6 "${prs} -d:MF: test/s.passwd" 0 "yes\n" ""
 
 # Check that the MR validation program is set.
-docommand M7 "${prs} -d:MP: test/s.passwd" 0 "/bin/true\n" ""
+docommand M7 "${prs} -d:MP: test/s.passwd" 0 "true\n" ""
 
 # Check in a file, giving an MR.
 docommand M8 "${delta} -mmr.XYZZY -ycomment.XYZZY test/s.passwd" 0 \

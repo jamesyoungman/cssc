@@ -72,16 +72,16 @@ docommand I16 "${prs} -d:MF: $s" 0 "yes\n" ""
 
 # Install MR validating program (setting & getting the 
 # name of the MR validator)
-docommand I17 "${admin} -fv/bin/true $s" 0 "" IGNORE
+docommand I17 "${admin} -fvtrue $s" 0 "" IGNORE
 
 # Check that the MR validation program is set correctly.
-docommand I18 "${prs} -d:MP: $s" 0 "/bin/true\n" ""
+docommand I18 "${prs} -d:MP: $s" 0 "true\n" ""
 
 ## The actual use of the MR validator is tested in the tests for "delta".
 
 # Make sure validation checks can succeed, ever.
 remove $s
-docommand I19 "${admin} -fv/bin/true -m19 -ifoo $s" 0 "" ""
+docommand I19 "${admin} -fvtrue -m19 -ifoo $s" 0 "" ""
 
 # Check compatible behaviour with regard to MR validation 
 # failure at initialisation.
