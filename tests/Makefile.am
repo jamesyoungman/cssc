@@ -1,4 +1,4 @@
-TESTDIRS = admin delta get prs prt unget
+TESTDIRS = admin delta get prs prt unget large
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -50,7 +50,15 @@ test-unget: links
 		$(SHELL) $$i || exit 1; \
 	done'
 
-all-tests: test-admin test-delta test-get test-prs test-prt test-unget
+test-large: links
+	$(SHELL) -ec 'cd large && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
+all-tests: 	test-admin test-delta test-get test-prs test-prt test-unget \
+		test-large
 	echo Tests passed.
 
 check: all-tests
