@@ -24,7 +24,7 @@ chmod +w $f
 # Try running get when gfile was writable -- it should fail.
 docommand W2 "$get s.$f" 1 IGNORE IGNORE
 remove $gfile
-test -e $gfile	    && miscarry could not remove _g.$f
+test -f $gfile	    && miscarry could not remove _g.$f
 
 # Now run get with the -G option and it should work even
 # though the file's usual name is occupied by a writable file.
