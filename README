@@ -80,7 +80,7 @@ provided in the file "docs/Platforms".
 
  The program "sccs" (from the subdirectory bsd) is sensitive to the
  setting of $(csscutildir) at compile time, because it compiles in the
- calue of that option as the default place to find the various
+ value of that option as the default place to find the various
  subprograms.
 
  mkdir work
