@@ -194,9 +194,11 @@ example @samp{^A}, the character whose code is 1.
 @item -a @var{xxx}
 Add user or group @var{xxx} the the list of those authorised 
 to check revisions in or out.  Untested.
+@c TODO: Write the test cases.
 
 @item -b
 Ensure that the file is encoded as a binary file.   Unimplemented.
+@c TODO: write the code, write the test cases, and document it.
 
 @item -d@var{F}
 Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
@@ -205,6 +207,7 @@ Delete flag @var{F} from the flags present in the file (@pxref{Flags}).
 @item -e @var{xxx}
 Erase the specified user or group from the list of those authorised to
 check revisions in or out.  Untested.
+@c TODO: Write the test cases.
 
 @item -fF @var{[xxx]}
 Add the flag @samp{F} (with optional value @var{xxx}) to the file's 
@@ -213,6 +216,7 @@ flags (@pxref{Flags}).
 @cindex checksum
 @item -h
 Check the @sc{sccs} file's checksum.  Untested.
+@c TODO: Write the test cases.
 
 @item -i@var{foo}
 Initialise the @sc{sccs} file with the contents of the file @var{foo}.
@@ -222,6 +226,7 @@ If no argument is given, read from standard input.  This implies the
 @item -l@var{rel1},@var{rel2},...
 Unlock the specified releases.   If @samp{a} is specified as the
 release, that denotes ``all releases''.  Untested.
+@c TODO: Write the test cases.
 
 @item -m@var{MR-list}
 When initialising a file, add the specified list of @sc{mr} numbers
@@ -239,6 +244,7 @@ Create a new @sc{sccs} file.
 @item -r@var{N}
 Set the initial release number to @var{N}.  The initial level within
 that release is always 1.  Untested.
+@c TODO: Write the test cases.
 
 @item -t@var{desc}
 Read in descriptive text for this file from @file{@var{desc}}.  This replaces
@@ -247,6 +253,7 @@ description (this is illegal if @samp{-i} or @samp{-n} is used).
 
 @item -V 
 Display version information.  Untested.
+@c TODO: Write the test cases (how?)
 
 @item -y@var{adayada}
 When initialising a file, set the comment for that delta to
@@ -258,6 +265,7 @@ to most Unix programs, but is the same as the behaviour of traditional
 
 @item -z
 Fix the checksum information.  Untested.
+@c TODO: Write the test cases.
 @end table
 
 
@@ -341,13 +349,20 @@ implementations may not be so flexible.
 @cindex cdc
 @cindex sccs-cdc
 @cindex change delta commentary
-Nothing here, sorry.
+This program is implemented but not yet documented here and 
+there are no tests for it in the test suite yet.  Sorry.
+@c TODO: Write the test cases, and document it.
+
 
 @node comb, delta, cdc, Invoking Programs
 @section @code{comb}
 @cindex comb
 @cindex sccs-comb
-Nothing here, sorry.
+This program is not yet implemented or documented in the manual, there
+are no tests for it in the test suite yet, but it is part of @sc{sccs}
+so it will eventually be implemented.
+@c TODO: write the code, write the test cases, and document it.
+
 
 @node delta, get, comb, Invoking Programs
 @section @code{delta}
@@ -414,6 +429,7 @@ The specified list of deltas are to be ignored when the version
 being checked in is retrieved using @code{get}.  The list is a list of
 @sc{sid}s separated by commas, or can contain ranges of @sc{sid}s (these
 are indicated by a dash).  Untested.
+@c TODO: Write the test cases.
 
 @item -m@var{mr-list}
 Specify the indicated list of MR numbers (separated by spaces) for this
@@ -431,10 +447,12 @@ If this option is given, the edited file is not deleted once processing
 has succeeded.  The edited file is referred to as the ``g-file'', since
 it is the file which was previously ``gotten'' by the @code{get}
 command.  Untested.
+@c TODO: Write the test cases.
 
 @item -p
 Display the differences between the old and new versions of the file
 during processing.  Untested.
+@c TODO: Write the test cases.
 
 @item -r
 If several versions are checked in, the @samp{-r} command-line option is
@@ -454,10 +472,12 @@ other specifies the @sc{sid} that the new version will be assigned once
 it is checked in again.  Either of these two @sc{sid}s (in this case,
 3.1 or 3.2) can be used for the @samp{-r} option of @code{delta}.
 Untested.
+@c TODO: Write the test cases.
 
 @item -s
 Suppress warning or confirmation messages.  Error messages go to
 standard error.  Untested.
+@c TODO: Write the test cases.
 
 @item -y
 Specify a comment for the revision log.  This option is usually quoted
@@ -520,6 +540,7 @@ Full description of options
 @item -a@i{N}
 Retrieve the version corresponding to the delta sequence number
 @i{N}.  Mainly for use by other programs in the suite.   Untested.
+@c TODO: Write the test cases.
 
 @item -b
 Create a new branch when the resulting file is checked back in.  Used
@@ -560,6 +581,7 @@ Name the gotten file @file{@var{foo}}, instead of the default name.
 
 @item -i@var{list}
 Include the deltas for the listed @sc{sid}s.  See also @samp{-x}.  Untested.
+@c TODO: Write the test cases, and document it.
 
 @item -k
 Avoid doing keyword substitution (@pxref{Keyword Substitution}).  This
@@ -567,9 +589,11 @@ is assumed when @samp{-e} is specified.
 
 @item -l
 Unsupported.
+@c TODO: Write the test cases, and document it.
 
 @item -lp
 Unsupported.
+@c TODO: Write the test cases, and document it.
 
 @item -m
 Prepend to each line of the result the @sc{sid} corresponding to the
@@ -1003,7 +1027,9 @@ may expand to strings containing newlines.
 @section @code{prt}
 @cindex prt
 @cindex sccs-prt
-This program is not yet fully implemented, and hence not yet documented here.
+This program is not yet documented here, even though it has been
+written.  Test cases are provided in the test suite.
+@c TODO: Document it.
 
 @node rmdel, sact, prt, Invoking Programs
 @section @code{rmdel}
@@ -1012,12 +1038,14 @@ This program is not yet fully implemented, and hence not yet documented here.
 @cindex backing out of changes
 @cindex censoring revisions
 Nothing here, sorry.
+@c TODO: Write the test cases, and document it.
 
 @node sact, sccs, rmdel, Invoking Programs
 @section @code{sact}
 @cindex sact
 @cindex sccs-sact
 Nothing here, sorry.
+@c TODO: Write the test cases, and document it.
 
 @node sccs, sccsdiff, sact, Invoking Programs
 @section @code{sccs}
@@ -1025,6 +1053,7 @@ Nothing here, sorry.
 Sorry, @code{sccs} is not integrated into this package, although it is
 available separately in source form.  You may find one on a BSD mirror.
 Eventually, @code{sccs} will be integrated, though.
+@c TODO: write the code, write the test cases, and document it.
 
 @node sccsdiff, unget, sccs, Invoking Programs
 @section @code{sccsdiff}
@@ -1032,6 +1061,7 @@ Eventually, @code{sccs} will be integrated, though.
 @cindex sccs-sccsdiff
 @cindex differences between revisions
 Nothing here, sorry.
+@c TODO: Write the test cases, and document it.
 
 @node unget, val, sccsdiff, Invoking Programs
 @section @code{unget}
@@ -1065,6 +1095,7 @@ indicate which edit is to be aborted.
 @cindex sccs-val
 @cindex validating @sc{sccs} files
 This program is not yet implemented, and hence not yet documented here.
+@c TODO: write the code, write the test cases, and document it.
 
 @node what, , val, Invoking Programs
 @section @code{what}
