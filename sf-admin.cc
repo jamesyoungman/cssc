@@ -18,7 +18,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.6 1997/05/20 23:56:37 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.7 1997/05/31 10:20:09 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -84,8 +84,11 @@ sccs_file::admin(const char *file_comment,
 			break;
 
 		case 'i':
-			flags.id_keywords = s;
-			break;
+		  if (strlen(s))
+		    quit(-1, "Flag 'i' does not take an argument.");
+		  else
+		    flags.no_id_keywords_is_fatal = 1;
+		  break;
 
 
 		case 'j':
@@ -152,7 +155,7 @@ sccs_file::admin(const char *file_comment,
 			break;
 
 		case 'i':
-			flags.id_keywords = NULL;
+			flags.no_id_keywords_is_fatal = 0;
 			break;
 
 		case 'j':
@@ -205,86 +208,95 @@ sccs_file::admin(const char *file_comment,
 void
 sccs_file::create(release first_release, const char *iname,
 		  list<mystring> mrs, list<mystring> comments,
-		  int suppress_comments) {
+		  int suppress_comments)
+{
 
-	sccs_date now = sccs_date::now();
-	if (!suppress_comments && comments.length() == 0) {
-		mystring one("date and time created ", now.as_string()),
-		       two(" by ", get_user_name());
-		mystring it(one, two);
-		comments.add(it);
+  sccs_date now = sccs_date::now();
+  if (!suppress_comments && comments.length() == 0)
+    {
+      mystring one("date and time created ", now.as_string()),
+	two(" by ", get_user_name());
+      mystring it(one, two);
+      comments.add(it);
+    }
+
+  sid id = sid(first_release).successor();
+
+  struct delta new_delta('D', id, now, get_user_name(), 1, 0,
+			 mrs, comments);
+  new_delta.inserted = 0;
+  new_delta.deleted = 0;
+  new_delta.unchanged = 0;
+
+  FILE *out = start_update(new_delta);
+
+  fprintf(out, "\001I 1\n");
+
+  if (iname != NULL) {
+    FILE *in;
+
+    if (strcmp(iname, "-") == 0)
+      {
+	in = stdin;
+      }
+    else
+      {
+      in = fopen(iname, "r");
+      if (in == NULL)
+	{
+	  quit(errno, "%s: Can't open file for reading.",
+	       iname);
 	}
+      }
 
-	sid id = sid(first_release).successor();
+    int found_id = 0;
 
-	struct delta new_delta('D', id, now, get_user_name(), 1, 0,
-			       mrs, comments);
-	new_delta.inserted = 0;
-	new_delta.deleted = 0;
-	new_delta.unchanged = 0;
+		
+    while(!read_line_param(in))
+      {
+	new_delta.inserted++;
+	if (fputs(linebuf, out) == EOF || putc('\n', out) == EOF)
+	  {
+	    mystring zname = name.zfile();
+	    quit(errno, "%s: Write error.",
+		 (const char *) zname);
+	  }
+	if (!found_id)
+	  {
+	    if (check_id_keywords(linebuf))
+	      {
+		found_id = 1;
+	      }
+	  }
+	if (ferror(in))
+	  {
+	    quit(errno, "%s: Read error.", iname);
+	  }
+	if (in != stdin)
+	  {
+	    fclose(in);
+	  }
 
-	FILE *out = start_update(new_delta);
+	if (!found_id)
+	  {
+	    if (flags.no_id_keywords_is_fatal)
+	      {
+		fprintf(stderr, "%s: Error: No id keywords.\n",
+			(const char *) name);
+	      }
+	    else
+	      {
+		fprintf(stderr, "%s: Warning: No id keywords.\n",
+			(const char *) name);
+	      }
+	  }
+      }
+  }
+	
 
-	fprintf(out, "\001I 1\n");
+  fprintf(out, "\001E 1\n");
 
-	if (iname != NULL) {
-		FILE *in;
-
-		if (strcmp(iname, "-") == 0) {
-			in = stdin;
-		} else {
-			in = fopen(iname, "r");
-			if (in == NULL) {
-				quit(errno, "%s: Can't open file for reading.",
-				     iname);
-			}
-		}
-
-		int found_id = 0;
-		const char *req_id = flags.id_keywords;
-		if (req_id != NULL && req_id[0] == '\0') {
-			req_id = NULL;
-		}
-
-		while(!read_line_param(in)) {
-			new_delta.inserted++;
-			if (fputs(linebuf, out) == EOF
-			    || putc('\n', out) == EOF) {
-				mystring zname = name.zfile();
-				quit(errno, "%s: Write error.",
-				     (const char *) zname);
-			}
-			if (!found_id) {
-				if (req_id == NULL) {
-					if (check_id_keywords(linebuf)) {
-						found_id = 1;
-					}
-				} else if (strstr(linebuf, req_id) != NULL) {
-					found_id = 1;
-				}
-			}
-		}
-		if (ferror(in)) {
-			quit(errno, "%s: Read error.", iname);
-		}
-		if (in != stdin) {
-			fclose(in);
-		}
-
-		if (!found_id) {
-			if (req_id != NULL) {
-				quit(-1, "%s: Required keywords \"%s\""
-				         " missing.",
-				     (const char *) name, req_id);
-			}
-			fprintf(stderr, "%s: Warning: No id keywords.\n",
-				(const char *) name);
-		}
-	}
-
-	fprintf(out, "\001E 1\n");
-
-	end_update(out, new_delta);
+  end_update(out, new_delta);
 }
 
 /* Local variables: */
