@@ -48,7 +48,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.48 2002/03/25 22:41:30 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.49 2002/03/26 13:54:44 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -483,11 +483,12 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 
   seq_state sstate(highest_delta_seqno());
+  const mystring sid_name = pfile->got.as_string();
   const delta *got_delta = find_delta(pfile->got);
   if (got_delta == NULL)
     {
-      errormsg("Locked delta doesn't exist!");
-      return false;
+        errormsg("Locked delta %s doesn't exist!", sid_name.c_str());
+        return false;
     }
 
   // Remember seq number that will be the predecessor of the 
