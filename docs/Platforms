@@ -6,7 +6,9 @@ these platforms (at some stage):
 James Youngman  <jay@gnu.org>    		    Red Hat Linux, versions
 						    4.1,4.2,5.0,5.1,5.2,5.9,
 						    6.0, 6.2, 7.0, 7.1, 7.1.93
+						    Debian GNU/Linux version 3.0
 James Youngman  <jay@gnu.org>    		    HPUX 9
+James Youngman  <jay@gnu.org>    		    Solaris 2.6
 Lars Hecking    <lhecking@nmrc.ucc.ie>              Solaris-2.5.1
 Malcolm Boff    <Malcolm_Boff@compuserve.com>       Solaris-2.5.1
 Lars Hecking    <lhecking@nmrc.ucc.ie>              IRIX 6.3 (GCC 2.7.x
@@ -25,6 +27,7 @@ Mark Reynolds   <mark@aoainc.com>                   Ultrix 4.2  [SEE BELOW!]
 
 [*] These entries denote that CSSC compiled successfully but the test
 suite was not run.
+
 
 
 
@@ -48,6 +51,7 @@ CSSC has not, as far as I know, been widely tested with C++ compilers
 other than GCC:-
 
 GCC (2.7,2.8,EGCS)		Compiles, test suite passes
+GCC (3.0)    		        Compiles, test suite passes
 EPC C++                         Compiles, test suite passes
 IRIX CC				Fails to compile (see below)
 
@@ -127,7 +131,7 @@ it falls short :-
    is a feature which is not supported under the Cygwin environment.
    For this reason, it is unsafe to use the Cygwin version of CSSC on
    SCCS files which are mounted via an NT NFS client.  If, on the other hand,
-   the files are mounted via Samba, this shoul dbe safe (but has not been 
+   the files are mounted via Samba, this should be safe (but has not been 
    tested).
 
 3. Set-user-id execution will not work properly.  Because of the
