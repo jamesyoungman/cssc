@@ -18,7 +18,7 @@
  *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
  * 
  *
- * Extract a requested delta from a SCCS file.
+ * Validate a SCCS file.
  * 
  */
 
@@ -30,7 +30,7 @@
 #include "except.h"
 #include "valcodes.h"
 
-const char main_rcs_id[] = "$Id: val.cc,v 1.7 2002/03/19 22:31:59 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: val.cc,v 1.8 2002/03/25 00:07:56 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
