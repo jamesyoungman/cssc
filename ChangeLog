@@ -1,3 +1,37 @@
+1999-03-21  James Youngman  <jay@gnu.org>
+
+	* Released 0.10beta.pl1.
+
+	* docs/cssc.texi: Updated version for release.
+
+	* docs/CREDITS.short.txt:
+	File containing brief list of people who have contributed to CSSC.
+
+	* docs/CREDITS: Added relevant people.
+
+	* configure.in: Bumped version to 0.10beta.pl1
+
+	* auxfiles/CSSC.spec.in:
+	Folded in change from Michael Sterrett <msterret@coat.com> and Aron
+	Griffis <agriffis@coat.com> which puts symlinks in /usr/bin (or
+	whatever directory), pointing at the stuff in /usr/libexec/cssc.
+	The effect is to have /usr/bin/get and so on.
+
+	* bsd/sccs.c:
+	Applied patch from Greg A. Woods which eliminates compiler warnings
+	from sccs.c, without changing how the program works (I hope!).
+
+	* docs/Platforms: Updated with respect to C++ compiler compatibility.
+
+	* configure.in: Moved version.cc to the front of the AC_OUTPUT() list.
+
+	* run.cc: Modification from Greg A. Woods; eliminates compiler warning.
+
+	* docs/cssc.texi: Minor corrections (typos, etc).
+
+	* testutils/README:
+	Minor tweak suggested by Greg A. Woods (specify UTC in time)
+
 1999-03-20  James Youngman  <jay@gnu.org>
 
 	* Released 0.10beta.pl0.
