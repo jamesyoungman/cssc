@@ -88,3 +88,14 @@ To run the tests on this platform, one must use:-
 > give syntax errors loading the defs in common. However "make
 > SHELL=bash check" does run (I'm using bash 2.03).  
 
+
+NetBSD
+------
+
+The Texinfo feature @env{} is not supported by version 1.68 of
+Makeinfo which comes with some versoins of NetBSD.  To work around
+this problem, you could apply the following sed command to
+"cssc.texi":-
+
+	sed -e 's/@env{\([^]]*\)}/@code{\1}/'
+
