@@ -53,6 +53,17 @@ in this Software without prior written authorization from the X Consortium.
 	%  cd /usr/local/src/new-X
    	%  lndir ../X
 */
+#include "config.h"
+
+
+#ifndef HAVE_SYMLINK
+#error I need to be patched to support either hard links or copying.
+#endif
+
+#ifndef HAVE_READLINK
+#error I need to be patched to support either hard links or copying.
+#endif
+
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -100,14 +111,6 @@ in this Software without prior written authorization from the X Consortium.
 #  include <ndir.h>
 # endif
 #endif
-
-#ifndef HAVE_SYMLINK
-#error I need to be patched to support either hard links or copying.
-#endif
-#ifndef HAVE_READLINK
-#error I need to be patched to support either hard links or copying.
-#endif
-
 
 #ifdef STAT_MACROS_BROKEN
 #undef S_ISDIR
