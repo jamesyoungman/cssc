@@ -120,7 +120,7 @@ all-tests: 	test-initial \
 		test-rmdel \
 		test-admin test-delta test-get test-prs test-prt test-unget \
 		test-cdc  test-sact \
-		test-large test-sccsdiff test-binary test-bsd-sccs
+		test-large test-sccsdiff test-binary test-bsd-sccs test-what
 	echo Tests passed.
 
 check: all-tests
