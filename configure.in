@@ -65,9 +65,32 @@ dnl Checks for library functions.
 dnl AC_FUNC_MEMCMP
 dnl The "select" that autoscan found was a method. AC_CHECK_FUNCS(select)
 AC_CHECK_FUNCS(mktime abort wait)
-AC_CHECK_FUNCS(stat getpwuid getlogin setreuid fork pipe spawn geteuid getegid)
+AC_CHECK_FUNCS(stat getpwuid getlogin setreuid pipe spawn geteuid getegid)
 AC_CHECK_FUNCS(fsetpos)
 AC_REPLACE_FUNCS(strerror remove rename strstr)
+
+
+
+dnl
+dnl On AmigsOS, fork() is a stub (in ixemul.library).  This means that
+dnl AC_CHECK_FUNC will find it and so unless we handle it specially, 
+dnl configure will set up for using fork().  For AmigaOS, we will probably
+dnl use system().  On AmigaOS system() is not going to be a security hole,
+dnl since there is no concept of separate users and so no setuid execution,
+dnl which is the potential problem with system, and the reason we don't
+dnl use it by default.
+dnl
+AC_MSG_CHECKING([for AmigaOS target])
+AC_EGREP_CPP(yes,
+[#ifdef __amigaos__
+       yes
+#endif
+], AC_MSG_RESULT([avoiding fork() on AmigaOS]),
+AC_MSG_RESULT(no)
+AC_CHECK_FUNC(fork,AC_DEFINE_UNQUOTED(HAVE_FORK)))
+
+
+
 AC_SUBST(LIBOBJS)dnl
 
 
