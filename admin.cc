@@ -15,12 +15,12 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.8 1997/05/20 23:58:11 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.9 1997/05/22 23:23:59 james Exp $";
 
 void
 usage() {
 	fprintf(stderr,
-"usage: %s [-nrzIMTYV] [-a users] [-d flags] [-e users] [-f flags]\n"
+"usage: %s [-nrzIMYV] [-a users] [-d flags] [-e users] [-f flags]\n"
 "\t[-i file] [-m MRs] [-t file] [-y comments] file ...\n",
 	prg_name);
 }
@@ -31,7 +31,7 @@ main(int argc, char **argv) {
 	release first_release = NULL;		/* -r */
 	int new_sccs_file = 0;			/* -n */
 	const char *iname = NULL;		/* -i -I */
-	const char *file_comment = NULL;	/* -t -T */
+	const char *file_comment = NULL;	/* -t */
 	list<mystring> set_flags, unset_flags;	/* -f, -d */
 	list<mystring> add_users, erase_users;	/* -a, -e */
 	mystring mrs, comments;			/* -m -M, -y -Y */
@@ -39,14 +39,15 @@ main(int argc, char **argv) {
 	int reset_checksum = 0;			/* -z */
 	int suppress_mrs = 0;	                /* -m (no arg), -M */
 	int suppress_comments = 0;              /* -y (no arg), -Y */
-
+	int empty_t_option = 0;	                /* -t (no arg) */ 
+	
 	if (argc > 0) {
 		set_prg_name(argv[0]);
 	} else {
 		set_prg_name("admin");
 	}
 
-	class getopt opts(argc, argv, "ni!Ir!t:Tf:d:a:e:m!y!hzYMV");
+	class getopt opts(argc, argv, "ni!Ir!t!f:d:a:e:m!y!hzYMV");
 	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
 		switch (c) {
 		default:
@@ -82,12 +83,9 @@ main(int argc, char **argv) {
 
 		case 't':
 			file_comment = opts.getarg();
+			empty_t_option = (0 == strlen(file_comment));
 			break;
 		       
-		case 'T':
-			file_comment = "";
-			break;
-
 		case 'f':
 			set_flags.add(opts.getarg());
 			break;
@@ -140,6 +138,11 @@ main(int argc, char **argv) {
 		}
 	}
 
+	if (empty_t_option && new_sccs_file)
+	  {
+	    quit(-1, "The -t option must have an argument if -n or -i is used.");
+	  }
+	
 	list<mystring> mr_list, comment_list;
 	int first = 1;
 	sccs_file_iterator iter(argc, argv, opts.get_index());
