@@ -5,7 +5,7 @@
 #
 #    This file is part of GNU CSSC.
 #
-#    Copyright (C) 1997, Free Software Foundation, Inc. 
+#    Copyright (C) 1997, 2000 Free Software Foundation, Inc. 
 # 
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,14 +20,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-# -z1: 4.77 
-# -z2: 5.40 
-# -z3: 5.35 
-# -z4: 5.07 
-# -z5: 6.15 5.36 	
-# -z9: 6.01 
-# No compression: 17.8 seconds
+#
+# $Id: show-disp.sh,v 1.6 2000/08/05 19:35:20 james_youngman Stab $
+# 
 
 cvs -z3 status "$@" 2>&1 </dev/null |
  sed \
