@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.29 2002/04/04 19:32:04 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.30 2003/12/07 21:07:28 james_youngman Exp $";
 #endif
 
 const char *prg_name = NULL;
@@ -349,20 +349,36 @@ cleanup::cleanup() {
         head = this;
 }
 
-cleanup::~cleanup() {
-        class cleanup *p = head;
-
-        if (p == this) {
-                head = next;
-                return;
+cleanup::~cleanup()
+{
+  if (head == NULL)
+    {
+      // SourceForge bug # 816679; cleanup::cleanup() 
+      // can be called before there are any entries on the 
+      // list.
+      return; // nothing to do.
+    }
+  else
+    {
+      class cleanup *p = head;
+      
+      if (p == this) 
+	{
+	  head = next;
+	  return;
         }
-
-        while (p->next != this) {
-                p = p->next;
-                ASSERT(p != NULL);
+      
+      while (p->next != this) 
+	{
+	  p = p->next;
+	  ASSERT(p != NULL);
         }
-
-        p->next = next;
+      
+      if (p != NULL) // 'if' fixes SourceForge bug # 816679
+	{
+	  p->next = next;
+	}
+    }
 }               
 
 void
