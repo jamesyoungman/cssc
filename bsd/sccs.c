@@ -36,7 +36,7 @@
 
 #define _BSD_SOURCE
 #define DEBUG (1)
-
+ 
 
 #ifndef lint
 static char copyright[] =
@@ -52,6 +52,10 @@ static char copyright[] =
 
 #ifdef HAVE_STDIO_H
 #include <stdio.h>
+#endif
+
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
 #endif
 
 #ifdef STDC_HEADERS
@@ -80,8 +84,28 @@ static char copyright[] =
 #include <sys/param.h>		/* TODO: this does what? */
 
 
-#include <sys/stat.h>		/* TODO: need sys/types.h?  What does autoconf say? */
-#include <sys/dir.h>		/* TODO: replace with autoconf mechanism. */
+#include <sys/stat.h>
+
+#if HAVE_DIRENT_H
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
+#else
+# define dirent direct
+# define NAMLEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# endif
+#endif
+
+
+
+
 #include <signal.h>		/* TODO: consider using sigaction(). */
 #include <errno.h>		/* TODO: same as in parent directory. */
 #include <pwd.h>		/* getpwuid() */
@@ -89,6 +113,12 @@ static char copyright[] =
 #include <sysexits.h>		/* TODO: we should probably define our own. */
 
 #include "pathnames.h"
+
+
+#ifdef STAT_MACROS_BROKEN
+#undef S_ISDIR
+#endif
+
 
 /*
    **  SCCS.C -- human-oriented front end to the SCCS system.
@@ -162,9 +192,6 @@ static char copyright[] =
    **                           the previous changes in that delta.
    **
    **   Compilation Flags:
-   **           UIDUSER -- determine who the user is by looking at the
-   **                   uid rather than the login name -- for machines
-   **                   where SCCS gets the user in this way.
    **           SCCSDIR -- if defined, forces the -d flag to take on
    **                   this value.  This is so that the setuid
    **                   aspects of this program cannot be abused.
@@ -173,6 +200,9 @@ static char copyright[] =
    **           MYNAME -- the title this program should print when it
    **                   gives error messages.
    **
+   **           UIDUSER -- removed since we cannot trust $USER
+   **                      or getlogin in setuid programs.
+   **                      
    **   Compilation Instructions:
    **           cc -O -n -s sccs.c
    **           The flags listed above can be -D defined to simplify
@@ -293,9 +323,9 @@ const char MyName[] = MYNAME;	/* name used in messages */
 int OutFile = -1;		/* override output file for commands */
 bool RealUser;			/* if set, running as real user */
 #ifdef DEBUG
-bool Debug;			/* turn on tracing */
+bool Debug = 0;			/* turn on tracing */
 #endif
-
+static bool TrustEnvironment = 0;
 
 void syserr (const char *fmt,...);
 void usrerr (const char *fmt,...);
@@ -321,6 +351,7 @@ static char *gstrcat (char *to, const char *from, int length);
 static char *gstrncat (char *to, const char *from, int n, int length);
 static char *gstrcpy (char *to, const char *from, int length);
 static void gstrbotch (const char *str1, const char *str2);
+static void  gstrbotchn (const char *, int, const char *, int);
 
 static char *str_dup (const char *);
 
@@ -337,6 +368,23 @@ main (int argc, char **argv)
 
   &copyright;			/* prevent warning about unused variable. */
 
+  if (getuid() != geteuid())
+    TrustEnvironment = 0;	/* running setuid, ignore $PATH etc. */
+  else
+    TrustEnvironment = 1;
+
+  if (TrustEnvironment)
+    {
+      if (NULL == setlocale(LC_ALL, ""))
+	{
+	  /* If we can't set the locale as the user wishes,
+	   * emit an error message and continue.   The error
+	   * message will of course be in the "C" locale.
+	   */
+	  perror("Error setting locale");
+	}
+    }
+  
   /*
      **  Detect and decode flags intended for this program.
    */
@@ -431,6 +479,40 @@ char ** do_enter(char *argv[], char **np, char **ap,
   return np;
 }
 
+static void
+try_to_exec(const char *prog, char * const argv[])
+{
+  const char *prefix = "/usr/sccs/";
+  char *newprog;
+  size_t len;
+
+  printf ("try_to_exec: %s\n", prog);
+  
+  /* Start by using execvp, because:-
+   * 1) The user may wish to use SCCS programs other than those
+   *    in a fixed location.
+   * 2) execv("prt") will exec a program "prt" in the current
+   *    dorectory (execvp will not).
+   */
+  
+  if (TrustEnvironment || RealUser) /* Honour $PATH unless running setuid */
+    execvp(prog, argv);		/* execvp() uses $PATH */
+
+  
+  /* if the above call returns or was not allowed, try our prefix.
+   */
+  len = strlen(prefix) + strlen(prefix);
+  newprog = malloc(len + 1);
+  if (newprog)
+    {
+      sprintf(newprog, "%s%s", prefix, prog);
+      prog = newprog;
+    }
+  printf ("try_to_exec: falling back on %s\n", prog);
+  execv(prog, argv);
+  perror(prog);
+}
+
 /*
    **  COMMAND -- look up and perform a command
    **
@@ -473,7 +555,7 @@ command (char *argv[], bool forkflag, const char *arg0)
 	printf ("\t\"%s\"\n", argv[i]);
     }
 #endif
-
+  
   /*
      **  Copy arguments.
      ** Copy from arg0 & if necessary at most one arg
@@ -669,10 +751,10 @@ command (char *argv[], bool forkflag, const char *arg0)
 
 	/* execute the diff program of choice */
 #ifndef V6
-	execvp ("diff", ap);
+	if (TrustEnvironment)
+	  execvp ("diff", ap);
 #endif
-	execv (cmd->sccspath, argv);
-	syserr ("cannot exec %s", cmd->sccspath);
+	try_to_exec (cmd->sccspath, argv);
 	exit (EX_OSERR);
       }
       /*NOTREACHED */
@@ -834,7 +916,11 @@ callprog (const char *progpath,
 
   /* set protection as appropriate */
   if (bitset (REALUSER, flags))
-    setuid (getuid ());
+    {
+      setuid (getuid ());
+      RealUser = 1;
+      printf ("callprog: gave up privileges.\n");
+    }
 
   /* change standard input & output if needed */
   if (OutFile >= 0)
@@ -845,8 +931,7 @@ callprog (const char *progpath,
     }
 
   /* call real SCCS program */
-  execv (progpath, argv);
-  syserr ("cannot execute %s", progpath);
+  try_to_exec (progpath, argv);
   exit (EX_UNAVAILABLE);
   /*NOTREACHED */
 }
@@ -926,7 +1011,8 @@ makefile (const char *name)
   register const char *p;
   char buf[3 * FBUFSIZ];
   register char *q;
-
+  int left;
+  
   p = rindex (name, '/');
   if (p == NULL)
     p = name;
@@ -960,17 +1046,18 @@ makefile (const char *name)
 
 
   /* then the head of the pathname */
-  gstrncat (buf, name, p - name, sizeof (buf));
+  gstrncat (buf, name, p - name, sizeof (buf)); /* will always be terminated */
   q = &buf[strlen (buf)];
-
+  left = sizeof(buf) - strlen(buf);
+  
   /* now copy the final part of the name, in case useful */
-  gstrcpy (q, p, sizeof (buf));
+  gstrcpy (q, p, left);
 
   /* so is it useful? */
   if (strncmp (p, "s.", 2) != 0 && !isdir (buf))
     {
       /* sorry, no; copy the SCCS pathname & the "s." */
-      gstrcpy (q, SccsPath, sizeof (buf));
+      gstrcpy (q, SccsPath, left);
       gstrcat (buf, "/s.", sizeof (buf));
 
       /* and now the end of the name */
@@ -1000,8 +1087,12 @@ bool
 isdir (const char *name)
 {
   struct stat stbuf;
-
-  return (stat (name, &stbuf) >= 0 && (stbuf.st_mode & S_IFMT) == S_IFDIR);
+  
+#ifdef S_ISDIR
+  return (stat (name, &stbuf) >= 0) && S_ISDIR(stbuf.st_mode);
+#else
+  return (stat (name, &stbuf) >= 0) && (stbuf.st_mode & S_IFDIR);
+#endif
 }
 
 /*
@@ -1039,6 +1130,21 @@ safepath (register const char *p)
   printf ("You may not use full pathnames or \"..\"\n");
   return FALSE;
 }
+  
+static void
+form_gname(char *buf, int bufsize, struct dirent *dir)
+{
+  if (NAMLEN(dir)-2 >= bufsize)
+    {
+      gstrbotchn(dir->d_name, NAMLEN(dir), (char*)0, 0);
+    }
+  else
+    {
+      memcpy(buf, dir->d_name+2, NAMLEN(dir)-2);
+      buf[NAMLEN(dir)-2+1] = 0; /* terminate the string. */
+    }
+}
+  
 
 /*
    **  CLEAN -- clean out recreatable files
@@ -1063,7 +1169,7 @@ safepath (register const char *p)
 int 
 clean (int mode, char *const *argv)
 {
-  struct direct *dir;
+  struct dirent *dir;
   register DIR *dirp;
   char buf[FBUFSIZ];
   char *bufend;
@@ -1144,13 +1250,14 @@ clean (int mode, char *const *argv)
   gotedit = FALSE;
   while (NULL != (dir = readdir (dirp)))
     {
-      if (strncmp (dir->d_name, "s.", 2) != 0)
+      if (NAMLEN(dir) < 2 || 's' != dir->d_name[0] || '.' != dir->d_name[1])
 	continue;
 
       /* got an s. file -- see if the p. file exists */
-      gstrcpy (bufend, "/p.", sizeof (buf));
+      gstrcat (buf, "/p.", sizeof (buf));/* XXX: BUG: wrong size limit. */
       basefile = bufend + 3;
-      gstrcpy (basefile, &dir->d_name[2], sizeof (buf));
+      form_gname(basefile, sizeof(buf)-strlen(buf), dir);
+
 
       /*
          **  open and scan the p-file.
@@ -1186,7 +1293,7 @@ clean (int mode, char *const *argv)
       if (mode == CLEANC && !gotpfent)
 	{
 	  char unlinkbuf[FBUFSIZ];
-	  gstrcpy (unlinkbuf, &dir->d_name[2], sizeof (unlinkbuf));
+	  form_gname(unlinkbuf, sizeof(unlinkbuf), dir);
 	  unlink (unlinkbuf);
 	}
     }
@@ -1382,6 +1489,11 @@ unedit (const char *fn)
   unlink (tfn);
 
   /* actually remove the g-file */
+  
+  /* TODO: %12s in the prontfs below is inappropriate
+   * for modern Unix were filenames can be longer than 11 characters...
+   */
+  
   if (delete)
     {
       /*
@@ -1652,24 +1764,17 @@ syserr (const char *fmt,...)
 const char *
 username (void)
 {
-#ifdef UIDUSER
   const struct passwd *pw;
 
   pw = getpwuid (getuid ());
   if (pw == NULL)
     {
-      syserr ("who are you? (uid=%d)", getuid ());
+      syserr ("Who are you?\n"
+	      "You don't seem to have an entry in the user database "
+	      "(/etc/passwd) (uid=%d)", getuid ());
       exit (EX_OSERR);
     }
   return (pw->pw_name);
-#else
-  register char *p;
-
-  p = getenv ("USER");
-  if (p == NULL || p[0] == '\0')
-    p = getlogin ();
-  return (p);
-#endif
 }
 
 /*
@@ -1695,6 +1800,7 @@ gstrncat (char *to, const char *from, int n, int length)
     {
       gstrbotch (to, from);
     }
+  /* strncat(), unlike strncpy(), always appends a \0 to the destination. */
   return strncat (to, from, n);
 }
 
@@ -1714,4 +1820,23 @@ gstrbotch (const char *str1, const char *str2)
   usrerr ("Filename(s) too long: %s %s",
 	  (str1 ? str1 : ""),
 	  (str2 ? str2 : ""));
+  exit(EX_SOFTWARE);
 }
+
+static void 
+gstrbotchn (const char *str1, int len1, const char *str2, int len2)
+{
+  fprintf(stderr, "Filename(s) too long: ");
+  if (str1)
+    {
+      fwrite(str1, len1, 1, stderr);
+      putc(' ', stderr);
+    }
+  if (str2)
+    {
+      fwrite(str2, len2, 1, stderr);
+    }
+  putc('\n', stderr);
+  exit(EX_SOFTWARE);
+}
+
