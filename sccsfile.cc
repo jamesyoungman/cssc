@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.54 2003/05/29 17:48:25 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.55 2003/12/13 15:11:56 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -407,7 +407,7 @@ sccs_file::read_delta() {
 
 	int c = read_line();
 	int i;
- 	const char *start;
+	const char *start;
 	bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
 	for(i = 0; i < 3; i++) {
 		if (c == "ixg"[i]) {
@@ -447,9 +447,17 @@ sccs_file::read_delta() {
 
 			start = plinebuf->c_str() + 3;
 			do {
-				char *end = strchr(start, ' ');
+				// In C++, strchr() is overloaded so that 
+				// it returns const char* if the first 
+				// argument is const char*, and char* only if 
+				// the first argument is char*.
+				const char *end = strchr(start, ' ');
 				if (end != NULL) {
-					*end++ = '\0';
+				  //*end++ = '\0';
+				  const char *p = plinebuf->c_str();
+				  plinebuf->set_char(end-p, 0);
+				  ASSERT(*end == 0);
+				  ++end;
 				}
 				seq_no seq = strict_atous(start);
 				switch (c) {

@@ -37,7 +37,7 @@
 #define CONFIG_LINEBUF_CHUNK_SIZE (1024)
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.14 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.15 2003/12/13 15:11:56 james_youngman Exp $";
 #endif
 
 cssc_linebuf::cssc_linebuf()
@@ -108,6 +108,14 @@ cssc_linebuf::split(int offset, char **args, int len, char c)
 
   return i;
 }
+
+void cssc_linebuf::
+set_char(unsigned offset, char value)
+{
+  ASSERT(offset < buflen);
+  buf[offset] = value;
+}
+
 
 /* Local variables: */
 /* mode: c++ */

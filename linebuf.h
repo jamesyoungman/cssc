@@ -44,6 +44,7 @@ public:
 
   const char *c_str() const { return buf; }
   const char *c_str() { return buf; }
+  void set_char(unsigned offset, char value);
   int split(int offset, char **args, int len, char c);
   int check_id_keywords() const;
   int write(FILE*) const;
