@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.27 1999/04/18 17:59:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.28 2000/11/05 17:40:10 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -270,16 +270,24 @@ sccs_file::write(FILE *out) const
     }
 
   // l locked-releases
-  if (flags.all_locked) {
-    if (fputs_failed(fputs("\001f l a\n", out))) {
-      return 1;
+  if (flags.all_locked)
+    {
+      if (fputs_failed(fputs("\001f l a\n", out)))
+	{
+	  return 1;
+	}
+    } 
+  else if ( !flags.locked.empty() )
+    {
+      if (fputs_failed(fputs("\001f l ", out)))
+	return 1;		// failed
+      
+      if (!flags.locked.print(out))
+	return 1;		// failed
+      
+      if (putc_failed(putc('\n', out)))
+	return 1;		// failed
     }
-  } else if (!flags.locked.empty()
-	     && (fputs_failed(fputs("\001f l ", out))
-		 || flags.locked.print(out)
-		 || putc_failed(putc('\n', out)))) {
-    return 1;
-  }
 
   // m Module flag
   if (flags.module)

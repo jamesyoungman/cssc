@@ -27,7 +27,7 @@
 #include <stdlib.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.7 1999/04/18 17:59:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.8 2000/11/05 17:40:10 james_youngman Exp $";
 #endif
 
 // Because we use member() all the time, this
@@ -89,9 +89,13 @@ bool release_list::print(FILE * out) const
   for(int i=0; i<len; i++)
     {
       if (i > 0)
-	fputc(' ', out);
+	{
+	  if (putc_failed(fputc(' ', out)))
+	    return false;
+	}
       
-      l[i].print(out);
+      if (l[i].print(out))
+	return false;
     }
   return true;
 }
