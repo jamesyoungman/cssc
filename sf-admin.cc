@@ -36,8 +36,20 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.30 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.31 2001/11/25 12:59:52 james_youngman Exp $";
 #endif
+
+
+
+/* #define ADMIN_MERGE_LOCKED_RELEASES if you want
+ * admin -fl1 s.foo ;  admin -fl2 s.foo 
+ * to result in both releases 1 and 2 being locked; 
+ * if you do not deifne this, the -fl option will 
+ * implicitly clear any previous list of locked releases. 
+ */
+#undef ADMIN_MERGE_LOCKED_RELEASES
+
+
 
 /* Changes the file comment, flags, and/or the user authorization list
    of the SCCS file. */
@@ -149,7 +161,14 @@ sccs_file::admin(const char *file_comment,
 	    }
 	  else
 	    {
+#ifdef ADMIN_MERGE_LOCKED_RELEASES
 	      flags.locked.merge(release_list(s));
+#else
+	      /* "admin -fl" clears any previously locked releases. 
+	       */
+	      flags.locked = release_list(); // empty list
+	      flags.locked.merge(release_list(s));
+#endif
 	    }
 	  break;
 

@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 dnl 
-dnl $Id: configure.in,v 1.74 2001/09/29 19:39:41 james_youngman Exp $
+dnl $Id: configure.in,v 1.75 2001/11/25 12:59:52 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -354,6 +354,7 @@ dnl Check for symlink() and readlink(), which lndir uses.
 AC_CHECK_FUNCS(symlink readlink) 
 
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid pipe spawn geteuid getegid)
+AC_CHECK_FUNCS(unsetenv)
 AC_CHECK_FUNCS(fsetpos)
 AC_REPLACE_FUNCS(strerror remove rename strstr)
 AC_CHECK_FUNCS(memchr)

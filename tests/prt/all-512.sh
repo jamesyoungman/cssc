@@ -18,7 +18,7 @@ then
     success
 else
     echo "output differs --"
-    diff -u all.expected got.stdout | head -30
+    diff -c all.expected got.stdout | head -30
     fail output differs
 fi
 

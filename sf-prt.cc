@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.22 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.23 2001/11/25 12:59:52 james_youngman Exp $";
 #endif
 
 static void
@@ -430,7 +430,7 @@ sccs_file::prt(FILE *out,
   // global stuff.
   if (print_users)
     {
-      fprintf(out, "\nUsers allowed to make deltas --\n");
+      fprintf(out, "\n Users allowed to make deltas -- \n");
       print_string_list(out, users, "\t", "\n", "everyone");
       putc('\n', out);
     }
@@ -481,13 +481,15 @@ sccs_file::prt(FILE *out,
 	}
       if (flags.all_locked)
 	{
-	  fprintf(out, "\tlocked releases a\n");
+	  fprintf(out, "\tlocked releases\ta\n");
+	  ++flag_count;
 	}
       else if (!flags.locked.empty())
 	{
-	  fprintf(out, "\tlocked releases ");
+	  fprintf(out, "\tlocked releases\t");
 	  flags.locked.print(out);
 	  putc('\n', out);
+	  ++flag_count;
 	}
       print_flag(out, "\tmodule\t%s\n", flags.module, flag_count);
       print_flag(out, "\tnull delta\t\n", flags.null_deltas, flag_count);

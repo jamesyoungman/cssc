@@ -27,7 +27,7 @@ expands_to T2 ':FD:'   'Descriptive Text\n\n'
 docommand T3 "${admin} -t s.bar" 0 "" ""
 
 # Make sure the decription has been removed.
-expands_to T4 ':FD:'   '(none)\n\n'
+expands_to T4 ':FD:'   'none\n\n'
 remove s.bar
 
 # Empty -t option is incompatible with -n and -i.

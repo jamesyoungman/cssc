@@ -19,7 +19,8 @@ echo "Descriptive Text" > DESC
 docommand P1 "${admin} -n -tDESC s.1" 0 "" ""
 remove DESC
 
-docommand P2 "${prs} -d':M:\n' s.1" 0 "1\n\n" ""
+docommand P2 "${prs} -d':M:\n' s.1" 0 "1
+" ""
 
 docommand P3 "${get} -e s.1" 0 "1.1\nnew delta 1.2\n0 lines\n" IGNORE
 echo "hello from %M%" >> 1
@@ -61,7 +62,8 @@ echo passed
 
 
 # Make sure prs accepts an empty "-r" option.
-docommand Z2 "${prs} -r -d':M:\n' s.1" 0 "1\n\n" ""
+docommand Z2 "${prs} -r -d':M:\n' s.1" 0 "1
+" ""
 
 remove s.1 p.1 z.1 1 command.log
 success

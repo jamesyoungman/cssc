@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.28 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.29 2001/11/25 12:59:52 james_youngman Exp $";
 #endif
 
 inline bool
@@ -275,7 +275,22 @@ sccs_file::print_delta(FILE *out, const char *format,
               // Backslash escape codes.  We only recognise \n and \t.
               switch (*s)
                 {
-                case 'n': c = '\n'; break;
+                case 'n':
+		  /* Turn a \n into a newline unless it is the last 
+		   * bit of the format string.  In the latter case we 
+		   * ignore it - see prs/format.sh test cases 4a and 4b.
+		   * Those partiicular test cases were checked against 
+		   * Sun Solaris 2.6.
+		   */
+		  if (s[1])
+		    {
+		      c = '\n';
+		      break;
+		    }
+		  else
+		    {
+		      return;
+		    }
                 case 't': c = '\t'; break;
                 case '\\': c = '\\'; break;
                 default:        // not \n or \t -- print the whole thing.
@@ -517,9 +532,11 @@ sccs_file::print_delta(FILE *out, const char *format,
 
         case KEY2('F','D'):
           // The genuine article prints '(none)' if there
-          // is no description.
+          // is no description.  
+	  // JY Sun Nov 25 01:33:46 2001; Solaris 2.6 
+	  // prints "none" rather than "(none)".
           if (0 == comments.length())
-            fputs("(none)\n", out);
+            fputs("none\n", out);
           else
             print_string_list(out, comments);
           break;

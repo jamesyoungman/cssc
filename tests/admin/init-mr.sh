@@ -41,19 +41,29 @@ docommand I6b "${prs} -d:MP: $s" 0 "none\n" ""
 docommand I7 "${admin} -ifoo $s" 1 "" IGNORE
 remove $s
 
+
+# The old test I8 has been disabled because for example under 
+# Solaris 2.6, "admin -r 2" is equivalent to "admin -r2".  
+# 
 ##
 ## OK, we know the -i and -r options work.
 ## Make sure -r doesn't work without an argument.
-docommand I8 "${admin} -ifoo -r 2 $s" 1 "" "IGNORE"
-test  -f $s && fail I8 stage I8 should not have created $s.
+# docommand I8 "${admin} -ifoo -r 2 $s" 1 "" "IGNORE"
+# test  -f $s && fail I8 stage I8 should not have created $s.
 
 ## Create and specify MR numbers...
 
 # No MR
-docommand I9 "${admin} -fv -m -r2 -ifoo $s" 0 "" ""
+# NB: -m on its own will not specify a lack of MR number 
+# any more (e.g. with Solaris 2.6).
+# Currently CSSC will distinguish between -m"" and -m "".
+# Hence this test cannot work with both CSSC and Solaris SCCS
+# unless CSSC migrates to a (later) traditional getopt option
+# parsing scheme instead of one where this distinction is made. 
+docommand I9 "${admin} -fv -m'' -r2 -ifoo $s" 0 "" ""
 # Check for absence of MRs
-docommand I10 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
-    0  "MRs:\nCOMMENTS:\n" ""
+#docommand I10 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
+#    0  "MRs:\nCOMMENTS:\n" ""
 
 # One MR -- v flag unset, should fail.
 remove $s

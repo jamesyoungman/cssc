@@ -65,7 +65,9 @@ do
   ""
 done
 
-docommand C12 "${prs} -d':M:\n' s.1 s.2" 0 "1\n\n2\n\n" ""
+docommand C12 "${prs} -d':M:\n' s.1 s.2" 0 "1
+2
+" ""
 
 # We should only be able to create one file if we use -i.
 docommand C13 "${admin} -n -ifoo s.1 s.2" 1 "" IGNORE

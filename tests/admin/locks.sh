@@ -31,10 +31,11 @@ docommand k1 "${admin} -ifoo $s" 0 "" ""
 ## 
 ## to unlock all versions, admin will crash.
 ## 
-## "-d" ends up invoking sf-admin.cc : sccs_file::admin, and the loop associated
-## with unset_flags. (I believe that the loop associated with set_flags also has
-## the same problem). A check is made to distingish "-da" from "-d#", and for the
-## case of "-da", the code will do:
+## "-d" ends up invoking sf-admin.cc : sccs_file::admin, and the loop
+## associated with unset_flags. (I believe that the loop associated
+## with set_flags also has the same problem). A check is made to
+## distingish "-da" from "-d#", and for the case of "-da", the code
+## will do:
 ## 
 ## 		 flags.all_locked = 0;
 ## 		 flags.locked = NULL;
@@ -81,22 +82,38 @@ remove  $p $g
 # Lock just release 2; a get should work, since we are getting release 1.
 docommand k7 "${admin} -fl2 $s" 0 IGNORE IGNORE
 docommand k8 "${get} -e $s" 0 IGNORE IGNORE
+docommand k8a "${prt} -f $s | 
+	sed -n -e 's/.*releases//p'" 0 "\t2\n" IGNORE
 remove $p $g
 
 # Lock release 1 as well; a get should fail.
 docommand k9 "${admin} -fl1 $s" 0 IGNORE IGNORE
+
+# CSSC and SCCS differ in terms of the order they list the locked
+# releases in.
+docommand k9a "${prt} -f $s | 
+	sed -n -e 's/.*releases//p' | grep 1" 0 IGNORE IGNORE
+
+# Locking release 1 should implicitly unlock release 2
+# (Solaris 2.6 does this).
+docommand k9b "${prt} -f $s | 
+	sed -n -e 's/.*releases//p' | grep 2" 1 IGNORE IGNORE
+
 docommand k10 "${get} -e $s" 1 IGNORE IGNORE
 remove $p $g
 
-# Remove lock on release 2.   The lock on release 1 should remain.
-docommand k11 "${admin} -dl2 $s" 0 IGNORE IGNORE
-docommand k12 "${get} -e $s" 1 IGNORE IGNORE
-remove $p $g
 
 # Remove lock on release 1; things should work now.
 docommand k13 "${admin} -dl1 $s" 0 IGNORE IGNORE
 docommand k14 "${get} -e $s" 0 IGNORE IGNORE
 remove $p $g
+
+
+
+docommand k15 "${admin} -fla $s" 0 IGNORE IGNORE
+docommand k16 "${prt} -f $s | 
+	sed -n -e 's/.*releases//p'" 0 "\ta\n" IGNORE
+
 
 remove $s $g $p
 

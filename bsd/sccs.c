@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.29 2001/09/29 19:39:41 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.30 2001/11/25 12:59:53 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -574,8 +574,30 @@ check_data_integrity()
  */
 static void cleanup_environment(void)
 {
-  unsetenv("CSSC_BINARY_SUPPORT");
-  unsetenv("CSSC_MAX_LINE_LENGTH");
+  const char *pfail;
+  const char * binary_support = "CSSC_BINARY_SUPPORT";
+  const char * max_line_len   = "CSSC_MAX_LINE_LENGTH";
+#ifdef HAVE_UNSETENV
+  unsetenv(binary_support);
+  unsetenv(max_line_len);
+#else
+
+  /* XXX: not ideal.  We'd like just to turn them off, but
+   * if we have no unsetenv(), we simply have to fail. 
+   */
+  pfail = getenv(binary_support);
+  if (NULL == pfail)
+    pfail = getenv(max_line_len);
+  
+  if (pfail)
+    {
+      fprintf(stderr, 
+	      "You should not set the %s environment variable when "
+	      "the sccs driver is running set-user-id or set-group-id.\n",
+	      pfail);
+      exit(CSSC_EX_NOPERM);
+    }
+#endif
 }
 
 static void 

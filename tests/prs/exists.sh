@@ -24,7 +24,12 @@ echo "Descriptive Text" > DESC
 docommand e1 "${admin} -n -tDESC s.1" 0 "" ""
 remove DESC
 
-docommand e2 "${prs} -d':M:\n' s.1" 0 "1\n\n" ""
+docommand e2a "${prs} -d':M:\nX' s.1" 0 "1\nX\n" ""
+docommand e2b "${prs} -d':M:\n' s.1" 0 "1\n" ""
+docommand e2c "${prs} -d':M:
+' s.1" 0 "1
+
+" ""
 
 docommand e3 "${get} -e s.1" 0 "1.1\nnew delta 1.2\n0 lines\n" IGNORE
 echo "hello from %M%" >> 1

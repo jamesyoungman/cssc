@@ -1,3 +1,11 @@
+New in CSSC-0.13alpha-pl1
+	
+	* If final item in the prs format string is \n (the 
+	  escape code for newline as opposed to newline) then
+	  prs does not emit that newline (for compatibility with 	
+	  Solaris 2.6 - if this is different on other Unix systems,
+	  please report this as a bug).
+
 New in CSSC-0.13alpha-pl0
 
 	* CSSC should now build with GCC version 3.
