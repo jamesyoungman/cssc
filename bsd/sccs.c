@@ -39,12 +39,13 @@
  
 
 #ifndef lint
-static char copyright[] =
+static const char copyright[] =
 "@(#) Copyright (c) 1980, 1993\n"
 "The Regents of the University of California.  All rights reserved.\n"
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
+static const char filever[] = "$Id: sccs.c,v 1.9 1998/05/28 21:26:44 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -361,6 +362,11 @@ static char *str_dup (const char *);
 
 #define FBUFSIZ 100
 
+static void
+show_version(void)
+{
+  fprintf(stderr, "GNU CSSC %s\n%s\n", VERSION, filever);
+}
 
 #define	PFILELG	120
 
@@ -408,6 +414,12 @@ main (int argc, char **argv)
 	    break;
 	  switch (*++p)
 	    {
+	    case 'V':
+	      show_version();
+	      if (2 == argc)	/* If -V was the only arg, return success. */
+		return 0;
+	      break;		/* Otherwise, process the remaining options. */
+	      
 	    case 'r':		/* run as real user */
 	      setuid (getuid ());
 	      RealUser++;
@@ -812,6 +824,27 @@ lookup (const char *name)
 }
 
 /*
+ *  get_sig_name -- find the name for a signal.
+ *
+ *  NOT REENTRANT!
+ */
+static const char *
+get_sig_name(unsigned int sig)		/* NOT RENTRANT */
+{
+  static char sigmsgbuf[10 + 1]; /* "Signal 127" + terminating '\0' */
+#ifdef SYS_SIGLIST_DECLARED
+#ifdef NSIG  
+  if (sig < NSIG)
+    return sys_siglist[sig];
+#endif
+#endif
+  if (sig > 999) sig = 999;	/* prevent buffer overflow (!) */
+  sprintf (sigmsgbuf, "Signal %u", sig);
+  return sigmsgbuf;
+}
+
+
+/*
    **  CALLPROG -- call a program
    **
    **   Used to call the SCCS programs.
@@ -843,7 +876,6 @@ callprog (const char *progpath,
   register int sigcode;
   register int coredumped;
   register const char *sigmsg;
-  char sigmsgbuf[10 + 1];	/* "Signal 127" + terminating '\0' */
 
 #ifdef DEBUG
   if (Debug)
@@ -886,16 +918,8 @@ callprog (const char *progpath,
 	      sigcode &= 0177;
 	      if (sigcode != SIGINT && sigcode != SIGPIPE)
 		{
-		  if (sigcode < NSIG)
-		    sigmsg = sys_siglist[sigcode];
-		  else
-		    {
-		      sprintf (sigmsgbuf, "Signal %d",
-			       sigcode);
-		      sigmsg = sigmsgbuf;
-		    }
 		  fprintf (stderr, "sccs: %s: %s%s", argv[0],
-			   sigmsg,
+			   get_sig_name(sigcode),
 			   coredumped ? " - core dumped" : "");
 		}
 	      st = EX_SOFTWARE;
@@ -1546,6 +1570,34 @@ unedit (const char *fn)
     }
 }
 
+/* 
+ * childwait()
+ *
+ * Wait for a child process, with SIGINT ignored.
+ */
+static void 
+childwait(int pid, int *status_ptr)
+{
+  struct sigaction sa={0}, osa;
+  int ret;
+
+  /* temporarily ignore SIG_INT.
+   */
+  sa.sa_handler = SIG_IGN;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  ret = sigaction(SIGINT, &sa, &osa);
+
+  while ( -1 == waitpid(pid, status_ptr, 0) && EINTR == errno)
+    errno = 0;
+
+  /* Restore previous disposition of SIG_INT.
+   */
+  if (0 == ret)
+    sigaction(SIGINT, &osa, NULL);
+}
+
+
 /*
    **  DODIFF -- diff an s-file against a g-file
    **
@@ -1569,7 +1621,6 @@ dodiff (char *const getv[], const char *gfile)
   register int pid;
   auto int st;
   extern int errno;
-  sig_t osig;
 
   printf ("\n------- %s -------\n", gfile);
   fflush (stdout);
@@ -1591,10 +1642,8 @@ dodiff (char *const getv[], const char *gfile)
       OutFile = pipev[1];
       close (pipev[0]);
       rval = command (&getv[1], TRUE, "get:rcixt -s -k -p"); /* Warning */
-      osig = signal (SIGINT, SIG_IGN);
-      while (((i = wait (&st)) >= 0 && i != pid) || errno == EINTR)
-	errno = 0;
-      signal (SIGINT, osig);
+
+      childwait(pid, &st);
       /* ignore result of diff */
     }
   else
