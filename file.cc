@@ -38,7 +38,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.9 1997/07/02 18:17:56 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.10 1997/11/15 20:04:04 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -463,8 +463,8 @@ file_lock::file_lock(mystring zname): locked(0), name(zname) {
 		quit(errno, "%s: Can't create lock file.", 
 		     (const char *) zname);
 	}
-	if (fprintf(f, "%s\n", get_user_name()) == EOF
-	    || fflush(f) == EOF || ffsync(f) == EOF) {
+	if (fprintf(f, "%s\n", get_user_name()) < 0
+	    || fflush_failed(fflush(f)) || ffsync(f) == EOF) {
 		quit(errno, "%s: Write error.", (const char *) zname);
 	}
 
@@ -482,6 +482,16 @@ file_lock::~file_lock() {
 
 #elif defined(CONFIG_PID_LOCKING) || defined(CONFIG_DUMB_LOCKING)
 
+#if defined(CONFIG_PID_LOCKING)
+
+static int
+put_pid(FILE *f)
+{
+  return fprintf(f, "%lu", (unsigned long int)getpid());
+}
+
+#endif
+
 file_lock::file_lock(mystring zname): locked(0), name(zname) {
 	FILE *f = fcreate(zname, CREATE_READ_ONLY | CREATE_EXCLUSIVE);
 	if (f == NULL) {
@@ -493,11 +503,11 @@ file_lock::file_lock(mystring zname): locked(0), name(zname) {
 	}
 
 #ifdef CONFIG_DUMB_LOCKING
-	if (fprintf(f, "%s\n", get_user_name()) == EOF
+	if (fprintf(f, "%s\n", get_user_name()) < 0
 #else
-	if (putw(getpid(), f) == EOF
+	if (put_pid(f) < 0
 #endif
-	    || fclose(f) == EOF) {
+	    || fclose_failed(fclose(f))) {
 		quit(errno, "%s: Write error.", (const char *) zname);
 	}
 
