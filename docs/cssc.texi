@@ -206,11 +206,14 @@ flags (@pxref{flags}).  Untested.
 Check the SCCS file's checksum.  Untested.
 
 @item -ifoo
-Initialise the SCCS file with the contents of @file{foo}.
+Initialise the SCCS file with the contents of @file{foo}.  If no
+argument is given, read from standard input.  This implies the @samp{-n}
+option.
 
 @item -I
 As -i, but specifying no file name.  The file is instead read from
-standard input.  Untested.
+standard input.  This implies the @samp{-n} option.  Untested,
+nonstandard.
 
 @item -lrel1,rel2,...
 Unlock the specified releases.   If @samp{a} is specified as the
@@ -219,15 +222,16 @@ release, that denotes ``all releases''.  Untested.
 @item -mMR-list
 When initialising a file, add the specified list of @sc{mr} numbers
 (@pxref{mr-numbers}) to the delta commentary for the initial version.
-The specified @sc{mr}s are validated according to the setting of the
-@var{v} flag, which should be set (@pxref{flags}).  If the @var{v} flag
-is set but has no value (i.e. is set to the empty string), validation
-silently succeeds.  If the @var{v} flag is not set, the @samp{-m} option
-causes @code{delta} to fail.
+This list can be empty.  The specified @sc{mr}s are validated according
+to the setting of the @var{v} flag, which should be set (@pxref{flags}).
+If the @var{v} flag is set but has no value (i.e. is set to the empty
+string), validation silently succeeds.  If the @var{v} flag is not set,
+the @samp{-m} option causes @code{delta} to fail.
 
 @item -M
-As for @samp{-m} but specifying no list of modification requests.
-This is the default.  Untested (although the default is tested).
+As for @samp{-m} but specifying no list of modification requests.  This
+is the default.  Untested (although the default is tested).
+Nonstandard.
 
 @item -n
 Create a new SCCS file.
@@ -238,20 +242,19 @@ that release is always 1.  Untested.
 
 @item -tdesc
 Read in descriptive text for this file from @file{desc}.  This replaces
-any existing description.  See also the @samp{-T} option.  Untested.
-
-@item -T
-Remove the file's descriptive text.   This cannot be specified when the
-file is being created.  Under normal SCCS, it is possible to specify
-@samp{-t} without an argument, and this option is not required.
-Untested.
+any existing description.  If no argument, remove any existing
+description (this is illegal if @samp{-i} or @samp{-n} is used).
 
 @item -V 
 Display version information.  Untested.
 
 @item -yadayada
 When intialising a file, set the comment for that delta to
-@samp{adayada}.  Untested.
+@samp{adayada}.  If the option is given just as @samp{-y}, the comment
+is recorded as empty.  The following word in the argument list is not
+used as the comment.  @emph{Note that this behaviour is different to
+most Unix programs, but is the same as the behaviour of traditional
+@sc{sccs}}.
 
 @item -Y
 As for the @samp{-y} option, but specifying no comment.  This is the
@@ -285,7 +288,7 @@ Create empty relases when the @samp{-r} option to @code{get} is used to
 skip releases.   These empty releases can later serve as branch points.
 @end table
 
-@unnumberedsubsubsec Boolean Flags 
+@unnumberedsubsubsec Numerical Flags 
 @table @samp
 @item c
 Set the release ceiling.  Releases higher than the ceiling cannot be
@@ -363,7 +366,8 @@ are each identified by a unique @dfn{SID}.  A @sc{sid} looks like
 @dfn{level}, @dfn{branch} and @dfn{sequence} numbers.
 
 New revisions on the main sequence (the @dfn{trunk}) have no branch or
-sequence numbers and so just have two numbers (@samp{1.2}, for example).
+sequence numbers and so just have two number components (@samp{1.2}, for
+example).
 
 @node get, help, delta, Invoking Programs
 @section @code{get}
@@ -486,7 +490,7 @@ Show version information.
 
 @item -w@i{XXX}
 When performing keyword substitution (@pxref{keyword substitution}), use
-XXX rather than @samp{%Z%%M%\t%I%} as the substitution value for %W%.
+XXX rather than @samp{%Z%%M% <@sc{tab}> %I%} as the substitution value for %W%.
 
 @item -x@i{list}
 Exclude the indicated deltas from the result.  Deltas are indicated by
