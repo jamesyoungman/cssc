@@ -1564,7 +1564,7 @@ accompanying @code{CSSC} first searches for them on the PATH, and then
 falls back on @file{/usr/sccs/*}.  If the executable is running
 set-user-id, the @code{PATH} environment variable is ignored.  The
 @code{sccs} program itself should be fairly secure, but the other
-programs in the suite are not.  @xref{Known Problems} for more
+programs in the suite are not.  @xref{Known Problems}, for more
 information.
 
 The @code{sccs} program is documented in its online manual page, and
@@ -1573,7 +1573,7 @@ Allman, a copy of which is included with this suite.
 
 Unlike all the other parts of the suite, the @code{sccs} program and its
 accompanying documentation are covered by the BSD copyright license; see
-@xref{BSD Code} and the file @file{COPYING.bsd} for more information.
+@xref{BSD Code}, and the file @file{COPYING.bsd}, for more information.
 
 The original BSD version of the @code{sccs} program can easily be found
 on BSD mirrors, for example @url{ftp://ftp.freebsd.org/}.
@@ -2175,7 +2175,7 @@ some point, and creating a symbolic link of the same name.  Most of the
 temporary files used are created in the same directory as the @sc{sccs}
 file itself.   @sc{cssc} should not be used by the owners of files whose
 security is important, especially to control files whose @sc{sccs} file
-is in a world-writable directory.  @xref{Filenames}
+is in a world-writable directory.  @xref{Filenames}.
 
 @cindex Setuid execution, why not to do it
 @item Setuid execution ---
