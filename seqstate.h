@@ -24,7 +24,7 @@
  *
  * Defines the class seqstate.  
  *
- * $Id: seqstate.h,v 1.12 1999/04/18 17:59:40 james Exp $
+ * $Id: seqstate.h,v 1.13 1999/04/21 22:18:24 james Exp $
  *
  */
 
@@ -32,8 +32,6 @@
 #define CSSC__SEQSTATE_H__
 
 #include "stack.h"
-#include <list> /* This dependence on STL will be removed in next version */
-
 
 class cssc_delta_table;
 
@@ -45,14 +43,6 @@ class cssc_delta_table;
 
 class seq_state
 {
-  struct action
-  {
-    seq_no seq;
-    char   command;
-
-    action(seq_no s, char c) : seq(s), command(c) { }
-  };
-  
   // Make assignment and copy constructor private.
   const seq_state& operator=(const seq_state& s);
   
@@ -60,24 +50,27 @@ class seq_state
   unsigned char * pExcluded;
   unsigned char * pExplicit;
   
+  unsigned char * pActive;
+  char          * pCommand;
+  
   seq_no          last;
   seq_no          active; // for use by "get -m" and so on.
 
 
   // We keep a record of the open ^AI or ^AD expressions
   // that are currently in effect, while reading the SCCS file.
-  list<action>    active_actions;
-  action          current_action;
-  
+  // This is kept in the pActive array.  If pActive[n] true,
+  // then pCommand[i] contains an 'I' or 'D' indicating that a 
+  // ^AI or ^AD had been encountered.
+
   bool            inserting;	// current state.
 
 
   // Calculate a new value for the "inserting" flag.
   void decide_disposition();
 
-  action default_action() const;
-  
 public:
+  
   seq_state(seq_no l);
   seq_state(const seq_state& s);
   ~seq_state();
@@ -91,7 +84,6 @@ public:
   void set_explicitly_excluded(seq_no);
   void set_included(seq_no);
   void set_excluded(seq_no);
-
   
   // stuff for use when reading the body of the s-file.
 

@@ -24,26 +24,27 @@
 
 #include "cssc.h"
 #include "seqstate.h"
-#include <list> /* This dependence on STL to be removed in the next version */
-
 
 #undef DEBUG_COMMANDS
 
 
 seq_state::seq_state(seq_no l) :
   last(l),
-  active(0u),
-  current_action(default_action())
+  active(0u)
 {
   pIncluded = new unsigned char[l + 1];
   pExcluded = new unsigned char[l + 1];
   pExplicit = new unsigned char[l + 1];
+  pActive   = new unsigned char[l + 1];
+  pCommand  = new          char[l + 1];
   
-  for( int i=0; i<l+1; i++)
+  for(int i=0; i <= last; i++)
     {
       pIncluded[i] = 0;
       pExcluded[i] = 0;
       pExplicit[i] = 0;
+      pActive[i]   = 0;
+      pCommand[i]  = 0;
     }
   
   decide_disposition();
@@ -52,20 +53,22 @@ seq_state::seq_state(seq_no l) :
 
 seq_state::seq_state(const seq_state& s) : 
   last(s.last),
-  active(s.active),
-  active_actions(s.active_actions),
-  current_action(s.current_action)
+  active(s.active)
   
 {
   pIncluded = new unsigned char[last + 1];
   pExcluded = new unsigned char[last + 1];
   pExplicit = new unsigned char[last + 1];
+  pActive   = new unsigned char[last + 1];
+  pCommand  = new          char[last + 1];
   
-  for( int i=0; i<last+1; i++)
+  for( int i=0; i <= last; i++)
     {
       pIncluded[i] = s.pIncluded[i];
       pExcluded[i] = s.pExcluded[i];
       pExplicit[i] = s.pExplicit[i];
+      pActive[i]   = s.pActive[i];
+      pCommand[i]  = s.pCommand[i];
     }
 
   decide_disposition();
@@ -118,8 +121,11 @@ seq_state::~seq_state()
   delete[] pIncluded;
   delete[] pExcluded;
   delete[] pExplicit;
+  delete[] pActive;
+  delete[] pCommand;
   
-  pIncluded = pExcluded = pExplicit = 0;
+  pIncluded = pExcluded = pExplicit = pActive = 0;
+  pCommand = 0;
 }
 
 // stuff for use when reading the body of the s-file.
@@ -143,12 +149,14 @@ seq_state::decide_disposition()
   seq_no our_highest_delete         = 0u;
   seq_no owner_of_current_insertion = 0u;
   
-  list<action>::const_iterator i = active_actions.begin();
-  while (i != active_actions.end())
+  for (seq_no s=0; s <= last; ++s)
     {
-      const seq_no s = i->seq;
-
-      if ('I' == i->command)
+      if (!pActive[s])
+	{
+	  continue;
+	}
+      
+      if ('I' == pCommand[s])
 	{
 	  if (is_included(s))
 	    {
@@ -169,8 +177,6 @@ seq_state::decide_disposition()
 		our_highest_delete = s;
 	    }
 	}
-
-      ++i;
     }
 
   // If the sequence number of the insert command is later than the
@@ -215,20 +221,13 @@ seq_state::start(seq_no seq, char command_letter)
     {
       return "invalid command letter";
     }
-  
-  list<action>::const_iterator i = active_actions.begin();
-  while (i != active_actions.end())
+  else if (seq > last)
     {
-      if (i->seq == seq)
-	{
-	  break;
-	}
-      ++i;
+      return "invalid sequence number";
     }
-  
-  if  (i != active_actions.end())
+  else if (pActive[seq])
     {
-      if ('I' == command_letter)
+      if (pCommand[seq] == 'I')
 	{
 	  return "^AI for sequence number which is already active";
 	}
@@ -240,8 +239,9 @@ seq_state::start(seq_no seq, char command_letter)
   // end diagnostic-only code.
 
        
-  current_action = action(seq, command_letter);
-  active_actions.push_front(current_action);
+  pActive[seq] = 1;
+  pCommand[seq] = command_letter;
+  
   decide_disposition();
 
 #ifdef DEBUG_COMMANDS
@@ -254,24 +254,19 @@ seq_state::start(seq_no seq, char command_letter)
   return NULL;
 }
 
-seq_state::action seq_state::default_action() const
-{
-  // return seq_no=0, inserting=true
-  return action(0u, 'I');
-}
-
-
 // When we find ^AE.
 const char *
 seq_state::end(seq_no seq)
 {
-  list<action>::iterator i = active_actions.begin();
-  while (i != active_actions.end())
+  if (seq > last)
     {
-      if (i->seq == seq)
-	{
-	  active_actions.erase(i);
-	  decide_disposition();
+      return "invalid sequence number";
+    }
+  else if (pActive[seq])
+    {
+      pActive[seq] = 0;
+      pCommand[seq] = 0;
+      decide_disposition();
 #ifdef DEBUG_COMMANDS
 	  fprintf(stderr,
 		  "^A%c %u: inserting=%c\n",
@@ -280,11 +275,11 @@ seq_state::end(seq_no seq)
 		  inserting ? 'Y' : 'N');
 #endif	  
 	  return NULL;	      
-	}
-      ++i;
     }
-  // if we get to here, the specified seq was not already active.
-  return "unmatched ^AE";
+  else
+    {
+      return "unmatched ^AE";
+    }
 }
 
 
