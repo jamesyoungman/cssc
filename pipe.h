@@ -63,7 +63,7 @@
 
 #ifndef USE_PIPE
 
-class Pipe: cleanup {
+class Pipe : private cleanup {
 	friend int run_diff(const char *gname, Pipe &in, Pipe &out);
 
 	FILE *f;
