@@ -148,6 +148,8 @@ exit 1 ;
 
 remove () { rm -rf $* || miscarry Could not remove $* ; }
 
+rename () { mv "$1" "$2" || miscarry "Could not rename $1 to $2" ; }
+
 ##############
 docommand () {
 # $1 is the label.  
