@@ -1,10 +1,22 @@
-New in CSSC-devel-0.03-pl0
+New in CSSC-0.03alpha-pl1
+
+        * Changed the version number format again.  It's the last
+	  time, I promise.  Probably.
+
+	* Works with versions of "make" other than GNU make, thanks to
+	  GNU automake.  In particular, it's been tested with BSD
+	  make.
+
+	* Now works (again) on systems lacking strstr(), rename(), or
+	  remove().
+
+New in CSSC-devel-0.03a-pl0
 
 	* Fundamental changes, hence new version number.
 
-	* Major change is switch to using "automake" to 
-	  generate the "Makefile.in" files.  The consequent
-	  changes may break things for some machines.
+	* Major change is switch to using "automake" to generate the
+	  "Makefile.in" files.  The consequent changes may break
+	  things for some machines.
 
 	* The test suite now has its own chapter in the manual.
 
