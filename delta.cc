@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.16 1998/05/09 16:10:53 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.17 1998/06/14 01:08:18 james Exp $";
 
 void
 usage() {
@@ -71,11 +71,14 @@ main(int argc, char **argv) {
 	    c = opts.next()) {
 		switch (c) {
 		default:
-			quit(-2, "Unsupported option: '%c'", c);
+			errormsg("Unsupported option: '%c'", c);
+			return 2;
+			
 		case 'r':
 			rid = sid(opts.getarg());
 			if (!rid.valid()) {
-				quit(-2, "Invaild SID: '%s'", opts.getarg());
+				errormsg("Invaild SID: '%s'", opts.getarg());
+				return 2;
 			}
 			break;
 
@@ -126,6 +129,8 @@ main(int argc, char **argv) {
 	list<mystring> mr_list, comment_list;
 	int first = 1;
 
+	int retval = 0;
+	
 	while(iter.next()) {
 		sccs_name &name = iter.get_name();
 		sccs_file file(name, sccs_file::UPDATE);
@@ -156,23 +161,33 @@ main(int argc, char **argv) {
 			break;
 
 		case sccs_pfile::NOT_FOUND:
-			if (!rid.valid()) {
-				quit(-1, "%s: You have no edits outstanding.",
-				     name.c_str());
-			}
-			quit(-1, "%s: Specified SID hasn't been locked for"
-			         " editing by you.",
-			     name.c_str());
-			break;
+		  if (!rid.valid())
+		    {
+		      errormsg("%s: You have no edits outstanding.",
+			       name.c_str());
+		    }
+		  else
+		    {
+		      errormsg("%s: Specified SID hasn't been locked for"
+			       " editing by you.",
+			       name.c_str());
+		    }
+		  retval = 1;
+		  break;
 
 		case sccs_pfile::AMBIGUOUS:
-			if (rid.valid()) {
-				quit(-1, "%s: Specified SID is ambiguous.",
-				     name.c_str());
-			}
-			quit(-1, "%s: You must specify a SID on the"
-			         " command line.", name.c_str());
-			break;
+		  if (rid.valid())
+		    {
+		      errormsg("%s: Specified SID is ambiguous.",
+			       name.c_str());
+		    }
+		  else
+		    {
+		      errormsg("%s: You must specify a SID on the"
+			       " command line.", name.c_str());
+		    }
+		  retval = 1;
+		  break;
 
 		default:
 			abort();
@@ -182,8 +197,10 @@ main(int argc, char **argv) {
 		  {
 		    if (mr_list.length() == 0)
 		      {
-			quit(-1, "%s: MR number(s) must be supplied.",
-			     name.c_str());
+			errormsg("%s: MR number(s) must be supplied.",
+				 name.c_str());
+			retval = 1;
+			continue;
 		      }
 		    if (file.check_mrs(mr_list))
 		      {
@@ -191,7 +208,9 @@ main(int argc, char **argv) {
                          */
 			pfile->delta.print(stdout);
 			putchar('\n');
-			quit(-1, "%s: Invalid MR number(s).", name.c_str());
+			errormsg("%s: Invalid MR number(s).", name.c_str());
+			retval = 1;
+			continue;
 		      }
 		  }
 		else if (mr_list.length())
@@ -199,10 +218,11 @@ main(int argc, char **argv) {
 		    // MRs were specified and the MR flag is turned off.
 		    pfile->delta.print(stdout);
 		    putchar('\n');
-		    quit(-1,
-			 "%s: MR verification ('v') flag not set, MRs"
-			 " are not allowed.\n",
-			 name.c_str());
+		    errormsg("%s: MR verification ('v') flag not set, MRs"
+			     " are not allowed.\n",
+			     name.c_str());
+		    retval = 1;
+		    continue;
 		  }
 		
 		mystring gname = name.gfile();
@@ -215,7 +235,7 @@ main(int argc, char **argv) {
 		  }
 	}
 
-	return 0;
+	return retval;
 }
 
 // Explicit template instantiations.
