@@ -28,33 +28,58 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.6 1997/11/18 23:22:27 james Exp $";
+static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.7 1998/01/15 22:47:59 james Exp $";
 #endif
+
+
+static char *
+re_new(char *p, int oldlen, int newlen)
+{
+  char *q = new char[newlen];
+  if (q)
+    {
+      memcpy(q, p, oldlen);
+      return q;
+    }
+  return q;
+}
+
 
 /* Prompts the user for input. */
 
 mystring
-prompt_user(const char *prompt) {
-	static char *linebuf = (char *) xmalloc(CONFIG_LINEBUF_CHUNK_SIZE);
-	static int buflen = CONFIG_LINEBUF_CHUNK_SIZE;
-	int c;
-	int i = 0;
-
-	fputs(prompt, stdout);
-	fflush(stdout);
+prompt_user(const char *prompt)
+{
+  const int chunk_size = 4;	// TODO: Debug the code, then increase this!
+  char *linebuf = new char [chunk_size];
+  int buflen = chunk_size;
+  int c;
+  int i = 0;
+  
+  // Issue the prompt only if stdin is a tty.
+  if (stdin_is_a_tty())
+    {
+      fputs(prompt, stdout);
+      fflush(stdout);
+    }
 	
-	c = getchar();
-	while(c != EOF && c != '\n') {
-		if (i == buflen - 1) {
-			buflen += CONFIG_LINEBUF_CHUNK_SIZE;
-			linebuf = (char *) xrealloc(linebuf, buflen);
-		}
-		linebuf[i++] = c;
-		c = getchar();
+  c = getchar();
+  while(c != EOF && c != '\n')
+    {
+      if (i == buflen - 1)
+	{
+	  linebuf = re_new(linebuf, buflen, buflen+chunk_size);
+	  buflen += chunk_size;
 	}
+      linebuf[i++] = c;
+      c = getchar();
+    }
 
-	linebuf[i] = '\0';
-	return linebuf;
+  linebuf[i] = '\0';
+  mystring ret(linebuf);
+  delete[] linebuf;
+  
+  return ret;
 }
 
 /* Local variables: */
