@@ -2,7 +2,7 @@
  * sccsfile.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2003 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.51 2003/03/01 14:15:15 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.52 2003/03/01 14:16:16 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
