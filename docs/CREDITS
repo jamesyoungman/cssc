@@ -1,12 +1,17 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <97/11/05 18:54:27 james>
+Time-stamp: <1998-01-11 16:44:16 james>
 
-The MySC package provides the bulk of the functionality of this
-package, compiled under GCC 2.4.5, and was written by Ross Ridge.
+The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
+(but not GCC 2.7.x), and was written by Ross Ridge.
 
-This package was updated for modern C++ compilers, fixed, enhanced,
-made more portable and sparingly documented by James Youngman,
-<jay@gnu.org>.
+This package was for all intents and purposes written (that is,
+updated for modern C++ compilers, fixed, enhanced, made more portable,
+ported, fixed and documented) by James Youngman, <jay@gnu.org>.  James
+also added a test suite, wrote the test cases, converted the package
+to use GNU Autoconf and GNU Automake, and wrote the manual.  He's the
+current maintainer.  Only (and all) code still in the Kernighan and
+Ritchie format is still left over from MySC.  New code is indented
+according to the GNU specification.
 
 Lars Hecking <lhecking@nmrc.ucc.ie> provided valuable help with
 Autoconf and portability information for Solaris, SunOS, AmigaOS, and
@@ -22,6 +27,10 @@ Malcolm Boff <Malcolm_Boff@compuserve.com> provided a useful bug
 report for FreeBSD (apparently "echo -e -n" is invalid; the options
 are exclusive).
 
+Richard Polton <richardp@scopic.com> provided Solaris testing, plus
+testing with gigantic inputs, and rewrote sccsdiff, also supplying
+test cases for it (in fact the only person so far [as of 1998-01-11]
+to do so!)
 
 Support for development snapshots of GCC (as of 1997-08-11) was
 contributed by Fila Kolodny <fila@ibi.com>.
