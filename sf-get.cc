@@ -45,112 +45,39 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.27 1999/04/21 22:19:12 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.28 1999/05/16 16:53:17 james Exp $";
 #endif
 
+
+
+
+// sccs_file::finalise_seqstate
+//
+// This function makes the final desisions on the visibility of each
+// delta.  Some of the work is delegated to
+// seq_state::render_visibility().  The word "FINALISE" here is not
+// indentded to imply that an object is deleted.
+
 bool
-sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
+sccs_file::finalise_seqstate(seq_state &state,
+			    seq_no get_seq)
 {
   bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
 
   // We must include the version we are trying to get.
-  state.set_included(seq);
-  
-  while (seq != 0)
+  // Mark it and its ancestors.
+  seq_no seq;
+  for (seq=get_seq; seq != 0; seq = delta_table->delta_at_seq(seq).prev_seq)
     {
-      int len;
-      int i;
-
-      bool bExcluded = state.is_excluded(seq);
-      bool bIncluded = state.is_included(seq);
-
-      bool bVisible = true;
-      if (bExcluded)
-	bVisible = false;
-      else if (!bIncluded)
-	bVisible = false;
-
-      if (bDebug)
-	{
-	  if (bExcluded)
-	    {
-	      fprintf(stderr, "seq %lu: is excluded\n", seq);
-	    }
-	  if (bVisible)
-	    {
-	      fprintf(stderr, "seq %lu: is visible\n", seq);
-	    }
-	  else
-	    {
-	      fprintf(stderr, "seq %lu: is not visible\n", seq);
-	    }
-	}
-
-      
-      if (bVisible)
-	{
-	  // OK, this delta is visible in the final result.  Apply its
-	  // include and exclude list.  We are travelling from newest to
-	  // oldest deltas.  Hence deltas which are ALREADY excluded or
-	  // included are left alone.  Only deltas which have not yet been
-	  // either included or excluded are messed with.
-	  
-	  const delta &d = delta_table->delta_at_seq(seq);
-	  
-	  len = d.included.length();
-	  for(i = 0; i < len; i++)
-	    {
-	      const seq_no s = d.included[i];
-	      if (s == seq)
-		continue;
-	      
-	      // A particular delta cannot have a LATER delta in 
-	      // its include list.
-	      ASSERT(s <= seq);
-	      
-	      if (!state.is_excluded(s))
-		{
-		  if (bDebug)
-		    {
-		      fprintf(stderr, "seq %lu includes seq %lu\n", seq, s);
-		    }
-		  state.set_included(s);
-		  ASSERT(state.is_included(s));
-		}
-	    } 		
-	  
-	  state.set_included(d.prev_seq);
-	  
-	  len = d.excluded.length();
-	  for(i = 0; i < len; i++)
-	    {
-	      const seq_no s = d.excluded[i];
-	      if (s == seq)
-		continue;
-	      
-	      // A particular delta cannot have a LATER delta in 
-	      // its exclude list.
-	      ASSERT(s <= seq);
-	      
-	      if (!state.is_included(s))
-		{
-		  if (bDebug)
-		    {
-		      fprintf(stderr, "seq %lu excludes seq %lu\n", seq, s);
-		    }
-		  state.set_excluded(s);
-		  ASSERT(state.is_excluded(s));
-		}
-	    }
-	}
-      
-      --seq;
+      state.set_ancestral(seq);
     }
+
+  state.render_visibility(bDebug, delta_table);
   
   if (bDebug)
     {
       fprintf(stderr,
-	      "sccs_file::prepare_seqstate(seq_state &state, seq_no seq)"
+	      "sccs_file::finalise_seqstate(seq_state &state, seq_no seq)"
 	      " done\n");
     }
   return true;
@@ -184,23 +111,16 @@ sccs_file::get(mystring gname, class seq_state &state,
     return false;
   
 
-  /* The following statement is not correct. */
-  /* "@I 1" should start the body of the SCCS file */
-
-  if (read_line() != 'I')
+  int first_command = read_line();
+  if (first_command != 'I' && first_command != 'D')
     {
-      corrupt("Expected '@I'");
+      corrupt("Expected '@I' or '@D'");
       return false;
     }
   check_arg();
 
-  /* The check on the following line is certainly wrong, since
-   * the first body line need not refer to the first delta.  For
-   * example, SunOS 4.1.1's SCCS implementation doesn't always
-   * start with ^AI 1.
-   */
   unsigned short first_delta = strict_atous( plinebuf->c_str() + 3);
-  state.start(first_delta, 'I'); /* 'I' means "insert". */
+  state.start(first_delta, first_command);
 
   FILE *out = parms.out;
 

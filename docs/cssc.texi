@@ -1771,9 +1771,9 @@ It is @emph{not authoritative}, and may not match some of the
 peculiarities of your vendor's implementation.
 
 @menu
-* File Format Overview::	An overview of the file format
-* The Header::			Format of the header of @sc{sccs} files
-* The Body::			Format of the body of @sc{sccs} files 
+* File Format Overview::	    An overview of the file format
+* The Header::			    Format of the header of @sc{sccs} files
+* The Body::			    Format of the body of @sc{sccs} files 
 @end menu
 
 @node File Format Overview, The Header, , File Format
@@ -1907,14 +1907,12 @@ table when they find a delta which is too old.
 
 After the @samp{^Ad} line there may be several lines which indicate
 lists of included, excluded or ignored sequence numbers for this delta.
-I don't understand this area of the functionality of @sc{sccs} very
-well, so any description here may be vague or incorrect.  The CSSC
-implementation may also be incomplete in this area.
 
 The list of included seqnos is introduced with @samp{^Ai }, the
 excluded seqnos with @samp{^Ax}, and ignored seqnos with @samp{^Ag}.
 These are followed by a space character, and then the list itself, which
-is a space-separated list of integers.
+is a space-separated list of integers.  For information about how these
+are actually used, please see @ref{The Body}.
 
 If the @sc{mr}-validation flag (@pxref{Flags}) was turned on at the time
 of the creation of this delta, one or more lines of the form
@@ -2089,12 +2087,100 @@ I was here
 ^AE 7
 @end example
 
-I currently have no clear understanding of the interaction of excluded,
-included or excluded revisions with the normal check-in processing.
-Hence I can't thouroughly explain the precise meaning of the @samp{^AI},
-@samp{^AE} and @samp{^AD} control lines.  This section will be completed
-at a future date.  If you have an understanding of these issues, please
-let me (@email{jay@@gnu.org}) know.
+The information in the delta table is used to determine what the effect
+of each @samp{^AI}, @samp{^AD} or @samp{^AE} line is.  This must be
+understood in the context of the @code{get} command.  The aim is to
+reconstruct a particular delta.  Each delta is listed in the delta table
+and has a predecessor and optional lists of ignored, excluded and
+included deltas.  The initial delta in the file has sequence number 1
+(and usually has the @sc{sid} 1.1, and of course has no predecessor).
+
+Before starting to read the body of the SCCS file, we start by assuming
+that the delta we are retrieving is wanted in the output.  We
+additionally start with a list of deltas that are to be included or
+excluded; the @samp{-i} and @samp{-x} options of @code{get} set these
+lists.  Each delta in the exclude list is marked not-wanted, and each
+delta in the include list is marked wanted.  Any given delta may not
+appear on both lists.
+
+The delta we wish to retrieve is marked "wanted".  The deltas listed in
+its include list are then examined; each of them is marked as wanted
+unless they have @emph{earlier} been marked as not-wanted.  The deltas
+on the exclude list are then each marked wanted unless they have
+@emph{earlier} been marked not-wanted.  The predecessor delta (as
+indicated in the @samp{^AD} line in the delta table) is then also marked
+wanted (unless it was already marked not-wanted).
+
+At this point, the processing for this delta is complete.  The delta
+with the next-lower sequence number is then considered.  If it is not
+already marked as wanted, it is ignored, and we continue on down to the
+next wanted delta.  When we find a delta which is wanted, it is
+processed in the above way.
+
+This method is usually equivalent to following the list of predecessor
+deltas, except that this method also takes into account the possibility
+that a delta may also include another delta from which it was not
+descended (for example, delta 1.4 may include delta 1.2.1.1).  This
+process stops after processing the initial delta (which has a sequence
+number of 1).
+
+After the processing described above is complete, we have marked some
+deltas in the delta table as wanted, and some as not-wanted.  From this
+point on, any delta not marked was wanted is considered to be
+not-wanted.
+
+In order to retrieve the delta we want, we then process the body of the
+@sc{sccs} file, line by line.  Each time we see a @samp{^AI n} or
+@samp{^AD n} line, we add this to a list of ``active commands'', and also
+remember the attached sequence number @samp{n}.  Each time we see a
+@samp{^AE n} line, we remove the relevant entry from the ``active
+command'' list.  At any stage, we are either emitting body lines into
+the output file, or we are not.
+
+When we have found a @samp{^AI n} line, the sequence number @samp{n} to
+which it belongs is either greater than the sequence number which we are
+retrieving, or not.  If it is greater, the text which follows was added
+to the @sc{sccs} file body after our own delta was created.  Hence, the
+instruction to include lines is ignored.  If the sequence number is
+less, then either this sequence number is wanted, or it is not.  If this
+sequence number is wanted, we emit any following data lines into the
+output file.  If it is not wanted, we don't emit them into the output.
+
+When we have found a @samp{^AD n} line, the listed sequence number is
+either wanted or not.  If it is wanted, we do not emit the lines which
+follow into the output.  If this sequence number is not wanted, then we
+don't change our current state; in other words, if we were already
+emitting lines, we continue to do so.  Put simply, the specified delta
+deleted some lines, but we aren't using that delta, so we don't consider
+the lines to be deleted.  The the specified sequence number @samp{n} is
+greater than the sequence number we are retrieveing, we behave as if
+that sequence number is marked not-wanted.
+
+When we have found a @samp{^AE n} line, we remove the relevant command
+from our ``active command'' list.  We then re-read our list to determine
+what we should do now.  Only two commands are really of interest here;
+the insert command with the highest wanted sequence number and the
+delete command with the highest wanted seuqence number.  If the sequence
+number of the delete command is higher than the sequence number of the
+insert command, we do not emit body lines into the output.  Otherwise,
+we do.  If the highest active insert command has a sequence number
+higher than the sequence number of the delta we are trying to retrieve,
+body lines will not be emitted, as already described.  This calculation
+is performed immediately after @samp{^AI} and @samp{^AD} lines, too; it
+was just simpler to describe @samp{^AI} and @samp{^AD} individually to
+start with.
+
+It sometimes happens that we reach a point in the body where there are
+no active insert or delete commands at all.  These lines are not emitted
+into the output.
+
+If you find this description is unclear, and particularly if you have
+suggestions for its improvement, please report this as a bug
+(@pxref{Problems}).  This description also completely omits any mention
+of ignored deltas (as with @code{get -g}).  This is because I have not
+been able to ascertain what this option actually does.  If you have an
+understanding of ignored deltas, please let me (@email{jay@@gnu.org})
+know.
 
 @c TODO: complete this seciton.
 

@@ -62,6 +62,7 @@ private:
   long body_offset;
   int body_lineno;
   bool xfile_created;
+  bool body_line_pushed_back;
   
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
@@ -98,7 +99,8 @@ private:
   unsigned long strict_atoul(const char *s) const;
   
   int read_line_param(FILE *f);
-
+  void push_back_current_line();
+  
   int read_line();
   void read_delta();
   bool seek_to_body();
@@ -153,8 +155,6 @@ private:
 	found_id(0) {}
   };
 
-  bool prepare_seqstate(seq_state &state, seq_no seq);
-
   typedef int (sccs_file::*subst_fn_t)(const char *,
 				       struct subst_parms *,
 				       struct delta const&) const;
@@ -195,6 +195,7 @@ public:
 
   /* sf-get3.c */
 private:
+  bool finalise_seqstate(seq_state &state, seq_no seq);
   bool prepare_seqstate(seq_state &state, sid_list include,
 			sid_list exclude, sccs_date cutoff_date);
 
@@ -232,9 +233,38 @@ public:
 
   int check_mrs(mylist<mystring> mrs);
 
+  bool traverse_body_line(seq_state& state,
+			  FILE *out,
+			  bool bEOFisOK,
+			  int * included_lines_traversed);
+  
   bool add_delta(mystring gname, sccs_pfile &pfile,
 		 mylist<mystring> mrs, mylist<mystring> comments,
 		 bool display_diff_output);
+
+  bool delta_do_insert(FILE *out,
+		       cssc_linebuf& delta_buf,
+		       struct delta& new_delta,
+		       seq_no new_seq,
+		       FILE * diff_out,
+		       bool display_diff_output);
+  bool delta_do_delete(FILE *out,
+		       cssc_linebuf& delta_buf,
+		       struct delta& new_delta,
+		       seq_no new_seq,
+		       FILE * diff_out,
+		       bool display_diff_output,
+		       seq_state& sstate,
+		       unsigned long int &next_body_line);
+  bool delta_do_change(FILE *out,
+		       cssc_linebuf& delta_buf,
+		       struct delta& new_delta,
+		       seq_no new_seq,
+		       FILE * diff_out,
+		       bool display_diff_output,
+		       seq_state& sstate,
+		       unsigned long int& next_body_line);
+  
 
   /* sccsfile.cc */
   void set_mr_checker_flag(const char *s);

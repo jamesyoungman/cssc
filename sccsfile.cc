@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.40 1999/04/21 22:19:12 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.41 1999/05/16 16:53:16 james Exp $";
 #endif
 
 
@@ -152,20 +152,33 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
    is returned.  Otherwise 0 is returned. */
 
 int
-sccs_file::read_line() {
-	if (read_line_param(f)) {
-		if (ferror(f)) {
-			errormsg_with_errno("%s: Read error.", name.c_str());
-		}
-		return -1;
+sccs_file::read_line()
+{
+  if (!body_line_pushed_back)
+    {
+      if (read_line_param(f))
+	{
+	  if (ferror(f))
+	    {
+	      errormsg_with_errno("%s: Read error.", name.c_str());
+	    }
+	  return -1;
 	} 
+      lineno++;
+    }
 
-	lineno++;
-	if ( bufchar(0) == '\001')
-	  {
-	    return bufchar(1);
-	  }
-	return 0;
+  body_line_pushed_back = false;
+  if ( bufchar(0) == '\001')
+    {
+      return bufchar(1);
+    }
+  return 0;
+}
+
+void sccs_file::push_back_current_line(void)
+{
+  if (!feof(f))
+    body_line_pushed_back = true;
 }
 
 
@@ -443,7 +456,8 @@ sccs_file::get_module_name() const
    locked if it isn't only being read.  */
 
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
-  : name(n), mode(m), lineno(0), xfile_created(false)
+  : name(n), mode(m), lineno(0), xfile_created(false), 
+    body_line_pushed_back(false)
 {
   delta_table = new cssc_delta_table;
   plinebuf     = new cssc_linebuf;

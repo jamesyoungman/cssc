@@ -37,7 +37,7 @@
 #define CONFIG_LINEBUF_CHUNK_SIZE (1024)
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.11 1998/02/28 14:49:37 james Stab $";
+static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.12 1999/05/16 16:53:16 james Exp $";
 #endif
 
 cssc_linebuf::cssc_linebuf()
@@ -45,6 +45,56 @@ cssc_linebuf::cssc_linebuf()
     buflen(CONFIG_LINEBUF_CHUNK_SIZE)
 {
 }
+
+
+
+//
+// The following is an untested alternative implementation:-
+//
+
+// // Read the next lne from the input.  Return 1 for EOF, 0 otherwise.
+// int
+// cssc_linebuf::read_line(FILE *f)
+// {
+//   int ipos = 0;
+// 
+//   for (;;)
+//     {
+// 	 while (ipos < buflen-1)
+// 	   {
+// 	     int ch = getc(f);
+// 	     if (EOF == ch)
+// 	       {
+// 		 buf[ipos] = 0;
+// 		 return 1;		// reached EOF.
+// 	       }
+// 	     else
+// 	       {
+// 		 buf[ipos++] = ch;
+// 		 
+// 		 if ('\n' == ch)	// end of line.
+// 		   {
+// 		     buf[ipos] = 0;
+// 		     return 0;	       
+// 		   }
+// 	       }
+// 	   }
+// 
+// 	 //
+// 	 // Add another chunk of space to the buffer.
+// 	 //
+// 	 char *temp_buf = new char[CONFIG_LINEBUF_CHUNK_SIZE + buflen];
+// 	 memcpy( temp_buf, buf, buflen*sizeof( char));
+// 	 delete [] buf;
+// 	 buf = temp_buf;
+// 	 
+// 	 buflen += CONFIG_LINEBUF_CHUNK_SIZE;
+//     }
+//   
+//   return 1;
+// }
+
+
 
 
 int

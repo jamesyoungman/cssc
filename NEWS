@@ -1,4 +1,16 @@
+New in CSSC-0.11alpha-pl3
+
+	* NOTE THAT THIS IS AN ALPHA RELEASE.  If you want a BETA
+          release, use 0.10beta.pl1 instead.
+
+	* Fixed bug in "sccs unedit path-name/SCCS/s.foo" which had
+          caused the wrong working file to be deleted (sccs used to 
+          attempt to delete "./s.foo").
+
 New in CSSC-0.11alpha-pl2
+
+	* NOTE THAT THIS IS AN ALPHA RELEASE.  If you want a BETA
+          release, use 0.10beta.pl1 instead.
 
 	* texinfo.tex is now included in the distribution, since
           automake likes this to be so.
@@ -8,8 +20,10 @@ New in CSSC-0.11alpha-pl2
 
 New in CSSC-0.11alpha-pl1
 
-	* Note that this is an ALPHA release.  If you want a BETA
+	* NOTE THAT THIS IS AN ALPHA RELEASE.  If you want a BETA
           release, use 0.10beta.pl1 instead.
+
+	* This version *only* requires the STL header file <list>.
 
  	* Rewrote the delta inclusion/exclusion code to correctly
           support getting deltas which include previous revisions of

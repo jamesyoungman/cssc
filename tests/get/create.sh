@@ -30,10 +30,45 @@ docommand L1 "${admin} -itest/passwd.1 test/s.passwd" 0 "" IGNORE
 docommand L2 "${get} -e -g test/s.passwd"             0 "1.1\nnew delta 1.2\n" IGNORE
 cp test/passwd.2 passwd
 docommand L3 "${delta} -y\"\" test/s.passwd" 0 "1.2\n1 inserted\n1 deleted\n1 unchanged\n" IGNORE
+
+
+docommand L3a "${get} -s -k -p -x1.1 -r1.2 test/s.passwd" 0 \
+"This is file number 2\n" IGNORE
+
+
+
 docommand L4 "${get} -e -g test/s.passwd"  0 "1.2\nnew delta 1.3\n" IGNORE
 cp test/passwd.3 passwd
+
+
+#echo ===EXIT
+#exit 99
+
+
 docommand L5 "${delta} -y'' test/s.passwd" 0 "1.3\n1 inserted\n1 deleted\n1 unchanged\n" IGNORE
+
+rm -f s.passwd.LAST
+cp test/s.passwd s.passwd.LAST
+
+
+docommand L5a "${get} -s -k -p -r1.1 test/s.passwd" 0 \
+"This is a test file containing nothing interesting.\nThis is file number 1\n" IGNORE
+
+docommand L5b "${get} -s -k -p -r1.2 test/s.passwd" 0 \
+"This is a test file containing nothing interesting.\nThis is file number 2\n" IGNORE
+
+docommand L5c "${get} -s -k -p -r1.3 test/s.passwd" 0 \
+"This is a test file containing nothing interesting.\nThis is file number 3\n" IGNORE
+
+docommand L5d "${get} -s -k -p -x1.1 -r1.2 test/s.passwd" 0 \
+"This is file number 2\n" IGNORE
+
+docommand L5e "${get} -s -k -p -x1.2 test/s.passwd" 0 \
+"This is a test file containing nothing interesting.\nThis is file number 1\nThis is file number 3\n" IGNORE
+
+
 docommand L6 "${get} -e -g -x1.2 test/s.passwd" 0 "Excluded:\n1.2\n1.3\nnew delta 1.4\n" IGNORE
+
 cp test/passwd.4 passwd
 docommand L7 "${delta} -y'' test/s.passwd" 0 "1.4\n1 inserted\n2 deleted\n1 unchanged\n" IGNORE
 docommand L8 "${get} -e -g test/s.passwd" 0 "1.4\nnew delta 1.5\n" IGNORE

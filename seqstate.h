@@ -24,7 +24,7 @@
  *
  * Defines the class seqstate.  
  *
- * $Id: seqstate.h,v 1.13 1999/04/21 22:18:24 james Exp $
+ * $Id: seqstate.h,v 1.14 1999/05/16 16:53:17 james Exp $
  *
  */
 
@@ -34,6 +34,7 @@
 #include "stack.h"
 
 class cssc_delta_table;
+struct delta;
 
 
 /* This class is used to decide which lines of the body of a SCCS file
@@ -48,6 +49,8 @@ class seq_state
   
   unsigned char * pIncluded;
   unsigned char * pExcluded;
+  unsigned char * pAncestral;
+  unsigned char * pVisible;
   unsigned char * pExplicit;
   
   unsigned char * pActive;
@@ -69,6 +72,10 @@ class seq_state
   // Calculate a new value for the "inserting" flag.
   void decide_disposition();
 
+  void apply_include_list(const delta& d,
+			  cssc_delta_table* pt,
+			  bool debug);
+
 public:
   
   seq_state(seq_no l);
@@ -77,13 +84,20 @@ public:
   
   bool is_included(seq_no) const;
   bool is_excluded(seq_no) const;
+  bool is_ancestral(seq_no) const;
+  bool is_visible(seq_no) const;
+  bool is_explicit(seq_no) const;
 
-  bool is_explicitly_tagged(seq_no) const;
-
-  void set_explicitly_included(seq_no);
-  void set_explicitly_excluded(seq_no);
   void set_included(seq_no);
   void set_excluded(seq_no);
+  void set_ancestral(seq_no);
+  void set_visible(seq_no);
+  void set_explicit(seq_no);
+
+
+  void render_visibility(bool bDebug, cssc_delta_table *pt);
+  
+  //void apply_exclude_list(const delta& d, const delta_table& t);
   
   // stuff for use when reading the body of the s-file.
 
@@ -108,4 +122,5 @@ public:
 /* Local variables: */
 /* mode: c++ */
 /* End: */
+
 
