@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.16 1998/05/09 16:10:20 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.17 1998/05/10 17:59:34 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -313,26 +313,9 @@ sccs_file::write(FILE *out) const
 	return 1;
     }
 
-  /* "admin -i" does not know if the input file is binary until
-   *  the body is copied into the x-file by bodyio.cc.  Hence if
-   *  it finds the file is binary, it must have a way of setting
-   *  the "e" (encoded) flag.  We do this by using a
-   *  FilePosSaver flag.  (we rewind back to this point and
-   *  rewrite the flag (is this a hack or a kludge then?)
-   *
-   * An alternative would have been to modify end_update(),
-   * telling it that it needs to update the "encoded" flag
-   * as well as the checksum.  However, the checksum calculation
-   * there is done by open_sccs_file(), and we'd have to figure 
-   * out the effect on the checksum of changing the "encoded"
-   * flag as well.   Not nice.   This will do for now.
-   *
-   * TODO: consider implementing the above fix.
-   */
-	
   // Write the correct valuie for the "encoded" flag.
   // We have to write it even if the flag is unset, 
-  // because "admin =i" goes back and updates that byte if the file 
+  // because "admin -i" goes back and updates that byte if the file 
   // turns out to have been binary.
   if (printf_failed(fprintf(out, "\001f e %c",
 			    (flags.encoded ? '1' : '0'))))
