@@ -22,13 +22,13 @@
 
 #include "release.h"
 
+class sccs_file;
 
 class sid {
 	short rel, level, branch, sequence;
 
 	int comparable(sid const &id) const;
 	int gt(sid const &id) const;
-	int gte(sid const &id) const;
 
 	sid(short r, short l, short b, short s)
 		: rel(r), level(l), branch(b), sequence(s) {
@@ -44,6 +44,7 @@ public:
 	sid(release);		/* Defined below */
 
   	bool is_null() const { return rel <= 0; }
+	int gte(sid const &id) const; // used by sccs_file::find_requested_sid().
 
 #if 1
 	sid(sid const &id): rel(id.rel), level(id.level),
@@ -65,7 +66,9 @@ public:
 	partial_sid() const {
 		return level == 0 || (branch != 0 && sequence == 0);
 	}
-
+	int components() const;
+  	bool on_trunk() const;
+  
 	operator void const *() const {
 		if (rel == 0)  {
 			return NULL;
@@ -150,6 +153,7 @@ public:
 	}
 
 	int partial_match(sid const &id) const;
+  	bool matches(const sid &m, int nfields) const;
 
 	int
 	release_only() const {

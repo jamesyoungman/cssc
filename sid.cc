@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.4 1997/05/21 00:02:43 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.5 1997/06/01 20:38:54 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an
@@ -181,6 +181,54 @@ sid::successor() const {
 		return sid(rel, level + 1, 0, 0);
 	}
 }
+
+int sid::components() const
+{
+  if (valid() && rel)
+    if (level)
+      if (branch)
+	if (sequence)
+	  return   4;
+	else
+	  return 3;
+      else
+	return 2;
+    else
+      return 1;
+  else
+    return 0;
+}
+
+bool sid::on_trunk() const
+{
+  return 2 == components();
+}
+
+bool sid::matches(const sid &m, int nfields) const
+{
+  if (0 == nfields--)
+    return true;
+  if (rel != m.rel)
+    return false;
+  
+  if (0 == nfields--)
+    return true;
+  if (level != m.level)
+    return false;
+  
+  if (0 == nfields--)
+    return true;
+  if (branch != m.branch)
+    return false;
+  
+  if (0 == nfields--)
+    return true;
+  if (sequence != m.sequence)
+    return false;
+  
+  return true;
+}
+
 
 int
 sid::print(FILE *out) const {
