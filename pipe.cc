@@ -38,12 +38,12 @@ class Pipe;
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.6 1997/07/02 18:18:35 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.7 1997/07/07 21:24:19 james Exp $";
 #endif
 
 extern int create(mystring name, int mode); /* file.c */
 
-#ifndef HAVE_PIPE
+#ifndef USE_PIPE
 
 /* Deletes the temporary file if the programme quits prematurely. */
 
@@ -170,10 +170,14 @@ run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out) {
 }
 
 
-#else /* HAVE_PIPE */
+#else /* USE_PIPE */
 
+/* Using pipes requires both fork() and pipe(). */
 #ifndef HAVE_FORK
-#error "HAVE_FORK must be defined if HAVE_PIPE is defined."
+#error "HAVE_FORK must be defined if USE_PIPE is defined."
+#endif
+#ifndef HAVE_PIPE
+#error "HAVE_PIPE must be defined if USE_PIPE is defined."
 #endif
 
 
@@ -320,7 +324,7 @@ run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out)
 
 }
 
-#endif /* HAVE_PIPE */
+#endif /* USE_PIPE */
 
 /* Local variables: */
 /* mode: c++ */

@@ -31,6 +31,24 @@
 
 #include "list.h"
 
+/* fork(); problem.
+ *
+ * On AmigaOS, ixemul.library provides fork(), but only as a stub.
+ * This means that we can't use it even though configure finds it.
+ * We can't run it to test it because that would mean that we would
+ * lose all support for cross-compiling.   Blech.  We hack configure.in
+ * to also check for the __amigaos__ proprocessor macro...
+ */
+#ifdef HAVE_FORK
+#ifdef __amigaos__
+#error Unless I'm mistaken we can't use fork() on AmigaOS.
+Stop now!  Compilers should obey #error!  Stop I say, stop!  Run for it Harold!
+#endif
+#endif
+
+
+
+
 #ifndef HAVE_FORK
 
 #if !defined(HAVE_SPAWN) && !defined(CONFIG_DJGPP)

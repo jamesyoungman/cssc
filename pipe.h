@@ -43,7 +43,19 @@
    called in order: constructor, write_stream(), write_close(),
    read_stream(), read_close(), destructor. */
 
+/*
+ * In order to use pipe(), we must have it and we must
+ * also have fork().
+ */
+#define USE_PIPE
+#ifndef HAVE_FORK
+#undef  USE_PIPE
+#endif
 #ifndef HAVE_PIPE
+#undef  USE_PIPE
+#endif
+
+#ifndef USE_PIPE
 
 class Pipe: cleanup {
 	friend int run_diff(const char *gname, Pipe &in, Pipe &out);

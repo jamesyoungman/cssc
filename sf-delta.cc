@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.9 1997/07/02 18:05:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.10 1997/07/07 21:24:26 james Exp $";
 #endif
 
 class diff_state {
@@ -337,7 +337,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	if (get_out != NULL) {
 		struct subst_parms parms(get_out, NULL, delta(), 
 					 0, sccs_date(NULL));
-#ifndef HAVE_PIPE
+#ifndef USE_PIPE
 		seq_state gsstate = sstate;
 		get("diff pipe", gsstate, parms);
 #else
@@ -352,7 +352,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	int ret;
 
-#ifndef HAVE_PIPE
+#ifndef USE_PIPE
 
 	ret = run_diff(gname, diff_in, diff_out);
 	if (ret != STATUS(0) && ret != STATUS(1)) {
@@ -362,7 +362,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	diff_in.read_close();
 
-#else /* HAVE_PIPE */
+#else /* USE_PIPE */
 
 	run_diff(gname, diff_in, diff_out);
 
@@ -372,7 +372,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		         STATUS_MSG(ret));
 	}
 
-#endif /* HAVE_PIPE */
+#endif /* USE_PIPE */
 
 	diff_out.write_close();
 
@@ -558,7 +558,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	fclose(df);
 #endif
 
-#ifndef HAVE_PIPE
+#ifndef USE_PIPE
 	diff_out.read_close();
 #else
 	ret = diff_out.read_close();

@@ -33,11 +33,12 @@
 #include "sysdep.h"
 #include "quit.h"
 #include "sysnerr.h"
+#include "pipe.h"
 
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.9 1997/07/02 18:18:44 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.10 1997/07/07 21:23:10 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -120,7 +121,7 @@ quit(int err, const char *fmt, ...) {
 	}
 #endif
 
-#if HAVE_PIPE
+#ifdef USE_PIPE
 	if (cleanup::in_child()) {
 		if (err > 0) {
 			_exit(1);
