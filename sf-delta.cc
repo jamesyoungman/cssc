@@ -43,7 +43,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.15 1997/12/26 18:38:08 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.16 1998/02/01 18:00:41 james Exp $";
 #endif
 
 class diff_state {
@@ -291,7 +291,7 @@ sccs_file::check_keywords_in_file(const char *name) {
 	}
 
 	while(!read_line_param(f)) {
-		if (check_id_keywords(plinebuf->c_str())) {
+		if (plinebuf->check_id_keywords()) {
 			fclose(f);
 			return;
 		}
