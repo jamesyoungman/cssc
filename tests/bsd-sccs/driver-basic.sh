@@ -193,6 +193,8 @@ docommand h1 "${sccs} unedit foo" 0 \
  "1.1\n1 lines\n         foo: removed\n" ""
 # That's 9 spaces.
 
+# the g-file should have been removed.
+docommand h2 "test -f foo" 1 IGNORE IGNORE
 
 #
 # info
