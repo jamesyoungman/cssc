@@ -1,2 +1,9 @@
 CSSC was written and is maintained by James Youngman <jay@gnu.org>.
+
 CSSC was based upon an earlier package, MySC, by Ross Ridge.
+
+The "sccs" program and its accompanying documentation were written by
+Eric Allman, and are copyright (C) 1980, 1993 The Regents of the
+University of California.  See the file ``bsd/COPYING.bsd'' for more
+information.
+
