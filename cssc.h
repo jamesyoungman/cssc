@@ -47,11 +47,14 @@ mystring prompt_user(const char *prompt);
 #endif /* NO_COMMON_HEADERS */
 
 extern const char main_sccs_id[];
+extern const char mysc_version[];
 
 inline void
 version() {
-	fprintf(stderr, "%s\n@(#) MySC Release: 2; Patchlevel: 0\n",
-		main_sccs_id);
+  	fputs(main_sccs_id, stderr);
+	fputc('\n', stderr);
+  	fputs(mysc_version, stderr);
+	fputc('\n', stderr);
 }
 
 #endif /* __MYSC_H__ */
