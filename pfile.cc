@@ -13,7 +13,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.3 1997/05/10 14:49:52 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.4 1997/05/25 15:29:36 james Exp $";
 #endif
 
 NORETURN
@@ -131,6 +131,16 @@ sccs_pfile::is_to_be_created(sid id) {
 
 	return 0;
 }
+
+int 
+sccs_pfile::print_lock_sid(FILE *fp)
+{
+  const edit_lock& l = edit_locks.select(pos);
+  const sid& s       = l.delta;
+  return s.print(fp);
+}
+
+
 
 sccs_pfile::~sccs_pfile() {
 	if (mode != READ) {
