@@ -1,0 +1,89 @@
+#! /bin/sh
+#
+# gg_get_ix.sh:  Tests the -i and -x options of "get"
+#
+
+# Import common functions & definitions.
+
+. ../common/test-common
+. ../common/real-thing
+
+remove command.log 
+
+g=incl_excl
+s=s.$g
+z=z.$g
+x=x.$g
+p=p.$g
+
+remove [zxsp].$g $g
+
+# Create the s. file and make sure it exists.
+
+remove $g
+
+## These tests currently work find on Digital Unix but 
+## Excl_1 fails on Solaris.  Hence it's commented out.
+## TODO: make sense of this situation.
+
+if $TESTING_CSSC
+then
+    echo 
+    echo 
+    echo "These tests are currently known to fail on CSSC,"
+    echo "so they are disabled.  This is a known bug and we're"
+    echo "working on it (you probably checked this version of the"
+    echo "test suite out of CVS - we don't expect to make a release"
+    echo "before this bug is fixed)."
+
+    echo 
+    echo "SOME TESTS OMITTED in $0"
+    sleep 2
+    exit 0
+fi
+
+echo "%M%" > $g
+
+docommand Init_1 "$admin -n -i$g $s" 0 "" IGNORE
+
+remove $g
+
+# "get" the new file and check its contents.
+
+docommand Init_2 "$get -p $s" 0 "$g\n" IGNORE
+
+# Try excluding V1.1 (the only version)
+# Returns a NULL file.
+
+# docommand Excl_1 "$get -x1.1 -p $s" 0 "" IGNORE
+
+# Edit the file and insert a line that identifies the version.
+
+docommand Edit_1 "$get -e $s" 0 "1.1\nnew delta 1.2\n1 lines\n" ""
+echo "Inserted in V1.2" >> $g
+docommand Delt_1 "$delta -yNoComment $s" 0 "1.2\n1 inserted\n0 deleted\n1 unchanged\n" ""
+
+# Now let's extract a read-only copy of V1.2 excluding V1.1
+
+docommand Excl_2 "$get -x1.1 -p $s" 0 "Inserted in V1.2\n" IGNORE
+
+# Edit V1.2 excluding V1.1
+
+docommand Edit_2 "$get -e -x1.1 $s | grep -v co25" 0 "Excluded:\n1.1\n1.2\nnew delta 1.3\n1 lines\n" IGNORE
+echo "V1.3 excluded V1.1" >> $g
+docommand Delt_2 "$delta -yNoComment $s" 0 "1.3\n1 inserted\n0 deleted\n1 unchanged\n" IGNORE
+
+# Now let's see what happens with various gets.
+# First get V1.3 which should automatically exclude V1.1
+
+docommand Get_1 "$get -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
+
+# Then do a "get" including V1.1.  All 3 lines should bee present.
+
+docommand Get_2 "$get -p -i1.1 $s" 0 "$g\nInserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
+
+#remove [zxsp].$g $g
+#remove command.log
+
+success
+
