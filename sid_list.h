@@ -17,56 +17,48 @@
 // #pragma this does not work with templates interface
 #endif
 
-extern void *invalid_range;
+template <class TYPE>
+struct range
+{
+  TYPE from;
+  TYPE to;
+  struct range *next;
+};
 
 template <class TYPE>
-class range_list {
-	struct range {
-		TYPE from;
-		TYPE to;
-		struct range *next;
-	} *head;
-
-	void destroy();
-	static void *_copy(void *list);
-
-	static struct range *
-	copy(struct range *p) { 
-		return (struct range *)_copy(p);
-	}
-
-	int clean();
-
-/*	static void *invalid_range; /**/
-
+class range_list
+{
 public:
-	range_list(): head(NULL) {}
-	range_list(const char *list);
+  // constructors & destructors.
+  ~range_list();
+  range_list();
+  range_list(const char *list);
+  range_list(range_list const &list);
+  range_list &operator =(range_list const &list);
 
-	range_list(range_list const &list) {
-		head = copy(list.head);
-	}	
+  // query functions.
+  int valid() const;
+  int empty() const;
+  int member(TYPE id) const;
+  
+  // manipulation.
+  void invalidate();
+  range_list &merge  (range_list const &list);
+  range_list &remove (range_list const &list);
 
-	range_list &operator =(range_list const &list);
+  // output.
+  int print(FILE *out) const;
 
-	void
-	operator =(void *p) {
-		assert(p == NULL);
-		destroy();
-		head = 0;
-	}
+private:  
+  // Data members.
+  range<TYPE> *head;
+  int valid_flag;
 
-	operator void const *() const { return (void const *) head; }
+  // Implementation.
+  void destroy();
+  static range<TYPE> *do_copy_list(range<TYPE> *);
 
-	int valid() const { return head != invalid_range; }
-	int member(TYPE id) const;
-
-  	range_list &merge (range_list const &list);
-  	range_list &remove (range_list const &list);
-
-	int print(FILE *out) const;
-
-	~range_list() { destroy(); }
+  int clean(); // clean the range list eliminating overlaps etc.
 };
 
 #include "sid_list.cc"
