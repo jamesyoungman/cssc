@@ -12,9 +12,9 @@
 @setchapternewpage odd
 @c %**end of header
 
-@set EDITION 1.01
+@set EDITION 1.02
 @set VERSION 0.11alpha-pl4
-@set UPDATED Tue Jul 18 22:38:45 2000
+@set UPDATED Mon Jul 24 22:45:46 2000
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
@@ -2140,8 +2140,13 @@ them (@pxref{Problems}).
 
 @item 
 @cindex Known bugs 
-If a bug is listed in @file{docs/BUGS} or @file{docs/TODO} but has in
-fact been fixed, this is a bug in the bug list.  Please report this via
+Known bugs are listed on the bug tracking system at 
+@url{http://sourceforge.net/bugs/?group_id=8064}.  Some historical known
+issues are listed in the file @file{docs/BUGS}.  Once this file has
+become obsolete it will be removed from the distribution.   
+
+If an item on the TODO list (see the file @file{docs/TODO}) has in
+fact been fixed, this is a bug in the TODO list.  Please report this via
 the bug tracking system, which is referred to below. 
 
 @item
@@ -2158,7 +2163,7 @@ report a bug; I'd like to know which features are required first.
 There are a small number of known problems documented in the files
 @samp{docs/BUGS} and @samp{docs/TODO}.  These will be fixed at some
 point in the future.  Future problems should be reported via the
-@sc{cssc} Bug Tracker, at @url{http://sourceforge.net/projects/CSSC}.
+@sc{cssc} Bug Tracker, at @url{http://sourceforge.net/bugs/?group_id=8064}.
 
 
 @cindex Security problems
@@ -2764,6 +2769,7 @@ If you have other questions, comments or suggestions about GNU
 The program @code{sccs}, its source code,  and its accompanying
 documentation are covered by the following license:-
 
+@sp 1
 @quotation
 Copyright (C) 1998, 1999 @*
 	Free Software Foundation, Inc.  All rights reserved.
@@ -2807,6 +2813,57 @@ SUCH DAMAGE.
 @end quotation
 
 
+@sp 1
+The original version of the copyright notice above dates from 1993, as
+you can see.  However, since that time a change has been made to the BSD
+license by UCB itself.  This change is described on the following letter,
+@iftex
+@footnote{Obviously, while this version has been typeset, the original 
+file is plain ASCII and will therefore look slightly different}
+@end iftex
+which is available on the BSD FTP site in the file
+@file{README.Impt.License.Change} :-
+@sp 1
+
+@need 10000
+@quotation 
+July 22, 1999
+
+To All Licensees, Distributors of Any Version of BSD:
+
+As you know, certain of the Berkeley Software Distribution (``BSD'') source
+code files require that further distributions of products containing all or
+portions of the software, acknowledge within their advertising materials
+that such products contain software developed by UC Berkeley and its
+contributors.
+
+Specifically, the provision reads:
+@example
+" * 3. All advertising materials mentioning features or use of this software
+  *    must display the following acknowledgement:
+  *    This product includes software developed by the University of
+  *    California, Berkeley and its contributors."
+@end example
+
+Effective immediately, licensees and distributors are no longer required to
+include the acknowledgement within advertising materials.  Accordingly, the
+foregoing paragraph of those BSD Unix files containing it is hereby deleted
+in its entirety.
+
+
+@sp 1
+William Hoskins
+@*
+Director, Office of Technology Licensing
+@*
+University of California, Berkeley
+@*
+@end quotation
+@sp 1
+
+
+Obviously, this change has not yet been made to the @sc{cssc} source
+distribution, but I expect to do this fairly soon.  
 
 @node Concept Index, , BSD Code, Top
 @unnumbered Concept Index
