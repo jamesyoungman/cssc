@@ -23,7 +23,7 @@
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.17 1998/05/27 20:33:02 james Exp $
+ * $Id: cssc.h,v 1.18 1998/08/13 18:15:31 james Exp $
  *
  */
 
@@ -46,7 +46,6 @@
 
 #undef  CONFIG_DECLARE_STAT
 #undef  CONFIG_DECLARE_GETPWUID
-#undef  CONFIG_DECLARE_GETLOGIN
 #undef  CONFIG_DECLARE_TIMEZONE
 #undef  CONFIG_DECLARE_TZSET
 #undef  CONFIG_DECLARE_FDOPEN
