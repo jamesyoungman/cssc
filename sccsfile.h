@@ -239,10 +239,10 @@ public:
 	struct get_status get(FILE *out, mystring name, sid id,
 			      sccs_date cutoff = NULL,
 #ifdef __GNUC__
-			      sid_list include = sid_list(NULL),
-			      sid_list exclude = sid_list(NULL),
+			      sid_list include = sid_list(""),
+			      sid_list exclude = sid_list(""),
 #else
-			      sid_list include = NULL, sid_list exclude = NULL,
+			      sid_list include = sid_list(""), sid_list exclude = sid_list(""),
 #endif
 			      int keywords = 0, const char *wstring = NULL,
 			      int show_sid = 0, int show_module = 0,
@@ -296,7 +296,8 @@ public:
 		   list<mystring> set_flags, list<mystring> unset_flags,
 		   list<mystring> add_users, list<mystring> erase_users);
 	void create(release first_release, const char *iname,
-		    list<mystring> mrs, list<mystring> comments);
+		    list<mystring> mrs, list<mystring> comments,
+		    int suppress_comments);
 
 	/* sf-prs.c */
 private:
