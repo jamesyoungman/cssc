@@ -15,12 +15,12 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.9 1997/05/22 23:23:59 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.10 1997/05/31 10:23:22 james Exp $";
 
 void
 usage() {
 	fprintf(stderr,
-"usage: %s [-nrzIMYV] [-a users] [-d flags] [-e users] [-f flags]\n"
+"usage: %s [-nrzV] [-a users] [-d flags] [-e users] [-f flags]\n"
 "\t[-i file] [-m MRs] [-t file] [-y comments] file ...\n",
 	prg_name);
 }
@@ -34,11 +34,11 @@ main(int argc, char **argv) {
 	const char *file_comment = NULL;	/* -t */
 	list<mystring> set_flags, unset_flags;	/* -f, -d */
 	list<mystring> add_users, erase_users;	/* -a, -e */
-	mystring mrs, comments;			/* -m -M, -y -Y */
+	mystring mrs, comments;			/* -m, -y */
 	const int check = 0;			/* -h */
 	int reset_checksum = 0;			/* -z */
-	int suppress_mrs = 0;	                /* -m (no arg), -M */
-	int suppress_comments = 0;              /* -y (no arg), -Y */
+	int suppress_mrs = 0;	                /* -m (no arg) */
+	int suppress_comments = 0;              /* -y (no arg) */
 	int empty_t_option = 0;	                /* -t (no arg) */ 
 	
 	if (argc > 0) {
@@ -47,7 +47,7 @@ main(int argc, char **argv) {
 		set_prg_name("admin");
 	}
 
-	class getopt opts(argc, argv, "ni!Ir!t!f:d:a:e:m!y!hzYMV");
+	class getopt opts(argc, argv, "ni!r!t!f!d:a:e:m!y!hzV");
 	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
 		switch (c) {
 		default:
@@ -62,11 +62,6 @@ main(int argc, char **argv) {
 			  iname = opts.getarg();
 			else
 			  iname = "-";
-			new_sccs_file = 1;
-			break;
-
-		case 'I':
-			iname = "-";
 			new_sccs_file = 1;
 			break;
 
@@ -107,19 +102,9 @@ main(int argc, char **argv) {
 			suppress_mrs = (mrs == "");
 			break;
 
-		case 'M':
-			mrs = "";
-			suppress_mrs = 1;
-			break;
-
 		case 'y':
 			comments = opts.getarg();
 			suppress_comments = (comments == "");
-			break;
-
-		case 'Y':
-			comments = "";
-			suppress_comments = 1;
 			break;
 
 #if 0
