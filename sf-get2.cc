@@ -48,10 +48,10 @@ sccs_file::find_requested_sid(sid requested, sid &found) const
       while(iter.next())
 	{
 	  sid const &id = iter->id;
-	  if (best.is_trunk_successor(id))
+	  if ((best == id) || best.is_trunk_successor(id))
 	    {
-	      // If ID is on the trunk and is after BEST, we
-	      // have a new BEST.
+	      // If ID is on the trunk and is either after BEST, or
+	      // the same as BEST, we have a new BEST.
 	      best = id;
 	      got_best = true;
 	    }
