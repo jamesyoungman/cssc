@@ -73,6 +73,19 @@ docommand b6 "${unget} $s" 0 "1.1.1.1\n" ""
 remove $s $g $p
 
 
+###
+### Tests for the n flag.
+### 
+# Create an SCCS file with the "n" flag turned on.
+docommand b7 "${admin} -ifoo $s" 0 "" ""
+docommand b8 "${admin} -fn $s" 0 "" ""
+
+# Skip a release (2)
+docommand b9 "${get} -e -r3 $s" 0 "1.1\nnew delta 3.1\n1 lines\n" \
+	IGNORE
+echo "hello" >> $g
+docommand b10 "${delta} -y $s" 0 "3.1\n1 inserted\n0 deleted\n1 unchanged\n" IGNORE
+
 
 
 ###
