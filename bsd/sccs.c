@@ -34,7 +34,7 @@
  * SUCH DAMAGE.
  */
 
-
+#define _BSD_SOURCE
 
 #ifndef lint
 static char copyright[] =
@@ -52,19 +52,39 @@ static char copyright[] =
 #include <stdio.h>
 #endif
 
-#ifdef HAVE_STDARG_H
+#ifdef STDC_HEADERS
+#include <string.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #endif
 
-#include <sys/cdefs.h>
-#include <sys/param.h>
-#include <sys/stat.h>
-#include <sys/dir.h>
-#include <signal.h>
-#include <sysexits.h>
-#include <errno.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#include <sys/types.h>
+#if HAVE_SYS_WAIT_H
+# include <sys/wait.h>
+#endif
+#ifndef WEXITSTATUS
+# define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
+#endif
+#ifndef WIFEXITED
+# define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#endif
+
+
+#include <sys/cdefs.h>		/* TODO: this does what? */
+#include <sys/param.h>		/* TODO: this does what? */
+
+
+#include <sys/stat.h>		/* TODO: need sys/types.h?  What does autoconf say? */
+#include <sys/dir.h>		/* TODO: replace with autoconf mechanism. */
+#include <signal.h>		/* TODO: consider using sigaction(). */
+#include <errno.h>		/* TODO: same as in parent directory. */
 #include <pwd.h>
 
+#include <sysexits.h>		/* TODO: we should probably define our own. */
 
 #include "pathnames.h"
 
@@ -166,11 +186,11 @@ static char copyright[] =
 
 # ifndef SCCSPATH
 # define SCCSPATH	"SCCS"	/* pathname in which to find s-files */
-# endif NOT SCCSPATH
+# endif
 
 # ifndef MYNAME
 # define MYNAME		"sccs"	/* name used for printing errors */
-# endif NOT MYNAME
+# endif
 
 /****************  End of Configuration Information  ****************/
 
@@ -274,14 +294,39 @@ bool	Debug;			/* turn on tracing */
 # endif
 # ifndef V6
 extern char	*getenv();
-# endif V6
+# endif
 
 void syserr(const char *fmt, ...);
 void usrerr(const char *fmt, ...);
+int command(char **argv, bool forkflag, char *arg0);
+int callprog(char *progpath, short flags, char **argv, bool forkflag);
+int clean(int mode, char **argv);
+int dodiff(char **getv, char *gfile);
+int isbranch(char *sid);
+void putpfent(register struct pfile *pf, register FILE *f);
+bool safepath();
+bool isdir();
+struct sccsprog *lookup();
+struct sccsprog *lookup();
+bool unedit();
+char *index();
+char *makefile();
+char *tail();
+char *index();
+struct pfile *getpfent();
+char *username();
+char *username();
+struct pfile *getpfent();
+char *makefile(), *rindex(), *tail();
+char *nextfield();
+struct passwd *getpwuid();
+char *getlogin();
 
-static char *gstrcat(), *strcat();
-static char *gstrncat(), *strncat();
-static char *gstrcpy(), *strcpy();
+
+static char *gstrcat();
+static char *gstrncat();
+static char *gstrcpy();
+static void  gstrbotch(char *str1, char *str2);
 
 #define	FBUFSIZ	BUFSIZ
 
@@ -290,9 +335,10 @@ static char *gstrcpy(), *strcpy();
 int main(int argc, char **argv)
 {
 	register char *p;
-	extern struct sccsprog *lookup();
 	register int i;
 
+	&copyright;		/* prevent warning about unused variable. */
+	
 	/*
 	**  Detect and decode flags intended for this program.
 	*/
@@ -373,26 +419,18 @@ int main(int argc, char **argv)
 **		none.
 */
 
-command(argv, forkflag, arg0)
-	char **argv;
-	bool forkflag;
-	char *arg0;
+int command(char **argv, bool forkflag, char *arg0)
 {
 	register struct sccsprog *cmd;
 	register char *p;
 	char buf[FBUFSIZ];
-	extern struct sccsprog *lookup();
 	char *nav[1000];
 	char **np;
 	register char **ap;
 	register int i;
 	register char *q;
-	extern bool unedit();
 	int rval = 0;
-	extern char *index();
-	extern char *makefile();
 	char *editchs;
-	extern char *tail();
 
 # ifdef DEBUG
 	if (Debug)
@@ -660,11 +698,7 @@ lookup(name)
 **		Can exit if forkflag == FALSE.
 */
 
-callprog(progpath, flags, argv, forkflag)
-	char *progpath;
-	short flags;
-	char **argv;
-	bool forkflag;
+int callprog(char *progpath, short flags, char **argv, bool forkflag)
 {
 	register int i;
 	register int wpid;
@@ -793,10 +827,6 @@ makefile(name)
 {
 	register char *p;
 	char buf[3*FBUFSIZ];
-	extern char *malloc();
-	extern char *rindex();
-	extern bool safepath();
-	extern bool isdir();
 	register char *q;
 
 	p = rindex(name, '/');
@@ -908,8 +938,6 @@ bool
 safepath(p)
 	register char *p;
 {
-	extern char *index();
-
 	if (*p != '/')
 	{
 		while (strncmp(p, "../", 3) != 0 && strcmp(p, "..") != 0)
@@ -945,23 +973,19 @@ safepath(p)
 **		Exits if a "check" command.
 */
 
-clean(mode, argv)
-	int mode;
-	char **argv;
+int clean(int mode, char **argv)
 {
 	struct direct *dir;
+	register DIR *dirp;
 	char buf[FBUFSIZ];
 	char *bufend;
-	register DIR *dirp;
 	register char *basefile;
 	bool gotedit;
 	bool gotpfent;
 	FILE *pfp;
 	bool nobranch = FALSE;
-	extern struct pfile *getpfent();
 	register struct pfile *pf;
 	register char **ap;
-	extern char *username();
 	char *usernm = NULL;
 	char *subdir = NULL;
 	char *cmdname;
@@ -1030,7 +1054,7 @@ clean(mode, argv)
 	*/
 
 	gotedit = FALSE;
-	while (dir = readdir(dirp)) {
+	while ( NULL != (dir = readdir(dirp)) ) {
 		if (strncmp(dir->d_name, "s.", 2) != 0)
 			continue;
 		
@@ -1109,8 +1133,7 @@ clean(mode, argv)
 **		none.
 */
 
-isbranch(sid)
-	char *sid;
+int isbranch(char *sid)
 {
 	register char *p;
 	int dots;
@@ -1157,11 +1180,8 @@ unedit(fn)
 	bool delete = FALSE;
 	bool others = FALSE;
 	char *myname;
-	extern char *username();
 	struct pfile *pent;
-	extern struct pfile *getpfent();
 	char buf[PFILELG];
-	extern char *makefile(), *rindex(), *tail();
 
 	/* make "s." filename & find the trailing component */
 	pfn = makefile(fn);
@@ -1302,9 +1322,7 @@ unedit(fn)
 **		none.
 */
 
-dodiff(getv, gfile)
-	char **getv;
-	char *gfile;
+int dodiff(char **getv, char *gfile)
 {
 	int pipev[2];
 	int rval;
@@ -1401,7 +1419,6 @@ getpfent(pfp)
 	static struct pfile ent;
 	static char buf[PFILELG];
 	register char *p;
-	extern char *nextfield();
 
 	if (fgets(buf, sizeof buf, pfp) == NULL)
 		return (NULL);
@@ -1447,9 +1464,7 @@ nextfield(p)
 **		pf is written onto file f.
 */
 
-putpfent(pf, f)
-	register struct pfile *pf;
-	register FILE *f;
+void putpfent(register struct pfile *pf, register FILE *f)
 {
 	fprintf(f, "%s %s %s %s %s", pf->p_osid, pf->p_nsid,
 		pf->p_user, pf->p_date, pf->p_time);
@@ -1544,7 +1559,6 @@ char *
 username()
 {
 # ifdef UIDUSER
-	extern struct passwd *getpwuid();
 	register struct passwd *pw;
 
 	pw = getpwuid(getuid());
@@ -1555,14 +1569,13 @@ username()
 	}
 	return (pw->pw_name);
 # else
-	extern char *getlogin();
 	register char *p;
 
 	p = getenv("USER");
 	if (p == NULL || p[0] == '\0')
 		p = getlogin();
 	return (p);
-# endif UIDUSER
+# endif
 }
 
 /*
@@ -1603,9 +1616,8 @@ gstrcpy(to, from, length)
 	}
 	return(strcpy(to, from));
 }
-static void 
-gstrbotch(str1, str2)
-	char	*str1, *str2;
+
+static void  gstrbotch(char *str1, char *str2)
 {
   usrerr("Filename(s) too long: %s %s",
 	 (str1 ? str1 : ""),
