@@ -30,7 +30,7 @@ else
   ac_n= ac_c='\c' ac_t=
 fi
 
-if (echo -e) | sed s/-e/xe/ | grep xn >/dev/null
+if (echo -e) | sed s/-e/xe/ | grep xe >/dev/null
 then
     ac_e=''
 else
