@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.33 1998/09/06 09:25:28 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.34 1998/10/29 23:29:38 james Exp $";
 #endif
 
 
@@ -350,7 +350,17 @@ sccs_file::read_delta() {
 	}
 
 	while (c == 'c') {
-		check_arg();
+	  /* Larry McVoy's extensions for BitKeeper and BitSCCS
+	   * add in extra stuff like "^AcSyadayada".  Real SCCS
+	   * doesn't mind about that, so at Larry's request, we
+	   * tolerate it too.   No idea what these lines mean though.
+	   * Ask <lm@bitmover.com> for more information.  Anyway, 
+	   * normal comment lines look like "^Ac yadayada" instead,
+	   * and check_arg() exists to check for the space.   Hence, 
+	   * to support Larry's extensions, we don't call check_arg()
+	   * here.
+	   */
+	  /* check_arg(); */
 		tmp.comments.add(plinebuf->c_str() + 3);
 		c = read_line();
 	}
