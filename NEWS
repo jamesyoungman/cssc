@@ -1,5 +1,9 @@
-New in CSSC-0.16alpha-pl1
-	
+New in CSSC-1.00
+
+	* We now support the "x" (make g-file executable) and "y" 
+	  (limit keyword expansion) SCCS file flags.  These are SCO
+	  OpenServer and Sun Solaris 8 extensions, respectively.
+
 	* We now support "sccs diffs -u", which of course produces
 	  unified-format diffs.  We also support the "-n" and "-w" 
 	  options to diff and the -a, -B, -d, -H, -p, -q, -s, -v ad
@@ -12,6 +16,8 @@ New in CSSC-0.16alpha-pl1
 	* The "sccs -d /xxx print foo.txt" command now works;
           previously, use of the "-d" flag would have generated an
           error.
+
+	* Better handling of the archive bit on Windows systems.
 
 New in CSSC-0.16alpha-pl0
 

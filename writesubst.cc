@@ -2,7 +2,7 @@
  * writesubst.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 2001, Free Software Foundation, Inc. 
+ *    Copyright (C) 2001,2004 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: writesubst.cc,v 1.3 2004/10/10 11:38:51 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: writesubst.cc,v 1.4 2004/10/10 12:19:16 james_youngman Exp $";
 #endif
 
 /* Return TRUE if the specified keyword letter should be 

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl 
 dnl configure.ac: Part of GNU CSSC.
 dnl 
-dnl    Copyright (C) 1997,1998,1999,2000,2001,2002 Free Software Foundation, Inc. 
+dnl    Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004 Free Software Foundation, Inc. 
 dnl 
 dnl    This program is free software; you can redistribute it and/or modify
 dnl    it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
 dnl 
-dnl $Id: configure.ac,v 1.6 2003/12/09 23:59:30 james_youngman Exp $
+dnl $Id: configure.ac,v 1.7 2004/10/10 12:19:16 james_youngman Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -31,7 +31,7 @@ AC_CONFIG_SRCDIR([sccsfile.h])
 # in the Automake manual.
 #   usually use -CVSDEVEL to indicate that the person who compiled 
 #   the code got it from CVS.
-AM_INIT_AUTOMAKE(CSSC,0.16alpha.pl1-CVS)
+AM_INIT_AUTOMAKE(CSSC,1.00-CVS)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)

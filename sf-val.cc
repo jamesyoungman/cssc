@@ -2,7 +2,7 @@
  * sf-val.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,2001,2002,2004 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.6 2004/10/10 11:38:51 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.7 2004/10/10 12:19:16 james_youngman Exp $";
 #endif
 
 const mystring

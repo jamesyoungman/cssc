@@ -2,7 +2,7 @@
  * sf-prt.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2004 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.25 2004/10/10 11:38:51 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.26 2004/10/10 12:19:16 james_youngman Exp $";
 #endif
 
 static void
@@ -468,8 +468,14 @@ sccs_file::prt(FILE *out,
 	  ++flag_count;
 	}
 
-      // The 'x' flag is a SCO extension.
+#if 0
+      // The 'x' flag is a SCO OpenServer extension.
+      // SCO OpenServer 5.0.6 has no "prt" command, but
+      // SCO Unixware 8.0.0 does have it.  However, it 
+      // does not print anything if the x flag is set.  
+      // Hence for compatibility, we don't do that either.
       print_flag(out, "\texecutable\t\n", flags.executable, flag_count);
+#endif
       
       print_flag(out, "\tfloor\t", flags.floor, flag_count);
       if (flags.no_id_keywords_is_fatal)

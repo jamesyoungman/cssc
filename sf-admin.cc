@@ -2,7 +2,7 @@
  * sf-admin.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,1999,2001 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2004 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.33 2004/10/10 11:38:51 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.34 2004/10/10 12:19:16 james_youngman Exp $";
 #endif
 
 

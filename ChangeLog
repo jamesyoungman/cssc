@@ -1,4 +1,93 @@
+2004-10-10  james_youngman  <james_youngman@orbital>
+
+	* sf-prs.cc:
+	SF bug 1040827: Solaris 9's "prs" does not produce any output for the
+	"y" flag.  Hence for compatibility nor should we.
+
+	* tests/admin/Makefile.am, tests/admin/hardlinks.sh, tests/admin/y-flag.sh, docs/cssc.texi, myset.h, sccsfile.cc, sccsfile.h, sf-admin.cc, sf-get.cc, sf-prs.cc, sf-prt.cc, sf-val.cc, sf-write.cc, writesubst.cc:
+	Added support for the SCCS 'y' flag - SF bug 1040827
+
+2004-10-03  james_youngman  <james_youngman@orbital>
+
+	* NEWS: Updated with new news.
+
+	* bsd/sccs.c:
+	Fixed SourceForge bug 806715 (incompatibility of -d flag with the
+	"sccs print" command).
+
+	* docs/cssc.texi:
+	Be more specific about which version of SCO has the 'x' flag.
+
+	* docs/cssc.texi, file.cc, file.h, get.cc, my-getopt.cc, sccsfile.cc, sccsfile.h, sf-admin.cc, sf-delta.cc, sf-prt.cc, sf-write.cc:
+	Implemented SCO SCCS's x flag; Sourceforge bug ID 969833
+
+2004-04-25  james_youngman  <james_youngman@orbital>
+
+	* tests/common/command-names:
+	Make sure we locate the "sccs" binary correctly now that $dir will
+	normally not begin with "..".
+
+	* tests/common/command-names:
+	Oops, make the tests work if you don't set the $dir variable.
+
+	* tests/common/command-names:
+	Figure out the absolute pathname of the directory containing the CSSC tools.
+
+	* depcomp: depcomp - new file required by automake
+
+2003-12-13  james_youngman  <james_youngman@orbital>
+
+	* tests/what/whatbasic.sh:
+	Provide a more helpful error message when 'ekko' fails
+
+	* linebuf.cc, linebuf.h, sccsfile.cc:
+	Resolve the strchr() problem pointed out bin SourceForge patch 857193
+
+2003-12-10  james_youngman  <james_youngman@orbital>
+
+	* NEWS, bsd/sccs.c, my-getopt.cc:
+	Some changes to eliminate compilation errors/warnings from Sun CC 5.5
+
+	* docs/CREDITS.short.txt, docs/CREDITS: Added Tom Duffy.
+
+2003-12-09  james_youngman  <james_youngman@orbital>
+
+	* bsd/sccs.c, configure.ac, NEWS:
+	pass through more options to diff (be it GNU diff or vanilla diff)
+
+	* bsd/sccs.1:
+	Documented the extra options now passed to diff by "sccs diffs".
+
+	* bsd/sccs.c:
+	Also pass through the w option (which is not GNU diff specific).
+
+	* bsd/sccs.c:
+	Pass through the options aBdHpqsvy to diff (these are GNU diff options).
+
+	* bsd/sccs.c: Support "sccs diffs -u".
+
+2003-12-08  james_youngman  <james_youngman@orbital>
+
+	* auxfiles/CSSC.spec.in:
+	Handed over "Packager" status for Red Hat to Thomas Duffy.
+
+	* auxfiles/CSSC.spec.in:
+	Applied SourceForge patch 856398, submitted by Thomas Duffy
+
+	* file.cc, file.h, get.cc:
+	Various changes as suggested by Dick Streefland, relating to the setting/clearing of the DOS archive bit and to systems which lack CONFIG_UIDs
+
+	* tests/delta/errorcase.sh:
+	Oops, this change should have been in 0.16alpha.pl0
+
+	* sact.cc:
+	Fixed SF bug 768002, mismatch in output of sact between CSSC and SCCS when only one file name is given on the command line
+
+	* sf-write.cc: Fixed SF bug 856158, compilation error on CYGWIN
+
 2003-12-07  james_youngman  <james_youngman@orbital>
+
+	* ChangeLog: Brought up to date (again).
 
 	* docs/Makefile.am: make mostlyclean should delete cssc.info.
 
