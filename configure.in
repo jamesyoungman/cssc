@@ -13,6 +13,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
+AC_PATH_PROG(PR,pr,/usr/bin/pr)
 dnl It would be a good idea to default the path for diff
 dnl to install_dir/diff-program so the installer can 
 dnl add a symlink later.   TODO.
@@ -115,4 +116,4 @@ AC_CHECK_DECL_IN_HEADER(sys_nerr,stdio.h)
 fi
 
 dnl What about saved setuid?
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile sccsdiff.sh)
