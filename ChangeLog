@@ -1,0 +1,399 @@
+1998-02-23  James Youngman  <jay@gnu.org>
+
+	* configure.in: Bumped version to 0.06alpha.pl2
+
+	* ChangeLog.1, ChangeLog: *** empty log message ***
+
+	* tests/binary/eightbit.sh, tests/binary/diff.sh, tests/Makefile.am:
+	Run the binary-file tests as part of "make check".  Small fixes to
+	those tests.
+
+	* tests/binary/eightbit.sh, bodyio.cc, NEWS:
+	Fixes to allow the character whose code is 255 to be properly handled.
+
+	* tests/binary/eightbit.sh: Tests involving 8-bit bodies.
+
+	* tests/binary/s.umsp.uue: SCCS file containing 8-bit characters.
+
+	* docs/BUGS, docs/FIXED, sf-write.cc, sccsfile.cc: Checksum is now
+	8-bit-clean, due to richardp@scopic.com and
+	Peter.Kjellerstedt@axis.com.
+
+	* testutils/Makefile.am:
+	Added seeker.c, which tests for a particular bug in GNU libc 2.0.6.
+
+	* unget.cc, what.cc, rmdel.cc, sact.cc, prt.cc, my-getopt.h, prs.cc, get.cc, my-getopt.cc, fileiter.h, delta.cc, fileiter.cc, admin.cc, cdc.cc:
+	Renamed class getopt to class CSSC_Options, to avoid conflict with
+	getopt(3) on systems such as netbsd-1.2 (as installed on
+	melange.gnu.org)
+
+	* testutils/seeker.c:
+	Test program which determines if fgetpos() works correctly on stdin.
+
+1998-02-21  James Youngman  <jay@gnu.org>
+
+	* auxfiles/CSSC.spec: Corrected source file name.
+
+	* auxfiles/CSSC.spec: Strip the installed binaries.
+
+	* NEWS: Updated for CSSC-0.06devel-pl1.
+
+	* ChangeLog: *** empty log message ***
+
+	* what.cc, sid_list.cc, unget.cc, sf-prt.cc, sf-prs.cc,
+	sf-get2.cc, sf-kw.cc, sf-get.cc, sf-chkid.cc, sf-delta.cc,
+	sf-cdc.cc, sccsfile.h, sact.cc, sccsfile.cc, run.cc, run.h,
+	rel_list.h, rmdel.cc, prt.cc, prompt.cc, prs.cc, pipe.h, pfile.h,
+	pipe.cc, mystring.h, pfile.cc, mystring.cc, my-getopt.h, mylist.h,
+	linebuf.h, my-getopt.cc, l-split.cc, linebuf.cc, get.cc, ioerr.h,
+	fileiter.h, filepos.h, file.cc, delta.cc, encoding.cc, cssc.h,
+	defaults.h, bodyio.h, cdc.cc, bodyio.cc: Updated the year in the
+	copyright message for all those files modified so far in 1998.
+
+	* docs/FIXED, docs/TODO, docs/BUGS: Added some bug reports.
+
+	* unget.cc, sact.cc, sf-get.cc, rmdel.cc, prs.cc, prt.cc, my-getopt.cc, my-getopt.h, fileiter.h, get.cc, fileiter.cc, cdc.cc, delta.cc, admin.cc:
+	Modified option processing so that "get s.foo -Gbaz" is equivalent
+	to "get -Gbaz s.foo".
+
+	* configure.in: Bumped version to 0.06-pl1.
+
+	* docs/cssc.texi: Minor punctuation corrections.
+
+	* tests/prs/keywords.sh: Added test for :PN:.
+
+	* Makefile.am, sf-prs.cc:
+	The prs keyword :PN: needs to produce the full pathname of the SCCS
+	file, not just the name as specified on the command line.
+
+	* tests/get/optorder.sh: Initial version.
+
+1998-02-20  James Youngman  <jay@gnu.org>
+
+	* sf-write.cc:
+	Cope in a more user-friendly way with the prior existence of "x.foo".
+
+	* docs/BUGS:
+	Some bug reports from Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+	and Dave Bodenstab <imdave@mcs.net>.
+
+	* tests/get/sep_subst.sh:
+	Make sure the substitution happens for the actual gotten delta, not
+	the delta to which the current line belongs.
+
+	* tests/get/sep_subst.sh: *** empty log message ***
+
+	* tests/get/sep_subst.sh:
+	Make sure that the delta information substituted for each line is the
+	information for the delta that we are actually getting, not the delta
+	information for the delta which last touched that line.
+
+1998-02-12  James Youngman  <jay@gnu.org>
+
+	* ChangeLog: *** empty log message ***
+
+	* auxfiles/CSSC.spec: Updated RPM spec-file for version 0.06alpha.pl0.
+
+	* ChangeLog: *** empty log message ***
+
+	* docs/cssc.texi, docs/Platforms, docs/TODO, auxfiles/CSSC.spec, sf-write.cc, configure.in, sccsfile.cc, NEWS:
+	Binary file support.
+
+	* docs/missing.txt: Binary file support is now present.
+
+	* tests/binary/binbasic.sh, filediff.h, sf-delta.cc, filediff.cc, Makefile.am, configure.in:
+	First working binary file support.
+
+1998-02-11  James Youngman  <jay@gnu.org>
+
+	* tests/binary/auto.sh:
+	Tests that ensure that admin correctly guesses if the original file is
+	binary or not.
+
+	* configure.in: Updated the patchlevel.
+
+	* ChangeLog: *** empty log message ***
+
+	* NEWS: Added the latest news.
+
+	* docs/TODO, docs/BUGS, docs/FIXED:
+	Updated the lists of bugs fixed, bugs discovered, and things to investigate.
+
+	* pipe.h, pipe.cc:
+	Some tidying.  This code seems problematic for binary files.  Some of
+	the commented-out tests in tests/binary/binbasic.sh break it.
+
+	* tests/get/create.sh: Corrected a comment.
+
+	* tests/Makefile.am: Added testing fr binary files.
+
+	* testutils/Makefile.am:
+	Added "ekko", a substitute echo(1) for systems where the normal
+	echo(1) does not support newline suppression and escape codes.
+
+	* encoding.cc, bodyio.cc: Added support for deltaing encoded files.
+
+	* auxfiles/CSSC.spec: Added the spec-file for RPM.
+
+	* tests/delta/basic.sh:
+	Make sure diff returns 0 for identical files and 1 for different ones.
+
+	* bodyio.h, sf-kw.cc, linebuf.cc, sf-delta.cc:
+	Support for deltaing encoded files.  We have a problem with the Pipe
+	class and large input files (broken pipe) though.
+
+	* file.cc, configure.in:
+	Use stat() to detect if the g-file is writable, because if we are
+	root, access() tells us yes even if the file is read-only.  This makes
+	"get" fail, saying that a wrtable gfile exists.  Using stat() fixes
+	this.
+
+1998-02-10  James Youngman  <jay@gnu.org>
+
+	* tests/common/test-common:
+	Use testutils/ekko if no suitable echo(1) command exitst on the system
+	(we need newline suppression and escape codes).
+
+	* testutils/ekko.c:
+	An echo(1) replacement for systems whose echo does not support escape
+	codes and newline supression.
+
+	* tests/binary/diff.sh, tests/binary/binbasic.sh:
+	New tests for binary file support (get/delta etc).
+
+	* docs/cssc.texi:
+	Removed remarks about option processing, since we now do this the SCCS
+	way.  Also, added remarks about the non-security of CSSC and advice not to install it setuid-root or use it as root.
+
+1998-02-09  James Youngman  <jay@gnu.org>
+
+	* sccsdiff.sh.in:
+	Patch from Maurice O'Donnell <mod@tfn.com>: pass "-e" to sed before
+	the sed commands.
+
+	* tests/large/admin.sh, testutils/yes.c, testutils/Makefile.am:
+	Solaris has no yes(1) utility so we roll our own.
+
+1998-02-01  James Youngman  <jay@gnu.org>
+
+	* bodyio.h: Prototypes for functions in bodyio.cc.
+
+	* bodyio.cc:
+	New file; functions for handling the I/O for the body of files
+	(i.e. the bits that might be uuencoded).
+
+	* ChangeLog, docs/TODO: *** empty log message ***
+
+	* scripts/rev-freq.sh:
+	Added rev-freq.sh, which generates a histogram of the distributon of
+	CVS revision numbers.
+
+	* config.h.in:
+	This file is automatically generated by "autoheader".  We should not therefore keep it under CVS control, I think.
+
+	* sccsfile.cc, pfile.cc:
+	Added TODO comment for the places where we modify the contents of a
+	cssc_linebuf nefariously.
+
+	* Makefile.am:
+	Added bodyio.cc and encoding.cc to those modules that now need it.
+
+	* sf-get.cc:
+	Added a no_decide flag to sccs_file::get() for the use of delta.  We
+	need to be able to obtain the body in encoded form so that we can feed
+	it to diff(1).
+
+	* sf-delta.cc:
+	cssc_linefuf now has its own check_id_keywords() member, as a
+	preparatory step to 8-bit-cleanness.
+
+	* sf-admin.cc:
+	If body_insert() informs us that the body turned out to be binary, set
+	flags.encoded so that sccs_file::end_update() can call
+	rehack_encoded_flag() (in sf-write.cc).
+
+	* sccsfile.h:
+	Allow sccs_file::get() to be told not to uudecode an encoded file.  We
+	do this in order to obtain the still-encoded text in otder for delta
+	to feed it to diff.
+
+	* linebuf.h, linebuf.cc:
+	Changes for the beginnings of 8-bit-clean support.  We're not
+	8-bit-clean yet though.  The class interface currently precludes it.
+
+	* ioerr.h: Added fwrite_failed().
+
+	* cssc.h, defaults.h:
+	CONFIG_LINEBUF_CHUNK_SIZE is only used by linebuf.cc and only really
+	needs ever to be changed as a tuning issue, so we #define it in
+	linebuf.cc.  For the moment, we keep it low as this ensures that we
+	debug the reallocation code.
+
+	* configure.in:
+	sf-chkid.cc can use memchr() if available, so detect it.
+
+	* sf-chkid.cc: Rewrote check_id_keywords() for 8-bit-cleanness.
+
+1998-01-25  James Youngman  <jay@gnu.org>
+
+	* testutils/README, testutils/last-time.c, testutils/Makefile.am:
+	Added last-time.c to the distribution.
+
+	* tests/get/defsid.sh, tests/get/subst.sh: *** empty log message ***
+
+	* tests/admin/flags.sh: Added checks for the default delta flag.
+
+	* docs/TODO, docs/missing.txt, docs/FIXED: *** empty log message ***
+
+	* sf-write.cc, sf-prs.cc, sf-prt.cc, sf-get2.cc, sf-admin.cc,
+	sf-get.cc, sccsfile.h, sccsfile.cc, filepos.h, get.cc,
+	encoding.cc, cssc.h, defaults.h, README, admin.cc, Makefile.am,
+	NEWS, ChangeLog: Preliminary support for binary files; creation
+	(initialisation) only.
+
+1998-01-24  James Youngman  <jay@gnu.org>
+
+	* docs/BUGS:
+	Removed a bug report (by jay@gnu.org, me) that actually wasn't a bug.
+
+	* tests/get/defsid.sh: Wrote tests for the default-SID flag.
+
+	* tests/admin/flags.sh:
+	Since we now emit a couple of error messages relating to the "-b"
+	flag, we need to IGNORE some of the stderr output in the tests,
+	otherwise we procude unwarranted test failures.
+
+	* tests/sccsdiff/rap.sh:
+	We can't count on the precise form of the output, but we can count on
+	the exit status of the command.   Tests amended for compatibility with
+	SCCS.  SCCS now passes :-)
+
+	* tests/get/branch.sh:
+	Since we now emit a couple of error messages relating to the "-b"
+	flag, we need to IGNORE some of the stderr output in the tests,
+	otherwise we procude unwarranted test failures.
+
+	* sccsdiff.sh.in:
+	SCCS compatibility fix -- When "get" fails, exit with value 1, not 2.
+
+	* get.cc: Added warnings for when -b flag is ignored because the b
+	(branch-enable) flag is not set, and for when -b is udes without -e
+	(which does not make sense and is otherwise ignored).
+
+	* _chmod.cc:
+	Removed double leading underscore for #define used to prevent multiple
+	inclusion.
+
+	* sf-get2.cc:
+	Fixed assertion failure for "get -e -r1.1.1 s.foo.c" when there is a
+	revision 1.1.1.1.   Probably needs tidying (or at least
+	re-generalising).
+
+	* sf-chkid.cc:
+	Export the function is_keyword_letter() so that our later support for
+	binary as well as text files can be simplified.
+
+	* sccsfile.h, sccsfile.cc: Added sccs_file::branches_allowed().
+
+1998-01-20  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi:
+	Added documentation on when and how branches are made.
+
+1998-01-19  James Youngman  <jay@gnu.org>
+
+	* tests/get/branch.sh:
+	Added tests for the correct handling of the "-b" flag.
+
+1998-01-18  James Youngman  <jay@gnu.org>
+
+	* encoding.cc:
+	First show at the uuencode/uudecode methods for the support of binary files.
+
+1998-01-17  James Youngman  <jay@gnu.org>
+
+	* unget.cc, what.cc, rmdel.cc, prs.cc, get.cc, my-getopt.cc,
+	delta.cc, ChangeLog, admin.cc: Removed all colons from getopt()
+	option descriptors.  Instead we replace them with "!", which tells
+	our custom version of getopt() to parse the options in the SCCS
+	style (arguments must follow keyletters and may not be in the next
+	argv[] element).
+
+	* cssc.h: Only include <config.h> if HAVE_CONFIG_H is defined.
+
+	* configure.in: Updated the version number.
+
+	* testutils/user.c:
+	Added this file (which is broadly the equivalent of the standard Unix
+	command "id").
+
+	* NEWS: Changes for version 0.05 (changes in Dec 19997 and Jan 1998).
+
+	* ChangeLog:
+	Updated for version 0.05 (changes in Dec 19997 and Jan 1998).
+
+	* docs/CREDITS:
+	Added paragraph for Richard Polton, and de-emphasised the role of
+	MySC.
+
+	* docs/FIXED:
+	Moved a bug report (99999 cap on nu,bers of lines in SCCS files) from
+	BUGS to FIXED after fixing it.
+
+	* docs/BUGS: Moved a bug report to the FIXED file after fixing it.
+
+	* docs/missing.txt:
+	Indicate that sccs-val and sccs-comb have not been implemented.
+
+	* docs/TODO: *** empty log message ***
+
+	* docs/TESTING:
+	Indicated that Richard Polton wrote the first contributed test suite.
+
+	* docs/Platforms:
+	Added indication that CSSC has been tested under Red Hat version 5.0.
+
+1998-01-16  James Youngman  <jay@gnu.org>
+
+	* docs/get-spec.txt:
+	Updated to reflect the fact that the makefile no longer has a "make
+	gtest" target.
+
+1998-01-15  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi: Documented sact, cdc, rmdel, prt.
+
+	* tests/Makefile.am: Added the test-cdc target.
+
+	* tests/common/test-common:
+	The expected stdout/stderr arguments are quoted when they are output
+	to temporary files, to prevent any wildcard characters iin them being
+	expanded!
+
+	* mystring.h: typo in comment
+
+	* fileiter.h:
+	Provide using_stdin(), which indicates if stdin is already in use for
+	reading a list of files to operate on.
+
+	* prompt.cc:
+	The prompt should not be issued if stdin is not a terminal.
+
+	* sf-cdc.cc, cdc.cc: Using the new test cases, fixed many bugs!
+
+	* tests/cdc/4order.sh, tests/cdc/2comment.sh, tests/cdc/3MRs.sh,
+	tests/cdc/1general.sh: Wrote a fairly comlete set of test cases
+	for 'cdc'.
+
+1998-01-10  James Youngman  <jay@gnu.org>
+
+	* tests/Makefile.am: Added tests for "sccsdiff".
+
+	* tests/sccsdiff/rap.sh:
+	Export $get so that "sccsdiff" can call the correct "get" program.
+
+	* Makefile.am: Renamed list.h to mylist.h.
+
+	* sccsfile.h, sid_list.cc, run.cc, run.h, pipe.cc, rel_list.h,
+	l-split.cc, pfile.h, fileiter.h, mylist.h, list.h: Renamed
+	"list.h" to "mylist.h".
