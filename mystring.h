@@ -24,7 +24,7 @@
  *
  * Defines the class mystring.
  *
- * @(#) CSSC mystring.h 1.1 93/11/09 17:24:42
+ * $Id: mystring.h,v 1.10 1997/11/23 22:08:37 james Exp $
  *
  */
 
@@ -44,7 +44,7 @@
 typedef string mystring;
 
 
-#else /* Use MySC's old "mystring". */
+#else /* Use our own "mystring". */
 
 #ifdef __GNUC__
 #pragma interface
@@ -56,98 +56,76 @@ typedef string mystring;
 /* This is a very simple string class.  Its purpose is mainly to
    simplify the allocation of strings. */
 
-class mystring {
-	struct ptr {
-		int refs;
-		char str[1];
-	};
 
-	char *str;
-
-	void create(const char *s);
-	void create(const char *s1, const char *s2);
-	void destroy();
-
-	void
-	copy(mystring const &s) {
-		str = s.str;
-		if (str != NULL) {
-			STR_PTR(str)->refs++;
-		}
-	}
-
+class mystring
+{
+  class MyStrRep;		// nested class.
+  class ModifiableReference;
+  
+  MyStrRep *rep;
+  
+  
 public:
-	mystring(): str(NULL) {}
-	mystring(const char *s) { create(s); }
-	mystring(const char *s1, const char *s2) { create(s1, s2); }
-        mystring(const char *s, size_t len);
-        mystring(mystring &s1, mystring &s2) { create(s1.str, s2.str); }
-        mystring(char *s) { create(s); }
-        mystring(char *s1, char *s2) { create(s1, s2); }
-	mystring(mystring const &s) {
-		copy(s);
-	}
-
-	mystring &operator =(mystring const &s);
-	mystring &operator =(const char *s);
-
-  	const mystring& operator+=(const mystring& s);
-  	mystring  operator+ (const mystring& s);
+  typedef unsigned long size_type;
+  typedef char charT;
   
-	const char * c_str() const {
-		return str;
-	}
-  	const char& operator[](size_t n) const;
+  static const size_type npos = static_cast<size_type>(-1);
   
-  	operator bool() const   {
-	  return str ? true : false;
-  	}
   
-#ifdef __GNUC__
-	operator void *() const {
-		return str;
-	}
-  // I am informaed that this next function is required to compile
-  // CSSC with the latest snapshots of GCC (as of 970811).  However,
-  // I don't have access to these to really fix the ACTUAL problem
-  // so the following aberration persists... XXX please fix me!
-	operator char *() const { // TODO: remove me 
-		return str;	  // and fix the calling code!
-	}
-#endif
+  // Constructors...
+  mystring();
+  mystring(const charT*);
+  mystring(const charT*, size_type); // first N characters.
+  mystring(const mystring&);
 
-	int
-	operator ==(mystring const &s) const {
-		ASSERT(s.str != NULL);
-		ASSERT(str != NULL);
-		return strcmp(str, s.str) == 0;
-	}
-	int operator !=(mystring const &s) const { return !operator==(s); }	
-
-	int
-	operator ==(const char *s) const {
-		if (s == NULL) {
-			return str == NULL;
-		}
-		ASSERT(str != NULL);
-		return strcmp(str, s) == 0;
-	}
-	int operator !=(const char *s) const { return !operator==(s); }
+  // Assignment
+  mystring& operator=(const mystring&);
+  mystring& assign(const mystring&, size_type pos);
   
-	int
-	print(FILE *out) const {
-		return fputs(str, out) == EOF;
-	}
-		
-	char *
-	xstrdup() const {
-		return strcpy((char *) xmalloc(strlen(str) + 1), str);
-	}
+  // Observers
+  bool valid() const;
+  bool empty() const;
+  size_type length() const;
+  
+  // Data access
+  charT at(size_type) const;
+  ModifiableReference at(size_type);
+  
+  
+  // Casts etc.
+  const charT *c_str() const;
+  
+  // Slicing...
+  mystring substr(size_type first, size_type last) const;
 
-	~mystring() {
-		destroy();
-	}
+  // Operators...
+  mystring operator+(const mystring&) const;
+  bool operator==(const mystring&) const;
+
+
+  // Searching..
+  size_type find_last_of(charT) const;
+
+
+private:
+
+  class ModifiableReference
+  {
+    mystring &s;
+    size_type pos;
+  public:
+    ModifiableReference(mystring& sref, size_type i) : s(sref), pos(i) { }
+    charT& operator=(charT ch);
+    operator char() const;
+  };
+
+  int compare(const mystring &) const;
+
+  // Copy management.
+  void prepare_for_writing();
 };
+
+
 #endif /* USE_STANDARD_STRING */
 
 
