@@ -41,23 +41,19 @@
 
 #include <paths.h>
 
-#ifndef PREFIX
-#define PREFIX ""
-#endif
+/* #define PASTE(a,b) a##b */
 
-#define PASTE(a,b) a##b
-
-#define	_PATH_SCCSADMIN	PASTE(PREFIX,"admin")
-#define	_PATH_SCCSBDIFF	PASTE(PREFIX,"bdiff")
-#define	_PATH_SCCSCOMB	PASTE(PREFIX,"comb")
-#define	_PATH_SCCSDELTA	PASTE(PREFIX,"delta")
-#define	_PATH_SCCSDIFF	PASTE(PREFIX,"sccsdiff")
-#define	_PATH_SCCSGET	PASTE(PREFIX,"get")
-#define	_PATH_SCCSHELP	PASTE(PREFIX,"help")
-#define	_PATH_SCCSPRS	PASTE(PREFIX,"prs")
-#define	_PATH_SCCSPRT	PASTE(PREFIX,"prt")
-#define	_PATH_SCCSRMDEL	PASTE(PREFIX,"rmdel")
-#define	_PATH_SCCSVAL	PASTE(PREFIX,"val")
-#define	_PATH_SCCSWHAT	PASTE(PREFIX,"what")
+#define	_PATH_SCCSADMIN	("admin")
+#define	_PATH_SCCSBDIFF	("bdiff")
+#define	_PATH_SCCSCOMB	("comb")
+#define	_PATH_SCCSDELTA	("delta")
+#define	_PATH_SCCSDIFF	("sccsdiff")
+#define	_PATH_SCCSGET	("get")
+#define	_PATH_SCCSHELP	("help")
+#define	_PATH_SCCSPRS	("prs")
+#define	_PATH_SCCSPRT	("prt")
+#define	_PATH_SCCSRMDEL	("rmdel")
+#define	_PATH_SCCSVAL	("val")
+#define	_PATH_SCCSWHAT	("what")
 #undef _PATH_TMP
 #define	_PATH_TMP	"/tmp/sccsXXXXX"
