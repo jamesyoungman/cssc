@@ -37,7 +37,7 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.26 1999/04/18 17:39:40 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.27 2000/07/18 20:46:03 james Exp $";
 
 void
 usage() {
@@ -162,18 +162,15 @@ delta_main(int argc, char **argv)
 		
 	  if (first)
 	    {
-	      if (stdin_is_a_tty())
+	      if (!suppress_mrs && !got_mrs && file.mr_required())
 		{
-		  if (!suppress_mrs && !got_mrs && file.mr_required())
-		    {
-		      mrs = prompt_user("MRs? ");
-		      got_mrs = 1;
-		    }
-		  if (!suppress_comments && !got_comments)
-		    {
-		      comments = prompt_user("comments? ");
-		      got_comments = 1;
-		    }
+		  mrs = prompt_user("MRs? ");
+		  got_mrs = 1;
+		}
+	      if (!suppress_comments && !got_comments)
+		{
+		  comments = prompt_user("comments? ");
+		  got_comments = 1;
 		}
 	      mr_list = split_mrs(mrs);
 	      comment_list = split_comments(comments);
