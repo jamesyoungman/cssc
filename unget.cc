@@ -14,7 +14,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.4 1997/05/10 14:49:59 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.5 1997/05/25 15:34:00 james Exp $";
 
 void
 usage() {
@@ -99,6 +99,21 @@ main(int argc, char **argv) {
 		default:
 			abort();
 		}
+		if (!iter.unique())
+		  printf("\n%s:\n", (const char*)name);
+		pfile.print_lock_sid(stdout);
+		fputc('\n', stdout);
+
+		/* No idea why SCCS prints the locked SID twice,
+		 * if the -n option is not given, but it does. 
+		 */
+		if (!keep_gfile)
+		  {
+		    if (!iter.unique())
+		      printf("\n%s:\n", (const char*)name);
+		    pfile.print_lock_sid(stdout);
+		    fputc('\n', stdout);
+		  }
 
 		pfile.delete_lock();
 		pfile.update();
