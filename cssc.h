@@ -3,7 +3,7 @@
  *
  * Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.13 1998/01/25 22:32:59 james Exp $
+ * $Id: cssc.h,v 1.14 1998/02/01 17:54:06 james Exp $
  *
  */
 
@@ -52,7 +52,6 @@
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 //           Tunable
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#define CONFIG_LINEBUF_CHUNK_SIZE	1024
 #define CONFIG_LIST_CHUNK_SIZE		16
 #define CONFIG_FILE_NAME_GUESSING
 

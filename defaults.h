@@ -96,10 +96,6 @@
 #endif
 #endif /* CONFIG_NULL_FILENAME */
 
-#ifndef CONFIG_LINEBUF_CHUNK_SIZE
-#define CONFIG_LINEBUF_CHUNK_SIZE 1024
-#endif
-
 #ifndef CONFIG_EOL_CHARACTER
 #define CONFIG_EOL_CHARACTER ('\n')
 #endif
