@@ -32,7 +32,7 @@
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.7 1997/07/02 18:04:08 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.8 1997/07/07 21:16:29 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -43,10 +43,19 @@ static const char rcs_id[] = "CSSC $Id: run.cc,v 1.7 1997/07/02 18:04:08 james E
 // and otherwise the return value of the program.
 // Success is indicated by a zero return value.
 
+// PROBLEM: system() returns an implementation-defined value
+// unless its argument is NULL.  This means that we cannot use it where
+// we care about the meaning of the return value.  This in turn means that
+// MR validation will never fail (that is, it won't fail when it is
+// supposed to, it will instead succeed all the time).
+//
 void call_system(const char *s)
 {
   int failed;
-  int ret = system(s);
+  int ret;
+
+  errno = 0;
+  ret = system(s);
 
 #ifdef SYSTEM_FAILS_RETURNING_MINUS_ONE
   failed = (-1 == ret);
@@ -54,8 +63,8 @@ void call_system(const char *s)
   failed = (ret != 0);
 #endif
   
-  if (failed)
-    quit(errno, "system(\"%s\") failed, returning %d.", s, ret);
+  if (errno)
+    quit(errno, "call_system(\"%s\") failed, returning errno=%d.", s, ret);
 }
 
 /* Runs a programme and returns its exit status. */
@@ -84,6 +93,7 @@ run(const char *prg, list<const char *> const &args) {
 
 	call_system(s);
 	free(s);
+	return 0;
 
 #else /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 
@@ -105,8 +115,9 @@ run(const char *prg, list<const char *> const &args) {
 		quit(errno, "spawnvp(\"%s\") failed.", prg);
 	}
 
-#else /* CONFIG_NO_FORK */
+#else /* HAVE_FORK */
 	// We _do_ have fork().
+	fflush(NULL);
 	pid_t pid = fork(); 
 	if (pid < 0) {
 		quit(errno, "fork() failed.");
@@ -130,10 +141,9 @@ run(const char *prg, list<const char *> const &args) {
 #endif /* CONFIG_NO_FORK */
 
 	free(argv);
-
-#endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
-
 	return ret;
+	
+#endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 }
 
 
