@@ -343,6 +343,14 @@ public:
 
 	void rmdel(sid rid);
 
+  // Implementation is protected; in the existing [MySC]
+  // implementation some of the implementation is private where
+  // it might better be protected.
+protected:
+
+  // sid_in_use() should take a const sccs_pfile&, but iteration over
+  // a sccs_pfile requires that it is not const (FIXME!).
+  bool sid_in_use(sid id, sccs_pfile& p) const;
 };
 
 /* l-split.c */
