@@ -1,4 +1,4 @@
-TESTDIRS = admin delta get prs prt unget large sccsdiff
+TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -64,7 +64,15 @@ test-sccsdiff: links
 		$(SHELL) $$i || exit 1; \
 	done'
 
-all-tests: 	test-admin test-delta test-get test-prs test-prt test-unget \
+test-cdc: links
+	$(SHELL) -ec 'cd cdc && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
+all-tests: 	test-cdc \
+		test-admin test-delta test-get test-prs test-prt test-unget \
 		test-large test-sccsdiff
 	echo Tests passed.
 
