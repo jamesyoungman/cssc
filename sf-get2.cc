@@ -16,7 +16,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.13 1997/06/01 20:37:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.14 1997/06/02 23:07:11 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -191,16 +191,27 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
 	}
     }
 
-  assert(true == got_best);
-  found = best;
+  if (got_best)
+    found = best;
   return got_best;
 }
 
 #endif
 
+bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
+{
+  if (delta_table.find(id))
+    return true;
+
+  if (pfile.is_to_be_created(id))
+    return true;
+
+  return false;
+}
+
 
 /* Returns the SID of the new delta to be created. */
-
+#if 0
 sid
 sccs_file::find_next_sid(sid requested, sid got, int branch,
 			 sccs_pfile &pfile) const
@@ -255,7 +266,61 @@ sccs_file::find_next_sid(sid requested, sid got, int branch,
 	
   return highest.next_branch();
 }
+#else
+sid
+sccs_file::find_next_sid(sid requested, sid got,
+			 int want_branch,
+			 sccs_pfile &pfile) const
+{
+  if (!flags.branch)
+    want_branch = false;	// branches not allowed!
+  
+  const int ncomponents = requested.components();
+  bool forced_branch = false;
 
+  sid next = requested;
+  ++next;
+  
+  if (want_branch)
+    {
+      if (ncomponents < 4)
+	next = got;
+
+      next.next_branch();
+    }
+  else
+    {
+      // We may be forced to create a branch anyway.
+      const bool too_high = requested.on_trunk() 
+	&& flags.ceiling.valid() && release(requested) > flags.ceiling;
+      bool branch_again = (4 == ncomponents && sid_in_use(next, pfile));
+      // If joint edits of deltas are not allowed, dont branch to avoid 
+      // collison with planned deltas.
+      if (!flags.joint_edit)
+	branch_again = false;
+      if (too_high || branch_again)
+	{
+	  next.next_branch();
+	  forced_branch = true;
+	}
+    }
+  
+  // If we have created a branch, and that branch is not unique, keep
+  // looking for an empty branch.
+  if (want_branch || forced_branch)
+    {
+      while (delta_table.find(next)
+	     || (flags.joint_edit && pfile.is_to_be_created(next)))
+	{
+	  next.next_branch();
+	}
+    }
+  
+  assert(!sid_in_use(next, pfile));
+  return next;
+}
+
+#endif
 
 /* Quits if the user isn't authorized to make deltas, if the release
    requested is locked or if the requested SID has an edit lock and
