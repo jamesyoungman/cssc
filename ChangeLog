@@ -1,3 +1,46 @@
+1998-03-01  James Youngman  <jay@gnu.org>
+
+	* Version 0.06alpha-pl3
+
+	* tests/binary/auto.sh, tests/binary/seeking.sh:
+	Tests for binary files and the "-i" option of admin.
+
+	* docs/cssc.texi:
+	Genuine SCCS doesn't always properly recover from finding out that
+	the "-i" file for admin needs encoding, after having read some of it.
+
+	* bodyio.cc, admin.cc:
+	When generating a new SCCS file using the "-i" option of admin,
+	we no longer need to be able to seek on that file if the input
+	turns out to need encoding after we have read some of it.
+
+	* tests/admin/i-option.sh: We no longer do fgetpos() on stdin.
+
+1998-02-28  James Youngman  <jay@gnu.org>
+
+	* xalloc.cc, xalloc.h, Makefile.am:
+	Removed xalloc.cc and xalloc.h completely.
+
+	* show-disp.sh:
+	Cope correctly with locally removed files when the actual working file
+	has been deleted.
+
+	* docs/CREDITS, xalloc.cc, sl-merge.h, stack.h, sid_list.cc,
+	sid_list.h, sid.cc, run.cc, seqstate.h, pipe.cc, linebuf.cc,
+	linebuf.h, delta-table.cc, l-split.cc, cssc.h: Patches from
+	Richard Polton to eliminate our xalloc.h wrapper for operator new,
+	as various versions of GCC differ on the exception throwing
+	specification -- if we don't have to override the operator new, we
+	don't have to get the declaration right :-)
+
+	* admin.cc:
+	Turn off buffering on stdin, as a workaround for a bug in glibc 2.0.6.
+
+	* tests/common/test-common: success(): Delete temporary files.
+
+	* tests/admin/i-option.sh, tests/admin/t-option.sh:
+	Temporarily mark the "admin -i" tests "expect-fail".
+
 1998-02-24  James Youngman  <jay@gnu.org>
 
 	* auxfiles/CSSC.spec: Updated the version.

@@ -1,3 +1,11 @@
+New in CSSC-0.06alpha-pl3
+
+	* "admin -i" now works when the input file turns out 
+          to need encoding.  We do not need to be able to seek 
+	  on the input file, so stdin from a pipe works fine,
+	  even if the -b option is not given.  We also have tests for
+	  this situation.
+
 New in CSSC-0.06alpha-pl2
 
 	* 8-bit input data now works, as ordinary text.  This means that
