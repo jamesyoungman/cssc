@@ -29,10 +29,12 @@
 #include "sccsfile.h"
 #include "sf-chkmr.h"
 #include "fileiter.h"
+#include "sid_list.h"
+#include "sl-merge.h"
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.12 1997/07/02 18:17:46 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.13 1997/11/07 22:57:19 james Exp $";
 
 void
 usage() {
