@@ -1,3 +1,43 @@
+1999-04-18  James Youngman  <jay@gnu.org>
+
+	* tests/bsd-sccs/driver-basic.sh:
+	Disable test h2, since currently we don't pass it.   FIXME!
+
+	* tests/rmdel/basic.sh: Better cleanup.
+
+	* tests/bsd-sccs/driver-basic.sh:
+	Added test for "sccs unedit" ensuring we delete the gotten file.
+
+	* docs/Platforms, docs/TODO, auxfiles/CSSC.spec.in:
+	*** empty log message ***
+
+	* pfile.cc, pfile.h, prs.cc, prt.cc, quit.cc, rel_list.cc,
+	rel_list.h, rl-merge.cc, rmdel.cc, run.cc, run.h, sact.cc,
+	sccsfile.cc, sccsfile.h, seqstate.cc, seqstate.h, sf-admin.cc,
+	sf-cdc.cc, sf-chkmr.h, sf-delta.cc, sf-get.cc, sf-get2.cc,
+	sf-get3.cc, sf-prs.cc, sf-prt.cc, sf-rmdel.cc, sf-write.cc,
+	unget.cc, admin.cc, cdc.cc, delta-table.cc, delta-table.h,
+	delta.cc, delta.h, dtbl-prepend.cc, fileiter.h, get.cc,
+	l-split.cc, list.cc, mylist.h, mystring.h: 
+	Changes for correct support of included deltas in branches (a
+	rewrite of seqstate.cc and seqstate.h).
+
+	* tests/get/included.sh:
+	Enable the test, now that we support included non-ancestor branches.
+
+	* NEWS, README, configure.in: Updates for 0.11alpha.pl0
+
+	* docs/cssc.texi: Updated version for next release.
+
+	* docs/BUGS: Added bug report for "unget" deleting the wrong g-file.
+
+	* bsd/sccs.c: Use tmpfile() rather than mktemp() in unget(), because
+	glibc-2.1-0.990311 has a broken mktemp() (it returns an empty string).
+
+1999-03-29  James Youngman  <jay@gnu.org>
+
+	* tests/get/included.sh: Tests for included deltas.
+
 1999-03-21  James Youngman  <jay@gnu.org>
 
 	* Released 0.10beta.pl1.

@@ -2,7 +2,7 @@
  * sf-cdc.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.10 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.11 1999/04/18 17:59:40 james Exp $";
 #endif
 
 /* Adds new MRs and comments to the specified delta. */

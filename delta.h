@@ -2,7 +2,7 @@
  * delta.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
  *
  * Definition of the class sccs_delta.
  *
- * $Id: delta.h,v 1.2 1999/04/18 17:39:40 james Exp $
+ * $Id: delta.h,v 1.3 1999/04/18 17:59:40 james Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_H
-#define CSSC_DELTA_H "$Id: delta.h,v 1.2 1999/04/18 17:39:40 james Exp $"
+#define CSSC_DELTA_H "$Id: delta.h,v 1.3 1999/04/18 17:59:40 james Exp $"
 
 struct delta
 {

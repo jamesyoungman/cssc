@@ -1,7 +1,7 @@
 /*
  * rl-merge.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include "rel_list.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: rl-merge.cc,v 1.3 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: rl-merge.cc,v 1.4 1999/04/18 17:59:40 james Exp $";
 #endif
 
 // another horrendously inefficient implementation.

@@ -2,7 +2,7 @@
  * sf-write.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.26 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.27 1999/04/18 17:59:40 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */

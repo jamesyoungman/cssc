@@ -2,7 +2,7 @@
  * sf-prt.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.19 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.20 1999/04/18 17:59:40 james Exp $";
 #endif
 
 static void

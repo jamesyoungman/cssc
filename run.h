@@ -2,7 +2,7 @@
  * run.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ int run(const char *prg, mylist<const char *> const &args);
 int run_mr_checker(const char *prg, const char *arg1,
 		   mylist<mystring> mrs);
 
-#endif /* __RUN_H__ */
+#endif /* CSSC__RUN_H__ */
 
 /* Local variables: */
 /* mode: c++ */

@@ -2,7 +2,7 @@
  * prt.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1999 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.15 1999/04/18 17:39:41 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prt.cc,v 1.16 1999/04/18 17:59:40 james Exp $";
 
 void
 usage()

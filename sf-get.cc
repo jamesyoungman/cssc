@@ -2,7 +2,7 @@
  * sf-get.cc: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998, Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999, Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.25 1999/04/18 17:39:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.26 1999/04/18 17:59:40 james Exp $";
 #endif
 
 #ifdef USE_OLD_SEQSTATE
