@@ -36,7 +36,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.23 1998/03/01 14:30:18 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.24 1998/03/10 23:00:32 james Exp $";
 
 
 static bool
@@ -44,7 +44,7 @@ well_formed_sccsname(const sccs_name& n)
 {
   const char *s;
   
-  if (s = strchr(n.c_str(), '/'))
+  if (s = strrchr(n.c_str(), '/'))
     {
       s++;
     }
