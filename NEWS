@@ -1,3 +1,15 @@
+New in CSSC-0.06alpha-pl1
+	
+	* "get" keywords now sustitute the right values, the ones
+	  corresponding to the delta actually being gotten, not the 
+	  ones corresponding to the delta that last modified the line 
+	  currently being worked on.
+
+	* Bugfixes; "get s.foo -Gbar" is now equivalent to 
+	  "get -Gbar s.foo".  This fix applies to all the programs,
+	  not just "get".
+
+
 New in CSSC-0.06alpha-pl0
 
 	* Binary file support (with test suite support).
