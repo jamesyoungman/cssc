@@ -1,6 +1,9 @@
 #! /bin/sh
-. test-common
+. ../common/test-common
 export prt
+
+remove s.testfile2
+uudecode < s.testfile2.uue || miscarry could not uudecode testfile2.uue.
 
 sh all-variations.txt >got.stdout
 
@@ -11,7 +14,7 @@ uncompress <all.expected.Z >all.expected \
 
 if diff all.expected got.stdout >/dev/null 
 then
-    remove all.expected
+    remove all.expected s.testfile2
     success
 else
     echo "output differs --"
