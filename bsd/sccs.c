@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.27 2001/07/31 08:28:07 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.28 2001/09/16 09:07:29 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -906,7 +906,10 @@ try_to_exec(const char *prog, char * const argv[])
     {
       /* if the above exec() returns or was not allowed, try our prefix.
        */
-      len = strlen(prefix) + strlen(prefix);
+      /* SourceForge BUG #448215: patch from Jeff Sheinberg;
+       * change seconf strlen call from strlen(prefix) to strlen(prog).
+       */
+      len = strlen(prefix) + strlen(prog);
       newprog = malloc(len + 1);
       if (NULL == newprog)
         {
