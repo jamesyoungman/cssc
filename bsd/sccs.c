@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.20 1999/03/21 09:23:27 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.21 1999/04/18 17:01:59 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -1856,7 +1856,6 @@ unedit (const char *fn)
   register FILE *pfp;
   const char *cp;
   char *pfn;
-  static char tfn[] = _PATH_TMP;
   FILE *tfp;
   register char *q;
   bool delete = FALSE;
@@ -1891,11 +1890,10 @@ unedit (const char *fn)
     }
 
   /* create temp file for editing p-file */
-  mktemp (tfn);
-  tfp = fopen (tfn, "w");
+  tfp = tmpfile();
   if (tfp == NULL)
     {
-      usrerr ("cannot create \"%s\"", tfn);
+      usrerr ("cannot create temporary file");
       fclose(pfp);
       free(pfn);
       exit (CSSC_EX_OSERR);
@@ -1947,7 +1945,6 @@ unedit (const char *fn)
 	    printf ("%12s: can't remove\n", cp);
 	    fclose (tfp);
 	    fclose (pfp);
-	    unlink (tfn);
 	    free(pfn);
 	    return (FALSE);
 	  }
@@ -1956,12 +1953,8 @@ unedit (const char *fn)
   if (others)
     {
       /* copy it back (perhaps it should be linked?) */
-      if (freopen (tfn, "r", tfp) == NULL)
-	{
-	  syserr ("cannot reopen \"%s\"", tfn);
-	  free(pfn);
-	  exit (CSSC_EX_OSERR);
-	}
+      rewind(tfp);
+
       if (freopen (pfn, "w", pfp) == NULL)
 	{
 	  usrerr ("cannot create \"%s\"", pfn);
@@ -1978,11 +1971,10 @@ unedit (const char *fn)
     }
   fclose (tfp);
   fclose (pfp);
-  unlink (tfn);
 
   /* actually remove the g-file */
   
-  /* TODO: %12s in the prontfs below is inappropriate
+  /* TODO: %12s in the printfs below is inappropriate
    * for modern Unix were filenames can be longer than 11 characters...
    */
   
