@@ -20,7 +20,7 @@
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
  *
- * $Id: _chmod.cc,v 1.6 1998/01/24 14:11:39 james Exp $
+ * $Id: _chmod.cc,v 1.1 1998/06/14 16:54:25 james Exp $
  *
  */
 

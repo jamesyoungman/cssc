@@ -30,7 +30,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: ffsync.cc,v 1.1 1998/06/14 15:24:16 james Exp $";
+static const char rcs_id[] = "CSSC $Id: ffsync.cc,v 1.1 1998/06/14 16:54:27 james Exp $";
 #endif
 
 #if defined(CONFIG_SYNC_BEFORE_REOPEN) || defined(CONFIG_SHARE_LOCKING)
