@@ -31,6 +31,7 @@
 #include "sccsfile.h"
 #include "sl-merge.h"
 #include "delta.h"
+#include "linebuf.h"
 
 // We use @LIBOBJS@ instead now.
 // #ifndef HAVE_STRSTR
@@ -38,7 +39,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.16 1997/11/30 21:05:51 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.17 1997/12/11 22:55:41 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -61,7 +62,7 @@ sccs_file::admin(const char *file_comment,
 			}
 
 			while(!read_line_param(fc)) {
-				comments.add(linebuf.c_str());
+				comments.add(plinebuf->c_str());
 			}
 
 			if (ferror(fc)) {
@@ -220,8 +221,12 @@ sccs_file::admin(const char *file_comment,
 			quit(-1, "Unrecognized flag '%c'", s[-1]);
 		}
 	}
-	      
-	users += add_users;
+
+	// Add the specified users to the beginning of the user list.
+	list<mystring> newusers = add_users;
+	newusers += users;
+	users = newusers;
+	
 	users -= erase_users;
 }
 
@@ -278,7 +283,7 @@ sccs_file::create(release first_release, const char *iname,
     while(!read_line_param(in))
       {
 	new_delta.inserted++;
-	if (fputs_failed(fputs(linebuf, out)) ||
+	if (fputs_failed(fputs(plinebuf->c_str(), out)) ||
 	    putc_failed(putc('\n', out)))
 	  {
 	    mystring zname = name.zfile();
@@ -286,7 +291,7 @@ sccs_file::create(release first_release, const char *iname,
 	  }
 	if (!found_id)
 	  {
-	    if (check_id_keywords(linebuf))
+	    if (check_id_keywords(plinebuf->c_str()))
 	      {
 		found_id = 1;
 	      }
