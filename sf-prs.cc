@@ -35,14 +35,14 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.32 2002/03/21 21:43:23 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.33 2002/03/23 15:27:55 james_youngman Exp $";
 #endif
 
 inline bool
 sccs_file::get(FILE *out, mystring name, seq_no seq)
 {
   struct subst_parms parms(out, NULL, delta(), 0,
-			   sccs_date());  // XXX: was sccs_date(NULL) (bad!)
+                           sccs_date());  // XXX: was sccs_date(NULL) (bad!)
   class seq_state state(highest_delta_seqno());
   
   return prepare_seqstate(state, seq) && get(name, state, parms, true);
@@ -55,11 +55,13 @@ print_seq_list(FILE *out, mylist<seq_no> const &list) {
         int i;
         int len = list.length();
 
+        /* prs does actually print the sequences in reverse order! */
         if (len > 0) {
-                fprintf(out, "%u", list[0]);
-                for(i = 1; i < len; i++) {
-                        fprintf(out, " %u", list[i]);
-                }
+            for(i = len-1; i >= 0; --i) {
+                fprintf(out, "%u", list[i]);
+                if (i > 0)
+                    fprintf(out, " ");
+            }
         }
 }
 
@@ -277,21 +279,21 @@ sccs_file::print_delta(FILE *out, const char *format,
               switch (*s)
                 {
                 case 'n':
-		  /* Turn a \n into a newline unless it is the last 
-		   * bit of the format string.  In the latter case we 
-		   * ignore it - see prs/format.sh test cases 4a and 4b.
-		   * Those partiicular test cases were checked against 
-		   * Sun Solaris 2.6.
-		   */
-		  if (s[1])
-		    {
-		      c = '\n';
-		      break;
-		    }
-		  else
-		    {
-		      return;
-		    }
+                  /* Turn a \n into a newline unless it is the last 
+                   * bit of the format string.  In the latter case we 
+                   * ignore it - see prs/format.sh test cases 4a and 4b.
+                   * Those partiicular test cases were checked against 
+                   * Sun Solaris 2.6.
+                   */
+                  if (s[1])
+                    {
+                      c = '\n';
+                      break;
+                    }
+                  else
+                    {
+                      return;
+                    }
                 case 't': c = '\t'; break;
                 case '\\': c = '\\'; break;
                 default:        // not \n or \t -- print the whole thing.
@@ -435,7 +437,9 @@ sccs_file::print_delta(FILE *out, const char *format,
               d.excluded.length() > 0 ||
               d.ignored.length()  > 0   )
             {
-              print_delta(out, ":Dn:/:Dx:/:Dg:", d);
+              /* Testing witht he SOlaris version only shows one slash! */
+              /* print_delta(out, ":Dn:/:Dx:/:Dg:", d); */
+              print_delta(out, ":Dn:/:Dx:", d);
               break;
             }
                   
@@ -534,8 +538,8 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY2('F','D'):
           // The genuine article prints '(none)' if there
           // is no description.  
-	  // JY Sun Nov 25 01:33:46 2001; Solaris 2.6 
-	  // prints "none" rather than "(none)".
+          // JY Sun Nov 25 01:33:46 2001; Solaris 2.6 
+          // prints "none" rather than "(none)".
           if (0 == comments.length())
             fputs("none\n", out);
           else
