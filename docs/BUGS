@@ -1,15 +1,8 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-02-19 21:52:03 james>
+Time-stamp: <1998-02-21 08:41:31 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
-
-Thu Feb 19 21:50:35 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
-In version 0.06-pl0.  Unfixed. 
- The option order seems to differ with SCCS and CSSC.  We have
- a number of tools which issue the command 'get file -Gfile'
- which works correctly with SCCS, but for CSSC I need to issue 
- the command 'get -Gfile file' instead...
 
 Thu Feb 19 21:50:39 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
 In version 0.06-pl0.  Unfixed. 
@@ -18,23 +11,9 @@ In version 0.06-pl0.  Unfixed.
  ../../admin: fgetpos() failed!
  29 - Illegal seek
 
-Thu Feb 19 21:50:44 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
-In version 0.06-pl0.  Unfixed. 
- The %I% %G% etc tags aren't substituted correctly (they are
- substituted with the version and date of the file at the time the
- tags were first checked in).  I have provided a patch 
- to the tests/get/subst.sh file below.  Also included is a replacement
- for the keywords.uue file to go along with the 
- patch.
-
 Thu Feb 19 21:50:49 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
 In version 0.06-pl0.  Unfixed. 
  The -t option is missing from get.   BSD's sccs.c uses it.
-
-Thu Feb 19 21:50:54 1998: Dave Bodenstab <imdave@mcs.net>
-In version 0.06-pl0.  Unfixed. 
- The operation of the "admin" command for s.foo will silently destroy
- any files matching [xz].foo.  The manual does not mention this.
 
 Mon Feb  9 23:41:03 1998: Lars Hecking <lhecking@nmrc.ucc.ie>
 In version 0.05-pl0.  Unfixed.

@@ -85,7 +85,7 @@ Fri Jun 27 19:40:22 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
 Mon May 26 14:56:52 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
-	* Write tests for cdc, comb, rmdel, sact, sccsdiff, val.
+	* Write tests for comb, rmdel, sact, sccsdiff, val.
 
 Sun May 25 16:27:05 1997  James Youngman  <jay@gnu.ai.mit.edu>
 

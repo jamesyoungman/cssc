@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-02-11 08:15:04 james>
+Time-stamp: <1998-02-21 08:41:45 james>
 
 List of fixed bugs 
 
@@ -16,6 +16,35 @@ it's easier to just fix the bug than list it in BUGS _and_ I do it
 promptly, it does not get listed.  If you don't like this (lack of?)
 policy, let me know.  All bugfixes are listed in ChangeLog, in some
 fashion.
+
+
+Thu Feb 19 21:50:35 1998:  Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl0.  Fixed in version 0.06-pl1 
+ The option order seems to differ with SCCS and CSSC.  We have
+ a number of tools which issue the command 'get file -Gfile'
+ which works correctly with SCCS, but for CSSC I need to issue 
+ the command 'get -Gfile file' instead...
+
+Thu Feb 19 21:50:54 1998: Dave Bodenstab <imdave@mcs.net>
+In version 0.06-pl0.  Fixed in version 0.06-pl1 
+ The operation of the "admin" command for s.foo will silently destroy
+ any files named x.foo.  The manual does not mention this.
+ [file is now renamed to x.foo.bak, message sent to stderr.  Warning
+ given if the old file could not be renamed]
+
+Thu Feb 19 21:50:44 1998:  Peter Kjellerstedt <Peter.Kjellerstedt@axis.com>
+In version 0.06-pl0.  Fixed in version 0.06-pl1
+ The %I% %G% etc tags aren't substituted correctly (they are
+ substituted with the version and date of the file at the time the
+ tags were first checked in).  I have provided a patch 
+ to the tests/get/subst.sh file below.  Also included is a replacement
+ for the keywords.uue file to go along with the 
+ patch. [bug fixed, single test added, patch not yet applied -- jay]
+
+Thu Feb 19 18:11:08 1998: Peter Kjellerstedt <peter.Kjellerstedt@axis.com>
+In version 0.06-pl0.  Fixed in version 0.06-pl1
+ prt -d:PN: shoulf prvide fully qualified pathname for s-file.
+ It does not.  "prs -d:PN: s.1" produces just "s.1".
 
 
 Mon Feb  9 23:47:08 1998: Marty Leisner <leisner@sdsp.mc.xerox.com>
