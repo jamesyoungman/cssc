@@ -28,6 +28,7 @@ Andrew Bardsley <bardslea@cs.man.ac.uk>		[*] GNU Hurd
 James Youngman  <jay@gnu.org>    		    Dynix/ptx 4.2
 
 Mark Reynolds   <mark@aoainc.com>                   Ultrix 4.2  [SEE BELOW!]
+Brad Crittenden <bac@spoetzl.net>               [*] Mac OS X
 
 [*] These entries denote that CSSC compiled successfully but the test
 suite was not run.
@@ -145,7 +146,7 @@ Windows NT
 ----------
 
 CSSC compiles under the CYGWIN environment for Windows NT.  CSSC
-support inder the Cygwin environment is nearly up to the standard of
+support under the Cygwin environment is nearly up to the standard of
 Unix implementations, but there are three significant areas in which
 it falls short :-
 
@@ -178,5 +179,17 @@ and hence is only flushed to the output file when the parent process
 exits.  The stdio buffering arrangements for CYGWIN seem to be
 slightly different, and this changes the ordering.  For this reason,
 test "h1" currently fails, and is skipped for CYGWIN.
+
+
+Mac OS X
+--------
+
+According to Brad Crittenden <bac@spoetzl.net>, CSSC fails to compile
+under Mac OS X with the default compiler (GCC 3.1).  However, it does
+work with the alternate compiler, GCC 2.95.  To switch compilers,
+execute the command "sudo gcc_select 2".  To switch back, issue the
+command "sudo gcc_select 3".  You may also find it helpful to read the
+Porting Guide at
+<http://developer.apple.com/techpubs/macosx/Darwin/GettingStarted/PortingUNIX/intro/index.html>.
 
 
