@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.14 1998/02/21 14:27:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.15 1998/05/11 21:13:57 james Exp $";
 #endif
 
 static void
@@ -135,7 +135,7 @@ bool sccs_file::cutoff::excludes_delta(sid /* s */,
     }
   if (last_accepted.valid())
     {
-      // Don't set stop_now, since we have not eve got to the first
+      // Don't set stop_now, since we have not even got to the first
       // one that's not excluded, yet.
       if (date > last_accepted)
 	return true;
@@ -315,13 +315,13 @@ sccs_file::prt(FILE *out,
 	       int print_users) const // -u
 
 {
-  putc('\n', out);
+  const int suppress_newlines = exclude.enabled;
+  const char* nl_sep = suppress_newlines ? " " : "\n";
   
   if (print_delta_table)
     {
       if (exclude.enabled)
 	{
-	  // exclude.print(stdout);
 	  if (exclude.most_recent_sid_only)
 	    {
 	      find_most_recent_sid(exclude.cutoff_sid,
@@ -329,8 +329,6 @@ sccs_file::prt(FILE *out,
 	    }
 	  if (exclude.cutoff_sid.valid())
 	    exclude.cutoff_delta = find_delta(exclude.cutoff_sid);
-  
-	  // exclude.print(stdout);
 	}
       
       bool stop_now = false;
@@ -361,8 +359,9 @@ sccs_file::prt(FILE *out,
 		  iter->user.c_str(),
 		  (unsigned short)iter->seq,
 		  (unsigned short)iter->prev_seq);
-	  fprintf(out, "\t%05lu/%05lu/%05lu\n",
+	  fprintf(out, "\t%05lu/%05lu/%05lu",
 		  iter->inserted, iter->deleted, iter->unchanged);
+
 
 	  if (!first_line_only)
 	    {
@@ -381,37 +380,40 @@ sccs_file::prt(FILE *out,
 		  // kludge.
 		  if (iter->included.length())
 		    {
+		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Included:\t");
 		      print_seq_list(out, iter->included);
-		      putc('\n', out);
 		    }
 		  else if (iter->have_includes)
 		    {
-		      fprintf(out, "Included:\t\n");
+		      fputs(nl_sep, out);	// either newline or space.
+		      fprintf(out, "Included:\t");
 		    }
 		  if (iter->excluded.length())
 		    {
+		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Excluded:\t");
 		      print_seq_list(out, iter->excluded);
-		      putc('\n', out);
 		    }
 		  else if (iter->have_excludes)
 		    {
-		      fprintf(out, "Excluded:\t\n");
+		      fputs(nl_sep, out);	// either newline or space.
+		      fprintf(out, "Excluded:\t");
 		    }
 		}
 	      // Print any MRs and then the comments.
 	      if (iter->mrs.length())
 		{
-		  print_string_list(out, iter->mrs, "MRs:\t", " ", "");
-		  putc('\n', out);
+		  fputs(nl_sep, out);	// either newline or space.
+		  print_string_list(out, iter->mrs, "MRs:\t", nl_sep, "");
 		}
 	      if (iter->comments.length())
 		{
-		  print_string_list(out, iter->comments, "", "\n", "");
-		  putc('\n', out);
+		  fputs(nl_sep, out);	// either newline or space.
+		  print_string_list(out, iter->comments, "", nl_sep, "");
 		}
 	    }
+	  putc('\n', out);
 	}
     }
       
