@@ -1,12 +1,12 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
-Version: 0.07alpha.pl2
+Version: 0.07alpha.pl3
 Release: 1
 URL: http://www.myth.co.uk/~jay/cssc/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
-Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-0.07alpha.pl2.tar.gz
+Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-0.07alpha.pl3.tar.gz
 Prereq: /sbin/install-info
 Requires: /usr/bin/diff
 
@@ -49,7 +49,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
-* Sat May 23 09:54:26 1998 interran@crd.GE.COM <John Interrante>
+* Wed Jun 10 1998 jay@gnu.org <James Youngman>
+Added sccs.1 to the list of files.
+
+* Sat May 23 1998 interran@crd.GE.COM <John Interrante>
 Don't use --infodir since that breaks the BuildRoot.  "--infodir" is
 set by setting "--prefix" anyway.
 
@@ -71,11 +74,11 @@ First RPMed version (0.05alpha-pl0)
 %attr(-, root, root) %doc README AUTHORS COPYING ChangeLog INSTALL NEWS 
 %attr(-, root, root) %doc docs/BUGS docs/CREDITS docs/FIXED docs/Platforms 
 %attr(-, root, root) %doc docs/TESTING docs/TODO docs/missing.txt 
-%attr(-, root, root) %doc docs/patches.txt
+%attr(-, root, root) %doc docs/patches.txt docs/mailing-list.txt
+%attr(-, root, root) %doc docs/style.txt
 %attr(-, root, root) %doc bsd/COPYING.bsd bsd/sccs.me
-%attr(-, root, root) %doc /usr/info/cssc.info
-%attr(-, root, root) %doc /usr/info/cssc.info-1
-%attr(-, root, root) %doc /usr/info/cssc.info-2
+%attr(-, root, root) %doc /usr/info/cssc.info*
 %attr(755, root, root) /usr/libexec/cssc
 %attr(-, root, root) /usr/sccs
 %attr(-, root, root) /usr/bin/sccs
+%attr(-, root, root) /usr/man/man1/sccs.1
