@@ -6,7 +6,7 @@
  *
  * Defines the class getopt.
  *
- * @(#) MySC getopt.h 1.1 93/11/09 17:17:47
+ * @(#) CSSC getopt.h 1.1 93/11/09 17:17:47
  *
  */
 

@@ -6,7 +6,7 @@
  *
  * Definition of the class sccs_pfile.
  *
- * @(#) MySC pfile.h 1.1 93/12/30 17:32:36
+ * @(#) CSSC pfile.h 1.1 93/12/30 17:32:36
  *
  */
 

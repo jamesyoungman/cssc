@@ -6,7 +6,7 @@
  *
  * Defines the class _linebuf.
  *
- * @(#) MySC linebuf.h 1.1 93/11/09 17:17:47
+ * @(#) CSSC linebuf.h 1.1 93/11/09 17:17:47
  *
  */
 

@@ -6,7 +6,7 @@
  *
  * Defines the class sccs_date.
  *
- * @(#) MySC sccsdate.h 1.1 93/11/09 17:17:49
+ * @(#) CSSC sccsdate.h 1.1 93/11/09 17:17:49
  *
  */
 

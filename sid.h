@@ -7,7 +7,7 @@
  * Defines the classes sid, and release as well as the typedef's sid_list
  * and release_list.  
  *
- * @(#) MySC sid.h 1.1 93/11/09 17:17:51
+ * @(#) CSSC sid.h 1.1 93/11/09 17:17:51
  *
  */
 

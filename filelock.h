@@ -6,7 +6,7 @@
  *
  * Defines the class file_lock.
  *
- * @(#) MySC filelock.h 1.1 93/11/09 17:17:47
+ * @(#) CSSC filelock.h 1.1 93/11/09 17:17:47
  *
  */
 

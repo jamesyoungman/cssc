@@ -6,7 +6,7 @@
  *
  * Defines the class sccs_file_iter.
  *
- * @(#) MySC fileiter.h 1.1 93/11/09 17:17:46
+ * @(#) CSSC fileiter.h 1.1 93/11/09 17:17:46
  *
  */
 
