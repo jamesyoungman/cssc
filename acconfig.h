@@ -31,6 +31,10 @@
 /* define if you have the ISO C function fsetpos(). */
 #undef HAVE_FSETPOS
 
+/* ixemul.library on AmigaOS has a stub for fork(), but it does nothing. */
+/* define if you have the Unix function fork() -- and it works. */
+#undef HAVE_FORK
+
 /* define if you have the global variable timezone. */
 #undef HAVE_TIMEZONE
 
