@@ -1,3 +1,89 @@
+2003-12-07  james_youngman  <james_youngman@orbital>
+
+	* docs/cssc.texi: Indicated the new version.
+
+	* configure.ac: Bumped the version number.
+
+	* NEWS: Fixed SourceForg bug 581740.
+
+	* bsd/Makefile.am, testutils/condense-valgrind.pl, file.cc, file.h, get.cc:
+	Honour the user's choice of umask - fixes SourceForge bug 581740
+
+	* docs/get-spec.txt: Removed the out of date file get-spec.txt
+
+	* docs/Makefile.am: Removed getspec.txt (since it is out of date).
+
+	* NEWS:
+	On Red Hat Linux, info files live in /usr/share/info not /usr/info.
+
+	* auxfiles/CSSC.spec.in:
+	infodir has moved from /usr/info to /usr/share/info.
+
+	* quit.cc:
+	Fix SourceForge bug number 816679, which caused a coredump if
+	cleanup::~cleanup() was called before there are any entries in the
+	cleanup list.
+
+	* tests/bsd-sccs/driver-basic.sh, tests/bsd-sccs/sf595594.sh:
+	Fixed SourceForge bug 806699: Make the test work even if the user had
+	set $PROJECTDIR.
+
+	* NEWS, sf-get2.cc, tests/get/defsid.sh:
+	Make "get -e" take account of the "d" flag.
+
+2003-05-29  james_youngman  <james_youngman@orbital>
+
+	* sccsfile.cc: sccs_file::sccs_file(): Ensure that this->f is NULL when
+	we return for mode CREATE (previously it was uninitialised).
+	This fixes SourceForge bug 745608.
+
+	* sf-write.cc:
+	CYGWIN: end_update: Only close the SCCS file if it is open (the FILE*
+	is not NULL).  On platforms other than CYGWIN, we don't close he file
+	anyway.
+
+2003-05-19  james_youngman  <james_youngman@orbital>
+
+	* docs/Platforms: Corrected email address for Clement T. Cole.
+
+2003-05-18  james_youngman  <james_youngman@orbital>
+
+	* tests/common/test-common:
+	Cope with the case where "remove" is called with no arguments.
+
+2003-05-16  james_youngman  <james_youngman@orbital>
+
+	* Makefile.am: Also clean "sccsdiff" for "make clean".
+
+2003-05-05  james_youngman  <james_youngman@orbital>
+
+	* sf-get2.cc:
+	"get -e" now takes notice of the default SID when deciding the SID of the new delta.
+
+2003-03-15  james_youngman  <james_youngman@orbital>
+
+	* README: Added pointer to docs/Platforms.
+
+	* docs/Platforms: Added MacOS X porting tip from Brad Crittenden.
+
+2003-03-08  james_youngman  <james_youngman@orbital>
+
+	* tests/get/excl_ig_2.sh: Don't cat the s-file at the end!
+
+	* tests/get/t-option.sh:
+	Added test for Sourceforge bug #699318 ("get -t s.foo" when foo
+	contains only one SID, created by "admin -iX -r1.1.1.1 s.foo").
+
+	* sccsfile.h, sf-get2.cc:
+	Fixed Sourceforge bug #699318 ("get -t s.foo" when foo contains only
+	one SID, created by "admin -iX -r1.1.1.1 s.foo").
+
+	* sf-get2.cc: Simplified the matching code.
+
+	* sf-get2.cc:
+	find_requested_sid(): separated the does-this-SID-match decision from
+	the is-this-the-best-yet decision.
+
 2003-03-01  james_youngman  <jay@gnu.org>
 
 	* sf-write.cc, sccsfile.h:
