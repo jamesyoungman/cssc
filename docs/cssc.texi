@@ -464,7 +464,7 @@ Although there are several valid command-line options for @code{delta},
 they are not frequently used; the most common usage of delta is 
 
 @example
-delta umsp.c
+delta SCCS/s.umsp.c
 @end example
 
 @noindent
@@ -474,6 +474,12 @@ the comment and MR-number for this change using command-line options,
 it's more common to type them when prompted, unless @code{delta} is
 being driven by another program; either way, it's unusual to specify
 options for @code{delta} on the command line.
+
+Note that the filename you speficy on the command line is that of the
+@sc{sccs} file, not the filename of the working file.  The BSD wrapper
+program, sccs(1), will guess the correct filename for you, but this
+doesn't happen unless you do actually invoke it (@code{sccs delta
+umsp.c} for example).
 
 If the file specified on the @code{delta} command line is an @sc{sccs}
 file, the name of the g-file (the file gotten with @code{get} which
