@@ -18,14 +18,14 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	filepos.h my-getopt.h linebuf.h mylist.h mystring.h pfile.h pipe.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
-	sysnerr.h version.h xalloc.h ioerr.h err_no.h delta-table.h delta.h \
+	sysnerr.h version.h ioerr.h err_no.h delta-table.h delta.h \
 	delta-iterator.h bodyio.h filediff.h
 
 # Sources required by everybody.
 common_SOURCES = my-getopt.cc version.cc
 
 # Sources required by programs working with lists of SCCS files.
-sname_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc xalloc.cc \
+sname_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc \
 		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc \
 		quit.cc 
 
