@@ -1,4 +1,115 @@
+1998-05-05  James Youngman  <jay@gnu.org>
+
+	* CSSC-0.06alpha.pl6 released.
+	
+	* NEWS: Added entry about "sccs.c".
+
+1998-05-04  James Youngman  <jay@gnu.org>
+
+	* bsd/sccs.c, bsd/pathnames.h, Makefile.am:
+	Attempted to make the location of "sccs" configurable.   Also attempted to add const modifiers where useful.
+
+	* NEWS: Added "-t" option.
+
+	* sccsfile.cc:
+	Use signed arithmetic for checksums.    I *think* that matches the
+	"real" SCCS.  Also produce what I hope are more useful messages when
+	the checksum is incorrect (or even the checksum header is missing).
+
+	* sccsfile.h:
+	Use signed arithmetic for checksums.    I *think* that matches the
+	"real" SCCS.
+
+	* configure.in: Added the "bsd" directory.
+
+	* tests/get/branch.sh:
+	Added note about the SCO version of "unget" being silent.
+
+	* docs/cssc.texi:
+	texi2html doesn't expand homegrown macros, so we have to write the
+	maintainer's email address out by hand in each place.
+
+	* docs/Platforms: Added note for IRIX.
+
+	* sid.h: Removed a #pragma -- they're not portable anyway.
+
+	* pipe.h: Use "class foo : public bar {}" not "class foo : bar { }".
+
+	* pfile.h: Removed a #pragma -- they're not portable anyway.
+
+	* mystring.h:
+	Added comment about functions disalbigiated only by the constness of
+	*this.   Some versions of the IRIX C++ compiler don't like that (error
+	3392).
+
+	* linebuf.h: Actually remove a #pragma that had been commented out.
+
+	* filelock.h: Explicitly use "private" in inheritance spec
+	(e.g. 'class foo : private bar {}') ,
+	we can't just leave it out.
+
+	* fileiter.cc:
+	If an argument is a directory which is named so as to end in a slash,
+	don't coredump.
+
+1998-03-18  James Youngman  <jay@gnu.org>
+
+	* bsd/sccs.c: Reindented with GNU Indent.
+
+	* bsd/sccs.c: Many const-correctness changes.
+
+1998-03-17  James Youngman  <jay@gnu.org>
+
+	* bsd/Makefile.am, bsd/Makefile.bsd, bsd/COPYING.bsd, bsd/Makefile:
+	Updated the copyright info.  There is a different copyright situation
+	locally in this dir.
+
+	* bsd/sccs.c:
+	Eliminated many compiler warnings.  Partial Autoconf conversion.
+
+	* bsd/sccs.c: Use stdarg.h instead of old-style /*VARARGS1*/ etc.
+
+1998-03-16  James Youngman  <jay@gnu.org>
+
+	* bsd/sccs.me, bsd/sccs.c, bsd/pathnames.h, bsd/sccs.1, bsd/Makefile:
+	Added files from the Berkeley sccs.c implementation.
+
+1998-03-15  James Youngman  <jay@gnu.org>
+
+	* tests/get/t-option.sh, docs/style.txt, docs/get-spec.txt, docs/cssc.texi, docs/Makefile.am, docs/TODO, sf-get2.cc, get.cc, Makefile.am:
+	Implemented the "-t" option of get.
+
+	* tests/get/t-option.sh: Tests for the -t option of get.
+
+1998-03-14  James Youngman  <jay@gnu.org>
+
+	* sccsdate.cc, sccsfile.cc, sf-get.cc, configure.in, file.cc, filediff.cc, admin.cc, bodyio.cc:
+	Fixed some compiler warnings, no change in functionality.
+
+	* docs/Makefile.am: Added mailing-list.txt.
+
+	* docs/mailing-list.txt:
+	Information about the mailing list for GNU CSSC.
+
+	* docs/patches.txt:
+	Requested that people specify the purpose of the submitted patch, and
+	delete all editor backup files before generating it.
+
+	* testutils/lndir.c, testutils/ekko.c:
+	Eliminate some compiler warnings; falling off the end of int-returning
+	functions and that sort of thing.
+
+	* testutils/seeker.c:
+	setlinebuf() is not a standard ISO-C library function and SCO Unix
+	(for example) does not provide it.  It has an exact setvbuf()
+	equivalent, so use that instead.
+
 1998-03-11  James Youngman  <jay@gnu.org>
+
+	* auxfiles/Makefile.am, Makefile.am, configure.in:
+	Added the "auxfiles" directory so that CSSC.spec is distributed.
+
+	* ChangeLog, NEWS: Detailed the updates for CSSC-0.06alpha-pl5.
 
 	* auxfiles/CSSC.spec, configure.in: Bumped patchlevel to 5.
 
