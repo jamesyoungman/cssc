@@ -36,5 +36,11 @@ Notes on the coding style used in the maintenance of CSSC
 	 Most of the other aspects of the coding for this project
 	 follow the GNU guidelines.   The only exception is the 
 	 function call notation; while the GNU standard stipulates 
-	 "f ()", I strongly prefer "f()".
+	 "f ()", I strongly prefer "f()".  If there is actually a
+	 reason to eschew one in favour of the other, please let me
+	 know.
+
+-- 
+James Youngman <jay@gnu.org>
+
 
