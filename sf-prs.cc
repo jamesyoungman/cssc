@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.20 1998/09/02 21:03:36 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.21 1998/10/20 17:27:30 james Exp $";
 #endif
 
 inline bool
@@ -622,6 +622,11 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
       putc('\n', out);
     }
   
+  if (ferror(out))
+    {
+      errormsg("%s: Ouput file error.", name.c_str());
+      return false;
+    }
   return true;
 }
 

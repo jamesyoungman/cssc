@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.11 1998/09/03 22:21:37 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.12 1998/10/20 17:27:28 james Exp $";
 
 void
 usage() {
@@ -66,6 +66,11 @@ main(int argc, char **argv)
 
   int retval = 0;
   sccs_file_iterator iter(opts);
+  if (! iter.using_source())
+    {
+      errormsg("No SCCS file specified.");
+      return 1;
+    }
   
   while (iter.next())
     {

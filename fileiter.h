@@ -68,7 +68,7 @@ class CSSC_Options;
 class sccs_file_iterator
 {
 public:
-  enum sources { ARGS, STDIN, DIRECTORY };
+  enum sources { NONE = 0, ARGS, STDIN, DIRECTORY };
 
 private:
   enum sources source;

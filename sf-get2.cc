@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.31 1998/09/02 21:03:35 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.32 1998/10/20 17:27:29 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -523,27 +523,31 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 #ifdef __GNUC__
     if (keywords)
         {
-        get(gname, state, parms, &sccs_file::write_subst,
+        status.success = get(gname, state, parms, &sccs_file::write_subst,
             show_sid, show_module, debug);
         }
     else
         {
-        get(gname, state, parms, (subst_fn_t) 0,
+        status.success = get(gname, state, parms, (subst_fn_t) 0,
             show_sid, show_module, debug);
         }
 #else
     if (keywords)
         {
-        get(gname, state, parms,
+        status.success = get(gname, state, parms,
             (int (sccs_file::*)(const char *, struct subst_parms *) const) 0,
             show_sid, show_module, debug);
         }
     else
         {
-        get(gname, state, parms, &sccs_file::write_subst,
+        status.success = get(gname, state, parms, &sccs_file::write_subst,
 	    show_sid, show_module, debug);
         }
 #endif
+	if (status.success == false)
+	  {
+	    return status;
+	  }
     // only issue a warning about there being no keywords
     // substituted, IF keyword substitution was being done.
 	if (keywords && !parms.found_id)

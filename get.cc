@@ -35,7 +35,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.29 1998/09/06 13:18:11 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.30 1998/10/20 17:27:24 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -269,7 +269,12 @@ main(int argc, char **argv)
     }
 
   sccs_file_iterator iter(opts);
-
+  if (sccs_file_iterator::NONE == iter.using_source())
+    {
+      errormsg("No SCCS file specified");
+      return 1;
+    }
+  
   while (iter.next())
     {
 #ifdef HAVE_EXCEPTIONS

@@ -38,7 +38,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.29 1998/09/02 21:03:20 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.30 1998/10/20 17:27:20 james Exp $";
 
 
 static bool
@@ -199,6 +199,11 @@ main(int argc, char **argv)
   list<mystring> mr_list, comment_list;
   int was_first = 1;
   sccs_file_iterator iter(opts);
+  if (! iter.using_source())
+    {
+      errormsg("No SCCS file specified.");
+      return 1;
+    }
 
   while (iter.next())
     {

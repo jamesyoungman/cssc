@@ -37,7 +37,7 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.22 1998/09/02 21:03:23 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.23 1998/10/20 17:27:22 james Exp $";
 
 void
 usage() {
@@ -126,6 +126,11 @@ delta_main(int argc, char **argv)
   }
 
   sccs_file_iterator iter(opts);
+  if (! iter.using_source())
+    {
+      errormsg("No SCCS file specified.");
+      return 1;
+    }
 
   if (silent)
     {

@@ -36,7 +36,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.15 1998/09/02 21:03:28 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.16 1998/10/20 17:27:27 james Exp $";
 
 void
 usage() {
@@ -102,6 +102,11 @@ main(int argc, char **argv)
     }
 
   sccs_file_iterator iter(opts);
+  if (! iter.using_source())
+    {
+      errormsg("No SCCS file specified.");
+      return 1;
+    }
   
   int tossed_privileges = 0;
   int retval = 0;

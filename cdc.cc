@@ -33,7 +33,7 @@
 #include "delta.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.17 1998/09/02 21:03:21 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.18 1998/10/20 17:27:21 james Exp $";
 
 void
 usage()
@@ -110,6 +110,11 @@ main(int argc, char *argv[])
     }
   
   sccs_file_iterator iter(opts);
+  if (! iter.using_source())
+    {
+      errormsg("No SCCS file specified.");
+      return 1;
+    }
   
   if (!got_comments)
     {
