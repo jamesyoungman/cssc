@@ -8,10 +8,10 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC prompt.c 1.1 93/11/09 17:17:57";
+static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.3 1997/05/10 14:49:52 james Exp $";
 #endif
 
 /* Prompts the user for input. */

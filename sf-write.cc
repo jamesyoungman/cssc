@@ -8,11 +8,11 @@
  *
  */
  
-#include "mysc.h"
+#include "cssc.h"
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC sf-write.c 1.1 93/11/09 17:18:02";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.4 1997/05/10 14:49:57 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */

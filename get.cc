@@ -8,13 +8,14 @@
  * 
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "fileiter.h"
 #include "sccsfile.h"
 #include "pfile.h"
 #include "getopt.h"
+#include "version.h"
 
-const char main_sccs_id[] = "$Id: get.cc,v 1.5 1997/05/10 12:35:50 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.6 1997/05/10 14:49:49 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 

@@ -12,7 +12,7 @@
 #pragma implementation "filelock.h"
 #endif
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sysdep.h"
 
 #ifdef HAVE_UNISTD_H
@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC file.c 1.1 93/11/09 17:17:53";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.7 1997/05/10 14:49:48 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS

@@ -9,11 +9,11 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sccsfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC sf-cdc.c 1.1 93/11/09 17:18:00";
+static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.3 1997/05/10 14:49:55 james Exp $";
 #endif
 
 /* Adds new MRs and comments to the specified delta. */

@@ -6,14 +6,14 @@
  *
  * An implementation of the ANSI C library function strstr.
  *
- * @(#) MySC strstr.c 1.1 93/11/09 17:18:03
+ * @(#) CSSC strstr.c 1.1 93/11/09 17:18:03
  *
  */
 
 #ifndef __STRSTR_C__
 #define __STRSTR_C__
 
-#include "mysc.h"
+#include "cssc.h"
 
 #ifndef HAVE_STRSTR
 #define strstr LIDENT(strstr)

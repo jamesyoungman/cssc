@@ -8,13 +8,14 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "getopt.h"
 #include "fileiter.h"
 #include "sccsfile.h"
 #include "sf-chkmr.h"
+#include "version.h"
 
-const char main_sccs_id[] = "@(#) MySC cdc.c 1.1 93/11/09 17:17:53";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.4 1997/05/10 14:49:48 james Exp $";
 
 void
 usage() {

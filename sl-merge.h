@@ -6,10 +6,10 @@
  *
  * Merge and remove member functions of the template range_list.
  *
- * @(#) MySC sl-merge.c 1.1 93/11/09 17:18:03
+ * @(#) CSSC sl-merge.c 1.1 93/11/09 17:18:03
  *
  */
-#include "mysc.h"
+#include "cssc.h"
 #include "sid.h"
 #include "sid_list.h"
 

@@ -14,14 +14,14 @@
 
 class Pipe;
 
-#include "mysc.h"
+#include "cssc.h"
 #include "pipe.h"
 #include "run.h"
 #include "list.h"
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC pipe.c 1.1 93/11/09 17:17:57";
+static const char rcs_id[] = "CSSC $Id: pipe.cc,v 1.4 1997/05/10 14:49:52 james Exp $";
 #endif
 
 extern int create(mystring name, int mode); /* file.c */
@@ -49,7 +49,7 @@ Pipe::do_cleanup() {
 
 Pipe::Pipe() {
 #ifdef CONFIG_TEMP_DIRECTORY
-	char *s = tempnam(CONFIG_TEMP_DIRECTORY, "mysc");
+	char *s = tempnam(CONFIG_TEMP_DIRECTORY, "cssc");
 	name = s;
 	if (s == NULL) {
 		quit(-1, "tempnam() failed.");

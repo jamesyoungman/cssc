@@ -9,13 +9,13 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sccsfile.h"
 
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC sccsfile.c 1.2 93/11/13 05:48:45";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.5 1997/05/10 14:49:54 james Exp $";
 #endif
 
 /* struct */ sccs_file::delta &

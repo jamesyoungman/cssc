@@ -12,13 +12,13 @@
 #pragma implementation "fileiter.h"
 #endif
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sccsname.h"
 #include "fileiter.h"
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC fileiter.c 1.1 93/11/09 17:17:54";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.4 1997/05/10 14:49:49 james Exp $";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)

@@ -6,7 +6,7 @@
  *
  * Defines the function _chmod for MS-DOS systems.
  *
- * @(#) MySC _chmod.c 1.1 93/11/09 17:18:04
+ * $Id: _chmod.cc,v 1.3 1997/05/10 14:49:48 james Exp $
  *
  */
 

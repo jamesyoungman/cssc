@@ -14,13 +14,13 @@
 #pragma implementation "sid_list.c"
 #endif
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sid.h"
 
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC sid.c 1.1 93/11/09 17:18:02";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.3 1997/05/10 14:49:58 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an

@@ -1,4 +1,4 @@
-#include "mysc.h"
+#include "cssc.h"
 
 #include <time.h>
 #undef HAVE_MKTIME
@@ -13,7 +13,7 @@ extern long timezone;
 extern "C" void CDECL tzset();
 #endif
 
-/* This is a "good enough for MySC" implementation of mktime. */
+/* This is a "good enough for CSSC" implementation of mktime. */
 
 time_t
 mktime(struct tm const *tm) {

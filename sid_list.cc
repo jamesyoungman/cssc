@@ -6,7 +6,7 @@
  *
  * Member functions of the template range_list.
  *
- * @(#) MySC sid_list.c 1.1 93/11/09 17:18:03
+ * @(#) CSSC sid_list.c 1.1 93/11/09 17:18:03
  *
  */
 
@@ -14,7 +14,7 @@
 #define __SID_LIST_C__
 
 #ifdef TEST
-#include "mysc.h"
+#include "cssc.h"
 #include "linebuf.h"
 #include "sid.h"
 #include "quit.cc"

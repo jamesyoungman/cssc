@@ -8,13 +8,13 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "run.h"
 #include "list.h"
 #include "sysdep.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC run.c 1.1 93/11/09 17:17:58";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.5 1997/05/10 14:49:53 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()

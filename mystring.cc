@@ -12,11 +12,11 @@
 #pragma implementation "mystring.h"
 #endif
 
-#include "mysc.h"
+#include "cssc.h"
 #include "mystring.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC mystring.c 1.1 93/11/09 17:32:32";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.4 1997/05/10 14:49:51 james Exp $";
 #endif
 
 

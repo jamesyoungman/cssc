@@ -8,7 +8,7 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
@@ -21,7 +21,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC sf-delta.c 1.2 93/11/12 06:01:20";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.5 1997/05/10 14:49:56 james Exp $";
 #endif
 
 class diff_state {

@@ -12,7 +12,7 @@
 #pragma implementation "seqstate.h"
 #endif
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
@@ -22,7 +22,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC sf-get.c 1.1 93/11/09 17:18:01";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.5 1997/05/10 14:49:56 james Exp $";
 #endif
 
 void

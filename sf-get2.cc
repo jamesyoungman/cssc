@@ -8,7 +8,7 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
@@ -16,7 +16,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC sf-get2.c 1.3 93/12/31 15:16:23";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.9 1997/05/10 14:49:56 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the

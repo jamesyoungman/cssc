@@ -9,11 +9,11 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC pf-del.c 1.2 93/11/13 00:12:06";
+static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.3 1997/05/10 14:49:51 james Exp $";
 #endif
 
 /* enum */ sccs_pfile::find_status

@@ -9,10 +9,10 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC xalloc.c 1.1 93/11/09 17:24:28";
+static const char rcs_id[] = "CSSC $Id: xalloc.cc,v 1.3 1997/05/10 14:50:00 james Exp $";
 #endif
 
 #ifdef CONFIG_DECLARE_MALLOC

@@ -6,7 +6,7 @@
  *
  * Defines the function fsync for MS-DOS systems.
  *
- * @(#) MySC fsync.c 1.1 93/11/09 17:17:54
+ * @(#) CSSC fsync.c 1.1 93/11/09 17:17:54
  *
  */
 

@@ -10,11 +10,12 @@
 
 #define NO_COMMON_HEADERS
 
-#include "mysc.h"
+#include "cssc.h"
 #include "quit.h"
 #include "getopt.h"
+#include "version.h"
 
-const char main_sccs_id[] = "@(#) MySC what.c 1.2 93/11/13 06:30:43";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.3 1997/05/10 14:49:59 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 

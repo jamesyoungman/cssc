@@ -9,12 +9,12 @@
  *
  */
 
-#include "mysc.h"
+#include "cssc.h"
 #include "sccsfile.h"
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char sccs_id[] = "@(#) MySC sf-prs.c 1.2 93/12/31 15:16:24";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.5 1997/05/10 14:49:57 james Exp $";
 #endif
 
 inline void
