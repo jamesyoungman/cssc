@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.50 2002/11/02 12:35:24 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.51 2003/02/13 13:58:56 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -51,6 +51,11 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
       if (requested.is_null())  // no default?
         {                       // get the latest.
           requested = (release)delta_table->highest_release();
+
+          if (requested.is_null())
+          {
+              return false; // no latest on the trunk.(SF bug 664900)
+          }
         }
     }
 
@@ -256,8 +261,8 @@ sccs_file::find_next_sid(sid requested, sid got,
               if (flags.joint_edit)
                 {
                   warning("%s: creating a branch "
-			  "due to concurrent edit",
-			  name.c_str());
+                          "due to concurrent edit",
+                          name.c_str());
                   branch_again = true;
                 }
               else
@@ -268,8 +273,8 @@ sccs_file::find_next_sid(sid requested, sid got,
                    * thrown out by sccs_file::test_locks().
                    */
                   warning("%s: requested SID is "
-			  "already being edited; this should not happen",
-			  name.c_str());
+                          "already being edited; this should not happen",
+                          name.c_str());
                   *pfailed = 1;
                   return next; // FAILURE
                 }
@@ -422,9 +427,9 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
           const struct delta & d = delta_table->delta_at_seq(s);
           const sid & id = d.id;
 
-	  fprintf(stderr, "%4d (", s);
+          fprintf(stderr, "%4d (", s);
           id.dprint(stderr);
-	  fprintf(stderr, ") ");
+          fprintf(stderr, ") ");
 
           if (state.is_explicitly_tagged(s))
             {
@@ -434,17 +439,17 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
           if (state.is_ignored(s))
             {
               fprintf(stderr, "ignored  by %4d\n",
-		      state.whodunit(s));
+                      state.whodunit(s));
             }
           else if (state.is_included(s))
             {
               fprintf(stderr, "included by %4d\n",
-		      state.whodunit(s));
+                      state.whodunit(s));
             }
           else if (state.is_excluded(s))
             {
               fprintf(stderr, "excluded by %d\n",
-		      state.whodunit(s));
+                      state.whodunit(s));
             }
           else
             {
