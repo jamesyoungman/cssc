@@ -35,10 +35,15 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.11 1997/11/18 23:22:17 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.12 1998/02/11 07:46:42 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -46,6 +51,7 @@ static const char rcs_id[] = "CSSC $Id: file.cc,v 1.11 1997/11/18 23:22:17 james
 #ifdef CONFIG_DECLARE_STAT
 extern "C" int CDECL stat(const char *, struct stat *);
 #endif
+
 
 
 /* Tests the accessability of file, but unlike access() uses the
@@ -151,11 +157,35 @@ is_readable(const char *name) {
 	return access(name, 04) != -1;
 }
 
+/* Determine if a given file is "writable".  If we
+ * are root, we can write to a mode 000 file, but
+ * we deem files of that sort not writable for these
+ * purposes -- we in fact only care about this for 
+ * the safeguards in "get -e" and "get".  This avoids
+ * overwriting a file which we might be editing.
+ */
+int
+is_writable(const char *filename, int as_real_user = 1)
+{
+  struct stat st;
+  if (0 != stat(filename, &st))
+    {
+      return 0;			// can't stat it so can't read it, probably.
+    }
+  else
+    {
+      if (st.st_mode & 0222)
+	return 1;		// at least one of the write bits is set.
+      else
+	return 0;		// no write bits set.
+    }
+  
+}
 
 /* Returns true if the file exists and is writable. */
 
 inline int
-is_writable(const char *name, int as_real_user = 1) {
+old_is_writable(const char *name, int as_real_user = 1) {
 	if (as_real_user) {
 		return access(name, 02) != -1;
 	} else {
