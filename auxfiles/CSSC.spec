@@ -1,12 +1,12 @@
 Summary: GNU CSSC - An SCCS clone
 Name: CSSC
-Version: 0.07alpha.pl0
+Version: 0.07alpha.pl1
 Release: 1
 URL: http://www.myth.co.uk/~jay/cssc/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
-Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-0.07alpha.pl0.tar.gz
+Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-0.07alpha.pl1.tar.gz
 Prereq: /sbin/install-info
 Requires: /usr/bin/diff
 
