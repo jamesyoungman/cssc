@@ -15,6 +15,9 @@ New in CSSC-0.14alpha-pl0
 	
 	* Bug-fixes for "val" (mainly corrections to the precise 
 	  value returned when validation fails)
+
+	* The options -Y and -M for "delta" have been removed (since they 
+          aren't in normal SCCS and can be replaced by -y"" and -m")".
 	
  	* "sccs help" and "sccs comb" now issue more helpful error
           messages explaining why the relevant program is missing.
