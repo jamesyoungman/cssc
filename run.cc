@@ -33,7 +33,7 @@
 #include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.25 2002/07/26 17:21:00 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.26 2002/07/26 17:44:56 james_youngman Exp $";
 #endif
 
 #if !defined(HAVE_FORK) && !defined(HAVE_SPAWN)
@@ -45,17 +45,24 @@ static const char rcs_id[] = "CSSC $Id: run.cc,v 1.25 2002/07/26 17:21:00 james_
 // According to the ANSI standard, id the argument to system()
 // is not NULL, the return value is implementation-defined.
 //
-// Under Unix, system() returns -1 or 127 for two
-// kinds of failure not involving the called program,
-// and otherwise the return value of the program.
-// Success is indicated by a zero return value.
-
 // PROBLEM: system() returns an implementation-defined value
 // unless its argument is NULL.  This means that we cannot use it where
 // we care about the meaning of the return value.  This in turn means that
 // MR validation will never fail (that is, it won't fail when it is
 // supposed to, it will instead succeed all the time).
 //
+// Under Unix, system() returns a value which should be examined with
+// the use of the WEXITSTATUS macro.  The diagnosed return value is -1
+// or 127 for two kinds of failure not involving the called program,
+// and otherwise the return value of the program.  Success is
+// indicated by a zero return value.   However, Unix also has fork() and 
+// so we wouldn't be using this function on Unix.  Nevertheless it's a 
+// valid choice to manually undefine HAVE_FORK, and so we support this 
+// by the use of WEXITSTATUS.
+//
+// XXX: this code probably won't work on many systems because we don't 
+// know how to interpret the result of system().
+
 #ifdef NEED_CALL_SYSTEM
 static bool call_system(const char *s)
 {
@@ -65,10 +72,14 @@ static bool call_system(const char *s)
   errno = 0;
   ret = system(s);
 
+#ifdef WEXITSTATUS 
+  failed = (WEXITSTATUS(ret) != 0);
+#else
 #ifdef SYSTEM_FAILS_RETURNING_MINUS_ONE
   failed = (-1 == ret);
 #else
   failed = (ret != 0);
+#endif
 #endif
   
   if (errno)
@@ -76,7 +87,11 @@ static bool call_system(const char *s)
       errormsg_with_errno("call_system(\"%s\") failed (returned %d).", s, ret);
       return false;
     }
-  return failed ? true : false;
+  
+  if (failed)
+      return false;
+  else
+      return true;
 }
 #endif
 
