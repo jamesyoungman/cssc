@@ -34,6 +34,7 @@
 #include "linebuf.h"
 #include "delta.h"
 #include "delta-table.h"
+#include "delta-iterator.h"
 #include "bodyio.h"
 #include "filediff.h"
 #include "err_no.h"
@@ -42,7 +43,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.32 1999/03/19 23:58:35 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.33 1999/04/18 17:39:41 james Exp $";
 #endif
 
 class diff_state
@@ -390,7 +391,7 @@ public:
 	    perror(s);
 	}
     }
-  disarm() { armed = false; }
+  void disarm() { armed = false; }
 };
 
 
@@ -400,7 +401,7 @@ public:
 
 bool
 sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
-		     list<mystring> mrs, list<mystring> comments,
+		     mylist<mystring> mrs, mylist<mystring> comments,
 		     bool display_diff_output)
 {
   ASSERT(mode == UPDATE);
@@ -435,7 +436,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   if (!flags.encoded)
     the_cleaner.disarm();
 
-  
+
   seq_state sstate(highest_delta_seqno());
   const delta *got_delta = find_delta(pfile->got);
   if (got_delta == NULL)
@@ -448,13 +449,14 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   // one for the delta.
   seq_no predecessor_seq = got_delta->seq;
 
+
   if (!prepare_seqstate(sstate, predecessor_seq))
     return false;
-  
+
+
   if (!prepare_seqstate(sstate, pfile->include, pfile->exclude,
 		   sccs_date(NULL)))
     return false;
-
   
   mystring dname(name.sub_file('d'));
   
@@ -469,7 +471,11 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   
   struct subst_parms parms(get_out, NULL, delta(), 
 			   0, sccs_date(NULL));
+#ifdef USE_OLD_SEQSTATE
   seq_state gsstate = sstate;
+#else
+  seq_state gsstate(sstate);
+#endif
   get(dname, gsstate, parms, 0, 0, 0, 0, GET_NO_DECODE);
 
   if (fclose_failed(fclose(get_out)))
@@ -499,8 +505,10 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   
   // The new delta header includes info about what deltas
   // are included, excluded, ignored.   Compute that now.
-  list<seq_no> included, excluded;
+  mylist<seq_no> included, excluded;
   seq_no seq;
+  
+#ifdef USE_OLD_SEQSTATE
   for (seq = 1; seq < highest_delta_seqno(); seq++) {
     if (sstate.is_explicit(seq)) {
       if (sstate.is_included(seq)) {
@@ -510,7 +518,24 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
       }
     }
   }
+#else
+  for (seq = 1; seq < highest_delta_seqno(); seq++)
+    {
+    if (sstate.is_explicitly_tagged(seq))
+      {
+      if (sstate.is_included(seq))
+	{
+	included.add(seq);
+	}
+      else if (sstate.is_excluded(seq))
+	{
+	  excluded.add(seq);
+	}
+      }
+    }
+#endif
 
+  
   // Create any required null deltas if we need to.
   if (flags.null_deltas)
     {
@@ -519,7 +544,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
       // belonging to the new delta.
 
       // use our own comment.
-      list <mystring> auto_comment;
+      mylist<mystring> auto_comment;
       auto_comment.add(mystring("AUTO NULL DELTA"));
 	    
       release last_auto_rel = release(pfile->delta);
@@ -564,6 +589,33 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   // assign a sequence number.
   seq_no new_seq = delta_table->next_seqno();
 
+  
+  // copy the list of excluded and included deltas from the p-file
+  // into the delta.  pfile->include is a range_list<sid>,
+  // but what we actually want to create is a list of seq_no.
+  if (!pfile->include.empty())
+    {
+      const_delta_iterator iter(delta_table);
+      while (iter.next())
+	{
+	  if (pfile->include.member(iter->id))
+	    {
+	      included.add(iter->seq);
+	    }
+	}
+    }
+  if (!pfile->exclude.empty())
+    {
+      const_delta_iterator iter(delta_table);
+      while (iter.next())
+	{
+	  if (pfile->exclude.member(iter->id))
+	    {
+	      excluded.add(iter->seq);
+	    }
+	}
+    }
+  
   // Construct the delta information for the new delta.
   delta new_delta('D', pfile->delta, sccs_date::now(),
 		  get_user_name(), new_seq, predecessor_seq,
@@ -625,7 +677,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	    case 'D':
 	    case 'I':
-	      msg = sstate.start(seq, c == 'I');
+	      msg = sstate.start(seq, c);
 	      break;
 
 	    default:

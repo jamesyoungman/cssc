@@ -21,13 +21,13 @@
  *
  * Definition of the class sccs_delta.
  *
- * $Id: delta.h,v 1.1 1997/11/30 21:08:09 james Stab $
+ * $Id: delta.h,v 1.2 1999/04/18 17:39:40 james Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_H
-#define CSSC_DELTA_H "$Id: delta.h,v 1.1 1997/11/30 21:08:09 james Stab $"
+#define CSSC_DELTA_H "$Id: delta.h,v 1.2 1999/04/18 17:39:40 james Exp $"
 
 struct delta
 {
@@ -37,14 +37,14 @@ struct delta
   sccs_date date;
   mystring user;
   seq_no seq, prev_seq;
-  list<seq_no> included, excluded, ignored;
+  mylist<seq_no> included, excluded, ignored;
   
   // have_* are a hack to ensure that prt works the same way
   // as the Real Thing.  We have to output Excludes: lines
   // if the SCCS file contained even an EMPTY includes list.
   bool have_includes, have_excludes, have_ignores;
-  list<mystring> mrs;
-  list<mystring> comments;
+  mylist<mystring> mrs;
+  mylist<mystring> comments;
   
   delta()
     : have_includes(false),
@@ -54,7 +54,7 @@ struct delta
   }
   
   delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
-	list<mystring> ms, list<mystring> cs)
+	mylist<mystring> ms, mylist<mystring> cs)
     : type(t), id(i), date(d), user(u),
       seq(s), prev_seq(p),
       have_includes(false), have_excludes(false),
@@ -64,8 +64,8 @@ struct delta
   }
   
   delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
-	list<seq_no> incl, list<seq_no> excl,
-	list<mystring> ms, list<mystring> cs)
+	mylist<seq_no> incl, mylist<seq_no> excl,
+	mylist<mystring> ms, mylist<mystring> cs)
     : type(t), id(i), date(d), user(u),
       seq(s), prev_seq(p),
       included(incl), excluded(excl),

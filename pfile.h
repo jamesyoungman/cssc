@@ -58,7 +58,7 @@ private:
 	mystring pname;
 	enum _mode mode;
 	
-        list<edit_lock> edit_locks;
+        mylist<edit_lock> edit_locks;
 
 	int pos;
 
@@ -98,8 +98,6 @@ public:
 	sccs_pfile(sccs_name &name, enum _mode mode);
 
 	void rewind() { pos = -1; }
-
-
 
 	int
 	next() {

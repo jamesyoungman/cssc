@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.38 1999/03/13 11:57:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.39 1999/04/18 17:39:41 james Exp $";
 #endif
 
 
@@ -305,6 +305,7 @@ sccs_file::read_delta() {
 	int c = read_line();
 	int i;
  	const char *start;
+	bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
 	for(i = 0; i < 3; i++) {
 		if (c == "ixg"[i]) {
 
@@ -340,10 +341,21 @@ sccs_file::read_delta() {
 				seq_no seq = strict_atous(start);
 				switch (c) {
 				case 'i':
+				  if (bDebug)
+				    {
+				      fprintf(stderr, "Including seq %lu\n",
+					      (unsigned long)seq);
+				    }
+
 					tmp.included.add(seq);
 					break;
 
 				case 'x':
+				  if (bDebug)
+				    {
+				      fprintf(stderr, "Excluding seq %lu\n",
+					      (unsigned long)seq);
+				    }
 					tmp.excluded.add(seq);
 					break;
 

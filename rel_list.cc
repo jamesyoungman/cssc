@@ -27,7 +27,7 @@
 #include <stdlib.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.5 1998/09/02 21:03:28 james Exp $";
+static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.6 1999/04/18 17:39:41 james Exp $";
 #endif
 
 // Because we use member() all the time, this
@@ -96,7 +96,7 @@ bool release_list::print(FILE * out) const
   return true;
 }
 // Explicit template instantiations...
-template class list<release>;
+template class mylist<release>;
 
 /* Local variables: */
 /* mode: c++ */

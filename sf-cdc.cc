@@ -33,13 +33,13 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.9 1998/06/15 20:50:02 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.10 1999/04/18 17:39:41 james Exp $";
 #endif
 
 /* Adds new MRs and comments to the specified delta. */
 
 static bool
-inlist(list<mystring> l, const mystring& find)
+inlist(mylist<mystring> l, const mystring& find)
 {
   int len = l.length();
   for (int i=0; i<len; ++i)
@@ -53,12 +53,12 @@ inlist(list<mystring> l, const mystring& find)
 // Do the MR addition and deletion; if any have been deleted,
 // return true.
 static bool
-process_mrs(list<mystring>& current,
-	   list<mystring> to_add,
-	   list<mystring> to_delete,
-	   list<mystring>& comments)
+process_mrs(mylist<mystring>& current,
+	   mylist<mystring> to_add,
+	   mylist<mystring> to_delete,
+	   mylist<mystring>& comments)
 {
-  list<mystring> old_mrs = current;
+  mylist<mystring> old_mrs = current;
 
   current = to_add;
 
@@ -86,7 +86,7 @@ process_mrs(list<mystring>& current,
 
 
 bool
-sccs_file::cdc(sid id, list<mystring> mrs, list<mystring> comments)
+sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
 {
   delta *p = find_delta(id);
   if (!p)
@@ -98,13 +98,13 @@ sccs_file::cdc(sid id, list<mystring> mrs, list<mystring> comments)
   
   delta &d = *p;
   
-  list<mystring> not_mrs;
-  list<mystring> deletion_comment;
+  mylist<mystring> not_mrs;
+  mylist<mystring> deletion_comment;
   int mrs_deleted = 0;
   int len = mrs.length();
   if (0 != len)
     {
-      list<mystring> yes_mrs;
+      mylist<mystring> yes_mrs;
 
       for (int i = 0; i < len; i++)
 	{
@@ -121,7 +121,7 @@ sccs_file::cdc(sid id, list<mystring> mrs, list<mystring> comments)
   
   if (mrs_deleted || comments.length())	// Prepend the new comments.
     {
-      list<mystring> newcomments;
+      mylist<mystring> newcomments;
       
       // If there are comments to be added, add them.
       if (comments.length())

@@ -27,7 +27,7 @@
 #include "rel_list.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: rl-merge.cc,v 1.2 1997/07/02 18:03:50 james Stab $";
+static const char rcs_id[] = "CSSC $Id: rl-merge.cc,v 1.3 1999/04/18 17:39:41 james Exp $";
 #endif
 
 // another horrendously inefficient implementation.
@@ -46,7 +46,7 @@ void release_list::merge(const release_list& m)
 void release_list::remove(const release_list& rm)
 {
   const int len = l.length();
-  list<release> newlist;
+  mylist<release> newlist;
   
   for(int i=0; i<len; i++)
     {

@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.25 1999/03/13 11:57:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.26 1999/04/18 17:39:41 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -45,8 +45,8 @@ static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.25 1999/03/13 11:57:24 j
 bool
 sccs_file::admin(const char *file_comment,
 		 bool force_binary,
-		 list<mystring> set_flags, list<mystring> unset_flags,
-		 list<mystring> add_users, list<mystring> erase_users)
+		 mylist<mystring> set_flags, mylist<mystring> unset_flags,
+		 mylist<mystring> add_users, mylist<mystring> erase_users)
 {
 	
   if (force_binary)
@@ -273,7 +273,7 @@ sccs_file::admin(const char *file_comment,
   users -= erase_users;
 	
   // Add the specified users to the beginning of the user list.
-  list<mystring> newusers = add_users;
+  mylist<mystring> newusers = add_users;
   newusers += users;
   users = newusers;
 
@@ -286,7 +286,7 @@ sccs_file::admin(const char *file_comment,
 bool
 sccs_file::create(const sid &id,
 		  const char *iname,
-		  list<mystring> mrs, list<mystring> comments,
+		  mylist<mystring> mrs, mylist<mystring> comments,
 		  int suppress_comments, bool force_binary)
 {
 

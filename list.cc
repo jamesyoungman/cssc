@@ -21,10 +21,10 @@
  * placed in the Public Domain.
  *
  *
- * Code for the template list<T>.
+ * Code for the template mylist<T>.
  */
 
-list<const char*> &
+mylist<const char*> &
 operator +=(list<const char*> &l1, list<mystring> const &l2)
 {
   int len = l2.length();

@@ -24,7 +24,7 @@
  *
  * Defines the class mystring.
  *
- * $Id: mystring.h,v 1.14 1999/03/19 23:58:34 james Exp $
+ * $Id: mystring.h,v 1.15 1999/04/18 17:39:40 james Exp $
  *
  */
 
@@ -61,6 +61,8 @@ class mystring
 {
   class MyStrRep;		// nested class.
   class ModifiableReference;
+  friend class MyStrRep;		// nested class.
+  friend class ModifiableReference;
   
   MyStrRep *rep;
   

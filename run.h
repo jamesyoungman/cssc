@@ -67,9 +67,9 @@ Stop now!  Compilers should obey #error!  Stop I say, stop!  Run for it Harold!
 
 #endif /* HAVE_FORK */
 
-int run(const char *prg, list<const char *> const &args);
+int run(const char *prg, mylist<const char *> const &args);
 int run_mr_checker(const char *prg, const char *arg1,
-		   list<mystring> mrs);
+		   mylist<mystring> mrs);
 
 #endif /* __RUN_H__ */
 

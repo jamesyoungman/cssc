@@ -36,7 +36,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.16 1998/10/20 17:27:27 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.17 1999/04/18 17:39:41 james Exp $";
 
 void
 usage() {
@@ -157,10 +157,10 @@ main(int argc, char **argv)
 
 // Explicit template instantiations.
 template class range_list<sid>;
-template class list<sccs_pfile::edit_lock>;
-template class list<mystring>;
-template class list<seq_no>;
-template class list<delta>;
+template class mylist<sccs_pfile::edit_lock>;
+template class mylist<mystring>;
+template class mylist<seq_no>;
+template class mylist<delta>;
 template class range_list<release>;
 
 /* Local variables: */

@@ -39,7 +39,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.33 1999/03/13 11:57:23 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.34 1999/04/18 17:39:40 james Exp $";
 
 
 static bool
@@ -77,8 +77,8 @@ main(int argc, char **argv)
   bool force_binary = false;			/* -b */
   const char *iname = NULL;			/* -i -I */
   const char *file_comment = NULL;		/* -t */
-  list<mystring> set_flags, unset_flags;	/* -f, -d */
-  list<mystring> add_users, erase_users;	/* -a, -e */
+  mylist<mystring> set_flags, unset_flags;	/* -f, -d */
+  mylist<mystring> add_users, erase_users;	/* -a, -e */
   mystring mrs, comments;			/* -m, -y */
   int check_checksum = 0;	                /* -h */
   int reset_checksum = 0;			/* -z */
@@ -218,7 +218,7 @@ main(int argc, char **argv)
   if (check_checksum)
       reset_checksum = false;
   
-  list<mystring> mr_list, comment_list;
+  mylist<mystring> mr_list, comment_list;
   int was_first = 1;
   sccs_file_iterator iter(opts);
   if (! iter.using_source())
@@ -372,13 +372,13 @@ main(int argc, char **argv)
 }
 
 // Explicit template instantiations.
-template class list<mystring>;
-template class list<seq_no>;
-template class list<delta>;
-//template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
-template class list<char const *>;
-template list<mystring>& operator+=(list<mystring> &, list<mystring> const &);
-template list<mystring>& operator-=(list<mystring> &, list<mystring> const &);
+template class mylist<mystring>;
+template class mylist<seq_no>;
+template class mylist<delta>;
+//template mylist<char const*>& operator+=(mylist<char const *> &, mylist<mystring> const &);
+template class mylist<char const *>;
+template mylist<mystring>& operator+=(mylist<mystring> &, mylist<mystring> const &);
+template mylist<mystring>& operator-=(mylist<mystring> &, mylist<mystring> const &);
 template class range_list<release>;
 
 /* Local variables: */

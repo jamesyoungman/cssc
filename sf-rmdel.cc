@@ -34,11 +34,11 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.10 1998/06/15 20:50:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.11 1999/04/18 17:39:41 james Exp $";
 #endif
 
 static int
-is_seqlist_member(seq_no seq, list<seq_no> const &seq_list) {
+is_seqlist_member(seq_no seq, mylist<seq_no> const &seq_list) {
 	int i;
 	int len = seq_list.length();
 	for(i = 0; i < len; i++) {

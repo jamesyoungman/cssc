@@ -22,7 +22,7 @@
  * placed in the Public Domain.
  *
  *
- * Defines the template list.
+ * Defines the template mylist.
  *
  */
  
@@ -30,7 +30,7 @@
 #define CSSC__LIST_H__
 
 template <class TYPE>
-class list
+class mylist
 {
 protected:
   TYPE *array;
@@ -38,13 +38,13 @@ protected:
   int left;
   
   void destroy();
-  void copy(list const &l);
+  void copy(mylist const &l);
   
 public:
-  list(): len(0), left(0) {}
-  list(list const &l) { copy(l); }
+  mylist(): len(0), left(0) {}
+  mylist(mylist const &l) { copy(l); }
   
-  list &operator =(list const &l);
+  mylist &operator =(mylist const &l);
   
   void
   operator =(void *p)
@@ -77,14 +77,14 @@ public:
       return array[index];
     }
 
-  ~list();
+  ~mylist();
 };
 
-/* Appends the contents of one list to another. */
+/* Appends the contents of one mylist to another. */
 
 template<class T1> 
-list<T1> &
-operator +=(list<T1> &l1, list<T1> const &l2)
+mylist<T1> &
+operator +=(mylist<T1> &l1, mylist<T1> const &l2)
 {
   int i;
   int len = l2.length();
@@ -98,14 +98,14 @@ operator +=(list<T1> &l1, list<T1> const &l2)
 #define CSSC__LIST_C__
 
 template <class TYPE>
-list<TYPE>::~list()
+mylist<TYPE>::~mylist()
 {
   destroy();
 }
 
 template <class TYPE>
 void
-list<TYPE>::destroy() {
+mylist<TYPE>::destroy() {
 	if (len != 0) {
 		delete[] array;
 	}
@@ -113,7 +113,7 @@ list<TYPE>::destroy() {
 
 template <class TYPE>
 void
-list<TYPE>::copy(list<TYPE> const &l) {
+mylist<TYPE>::copy(mylist<TYPE> const &l) {
 	len = l.len;
 	left = l.left;
 	if (len + left > 0) {
@@ -126,8 +126,8 @@ list<TYPE>::copy(list<TYPE> const &l) {
 }
 
 template <class TYPE>
-list<TYPE> &
-list<TYPE>::operator =(list<TYPE> const &l) {
+mylist<TYPE> &
+mylist<TYPE>::operator =(mylist<TYPE> const &l) {
 	if (this != &l) {
 		destroy();
 		copy(l);
@@ -137,7 +137,7 @@ list<TYPE>::operator =(list<TYPE> const &l) {
 
 template <class TYPE>
 void
-list<TYPE>::add(TYPE const &ent) {
+mylist<TYPE>::add(TYPE const &ent) {
 	if (left == 0) {
 		TYPE *new_array = new TYPE[len + CONFIG_LIST_CHUNK_SIZE];
 		if (len != 0) {
@@ -162,17 +162,17 @@ list<TYPE>::add(TYPE const &ent) {
 /* End: */
 
 
-/* Deletes the contents of one list from another. */
+/* Deletes the contents of one my mylist from another. */
 
 template<class T1, class T2> 
-list<T1> &
-operator -=(list<T1> &l1, list<T2> const &l2) {
+mylist<T1> &
+operator -=(mylist<T1> &l1, mylist<T2> const &l2) {
 	int i, j;
 	int len1 = l1.length();
 	int len2 = l2.length();
 	
 	if (len2 > 0) {
-		list<T1> nl;
+		mylist<T1> nl;
 
 		for(i = 0; i < len1; i++) {
 			T1 elt = l1[i];

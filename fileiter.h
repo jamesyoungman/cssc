@@ -78,7 +78,7 @@ private:
   int is_unique;
   
 #ifndef CONFIG_NO_DIRECTORY
-  list<mystring> files;
+  mylist<mystring> files;
   int pos;
 #endif
   sccs_name name;

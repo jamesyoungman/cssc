@@ -24,7 +24,7 @@
  *
  * Defines the class seqstate.  
  *
- * $Id: seqstate.h,v 1.10 1998/05/08 07:52:46 james Exp $
+ * $Id: seqstate.h,v 1.11 1999/04/18 17:39:41 james Exp $
  *
  */
 
@@ -32,12 +32,18 @@
 #define CSSC__SEQSTATE_H__
 
 #include "stack.h"
+#include <list>
+
 
 class cssc_delta_table;
 
+/* #define USE_OLD_SEQSTATE 1 */
 
 /* This class is used to decide which lines of the body of a SCCS file
    should be included in a gotten file. */
+
+#ifdef USE_OLD_SEQSTATE
+
 
 class seq_state
 {
@@ -163,8 +169,85 @@ public:
   }
 };
 
+#else
+
+
+////////////////////////////////////////// New seqstate implementation.
+
+#endif
+
+
+class seq_state
+{
+  struct action
+  {
+    seq_no seq;
+    char   command;
+
+    action(seq_no s, char c) : seq(s), command(c) { }
+  };
+  
+  // Make assignment and copy constructor private.
+  const seq_state& operator=(const seq_state& s);
+  
+  unsigned char * pIncluded;
+  unsigned char * pExcluded;
+  unsigned char * pExplicit;
+  
+  seq_no          last;
+  seq_no          active; // for use by "get -m" and so on.
+
+
+  // We keep a record of the open ^AI or ^AD expressions
+  // that are currently in effect, while reading the SCCS file.
+  list<action>    active_actions;
+  action          current_action;
+  
+  bool            inserting;	// current state.
+
+
+  // Calculate a new value for the "inserting" flag.
+  void decide_disposition();
+
+  action default_action() const;
+  
+public:
+  seq_state(seq_no l);
+  seq_state(const seq_state& s);
+  ~seq_state();
+  
+  bool is_included(seq_no) const;
+  bool is_excluded(seq_no) const;
+
+  bool is_explicitly_tagged(seq_no) const;
+
+  void set_explicitly_included(seq_no);
+  void set_explicitly_excluded(seq_no);
+  void set_included(seq_no);
+  void set_excluded(seq_no);
+
+  
+  // stuff for use when reading the body of the s-file.
+
+  // When we find ^AI or ^AD
+  const char * start(seq_no seq, char command);
+
+  // When we find ^AE.
+  const char * end(seq_no seq);
+
+  // Tells us if the delta at the top of the stack is being included.
+  int include_line() const;
+
+
+  // finding out which seq is active, currently.
+  seq_no active_seq() const;
+};
+
+
+
 #endif
 
 /* Local variables: */
 /* mode: c++ */
 /* End: */
+

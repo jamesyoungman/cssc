@@ -29,7 +29,7 @@
 #include "delta-table.h"
 #include "delta-iterator.h"
 
-delta const &
+const delta &
 cssc_delta_table::delta_at_seq(seq_no seq)
 {
   ASSERT(0 != this);

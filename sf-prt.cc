@@ -39,12 +39,12 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.18 1998/12/09 23:37:55 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.19 1999/04/18 17:39:41 james Exp $";
 #endif
 
 static void
 print_string_list(FILE *out,
-		  list<mystring> const &l,
+		  mylist<mystring> const &l,
 		  const char* pre,
 		  const char* post,
 		  const char* dflt)
@@ -297,7 +297,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 }
 
 static void
-print_seq_list(FILE *out, list<seq_no> const &list)
+print_seq_list(FILE *out, mylist<seq_no> const &list)
 {
   const int len = list.length();
 

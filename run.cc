@@ -33,7 +33,7 @@
 #include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.20 1999/03/21 09:04:35 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.21 1999/04/18 17:39:41 james Exp $";
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -75,7 +75,7 @@ static bool call_system(const char *s)
 /* Runs a programme and returns its exit status. */
 
 int
-run(const char *prg, list<const char *> const &args) {
+run(const char *prg, mylist<const char *> const &args) {
 	int i;
 	int len = args.length();
 
@@ -155,8 +155,8 @@ run(const char *prg, list<const char *> const &args) {
 #endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 }
 
-inline list<const char*> &
-operator +=(list<const char*> &l1, list<mystring> const &l2)
+inline mylist<const char*> &
+operator +=(mylist<const char*> &l1, mylist<mystring> const &l2)
 {
   int len = l2.length();
   int i;
@@ -172,14 +172,14 @@ operator +=(list<const char*> &l1, list<mystring> const &l2)
 /* Runs a program to check MRs. */
 
 int
-run_mr_checker(const char *prg, const char *arg1, list<mystring> mrs)
+run_mr_checker(const char *prg, const char *arg1, mylist<mystring> mrs)
 {
   // If the validation flag is set but has no value, PRG will be an
   // empty string and the validation should succeed silently.  This is
   // for compatibility with "real" SCCS.
   if (prg[0])
     {
-      list<const char *> args;
+      mylist<const char *> args;
 
       args.add(arg1);
 

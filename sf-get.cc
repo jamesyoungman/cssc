@@ -45,9 +45,10 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.24 1998/11/21 09:00:47 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.25 1999/04/18 17:39:41 james Exp $";
 #endif
 
+#ifdef USE_OLD_SEQSTATE
 bool
 sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
 {
@@ -81,6 +82,119 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
     }
   return true;
 }
+
+#else
+
+
+bool
+sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
+{
+  bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
+
+  // We must include the version we are trying to get.
+  state.set_included(seq);
+  
+  while (seq != 0)
+    {
+      int len;
+      int i;
+
+      bool bExcluded = state.is_excluded(seq);
+      bool bIncluded = state.is_included(seq);
+
+      bool bVisible = true;
+      if (bExcluded)
+	bVisible = false;
+      else if (!bIncluded)
+	bVisible = false;
+
+      if (bDebug)
+	{
+	  if (bExcluded)
+	    {
+	      fprintf(stderr, "seq %lu: is excluded\n", seq);
+	    }
+	  if (bVisible)
+	    {
+	      fprintf(stderr, "seq %lu: is visible\n", seq);
+	    }
+	  else
+	    {
+	      fprintf(stderr, "seq %lu: is not visible\n", seq);
+	    }
+	}
+
+      
+      if (bVisible)
+	{
+	  // OK, this delta is visible in the final result.  Apply its
+	  // include and exclude list.  We are travelling from newest to
+	  // oldest deltas.  Hence deltas which are ALREADY excluded or
+	  // included are left alone.  Only deltas which have not yet been
+	  // either included or excluded are messed with.
+	  
+	  const delta &d = delta_table->delta_at_seq(seq);
+	  
+	  len = d.included.length();
+	  for(i = 0; i < len; i++)
+	    {
+	      const seq_no s = d.included[i];
+	      if (s == seq)
+		continue;
+	      
+	      // A particular delta cannot have a LATER delta in 
+	      // its include list.
+	      ASSERT(s <= seq);
+	      
+	      if (!state.is_excluded(s))
+		{
+		  if (bDebug)
+		    {
+		      fprintf(stderr, "seq %lu includes seq %lu\n", seq, s);
+		    }
+		  state.set_included(s);
+		  ASSERT(state.is_included(s));
+		}
+	    } 		
+	  
+	  state.set_included(d.prev_seq);
+	  
+	  len = d.excluded.length();
+	  for(i = 0; i < len; i++)
+	    {
+	      const seq_no s = d.excluded[i];
+	      if (s == seq)
+		continue;
+	      
+	      // A particular delta cannot have a LATER delta in 
+	      // its exclude list.
+	      ASSERT(s <= seq);
+	      
+	      if (!state.is_included(s))
+		{
+		  if (bDebug)
+		    {
+		      fprintf(stderr, "seq %lu excludes seq %lu\n", seq, s);
+		    }
+		  state.set_excluded(s);
+		  ASSERT(state.is_excluded(s));
+		}
+	    }
+	}
+      
+      --seq;
+    }
+  
+  if (bDebug)
+    {
+      fprintf(stderr,
+	      "sccs_file::prepare_seqstate(seq_state &state, seq_no seq)"
+	      " done\n");
+    }
+  return true;
+}
+
+#endif 
 
 bool
 sccs_file::get(mystring gname, class seq_state &state,
@@ -125,7 +239,7 @@ sccs_file::get(mystring gname, class seq_state &state,
    * start with ^AI 1.
    */
   unsigned short first_delta = strict_atous( plinebuf->c_str() + 3);
-  state.start(first_delta, 1); /* 1 means "insert". */
+  state.start(first_delta, 'I'); /* 'I' means "insert". */
 
   FILE *out = parms.out;
 
@@ -223,9 +337,9 @@ sccs_file::get(mystring gname, class seq_state &state,
 
     case 'D':
     case 'I':
-      msg = state.start(seq, c == 'I');
+      msg = state.start(seq, c);
       break;
-
+      
     default:
       corrupt("Unexpected control line");
       break;

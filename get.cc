@@ -36,12 +36,12 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.32 1999/03/13 11:57:23 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.33 1999/04/18 17:39:40 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
 static void
-print_id_list(const char *s, list<sid> const &list)
+print_id_list(const char *s, mylist<sid> const &list)
 {
   int i, len;
 	
@@ -449,11 +449,11 @@ main(int argc, char **argv)
 
 // Explicit template instantiations.
 template class range_list<sid>;
-template class list<sid>;
-template class list<mystring>;
-template class list<seq_no>;
-template class list<delta>;
-template class list<sccs_pfile::edit_lock>;
+template class mylist<sid>;
+template class mylist<mystring>;
+template class mylist<seq_no>;
+template class mylist<delta>;
+template class mylist<sccs_pfile::edit_lock>;
 
 #include "stack.h"
 template class stack<unsigned short>;

@@ -31,13 +31,13 @@
 #include <string.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.11 1998/08/13 18:17:09 james Exp $";
+static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.12 1999/04/18 17:39:40 james Exp $";
 #endif
 
-list<mystring>
+mylist<mystring>
 split_mrs(mystring mrs)
 {
-  list<mystring> mr_list;
+  mylist<mystring> mr_list;
   const char *delims = " \t\n";
   
   if (!mrs.empty())
@@ -57,9 +57,9 @@ split_mrs(mystring mrs)
   return mr_list;
 }
 
-list<mystring>
+mylist<mystring>
 split_comments(mystring comments) {
-	list<mystring> comment_list;
+	mylist<mystring> comment_list;
 
 	if (!comments.empty()) {
 	  char *s = new char[strlen(comments.c_str()) + 1];

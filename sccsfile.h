@@ -66,7 +66,7 @@ private:
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
   
-  list<mystring> users;
+  mylist<mystring> users;
   struct sccs_file_flags
   {
     mystring *type;
@@ -87,7 +87,7 @@ private:
     int encoded;
   } flags;
 
-  list<mystring> comments;
+  mylist<mystring> comments;
 
   static FILE *open_sccs_file(const char *name, enum _mode mode,
 			      int *sump);
@@ -175,7 +175,7 @@ public:
   struct get_status
   {
     unsigned lines;
-    list<sid> included, excluded;
+    mylist<sid> included, excluded;
     bool     success;
   };
 
@@ -230,10 +230,10 @@ public:
       return 0;
   }
 
-  int check_mrs(list<mystring> mrs);
+  int check_mrs(mylist<mystring> mrs);
 
   bool add_delta(mystring gname, sccs_pfile &pfile,
-		 list<mystring> mrs, list<mystring> comments,
+		 mylist<mystring> mrs, mylist<mystring> comments,
 		 bool display_diff_output);
 
   /* sccsfile.cc */
@@ -254,12 +254,12 @@ public:
   /* sf-admin.c */
   bool admin(const char *file_comment,
 	     bool force_binary,
-	     list<mystring> set_flags, list<mystring> unset_flags,
-	     list<mystring> add_users, list<mystring> erase_users);
+	     mylist<mystring> set_flags, mylist<mystring> unset_flags,
+	     mylist<mystring> add_users, mylist<mystring> erase_users);
   bool create(const sid &initial_sid,
 	      const char *iname,
-	      list<mystring> mrs,
-	      list<mystring> comments,
+	      mylist<mystring> mrs,
+	      mylist<mystring> comments,
 	      int suppress_comments,
 	      bool force_binary);
 
@@ -303,7 +303,7 @@ public:
 
   /* sf-cdc.c */
 
-  bool cdc(sid id, list<mystring> mrs, list<mystring> comments);
+  bool cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments);
 
   /* sf-rmdel.c */
 
@@ -332,8 +332,8 @@ private:
 
 /* l-split.c */
 
-list<mystring> split_mrs(mystring mrs);
-list<mystring> split_comments(mystring comments);
+mylist<mystring> split_mrs(mystring mrs);
+mylist<mystring> split_comments(mystring comments);
 
 #endif /* __SCCSFILE_H__ */
 

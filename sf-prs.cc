@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.21 1998/10/20 17:27:30 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.22 1999/04/18 17:39:41 james Exp $";
 #endif
 
 inline bool
@@ -50,7 +50,7 @@ sccs_file::get(FILE *out, mystring name, seq_no seq)
 /* Prints a list of sequence numbers on the same line. */
 
 static void
-print_seq_list(FILE *out, list<seq_no> const &list) {
+print_seq_list(FILE *out, mylist<seq_no> const &list) {
 	int i;
 	int len = list.length();
 
@@ -66,7 +66,7 @@ print_seq_list(FILE *out, list<seq_no> const &list) {
 /* Prints a list of strings, one per line. */
 
 static void
-print_string_list(FILE *out, list<mystring> const &list) {
+print_string_list(FILE *out, mylist<mystring> const &list) {
 	int i;
 	int len = list.length();
 

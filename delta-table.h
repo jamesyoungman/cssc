@@ -21,19 +21,19 @@
  *
  * Definition of the classes cssc_delta_table and delta_iterator.
  *
- * $Id: delta-table.h,v 1.2 1998/05/30 08:53:59 james Exp $
+ * $Id: delta-table.h,v 1.3 1999/04/18 17:39:40 james Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_TABLE_H
-#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.2 1998/05/30 08:53:59 james Exp $"
+#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.3 1999/04/18 17:39:40 james Exp $"
 
 #include "delta.h"
 
 class cssc_delta_table
 {
-  list<struct delta> l;
+  mylist<struct delta> l;
   int *seq_table;
   seq_no high_seqno;
   sid high_release;

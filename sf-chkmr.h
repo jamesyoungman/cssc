@@ -38,7 +38,7 @@
    have the run_mr_checker function defined. */
 
 inline int 
-sccs_file::check_mrs(list<mystring> mrs)
+sccs_file::check_mrs(mylist<mystring> mrs)
 {
   ASSERT(0 != flags.mr_checker);
   return 0 != run_mr_checker(flags.mr_checker->c_str(),

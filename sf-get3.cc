@@ -32,12 +32,13 @@
 #include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.9 1998/08/14 08:23:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.10 1999/04/18 17:39:41 james Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are
    to be included and which are to be excluded. */
 
+#ifdef USE_OLD_SEQSTATE
 bool
 sccs_file::prepare_seqstate(seq_state &state, sid_list include,
 			    sid_list exclude, sccs_date cutoff_date)
@@ -69,6 +70,47 @@ sccs_file::prepare_seqstate(seq_state &state, sid_list include,
   
   return true;
 }
+#else 
+
+bool
+sccs_file::prepare_seqstate(seq_state &state, sid_list include,
+			    sid_list exclude, sccs_date cutoff_date)
+{
+  
+  ASSERT(0 != delta_table);
+  delta_iterator iter(delta_table);
+
+  while (iter.next())
+    {
+      // Did the user explicitly include this SID (on the command line)?
+      // Did the user explicitly exclude this SID (on the command line)?
+      
+      sid const &id = iter->id;
+
+      if (include.member(id))
+	{
+	  state.set_explicitly_included(iter->seq);
+	}
+      else if (exclude.member(id))
+	{
+	  state.set_explicitly_excluded(iter->seq);
+	}
+      else if (cutoff_date.valid() && iter->date > cutoff_date)
+	{
+	  // Delta not explicitly included/excluded by the user, but if it is newer
+	  // than the cutoff date, we don't want it.  This is the feature that allows
+	  // us to retrieve a delta that was current at some time in the past.
+	  state.set_excluded(iter->seq);
+	}
+      
+      ASSERT(0 != delta_table);
+    }
+  ASSERT(0 != delta_table);
+  
+  return true;
+}
+
+#endif
 
 /* Local variables: */
 /* mode: c++ */

@@ -31,7 +31,7 @@
 #include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.13 1999/03/13 11:57:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.14 1999/04/18 17:39:41 james Exp $";
 #endif
 
 NORETURN
@@ -162,7 +162,6 @@ sccs_pfile::print_lock_sid(FILE *fp)
   const sid& s       = l.delta;
   return s.print(fp);
 }
-
 
 
 sccs_pfile::~sccs_pfile() {

@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.20 1999/03/19 23:58:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.21 1999/04/18 17:39:41 james Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -218,7 +218,7 @@ ctor_fail(int err, const char *fmt, ...) {
 #endif
 	/*NOTREACHED*/
 	va_end(ap);
-	assert(0);		// not reached.
+	ASSERT(0);		// not reached.
 }
 
 NORETURN
@@ -236,7 +236,7 @@ s_corrupt_quit(const char *fmt, ...) {
 #endif
 	/*NOTREACHED*/
 	va_end(ap);
-	assert(0);		// not reached.
+	ASSERT(0);		// not reached.
 }
 
 NORETURN
@@ -254,7 +254,7 @@ s_missing_quit(const char *fmt, ...) {
 #endif
 	/*NOTREACHED*/
 	va_end(ap);
-	assert(0);		// not reached.
+	ASSERT(0);		// not reached.
 }
 
 
@@ -273,7 +273,7 @@ p_corrupt_quit(const char *fmt, ...) {
 #endif
 	/*NOTREACHED*/
 	va_end(ap);
-	assert(0);		// not reached.
+	ASSERT(0);		// not reached.
 }
 
 // fatal_quit() is ALWAYS immediately fatal.
@@ -285,7 +285,7 @@ fatal_quit(int err, const char *fmt, ...) {
 	v_quit(err, fmt, ap);
 	/*NOTREACHED*/
 	va_end(ap);
-	assert(0);		// not reached.
+	ASSERT(0);		// not reached.
 }
 
 

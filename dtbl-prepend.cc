@@ -30,7 +30,7 @@
 #include "delta-table.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: dtbl-prepend.cc,v 1.1 1997/11/30 21:10:26 james Stab $";
+static const char rcs_id[] = "CSSC $Id: dtbl-prepend.cc,v 1.2 1999/04/18 17:39:40 james Exp $";
 #endif
 
 
@@ -39,7 +39,7 @@ static const char rcs_id[] = "CSSC $Id: dtbl-prepend.cc,v 1.1 1997/11/30 21:10:2
 void
 cssc_delta_table::prepend(const delta &it)
 {
-  list<struct delta> newlist;
+  mylist<struct delta> newlist;
 
   newlist.add(it);
   newlist += l;

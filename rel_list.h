@@ -34,7 +34,7 @@
 
 class release_list
 {
-  list<release> l;
+  mylist<release> l;
 
 public:
   // Constructors / destructors

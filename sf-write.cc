@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.25 1998/12/12 15:09:13 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.26 1999/04/18 17:39:41 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -106,7 +106,7 @@ sccs_file::start_update() {
 
 
 static int
-print_seqs(FILE *out, char control, list<seq_no> const &seqs) {
+print_seqs(FILE *out, char control, mylist<seq_no> const &seqs) {
 	int i;
 	int len = seqs.length();
 

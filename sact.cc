@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.12 1998/10/20 17:27:28 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.13 1999/04/18 17:39:41 james Exp $";
 
 void
 usage() {
@@ -116,8 +116,8 @@ main(int argc, char **argv)
 
 // Explicit template instantiations.
 template class range_list<sid>;
-template class list<sccs_pfile::edit_lock>;
-template class list<mystring>;
+template class mylist<sccs_pfile::edit_lock>;
+template class mylist<mystring>;
 
 /* Local variables: */
 /* mode: c++ */
