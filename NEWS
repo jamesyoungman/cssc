@@ -1,3 +1,27 @@
+New in CSSC-0.11alpha-pl4
+	
+	* delta now accepts list of MRs on input even if the input is
+	  not a TTY since allegedly other implementations do this.  
+	  This patch from Albert John FitzPatrick III.
+
+	* Patches to allow the processing of SCCS files with gaps in
+	  the chain of used sequence numbers, and to allow two deltas
+	  to have the same sequence number, on the condition that one
+	  of them is a removed delta.  These patches from Sergey
+	  Ostashenko.
+
+	* Support for SCCS files in which timestamps have been
+	  corrupted by non-Y2K-compliant versions of SCCS.  These
+	  files are correctly understood on reading, and are fixed if
+	  the file is ever re-written by CSSC.  (The Sun version of
+	  SCCS also performs the same fix).  Patches to do this were
+	  provided by Peter Kjellerstedt
+
+	* Fix from Frank van Maarseveen for cdc and rmdel: if there is
+	  a problem, delete the lock file even if we are running
+	  setuid.  (See the manual for remarks about setuid
+	  operation).
+
 New in CSSC-0.11alpha-pl3
 
         * Portability fixes for SunOS 4.1.3, Ultrix 4.2, IRIX 6.5.

@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1999-06-26 22:15:39 james>
+Time-stamp: <2000-03-19 17:19:22 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -49,7 +49,9 @@ Support for development snapshots of GCC (as of 1997-08-11) was
 contributed by Fila Kolodny <fila@ibi.com>.
 
 Peter Kjellerstedt <Peter.Kjellerstedt@axis.com> has provided many
-consise and useful bug reports, mostly with patches.
+consise and useful bug reports, mostly with patches.  In particular,
+hae has proveded patches that allow CSSC to fix SCCS files which have
+been corrupted by non-Y2K-compliant versions of SCCS.
 
 John Interrante <interran@crd.ge.com> added support in cssc.texi for
 "make install-info", and several improvements for auxfiles/CSSC.spec.
@@ -83,11 +85,23 @@ William W. Austin provided a bug report regarding SCCS files
 containing flag lines which are only four characters long.
 
 Hyman Rosen provided fixes for better compatibility with strange SCCS
-files produced by ther implementations (e.g. ^Am after ^Ac instead of
+files produced by other implementations (e.g. ^Am after ^Ac instead of
 before it).
 
 Mark Reynolds provided a fair number of portability improvements (IRIX
 6.5, SunOS 4.1.3, Ultrix 4.2).
+
+Sergey Ostashenko provided patches to allow the processing of SCCS
+files with gaps in the chain of used sequence numbers, and to allow
+two deltas to have the same sequence number, on the condition that one
+of them is a removed delta.
+
+Frank van Maarseveen provided a patch for cdc and rmdel: if there is a
+problem, delete the lock file even if we are running setuid.
+
+Mark Fortescue provided patches bug-fixes relating to SID selection
+and cutoff dates.
+
 
 Local Variables:
 mode: Text

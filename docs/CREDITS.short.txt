@@ -2,5 +2,6 @@ James Youngman, Ross Ridge, Eric Allman, Lars Hecking, Larry McVoy,
 Dave Bodenstab, Malcolm Boff, Richard Polton, Fila Kolodny, Peter
 Kjellerstedt, John Interrante, Marko Rauhamaa, Achim Hoffann, Dick
 Streefland, Greg A. Woods, Aron Griffis, Michael Sterrett, William
-W. Austin, Hyman Rosen, Mark Reynolds
+W. Austin, Hyman Rosen, Mark Reynolds, Sergey Ostashenko, Frank van
+Maarseveen
 
