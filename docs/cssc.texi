@@ -582,7 +582,9 @@ command.
 
 @item -p
 Display the differences between the old and new versions of the file
-during processing.  Untested.
+during processing.  The output of @code{diff} is echoed on the standard
+output.
+Untested.
 @c TODO: Write the test cases.
 
 @item -r
@@ -1576,7 +1578,7 @@ accompanying documentation are covered by the BSD copyright license; see
 The original BSD version of the @code{sccs} program can easily be found
 on BSD mirrors, for example @url{ftp://ftp.freebsd.org/}.
 
-@c TODO: write the code, write the test cases, and document it.
+@c Write the test cases.
 
 @node sccsdiff, unget, sccs, Invoking Programs
 @section @code{sccsdiff}
