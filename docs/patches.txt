@@ -14,7 +14,7 @@ One last thing; if your editor makes backup files as you work, please
 delete these backups before computing the diff, particularly if you
 use "diff -r".
 
-You can submit patches either via the SourceForge Patch Manager (ar
+You can submit patches either via the SourceForge Patch Manager (at
 the URL http://sourceforge.net/patch/?group_id=8064) or by email.
 
 
