@@ -1,5 +1,5 @@
 TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel \
-		bsd-sccs year-2000 initial what
+		bsd-sccs year-2000 initial what val
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -108,6 +108,13 @@ test-what: links
 		$(SHELL) $$i || exit 1; \
 	done'
 
+test-val: links
+	$(SHELL) -ec 'cd val && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
 test-bsd-sccs: links
 	$(SHELL) -ec 'cd bsd-sccs && for i in *.sh ; \
 	do \
@@ -119,7 +126,7 @@ test-bsd-sccs: links
 all-tests: 	test-initial \
 		test-rmdel \
 		test-admin test-delta test-get test-prs test-prt test-unget \
-		test-cdc  test-sact \
+		test-cdc  test-sact test-val \
 		test-large test-sccsdiff test-binary test-bsd-sccs test-what
 	echo Tests passed.
 
