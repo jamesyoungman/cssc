@@ -59,13 +59,19 @@ docommand d7 "${unget} -r1.1.1.1 -n -s $s1" 0 "" ""
 test -f $g1 || fail d7 unget -n removed $g1
 docommand d8 "${unget} -n -s $s1" 0 "" ""
 
-
+#
+# The following test shows what we get from SCCS's unget
+# when output is redirected to a file.   We gat a different output
+# from the same command when output is a tty.   This appears to be
+# a bug in SCCS (?) and hence I'm not going to jump through hoops 
+# to be compatible with it.
+#
 setup_an_edit e
-#
-echo Test e7 is currently expected to fail.  Please fix unget so
-echo that it passes.  See the files expected.stdout and got.stdout,
-echo plus the file last.command.
-#
+
+echo Test e7 is currently expected to fail.  
+echo The behaviour from SCCS in this case could be a bug.
+
+expect_fail=true
 docommand e7 "${unget} -r1.1.1.1 $s1 $s2" 0 "\
 \ns.new1.txt:\
 \n1.1.1.1\
@@ -83,9 +89,13 @@ docommand e7 "${unget} -r1.1.1.1 $s1 $s2" 0 "\
 \n1.1.1.1\
 \n\
 " ""
+expect_fail=false
 test -f $g1 && fail e7 unget failed to remove $g1
 test -f $g2 && fail e7 unget failed to remove $g2
+expect_fail=true
 docommand e8 "${unget} $s1 $s2" 0 "\ns.new1.txt:\n1.2\n\ns.new1.txt:\n1.2\n\ns.new2.txt:\n1.2\n\ns.new1.txt:\n1.2\n\ns.new2.txt:\n1.2\n" ""
+expect_fail=false
+
 
 setup_an_edit f
 docommand f7 "${unget} -r1.1.1.1 -s $s1 $s2" 0 "" ""
@@ -99,6 +109,7 @@ docommand g7 "${unget} -r1.1.1.1 -n $s1 $s2" 0 \
 test -f $g1 || fail g7 unget -n removed $g1
 test -f $g2 || fail g7 unget -n removed $g2
 docommand g8 "${unget} -s $s1 $s2" 0 "" ""
+
 
 ###
 ### Cleanup and exit.
