@@ -2392,17 +2392,35 @@ with other implementations of @sc{sccs} as possible.
 
 @node Maximum Line Length, Limitations of diff, Binary File Support, Interoperability
 @section Maximum Line Length
-Most other implementations of @sc{sccs} also have an upper limit on the
-maximum length of line that can be handled in a text file (that is,
-those versions of @sc{sccs} which have such a limit do not apply this
-limit for binary files).  To set such a limit in @sc{cssc}, use the
-@code{--enable-max-line-length=N} option to ``configure''.  This sets
-the limit to the specified value.
 
-If @sc{cssc} is adding a new delta to an existing file, and it finds an
-input line which is longer than N characters, if will fail with an
-explanatory message (the alternative would be that an SCCS file would be
-generated that could not be read with other versions of @sc{sccs}).  
+By default, CSSC enforces no line length limits.  The @sc{cssc} tools
+will correctly process input files containing lines of arbitrary
+length, subject to the limits of available memory.  The system command
+@code{diff} may impose its own limit however; this is discussed below
+(@pxref{Limitations of diff}).
+
+If you are working with a binary file (that is, the @samp{-b} option
+to @code{admin} was used when the history file was created), the
+encoding mechanism used by @sc{cssc} (and those @sc{sccs}
+implementations that support binary files) ensures that data is
+encoded before being stored in the body of the history file, and so
+the ``binary'' file can contain any sequence of bytes at all - the
+``line length'' is no longer important.
+
+Most other implementations of @sc{sccs} do however have an upper limit
+on the maximum length of line that can be handled in a text file (that
+is, those versions of @sc{sccs} which have such a limit do not apply
+this limit for binary files).  To set such a limit in @sc{cssc}, use
+the @code{--enable-max-line-length=N} option to ``configure''.  This
+sets the limit to the specified value.
+
+If (and only if) you have configured CSSC with such a maximum line
+length limitation, the lengths of input lines are checked as they are
+being read.  When @sc{cssc} is adding a new delta to an existing file,
+if it finds an input line which is longer than N characters, it will
+fail with an explanatory message (the alternative would be that an
+SCCS file would be generated that could not be read with other
+versions of @sc{sccs}).
 
 If, on the other hand, @sc{cssc} is creating a new SCCS file in response
 to the @code{admin -i} command, one of two things will happen when an
