@@ -236,7 +236,7 @@ flags (@pxref{Flags}).
 
 @cindex checksum
 @item -h
-Check the @sc{sccs} file's checksum.  Untested.
+Check the @sc{sccs} file's checksum.  Unimplemented.
 @c TODO: Write the test cases.
 
 @item -i@var{foo}
