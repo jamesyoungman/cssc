@@ -36,50 +36,88 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.8 1997/11/18 23:22:32 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.9 1997/11/21 19:36:24 james Exp $";
 #endif
 
+// The MySC code used to just check for (year % 4) and (year == 0).
+// This implementation is "right", but in any case it won't make a
+// difference until 2100AD.
 static int
-days_in_month(int mon, int year) {
-	switch(mon) {
-	case 1:
-	case 3:
-	case 5:
-	case 7:
-	case 8:
-	case 10:
-	case 12:
-		return 31;
-
-	case 4:
-	case 6:
-	case 9:
-	case 11:
-		return 30;
-
-	case 2:
-		if (year % 4 == 0 && year != 0) {
-			return 29;
-		}
-		return 28;
+is_leapyear(int year)
+{
+  if (year % 4)
+    {
+      return 0;			// not a leapyear.
+    }
+  else 
+    {
+      if (year % 100)
+	{
+	  return 1;		// non-century year
 	}
-	return -1;
+      else
+	{
+	  if (year % 400)
+	    return 0;		// century years are not leap-years exceot
+	  else
+	    return 1;		// every fourth one, which IS a leap year.
+	}
+    }
+}
+
+inline int 
+get_digit(char ch)
+{
+  ASSERT(isdigit( (unsigned char) ch ));
+  return ch - '0';
 }
 
 static int
-get_part(const char *&s, int def) {
-	char c = *s;
-	while(c != '\0') {
-		if (isdigit(c)) {
-			s++;
-			if (isdigit(*s)) {
-				return (c - '0') * 10 + (*s++ - '0');
-			}
-			return c - '0';
-		}
-		c = *++s;
+days_in_month(int mon, int year)
+{
+  switch(mon)
+    {
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    case 8:
+    case 10:
+    case 12:
+      return 31;
+      
+    case 4:
+    case 6:
+    case 9:
+    case 11:
+      return 30;
+      
+    case 2:
+      if (is_leapyear(year + 1900))
+	return 29;
+      else
+	return 28;
+    }
+  return -1;
+}
+
+static int
+get_part(const char *&s, int def)
+{
+  char c = *s;
+  while (c)
+    {
+      if (isdigit(c))
+	{
+	  s++;
+	  if (isdigit(*s))
+	    return get_digit(c) * 10 + get_digit(*s++);
+	  else
+	    return get_digit(c);
 	}
-	return def;
+      c = *++s;
+    }
+  return def;
 }
 
 static int
@@ -93,36 +131,98 @@ check_tm(struct tm &tm) {
 	       || tm.tm_hour > 23 || tm.tm_min > 59 || tm.tm_sec > 59;
 }
 
+static int 
+count_digits(const char *s)
+{
+  int count;
+  
+  for(count=0; *s; s++)
+    {
+      if (isdigit((unsigned char)*s))
+	count++;
+    }
+  return count;
+}
+
+// Construct a date as specified on the command line.
 sccs_date::sccs_date(const char *s) {
 	t = (time_t) -1;
 
-	if (s == NULL) {
-		return;
-	}
+	if (s == 0)
+	  return;
 
 	struct tm tm;
 
-	tm.tm_year = get_part(s, -1);
-	if (tm.tm_year == -1) {
-		return;
-	}
+
+	// A fully-qualified YYmmDDhhMMss specification contains
+	// twelve (12) digits.  If we have more than that, assume that
+	// the first two digits are the century.  We have to make this
+	// count before the first call to get_part(), since that
+	// actually advances the pointer.
+	const int n_digits = count_digits(s);
+	
+	// Get and check the year part.
+	if ( (tm.tm_year = get_part(s, -1)) == -1)
+	  return;
 
 #if 1
-	if ((tm.tm_year == 19 || tm.tm_year == 20)
-            && isdigit(s[0]) && isdigit(s[1])) {
-		tm.tm_year = (tm.tm_year - 19) * 100
-			     + (s[0] - '0') * 10 + (s[1] - '0');
-		s += 2;
-	}
+	// Here be Year-2000 code.
+	//
+	// This code checks if the year is 19 or 20 AND the next two
+	// characters are ALSO digits.  If so, we assume that we've
+	// just got the century.  This is an extension with respect to
+	// "real" SCCS.
+	//
+	// To prevent this simply breaking down in the year 2019 (with
+	// a two digit year part), we only activate this measure if we
+	// have more than the regulation number of digits.
+	//
+	// The version of MySC which I inherited assumed the first 2
+	// digits to be the century part if they were 19 or 20.  This
+	// approach breaks down rather unexpectedly for the user in
+	// the year 2019.
+	// 
+	if (n_digits > 12)
+	  {
+	    // If we actually have a 4-digit year, the next two
+	    // characters must be digits (we have already consumed the
+	    // first two).
+	    if (isdigit((unsigned char)s[0]) &&
+		isdigit((unsigned char)s[1]))
+	      {
+		// tm_year needs to be set to the number of years
+		// since 1900.
+		const int century_field_val = (tm.tm_year - 19);
+		tm.tm_year =  century_field_val * 100
+		  + get_digit(s[0]) * 10 + get_digit(s[1]);
+		s += 2;		// this consumes exactly two characters.
+	      }
+	  }
+	else
+	  {
+	    // In the X/Open Commands and Utilities Issue 5 standard,
+	    // it is specified that yy/mm/dd type dates with values
+	    // for "yy" which range from 69-99 are to be interpreted
+	    // as 1969-1999 and dates with year values 00-68 are to be
+	    // interpreted as 2000-2068.
+	    //
+	    // For more information about this, please see that
+	    // document itself and also the X/Open Year-2000 FAQ,
+	    // which can be obtained from the URL
+	    // http://www.xopen.org/public/tech/base/year2000.html
+	    //
+	    if (tm.tm_year < 69)
+	      tm.tm_year += 100;
+	  }
 #endif
 			
-	tm.tm_mon = get_part(s, 12) - 1;
+	tm.tm_mon  = get_part(s, 12) - 1;
 	tm.tm_mday = get_part(s, days_in_month(tm.tm_mon + 1, tm.tm_year));
 	tm.tm_hour = get_part(s, 23);
-	tm.tm_min = get_part(s, 59);
-	tm.tm_sec = get_part(s, 59);
+	tm.tm_min  = get_part(s, 59);
+	tm.tm_sec  = get_part(s, 59);
 
-	tm.tm_isdst = -1;
+	tm.tm_isdst = -1;	// i.e. "don't know".
 
 	if (check_tm(tm)) {
 		return;
@@ -131,6 +231,7 @@ sccs_date::sccs_date(const char *s) {
 	t = mktime(&tm);
 }
 
+// Construct a date as specified in an SCCS file.
 sccs_date::sccs_date(const char *date, const char *time) {
 	struct tm tm;
 
@@ -140,6 +241,14 @@ sccs_date::sccs_date(const char *date, const char *time) {
 		return;
 	}
 	tm.tm_year = (date[0] - '0') * 10 + (date[1] - '0');
+
+
+	// Year 2000 fix (mandated by X/Open white paper, see above
+	// for more details).
+	if (tm.tm_year < 69)
+	  tm.tm_year += 100;
+
+
 
 	if (!isdigit(date[3]) || !isdigit(date[4]) || date[5] != '/') {
 		return;
@@ -166,7 +275,7 @@ sccs_date::sccs_date(const char *date, const char *time) {
 	}
 	tm.tm_sec = (time[6] - '0') * 10 + (time[7] - '0');
 
-	tm.tm_isdst = -1;
+	tm.tm_isdst = -1;	// i.e. "don't know".
 
 	if (check_tm(tm)) {
 		return;
@@ -227,14 +336,15 @@ sccs_date::printf(FILE *f, char fmt) const {
 }
 
 int
-sccs_date::print(FILE *f) const {
-	return
-	  printf_failed(printf(f, 'D')) ||
-	  putc_failed(putc(' ', f)) ||
-	  printf_failed(printf(f, 'T'));
+sccs_date::print(FILE *f) const
+{
+  return this->printf(f, 'D')
+    || putc_failed(putc(' ', f))
+    || this->printf(f, 'T');
 }
 
 
+// LOCAL time really is the right thing to use, apparently.
 const char *
 sccs_date::as_string() const {
 	struct tm const *tm = localtime(&t); 
@@ -243,8 +353,32 @@ sccs_date::as_string() const {
 		quit(-1, "localtime() failed.");
 	}
 
-	static char buf[18];
+	char buf[18];
 
+	ASSERT(tm->tm_mon >= 0);
+	ASSERT(tm->tm_mon < 12); // months are counted from zero (!)
+
+	ASSERT(tm->tm_mday > 0);
+	ASSERT(tm->tm_mday < 32);
+
+	ASSERT(tm->tm_hour >= 0);
+	ASSERT(tm->tm_hour < 24);
+
+	ASSERT(tm->tm_min >= 0);
+	ASSERT(tm->tm_min < 60);
+
+	/* The ANSI standard allows tm_sec to be as large as
+	 * 61, but in fact there will never be TWO leap-seconds
+	 * in the same minute (at least not with our current
+	 * UTC system unless _really_ weird things happen to
+	 * the Earth's orbit).  However I don't have copies
+	 * all the addenda to the C standard, but just the
+	 * oridinal document.  Hence this assertion for the
+	 * moment stays at 61.
+	 */
+	ASSERT(tm->tm_sec < 61);
+	
+	
 	sprintf(buf, "%02d/%02d/%02d %02d:%02d:%02d",
 		tm->tm_year % 100, tm->tm_mon + 1, tm->tm_mday,
 		tm->tm_hour, tm->tm_min, tm->tm_sec);
