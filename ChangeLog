@@ -1,4 +1,24 @@
+1998-06-19  James Youngman  <jay@gnu.org>
+
+	* configure.in, auxfiles/CSSC.spec: Bumped the patchlevel.
+
+	* mystring.cc:
+	re-fixed bug in find_last_of().    First bugfix had a bug.
+
+	* bsd/sccs.c:
+	Use our own error code definitions taken from the glibc <sysexits.h>.
+	This is to avoid a compiler error due to the redifinition on Solaris
+	(with GCC installed).
+
+	* bsd/sccs.1: Documented the various possible error codes.
+
 1998-06-16  James Youngman  <jay@gnu.org>
+
+	* configure.in: Bumped version to 0.08alpha-pl0.
+
+	* ChangeLog: *** empty log message ***
+
+	* auxfiles/CSSC.spec: Changed version to 0.08alpha-pl0.
 
 	* docs/FIXED: Added a report of the mystring::find_last_of() bug.
 
@@ -10,6 +30,8 @@
 
 	* docs/cssc.texi:
 	Indicate that the fatal-exit-on-error problem is being worked on.
+
+	* NEWS: *** empty log message ***
 
 	* docs/cssc.texi:
 	Added a short remark about Emacs's VC-mode in the section on delta; if

@@ -1,3 +1,11 @@
+New in CSSC-0.08alpha-pl1
+
+	* Documented the possible exit valus in the manpage for sccs.
+
+	* Re-fixed bug in mystring.cc.    Sigh.
+
+	* Avoids compilation error for sccs.c on Solaris.
+
 New in CSSC-0.08alpha-pl0
 
 	* The program now works on systems with no <string> header file.
