@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.37 2003/12/09 23:46:58 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.38 2003/12/09 23:47:39 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -2146,7 +2146,7 @@ dodiff (char * getv[], const char *gfile)
       /* GNU diff supports -v (show version) but I don't think
        *  this is useful.  Nevertheless we pass it through.
        */
-      command (&getv[1], FALSE, "-diff:elsfhbCunaBdHpqsvy");
+      command (&getv[1], FALSE, "-diff:elsfhbCunaBdHpqsvwy");
     }
   return rval;
 }
