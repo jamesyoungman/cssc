@@ -43,7 +43,7 @@ echo "Creating the input files..."
 for i in $files
 do
     echo "This is file $i" > $i
-    sccs enter $i
+    ${sccs} enter $i
     rm ,$i
 done
 
