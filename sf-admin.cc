@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.19 1998/01/25 22:33:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.20 1998/02/01 17:59:54 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -285,17 +285,19 @@ sccs_file::create(release first_release, const char *iname,
 	}
       }
 
-    bool binary = false;
     bool found_id = false;
     unsigned long int lines = 0uL;
 
     // Insert the body...
-    body_insert(&binary,
+    body_insert(&force_binary,
 		iname,		// input file name
 		name.xfile().c_str(), // output file name
 		in, out,
 		&lines, &found_id);
-    if (binary)
+
+    new_delta.inserted = lines;
+    
+    if (force_binary)
       flags.encoded = true;	// fixup file in sccs_file::end_update()
     
     if (in != stdin)
