@@ -1,3 +1,6 @@
+.\" Copyright (c) 1998
+.\"	Free Software Foundation, Inc.  All rights reserved.
+.\"
 .\" Copyright (c) 1983, 1990, 1993
 .\"	The Regents of the University of California.  All rights reserved.
 .\"
@@ -31,9 +34,10 @@
 .\"
 .\"	@(#)sccs.1	8.1 (Berkeley) 6/6/93
 .\"
-.Dd June 6, 1993
+.Dd June 3, 1998
 .Dt SCCS 1
-.Os BSD 4.2
+.Os GNU
+.\" .Os was BSD 4.2
 .Sh NAME
 .Nm sccs
 .Nd front end for the
@@ -43,7 +47,12 @@ subsystem
 .Nm sccs
 .Op Fl r
 .Op Fl d Ar path
+.Op Fl T
+.Op Fl V
+.Op Fl -version
 .Op Fl p Ar path
+[--prefix=\fIpath\fP]
+.Op Fl -cssc
 .Ar command
 .Op flags
 .Op Ar
@@ -61,7 +70,7 @@ also includes the capability to run
 .Dq set user id
 to another user
 to
-provide additional protection.
+provide additional protection (but see the section entitled BUGS).
 .Pp
 Basically,
 .Nm sccs
@@ -264,7 +273,50 @@ as
 .It Cm print
 This command prints out verbose information
 about the named files.
+.El
 .Pp
+Certain
+commands (such as
+.Nm admin  )
+cannot be run
+.Dq Li set user id
+by all users, since this would allow anyone to change the authorizations.
+These commands are always run as the real user.
+.Pp
+.Bl -tag -width --prefix=foo
+.It Fl -cssc
+Returns a zero exit value (for the GNU version only).  No other
+operation is performed.  This flag is used by the test suite to
+determine if it needs to use the
+.Fl -prefix
+flag in order to find the correct subprograms (non-GNU versions of
+sccs have the full pathnames for the subprograms hard-coded).  In
+this way, the CSSC test suite can be compiled ready for installation
+in a particular directory, but the test suite can still be run before
+the suite has been installed in its final position.  This option is
+supported only by the GNU version of
+.Nm sccs .
+.It Fl -prefix=foo
+Uses
+.Ar foo 
+as the prefix for SCCS sub-commands.   The default prefix
+is compiled into the program and is usually 
+.Dq /usr/sccs .  
+You can discover the prefix setting with the 
+.Fl V 
+flag.  This prefix is used without a final slash being appended, so
+values like
+.Dq /usr/local/bin/cssc-
+can be used.  This option is disallowed if the program is installed
+setuid, and it is supported only by the GNU version of
+.Nm sccs .
+.Em "This option is not equivalent to the" 
+.Fl p
+.Em flag .
+.It Fl -version
+Show version information; synonymous with the 
+.Fl V
+flag.
 .It Fl r
 Runs
 .Nm sccs
@@ -279,7 +331,7 @@ Specifies a root directory for the
 files.
 The default is the current directory.
 If environment variable
-.Ev PROJECT
+.Ev PROJECTDIR
 is set,
 it will be used to determine the 
 .Fl d
@@ -310,14 +362,21 @@ The intent here is to create aliases such as
 which
 will be used as
 .Dq Li syssccs get cmd/who.c .
-.Pp
-Certain
-commands (such as
-.Nm admin  )
-cannot be run
-.Dq Li set user id
-by all users, since this would allow anyone to change the authorizations.
-These commands are always run as the real user.
+.Em Please note that the 
+.Fl p
+.Em flag is (very) different in purpose from the 
+.Fl -prefix 
+.Em option.
+.It Fl T
+This flag causes the program to emit a debugging trace on stdout.
+This flag may be disabled at compile time.
+.It Fl V
+Shows the version information for the 
+.Nm sccs
+program, and the subcommand prefix being used.  This option is
+supported only by the GNU version of
+.Nm sccs .
+.El
 .Sh EXAMPLES
 To get a file for editing,
 edit it,
@@ -356,10 +415,15 @@ file if it does not already exist:
 .Dl SRCS = <list of source files>
 .Dl $(SRCS):
 .Dl \&\tsccs get $(REL) $@
+.Sh MAINTAINER
+This version of 
+.Nm sccs
+is maintained by James Youngman, <jay@gnu.org>.
 .Sh ENVIRONMENT
 .Bl -tag -width Ar
-.It Ev PROJECT
-The PROJECT environment variable is checked by the
+.It Ev PROJECTDIR
+.Pp
+The PROJECTDIR environment variable is checked by the
 .Fl d
 flag.  If
 it begins with a slash, it is taken directly; otherwise,
@@ -371,28 +435,107 @@ or
 If such a directory is found, it is used.
 .El
 .Sh SEE ALSO
-.Xr what 1
-.Xr admin SCCS ,
-.Xr chghist SCCS ,
-.Xr comb SCCS ,
-.Xr delta SCCS ,
-.Xr get SCCS ,
-.Xr help SCCS ,
-.Xr prt SCCS ,
-.Xr rmdel SCCS ,
-.Xr sccsdiff SCCS ,
+.Xr what 1 ,
+.Xr sccs-admin 1 ,
+.Xr sccs-cdc 1 ,
+.Xr sccs-comb 1 ,
+.Xr sccs-delta 1 ,
+.Xr sccs-get 1 ,
+.Xr sccs-help 1 ,
+.Xr sccs-prs 1 ,
+.Xr sccs-prt 1 ,
+.Xr sccs-rmchg 1 ,
+.Xr sccs-rmdel 1 ,
+.Xr sccs-sact 1 ,
+.Xr sccsdiff 1 ,
+.Xr sccs-unget 1 ,
+.Xr sccs-val 1 ,
+.Xr make 1 ,
+.Xr rcsintro 1 ,
+.Xr cvs 1 ,
+.Xr sccsfile 5 .
 .Rs
 .%A Eric Allman
 .%T "An Introduction to the Source Code Control System"
 .Re
+.Rs
+.%A James Youngman
+.%B "CSSC: Compatibly Stupid Source Control"
+.Re
+.Sh COPYING
+Copyright \(co 1998
+.br
+Free Software Foundation, Inc.  All rights reserved.
+.Pp
+Copyright \(co 1983, 1990, 1993
+.br
+The Regents of the University of California.  All rights reserved.
+
+.Pp
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+.Bl -enum
+.It 
+Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+.It 
+Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+.It 
+All advertising materials mentioning features or use of this software
+must display the following acknowledgement:
+.Pp
+.Rs
+This product includes software developed by the University of
+California, Berkeley and its contributors.
+.Re
+.It 
+Neither the name of the University nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+.El
+.Pp
+THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+
 .Sh HISTORY
 The
 .Nm sccs
 command
 appeared in
 .Bx 4.3 .
+.Pp
+This version of
+.Nm sccs
+has been slightly modified to support 
+.Nm "GNU Autoconf" ,
+and several new options (those beginning with two dashes and also 
+.Fl V ) 
+and to make
+it somewhat more portable.
+The program otherwise remains largely unchanged.
 .Sh BUGS
 It should be able to take directory arguments on pseudo-commands
 like the
 .Li SCCS
 commands do.
+.Pp 
+Though this program is mostly derived from the original 
+.Bx 
+code, the subprograms accompanying it in the CSSC suite (admin, get,
+delta and so on) are not the original AT&T code.  Please do not count
+on these programs being secure.
+.Pp 
+Other known bugs are listed in the file BUGS, which accompanies GNU CSSC.

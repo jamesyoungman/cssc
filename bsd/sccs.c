@@ -45,7 +45,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.11 1998/05/28 22:30:43 james Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.12 1998/06/06 13:35:55 james Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -81,12 +81,14 @@ static const char filever[] = "$Id: sccs.c,v 1.11 1998/05/28 22:30:43 james Exp 
 #define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
 #endif
 #ifndef WIFEXITED
-#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#define WIFEXITED(stat_val) (((stat_val) & 0377) == 0)
 #endif
 #ifndef WTERMSIG
 #define WTERMSIG(stat_val) ( (stat_val) & 0177 )
 #endif
-
+#ifndef WCOREDUMP
+#define WCOREDUMP(stat_val) ( (stat_val) & 0200 )
+#endif
 
 #include <sys/cdefs.h>		/* TODO: this does what? */
 #include <sys/param.h>		/* TODO: this does what? */
@@ -120,7 +122,34 @@ static const char filever[] = "$Id: sccs.c,v 1.11 1998/05/28 22:30:43 james Exp 
 
 #include <sysexits.h>		/* TODO: we should probably define our own. */
 
-#include "pathnames.h"
+/* #include "pathnames.h" */
+/* The next few lines inserted from @(#)pathnames.h	8.1 (Berkeley) 6/6/93
+ */
+#include <paths.h>
+
+/* #define PASTE(a,b) a##b */
+
+#define	_PATH_SCCSADMIN	("admin")
+#define	_PATH_SCCSBDIFF	("bdiff")
+#define	_PATH_SCCSCOMB	("comb")
+#define	_PATH_SCCSDELTA	("delta")
+#define	_PATH_SCCSDIFF	("sccsdiff")
+#define	_PATH_SCCSGET	("get")
+#define	_PATH_SCCSHELP	("help")
+#define	_PATH_SCCSPRS	("prs")
+#define	_PATH_SCCSPRT	("prt")
+#define	_PATH_SCCSRMDEL	("rmdel")
+#define	_PATH_SCCSVAL	("val")
+#define	_PATH_SCCSWHAT	("what")
+#undef _PATH_TMP
+#define	_PATH_TMP	"/tmp/sccsXXXXX"
+
+/* End of insertion from pathnames.h */
+
+
+#ifndef PREFIX
+#define PREFIX "/usr/sccs/"
+#endif
 
 
 #ifdef STAT_MACROS_BROKEN
@@ -327,6 +356,8 @@ const char *SccsDir = SCCSDIR;	/* directory to begin search from */
 #else
 const char *SccsDir = "";
 #endif
+char *subprogram_exec_prefix = NULL; /* see try_to_exec(). */
+
 const char MyName[] = MYNAME;	/* name used in messages */
 int OutFile = -1;		/* override output file for commands */
 bool RealUser;			/* if set, running as real user */
@@ -334,6 +365,7 @@ bool RealUser;			/* if set, running as real user */
 bool Debug = 0;			/* turn on tracing */
 #endif
 static bool TrustEnvironment = 0;
+
 
 void syserr (const char *fmt,...);
 void usrerr (const char *fmt,...);
@@ -368,12 +400,68 @@ static void childwait(int pid, int *status_ptr, int ignoreintr);
 
 /* #define	FBUFSIZ	BUFSIZ */
 
-#define FBUFSIZ 100
+#define FBUFSIZ 1024
 
 static void
 show_version(void)
 {
-  fprintf(stderr, "GNU CSSC %s\n%s\n", VERSION, filever);
+  fprintf(stderr, "%s from GNU CSSC %s\n%s\n", MyName, (VERSION), filever);
+  fprintf(stderr, "SccsPath = '%s'\nSccsDir = '%s'\n", SccsPath, SccsDir);
+  fprintf(stderr, "Default prefix for SCCS subcommands is '%s'\n", (PREFIX));
+}
+
+
+static void oom(void)
+{
+  perror("malloc failed");
+  exit(EX_TEMPFAIL);
+}
+
+/* set_prefix()
+ *
+ * The user has specified the --prefix option which indicates
+ * where to look for the subcommands.   This is primarily 
+ * used by the test suite so that it can be run before
+ * the programs have been installed.
+ *
+ * However, if the user is allowed to provide an arbitrary prefix,
+ * they could use this facility to execute arbitrary programs.
+ * If this program is installed setuid, that is a security hole.
+ *
+ * I'm not saying that CSSC isn't one big security hole itself,
+ * but we should certainly forbid this.
+ *
+ * See also try_to_exec().
+ */
+static void
+set_prefix(const char *pfx)
+{
+  if (TrustEnvironment)
+    {
+      char *p = malloc(1+strlen(pfx));
+#ifdef DEBUG
+      if (Debug)
+	printf ("set_prefix: setting execution prefix to '%s'\n", pfx);
+#endif
+      if (p)
+	{
+	  if (subprogram_exec_prefix)
+	    free(subprogram_exec_prefix);
+	  strcpy(p, pfx);
+	  subprogram_exec_prefix = p;
+	}
+      else
+	{
+	  oom();
+	}
+    }
+  else
+    {
+      fprintf(stderr,
+	      "Option --prefix is incompatible with setuid "
+	      "execution.  Sorry.\n");
+      exit (EX_USAGE);
+    }
 }
 
 static void 
@@ -409,6 +497,48 @@ main (int argc, char **argv)
 	  perror("Error setting locale");
 	}
     }
+
+  /* If we do not trust the environment, should we trust PROJECTDIR?
+   * I think yes, because the setuid mechanism may be being used
+   * to conrol access to source.
+   */
+#ifndef SCCSDIR
+  
+  /* pull "SccsDir" out of the environment (possibly) */
+  p = getenv("PROJECTDIR");
+  if (p != NULL && p[0] != '\0')
+    {
+      register struct passwd *pw;
+      extern struct passwd *getpwnam();
+      char buf[FBUFSIZ];
+      
+      if (p[0] == '/')
+	SccsDir = p;
+      else
+	{
+	  pw = getpwnam(p);
+	  if (pw == NULL)
+	    {
+	      usrerr("user %s does not exist", p);
+	      exit(EX_USAGE);
+	    }
+	  gstrcpy(buf, pw->pw_dir, sizeof(buf));
+	  gstrcat(buf, "/src", sizeof(buf));
+	  if (access(buf, 0) < 0)
+	    {
+	      gstrcpy(buf, pw->pw_dir, sizeof(buf));
+	      gstrcat(buf, "/source", sizeof(buf));
+	      if (access(buf, 0) < 0)
+		{
+		  usrerr("project %s has no source!", p);
+		  exit(EX_USAGE);
+		}
+	    }
+	  SccsDir = buf;
+	}
+    }
+#endif
+
   
   /*
      **  Detect and decode flags intended for this program.
@@ -429,6 +559,40 @@ main (int argc, char **argv)
 	    break;
 	  switch (*++p)
 	    {
+	    case '-': /* long option. */
+	      ++p;
+	      if (0 == *p)	/* just "--" */
+		{
+		  fprintf(stderr,
+			  "End-of-arguments option -- not "
+			  "supported, sorry.\n");
+		  exit (EX_USAGE);
+		}
+	      else if (0 == strncmp(p, "prefix=", 7))
+		{
+		  set_prefix(p+7);
+		}
+	      else if (0 == strcmp(p, "cssc"))
+		{
+		  printf("%s\n", "yes");
+		  exit(EX_OK);
+		}
+	      else if (0 == strcmp(p, "version"))
+		{
+		  if (!hadver)
+		    show_version();
+		  hadver = 1;
+		  if (2 == argc) /* If the only arg, return success. */
+		    return 0;
+		}
+	      else
+		{
+		  usrerr ("unknown option --%s", p);
+		  usage();
+		  exit (EX_USAGE);
+		}
+	      break;
+	      
 	    case 'V':
 	      if (!hadver)
 		show_version();
@@ -454,13 +618,22 @@ main (int argc, char **argv)
 	      if (SccsDir[0] == '\0' && argv[1] != NULL)
 		SccsDir = *++argv;
 	      break;
-#endif
-
-#ifdef DEBUG
-	    case 'T':		/* trace */
-	      Debug++;
+#else
+	    case 'p':
+	    case 'd':
+	      fprintf(stderr, "The %c option has been disabled.\n", *p);
+	      exit(EX_USAGE);
 	      break;
 #endif
+
+	    case 'T':		/* trace */
+#ifdef DEBUG
+	      Debug++;
+#else
+	      fprintf(stderr, "The -T option has been disabled.  Sorry.\n");
+	      exit(EX_USAGE);
+#endif
+	      break;
 
 	    default:
 	      usrerr ("unknown option -%s", p);
@@ -531,38 +704,89 @@ char ** do_enter(char *argv[], char **np, char **ap,
   return np;
 }
 
+static int
+absolute_pathname(const char *p)
+{
+  return '/' == p[0];
+}
+
+
 static void
 try_to_exec(const char *prog, char * const argv[])
 {
-  const char *prefix = "/usr/sccs/";
   char *newprog;
+  const char *prefix;
   size_t len;
 
-  printf ("try_to_exec: %s\n", prog);
-  
-  /* Start by using execvp, because:-
-   * 1) The user may wish to use SCCS programs other than those
-   *    in a fixed location.
-   * 2) execv("prt") will exec a program "prt" in the current
-   *    dorectory (execvp will not).
-   */
-  
-  if (TrustEnvironment || RealUser) /* Honour $PATH unless running setuid */
-    execvp(prog, argv);		/* execvp() uses $PATH */
+#ifdef DEBUG
+  if (Debug)
+    printf ("try_to_exec: %s\n", prog);
+#endif
 
-  
-  /* if the above call returns or was not allowed, try our prefix.
-   */
-  len = strlen(prefix) + strlen(prefix);
-  newprog = malloc(len + 1);
-  if (newprog)
+  if (subprogram_exec_prefix)
     {
+      prefix = subprogram_exec_prefix;
+#ifdef DEBUG
+      if (Debug)
+	printf ("try_to_exec: Using user prefix '%s'\n", prefix);
+#endif
+    }
+  else
+    {
+      prefix = (PREFIX);
+#ifdef DEBUG
+      if (Debug)
+	printf ("try_to_exec: Using default prefix '%s'\n", prefix);
+#endif
+
+
+      /* If no custom prefix was specified on the command line,
+       * we start by using execvp, because:-
+       *
+       * 1) The user may wish to use SCCS programs other than those
+       *    in a fixed location.
+       * 2) execv("prt") will exec a program "prt" in the current
+       *    dorectory (execvp will not).
+       */
+
+       /* Honour $PATH unless running setuid.
+        * Must NOT use execvp() if running setuid.
+	*/
+      if (TrustEnvironment || RealUser)
+	execvp(prog, argv);		/* execvp() uses $PATH */
+    }
+  
+  /* absolute_pathname() does not call a library function, so no need
+   * to save/restore errno.
+   */
+  if (absolute_pathname(prog))	
+    {
+      perror(prog);
+    }
+  else
+    {
+      /* if the above exec() returns or was not allowed, try our prefix.
+       */
+      len = strlen(prefix) + strlen(prefix);
+      newprog = malloc(len + 1);
+      if (NULL == newprog)
+	{
+	  oom();
+	  /*NOTREACHED*/
+	  exit(EX_TEMPFAIL);
+	}
       sprintf(newprog, "%s%s", prefix, prog);
       prog = newprog;
+
+      
+#ifdef DEBUG
+      if (Debug)
+	printf ("try_to_exec: %s\n", prog);
+#endif
+
+      execv(prog, argv);
+      perror(prog);
     }
-  printf ("try_to_exec: falling back on %s\n", prog);
-  execv(prog, argv);
-  perror(prog);
 }
 
 /*
@@ -757,9 +981,21 @@ command (char *argv[], bool forkflag, const char *arg0)
 	  }
 	*np = NULL;
 
+	/* Test difference: unedit() says " foo: removed" and this
+	 * output comes *after* the output from get.  This happens
+	 * when the output is a file.  it's a buffering issue, not
+	 * noticed by the casual user.
+	 *
+	 * Sigh.
+	 *
+	 * We can get the same output if we fork to run get; that way,
+	 * the parent's output remains in the stdout buffer until
+	 * after the child has exited.
+	 */
+
 	/* get all the files that we unedited successfully */
 	if (np > &ap[1])
-	  rval = command (&ap[1], FALSE, "get");
+	  rval = command (&ap[1], TRUE, "get");	
       }
       break;
 
@@ -896,12 +1132,11 @@ childwait(int pid, int *status_ptr, int ignoreintr)
 /*
  *  get_sig_name -- find the name for a signal.
  *
- *  NOT REENTRANT!
  */
 static const char *
-get_sig_name(unsigned int sig)		/* NOT RENTRANT */
+get_sig_name(unsigned int sig,
+	     char sigmsgbuf[11])
 {
-  static char sigmsgbuf[10 + 1]; /* "Signal 127" + terminating '\0' */
 #ifdef SYS_SIGLIST_DECLARED
 #ifdef NSIG  
   if (sig < NSIG)
@@ -911,6 +1146,24 @@ get_sig_name(unsigned int sig)		/* NOT RENTRANT */
   if (sig > 999) sig = 999;	/* prevent buffer overflow (!) */
   sprintf (sigmsgbuf, "Signal %u", sig);
   return sigmsgbuf;
+}
+
+
+/* do_fork()
+ *
+ * This function was created so that we could do things in preparation
+ * for fork, specifically, ensure that output streams are flushed and
+ * so on.   Unfortunately, if we flush our output before forking, we break
+ * compatibility with some vendors' implementations of "sccs unedit", for
+ * which the output of "get" comes before the "foo: removed" output.
+ * The fact that that is stupid is beside the point. -- <jay@gnu.org>.
+ */
+static pid_t
+do_fork(void)
+{
+  /* ? Sleep if we get EAGAIN? */
+  /* ? Sleep if we get ENOMEM? */
+  return fork();
 }
 
 
@@ -964,7 +1217,7 @@ callprog (const char *progpath,
       if (Debug)
 	printf ("Forking\n");
 #endif
-      i = fork ();
+      i = do_fork ();
       if (i < 0)
 	{
 	  syserr ("cannot fork");
@@ -985,8 +1238,12 @@ callprog (const char *progpath,
 	      int sigcode = WTERMSIG(st);
 	      if (sigcode != SIGINT && sigcode != SIGPIPE)
 		{
-		  fprintf (stderr, "sccs: %s: %s", argv[0],
-			   get_sig_name(sigcode));
+		  char sigmsgbuf[11];
+		  fprintf (stderr,
+			   "sccs: %s: %s%s",
+			   argv[0],
+			   get_sig_name(sigcode, sigmsgbuf),
+			   (WCOREDUMP(st) ? " (core dumped)" : "") );
 		}
 	      st = EX_SOFTWARE;
 	    }
@@ -1014,7 +1271,10 @@ callprog (const char *progpath,
     {
       setuid (getuid ());
       RealUser = 1;
-      printf ("callprog: gave up privileges.\n");
+#ifdef DEBUG
+      if (Debug)
+	printf ("callprog: gave up privileges.\n");
+#endif
     }
 
   /* change standard input & output if needed */
@@ -1032,17 +1292,7 @@ callprog (const char *progpath,
 }
 
 /*
-   **  STR_DUP -- make filename of SCCS file
-   **
-   **   Allocate and return a copy of a string.
-   **
-   **   There are cases when it is not clear what you want to
-   **   do.  For example, if SccsPath is an absolute pathname
-   **   and the name given is also an absolute pathname, we go
-   **   for SccsPath (& only use the last component of the name
-   **   passed) -- this is important for security reasons (if
-   **   sccs is being used as a setuid front end), but not
-   **   particularly intuitive.
+   **  STR_DUP -- make a copy of a string.
    **
    **   Parameters:
    **           S -- the string to be cpied.
@@ -1236,7 +1486,7 @@ form_gname(char *buf, int bufsize, struct dirent *dir)
   else
     {
       memcpy(buf, dir->d_name+2, NAMLEN(dir)-2);
-      buf[NAMLEN(dir)-2+1] = 0; /* terminate the string. */
+      buf[NAMLEN(dir)-2] = 0; /* terminate the string. */
     }
 }
   
@@ -1260,12 +1510,6 @@ form_gname(char *buf, int bufsize, struct dirent *dir)
    **           Prints information regarding files being edited.
    **           Exits if a "check" command.
  */
-static void oom(void)
-{
-  perror("malloc failed");
-  exit(EX_TEMPFAIL);
-}
-
 int 
 do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
 {
@@ -1670,7 +1914,7 @@ dodiff (char *const getv[], const char *gfile)
       syserr ("dodiff: pipe failed");
       exit (EX_OSERR);
     }
-  if ((pid = fork ()) < 0)
+  if ((pid = do_fork ()) < 0)
     {
       syserr ("dodiff: fork failed");
       exit (EX_OSERR);
