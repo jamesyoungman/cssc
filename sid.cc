@@ -9,9 +9,9 @@
  */
 
 #ifdef __GNUC__
-#pragma implementation "sid.h"
-#pragma implementation "sid_list.h"
-#pragma implementation "sid_list.c"
+//#pragma implementation "sid.h"
+//#pragma implementation "sid_list.h"
+//#pragma implementation "sid_list.c"
 #endif
 
 #include "cssc.h"
@@ -20,13 +20,14 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.3 1997/05/10 14:49:58 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.4 1997/05/21 00:02:43 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an
    invalid range. */
-
+#if 0
 void *invalid_range = xmalloc(1);
+#endif
 
 static int
 get_comp(const char *&s) {
@@ -215,10 +216,16 @@ sid::printf(FILE *out, char c) const {
 		break;
 
 	case 'B':
+	        // this field is completely blank for trunk revisions.
+                if (0 == branch && 0 == sequence)
+		  return 0;
 		n = branch;
 		break;
 
 	case 'S':
+	        // this field is completely blank for trunk revisions.
+                if (0 == branch && 0 == sequence)
+		  return 0;
 		n = sequence;
 		break;
 
