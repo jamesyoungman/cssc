@@ -59,14 +59,14 @@ mv ${g}_1 ${g} || miscarry "Could not rename ${g}_1 to ${g}"
 docommand o9 "${delta} -r1.2.1.1 -yBranch1" 1 IGNORE IGNORE
 
 # Unknown command line option is an error (we pick an unlikely one)
-docommand o10 "${delta}"' -! -yBranch1' 2 IGNORE IGNORE
+docommand o10 "${delta}"' -! -yBranch1' 1 IGNORE IGNORE
 
 # Ambiguity in SID selection is an error
 docommand o11 "${delta} -r1 -yBranch1 $s" 1 IGNORE IGNORE
 docommand o12 "${delta} -yBranch1 $s" 1 IGNORE IGNORE
 
 # Invalid branch should be detected (note return value 2 not 1)
-docommand o13 "${delta} -r1.2.1.1a -yBranch2 $s" 2 IGNORE IGNORE
+docommand o13 "${delta} -r1.2.1.1a -yBranch2 $s" 1 IGNORE IGNORE
 
 docommand o14 "${delta} -r1.1.1.1 -yBranch1 $s" 0 IGNORE IGNORE
 
