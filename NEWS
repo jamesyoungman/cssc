@@ -1,3 +1,11 @@
+New in CSSC-0.11alpha-pl5
+ 
+        * Bugfixes: SID selection for branches -- if 1.3 exists 
+          and you edit 1.2.1.1, you should still get 1.2.1.2.
+
+        * Documentation: we now refer to the correct SourceForge URL
+	  for the bug-reporting service in the CSSC manual.
+
 New in CSSC-0.11alpha-pl4
 	
 	* delta now accepts list of MRs on input even if the input is
