@@ -36,7 +36,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.12 1998/02/23 21:01:10 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.13 1998/03/09 23:43:45 james Exp $";
 #endif
 
 #if 0
@@ -103,7 +103,9 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 #else
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	: argv(opts.get_argv() + opts.get_index()),
-	  argc(opts.get_argc() - opts.get_index()) {
+	  argc(opts.get_argc() - opts.get_index()),
+	  is_unique(0)
+{
 
 	if (argc < 1) {
 		quit(-2, "No SCCS file specified.");

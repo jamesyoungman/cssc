@@ -44,7 +44,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.19 1998/02/21 14:27:22 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.20 1998/03/09 23:43:46 james Exp $";
 #endif
 
 class diff_state
@@ -561,7 +561,6 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	end_update(out, new_delta);
 
-	differ.finish();
 	diff_out = 0;
 	if (0 != remove(dname.c_str()))
 	  {
@@ -577,6 +576,11 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	      {
 		perror(file_to_diff.c_str());
 	      }
+	  }
+	
+	if (!differ.finish())
+	  {
+	    quit(-1, "diff returned unsuccessful exit status.");
 	  }
 	
 	new_delta.id.print(stdout);
