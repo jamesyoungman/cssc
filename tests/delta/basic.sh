@@ -129,6 +129,16 @@ docommand C14  "${delta} -y $s" 1 IGNORE IGNORE
 # It is also an error to specify a SID which is not being edited.
 docommand C15  "${delta} -y -r1.3 $s" 1 IGNORE IGNORE
 
+# It is an error to check in a file containing no SCCS keywords when the 
+# "i" flag is set. 
+docommand C16  "${admin} -fi $s" 0 "" IGNORE
+docommand C17  "${delta} -y -r1.2 $s" 1 "" IGNORE
+
+# ... but if we turn that flag off again, it should work fine.
+docommand C18  "${admin} -di $s" 0 "" IGNORE
+docommand C19  "${delta} -y -r1.2 $s" 0 IGNORE IGNORE
+
+
 rm -rf test
 remove passwd command.log $files
 success
