@@ -70,7 +70,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.8 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.9 2002/03/18 20:55:44 james_youngman Exp $";
 #endif
 
 int
@@ -110,7 +110,7 @@ CSSC_Options::next()
       if (opterr)		// set opterr for verbose error returns.
 	{
 	  fprintf(stderr, "Unrecognized option '%c'.\n", c);
-	  exit(2);
+	  exit(opterr);
 	}
       arg = cindex - 1;
       return UNRECOGNIZED_OPTION;
@@ -164,7 +164,7 @@ CSSC_Options::next()
 	      if (opterr)
 		{
 		  fprintf(stderr, "Option '%c' requires an argument.\n", c);
-		  exit(2);
+		  exit(opterr);
 		}
 	      arg = cindex - 1;
 	      return MISSING_ARGUMENT;

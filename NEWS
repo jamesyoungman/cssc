@@ -2,6 +2,11 @@ New in CSSC-0.14alpha-pl0
 
 	* Added Richard Kettlewell's sccs.cgi CGI script.
 
+	* Added a Glossary to the manual
+
+	* Corrections to "what" - exit with status 1 if no matching 
+          string was found or an unknown option letter was passed.
+
 	* Fixes for set-user-id operation (which is still not
           recommended - see the CSSC manual for an explanation).
 

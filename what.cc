@@ -50,7 +50,7 @@
 #include "cssc.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.19 2001/09/29 19:39:41 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.20 2002/03/18 20:55:44 james_youngman Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -207,14 +207,15 @@ int
 main(int argc, char **argv)
 {
   int one_match = 0;
-
+  int matchcount = 0;
+  
   if (argc > 0)
     what_prg_name = argv[0];
 
   check_env_vars();
   
   int c;
-  class CSSC_Options opts(argc, argv, "r!snV");
+  class CSSC_Options opts(argc, argv, "r!snV", 1);
   for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS; c = opts.next())
     {
       switch (c)
@@ -255,6 +256,8 @@ main(int argc, char **argv)
 	    if (at[1] == '(' && at[2] == '#' && at[3] == ')')
 	      {
 		at = print_what(at+4, end + 3, f);
+		++matchcount;
+		
 		putchar('\n');
 		if (0 == at || one_match)
 		  {
@@ -289,7 +292,10 @@ main(int argc, char **argv)
 #endif
       xclose(f);
     }
-  return 0;
+  if (matchcount)
+    return 0;
+  else
+    return 1;
 }
 
 /* Local variables: */

@@ -56,7 +56,7 @@ private:
   void reorder();		// reorder argv so that options come first.
 
 public:
-  CSSC_Options(int ac, char **av, const char *s, int err = 1);
+  CSSC_Options(int ac, char **av, const char *s, int err = 2);
   int next(void);
   int get_index(void) const;
   int get_argc(void) const;

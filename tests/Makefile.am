@@ -1,5 +1,5 @@
 TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel \
-		bsd-sccs year-2000 initial
+		bsd-sccs year-2000 initial what
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -96,6 +96,13 @@ test-binary: links
 
 test-rmdel: links
 	$(SHELL) -ec 'cd rmdel && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
+test-what: links
+	$(SHELL) -ec 'cd what && for i in *.sh ; \
 	do \
 		echo Running test $$i; \
 		$(SHELL) $$i || exit 1; \

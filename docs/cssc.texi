@@ -1716,6 +1716,9 @@ The @code{what} program is designed to search in files for the
 recognition string @samp{@@(#)}.  All the strings it finds matching this
 are printed on standard output.
 
+The exit status of @code{what} if zero is a matching string as found,
+and 1 otherwise.  
+
 @subsection Options for @code{what}
 @code{what [-s] [-V] file [file ...]}
 @table @samp
