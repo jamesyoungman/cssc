@@ -30,9 +30,16 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.11 1998/09/06 09:25:26 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.12 2001/09/16 09:35:24 james_youngman Exp $";
 #endif
 
+
+#if 0 
+/* This is the old add_lock code. 
+ * The p-file is supposed to have mode 0644.  This means
+ * that we need to reqrite the pfile, instead of just appending
+ * to it. 
+ */
 bool
 sccs_pfile::add_lock(sid got, sid delta, 
 		     sid_list &included, sid_list &excluded) {
@@ -75,6 +82,31 @@ sccs_pfile::add_lock(sid got, sid delta,
 	  }
 #endif
 }
+
+
+#else
+
+bool
+sccs_pfile::add_lock(sid got, sid delta, 
+		     sid_list &included, sid_list &excluded) {
+	ASSERT(mode == APPEND);
+
+	struct edit_lock new_lock;
+	
+	new_lock.got = got;
+	new_lock.delta = delta;
+	new_lock.user = get_user_name();
+	new_lock.date = sccs_date::now();
+	new_lock.include = included;
+	new_lock.exclude = excluded;
+	new_lock.deleted = 0;
+
+	edit_locks.add(new_lock);
+
+	return update();
+}
+#endif
+
 
 /* Local variables: */
 /* mode: c++ */
