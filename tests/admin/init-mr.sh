@@ -45,7 +45,7 @@ remove $s
 ## OK, we know the -i and -r options work.
 ## Make sure -r doesn't work without an argument.
 docommand I8 "${admin} -ifoo -r 2 $s" 1 "" "IGNORE"
-test  -f $s && fail I8 stage I7 should not have created $s.
+test  -f $s && fail I8 stage I8 should not have created $s.
 
 ## Create and specify MR numbers...
 
