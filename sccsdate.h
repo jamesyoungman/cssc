@@ -29,7 +29,7 @@ public:
 	sccs_date(const char *cutoff);
 	sccs_date(const char *date, const char *time);
 
-	int valid() { return t != -1; }
+	int valid() const { return t != -1; }
 
 	static sccs_date now() {
 		sccs_date temp(0, 0);
