@@ -76,7 +76,7 @@ public:
 		return (void const *) this;
 	}
 
-	operator release() const;	/* Defined below */
+  //	operator release() const;	/* Defined below */
 
 	friend int
 	operator >(sid const &i1, sid const &i2) {
@@ -181,11 +181,13 @@ public:
 	dprint(FILE *f) const {
 		fprintf(f, "%d.%d.%d.%d", rel, level, branch, sequence);
 	}
+
+  friend release::release(const sid &s);
 };
 
 
 inline sid::sid(release r): rel(r), level(0), branch(0), sequence(0) {}
-inline sid::operator release() const { return release(rel); }
+//inline sid::operator release() const { return release(rel); }
 
 #if 1
 
