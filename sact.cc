@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.15 2001/09/29 19:39:41 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.16 2003/12/08 12:13:46 james_youngman Exp $";
 
 void
 usage() {
@@ -82,13 +82,23 @@ main(int argc, char **argv)
 	  sccs_pfile pfile(name, sccs_pfile::READ);
 	  
 	  pfile.rewind();
-	  bool first = true;
 	  
+	  bool first = true;
 	  while (pfile.next())
 	    {
-	      if (first)		// first lock on this file...
+	      if (first) // first lock on this file...
 		{
-		  printf("\n%s:\n", name.c_str());
+		  /*
+		   * Before we print out the information about the
+		   * first lock on a given file. we may have to
+		   * identify which file we are talking about.  We
+		   * don't do this if only one file was specified on
+		   * the command line.
+		   */
+		  if (!iter.unique())
+		  {
+		    printf("\n%s:\n", name.c_str());
+		  }
 		  first = false;
 		}
 	      
