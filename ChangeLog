@@ -1,3 +1,35 @@
+2001-07-14  james_youngman  <jay@gnu.org>
+
+	* /cvsroot/cssc/gnu/CSSC/README: Add remark about "--disable-binary".
+
+	* /cvsroot/cssc/gnu/CSSC/acconfig.h, /cvsroot/cssc/gnu/CSSC/admin.cc, /cvsroot/cssc/gnu/CSSC/auxfiles/CSSC.spec.in, /cvsroot/cssc/gnu/CSSC/bodyio.cc, /cvsroot/cssc/gnu/CSSC/docs/config-info.texi.in, /cvsroot/cssc/gnu/CSSC/docs/cssc.texi, /cvsroot/cssc/gnu/CSSC/docs/Makefile.am, /cvsroot/cssc/gnu/CSSC/Makefile.am, /cvsroot/cssc/gnu/CSSC/NEWS, /cvsroot/cssc/gnu/CSSC/README, /cvsroot/cssc/gnu/CSSC/sf-delta.cc, /cvsroot/cssc/gnu/CSSC/sf-get2.cc, /cvsroot/cssc/gnu/CSSC/showconfig.cc, /cvsroot/cssc/gnu/CSSC/tests/binary/auto.sh, /cvsroot/cssc/gnu/CSSC/tests/binary/binbasic.sh, /cvsroot/cssc/gnu/CSSC/tests/binary/diff.sh, /cvsroot/cssc/gnu/CSSC/tests/binary/eightbit.sh, /cvsroot/cssc/gnu/CSSC/tests/binary/seeking.sh, /cvsroot/cssc/gnu/CSSC/tests/common/config-data, /cvsroot/cssc/gnu/CSSC/val.cc, /cvsroot/cssc/gnu/CSSC/version.h:
+	Provide new configure option, --disable-binary, which removes
+	support for creating binary SCCS files.  If we find an existing
+	binary SCCS file, we can still work with it.  Also allow the
+	setting of a maximum line length in order to provide better
+	interoperability with other SCCS implementations.
+
+	* /cvsroot/cssc/gnu/CSSC/configure.in:
+	Allow the disabling of binary file support and the setting of a
+	maximum SCCS file line length (for interoperability).
+
+2001-07-10  james_youngman  <jay@gnu.org>
+
+	* /cvsroot/cssc/gnu/CSSC/get.cc, /cvsroot/cssc/gnu/CSSC/sccsfile.h, /cvsroot/cssc/gnu/CSSC/sf-get2.cc:
+	SourceForge bug 439146: concurrent edits cause assert failure
+	First cut at solving the problem.
+
+	* /cvsroot/cssc/gnu/CSSC/cdc.cc, /cvsroot/cssc/gnu/CSSC/delta.cc, /cvsroot/cssc/gnu/CSSC/get.cc, /cvsroot/cssc/gnu/CSSC/pf-del.cc, /cvsroot/cssc/gnu/CSSC/prs.cc, /cvsroot/cssc/gnu/CSSC/rmdel.cc, /cvsroot/cssc/gnu/CSSC/sccsfile.cc, /cvsroot/cssc/gnu/CSSC/sccsname.h, /cvsroot/cssc/gnu/CSSC/sf-admin.cc, /cvsroot/cssc/gnu/CSSC/sf-delta.cc, /cvsroot/cssc/gnu/CSSC/unget.cc, /cvsroot/cssc/gnu/CSSC/val.cc:
+	Various changes relating to correct NULL pointer 'spelling', in the
+	interests of greater portability.
+
+2001-07-08  james_youngman  <jay@gnu.org>
+
+	* /cvsroot/cssc/gnu/CSSC/ChangeLog, /cvsroot/cssc/gnu/CSSC/NEWS:
+	Updated ChangeLog and NEWS files prior to release.
+
+	* /cvsroot/cssc/gnu/CSSC/configure.in: Bumped version to 0.12alpha.pl0.
+
 2001-07-06  james_youngman  <jay@gnu.org>
 
 	* sid_list.h:
