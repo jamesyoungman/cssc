@@ -4,6 +4,7 @@
 
 # Import common functions & definitions.
 . ../common/test-common
+. ../common/need-prt
 
 s=s.testfile
 

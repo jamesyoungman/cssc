@@ -1174,6 +1174,12 @@ The full path name of the @sc{sccs} file.
 
 @item :UN:
 List of users authorised to make deltas to this file (one per line).
+This list can be modified with the use of the options @option{-a} and
+@option{-e} of @code{admin}; if this list is empty, any user is
+allowed to use @code{delta} on this file (subject to the usual file
+permissions checks made by the operating system).  However, in this
+case the @samp{UN} data keyword somewhat curiously expands to
+@samp{none}.
 
 @item :Y:
 Value of the module-type flag.
@@ -1318,6 +1324,10 @@ The @code{prt} command provides information about an @sc{sccs} file
 without modifying it.  There are many options, though the default
 behaviour is usually appropriate.  It is possible to select what
 revisions to print information on, by @sc{sid} or by date.
+
+Some @sc{sccs} implementations lack the @code{prt} command, though
+none lack the @code{prs} command (@pxref{prs}) which is otherwise
+quite similar.
 
 @menu
 * Basic usage: prt usage.       Frequently-used @code{prt} commands
@@ -3212,33 +3222,57 @@ This section explains those commands used in the test scripts that are
 not simply normal shell commands.  Normal shell commands like @code{sed}
 and @code{grep} are not described.
 
-
-@menu
-* docommand::   Run a command, checking its return value and output.
-* remove::      Remove a file if it is present.
-* success::     Declare that a test has passed.
-* fail::        Declare that a test has failed.
-* echo_nonl::   Print a string without a following argument.
-* miscarry::    When a test case cannot be run.
-@end menu
-
-
 The best approach for writing new test scripts or just individual new
 test cases is to first think of some aspect that needs better test
 coverage, and then to write the test script, basing it on an existing
-script.  At this stage the best strategy is to test the test script
-itself by running against a genuine edition of @sc{sccs}, if you have
-one available (before running @code{make check}, set the environment
-variable @samp{dir} to point to the directory containing the programs to
-be tested; this should usually be @w{@file{/usr/sccs}}).  When you
-are sure that the test script is expecting the correct behaviour from
-programs under test, you can then run it against @sc{cssc}.  After all,
-if you're going to set out writing your test by assuming that @sc{cssc}
-is correct in the area under test, of what value is the test?
+script.  To make sure that your new tests are really checking for the
+right things, you can run them against an existing @sc{sccs}
+implementation other than @sc{cssc}.
+
+@menu
+* Testing the Test Suite: testing tests.   How to test the test suite itself
+* docommand::                              Run a command, checking its return value and output.
+* remove::                                 Remove a file if it is present.
+* success::                                Declare that a test has passed.
+* fail::                                   Declare that a test has failed.
+* echo_nonl::                              Print a string without a following argument.
+* miscarry::                               When a test case cannot be run.
+* real-thing::                             Some test scripts need to know which features to expect.
+* need-prt::                               Not all implementations have prt
+@end menu
 
 
+@node testing tests, docommand, , Writing new test cases
+@subsection Testing the Test Suite
 
-@node docommand, remove, ,          Writing new test cases
+The best strategy for testing the @sc{cssc} test suite itself is to
+run it against a genuine edition of @sc{sccs}, if you have one
+available.   Before running @code{make check}, set the environment
+variable @samp{dir} to point to the directory containing the programs
+to be tested; this should usually be @w{@file{/usr/sccs}}.  
+
+In many implementations of @sc{sccs}, some of the tools execute others
+(for example, @code{delta} often executes @code{get} to retrieve the
+previous version of the controlled file).  This means that to
+correctly test the test suite, your @code{PATH} environment variable
+should be set up to select the @sc{sccs} tools you want to test.  Here
+is an example of the correct way to set up the environment to test
+@sc{sccs} tools in @file{/usr/ccs/bin} :-
+
+@example
+dir=/usr/ccs/bin
+PATH=/usr/ccs/bin:$PATH
+export dir
+make check
+@end example
+
+When you are sure that the test script is expecting the correct
+behaviour from programs under test, you can then run it against
+@sc{cssc}.  After all, if you're going to set out writing your test by
+assuming that @sc{cssc} is correct in the area under test, of what
+value is the test?
+
+@node docommand, remove, testing tests,          Writing new test cases
 @subsection docommand
 @cindex docommand
 
@@ -3387,7 +3421,7 @@ echo done
 @end example
 
 
-@node miscarry, , echo_nonl, Writing new test cases
+@node miscarry, real-thing, echo_nonl, Writing new test cases
 @subsection miscarry
 
 The @code{miscarry} function is used to indicate that while the test
@@ -3402,6 +3436,57 @@ remove foo
 echo '%M%' > foo
 test `cat foo` = '%M%' || miscarry cannot create file foo.
 @end example
+
+@node real-thing, need-prt, miscarry, Writing new test cases
+@subsection real-thing
+
+The various implementations of @sc{sccs} vary in several different
+ways, but the @sc{cssc} test suite tries very hard to pass when run
+against any genuine implementation of @sc{sccs} unless it has a
+definite bug.  This means for example that although the @sc{cssc}
+version of @code{admin -i} will support automatic switch-over to
+binary mode for a file provided via stdin, and the test suite tests
+this, the same property is not required of @sc{sccs} itself.
+
+The @file{real-thing} script checks if we are actually tesing a real
+implementation of @sc{sccs}.  It sets the environment variable
+@env{TESTING_CSSC} to @samp{true} or @samp{false}, depending on whether
+we are testing CSSC or not.
+
+If you are really interested in whether the implementation being
+tested supports binary files or not, you should be using the
+@file{config-data} script instead.
+
+@node need-prt, , real-thing, Writing new test cases
+@subsection need-prt
+
+The possible non-availability of @code{prt} is another thing that the
+@sc{cssc} test suite needs to know about in order to run successfully
+against all working versions of @sc{sccs}.  Some versions of @sc{sccs}
+lack the @code{prt} program.  For this reason, the tests for this tool
+(in the @file{tests/prt} directory) are skipped if @code{prt} is
+missing.  When writing test scripts, you should never use @code{prt}
+unless you are actually testing @code{prt} itself (you can almost
+always use @code{prs} instead).
+
+If your test is specifically designed to test the functionality of
+@code{prt} itself on the other hand, just source @file{need-prt}
+before the first test.  The @file{need-prt} script will skip the
+remainder of the invoking test script if @code{prt} is missing.  You
+might use it like this, for example :-
+
+@example
+#! /bin/sh
+. ../common/test-common
+. ../common/need-prt
+s=s.testfile
+remove $s
+docommand e1 "$@{prt@} $s" 1 IGNORE IGNORE
+success
+@end example
+
+
+
 
 
 @node Problems, Copying, Testing, Top

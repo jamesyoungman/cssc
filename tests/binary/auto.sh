@@ -39,7 +39,7 @@ rm -f infile $s
 echo_nonl "$@" > infile
 if ${admin} -iinfile ${adminflags} $s >/dev/null 2>&1
 then
-    if ( ${prt} -f $s 2>/dev/null; echo foo ) | grep encoded >/dev/null 2>&1
+    if ( ${prs} -d:FL: $s 2>/dev/null; echo foo ) | grep encoded >/dev/null 2>&1
     then
 	good
     else

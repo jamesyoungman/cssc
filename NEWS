@@ -1,3 +1,10 @@
+New in CSSC-0.14alpha-pl1
+
+	* The test suite now passes when run against a genuine version of 
+	  SCCS which lacks "prt".
+	
+	* Support for the "-a" option of "get"
+
 New in CSSC-0.14alpha-pl0
 
 	* Added Richard Kettlewell's sccs.cgi CGI script.

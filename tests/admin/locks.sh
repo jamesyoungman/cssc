@@ -82,8 +82,12 @@ remove  $p $g
 # Lock just release 2; a get should work, since we are getting release 1.
 docommand k7 "${admin} -fl2 $s" 0 IGNORE IGNORE
 docommand k8 "${get} -e $s" 0 IGNORE IGNORE
-docommand k8a "${prt} -f $s | 
-	sed -n -e 's/.*releases//p'" 0 "\t2\n" IGNORE
+
+# we may not have "prt".
+# docommand k8a "${prt} -f $s | 
+# 	sed -n -e 's/.*releases//p'" 0 "\t2\n" IGNORE
+docommand k8a "${prs} -d:LK: $s" 0 "2\n" IGNORE
+
 remove $p $g
 
 # Lock release 1 as well; a get should fail.
@@ -91,13 +95,9 @@ docommand k9 "${admin} -fl1 $s" 0 IGNORE IGNORE
 
 # CSSC and SCCS differ in terms of the order they list the locked
 # releases in.
-docommand k9a "${prt} -f $s | 
-	sed -n -e 's/.*releases//p' | grep 1" 0 IGNORE IGNORE
-
 # Locking release 1 should implicitly unlock release 2
 # (Solaris 2.6 does this).
-docommand k9b "${prt} -f $s | 
-	sed -n -e 's/.*releases//p' | grep 2" 1 IGNORE IGNORE
+docommand k9a "${prs} -d:LK: $s" 0 "1\n" IGNORE
 
 docommand k10 "${get} -e $s" 1 IGNORE IGNORE
 remove $p $g
@@ -111,9 +111,7 @@ remove $p $g
 
 
 docommand k15 "${admin} -fla $s" 0 IGNORE IGNORE
-docommand k16 "${prt} -f $s | 
-	sed -n -e 's/.*releases//p'" 0 "\ta\n" IGNORE
-
+docommand k16 "${prs} -d:LK: $s" 0 "a\n" IGNORE
 
 remove $s $g $p
 

@@ -58,7 +58,7 @@ rm -f $s
 remove errmsg
 if ( eval "${cmd}" ) >/dev/null 2>errmsg
 then
-    if ( ${prt} -f ${s} 2>/dev/null; echo foo ) | grep encoded >/dev/null 2>&1
+    if ( ${prs} -d:FL: $s 2>/dev/null; echo foo ) | grep encoded >/dev/null 2>&1
     then
 	remove $g errmsg
 	if ${get} -p ${s} 2>errmsg >${g}

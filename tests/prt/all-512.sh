@@ -1,6 +1,8 @@
 #! /bin/sh
 . ../common/test-common
+. ../common/need-prt
 export prt
+
 
 remove s.testfile2
 ../../testutils/uu_decode --decode < s.testfile2.uue || miscarry could not uudecode testfile2.uue.

@@ -19,30 +19,36 @@ test `cat foo` = '%M%' || miscarry cannot create file foo.
 docommand A1 "${admin} -ifoo ${s}" 0 "" IGNORE
 remove foo
 
-docommand A2 "${prt} -u $s" 0 "\ns.bar:\n\n Users allowed to make deltas -- \n\teveryone\n" ""
+#no_users="\n"
+no_users="none\n\n"
+
+# We may not have a "prt".
+# docommand A2 "${prt} -u $s" 0 "\ns.bar:\n\n Users allowed to make deltas -- \n\teveryone\n" ""
+
+# If the authorised user list is empty everyone is allowed to make deltas.
+docommand A2 "${prs} -d:UN: $s" 0 "${no_users}" ""
 
 # Check the adding of users.
 docommand A3 "${admin} -abashful ${s}" 0 "" ""
 docommand A4 "${admin} -agrumpy  ${s}" 0 "" ""
 docommand A5 "${admin} -asleepy  ${s}" 0 "" ""
 
-docommand A6 "${prt} -u $s" 0 "\ns.bar:\n\n Users allowed to make deltas -- \n\tsleepy\n\tgrumpy\n\tbashful\n" ""
+# docommand A6 "${prt} -u $s" 0 "\ns.bar:\n\n Users allowed to make deltas -- \n\tsleepy\n\tgrumpy\n\tbashful\n" ""
+docommand A6 "${prs} -d:UN: $s" 0 "sleepy\ngrumpy\nbashful\n\n" ""
 
 
 # Check the removal of users.
 docommand A7 "${admin} -esleepy  ${s}" 0 "" ""
-docommand A8 "${prt} -u $s" 0 "\ns.bar:\n\n Users allowed to make deltas -- \n\tgrumpy\n\tbashful\n" ""
+docommand A8 "${prs} -d:UN: $s" 0 "grumpy\nbashful\n\n" ""
 docommand A9 "${admin} -ebashful  ${s}" 0 "" ""
-docommand A10 "${prt} -u $s" 0 "\ns.bar:\n\n Users allowed to make deltas -- \n\tgrumpy\n" ""
+docommand A10 "${prs} -d:UN: $s" 0 "grumpy\n\n" ""
 docommand A11 "${admin} -egrumpy  ${s}" 0 "" ""
-docommand A12 "${prt} -u $s" 0 "\ns.bar:\n\n Users allowed to make deltas -- \n\teveryone\n" ""
-
-
+docommand A12 "${prs} -d:UN: $s" 0 "${no_users}" ""
 
 # Adding and removing a user in the same command should still
 # result in the user being added.
 docommand A13 "${admin} -asleepy -esleepy ${s}" 0 "" ""
-docommand A14 "${prt} -u $s" 0 "\ns.bar:\n\n Users allowed to make deltas -- \n\tsleepy\n" ""
+docommand A14 "${prs} -d:UN: $s" 0 "sleepy\n\n" ""
 
 
 remove $s $g $z foo command.log last.command core 

@@ -123,15 +123,17 @@ the package on older machines and perhaps even incorrect operation.
 SCCS commands implemented this package are: admin, cdc, delta, get,
 prs, prt, sccsdiff, rmdel, sact, sccs, unget, val and what.  Not all
 options and capabilities of the commands have been implemented yet,
-and the comb and vc commands are not provided at all.  Features
-planned but not yet available include a Bourne shell script for
-converting SCCS files to RCS files (a csh script exists for this
-purpose [sccs2rcs.csh] but not everybody has csh).
+and the comb and help commands are not provided at all.  
 
-Unimplemented features include consistency checking (admin -h),
-ignored deltas (delta -g), l-files (get -l), and getting a delta by
-sequence number (get -a).  Some features like including and excluding
-deltas (get -i -x) have been implemented but not extensively tested.
+You can use these tools to convert your SCCS repository to RCS or CVS
+- to do this, you will also need the SCCS-to-RCS conversion script by
+Jonathan Leffler (which should be included in the source distribution
+of CVS).
+
+Unimplemented features include the "-h" option of admin (use "val"
+instead), ignored deltas (delta -g), l-files (get -l).  Some features
+like including and excluding deltas (get -i -x) have been implemented
+but not extensively tested.
 
 See the file INSTALL for information on how to compile this package.
 Send any questions or bug reports by e-mail to the current maintainer,
