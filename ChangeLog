@@ -1,4 +1,191 @@
-2002-03-19  James Youngman  <jay@gnu.org>
+2002-04-03  james_youngman  <james_youngman@periwinkle>
+
+	* docs/cssc.texi: enhancements to the sections on interoperability
+
+	* configure.in:
+	Added HAVE_GNU_DIFF, which indicates if the diff command to be used s GNU diff
+
+	* showconfig.cc:
+	Show the likely limit on the length of a line for the diff utility being used
+
+	* acconfig.h:
+	Added HAVE_GNU_DIFF, which indicates if the diff command to be used s GNU diff
+
+	* environment.cc:
+	Show the likely limit on the length of a line for the diff utility being used
+
+	* delta.cc, get.cc, tests/get/errorcases.sh:
+	Invalid options produce a return value of 1 (on Solaris 2.6) not 2
+
+	* testutils/compare_gets.sh:
+	Do not compare removed deltas - so do not pass -a to prs
+
+2002-04-02  james_youngman  <james_youngman@periwinkle>
+
+	* NEWS: Corrected typos.
+
+	* tests/delta/options.sh:
+	Unknown option error results in return value of 1, not 2.
+
+	* tests/delta/errorcase.sh, sf-delta.cc:
+	A pre-existing d-file is not an error condition
+
+	* seqstate.cc, seqstate.h, sf-get.cc, sf-get2.cc, sf-get3.cc, tests/get/gg_get_ix.sh, tests/get/sf111140.sh:
+	Do includes before excludes (except in the case of command-line includes) - fixes bug reported by gerry.green@cle.philips.com
+
+	* tests/get/sf111140_full.txt: test file
+
+	* tests/get/create.sh: Extra checks as we go along.
+
+2002-03-28  james_youngman  <james_youngman@periwinkle>
+
+	* NEWS: Updated with the latest info
+
+	* docs/TESTING: added Gerry Green
+
+	* tests/get/gg_get_ix.sh, sccsfile.h, sf-delta.cc, sf-get.cc, sf-get2.cc, sf-get3.cc, sf-prs.cc, Makefile.am:
+	Make sure everybody is using sccs_file::prepare_seqstate() in the same way
+
+	* tests/get/gg_get_ix.sh: new test script from Gerry Green
+
+2002-03-26  james_youngman  <james_youngman@periwinkle>
+
+	* tests/get/errorcases.sh, docs/tests-todo.txt, get.cc:
+	gcov fixes - invalid SIDs for get -i and get -x
+
+	* docs/.cvsignore: Ignore cssc.info-4
+
+	* sccs-cgi/.cvsignore: Ignore Makefile.in.
+
+	* docs/tests-todo.txt, tests/delta/errorcase.sh:
+	Added extra 5test cases to increate test coverage
+
+	* sf-delta.cc:
+	If the p-file indicates a SID which is not in the SCCS file, indicate
+	which SID we have a problem with in the error message we produce.
+
+	* docs/tests-todo.txt: Removed todo items for the tests we've addded.
+
+	* testutils/user.c: Various enhancements for testing "delta".
+
+	* docs/cssc.texi: Comments about authorised user list
+
+2002-03-25  james_youngman  <james_youngman@periwinkle>
+
+	* tests/delta/errorcase.sh:
+	Extra test cases for the authorised user list.
+
+	* sf-get3.cc: Do not use '!' exclusion for authorised user list
+
+	* sccsfile.h, sf-get3.cc, sf-get2.cc, sf-delta.cc:
+	delta should check that the invoking user is allowed to make deltas
+
+	* docs/cssc.texi:
+	Made the SCCS file flags section headings reflect the contents better
+
+	* tests/delta/errorcase.sh: initial checkin
+
+	* tests/delta/MRs.sh:
+	fixes to the tests - after testing against Solaris 2.6
+
+	* tests/delta/basic.sh:
+	Added tests for the no-id-keywords-is-fatal flag
+
+	* testutils/user.c:
+	added feature - 'tell me a group of which I am not a member'
+
+	* sccs-cgi/Makefile.am: initial version
+
+	* docs/tests-todo.txt: Removed the todo-items we've already done
+
+	* NEWS: We removed the -Y and -M options of delta
+
+	* Makefile.am: recurse into sccs-cgi also
+
+	* configure.in: generate  sccs-cgi/Makefile in AC_OUTPUT
+
+	* val.cc: Fixed header comment which indicated what the file was for
+
+	* sccsfile.cc:
+	Use  v_unknown_feature_warning() instead of  v_errormsg() since the latter is no longer exported from quit.cc
+
+	* my-getopt.cc:
+	Produce usage message is the command line exhibits wrong usage of options
+
+	* tests/common/test-common: Added function rename()
+
+	* tests/delta/MRs.sh:
+	Extra test - should not be able to check in file without specifying an MR if the v flag is set
+
+	* tests/delta/basic.sh:
+	extra tests (deletion of lines, checking of -r option against p-file)
+
+	* tests/delta/n-option.sh:
+	remove any test files we will need to control at the start
+
+	* quit.cc, quit.h: Don't export v_errormsg as a global function
+
+2002-03-24  james_youngman  <james_youngman@periwinkle>
+
+	* testutils/gcov-util.sh: Put the title in <title>...</title>.
+
+	* testutils/gcov-util.sh:
+	Define $NOW (date at which the summary was prepared).
+
+	* testutils/gcov-util.sh:
+	Tool for slicing and dicing the results of gcov.
+
+	* docs/tests-todo.txt:
+	Added list of tests to be written in tests-todo.txt
+
+	* delta.cc: Removed options -M and -Y (not in normal SCCS anyway)
+
+	* tests/delta/options.sh:
+	Added tests for the various command-line options of delta.
+
+	* NEWS: Brought the NEWS fie up to date with the ChangeLog file.
+
+2002-03-23  james_youngman  <james_youngman@periwinkle>
+
+	* docs/cssc.texi: Use @option for options, not @samp.
+
+	* configure.in: spell --disable-max-line-length correctly
+
+	* sf-prs.cc:
+	Print sequence numbers in correct (reverse) order; don't include ignored deltas in :DI: (for Solaris 2.6 compatibility)
+
+	* docs/cssc.texi:
+	Documented val.  Included information about differences between the various SCCS versions
+
+2002-03-22  james_youngman  <james_youngman@periwinkle>
+
+	* tests/prs/keywords.sh: Re-enabled all the tests...
+
+	* tests/prs/keywords.sh:
+	Added test cases for having more than one SID in the included or
+	excluded SID list.
+
+2002-03-21  james_youngman  <james_youngman@periwinkle>
+
+	* sf-prs.cc:
+	Backed out of the change made for previous revision - they should be
+	shown as seq_nos after all...
+
+	* tests/prs/keywords.sh: :Dx: and friends should emit seq_no values.
+
+	* sf-prs.cc:
+	For lists of included/excluded deltas, print the SID rather than the seq_no.
+
+	* myset.h, sf-delta.cc:
+	Only list each included/excluded delta once in each include/exclude list.
+
+	* tests/prs/keywords.sh: Added tests for more keywords.
+
+2002-03-20  james_youngman  <james_youngman@periwinkle>
+
+	* ChangeLog: Brought up to date with new log entries.
+
+2002-03-19  james_youngman  <james_youngman@periwinkle>
 
 	* val.cc:
 	Various fixes for the value returned in all sorts of validation-faulure cases
