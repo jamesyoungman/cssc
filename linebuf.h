@@ -14,7 +14,7 @@
 #define __LINEBUF_H__
 
 #ifdef __GNUC__
-#pragma interface
+//#pragma interface
 #endif
 
 /* This class is used to read lines of unlimited length from a file. */

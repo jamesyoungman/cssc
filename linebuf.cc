@@ -9,14 +9,14 @@
  */
 
 #ifdef __GNUC__
-#pragma implementation "linebuf.h"
+//#pragma implementation "linebuf.h"
 #endif
 
 #include "cssc.h"
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.3 1997/05/10 14:49:50 james Exp $";
+static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.4 1997/05/21 00:04:40 james Exp $";
 #endif
 
 int
