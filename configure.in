@@ -48,10 +48,10 @@ eval "ac_cv_decl_$ac_tr_define=yes",
 eval "ac_cv_decl_$ac_tr_define=no")])dnl
 if eval "test \"`echo '$ac_cv_decl_'$ac_tr_define`\" = yes"; then
 	 AC_MSG_RESULT(yes)
-	 echo 'defineing' $ac_tr_define
+	 echo 'defining' $ac_tr_define
 	 AC_DEFINE_UNQUOTED($ac_tr_define)
 else
-	 echo 'NOT defineing' $ac_tr_define 
+	 echo 'NOT defining' $ac_tr_define 
 	 AC_MSG_RESULT(no)
 fi
 )
@@ -66,6 +66,7 @@ dnl AC_FUNC_MEMCMP
 dnl The "select" that autoscan found was a method. AC_CHECK_FUNCS(select)
 AC_CHECK_FUNCS(mktime abort wait)
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid fork pipe spawn geteuid getegid)
+AC_CHECK_FUNCS(fsetpos)
 AC_REPLACE_FUNCS(strerror remove rename strstr)
 AC_SUBST(LIBOBJS)dnl
 

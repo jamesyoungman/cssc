@@ -28,6 +28,9 @@
  * autoheader in this way.
  */
 
+/* define if you have the ISO C function fsetpos(). */
+#undef HAVE_FSETPOS
+
 /* define if you have the global variable timezone. */
 #undef HAVE_TIMEZONE
 
