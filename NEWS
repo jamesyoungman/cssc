@@ -2,7 +2,22 @@ New in CSSC-0.14alpha-pl0
 
 	* Added Richard Kettlewell's sccs.cgi CGI script.
 
-	* Added a Glossary to the manual
+	* Enhancements to the manual: added a Glossary, document "val".
+
+	* Include a section in the manual explaining in more detail some of 
+	  the differences in between other SCCS versions (and which 
+	  funcitonality CSSC follows in each case).
+
+	* More test cases (we are now tracking test suite 
+	  coverage with "gcov" and devising test cases to 
+	  test the parts of the code that the test suite does not 	
+	  currently reach).
+	
+	* Bug-fixes for "val" (mainly corrections to the precise 
+	  value returned when validation fails)
+	
+ 	* "sccs help" and "sccs comb" now issue more helpful error
+          messages explaining why the relevant program is missing.
 
 	* Corrections to "what" - exit with status 1 if no matching 
           string was found or an unknown option letter was passed.
@@ -13,6 +28,18 @@ New in CSSC-0.14alpha-pl0
 	* Added warning when we see an excluded delta, explaining that 
           this feature is not fully tested.   The warning includes a pointer 
           to a document explaining what they should do about this.
+
+	* Fixed bugs from SourceForge: 
+		479916 (get -t problem), 
+	  	480136, 481519, 481707, 484278 (all related to setuid
+	  		operation, and in fact all duplicates of each other),
+	  	489005 (removal of g-file when running setuid), 
+		513800 (cope with Data General "bugfix" 4-digit years), 
+		489311 (Locale settings cause test failure),	
+	  	530969 (FILE* leak in filediff.cc), 
+		531884 (compiler warning on 64-bit systems)
+
+	* Moved old ChangeLog to ChangLog.2.
 
 New in CSSC-0.13alpha-pl1
 
