@@ -37,7 +37,7 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.27 2000/07/18 20:46:03 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.28 2001/07/10 21:54:54 james_youngman Exp $";
 
 void
 usage() {
@@ -51,7 +51,7 @@ delta_main(int argc, char **argv)
 {
   Cleaner arbitrary_name;
   int c;
-  sid rid = NULL;		/* -r */
+  sid rid = NULL;		/* -r  ... XXX: does this need correcting? s/NULL/0/? */
   int silent = 0;		/* -s */
   int keep_gfile = 0;		/* -n */
 #if 0

@@ -36,7 +36,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.19 2000/03/19 13:08:30 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: rmdel.cc,v 1.20 2001/07/10 21:54:54 james_youngman Exp $";
 
 void
 usage() {
@@ -66,7 +66,7 @@ main(int argc, char **argv)
 {
   Cleaner arbitrary_name;
   int c;
-  sid rid = NULL;
+  sid rid = NULL;		// (XXX: correct use of NULL?) 
   
   if (argc > 0)
     set_prg_name(argv[0]);

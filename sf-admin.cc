@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.27 2000/11/05 17:40:10 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.28 2001/07/10 21:54:54 james_youngman Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -200,16 +200,16 @@ sccs_file::admin(const char *file_comment,
 	  break;
 	  
 	case 'c':
-	  flags.ceiling = NULL;
+	  flags.ceiling = 0;
 	  break;
 	  
 	case 'f':
-	  flags.floor = NULL;
+	  flags.floor = 0;
 	  break;
 	  
 	  
 	case 'd':
-	  flags.default_sid = NULL;
+	  flags.default_sid = NULL; // (XXX: correct use of NULL?) 
 	  break;
 	  
 	case 'i':

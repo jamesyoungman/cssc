@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.33 1999/04/18 17:39:40 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.34 2001/07/10 21:54:54 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -81,8 +81,8 @@ main(int argc, char **argv)
   Cleaner arbitrary_name;
   int retval = 0;
   int c;
-  sid rid = NULL;			/* -r */
-  sid org_rid = NULL;
+  sid rid = NULL;			/* -r (XXX: correct use of NULL?) */
+  sid org_rid = NULL;		// (XXX: correct use of NULL?) 
   int for_edit = 0;			/* -e */
   int branch = 0;			/* -b */
   int suppress_keywords = 0;		/* -k */

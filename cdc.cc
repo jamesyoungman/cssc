@@ -33,7 +33,7 @@
 #include "delta.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.22 2000/03/19 13:08:05 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.23 2001/07/10 21:54:54 james_youngman Exp $";
 
 void
 usage()
@@ -57,7 +57,7 @@ main(int argc, char *argv[])
 {
   Cleaner arbitrary_name;
   int c;
-  sid rid = NULL;
+  sid rid = NULL;		// XXX: does this need correcting? s/NULL/0/?
   mystring mrs;
   mystring comments;
   int got_comments = 0;

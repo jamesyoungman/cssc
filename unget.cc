@@ -34,7 +34,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.20 1999/04/18 17:59:40 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.21 2001/07/10 21:54:54 james_youngman Exp $";
 
 void
 usage() {
@@ -48,7 +48,7 @@ main(int argc, char **argv)
 {
   Cleaner arbitrary_name;
   int c;
-  sid rid = NULL;
+  sid rid = NULL;		// (XXX: correct use of NULL?) 
   int silent = 0;
   int keep_gfile = 0;
   

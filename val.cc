@@ -30,7 +30,7 @@
 #include "except.h"
 #include "valcodes.h"
 
-const char main_rcs_id[] = "$Id: val.cc,v 1.3 2000/03/19 11:18:41 james Exp $";
+const char main_rcs_id[] = "$Id: val.cc,v 1.4 2001/07/10 21:54:54 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -56,7 +56,7 @@ main(int argc, char **argv)
   bool had_r_option = false;
   int c;
   const char *req_sid_str = NULL;
-  sid rid = NULL;
+  sid rid = NULL;		// (XXX: correct use of NULL?) 
   
   if (argc > 0)
       set_prg_name(argv[0]);

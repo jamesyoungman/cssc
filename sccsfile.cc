@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.42 2000/03/19 11:18:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.43 2001/07/10 21:54:54 james_youngman Exp $";
 #endif
 
 
@@ -480,9 +480,9 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   
   flags.no_id_keywords_is_fatal = 0;
   flags.branch = 0;
-  flags.floor = NULL;
-  flags.ceiling = NULL;
-  flags.default_sid = NULL;
+  flags.floor = 0;
+  flags.ceiling = 0;
+  flags.default_sid = NULL;	// (XXX: correct use of NULL?) 
   flags.null_deltas = 0;
   flags.joint_edit = 0;
   flags.all_locked = 0;

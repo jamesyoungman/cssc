@@ -69,7 +69,10 @@ class sccs_name
   
 public:
   static int valid_filename(const char *name);
-  sccs_name(): lock_cnt(0), lock_ptr(0) {}
+  /* The initialisers on the following line have been re-ordered
+   * to follow the declaration order. 
+   */
+  sccs_name(): lock_ptr(0), lock_cnt(0)  {}
   sccs_name &operator =(const mystring& n); /* undefined */
 
   int valid() const { return sname.length(); }

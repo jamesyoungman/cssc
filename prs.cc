@@ -34,7 +34,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.21 1999/04/18 17:59:40 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.22 2001/07/10 21:54:54 james_youngman Exp $";
 
 void
 usage() {
@@ -49,7 +49,7 @@ main(int argc, char **argv)
   Cleaner arbitrary_name;
   int c;
   mystring format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
-  sid rid = NULL;
+  sid rid = NULL;		// (XXX: correct use of NULL?) 
   /* enum */ sccs_file::when selected = sccs_file::SIDONLY;
   int all_deltas = 0;
   sccs_date cutoff_date;
@@ -98,7 +98,7 @@ main(int argc, char **argv)
 	  break;
 	  
 	case 'R':	// obsolete MySC-ism.
-	  rid = NULL;
+	  rid = NULL;		// (XXX: correct use of NULL?) 
 	  default_processing = 0;
 	  break;
 	  
