@@ -1,3 +1,10 @@
+Nwe in CSSC-0.03alpha-pl2
+
+	* Really fixed the test case for %P% in tests/get this time.
+
+	* Indicated that GNU make and /bin/posix/sh are required on 
+	  HP-UX version 9.
+
 New in CSSC-0.03alpha-pl1
 
         * Changed the version number format again.  It's the last
