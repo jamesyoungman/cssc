@@ -2,7 +2,7 @@
  * sccsfile.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997-2003 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2002 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.50 2003/03/01 14:16:25 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.49 2003/03/01 14:15:33 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
