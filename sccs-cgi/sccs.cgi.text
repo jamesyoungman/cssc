@@ -1,0 +1,80 @@
+
+				  sccs.cgi
+
+This is a CGI program that provides a web interface to SCCS, the version control
+system. I wrote it because I wanted a convenient interface to the revision
+history data on the CSRG Archive CD-ROMs.
+
+With this program, you can:
+
+   o browse through directories;
+   o view the complete revision history of SCCS files;
+   o view arbitrary versions of SCCS files;
+   o view formatted versions of man pages stored in SCCS;
+   o view the difference between successive versions; and
+   o view the difference between arbitrary versions.
+
+Requirements
+
+Before you start, make sure you have the following software:
+
+   o Perl. I've only tested with Perl 5.6.1.
+   o GNU diff (or any other diff that supports the -u option)
+   o An SCCS implementation. I use GNU CSSC. I have not tested it with
+     anything else!
+   o GNU groff if you want to use the manpage-to-HTML translation feature.
+   o A web server that supports CGI.
+
+Security
+
+This program provides a web browsing interface to a portion of your file
+system. You are therefore recommended to restrict access to it. It also invokes
+whatever SCCS implementation you have; if that has any bugs then they may become
+security problems when used with this program.
+
+This program will also invoke groff on arbitrary files in the SCCS repository,
+if you configure it to do so. This might be risky, so the feature is turned off
+by default.
+
+Installation
+
+
+   1.  Modify the assignment of $root at the top of the script so that it
+       points to the directory containing your source tree (or
+       whatever)
+   2.  If you have groff, and don't think that running it from a CGI program
+       is risky, add "man2html" to the list of allowed filters at the top of
+       the script.
+   3.  Install it in your cgi-bin directory (or in some other way that your
+       web server will be able to access it). Remember to make it
+       executable.
+   4.  Visit its URL and check that it works.
+
+Reporting Bugs
+
+Please report any bugs to richard+sccscgi@sfere.greenend.org.uk. If you think
+you have found a bug, please check that there isn't a more recent version that
+fixes it before mailing me. If you include a patch, please use "diff -u" format.
+
+Changes
+
+2001-11-25: support for colorizing diffs (which is on by default) and formatting
+man pages to html (which is off by default, as you might not trust, or even
+have, groff).
+
+Copyright
+
+sccs.cgi is Copyright  2001 Richard Kettlewell.
+
+This package is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA

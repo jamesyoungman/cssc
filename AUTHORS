@@ -7,6 +7,10 @@ Eric Allman, and are copyright (C) 1980, 1993 The Regents of the
 University of California.  See the file ``bsd/COPYING.bsd'' for more
 information.
 
+The CGI script "sccs.cgi" and its associated documentation was written
+by Richard Kettlewell <rjk@greenend.org.uk> and is Copyright 2001
+Richard Kettlewell.
+
 See also the file docs/CREDITS for alist of other contributors without
 whose input CSSC would be much less useful than it is today.  I'd like
 to take this opportuniity to thank them.
