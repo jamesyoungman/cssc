@@ -11,15 +11,5 @@ unget=${unget:-${dir}/unget}
 what=${what:-${dir}/what}
 rmdel=${rmdel:-${dir}/rmdel}
 
-if test -f ${dir}/sccs
-then
-	sccs=${dir}/sccs
-else
-	case ${dir} in 
-		../..) sccs=${dir}/bsd/sccs ;;
-		    *) sccs=sccs            ;;
-	esac
-fi
-
 
 DIFF=${DIFF:-diff}
