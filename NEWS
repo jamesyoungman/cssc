@@ -1,4 +1,18 @@
-New in CSSC-0.11alpha-pl5
+New in CSSC-0.12alpha-pl0
+
+ 	* Updated BSD license & documentation to remove advertising clause
+	  (Thanks to Janet Casey and Richard Stallman for reminding me
+	  to do this).
+
+	* Some changes for better compilation with compilers other 
+	  than GCC.
+
+	* Include a script "testutils/mogrify.awk" that you can use to "sanitise" 
+	  SCCS files before sending them with bug reports, so as to not 
+	  expose your code (please check that the problem persists
+	  with the sanitised version of the file, also).
+
+	* Support for newer versions of automake and autoconf.
 
 	* New script, testutils/compare_gets.sh which can be used 
           to compare the result of using CSSC on your repository 

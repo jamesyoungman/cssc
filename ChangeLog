@@ -1,3 +1,49 @@
+2001-07-06  james_youngman  <jay@gnu.org>
+
+	* sid_list.h:
+	Source forge bug #438857; coredump if a range list has an empty element (e.g.
+	a comma at the end or two commas in a row).
+
+2001-06-26  james_youngman  <jay@gnu.org>
+
+	* docs/cssc.texi: Minor formatting changes
+
+2001-06-03  james_youngman  <jay@gnu.org>
+
+	* tests/get/s.incl_excl_1.input:
+	SourceForge BUG 417990: s.incl_excl_1.input missing from CVS.
+
+2000-12-03  james_youngman  <jay@gnu.org>
+
+	* README:
+	We now provide "val".  Also include note about unsetting ${sccs}
+	before running the test suite.
+
+	* NEWS: Added further info about more additions & bugfixes
+
+	* tests/get/excl_ig_1.sh:
+	Added extra test script; one of the tests fails on CSSC but is currently commented out
+
+	* docs/borrowed-files.txt: Added list of files sourced from elsewhere
+
+	* docs/TODO: Reconsidered some decisions.
+
+	* sf-get.cc:
+	Removed redundant "0 ||" expression in if statement (leftover from debugging)
+
+	* install-sh, missing, mkinstalldirs:
+	Updated various scripts used bu the automake/autoconf stuff with the
+	latest versions of those files as obtained from the Automake
+	distribution.
+
+	* tests/get/s.incl_excl_1: New file.
+
+2000-12-02  james_youngman  <jay@gnu.org>
+
+	* ChangeLog:
+	Updated ChangeLog from CVS repository, including the latest checkin
+	comments.
+
 2000-11-26  James Youngman  <james_youngman@users.sourceforge.net>
 
 	* /cvsroot/cssc/gnu/CSSC/sccsname.cc, /cvsroot/cssc/gnu/CSSC/cap.cc, /cvsroot/cssc/gnu/CSSC/delta-iterator.cc, /cvsroot/cssc/gnu/CSSC/fdclosed.cc, /cvsroot/cssc/gnu/CSSC/my-getopt.cc, /cvsroot/cssc/gnu/CSSC/sid_list.h, /cvsroot/cssc/gnu/CSSC/stack.h:
