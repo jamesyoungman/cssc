@@ -33,7 +33,7 @@
 #include "getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.4 1997/07/02 18:06:13 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.5 1997/10/26 14:13:01 james Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -207,7 +207,7 @@ main(int argc, char **argv) {
 			while(at != NULL) {
 				if (at[1] == '(' && at[2] == '#'
 				    && at[3] == ')') {
-					at = print_what(at, end + 3, f);
+					at = print_what(at+4, end + 3, f);
 					putchar('\n');
 					if (at == NULL || one_match) {
 						done = 1;
@@ -231,7 +231,9 @@ main(int argc, char **argv) {
 		if (read_len == -1) {
 			quit(errno, "%s: Read error.", argv[arg]);
 		}
+#if 0
 		putchar('\n');
+#endif
 		xclose(f);
 	}
 
