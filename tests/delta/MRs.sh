@@ -71,6 +71,19 @@ docommand M15 "${get} -e test/s.passwd" 0 "1.3\nnew delta 1.4\n2 lines\n" ""
 # Now that MR validation is turned off, we should not be able to specify MRs.
 docommand M16 "${delta} -mmr.M16 -ycomment.M16 test/s.passwd" 1 "1.4\n" IGNORE
 
+# If the MR flag is on but has no value ...
+docommand M17 "${admin} -fv test/s.passwd" 0 "" ""
+
+# Check that the MR validation flag is ON.
+docommand M18 "${prs} -d:MF: test/s.passwd" 0 "yes\n" ""
+
+# Check that the MR validation program is blank.
+docommand M19 "${prs} -d:MP: test/s.passwd" 0 "\n" ""
+
+# Hence MRs should be accepted without checking.
+docommand M20 "${delta} -mmr.M20 -ycomment.M20 test/s.passwd" 0 \
+	"1.4\n0 inserted\n0 deleted\n2 unchanged\n"  ""
+
 rm -rf test
 remove command.log passwd 
 
