@@ -93,10 +93,10 @@ docommand _4 "${admin} -asanta s.1" 0 IGNORE IGNORE
 
 sid=1.2.1.1
 # Excluded deltas
-expands_to K8 ':Dx:'   '1.1\n'
+expands_to K8 ':Dx:'   '1\n'
 
 # Ignored deltas
-# expands_to K9 ':Dg:'   '1.2\n'
+# expands_to K9 ':Dg:'   '2\n'
 expands_to K9 ':Dg:'   '\n'
 
 # Authorised user list
