@@ -3,6 +3,13 @@ New in CSSC-0.09alpha-pl3
 	* You can specify a full SID in the argument for the -r option
           of admin.  Some SCCS implementations allow this, and others 
           do not.  We now allow it, but with a warning.
+
+	* Improvements to the "val" command.
+
+	* We avoid checking for proper support of "const" in the 
+	  compiler, since the relevant Autoconf macro is designed for
+	  testing C compilers, and apparently fails on standard-compliant 
+	  C++ implementations.
 	
 New in CSSC-0.09alpha-pl2
 	
