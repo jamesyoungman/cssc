@@ -18,10 +18,6 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
- * placed in the Public Domain.
- *
- *
  * Members of the class sccs_file for doing sccs-prt.
  *
  */
