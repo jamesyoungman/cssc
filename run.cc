@@ -25,11 +25,6 @@ static const char sccs_id[] = "@(#) MySC run.c 1.1 93/11/09 17:17:58";
 // and otherwise the return value of the program.
 // Success is indicated by a zero return value.
 
-#if !defined(SYSTEM_FAILS_RETURNING_MINUS_ONE) && !defined(SYSTEM_FAILS_RETURNING_NONZERO)
-#error Please define either SYSTEM_FAILS_RETURNING_NONZERO or SYSTEM_FAILS_RETURNING_MINUS_ONE
-stop compiling now please.
-#endif
-
 void call_system(const char *s)
 {
   int failed;
