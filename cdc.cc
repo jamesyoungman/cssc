@@ -32,123 +32,180 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.9 1997/11/30 21:05:44 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.10 1998/01/15 22:47:19 james Exp $";
 
 void
-usage() {
-	fprintf(stderr,
-"usage: %s [-MYV] [-m MRs] [-y comments] -r SID file ...\n",
-		prg_name);
+usage()
+{
+  fprintf(stderr,
+	  "usage: %s [-V] [-m MRs] [-y comments] -r SID file ...\n",
+	  prg_name);
+}
+
+static const char *
+plural(int n)
+{
+  if (1 == n)
+    return "";
+  else
+    return "s";
 }
 
 int
-main(int argc, char **argv) {
-	int c;
-	sid rid = NULL;
-	mystring mrs;
-	int got_mrs = 0;
-	mystring comments;
-	int got_comments = 0;
-	
-	if (argc > 0) {
-		set_prg_name(argv[0]);
-	} else {
-		set_prg_name("cdc");
+main(int argc, char *argv[])
+{
+  int c;
+  int errflag = 0;
+  sid rid = NULL;
+  mystring mrs;
+  int got_mrs = 0;
+  mystring comments;
+  int got_comments = 0;
+  
+  if (argc > 0)
+    set_prg_name(argv[0]);
+  else
+    set_prg_name("cdc");
+
+  class getopt opts(argc, argv, "r!m!y!V");
+  for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next())
+    {
+      switch (c)
+	{
+	default:
+	  quit(-2, "Unsupported option: '%c'", c);
+
+	case 'r':
+	  rid = sid(opts.getarg());
+	  if (!rid.valid())
+	    {
+	      quit(-2, "Invaild SID: '%s'", opts.getarg());
+	    }
+	  break;
+	  
+	case 'm':
+	  mrs = opts.getarg();
+	  got_mrs = 1;
+	  break;
+
+	case 'y':
+	  comments = opts.getarg();
+	  got_comments = 1;
+	  break;
+
+	case 'V':
+	  version();
+	  break;
+	}
+    }
+
+  if (!rid.valid())
+    {
+      quit(-1, "A SID must be specified on the command line.");
+    }
+
+  sccs_file_iterator iter(argc, argv, opts.get_index());
+
+  if (!got_comments)
+    {
+      if (!iter.using_stdin())
+	{
+	  comments = prompt_user("comments? ");
+	}
+      else
+	{
+	  /* No -y option specified, but "-" was
+	   * specified on the command line, so
+	   * that's an error.
+	   */
+	  quit(-1,
+	       "You can't use standard input for argument list "
+	       "without using the \"-y\" option,\n"
+	       "because these two uses of stdin are mutually exclusive, sorry.");
+	}
+    }
+  
+  list<mystring> mr_list, comment_list;
+  comment_list = split_comments(comments);
+  mr_list = split_mrs(mrs);
+
+  int tossed_privileges = 0;
+
+  int first = 1;
+  
+  while (iter.next())
+    {
+      if (tossed_privileges)
+	{
+	  restore_privileges();
+	  tossed_privileges = 0;
 	}
 
-	class getopt opts(argc, argv, "r:m:My:YV");
-	for(c = opts.next(); c != getopt::END_OF_ARGUMENTS; c = opts.next()) {
-		switch (c) {
-		default:
-			quit(-2, "Unsupported option: '%c'", c);
+      sccs_name &name = iter.get_name();
+      sccs_file file(name, sccs_file::UPDATE);
 
-		case 'r':
-			rid = sid(opts.getarg());
-			if (!rid.valid()) {
-				quit(-2, "Invaild SID: '%s'", opts.getarg());
-			}
-			break;
-
-		case 'm':
-			mrs = opts.getarg();
-			got_mrs = 1;
-			break;
-
-		case 'M':
-			mrs = "";
-			got_mrs = 1;
-			break;
-
-		case 'y':
-			comments = opts.getarg();
-			got_comments = 1;
-			break;
-
-		case 'Y':
-			comments = "";
-			got_comments = 1;
-			break;
-
-		case 'V':
-			version();
-			break;
+      // If we need an MR list, prompt if required.
+      if (first)
+	{
+	  first = 0;
+	  if (file.mr_required() && (0 == mr_list.length()) )
+	    {
+	      if (iter.using_stdin())
+		{
+		  /* No -y option specified, but "-" was
+		   * specified on the command line, so
+		   * that's an error.
+		   */
+		  quit(-1,
+		       "You can't use standard input for argument list "
+		       "without using the \"-y\" and \"-m\" options, because\n"
+		       "these two uses of stdin are mutually exclusive, sorry.");
 		}
+	      else
+		{
+		  mrs = prompt_user("MRs? ");
+		  mr_list = split_mrs(mrs);
+		}
+	    }
 	}
-
-	if (!rid.valid()) {
-		quit(-2, "A SID must be specified on the command line.");
+  
+      if (mr_list.length() != 0)
+	{
+	  if (file.mr_required())
+	    {
+	      if (file.check_mrs(mr_list))
+		{
+		  quit(-1, "%s: Invalid MR number%s -- validation failed..",
+		       plural(mr_list.length()), name.c_str());
+		}
+	    }
+	  else 
+	    {
+	      /* No MRs required; it is in this case an error to provide them! */
+	      quit(-1,
+		   "%s: MRs are not allowed for this file "
+		   "(because its 'v' flag is not set).",
+		   name.c_str());
+	    }
 	}
-
-	sccs_file_iterator iter(argc, argv, opts.get_index());
-
-	list<mystring> mr_list, comment_list;
-	int first = 1;
-	int tossed_privileges = 0;
-
-	while(iter.next()) {
-		if (tossed_privileges) {
-			restore_privileges();
-			tossed_privileges = 0;
-		}
-
-		sccs_name &name = iter.get_name();
-		sccs_file file(name, sccs_file::UPDATE);
-		
-		if (first)
-		  {
-		    first = 0;
-		    
-		    // TODO: check if REAL SCCS prompts at this point.
-		    if (stdin_is_a_tty())
-		      {
-			if (!got_mrs && file.mr_required())
-			  mrs = prompt_user("MRs? ");
-			
-			if (!got_comments)
-			  comments = prompt_user("comments? ");
-		      }
-		    
-		    mr_list = split_mrs(mrs);
-		    comment_list = split_comments(comments);
-		  }
-
-		if (file.mr_required() && mr_list.length() != 0) {
-			if (file.check_mrs(mr_list)) {
-				quit(-1, "%s: Invalid MR number(s).",
-				     name.c_str());
-			}
-		}
-
-		if (!file.is_delta_creator(get_user_name(), rid)) {
-			give_up_privileges();
-			tossed_privileges = 1;
-		}
-
-		file.cdc(rid, mr_list, comment_list);
-		file.update();
+      else
+	{
+	  if (file.mr_required())
+	    quit(-1, "%s: MRs required.", name.c_str());
 	}
-
-	return 0;
+      
+      
+      if (!file.is_delta_creator(get_user_name(), rid))
+	{
+	  give_up_privileges();
+	  tossed_privileges = 1;
+	}
+      
+      file.cdc(rid, mr_list, comment_list);
+      file.update();
+    }
+  
+  return errflag;
 }
 
 // Explicit template instantiations.
