@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.33 2001/12/01 21:57:58 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.34 2002/03/19 16:13:37 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -390,6 +390,46 @@ static long get_nlinks(const char *name)
     }
 }
 
+static void maybe_wait_a_bit(int attempt, const char *lockfile)
+{
+    int waitfor = 0;
+    
+    if (attempt > 4)
+    {
+        /* Make sure that it's unlikely for two instances to be in sync. */
+        if ((attempt & 1) == (getpid() & 1) )
+        {
+            /* Once we have been waiting for a while, make each wait 
+             * longer in order to reduce the load on the system.  In
+             * this case it is unlikely that we will ever get the lock - 
+             * perhaps the other process got killed with SIGKILL or 
+             * something like that - but we can't just go ahead since 
+             * that's too dangerous.   
+             * 
+             * Therefore we hang around until someone investigates and 
+             * either kills us or deletes the lock file.  Meanwhile we 
+             * hope that our output messages are not being logged to a 
+             * file that's filled the disk.
+             */
+            if (attempt < 10)
+                waitfor = 1;
+            else
+                waitfor = 10;
+        }
+    }
+
+    if (waitfor)
+    {
+        errormsg("Sleeping for %d second%s "
+                 "while waiting for lock on %s; my PID is %ld\n",
+                 waitfor,
+                 ( (waitfor == 1) ? "" : "s"),
+                 lockfile,
+                 (long int) getpid() );
+        sleep(waitfor);
+    }
+}
+
 
 static int atomic_nfs_create(const mystring& path, int flags, int perms)
 {
@@ -438,6 +478,11 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
                        */
                       return open(pstr, flags, perms);
                     }
+                  else
+                  {
+                      /* The z.* file exists; wait a bit. */
+                      maybe_wait_a_bit(attempt, pstr);
+                  }
                 }
             }
           close(fd);
@@ -455,12 +500,7 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
                * Try again.  Sleep first if we're not doing well,
                * but try to avoid pathalogical cases...
                */
-              if ( (attempt > 4) && (attempt & 1) == (getpid() & 1) )
-                {
-                  errormsg("Sleeping for one second while "
-                           "waiting for lock\n");
-                  sleep(1);
-                }
+              maybe_wait_a_bit(attempt, pstr);
               break;
               
             default:            /* hard failure. */
@@ -531,10 +571,10 @@ bool unlink_gfile_if_present(const char *gfile_name)
   if (file_exists(gfile_name))
     {
       if (unlink(gfile_name) < 0)
-	{
-	  errormsg_with_errno("Cannot unlink the file %s", gfile_name);
-	  rv = false;
-	}
+        {
+          errormsg_with_errno("Cannot unlink the file %s", gfile_name);
+          rv = false;
+        }
     }
 #ifdef CONFIG_UIDS
   restore_privileges();
@@ -556,10 +596,10 @@ bool unlink_file_if_present(const char *gfile_name)
   if (file_exists(gfile_name))
     {
       if (unlink(gfile_name) < 0)
-	{
-	  errormsg_with_errno("Cannot unlink the file %s", gfile_name);
-	  rv = false;
-	}
+        {
+          errormsg_with_errno("Cannot unlink the file %s", gfile_name);
+          rv = false;
+        }
     }
 #ifdef CONFIG_UIDS
   restore_privileges();
