@@ -32,7 +32,7 @@
 #include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.7 1997/11/30 21:05:55 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.8 1997/12/26 17:00:14 james Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are
@@ -40,22 +40,32 @@ static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.7 1997/11/30 21:05:55 jam
 
 void
 sccs_file::prepare_seqstate(seq_state &state, sid_list include,
-			    sid_list exclude, sccs_date cutoff_date) {
-	delta_iterator iter(delta_table);
+			    sid_list exclude, sccs_date cutoff_date)
+{
+  
+  ASSERT(0 != delta_table);
+  delta_iterator iter(delta_table);
 
-	while(iter.next()) {
-		sid const &id = iter->id;
-
-		if (include.member(id)) {
-			state.include(iter->seq);
-		}
-		if (exclude.member(id)) {
-			state.exclude(iter->seq);
-		}
-		if (cutoff_date.valid() && iter->date > cutoff_date) {
-			state.exclude(iter->seq);
-		}
+  while (iter.next())
+    {
+      sid const &id = iter->id;
+      
+      if (include.member(id))
+	{
+	  state.include(iter->seq);
 	}
+      if (exclude.member(id))
+	{
+	  state.exclude(iter->seq);
+	}
+      if (cutoff_date.valid() && iter->date > cutoff_date)
+	{
+	  state.exclude(iter->seq);
+	}
+      
+      ASSERT(0 != delta_table);
+    }
+  ASSERT(0 != delta_table);
 }
 
 /* Local variables: */

@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.21 1997/11/30 21:05:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.22 1997/12/26 17:00:56 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -595,10 +595,16 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	       int keywords, const char *wstring,
 	       int show_sid, int show_module, int debug) {
 
+	ASSERT(0 != delta_table);
+	
 	seq_state state(highest_delta_seqno());
 	const delta *d = find_delta(id);
 	ASSERT(d != NULL);
+
+	ASSERT(0 != delta_table);
 	prepare_seqstate(state, d->seq);
+
+	ASSERT(0 != delta_table);
 	prepare_seqstate(state, include, exclude, cutoff_date);
 
 	// The subst_parms here may not be the Whole Truth since
