@@ -71,8 +71,8 @@ docommand Get_1 "$get -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
 
 docommand Get_2 "$get -p -i1.1 $s" 0 "$g\nInserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
 
-#remove [zxsp].$g $g
-#remove command.log
+remove [zxsp].$g $g
+remove command.log
 
 success
 
