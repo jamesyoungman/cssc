@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.5 1997/06/01 20:38:54 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.6 1997/06/23 23:01:38 james Exp $";
 #endif
 
 /* This pointer is used by the template range_list to denote an
@@ -282,6 +282,12 @@ sid::printf(FILE *out, char c) const {
 	}
 	return fprintf(out, "%d", n) == EOF;
 }
+
+release::release(const sid &s) :  rel( (short)s.rel )
+{
+  // nothing.
+}
+
 
 /* Local variables: */
 /* mode: c++ */
