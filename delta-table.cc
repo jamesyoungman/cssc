@@ -21,10 +21,6 @@
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
  *
- *
- * Common members of the class sccs_file and its subclasses.  Most of
- * the members in this file are used to read from the SCCS file.
- *
  */
 
 #include "cssc.h"
@@ -36,6 +32,7 @@
 delta const &
 cssc_delta_table::delta_at_seq(seq_no seq)
 {
+  ASSERT(0 != this);
   ASSERT(seq > 0 && seq <= high_seqno);
   if (seq_table == NULL)
     {
@@ -48,14 +45,17 @@ cssc_delta_table::delta_at_seq(seq_no seq)
 
 cssc_delta_table::~cssc_delta_table()
 {
+  ASSERT(0 != this);
   if (seq_table)
     free(seq_table);
+  seq_table = 0;
 }
 
 
 
 seq_no cssc_delta_table::next_seqno() const
 {
+  ASSERT(0 != this);
   return highest_seqno() + 1u;
 }
 
@@ -65,6 +65,8 @@ seq_no cssc_delta_table::next_seqno() const
 void
 cssc_delta_table::build_seq_table()
 {
+  ASSERT(0 != this);
+
   seq_table = (int *) xmalloc((high_seqno + 1) * sizeof(int));
 
   int i;
@@ -89,6 +91,7 @@ cssc_delta_table::build_seq_table()
 void
 cssc_delta_table::update_highest(const delta &it) 
 {
+  ASSERT(0 != this);
   seq_no seq = it.seq;
   
   if (seq > high_seqno) 
@@ -160,6 +163,8 @@ cssc_delta_table::update_highest(const delta &it)
 void
 cssc_delta_table::add(const delta &it)
 {
+  ASSERT(0 != this);
+  
   l.add(it);
   update_highest(it);
 }
@@ -172,6 +177,7 @@ cssc_delta_table::add(const delta &it)
 delta const * cssc_delta_table::
 find(sid id) const
 {
+  ASSERT(0 != this);
   const_delta_iterator iter(this);
   
   while (iter.next())
@@ -188,6 +194,7 @@ find(sid id) const
 delta * cssc_delta_table::
 find(sid id)
 {
+  ASSERT(0 != this);
   delta_iterator iter(this);
   
   while (iter.next())
@@ -199,6 +206,5 @@ find(sid id)
     }
   return NULL;
 }
-
 
 
