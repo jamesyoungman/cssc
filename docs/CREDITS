@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <2000-08-03 13:09:10 james>
+Time-stamp: <2001-09-16 09:53:42 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -101,6 +101,9 @@ problem, delete the lock file even if we are running setuid.
 
 Mark Fortescue provided patches bug-fixes relating to SID selection
 and cutoff dates.
+
+Jeff Sheinberg provided a patch to sccs.c, fixing an incorrect
+allocation size for a buffer. 
 
 
 Local Variables:
