@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-06-16 22:16:45 james>
+Time-stamp: <1998-10-20 18:48:44 james>
 
 List of fixed bugs 
 
@@ -16,6 +16,17 @@ it's easier to just fix the bug than list it in BUGS _and_ I do it
 promptly, it does not get listed.  If you don't like this (lack of?)
 policy, let me know.  All bugfixes are listed in ChangeLog, in some
 fashion.
+
+Thu Oct  8 1998 12:11:43:  Dick Streefland <dick_streefland@tasking.com>
+In version 0.09alpha.pl0.  Fixed in version 0.09alpha.pl1. 
+ Core dumps if no SCCS file is specified on the "get" command line. 
+ This was fixed by a patch submitted by Mr. Streefland.
+
+Thu Oct  8 1998 12:11:43:  Dick Streefland <dick_streefland@tasking.com>
+In version 0.09alpha.pl0.  Fixed in version 0.09alpha.pl1. 
+ We omit to return a failure exit status of 1 from get and prs when
+ the output file suffers an out-of-space condition.
+ This was fixed by a patch submitted by Mr. Streefland.
 
 Tue Jun 16 22:12:46 1998:  Achim Hoffmann <hoffmann@tebis.de>
 In version 0.07-pl3 [and most earlier].  Fixed in version 0.08-pl0.
