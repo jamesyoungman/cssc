@@ -65,7 +65,7 @@ public:
       return r1.rel != r2.rel;
     }
 
-  int print(FILE *out) const { return fprintf(out, "%d", rel); }
+  int print(FILE *out) const { return (fprintf(out, "%d", rel) < 0); }
 
   
   //  friend sid::operator release() const;
