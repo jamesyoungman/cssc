@@ -43,3 +43,18 @@ Automake useful.
 
 As far as I know however, CSSC has not yet been tested with any C++
 compiler other than GCC, so I *do* expect portability problems there.
+
+
+Notes for specific platforms
+============================
+
+HPUX
+----
+To compile on HPUX 9 you have to use GNU make and /bin/posix/sh:
+$ SHELL=/bin/posix/sh $SHELL ./configure
+$ gmake SHELL=/bin/posix/sh 
+
+
+IRIX
+----
+To compile on IRIX it appears that GNU make is required.
