@@ -51,32 +51,32 @@ public:
  * This is most notably used by the "file_lock" class.
  */
 class cleanup {
-	static class cleanup *head;
-	static int running;
-	static int all_disabled;
+        static class cleanup *head;
+        static int running;
+        static int all_disabled;
 #if HAVE_FORK
-	static int in_child_flag;
+        static int in_child_flag;
 #endif
 
-	class cleanup *next;
-	
+        class cleanup *next;
+        
 protected:
-	cleanup();
-	virtual void do_cleanup() = 0;
+        cleanup();
+        virtual void do_cleanup() = 0;
 
 #ifdef __GNUC__
-	virtual /* not needed but it gets rid of an anoying warning */
+        virtual /* not needed but it gets rid of an anoying warning */
 #endif
-	~cleanup();
+        ~cleanup();
 
 public:
 
-	static void run_cleanups();
-	static int active() { return running; }
-	static void disable_all() { all_disabled++; }
+        static void run_cleanups();
+        static int active() { return running; }
+        static void disable_all() { all_disabled++; }
 #ifdef HAVE_FORK
-	static void set_in_child() { in_child_flag = 1; disable_all(); }
-	static int in_child() { return in_child_flag; }
+        static void set_in_child() { in_child_flag = 1; disable_all(); }
+        static int in_child() { return in_child_flag; }
 #endif
 };
 
@@ -102,17 +102,16 @@ void quit_on_fatal_signals(void); // defined in fatalsig.cc.
 
 #ifdef __GNUC__
 NORETURN fatal_quit(int err, const char *fmt, ...)
-	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
+        __attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
 NORETURN p_corrupt_quit(const char *fmt, ...)
-	__attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
+        __attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
 NORETURN s_corrupt_quit(const char *fmt, ...)
-	__attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
+        __attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
 NORETURN s_missing_quit(const char *fmt, ...)
-	__attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
+        __attribute__((format(printf, 1, 2))) POSTDECL_NORETURN;
 NORETURN ctor_fail(int err, const char *fmt, ...)
-	__attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
+        __attribute__((format(printf, 2, 3))) POSTDECL_NORETURN;
 #else
-
 NORETURN s_missing_quit(const char *fmt, ...) POSTDECL_NORETURN;
 NORETURN s_corrupt_quit(const char *fmt, ...)  POSTDECL_NORETURN;
 NORETURN p_corrupt_quit(const char *fmt, ...)  POSTDECL_NORETURN;
@@ -120,17 +119,18 @@ NORETURN fatal_quit(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 NORETURN ctor_fail(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 #endif
 
+NORETURN ctor_fail_nomsg(int err)  POSTDECL_NORETURN;
 NORETURN nomem()  POSTDECL_NORETURN;
 NORETURN assert_failed(const char *file, int line, const char *func,
-		       const char *test) POSTDECL_NORETURN;
+                       const char *test) POSTDECL_NORETURN;
 
 #ifdef __GNUC__
-#define ASSERT(test) ((test) ? (void) 0					\
-		             : assert_failed(__FILE__, __LINE__,        \
-					     __PRETTY_FUNCTION__, #test))
+#define ASSERT(test) ((test) ? (void) 0                                 \
+                             : assert_failed(__FILE__, __LINE__,        \
+                                             __PRETTY_FUNCTION__, #test))
 #else
-#define ASSERT(test) ((test) ? (void) 0					\
-		             : assert_failed(__FILE__, __LINE__, "", #test))
+#define ASSERT(test) ((test) ? (void) 0                                 \
+                             : assert_failed(__FILE__, __LINE__, "", #test))
 #endif
 
 extern void usage();

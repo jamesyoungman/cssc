@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.26 2001/07/15 15:08:40 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.27 2001/07/31 08:28:07 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -90,7 +90,7 @@ static const char filever[] = "$Id: sccs.c,v 1.26 2001/07/15 15:08:40 james_youn
 #endif
 
 #ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>		/* TODO: this does what? */
+#include <sys/param.h>          /* TODO: this does what? */
 #endif
 
 #ifdef HAVE_SYS_STAT_H
@@ -117,12 +117,12 @@ static const char filever[] = "$Id: sccs.c,v 1.26 2001/07/15 15:08:40 james_youn
 
 
 
-#include <signal.h>		/* TODO: consider using sigaction(). */
-#include <errno.h>		/* TODO: same as in parent directory. */
-#include <pwd.h>		/* getpwuid() */
+#include <signal.h>             /* TODO: consider using sigaction(). */
+#include <errno.h>              /* TODO: same as in parent directory. */
+#include <pwd.h>                /* getpwuid() */
 
 /* #include "pathnames.h" */
-/* The next few lines inserted from @(#)pathnames.h	8.1 (Berkeley) 6/6/93
+/* The next few lines inserted from @(#)pathnames.h     8.1 (Berkeley) 6/6/93
  */
 /* #include <paths.h> */
 
@@ -132,22 +132,22 @@ static const char filever[] = "$Id: sccs.c,v 1.26 2001/07/15 15:08:40 james_youn
 
 /* #define PASTE(a,b) a##b */
 
-#define	_PATH_SCCSADMIN	("admin")
-#define	_PATH_SCCSBDIFF	("bdiff")
-#define	_PATH_SCCSCOMB	("comb")
-#define	_PATH_SCCSDELTA	("delta")
-#define	_PATH_SCCSDIFF	("sccsdiff")
-#define	_PATH_SCCSGET	("get")
-#define	_PATH_SCCSUNGET	("unget")
-#define	_PATH_SCCSHELP	("help")
-#define	_PATH_SCCSPRS	("prs")
-#define	_PATH_SCCSPRT	("prt")
-#define	_PATH_SCCSRMDEL	("rmdel")
-#define	_PATH_SCCSCDC	("cdc")
-#define	_PATH_SCCSVAL	("val")
-#define	_PATH_SCCSWHAT	("what")
+#define _PATH_SCCSADMIN ("admin")
+#define _PATH_SCCSBDIFF ("bdiff")
+#define _PATH_SCCSCOMB  ("comb")
+#define _PATH_SCCSDELTA ("delta")
+#define _PATH_SCCSDIFF  ("sccsdiff")
+#define _PATH_SCCSGET   ("get")
+#define _PATH_SCCSUNGET ("unget")
+#define _PATH_SCCSHELP  ("help")
+#define _PATH_SCCSPRS   ("prs")
+#define _PATH_SCCSPRT   ("prt")
+#define _PATH_SCCSRMDEL ("rmdel")
+#define _PATH_SCCSCDC   ("cdc")
+#define _PATH_SCCSVAL   ("val")
+#define _PATH_SCCSWHAT  ("what")
 #undef _PATH_TMP
-#define	_PATH_TMP	"/tmp/sccsXXXXX"
+#define _PATH_TMP       "/tmp/sccsXXXXX"
 
 /* End of insertion from pathnames.h */
 
@@ -169,22 +169,22 @@ static const char filever[] = "$Id: sccs.c,v 1.26 2001/07/15 15:08:40 james_youn
  * case, with GCC as the compiler).  To avoid this we define them
  * here, but with a name change to avoid clashes.
  */
-#define CSSC_EX_OK		0  /* successful termination */
-#define CSSC_EX_USAGE	        64 /* command line usage error */
-#define CSSC_EX_DATAERR	        65 /* data format error */
-#define CSSC_EX_NOINPUT	        66 /* cannot open input */
-#define CSSC_EX_NOUSER	        67 /* addressee unknown */
-#define CSSC_EX_NOHOST	        68 /* host name unknown */
-#define CSSC_EX_UNAVAILABLE	69 /* service unavailable */
-#define CSSC_EX_SOFTWARE	70 /* internal software error */
-#define CSSC_EX_OSERR	        71 /* system error (e.g., can't fork) */
-#define CSSC_EX_OSFILE	        72 /* critical OS file missing */
-#define CSSC_EX_CANTCREAT	73 /* can't create (user) output file */
-#define CSSC_EX_IOERR	        74 /* input/output error */
-#define CSSC_EX_TEMPFAIL	75 /* temp failure; user is invited to retry */
-#define CSSC_EX_PROTOCOL	76 /* remote error in protocol */
-#define CSSC_EX_NOPERM	        77 /* permission denied */
-#define CSSC_EX_CONFIG	        78 /* configuration error */
+#define CSSC_EX_OK              0  /* successful termination */
+#define CSSC_EX_USAGE           64 /* command line usage error */
+#define CSSC_EX_DATAERR         65 /* data format error */
+#define CSSC_EX_NOINPUT         66 /* cannot open input */
+#define CSSC_EX_NOUSER          67 /* addressee unknown */
+#define CSSC_EX_NOHOST          68 /* host name unknown */
+#define CSSC_EX_UNAVAILABLE     69 /* service unavailable */
+#define CSSC_EX_SOFTWARE        70 /* internal software error */
+#define CSSC_EX_OSERR           71 /* system error (e.g., can't fork) */
+#define CSSC_EX_OSFILE          72 /* critical OS file missing */
+#define CSSC_EX_CANTCREAT       73 /* can't create (user) output file */
+#define CSSC_EX_IOERR           74 /* input/output error */
+#define CSSC_EX_TEMPFAIL        75 /* temp failure; user is invited to retry */
+#define CSSC_EX_PROTOCOL        76 /* remote error in protocol */
+#define CSSC_EX_NOPERM          77 /* permission denied */
+#define CSSC_EX_CONFIG          78 /* configuration error */
 
 
 
@@ -315,51 +315,51 @@ static const char filever[] = "$Id: sccs.c,v 1.26 2001/07/15 15:08:40 james_youn
 /*******************  Configuration Information  ********************/
 
 #ifndef SCCSPATH
-#define SCCSPATH	"SCCS"	/* pathname in which to find s-files */
+#define SCCSPATH        "SCCS"  /* pathname in which to find s-files */
 #endif
 
 #ifndef MYNAME
-#define MYNAME		"sccs"	/* name used for printing errors */
+#define MYNAME          "sccs"  /* name used for printing errors */
 #endif
 
 /****************  End of Configuration Information  ****************/
 
 typedef char bool;
-#define TRUE	1
-#define FALSE	0
+#define TRUE    1
+#define FALSE   0
 
-#define bitset(bit, word)	((bool) ((bit) & (word)))
+#define bitset(bit, word)       ((bool) ((bit) & (word)))
 
 struct sccsprog
   {
-    const char *sccsname;	/* name of SCCS routine */
-    short sccsoper;		/* opcode, see below */
-    short sccsflags;		/* flags, see below */
-    const char *sccspath;	/* pathname of binary implementing */
+    const char *sccsname;       /* name of SCCS routine */
+    short sccsoper;             /* opcode, see below */
+    short sccsflags;            /* flags, see below */
+    const char *sccspath;       /* pathname of binary implementing */
   };
 
 /* values for sccsoper */
-#define PROG		0	/* call a program */
-#define CMACRO		1	/* command substitution macro */
-#define FIX		2	/* fix a delta */
-#define CLEAN		3	/* clean out recreatable files */
-#define UNEDIT		4	/* unedit a file */
+#define PROG            0       /* call a program */
+#define CMACRO          1       /* command substitution macro */
+#define FIX             2       /* fix a delta */
+#define CLEAN           3       /* clean out recreatable files */
+#define UNEDIT          4       /* unedit a file */
 #if 0
-#define SHELL		5	/* call a shell file (like PROG) */
+#define SHELL           5       /* call a shell file (like PROG) */
 #endif
-#define DIFFS		6	/* diff between sccs & file out */
-#define DODIFF		7	/* internal call to diff program */
-#define ENTER		8	/* enter new files */
+#define DIFFS           6       /* diff between sccs & file out */
+#define DODIFF          7       /* internal call to diff program */
+#define ENTER           8       /* enter new files */
 
 /* bits for sccsflags */
-#define NO_SDOT	0001		/* no s. on front of args */
-#define REALUSER	0002	/* protected (e.g., admin) */
+#define NO_SDOT 0001            /* no s. on front of args */
+#define REALUSER        0002    /* protected (e.g., admin) */
 
 /* modes for the "clean", "info", "check" ops */
-#define CLEANC		0	/* clean command */
-#define INFOC		1	/* info command */
-#define CHECKC		2	/* check command */
-#define TELLC		3	/* give list of files being edited */
+#define CLEANC          0       /* clean command */
+#define INFOC           1       /* info command */
+#define CHECKC          2       /* check command */
+#define TELLC           3       /* give list of files being edited */
 
 /*
    **  Description of commands known to this program.
@@ -406,27 +406,27 @@ const struct sccsprog SccsProg[] =
 /* one line from a p-file */
 struct pfile
   {
-    char *p_osid;		/* old SID */
-    char *p_nsid;		/* new SID */
-    char *p_user;		/* user who did edit */
-    char *p_date;		/* date of get */
-    char *p_time;		/* time of get */
-    char *p_aux;		/* extra info at end */
+    char *p_osid;               /* old SID */
+    char *p_nsid;               /* new SID */
+    char *p_user;               /* user who did edit */
+    char *p_date;               /* date of get */
+    char *p_time;               /* time of get */
+    char *p_aux;                /* extra info at end */
   };
 
-const char *SccsPath = SCCSPATH;	/* pathname of SCCS files */
+const char *SccsPath = SCCSPATH;        /* pathname of SCCS files */
 #ifdef SCCSDIR
-const char *SccsDir = SCCSDIR;	/* directory to begin search from */
+const char *SccsDir = SCCSDIR;  /* directory to begin search from */
 #else
 const char *SccsDir = "";
 #endif
 char *subprogram_exec_prefix = NULL; /* see try_to_exec(). */
 
-const char MyName[] = MYNAME;	/* name used in messages */
-int OutFile = -1;		/* override output file for commands */
-bool RealUser;			/* if set, running as real user */
+const char MyName[] = MYNAME;   /* name used in messages */
+int OutFile = -1;               /* override output file for commands */
+bool RealUser;                  /* if set, running as real user */
 #ifdef DEBUG
-bool Debug = 0;			/* turn on tracing */
+bool Debug = 0;                 /* turn on tracing */
 #endif
 static bool TrustEnvironment = 0;
 
@@ -435,7 +435,7 @@ void syserr (const char *fmt,...);
 void usrerr (const char *fmt,...);
 int command (char *argv[], bool forkflag, const char *arg0);
 int callprog (const char *progpath, short flags,
-	      char *const argv[], bool forkflag);
+              char *const argv[], bool forkflag);
 int clean (int mode, char *const argv[]);
 int dodiff (char * getv[], const char *gfile);
 int isbranch (const char *sid);
@@ -463,7 +463,7 @@ static char *str_dup (const char *);
 static void childwait(int pid, int *status_ptr, int ignoreintr);
 
 
-/* #define	FBUFSIZ	BUFSIZ */
+/* #define      FBUFSIZ BUFSIZ */
 
 #define FBUFSIZ 1024
 
@@ -506,26 +506,26 @@ set_prefix(const char *pfx)
       char *p = malloc(1+strlen(pfx));
 #ifdef DEBUG
       if (Debug)
-	printf ("set_prefix: setting execution prefix to '%s'\n", pfx);
+        printf ("set_prefix: setting execution prefix to '%s'\n", pfx);
 #endif
       if (p)
-	{
-	  if (subprogram_exec_prefix)
-	    free(subprogram_exec_prefix);
-	  strcpy(p, pfx);
-	  subprogram_exec_prefix = p;
-	}
+        {
+          if (subprogram_exec_prefix)
+            free(subprogram_exec_prefix);
+          strcpy(p, pfx);
+          subprogram_exec_prefix = p;
+        }
       else
-	{
-	  oom();
-	}
+        {
+          oom();
+        }
     }
   else
     {
       fprintf(stderr,
-	      "%s",
-	      "Option --prefix is incompatible with setuid "
-	      "execution.  Sorry.\n");
+              "%s",
+              "Option --prefix is incompatible with setuid "
+              "execution.  Sorry.\n");
       exit (CSSC_EX_USAGE);
     }
 }
@@ -584,7 +584,7 @@ usage(void)
   fprintf (stderr, "Usage: %s [flags] command [flags]\n", MyName);
 }
 
-#define	PFILELG	120
+#define PFILELG 120
 
 int 
 main (int argc, char **argv)
@@ -593,19 +593,20 @@ main (int argc, char **argv)
   register int i;
   int hadver = 0;
   
-  &copyright;			/* prevent warning about unused variable. */
+  (void) &copyright;            /* prevent warning about unused variable. */
 
   if (!absolute_pathname(PREFIX))
     {
       fprintf(stderr,
-	      "Compiled-in program name prefix %s is not absolute.\n"
-	      "Please recompile this program using an absolute path.\n");
+              "Compiled-in program name prefix %s is not absolute.\n"
+              "Please recompile this program using an absolute path.\n",
+              PREFIX);
       exit(CSSC_EX_CONFIG);
     }
   
   if ( (getuid() != geteuid()) || (getgid() != getegid()))
     {
-      TrustEnvironment = 0;	/* running setuid, ignore $PATH etc. */
+      TrustEnvironment = 0;     /* running setuid, ignore $PATH etc. */
 #ifndef SCCSDIR
       setuid_warn();
       exit(CSSC_EX_NOPERM);
@@ -623,13 +624,13 @@ main (int argc, char **argv)
       // Mark Reynolds <mark@aoainc.com>: If $LANG is not 
       // set, setlocale() fails on VAX Ultrix 4.2.
       if (NULL == setlocale(LC_ALL, ""))
-	{
-	  /* If we can't set the locale as the user wishes,
-	   * emit an error message and continue.   The error
-	   * message will of course be in the "C" locale.
-	   */
-	  perror("Error setting locale");
-	}
+        {
+          /* If we can't set the locale as the user wishes,
+           * emit an error message and continue.   The error
+           * message will of course be in the "C" locale.
+           */
+          perror("Error setting locale");
+        }
 #endif      
     }
 
@@ -650,29 +651,29 @@ main (int argc, char **argv)
       char buf[FBUFSIZ];
       
       if (p[0] == '/')
-	SccsDir = p;
+        SccsDir = p;
       else
-	{
-	  pw = getpwnam(p);
-	  if (pw == NULL)
-	    {
-	      usrerr("user %s does not exist", p);
-	      exit(CSSC_EX_USAGE);
-	    }
-	  gstrcpy(buf, pw->pw_dir, sizeof(buf));
-	  gstrcat(buf, "/src", sizeof(buf));
-	  if (access(buf, 0) < 0)
-	    {
-	      gstrcpy(buf, pw->pw_dir, sizeof(buf));
-	      gstrcat(buf, "/source", sizeof(buf));
-	      if (access(buf, 0) < 0)
-		{
-		  usrerr("project %s has no source!", p);
-		  exit(CSSC_EX_USAGE);
-		}
-	    }
-	  SccsDir = buf;
-	}
+        {
+          pw = getpwnam(p);
+          if (pw == NULL)
+            {
+              usrerr("user %s does not exist", p);
+              exit(CSSC_EX_USAGE);
+            }
+          gstrcpy(buf, pw->pw_dir, sizeof(buf));
+          gstrcat(buf, "/src", sizeof(buf));
+          if (access(buf, 0) < 0)
+            {
+              gstrcpy(buf, pw->pw_dir, sizeof(buf));
+              gstrcat(buf, "/source", sizeof(buf));
+              if (access(buf, 0) < 0)
+                {
+                  usrerr("project %s has no source!", p);
+                  exit(CSSC_EX_USAGE);
+                }
+            }
+          SccsDir = buf;
+        }
     }
 #endif
 
@@ -691,95 +692,95 @@ main (int argc, char **argv)
   if (lookup (argv[0]) == NULL)
     {
       while ((p = *++argv) != NULL)
-	{
-	  if (*p != '-')
-	    break;
-	  switch (*++p)
-	    {
-	    case '-': /* long option. */
-	      ++p;
-	      if (0 == *p)	/* just "--" */
-		{
-		  fprintf(stderr, "%s",
-			  "End-of-arguments option \"--\" not "
-			  "supported, sorry.\n");
-		  exit (CSSC_EX_USAGE);
-		}
-	      else if (0 == strncmp(p, "prefix=", 7))
-		{
-		  set_prefix(p+7);
-		}
-	      else if (0 == strcmp(p, "cssc"))
-		{
-		  printf("%s\n", "yes");
-		  exit(CSSC_EX_OK);
-		}
-	      else if (0 == strcmp(p, "version"))
-		{
-		  if (!hadver)
-		    show_version();
-		  hadver = 1;
-		  if (2 == argc) /* If the only arg, return success. */
-		    return 0;
-		}
-	      else
-		{
-		  usrerr ("unknown option --%s", p);
-		  usage();
-		  exit (CSSC_EX_USAGE);
-		}
-	      break;
-	      
-	    case 'V':
-	      if (!hadver)
-		show_version();
-	      hadver = 1;
-	      if (2 == argc)	/* If -V was the only arg, return success. */
-		return 0;
-	      break;		/* Otherwise, process the remaining options. */
-	      
-	    case 'r':		/* run as real user */
-	      drop_privs();
-	      break;
+        {
+          if (*p != '-')
+            break;
+          switch (*++p)
+            {
+            case '-': /* long option. */
+              ++p;
+              if (0 == *p)      /* just "--" */
+                {
+                  fprintf(stderr, "%s",
+                          "End-of-arguments option \"--\" not "
+                          "supported, sorry.\n");
+                  exit (CSSC_EX_USAGE);
+                }
+              else if (0 == strncmp(p, "prefix=", 7))
+                {
+                  set_prefix(p+7);
+                }
+              else if (0 == strcmp(p, "cssc"))
+                {
+                  printf("%s\n", "yes");
+                  exit(CSSC_EX_OK);
+                }
+              else if (0 == strcmp(p, "version"))
+                {
+                  if (!hadver)
+                    show_version();
+                  hadver = 1;
+                  if (2 == argc) /* If the only arg, return success. */
+                    return 0;
+                }
+              else
+                {
+                  usrerr ("unknown option --%s", p);
+                  usage();
+                  exit (CSSC_EX_USAGE);
+                }
+              break;
+              
+            case 'V':
+              if (!hadver)
+                show_version();
+              hadver = 1;
+              if (2 == argc)    /* If -V was the only arg, return success. */
+                return 0;
+              break;            /* Otherwise, process the remaining options. */
+              
+            case 'r':           /* run as real user */
+              drop_privs();
+              break;
 
 #ifndef SCCSDIR
-	    case 'p':		/* path of sccs files */
-	      SccsPath = ++p;
-	      if (SccsPath[0] == '\0' && argv[1] != NULL)
-		SccsPath = *++argv;
-	      break;
+            case 'p':           /* path of sccs files */
+              SccsPath = ++p;
+              if (SccsPath[0] == '\0' && argv[1] != NULL)
+                SccsPath = *++argv;
+              break;
 
-	    case 'd':		/* directory to search from */
-	      SccsDir = ++p;
-	      if (SccsDir[0] == '\0' && argv[1] != NULL)
-		SccsDir = *++argv;
-	      break;
+            case 'd':           /* directory to search from */
+              SccsDir = ++p;
+              if (SccsDir[0] == '\0' && argv[1] != NULL)
+                SccsDir = *++argv;
+              break;
 #else
-	    case 'p':
-	    case 'd':
-	      fprintf(stderr, "The %c option has been disabled.\n", *p);
-	      exit(CSSC_EX_USAGE);
-	      break;
+            case 'p':
+            case 'd':
+              fprintf(stderr, "The %c option has been disabled.\n", *p);
+              exit(CSSC_EX_USAGE);
+              break;
 #endif
 
-	    case 'T':		/* trace */
+            case 'T':           /* trace */
 #ifdef DEBUG
-	      Debug++;
+              Debug++;
 #else
-	      fprintf(stderr, "%s",
-		      "The -T option has been disabled.  Sorry.\n");
-	      exit(CSSC_EX_USAGE);
+              fprintf(stderr, "%s",
+                      "The -T option has been disabled.  Sorry.\n");
+              exit(CSSC_EX_USAGE);
 #endif
-	      break;
+              break;
 
-	    default:
-	      usrerr ("unknown option -%s", p);
-	      usage();
-	      exit (CSSC_EX_USAGE);
-	    }
-	}
+            default:
+              usrerr ("unknown option -%s", p);
+              usage();
+              exit (CSSC_EX_USAGE);
+            }
+        }
       if (SccsPath[0] == '\0')
-	SccsPath = ".";
+        SccsPath = ".";
     }
   
   if (NULL == argv[0])
@@ -787,15 +788,15 @@ main (int argc, char **argv)
       /* No remaining args!
        */
       if (!hadver)
-	{
-	  /* Not sure what went on, but it wasn't a useful command line. */
-	  usage();
-	}
+        {
+          /* Not sure what went on, but it wasn't a useful command line. */
+          usage();
+        }
       else
-	{
-	  /* Just "sccs -V" is valid. */
-	  exit(0);
-	}
+        {
+          /* Just "sccs -V" is valid. */
+          exit(0);
+        }
     }
   else
     {
@@ -805,7 +806,7 @@ main (int argc, char **argv)
 }
 
 char ** do_enter(char *argv[], char **np, char **ap,
-		 int *rval)
+                 int *rval)
 {
   char buf2[FBUFSIZ];
   char *argv_tmp;
@@ -822,19 +823,19 @@ char ** do_enter(char *argv[], char **np, char **ap,
       printf ("\n%s:\n", *np);
       strcpy (buf2, "-i");
       gstrcat (buf2, np[0], sizeof (buf2));
-      ap[0] = buf2;	/* sccs enter foo --> admin -ifoo */
+      ap[0] = buf2;     /* sccs enter foo --> admin -ifoo */
       argv[0] = tail_nc (np[0]);
       argv[1] = NULL;
       *rval = command (ap, TRUE, "admin");
 
       argv[1] = argv_tmp;
       if (*rval == 0)
-	{
-	  strcpy (buf2, ",");
-	  gstrcat (buf2, tail (np[0]), sizeof (buf2));
-	  if (link (np[0], buf2) >= 0)
-	    unlink (np[0]);
-	}
+        {
+          strcpy (buf2, ",");
+          gstrcat (buf2, tail (np[0]), sizeof (buf2));
+          if (link (np[0], buf2) >= 0)
+            unlink (np[0]);
+        }
       np++;
     }
   return np;
@@ -865,7 +866,7 @@ try_to_exec(const char *prog, char * const argv[])
       prefix = subprogram_exec_prefix;
 #ifdef DEBUG
       if (Debug)
-	printf ("try_to_exec: Using user prefix '%s'\n", prefix);
+        printf ("try_to_exec: Using user prefix '%s'\n", prefix);
 #endif
     }
   else
@@ -873,7 +874,7 @@ try_to_exec(const char *prog, char * const argv[])
       prefix = (PREFIX);
 #ifdef DEBUG
       if (Debug)
-	printf ("try_to_exec: Using default prefix '%s'\n", prefix);
+        printf ("try_to_exec: Using default prefix '%s'\n", prefix);
 #endif
 
 
@@ -888,15 +889,15 @@ try_to_exec(const char *prog, char * const argv[])
 
        /* Honour $PATH unless running setuid.
         * Must NOT use execvp() if running setuid.
-	*/
+        */
       if (TrustEnvironment || RealUser)
-	execvp(prog, argv);		/* execvp() uses $PATH */
+        execvp(prog, argv);             /* execvp() uses $PATH */
     }
   
   /* absolute_pathname() does not call a library function, so no need
    * to save/restore errno.
    */
-  if (absolute_pathname(prog))	
+  if (absolute_pathname(prog))  
     {
       execv(prog, argv);
       perror(prog);
@@ -908,18 +909,18 @@ try_to_exec(const char *prog, char * const argv[])
       len = strlen(prefix) + strlen(prefix);
       newprog = malloc(len + 1);
       if (NULL == newprog)
-	{
-	  oom();
-	  /*NOTREACHED*/
-	  exit(CSSC_EX_TEMPFAIL);
-	}
+        {
+          oom();
+          /*NOTREACHED*/
+          exit(CSSC_EX_TEMPFAIL);
+        }
       sprintf(newprog, "%s%s", prefix, prog);
       prog = newprog;
 
       
 #ifdef DEBUG
       if (Debug)
-	printf ("try_to_exec: %s\n", prog);
+        printf ("try_to_exec: %s\n", prog);
 #endif
 
       execv(prog, argv);
@@ -963,7 +964,7 @@ command (char *argv[], bool forkflag, const char *arg0)
   char *nav[1000];
   char **np;
   char **ap;
-  int rval = 0;			/* value to be returned. */
+  int rval = 0;                 /* value to be returned. */
 
 #ifdef DEBUG
   if (Debug)
@@ -971,7 +972,7 @@ command (char *argv[], bool forkflag, const char *arg0)
       int i;
       printf ("command:\n\t\"%s\"\n", arg0);
       for (i=0; argv[i] != NULL; ++i)
-	printf ("\t\"%s\"\n", argv[i]);
+        printf ("\t\"%s\"\n", argv[i]);
     }
 #endif
   
@@ -982,37 +983,37 @@ command (char *argv[], bool forkflag, const char *arg0)
    */
 
   np = ap = &nav[1];
-  if (1)			/* introduce scope for editchs. */
+  if (1)                        /* introduce scope for editchs. */
     {
       char *editchs;
       
       editchs = NULL;
-      if (1)			/* introduce scope */
-	{
-	  char *q;
-	  const char *p;
+      if (1)                    /* introduce scope */
+        {
+          char *q;
+          const char *p;
       
-	  for (p = arg0, q = buf; *p != '\0' && *p != '/';)
-	    {
-	      *np++ = q;
-	      while (*p == ' ')		/* wind p to next word. */
-		p++;
-	      while (*p != ' ' && *p != '\0' && *p != '/' && *p != ':')
-		*q++ = *p++;
-	      *q++ = '\0';
-	      if (*p == ':')
-		{
-		  editchs = q;
-		  while (*++p != '\0' && *p != '/' && *p != ' ')
-		    *q++ = *p;
-		  *q++ = '\0';
-		}
-	    }
-	}
+          for (p = arg0, q = buf; *p != '\0' && *p != '/';)
+            {
+              *np++ = q;
+              while (*p == ' ')         /* wind p to next word. */
+                p++;
+              while (*p != ' ' && *p != '\0' && *p != '/' && *p != ':')
+                *q++ = *p++;
+              *q++ = '\0';
+              if (*p == ':')
+                {
+                  editchs = q;
+                  while (*++p != '\0' && *p != '/' && *p != ' ')
+                    *q++ = *p;
+                  *q++ = '\0';
+                }
+            }
+        }
   
       *np = NULL;
       if (*ap == NULL)
-	*np++ = *argv++;
+        *np++ = *argv++;
 
       /*
       **  Look up command.
@@ -1021,34 +1022,34 @@ command (char *argv[], bool forkflag, const char *arg0)
 
       cmd = lookup (*ap);
       if (cmd == NULL)
-	{
-	  usrerr ("Unknown command \"%s\"", *ap);
-	  usage();
-	  return (CSSC_EX_USAGE);
-	}
+        {
+          usrerr ("Unknown command \"%s\"", *ap);
+          usage();
+          return (CSSC_EX_USAGE);
+        }
 
       /*
       **  Copy remaining arguments doing editing as appropriate.
       */
 
       for (; *argv != NULL; argv++)
-	{
-	  char *p;
+        {
+          char *p;
 
-	  p = *argv;
-	  if (*p == '-')
-	    {
-	      if (p[1] == '\0' || editchs == NULL || index (editchs, p[1]) != NULL)
-		*np++ = p;
-	    }
-	  else
-	    {
-	      if (!bitset (NO_SDOT, cmd->sccsflags))
-		p = makefile (p);	/* MEMORY LEAK (of returned value) */
-	      if (p != NULL)
-		*np++ = p;
-	    }
-	}
+          p = *argv;
+          if (*p == '-')
+            {
+              if (p[1] == '\0' || editchs == NULL || index (editchs, p[1]) != NULL)
+                *np++ = p;
+            }
+          else
+            {
+              if (!bitset (NO_SDOT, cmd->sccsflags))
+                p = makefile (p);       /* MEMORY LEAK (of returned value) */
+              if (p != NULL)
+                *np++ = p;
+            }
+        }
       *np = NULL;
     }
   
@@ -1059,151 +1060,151 @@ command (char *argv[], bool forkflag, const char *arg0)
   switch (cmd->sccsoper)
     {
 #if 0      
-    case SHELL:		/* call a shell file */
+    case SHELL:         /* call a shell file */
       {
-	ap[0]  = cmd->sccspath;	/* Warning: discards const */
-	ap[-1] = "sh";
-	rval = callprog (_PATH_BSHELL, cmd->sccsflags, ap-1, forkflag);
+        ap[0]  = cmd->sccspath; /* Warning: discards const */
+        ap[-1] = "sh";
+        rval = callprog (_PATH_BSHELL, cmd->sccsflags, ap-1, forkflag);
       }
       break;
 #endif
 
-    case PROG:			/* call an sccs prog */
+    case PROG:                  /* call an sccs prog */
       {
-	rval = callprog (cmd->sccspath, cmd->sccsflags, ap, forkflag);
+        rval = callprog (cmd->sccspath, cmd->sccsflags, ap, forkflag);
       }
       break;
 
-    case CMACRO:		/* command macro */
+    case CMACRO:                /* command macro */
       {
-	const char *s;
-	
-	/* step through & execute each part of the macro */
-	for (s = cmd->sccspath; *s != '\0'; s++)
-	  {
-	    const char *qq = s;
-	    while (*s != '\0' && *s != '/')
-	      s++;
-	    rval = command (&ap[1], *s != '\0', qq);
-	    if (rval != 0)
-	      break;
-	  }
+        const char *s;
+        
+        /* step through & execute each part of the macro */
+        for (s = cmd->sccspath; *s != '\0'; s++)
+          {
+            const char *qq = s;
+            while (*s != '\0' && *s != '/')
+              s++;
+            rval = command (&ap[1], *s != '\0', qq);
+            if (rval != 0)
+              break;
+          }
       }
       break;
 
-    case FIX:			/* fix a delta */
+    case FIX:                   /* fix a delta */
       {
-	if (ap[1] == 0 || strncmp (ap[1], "-r", 2) != 0)
-	  {
-	    usrerr ("-r flag needed for fix command");
-	    rval = CSSC_EX_USAGE;
-	    break;
-	  }
+        if (ap[1] == 0 || strncmp (ap[1], "-r", 2) != 0)
+          {
+            usrerr ("-r flag needed for fix command");
+            rval = CSSC_EX_USAGE;
+            break;
+          }
 
-	/* get the version with all changes */
-	rval = command (&ap[1], TRUE, "get -k");
+        /* get the version with all changes */
+        rval = command (&ap[1], TRUE, "get -k");
 
-	/* now remove that version from the s-file */
-	if (rval == 0)
-	  rval = command (&ap[1], TRUE, "rmdel:r");
+        /* now remove that version from the s-file */
+        if (rval == 0)
+          rval = command (&ap[1], TRUE, "rmdel:r");
 
-	/* and edit the old version (but don't clobber new vers) */
-	if (rval == 0)
-	  rval = command (&ap[2], FALSE, "get -e -g");
+        /* and edit the old version (but don't clobber new vers) */
+        if (rval == 0)
+          rval = command (&ap[2], FALSE, "get -e -g");
       }
       break;
 
     case CLEAN:
       {
-	rval = clean ((int) cmd->sccspath, ap);
+        rval = clean ((int) cmd->sccspath, ap);
       }
       break;
 
     case UNEDIT:
       {
-	for (argv = np = &ap[1]; *argv != NULL; argv++)
-	  {
-	    if (unedit (*argv))
-	      *np++ = *argv;
-	  }
-	*np = NULL;
+        for (argv = np = &ap[1]; *argv != NULL; argv++)
+          {
+            if (unedit (*argv))
+              *np++ = *argv;
+          }
+        *np = NULL;
 
-	/* Test difference: unedit() says " foo: removed" and this
-	 * output comes *after* the output from get.  This happens
-	 * when the output is a file.  it's a buffering issue, not
-	 * noticed by the casual user.
-	 *
-	 * Sigh.
-	 *
-	 * We can get the same output if we fork to run get; that way,
-	 * the parent's output remains in the stdout buffer until
-	 * after the child has exited.
-	 */
+        /* Test difference: unedit() says " foo: removed" and this
+         * output comes *after* the output from get.  This happens
+         * when the output is a file.  it's a buffering issue, not
+         * noticed by the casual user.
+         *
+         * Sigh.
+         *
+         * We can get the same output if we fork to run get; that way,
+         * the parent's output remains in the stdout buffer until
+         * after the child has exited.
+         */
 
-	/* get all the files that we unedited successfully */
-	if (np > &ap[1])
-	  rval = command (&ap[1], TRUE, "get");	
+        /* get all the files that we unedited successfully */
+        if (np > &ap[1])
+          rval = command (&ap[1], TRUE, "get"); 
       }
       break;
 
-    case DIFFS:		/* diff between s-file & edit file */
+    case DIFFS:         /* diff between s-file & edit file */
       {
-	char *s;
-	
-	/* find the end of the flag arguments */
-	for (np = &ap[1]; *np != NULL && **np == '-'; np++)
-	  continue;
-	argv = np;
+        char *s;
+        
+        /* find the end of the flag arguments */
+        for (np = &ap[1]; *np != NULL && **np == '-'; np++)
+          continue;
+        argv = np;
 
-	/* for each file, do the diff */
-	s = argv[1];
-	while (*np != NULL)
-	  {
-	    int this_ret;
-	    /* messy, but we need a null terminated argv */
-	    *argv = *np++;
-	    argv[1] = NULL;
-	    this_ret = dodiff (ap, tail (*argv));
-	    if (rval == 0)
-	      rval = this_ret;
-	    argv[1] = s;
-	  }
+        /* for each file, do the diff */
+        s = argv[1];
+        while (*np != NULL)
+          {
+            int this_ret;
+            /* messy, but we need a null terminated argv */
+            *argv = *np++;
+            argv[1] = NULL;
+            this_ret = dodiff (ap, tail (*argv));
+            if (rval == 0)
+              rval = this_ret;
+            argv[1] = s;
+          }
       }
       break;
 
-    case DODIFF:		/* internal diff call */
+    case DODIFF:                /* internal diff call */
       {
-	drop_privs();
-	for (np = ap; *np != NULL; np++)
-	  {
-	    if ((*np)[0] == '-' && (*np)[1] == 'C')
-	      (*np)[1] = 'c';
-	  }
+        drop_privs();
+        for (np = ap; *np != NULL; np++)
+          {
+            if ((*np)[0] == '-' && (*np)[1] == 'C')
+              (*np)[1] = 'c';
+          }
 
-	/* insert "-" argument */
-	np[1] = NULL;
-	np[0] = np[-1];
-	np[-1] = "-";
+        /* insert "-" argument */
+        np[1] = NULL;
+        np[0] = np[-1];
+        np[-1] = "-";
 
-	/* execute the diff program of choice */
+        /* execute the diff program of choice */
 #ifndef V6
-	if (TrustEnvironment)
-	  execvp ("diff", ap);
+        if (TrustEnvironment)
+          execvp ("diff", ap);
 #endif
-	try_to_exec (cmd->sccspath, argv);
-	exit (CSSC_EX_OSERR);
+        try_to_exec (cmd->sccspath, argv);
+        exit (CSSC_EX_OSERR);
       }
       /*NOTREACHED */
       break;
 
-    case ENTER:		/* enter new sccs files */
+    case ENTER:         /* enter new sccs files */
       np = do_enter(argv, np, ap, &rval);
       break;
 
     default:
       {
-	syserr ("Unexpected oper %d", cmd->sccsoper);
-	exit (CSSC_EX_SOFTWARE);
+        syserr ("Unexpected oper %d", cmd->sccsoper);
+        exit (CSSC_EX_SOFTWARE);
       }
       /*NOTREACHED */
       break;
@@ -1238,7 +1239,7 @@ lookup (const char *name)
   for (cmd = SccsProg; cmd->sccsname != NULL; cmd++)
     {
       if (strcmp (cmd->sccsname, name) == 0)
-	return cmd;
+        return cmd;
     }
   return NULL;
 }
@@ -1282,7 +1283,7 @@ childwait(int pid, int *status_ptr, int ignoreintr)
  */
 static const char *
 get_sig_name(unsigned int sig,
-	     char sigmsgbuf[11])
+             char sigmsgbuf[11])
 {
 #ifdef SYS_SIGLIST_DECLARED
 #ifdef NSIG  
@@ -1290,7 +1291,7 @@ get_sig_name(unsigned int sig,
     return sys_siglist[sig];
 #endif
 #endif
-  if (sig > 999) sig = 999;	/* prevent buffer overflow (!) */
+  if (sig > 999) sig = 999;     /* prevent buffer overflow (!) */
   sprintf (sigmsgbuf, "Signal %u", sig);
   return sigmsgbuf;
 }
@@ -1336,9 +1337,9 @@ do_fork(void)
 
 int 
 callprog (const char *progpath,
-	  short flags,
-	  char *const argv[],
-	  bool forkflag)
+          short flags,
+          char *const argv[],
+          bool forkflag)
 {
   register int i;
 
@@ -1347,7 +1348,7 @@ callprog (const char *progpath,
     {
       printf ("%s\n", "callprog:");
       for (i = 0; argv[i] != NULL; i++)
-	printf ("\t\"%s\"\n", argv[i]);
+        printf ("\t\"%s\"\n", argv[i]);
     }
 #endif
 
@@ -1362,50 +1363,50 @@ callprog (const char *progpath,
     {
 #ifdef DEBUG
       if (Debug)
-	printf ("%s", "Forking\n");
+        printf ("%s", "Forking\n");
 #endif
       i = do_fork ();
       if (i < 0)
-	{
-	  syserr ("cannot fork");
-	  exit (CSSC_EX_OSERR);
-	}
-      else if (i > 0)		/* parent */
-	{
-	  int st;
-	  
-	  childwait(i, &st, 0);	/* don't block SIGINT. */
+        {
+          syserr ("cannot fork");
+          exit (CSSC_EX_OSERR);
+        }
+      else if (i > 0)           /* parent */
+        {
+          int st;
+          
+          childwait(i, &st, 0); /* don't block SIGINT. */
 
-	  if (WIFEXITED(st))	/* normal exit. */
-	    {
-	      st = WEXITSTATUS(st);
-	    }
-	  else			/* child exited via signal */
-	    {
-	      int sigcode = WTERMSIG(st);
-	      if (sigcode != SIGINT && sigcode != SIGPIPE)
-		{
-		  char sigmsgbuf[11];
-		  fprintf (stderr,
-			   "%s: %s: %s%s\n",
-			   MyName,
-			   argv[0],
-			   get_sig_name(sigcode, sigmsgbuf),
-			   (WCOREDUMP(st) ? " (core dumped)" : "") );
-		}
-	      st = CSSC_EX_SOFTWARE;
-	    }
-	  
-	  if (OutFile >= 0)
-	    {
-	      close (OutFile);
-	      OutFile = -1;
-	    }
-	  return (st);
-	}
+          if (WIFEXITED(st))    /* normal exit. */
+            {
+              st = WEXITSTATUS(st);
+            }
+          else                  /* child exited via signal */
+            {
+              int sigcode = WTERMSIG(st);
+              if (sigcode != SIGINT && sigcode != SIGPIPE)
+                {
+                  char sigmsgbuf[11];
+                  fprintf (stderr,
+                           "%s: %s: %s%s\n",
+                           MyName,
+                           argv[0],
+                           get_sig_name(sigcode, sigmsgbuf),
+                           (WCOREDUMP(st) ? " (core dumped)" : "") );
+                }
+              st = CSSC_EX_SOFTWARE;
+            }
+          
+          if (OutFile >= 0)
+            {
+              close (OutFile);
+              OutFile = -1;
+            }
+          return (st);
+        }
     }
   else if (OutFile >= 0)
-    {				   /* TODO: make this impossible. */
+    {                              /* TODO: make this impossible. */
       syserr ("callprog: setting stdout without forking");
       exit (CSSC_EX_SOFTWARE);
     }
@@ -1421,7 +1422,7 @@ callprog (const char *progpath,
       RealUser = 1;
 #ifdef DEBUG
       if (Debug)
-	printf ("callprog: gave up privileges.\n");
+        printf ("callprog: gave up privileges.\n");
 #endif
     }
 
@@ -1457,7 +1458,7 @@ static char *
 str_dup (const char *s)
 {
   char *p;
-  size_t len = strlen (s) + 1u;	/* include space for terminating '\0' */
+  size_t len = strlen (s) + 1u; /* include space for terminating '\0' */
   p = malloc (len);
   if (p)
     {
@@ -1612,12 +1613,12 @@ safepath (register const char *p)
   if (*p != '/')
     {
       while (strncmp (p, "../", 3) != 0 && strcmp (p, "..") != 0)
-	{
-	  p = index (p, '/');
-	  if (p == NULL)
-	    return TRUE;
-	  p++;
-	}
+        {
+          p = index (p, '/');
+          if (p == NULL)
+            return TRUE;
+          p++;
+        }
     }
 
   printf ("You may not use full pathnames or \"..\"\n");
@@ -1683,31 +1684,31 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
   for (ap = argv; *++ap != NULL;)
     {
       if (**ap == '-')
-	{
-	  /* we have a flag */
-	  switch ((*ap)[1])
-	    {
-	    case 'b':
-	      nobranch = TRUE;
-	      break;
+        {
+          /* we have a flag */
+          switch ((*ap)[1])
+            {
+            case 'b':
+              nobranch = TRUE;
+              break;
 
-	    case 'u':
-	      if ((*ap)[2] != '\0')
-		usernm = &(*ap)[2];
-	      else if (ap[1] != NULL && ap[1][0] != '-')
-		usernm = *++ap;
-	      else
-		usernm = username ();
-	      break;
-	    }
-	}
+            case 'u':
+              if ((*ap)[2] != '\0')
+                usernm = &(*ap)[2];
+              else if (ap[1] != NULL && ap[1][0] != '-')
+                usernm = *++ap;
+              else
+                usernm = username ();
+              break;
+            }
+        }
       else
-	{
-	  if (subdir != NULL)
-	    usrerr ("too many args");
-	  else
-	    subdir = *ap;
-	}
+        {
+          if (subdir != NULL)
+            usrerr ("too many args");
+          else
+            subdir = *ap;
+        }
     }
 
   /*
@@ -1742,7 +1743,7 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
   while (NULL != (dir = readdir (dirp)))
     {
       if (NAMLEN(dir) < 2 || 's' != dir->d_name[0] || '.' != dir->d_name[1])
-	continue;
+        continue;
 
       /* got an s. file -- see if the p. file exists */
       gstrcat (buf, "/p.", FBUFSIZ);/* XXX: BUG: wrong size limit. */
@@ -1759,34 +1760,34 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
       pfp = fopen (buf, "r");
       gotpfent = FALSE;
       if (pfp != NULL)
-	{
-	  /* the file exists -- report it's contents */
-	  while ((pf = getpfent (pfp)) != NULL)
-	    {
-	      if (nobranch && isbranch (pf->p_nsid))
-		continue;
-	      if (usernm != NULL && strcmp (usernm, pf->p_user) != 0 && mode != CLEANC)
-		continue;
-	      gotedit = TRUE;
-	      gotpfent = TRUE;
-	      if (mode == TELLC)
-		{
-		  printf ("%s\n", basefile);
-		  break;
-		}
-	      printf ("%12s: being edited: ", basefile);
-	      putpfent (pf, stdout);
-	    }
-	  fclose (pfp);
-	}
+        {
+          /* the file exists -- report it's contents */
+          while ((pf = getpfent (pfp)) != NULL)
+            {
+              if (nobranch && isbranch (pf->p_nsid))
+                continue;
+              if (usernm != NULL && strcmp (usernm, pf->p_user) != 0 && mode != CLEANC)
+                continue;
+              gotedit = TRUE;
+              gotpfent = TRUE;
+              if (mode == TELLC)
+                {
+                  printf ("%s\n", basefile);
+                  break;
+                }
+              printf ("%12s: being edited: ", basefile);
+              putpfent (pf, stdout);
+            }
+          fclose (pfp);
+        }
 
       /* the s. file exists and no p. file exists -- unlink the g-file */
       if (mode == CLEANC && !gotpfent)
-	{
-	  char unlinkbuf[FBUFSIZ];
-	  form_gname(unlinkbuf, FBUFSIZ, dir);
-	  unlink (unlinkbuf);
-	}
+        {
+          char unlinkbuf[FBUFSIZ];
+          form_gname(unlinkbuf, FBUFSIZ, dir);
+          unlink (unlinkbuf);
+        }
     }
 
   /* cleanup & report results */
@@ -1795,11 +1796,11 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
     {
       printf ("Nothing being edited");
       if (nobranch)
-	printf (" (on trunk)");
+        printf (" (on trunk)");
       if (usernm == NULL)
-	printf ("\n");
+        printf ("\n");
       else
-	printf (" by %s\n", usernm);
+        printf (" by %s\n", usernm);
     }
   if (mode == CHECKC)
     exit (gotedit);
@@ -1847,9 +1848,9 @@ isbranch (const char *sid)
   for (p = sid; *p != '\0'; p++)
     {
       if (*p == '.')
-	dots++;
+        dots++;
       if (dots > 1)
-	return TRUE;
+        return TRUE;
     }
   return FALSE;
 }
@@ -1888,7 +1889,7 @@ unedit (const char *fn)
   char buf[PFILELG];
 
   /* make "s." filename & find the trailing component */
-  pfn = makefile (fn);		/* returned value must be freed. */
+  pfn = makefile (fn);          /* returned value must be freed. */
   if (pfn == NULL)
     return (FALSE);
   q = rindex (pfn, '/');
@@ -1932,16 +1933,16 @@ unedit (const char *fn)
   while ((pent = getpfent (pfp)) != NULL)
     {
       if (strcmp (pent->p_user, myname) == 0)
-	{
-	  /* a match */
-	  delete++;
-	}
+        {
+          /* a match */
+          delete++;
+        }
       else
-	{
-	  /* output it again */
-	  putpfent (pent, tfp);
-	  others++;
-	}
+        {
+          /* output it again */
+          putpfent (pent, tfp);
+          others++;
+        }
     }
 
   /*
@@ -1955,22 +1956,22 @@ unedit (const char *fn)
       cp = tail (fn);
       errno = 0;
       if (access (cp, 0) < 0 && errno != ENOENT)
-	goto bad;
+        goto bad;
       if (errno == 0)
-	/*
-	 * This is wrong, but the rest of the program
-	 * has built in assumptions about "." as well,
-	 * so why make unedit a special case?
-	 */
-	if (access (".", 2) < 0)
-	  {
-	  bad:
-	    printf ("%12s: can't remove\n", cp);
-	    fclose (tfp);
-	    fclose (pfp);
-	    free(pfn);
-	    return (FALSE);
-	  }
+        /*
+         * This is wrong, but the rest of the program
+         * has built in assumptions about "." as well,
+         * so why make unedit a special case?
+         */
+        if (access (".", 2) < 0)
+          {
+          bad:
+            printf ("%12s: can't remove\n", cp);
+            fclose (tfp);
+            fclose (pfp);
+            free(pfn);
+            return (FALSE);
+          }
     }
   /* do final cleanup */
   if (others)
@@ -1979,13 +1980,13 @@ unedit (const char *fn)
       rewind(tfp);
 
       if (freopen (pfn, "w", pfp) == NULL)
-	{
-	  usrerr ("cannot create \"%s\"", pfn);
-	  free(pfn);
-	  return (FALSE);
-	}
+        {
+          usrerr ("cannot create \"%s\"", pfn);
+          free(pfn);
+          return (FALSE);
+        }
       while (fgets (buf, sizeof buf, tfp) != NULL)
-	fputs (buf, pfp);
+        fputs (buf, pfp);
     }
   else
     {
@@ -2009,7 +2010,7 @@ unedit (const char *fn)
        * determine if the file existed or not.
        */
       if (unlink (cp) >= 0)
-	printf ("%12s: removed\n", cp);
+        printf ("%12s: removed\n", cp);
       free(pfn);
       return (TRUE);
     }
@@ -2039,7 +2040,6 @@ dodiff (char * getv[], const char *gfile)
 {
   int pipev[2];
   int rval;
-  register int i;
   register int pid;
   auto int st;
   extern int errno;
@@ -2065,18 +2065,18 @@ dodiff (char * getv[], const char *gfile)
       close (pipev[0]);
       rval = command (&getv[1], TRUE, "get:rcixt -s -k -p");
 
-      childwait(pid, &st, 1);	/* ignore SIGINT while waiting. */
+      childwait(pid, &st, 1);   /* ignore SIGINT while waiting. */
       /* ignore result of diff */
     }
   else
     {
       /* in child, run diff */
       if (close (pipev[1]) < 0 || close (0) < 0 ||
-	  dup (pipev[0]) != 0 || close (pipev[0]) < 0)
-	{
-	  syserr ("dodiff: magic failed");
-	  exit (CSSC_EX_OSERR);
-	}
+          dup (pipev[0]) != 0 || close (pipev[0]) < 0)
+        {
+          syserr ("dodiff: magic failed");
+          exit (CSSC_EX_OSERR);
+        }
       command (&getv[1], FALSE, "-diff:elsfhbC");
     }
   return rval;
@@ -2202,7 +2202,7 @@ void
 putpfent (register const struct pfile *pf, register FILE * f)
 {
   fprintf (f, "%s %s %s %s %s", pf->p_osid, pf->p_nsid,
-	   pf->p_user, pf->p_date, pf->p_time);
+           pf->p_user, pf->p_date, pf->p_time);
 
   if (pf->p_aux != NULL)
     fprintf (f, " %s", pf->p_aux);
@@ -2300,8 +2300,8 @@ username (void)
   if (pw == NULL)
     {
       syserr ("Who are you?\n"
-	      "You don't seem to have an entry in the user database "
-	      "(/etc/passwd) (uid=%d)", (int)getuid ());
+              "You don't seem to have an entry in the user database "
+              "(/etc/passwd) (uid=%d)", (int)getuid ());
       exit (CSSC_EX_OSERR);
     }
   return (pw->pw_name);
@@ -2348,14 +2348,14 @@ static void
 gstrbotch (const char *str1, const char *str2)
 {
   usrerr ("Filename(s) too long: %s %s",
-	  (str1 ? str1 : ""),
-	  (str2 ? str2 : ""));
+          (str1 ? str1 : ""),
+          (str2 ? str2 : ""));
   exit(CSSC_EX_SOFTWARE);
 }
 
 static void 
 gstrbotchn (int navail,
-	    const char *str1, int len1, const char *str2, int len2)
+            const char *str1, int len1, const char *str2, int len2)
 {
   fprintf(stderr, "Filename%s too long: ", (str1 && str2) ? "s" :"");
   if (str1)

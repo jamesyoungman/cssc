@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.35 2001/07/10 23:13:00 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.36 2001/07/31 08:28:07 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -44,29 +44,29 @@ static void
 print_id_list(const char *s, mylist<sid> const &list)
 {
   int i, len;
-	
+        
   len = list.length();
   if (len > 0)
     {
       printf("%s:\n", s);
       for(i = 0; i < len; i++)
-	{
-	  list[i].print(stdout);
-	  putchar('\n');
-	}
+        {
+          list[i].print(stdout);
+          putchar('\n');
+        }
     }
 }
 
 void
 usage() {
-	fprintf(stderr,
+        fprintf(stderr,
 "usage: %s [-begkmnpstV] [-c date] [-r SID] [-i range] [-w string]\n"
 "\t[-x range] [-G gfile] file ...\n",
                 prg_name);
 }
 
 
-static void maybe_clear_archive_bit(const mystring &s)
+static void maybe_clear_archive_bit(const mystring &)
 {
 #ifdef CONFIG_USE_ARCHIVE_BIT
   clear_archive_bit(gname);
@@ -81,26 +81,26 @@ main(int argc, char **argv)
   Cleaner arbitrary_name;
   int retval = 0;
   int c;
-  sid rid = NULL;			/* -r (XXX: correct use of NULL?) */
-  sid org_rid = NULL;		// (XXX: correct use of NULL?) 
-  int for_edit = 0;			/* -e */
-  int branch = 0;			/* -b */
-  int suppress_keywords = 0;		/* -k */
-  int use_stdout = 0;			/* -p */
-  int silent = 0;			/* -s */
-  int no_output = 0;			/* -g */
-  const char *wstring = NULL;		/* -w */
-  sid_list include, exclude;		/* -i, -x */
-  sccs_date cutoff_date;		/* -c */
-  int show_sid = 0;			/* -m */
-  int show_module = 0;			/* -n */
-  int debug = 0;			/* -D */
-  mystring gname;		        /* -G */
-  int got_gname = 0;			/* -G */
+  sid rid = NULL;                       /* -r (XXX: correct use of NULL?) */
+  sid org_rid = NULL;           // (XXX: correct use of NULL?) 
+  int for_edit = 0;                     /* -e */
+  int branch = 0;                       /* -b */
+  int suppress_keywords = 0;            /* -k */
+  int use_stdout = 0;                   /* -p */
+  int silent = 0;                       /* -s */
+  int no_output = 0;                    /* -g */
+  const char *wstring = NULL;           /* -w */
+  sid_list include, exclude;            /* -i, -x */
+  sccs_date cutoff_date;                /* -c */
+  int show_sid = 0;                     /* -m */
+  int show_module = 0;                  /* -n */
+  int debug = 0;                        /* -D */
+  mystring gname;                       /* -G */
+  int got_gname = 0;                    /* -G */
 #if 0
-  int seq_no = 0;			/* -a */
+  int seq_no = 0;                       /* -a */
 #endif
-  int include_branches = 0;		/* -t */
+  int include_branches = 0;             /* -t */
   bool real_file;
   
   if (argc > 0)
@@ -115,158 +115,158 @@ main(int argc, char **argv)
       c = opts.next())
     {
       switch (c)
-	{
-	default:
-	  errormsg("Unsupported option: '%c'", c);
-	  return 2;
-	  
-	case 'r':
-	  org_rid = sid(opts.getarg());
-	  if (!org_rid.valid())
-	    {
-	      errormsg("Invaild SID: '%s'", opts.getarg());
-	      return 2;
-	    }
-	  break;
-	  
-	case 'c':
-	  cutoff_date = sccs_date(opts.getarg());
-	  if (!cutoff_date.valid())
-	    {
-	      errormsg("Invalid cutoff date: '%s'",
-		       opts.getarg());
-	      return 2;
-	    }
-	  break;
-	  
-	case 'i':
-	  include = sid_list(opts.getarg());
-	  if (!include.valid())
-	    {
-	      errormsg("Invalid inclusion list: '%s'",
-		       opts.getarg());
-	      return 2;
-	    }
-	  break;
-	  
-	case 'x':
-	  exclude = sid_list(opts.getarg());
-	  if (!exclude.valid())
-	    {
-	      errormsg("Invalid exclusion list: '%s'",
-		       opts.getarg());
-	      return 2;
-	    }
-	  break;
-	  
-	case 'e':
-	  for_edit = 1;
-	  suppress_keywords = 1;
-	  break;
+        {
+        default:
+          errormsg("Unsupported option: '%c'", c);
+          return 2;
+          
+        case 'r':
+          org_rid = sid(opts.getarg());
+          if (!org_rid.valid())
+            {
+              errormsg("Invaild SID: '%s'", opts.getarg());
+              return 2;
+            }
+          break;
+          
+        case 'c':
+          cutoff_date = sccs_date(opts.getarg());
+          if (!cutoff_date.valid())
+            {
+              errormsg("Invalid cutoff date: '%s'",
+                       opts.getarg());
+              return 2;
+            }
+          break;
+          
+        case 'i':
+          include = sid_list(opts.getarg());
+          if (!include.valid())
+            {
+              errormsg("Invalid inclusion list: '%s'",
+                       opts.getarg());
+              return 2;
+            }
+          break;
+          
+        case 'x':
+          exclude = sid_list(opts.getarg());
+          if (!exclude.valid())
+            {
+              errormsg("Invalid exclusion list: '%s'",
+                       opts.getarg());
+              return 2;
+            }
+          break;
+          
+        case 'e':
+          for_edit = 1;
+          suppress_keywords = 1;
+          break;
 
-	case 'b':
-	  branch = 1;
-	  break;
+        case 'b':
+          branch = 1;
+          break;
 
-	case 'k':
-	  suppress_keywords = 1;
-	  break;
+        case 'k':
+          suppress_keywords = 1;
+          break;
 
-	case 'p':
-	  use_stdout = 1;
-	  got_gname = 0;
-	  break;
+        case 'p':
+          use_stdout = 1;
+          got_gname = 0;
+          break;
 
-	case 's':
-	  silent = 1;
-	  break;
+        case 's':
+          silent = 1;
+          break;
 
-	case 'm':
-	  show_sid = 1;
-	  break;
+        case 'm':
+          show_sid = 1;
+          break;
 
-	case 'n':
-	  show_module = 1;
-	  break;
+        case 'n':
+          show_module = 1;
+          break;
 
-	case 'g':
-	  no_output = 1;
-	  break;
+        case 'g':
+          no_output = 1;
+          break;
 
-	case 'w':
-	  wstring = opts.getarg();
-	  break;
+        case 'w':
+          wstring = opts.getarg();
+          break;
 
-#if 0		       
-	case 'a':
-	  int i = atoi(opts.getarg());
-	  if (i < 1)
-	    {
-	      errormsg("Invalid sequence number: '%s'", optarg);
-	      return 2;
-	    }
-	  seq_no = i;
-	  break;
+#if 0                  
+        case 'a':
+          int i = atoi(opts.getarg());
+          if (i < 1)
+            {
+              errormsg("Invalid sequence number: '%s'", optarg);
+              return 2;
+            }
+          seq_no = i;
+          break;
 #endif
-	  
-	case 't':
-	  include_branches = 1;
-	  break;
+          
+        case 't':
+          include_branches = 1;
+          break;
 
-	case 'G':
-	  got_gname = 1;
-	  use_stdout = 0;
-	  gname = opts.getarg();
-	  break;
-			
-	case 'D':
-	  debug = 1;
-	  break;
-	  
-	case 'V':
-	  version();
-	  break;
-	}
+        case 'G':
+          got_gname = 1;
+          use_stdout = 0;
+          gname = opts.getarg();
+          break;
+                        
+        case 'D':
+          debug = 1;
+          break;
+          
+        case 'V':
+          version();
+          break;
+        }
     }
 
   if (branch && !for_edit)
     {
       errormsg(
-	      "Warning: there is not a lot of point in using the "
-	      "-b option unless you want to check the file out for "
-	      "editing (using the -e option).\n");
+              "Warning: there is not a lot of point in using the "
+              "-b option unless you want to check the file out for "
+              "editing (using the -e option).\n");
     }
-	
+        
 
-  FILE *out = NULL;	/* The output file.  It's initialized
-			   with NULL so if it's accidentally
-			   used before being set it will
-			   quickly cause an error. */
+  FILE *out = NULL;     /* The output file.  It's initialized
+                           with NULL so if it's accidentally
+                           used before being set it will
+                           quickly cause an error. */
   
   if (use_stdout)
     {
       gname = "-";
       out = stdout_to_stderr();
       if (NULL == out)
-	return 1;	// fatal error.
+        return 1;       // fatal error.
     }
   
   if (silent)
     {
       if (!stdout_to_null())
-	return 1;	// fatal error.
+        return 1;       // fatal error.
     }
   
   if (no_output)
     {
       if (use_stdout)
-	{
-	  fclose(out);
-	}
+        {
+          fclose(out);
+        }
       got_gname = 0;
       gname = "null";
       if (NULL == (out = open_null()))
-	return 1;
+        return 1;
     }
 
   sccs_file_iterator iter(opts);
@@ -280,177 +280,177 @@ main(int argc, char **argv)
     {
 #ifdef HAVE_EXCEPTIONS
       try
-	{
-#endif	      
-	  sccs_name &name = iter.get_name();
-	  
-	  sccs_pfile *pfile = NULL;
-	  if (for_edit)
-	    {
-	      pfile = new sccs_pfile(name, sccs_pfile::APPEND);
-	    }
-	  
-	  sccs_file file(name, sccs_file::READ);
-	  sid new_delta;
-	  sid retrieve;
+        {
+#endif        
+          sccs_name &name = iter.get_name();
+          
+          sccs_pfile *pfile = NULL;
+          if (for_edit)
+            {
+              pfile = new sccs_pfile(name, sccs_pfile::APPEND);
+            }
+          
+          sccs_file file(name, sccs_file::READ);
+          sid new_delta;
+          sid retrieve;
 
-	  rid = org_rid;
-	  if (!file.find_requested_sid(rid, retrieve, include_branches))
-	    {
-	      errormsg("%s: Requested SID not found.", name.c_str());
-	      retval = 1;
-	      continue;	// with next file....
-	    }
-	  if (!rid.valid() ||
-	      (rid.release_only() && release(rid) == release(retrieve)))
-	    {
-	      rid = retrieve;
-	    }
-	  
-	  
-	  if (for_edit)
-	    {
-	      if (branch && !file.branches_allowed())
-		{
-		  errormsg(
-			  "%s: Warning: Branch-enable flag not set, "
-			  "option -b ignored.\n",
-			  name.c_str());
-		}
-	      
-	      if ( (NULL==pfile) || !file.test_locks(retrieve, *pfile))
-		{
-		  retval = 1;
-		  continue; // continue with next file...
-		}
+          rid = org_rid;
+          if (!file.find_requested_sid(rid, retrieve, include_branches))
+            {
+              errormsg("%s: Requested SID not found.", name.c_str());
+              retval = 1;
+              continue; // with next file....
+            }
+          if (!rid.valid() ||
+              (rid.release_only() && release(rid) == release(retrieve)))
+            {
+              rid = retrieve;
+            }
+          
+          
+          if (for_edit)
+            {
+              if (branch && !file.branches_allowed())
+                {
+                  errormsg(
+                          "%s: Warning: Branch-enable flag not set, "
+                          "option -b ignored.\n",
+                          name.c_str());
+                }
+              
+              if ( (NULL==pfile) || !file.test_locks(retrieve, *pfile))
+                {
+                  retval = 1;
+                  continue; // continue with next file...
+                }
 
-	      int failed = 0;
-	      new_delta = file.find_next_sid(rid, retrieve,
-					     branch, *pfile,
-					     &failed);
-	      if (failed)
-		{
-		  /* sccs_file::find_next_sid() has returned NULL.
-		   * This is a rare case.
-		   */
-		  retval = 1;
-		  continue; // continue with next file...
-		}
-	    }
+              int failed = 0;
+              new_delta = file.find_next_sid(rid, retrieve,
+                                             branch, *pfile,
+                                             &failed);
+              if (failed)
+                {
+                  /* sccs_file::find_next_sid() has returned NULL.
+                   * This is a rare case.
+                   */
+                  retval = 1;
+                  continue; // continue with next file...
+                }
+            }
 
-	  real_file = false;
-	  
-	  if (!use_stdout && !no_output)
-	    {
-	      ASSERT(name.valid());
-	      
-	      /* got_gname is specified if we had -G g-file
-	       * on the command line.   This only works for the
-	       * first file on the command line (or else we'd
-	       * be overwriting easrlier data.
-	       */
-	      if (!got_gname)
-		gname = name.gfile();
-	      got_gname = 0;
-	      
-	      int mode = CREATE_AS_REAL_USER | CREATE_FOR_GET;
-	      if (!suppress_keywords)
-		{
-		  mode |= CREATE_READ_ONLY;
-		}
-	      
-	      out = fcreate(gname, mode);
-	      real_file = true;
-	      
-	      if (NULL == out)
-		{
-		  if (errno)
-		    perror(gname.c_str());
-		  retval = 1;
-		  continue;	// with next file....
-		}
-	    }
+          real_file = false;
+          
+          if (!use_stdout && !no_output)
+            {
+              ASSERT(name.valid());
+              
+              /* got_gname is specified if we had -G g-file
+               * on the command line.   This only works for the
+               * first file on the command line (or else we'd
+               * be overwriting easrlier data.
+               */
+              if (!got_gname)
+                gname = name.gfile();
+              got_gname = 0;
+              
+              int mode = CREATE_AS_REAL_USER | CREATE_FOR_GET;
+              if (!suppress_keywords)
+                {
+                  mode |= CREATE_READ_ONLY;
+                }
+              
+              out = fcreate(gname, mode);
+              real_file = true;
+              
+              if (NULL == out)
+                {
+                  if (errno)
+                    perror(gname.c_str());
+                  retval = 1;
+                  continue;     // with next file....
+                }
+            }
 
-	  const int keywords = !suppress_keywords;
-	  struct sccs_file::get_status status;
-	  
+          const int keywords = !suppress_keywords;
+          struct sccs_file::get_status status;
+          
 #ifdef HAVE_EXCEPTIONS
-	  try
-	    {
-#endif	  
-	  status = file.get(out, gname, retrieve, cutoff_date,
-			    include, exclude, keywords, wstring,
-			    show_sid, show_module, debug);
+          try
+            {
+#endif    
+          status = file.get(out, gname, retrieve, cutoff_date,
+                            include, exclude, keywords, wstring,
+                            show_sid, show_module, debug);
 #ifdef HAVE_EXCEPTIONS
-	    }
-	  catch (CsscException)
-	    {
-	      // the get failed.  Delete the g-file and re-throw the exception.
-	      if (real_file)
-		{
-		  fclose(out);
-		  remove(gname.c_str());
-		  throw;
-		}
-	    }
+            }
+          catch (CsscException)
+            {
+              // the get failed.  Delete the g-file and re-throw the exception.
+              if (real_file)
+                {
+                  fclose(out);
+                  remove(gname.c_str());
+                  throw;
+                }
+            }
 #endif
-	  
-	  if (real_file)
-	    {
-	      fclose(out);
-	      if (!keywords)
-		maybe_clear_archive_bit(gname);
-	    }
-	  
-	  if (!status.success) // get failed.
-	    {
-	      retval = 1;
-	      remove(gname.c_str());
-	      continue;
-	    }
-	  
-	  // Print the name of the SCCS file unless exactly one
-	  // was specified.
-	  if (!iter.unique())
-	    {
-	      fprintf(stdout, "\n%s:\n", name.c_str());
-	    }
-	  
-	  print_id_list("Included", status.included);
-	  print_id_list("Excluded", status.excluded);
-	  retrieve.print(stdout);
-	  putchar('\n');
-	  
-	  if (for_edit)
-	    {
-	      printf("new delta ");
-	      new_delta.print(stdout);
-	      putchar('\n');
-	      
-	      if (!pfile->add_lock(retrieve, new_delta, include, exclude))
-		{
-		  // Failed to add the lock to the p-file.
-		  if (real_file)
-		    remove(gname.c_str());
+          
+          if (real_file)
+            {
+              fclose(out);
+              if (!keywords)
+                maybe_clear_archive_bit(gname);
+            }
+          
+          if (!status.success) // get failed.
+            {
+              retval = 1;
+              remove(gname.c_str());
+              continue;
+            }
+          
+          // Print the name of the SCCS file unless exactly one
+          // was specified.
+          if (!iter.unique())
+            {
+              fprintf(stdout, "\n%s:\n", name.c_str());
+            }
+          
+          print_id_list("Included", status.included);
+          print_id_list("Excluded", status.excluded);
+          retrieve.print(stdout);
+          putchar('\n');
+          
+          if (for_edit)
+            {
+              printf("new delta ");
+              new_delta.print(stdout);
+              putchar('\n');
+              
+              if (!pfile->add_lock(retrieve, new_delta, include, exclude))
+                {
+                  // Failed to add the lock to the p-file.
+                  if (real_file)
+                    remove(gname.c_str());
 
-		  retval = 1;	// remember the failure.
-		}
-	      delete pfile;
-	      pfile = NULL;
-	    }
-	  
-	  if (!no_output)
-	    {
-	      printf("%d lines\n", status.lines);
-	    }
+                  retval = 1;   // remember the failure.
+                }
+              delete pfile;
+              pfile = NULL;
+            }
+          
+          if (!no_output)
+            {
+              printf("%d lines\n", status.lines);
+            }
 #ifdef HAVE_EXCEPTIONS
-	}
+        }
       catch (CsscExitvalException e)
-	{
-	  if (e.exitval > retval)
-	    retval = e.exitval;
-	}
-#endif		
+        {
+          if (e.exitval > retval)
+            retval = e.exitval;
+        }
+#endif          
     }
 
   return retval;

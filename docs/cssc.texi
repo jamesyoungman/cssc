@@ -2170,7 +2170,7 @@ There are a small number of exceptions to this rule :-
 @table @code
 @item sccs
 The @code{sccs} driver program can be used to invoke any of the other
-tools in the suite.  @xref{Known Problems} for a discussion of the
+tools in the suite.  @xref{Known Problems}, for a discussion of the
 issues this raises.
 
 @item delta
@@ -2211,8 +2211,8 @@ values for this variable are as follows :-
 The default behaviour is used; this default will be the same as for one
 of @samp{enabled} or @samp{disabled}.  The default is set by passing
 either @code{--enable-binary} or @code{--disable-binary} to
-``configure'' when @sc{cssc} is compiled.  See @xref{Interoperability}
-for more information.
+``configure'' when @sc{cssc} is compiled.  |For more information see
+@xref{Interoperability}.  
 @end table
 
 This variable is unset by the @code{sccs} driver program, if it is
@@ -2264,7 +2264,7 @@ This is only of use when debugging @sc{cssc}.
 The @env{PROJECTDIR} environment variable is used only by the
 @code{sccs} driver program.  This variable is ignored if the the
 @code{sccs} program is installed with the set-user-ID bit set.  See
-@xref{Known Problems} for other remarks concerning setuid execution.
+@xref{Known Problems}, for other remarks concerning setuid execution.
 
 The @env{PROJECTDIR} variable is used to locate the @sc{sccs} history
 file corresponding to a filename given on the command line.  If the
@@ -2382,10 +2382,10 @@ pass the @code{-V} option to any of the @sc{cssc} tools.  The
 but you must specifically indicate if binary file support is to be 
 enabled or not when running ``configure''.
 
-The configuration options in effect at the time this file was formatted
-are as below :-
-
-@include config-info.texi
+@c The configuration options in effect at the time this file was formatted
+@c are as below :-
+@c 
+@c @include config-info.texi
 
 @node Incomplete, Year 2000 Issues, Interoperability, Top
 @chapter Missing Features and other Problems

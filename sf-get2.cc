@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.42 2001/07/14 18:30:51 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.43 2001/07/31 08:28:07 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -45,13 +45,13 @@ static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.42 2001/07/14 18:30:51 ja
 bool
 sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) const
 {
-  if (requested.is_null())	// no sid specified?
-    {				// get the default.
+  if (requested.is_null())      // no sid specified?
+    {                           // get the default.
       requested = flags.default_sid; 
-      if (requested.is_null())	// no default?
-	{			// get the latest.
-	  requested = sid(release::LARGEST);
-	}
+      if (requested.is_null())  // no default?
+        {                       // get the latest.
+          requested = sid(release::LARGEST);
+        }
     }
 
   // Giving a SID of two components is a request for 
@@ -60,7 +60,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
   // the latest SID of the specified release and level.
   int ncomponents = requested.components();
   if (2 == ncomponents && !include_branches)
-    ncomponents = 4;		// want an exact match.
+    ncomponents = 4;            // want an exact match.
 
   ASSERT(ncomponents != 0);
   ASSERT(ncomponents <= 4);
@@ -77,57 +77,57 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
       // the requested one.  If include_branches is true, they don't
       // have to be on the trunk.
       while (iter.next())
-	{
-	  if ( (release)iter->id > (release)requested )
-	    continue;
-	  else if (!include_branches && !iter->id.on_trunk())
-	    continue;
-	  if (!got_best || iter->id.gte(best))
-	    {
-	      best = iter->id;
-	      got_best = true;
-	    }
-	}
+        {
+          if ( (release)iter->id > (release)requested )
+            continue;
+          else if (!include_branches && !iter->id.on_trunk())
+            continue;
+          if (!got_best || iter->id.gte(best))
+            {
+              best = iter->id;
+              got_best = true;
+            }
+        }
     }
   else if (3 == ncomponents)
     {
       while (iter.next())
-	{
-	  const sid &s = iter->id;
-	  const int nc = s.components();
-	  
-	  // We ignore anything that is not on a branch.
-	  if (nc >= ncomponents)
-	    {
-	      // Fix by Mark Fortescue <mfortescue@transoft.com> for the 
-	      // situation where we specify -rx.y.z.
-	      // 
-	      // There was a branch problem here - We were only checking the
-	      // Release. We need to check Level and Branch as well
-	      if ( (relvbr)s == (relvbr)requested )
-		{
-		  if (!got_best || s >= best)
-		    {
-		      best = s;
-		      got_best = true;
-		    }
-		}
-	    }
-	}
+        {
+          const sid &s = iter->id;
+          const int nc = s.components();
+          
+          // We ignore anything that is not on a branch.
+          if (nc >= ncomponents)
+            {
+              // Fix by Mark Fortescue <mfortescue@transoft.com> for the 
+              // situation where we specify -rx.y.z.
+              // 
+              // There was a branch problem here - We were only checking the
+              // Release. We need to check Level and Branch as well
+              if ( (relvbr)s == (relvbr)requested )
+                {
+                  if (!got_best || s >= best)
+                    {
+                      best = s;
+                      got_best = true;
+                    }
+                }
+            }
+        }
     }
   else
     {
       while (iter.next())
-	{
-	  if (iter->id.matches(requested, ncomponents))
-	    {
-	      if (!got_best || iter->id.gte(best))
-		{
-		  best = iter->id;
-		  got_best = true;
-		}
-	    }
-	}
+        {
+          if (iter->id.matches(requested, ncomponents))
+            {
+              if (!got_best || iter->id.gte(best))
+                {
+                  best = iter->id;
+                  got_best = true;
+                }
+            }
+        }
     }
 
   if (got_best)
@@ -151,12 +151,12 @@ bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
 /* Returns the SID of the new delta to be created. */
 sid
 sccs_file::find_next_sid(sid requested, sid got,
-			 int want_branch,
-			 sccs_pfile &pfile,
-			 int *pfailed) const
+                         int want_branch,
+                         sccs_pfile &pfile,
+                         int *pfailed) const
 {
   if (!flags.branch)
-    want_branch = false;	// branches not allowed!
+    want_branch = false;        // branches not allowed!
   
   const int ncomponents = requested.components();
   bool forced_branch = false;
@@ -181,7 +181,7 @@ sccs_file::find_next_sid(sid requested, sid got,
   if (want_branch)
     {
       if (ncomponents < 4)
-	next = got;
+        next = got;
 
       next.next_branch();
     }
@@ -191,57 +191,57 @@ sccs_file::find_next_sid(sid requested, sid got,
 
       // have we hit the release ceiling?
       const bool too_high = requested.on_trunk() 
-	&& flags.ceiling.valid() && release(requested) > flags.ceiling;
+        && flags.ceiling.valid() && release(requested) > flags.ceiling;
 
       // have we collided with an existing SID?
       bool branch_again;
       const delta *pnext = find_any_delta(next);
       if (pnext)
-	{
-	  if (!pnext->removed() && !requested.partial_sid())
-	    {
-	      branch_again = true;
-	    }
-	  else
-	    {
-	      branch_again = false;
-	    }
-	}
+        {
+          if (!pnext->removed() && !requested.partial_sid())
+            {
+              branch_again = true;
+            }
+          else
+            {
+              branch_again = false;
+            }
+        }
       else
-	{
-	  /* Whew, the SID is not already used in the SCCS file; 
-	   * check the p-file also though...
-	   */
-	  if (sid_in_use(next, pfile))
-	    {
-	      if (flags.joint_edit)
-		{
-		  errormsg("Warning: %s: creating a branch "
-			   "due to concurrent edit",
-			   name.c_str());
-		  branch_again = true;
-		}
-	      else
-		{
-		  /* If the requested SID is already being edited, 
-		   * and the joint edit flag is not set, I think that
-		   * the attempt to edit the file shpuld already have been 
-		   * thrown out by sccs_file::test_locks().
-		   */
-		  errormsg("Warning: %s: requested SID is "
-			   "already being edited; this should not happen",
-			   name.c_str());
-		  *pfailed = 1;
-		  return next; // FAILURE
-		}
-	    }
-	  else
-	    {
-	      branch_again = false;
-	    }
-	}
+        {
+          /* Whew, the SID is not already used in the SCCS file; 
+           * check the p-file also though...
+           */
+          if (sid_in_use(next, pfile))
+            {
+              if (flags.joint_edit)
+                {
+                  errormsg("Warning: %s: creating a branch "
+                           "due to concurrent edit",
+                           name.c_str());
+                  branch_again = true;
+                }
+              else
+                {
+                  /* If the requested SID is already being edited, 
+                   * and the joint edit flag is not set, I think that
+                   * the attempt to edit the file shpuld already have been 
+                   * thrown out by sccs_file::test_locks().
+                   */
+                  errormsg("Warning: %s: requested SID is "
+                           "already being edited; this should not happen",
+                           name.c_str());
+                  *pfailed = 1;
+                  return next; // FAILURE
+                }
+            }
+          else
+            {
+              branch_again = false;
+            }
+        }
 
-	
+        
       // If we have the revision sequence 1.1 -> 1.2 -> 2.1, then we
       // get 1.2 for editing, we must create a branch (1.2.1.1),
       // because we can't create a 1.3 (as 2.1 already exists).  If
@@ -250,25 +250,25 @@ sccs_file::find_next_sid(sid requested, sid got,
       // rules take care of it.
       bool not_trunk_top;
       if (ncomponents < 3)
-	{
-	  not_trunk_top = release(got) < release(highest_delta_release());
-	}
+        {
+          not_trunk_top = release(got) < release(highest_delta_release());
+        }
       else
-	{
-	  /* If 4 components were specified, then we don't care if the
-	   * current release is not the highest release.  If we
-	   * specified that we want to check 1.2.1.1 out for editing
-	   * and in fact 1.2.1.2 alredy exists, we should just fail,
-	   * rather than making a branch.
-	   */
-	  not_trunk_top = false;
-	}
+        {
+          /* If 4 components were specified, then we don't care if the
+           * current release is not the highest release.  If we
+           * specified that we want to check 1.2.1.1 out for editing
+           * and in fact 1.2.1.2 alredy exists, we should just fail,
+           * rather than making a branch.
+           */
+          not_trunk_top = false;
+        }
       if (too_high || branch_again || not_trunk_top)
-	{
-	  next = got;
-	  next.next_branch();
-	  forced_branch = true;
-	}
+        {
+          next = got;
+          next.next_branch();
+          forced_branch = true;
+        }
     }
   
   // If we have created a branch, and that branch is not unique, keep
@@ -276,10 +276,10 @@ sccs_file::find_next_sid(sid requested, sid got,
   if (want_branch || forced_branch)
     {
       while (find_delta(next)
-	     || (flags.joint_edit && pfile.is_to_be_created(next)))
-	{
-	  next.next_branch();
-	}
+             || (flags.joint_edit && pfile.is_to_be_created(next)))
+        {
+          next.next_branch();
+        }
     }
 
   ASSERT(!sid_in_use(next, pfile));
@@ -292,283 +292,81 @@ sccs_file::find_next_sid(sid requested, sid got,
 
 bool
 sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
-	int i;
-	int len;
+        int i;
+        int len;
 
-	const char *user = get_user_name();
+        const char *user = get_user_name();
 
-	len = users.length();
-	if (len != 0) {
-		int found = 0;
+        len = users.length();
+        if (len != 0) {
+                int found = 0;
 
-		for(i = 0; i < len; i++) {
-			const char *s = users[i].c_str();
-			char c = s[0];
+                for(i = 0; i < len; i++) {
+                        const char *s = users[i].c_str();
+                        char c = s[0];
 
-			if (c == '!') {
-				s++;
-				if (isdigit(c)) {
-					if (user_is_group_member(atoi(s))) {
-						found = 0;
-						break;
-					}
-				} else if (strcmp(s, user) == 0) {
-					found = 0;
-					break;
-				}
-			} else {
-				if (isdigit(c)) {
-					if (user_is_group_member(atoi(s))) {
-						found = 1;
-					}
-				} else if (strcmp(s, user) == 0) {
-					found = 1;
-					break;
-				}
-			}
-		}
-		
-		if (!found) {
-			errormsg("%s: You are not authorized to make deltas.",
-			     name.c_str());
-			return false;
-		}
-	}
+                        if (c == '!') {
+                                s++;
+                                if (isdigit(c)) {
+                                        if (user_is_group_member(atoi(s))) {
+                                                found = 0;
+                                                break;
+                                        }
+                                } else if (strcmp(s, user) == 0) {
+                                        found = 0;
+                                        break;
+                                }
+                        } else {
+                                if (isdigit(c)) {
+                                        if (user_is_group_member(atoi(s))) {
+                                                found = 1;
+                                        }
+                                } else if (strcmp(s, user) == 0) {
+                                        found = 1;
+                                        break;
+                                }
+                        }
+                }
+                
+                if (!found) {
+                        errormsg("%s: You are not authorized to make deltas.",
+                             name.c_str());
+                        return false;
+                }
+        }
 
-	if (flags.all_locked 
-	    || (flags.floor.valid() && flags.floor > got)
-	    || (flags.ceiling.valid() && flags.ceiling < got)
-	    || flags.locked.member(got)) {
-		errormsg("%s: Requested release is locked.",
-			 name.c_str());
-		return false;
-	}
-	
-	if (pfile.is_locked(got) && !flags.joint_edit)
-	  {
-	    mystring when(pfile->date.as_string());
-	    errormsg("%s: Requested SID locked by '%s' at %s.\n",
-		     name.c_str(),
-		     pfile->user.c_str(),
-		     when.c_str());
-		return false;
-	}
-	return true;
+        if (flags.all_locked 
+            || (flags.floor.valid() && flags.floor > got)
+            || (flags.ceiling.valid() && flags.ceiling < got)
+            || flags.locked.member(got)) {
+                errormsg("%s: Requested release is locked.",
+                         name.c_str());
+                return false;
+        }
+        
+        if (pfile.is_locked(got) && !flags.joint_edit)
+          {
+            mystring when(pfile->date.as_string());
+            errormsg("%s: Requested SID locked by '%s' at %s.\n",
+                     name.c_str(),
+                     pfile->user.c_str(),
+                     when.c_str());
+                return false;
+        }
+        return true;
 }
 
-
-/* Write a line of a file after substituting any id keywords in it.
-   Returns true if an error occurs. */
-
-int
-sccs_file::write_subst(const char *start,
-		       struct subst_parms *parms,
-		       const delta& d) const
-{
-  FILE *out = parms->out;
-
-  const char *percent = strchr(start, '%');
-  while (percent != NULL)
-    {
-      char c = percent[1];
-      if (c != '\0' && percent[2] == '%')
-	{
-	  if (start != percent
-	      && fwrite(start, percent - start, 1, out) != 1)
-	    {
-	      return 1;
-	    }
-
-	  percent += 3;
-
-	  int err = 0;
-
-	  switch (c)
-	    {
-	      const char *s;
-
-	    case 'M':
-	      {
-		const char *mod = get_module_name().c_str();
-		err = fputs_failed(fputs(mod, out));
-	      }
-	    break;
-			
-	    case 'I':
-	      err = d.id.print(out);
-	      break;
-
-	    case 'R':
-	      err = d.id.printf(out, 'R', 1);
-	      break;
-
-	    case 'L':
-	      err = d.id.printf(out, 'L', 1);
-	      break;
-
-	    case 'B':
-	      err = d.id.printf(out, 'B', 1);
-	      break;
-
-	    case 'S':
-	      err = d.id.printf(out, 'S', 1);
-	      break;
-
-	    case 'D':
-	      err = parms->now.printf(out, 'D');
-	      break;
-				
-	    case 'H':
-	      err = parms->now.printf(out, 'H');
-	      break;
-
-	    case 'T':
-	      err = parms->now.printf(out, 'T');
-	      break;
-
-	    case 'E':
-	      err = d.date.printf(out, 'D');
-	      break;
-
-	    case 'G':
-	      err = d.date.printf(out, 'H');
-	      break;
-
-	    case 'U':
-	      err = d.date.printf(out, 'T');
-	      break;
-
-	    case 'Y':
-	      if (flags.type)
-		{
-		  err = fputs_failed(fputs(flags.type->c_str(), out));
-		}
-	      break;
-
-	    case 'F':
-	      err =
-		fputs_failed(fputs(base_part(name.sfile()).c_str(),
-				   out));
-	      break;
-
-	    case 'P':
-	      if (1) // introduce new scope...
-		{
-		  mystring path(canonify_filename(name.c_str()));
-		  err = fputs_failed(fputs(path.c_str(), out));
-		}
-	      break;
-
-	    case 'Q':
-	      if (flags.user_def)
-		{
-		  err = fputs_failed(fputs(flags.user_def->c_str(), out));
-		}
-	      break;
-
-	    case 'C':
-	      err = printf_failed(fprintf(out, "%d",
-					  parms->out_lineno));
-	      break;
-
-	    case 'Z':
-	      if (fputc_failed(fputc('@', out))
-		  || fputs_failed(fputs("(#)", out)))
-		{
-		  err = 1;
-		}
-	      else
-		{
-		  err = 0;
-		}
-	      break;
-
-	    case 'W':
-	      s = parms->wstring;
-	      if (0 == s)
-		{
-		  /* At some point I had been told that SunOS 4.1.4
-		   * apparently uses a space rather than a tab here.
-		   * However, a test on 4.1.4 shows otherwise.
-		   *
-		   * From: "Carl D. Speare" <carlds@attglobal.net>
-		   * Subject: RE: SunOS 4.1.4 
-		   * To: 'James Youngman' <jay@gnu.org>,
-		   * 	     "cssc-users@gnu.org" <cssc-users@gnu.org>
-		   * Date: Wed, 11 Jul 2001 01:07:36 -0400
-		   * 
-		   * Ok, here's what I got:
-		   * 
-		   * %W% in a file called test.c expanded to:
-		   * 
-		   * @(#)test.c<TAB>1.1
-		   * 
-		   * Sorry, but my SunOS machine is lacking a network
-		   * connection, so I can't bring it over into
-		   * mail-land. But, there you are, for what it's
-		   * worth.
-		   * 
-		   * --Carl
-		   * 
-		   */
-		  s = "%Z" "%%M" "%\t%" "I%";
-		  /* NB: strange foroatting of the string above is 
-		   * to preserve it unchanged even if this source code does 
-		   * itself get checked into SCCS or CSSC.
-		   */
-		}
-	      else
-		{
-		  /* protect against recursion */
-		  parms->wstring = 0; 
-		}
-	      err = write_subst(s, parms, d);
-	      if (0 == parms->wstring)
-		{
-		  parms->wstring = s;
-		}
-	      break;
-
-	    case 'A':
-	      err = write_subst("%Z""%%Y""% %M""% %I"
-				"%%Z""%",
-				parms, d);
-	      break;
-
-	    default:
-	      start = percent - 3;
-	      percent = percent - 1;
-	      continue;
-	    }
-
-	  parms->found_id = 1;
-
-	  if (err)
-	    {
-	      return 1;
-	    }
-	  start = percent;
-	}
-      else
-	{
-	  percent++;
-	}
-      percent = strchr(percent, '%');
-    }
-
-  return fputs_failed(fputs(start, out));
-}
 
 /* Output the specified version to a file with possible modifications.
    Most of the actual work is done with a seqstate object that 
    figures out whether or not given line of the SCCS file body
    should be included in the output file. */
-	
+        
 /* struct */ sccs_file::get_status
 sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
-	       sid_list include, sid_list exclude,
-	       int keywords, const char *wstring,
-	       int show_sid, int show_module, int debug)
+               sid_list include, sid_list exclude,
+               int keywords, const char *wstring,
+               int show_sid, int show_module, int debug)
 {
   
   /* Set the return status. */
@@ -607,10 +405,10 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
       const sid & id = d.id;
 
       if (!state.is_excluded(s) && !set)
-	{
-	   dparm = find_delta(id);
-	   set = true;
-	}
+        {
+           dparm = find_delta(id);
+           set = true;
+        }
     }
   if ( !set ) dparm = d;
   // End of fix
@@ -618,38 +416,38 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   if (getenv("CSSC_SHOW_SEQSTATE"))
     {
       for (seq_no s = d->seq; s>0; s--)
-	{
+        {
           if (!delta_table->delta_at_seq_exists(s))
             {
               /* skip non-existent seq number */
               continue;
             }
 
-	  const struct delta & d = delta_table->delta_at_seq(s);
-	  const sid & id = d.id;
+          const struct delta & d = delta_table->delta_at_seq(s);
+          const sid & id = d.id;
 
-	  id.dprint(stderr);
+          id.dprint(stderr);
 
-	  putc(':', stderr);
-	  putc(' ', stderr);
-	  if (state.is_explicitly_tagged(s))
-	    {
-	      fprintf(stderr, "explicitly ");
-	    }
-	  
-	  if (state.is_included(s))
-	    {
-	      fprintf(stderr, "included\n");
-	    }
-	  else if (state.is_excluded(s))
-	    {
-	      fprintf(stderr, "excluded\n");
-	    }
-	  else
-	    {
-	      fprintf(stderr, "irrelevant\n");
-	    }
-	}
+          putc(':', stderr);
+          putc(' ', stderr);
+          if (state.is_explicitly_tagged(s))
+            {
+              fprintf(stderr, "explicitly ");
+            }
+          
+          if (state.is_included(s))
+            {
+              fprintf(stderr, "included\n");
+            }
+          else if (state.is_excluded(s))
+            {
+              fprintf(stderr, "excluded\n");
+            }
+          else
+            {
+              fprintf(stderr, "irrelevant\n");
+            }
+        }
     }
 
   
@@ -660,19 +458,12 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   // (eugh...)
   // Changed to use dparm not d to deal with Cutoff Date (Mark Fortescue)
   struct subst_parms parms(out, wstring, *dparm,
-			   0, sccs_date::now());
+                           0, sccs_date::now());
   
   
-  if (keywords)
-    {
-      status.success = get(gname, state, parms, &sccs_file::write_subst,
-			   show_sid, show_module, debug);
-    }
-  else
-    {
-      status.success = get(gname, state, parms, (subst_fn_t) 0,
-			   show_sid, show_module, debug);
-    }
+  status.success = get(gname, state, parms, keywords,
+                       show_sid, show_module, debug);
+
   if (status.success == false)
     {
       return status;
@@ -687,18 +478,18 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   
   status.lines = parms.out_lineno;
   
-  seq_no seq;	
+  seq_no seq;   
   for(seq = 1; seq <= highest_delta_seqno(); seq++)
     {
       if (state.is_explicitly_tagged(seq))
-	{
+        {
           const sid id = seq_to_sid(seq);
 
-	  if (state.is_included(seq))
-	    status.included.add(id);
-	  else if (state.is_excluded(seq))
-	    status.excluded.add(id);
-	}
+          if (state.is_included(seq))
+            status.included.add(id);
+          else if (state.is_excluded(seq))
+            status.excluded.add(id);
+        }
     }
   
   return status;

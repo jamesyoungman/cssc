@@ -33,7 +33,13 @@
 #include "err_no.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.22 2000/03/19 11:18:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: run.cc,v 1.23 2001/07/31 08:28:07 james_youngman Exp $";
+#endif
+
+#if !(HAVE_FORK) && !(HAVE_SPAWN)
+#define NEED_CALL_SYSTEM
+#else
+#undef NEED_CALL_SYSTEM
 #endif
 
 // According to the ANSI standard, id the argument to system()
@@ -50,6 +56,7 @@ static const char rcs_id[] = "CSSC $Id: run.cc,v 1.22 2000/03/19 11:18:41 james 
 // MR validation will never fail (that is, it won't fail when it is
 // supposed to, it will instead succeed all the time).
 //
+#ifdef NEED_CALL_SYSTEM
 static bool call_system(const char *s)
 {
   int failed;
@@ -71,94 +78,96 @@ static bool call_system(const char *s)
     }
   return failed ? true : false;
 }
+#endif
+
 
 /* Runs a programme and returns its exit status. */
 
 int
 run(const char *prg, mylist<const char *> const &args) {
-	int i;
-	int len = args.length();
+        int i;
+        int len = args.length();
 
-#if !(HAVE_FORK) && !(HAVE_SPAWN)
+#if NEED_CALL_SYSTEM
 
-	int cmdlen = strlen(prg) + 1;
-	
-	for(i = 0; i < len; i++) {
-		cmdlen += strlen(args[i]) + 1;
-	}
+        int cmdlen = strlen(prg) + 1;
+        
+        for(i = 0; i < len; i++) {
+                cmdlen += strlen(args[i]) + 1;
+        }
 
-	char *s = new char[cmdlen+1];
+        char *s = new char[cmdlen+1];
 
-	strcpy(s, prg);
-	
-	for(i = 0; i < len; i++) {
-		strcat(s, " ");
-		strcat(s, args[i]);
-	}
+        strcpy(s, prg);
+        
+        for(i = 0; i < len; i++) {
+                strcat(s, " ");
+                strcat(s, args[i]);
+        }
 
-	bool sysfail = !call_system(s);
-	delete [] s;
-	if (sysfail)
-	  return -1;
-	else
-	  return 0;
+        bool sysfail = !call_system(s);
+        delete [] s;
+        if (sysfail)
+          return -1;
+        else
+          return 0;
 
 #else /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 
-	const char *  *argv = new const char*[len+2];
-	
-	argv[0] = prg;
+        const char *  *argv = new const char*[len+2];
+        
+        argv[0] = prg;
 
-	for(i = 0; i < len; i++) {
-		argv[i + 1] = args[i];
-	}
-	
-	argv[i + 1] = NULL;
+        for(i = 0; i < len; i++) {
+                argv[i + 1] = args[i];
+        }
+        
+        argv[i + 1] = NULL;
 
 #ifndef HAVE_FORK
-	// Use spawn() instead then
-	int ret = spawnvp(P_WAIT, (char *) prg, (char **) argv);
-	if (ret == -1)
-	  {
-	    errormsg_with_errno("spawnvp(\"%s\") failed.", prg);
-	  }
+        // Use spawn() instead then
+        int ret = spawnvp(P_WAIT, (char *) prg, (char **) argv);
+        if (ret == -1)
+          {
+            errormsg_with_errno("spawnvp(\"%s\") failed.", prg);
+          }
 
 #else /* HAVE_FORK */
-	// We _do_ have fork().
+        // We _do_ have fork().
 
-	// SunOS 4.1.3 appears not to like fflush(NULL).
-#if 0	
-	fflush(NULL);
+        // SunOS 4.1.3 appears not to like fflush(NULL).
+#if 0   
+        fflush(NULL);
 #else
-	fflush(stdout);
-	fflush(stderr);
-#endif	
-	pid_t pid = fork(); 
-	if (pid < 0) {
-		fatal_quit(errno, "fork() failed.");
-	}
+        fflush(stdout);
+        fflush(stderr);
+#endif  
+        pid_t pid = fork(); 
+        if (pid < 0) {
+                fatal_quit(errno, "fork() failed.");
+        }
 
-	if (pid == 0) {
-		cleanup::set_in_child();
-		execvp(prg, (char **) argv);
-		fatal_quit(errno, "execvp(\"%s\") failed.", prg);
-	}
+        if (pid == 0) {
+                cleanup::set_in_child();
+                execvp(prg, (char **) argv);
+                fatal_quit(errno, "execvp(\"%s\") failed.", prg);
+        }
 
-	int ret;
-	pid_t r = wait(&ret);
-	while (r != pid) {
-		if (r == -1 && errno != EINTR) {
-		  perror("wait()"); // probably ECHILD.
-		  break;
-		}
-		r = wait(&ret);
-	}
+        int ret;
+        pid_t r = wait(&ret);
+        while (r != pid) {
+                if (r == -1 && errno != EINTR) {
+                  perror("wait()"); // probably ECHILD.
+                  break;
+                }
+                r = wait(&ret);
+        }
 
 #endif /* CONFIG_NO_FORK */
 
-	delete [] argv;
-	return ret;
-	
+        delete [] argv;
+        return ret;
+        
 #endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 }
 
@@ -192,7 +201,7 @@ run_mr_checker(const char *prg, const char *arg1, mylist<mystring> mrs)
 
       int len = mrs.length();
       for(int i = 0; i < len; i++)
-	args.add(mrs[i].c_str()); // STL's push_back
+        args.add(mrs[i].c_str()); // STL's push_back
 
       return run(prg, args);
     }

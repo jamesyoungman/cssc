@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.28 2000/11/05 17:40:10 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.29 2001/07/31 08:28:07 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -50,80 +50,80 @@ sccs_file::xfile_error(const char *msg) const
 
 FILE *
 sccs_file::start_update() {
-	ASSERT(mode != READ);
+        ASSERT(mode != READ);
 
-	if (mode == CREATE && file_exists(name.c_str()))
-	  {
-	    errormsg("%s: SCCS file already exists.", name.c_str());
-	    return NULL;
-	  }
-		     
-	mystring xname = name.xfile();
+        if (mode == CREATE && file_exists(name.c_str()))
+          {
+            errormsg("%s: SCCS file already exists.", name.c_str());
+            return NULL;
+          }
+                     
+        mystring xname = name.xfile();
 
-	// real SCCS silently destroys any existing file named
-	// x.[whatever].  Dave Bodenstab <imdave@mcs.net> pointed out
-	// that this isn't very friendly.  However, I don't want to
-	// abort if x.foo exists, since "real" SCCS doesn't.  So we'll
-	// produce a warning and rename the old file.  If x.foo.bak exists,
-	// we fail to rename, and lose the original x.foo file, as does 
-	// the genuine article.
-	if (file_exists(xname.c_str()))
-	  {
-	    const char *xns = xname.c_str();
-	    mystring newname(xname + ".bak");
-	    if (0 == rename(xns, newname.c_str()))
-	      {
-		errormsg("Warning: %s renamed to %s\n",
-			 xns, newname.c_str());
-	      }
-	    else
-	      {
-		errormsg("Warning: %s over-written!\n", xns);
-	      }
-	  }
-	
+        // real SCCS silently destroys any existing file named
+        // x.[whatever].  Dave Bodenstab <imdave@mcs.net> pointed out
+        // that this isn't very friendly.  However, I don't want to
+        // abort if x.foo exists, since "real" SCCS doesn't.  So we'll
+        // produce a warning and rename the old file.  If x.foo.bak exists,
+        // we fail to rename, and lose the original x.foo file, as does 
+        // the genuine article.
+        if (file_exists(xname.c_str()))
+          {
+            const char *xns = xname.c_str();
+            mystring newname(xname + ".bak");
+            if (0 == rename(xns, newname.c_str()))
+              {
+                errormsg("Warning: %s renamed to %s\n",
+                         xns, newname.c_str());
+              }
+            else
+              {
+                errormsg("Warning: %s over-written!\n", xns);
+              }
+          }
+        
 
-	FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE);
+        FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE);
 
-	if (out == NULL)
-	  {
-	    xfile_error("Can't create temporary file for update.");
-	    return NULL;
-	  }
-	else
-	  {
-	    xfile_created = true;
-	    
-	    if (fputs_failed(fputs("\001h-----\n", out)))
-	      {
-		xfile_error("write error");
-		fclose(out);
-		return NULL;
-	      }
-	    return out;
-	  }
+        if (out == NULL)
+          {
+            xfile_error("Can't create temporary file for update.");
+            return NULL;
+          }
+        else
+          {
+            xfile_created = true;
+            
+            if (fputs_failed(fputs("\001h-----\n", out)))
+              {
+                xfile_error("write error");
+                fclose(out);
+                return NULL;
+              }
+            return out;
+          }
 }
 
 
 static int
 print_seqs(FILE *out, char control, mylist<seq_no> const &seqs) {
-	int i;
-	int len = seqs.length();
+        int i;
+        int len = seqs.length();
 
-	if (len != 0) {
-		if (printf_failed(fprintf(out, "\001%c", control))) {
-			return 1;
-		}
-		for(i = 0; i < len; i++) {
-			if (printf_failed(fprintf(out, " %u", seqs[i]))) {
-				return 1;
-			}
-		}
-		if (putc_failed(putc('\n', out))) {
-			return 1;
-		}
-	}
-	return 0;
+        if (len != 0) {
+                if (printf_failed(fprintf(out, "\001%c", control))) {
+                        return 1;
+                }
+                for(i = 0; i < len; i++) {
+                        if (printf_failed(fprintf(out, " %u", seqs[i]))) {
+                                return 1;
+                        }
+                }
+                if (putc_failed(putc('\n', out))) {
+                        return 1;
+                }
+        }
+        return 0;
 }
 
 /* Outputs an entry to the delta table of a new SCCS file.
@@ -136,16 +136,16 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
   int i;
 
   if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
-			    cap5(d.inserted),
-			    cap5(d.deleted),
-			    cap5(d.unchanged)))
+                            cap5(d.inserted),
+                            cap5(d.deleted),
+                            cap5(d.unchanged)))
       || printf_failed(fprintf(out, "\001d %c ", d.type))
       || d.id.print(out)
       || putc_failed(putc(' ', out))
       || d.date.print(out)
       || printf_failed(fprintf(out, " %s %u %u\n",
-			       d.user.c_str(),
-			       d.seq, d.prev_seq)))
+                               d.user.c_str(),
+                               d.seq, d.prev_seq)))
     {
       return 1;
     }
@@ -161,20 +161,20 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
   for(i = 0; i < len; i++)
     {
       if (printf_failed(fprintf(out, "\001m %s\n",
-				d.mrs[i].c_str())))
-	{
-	  return 1;
-	}
+                                d.mrs[i].c_str())))
+        {
+          return 1;
+        }
     }
 
   len = d.comments.length();
   for(i = 0; i < len; i++)
     {
       if (printf_failed(fprintf(out, "\001c %s\n",
-				d.comments[i].c_str())))
-	{
-	  return 1;
-	}
+                                d.comments[i].c_str())))
+        {
+          return 1;
+        }
     }
 
   return fputs_failed(fputs("\001e\n", out));
@@ -221,40 +221,40 @@ sccs_file::write(FILE *out) const
   if (flags.branch && fputs_failed(fputs("\001f b\n", out))) {
     return 1;
   }
-		
+                
   // c ceiling
   if (flags.ceiling.valid())
     {
       if (fputs_failed(fputs("\001f c ", out))
-	 || flags.ceiling.print(out)
-	 || putc_failed(putc('\n', out)))
-	{
-	  return 1;
-	}
+         || flags.ceiling.print(out)
+         || putc_failed(putc('\n', out)))
+        {
+          return 1;
+        }
     }
-	
+        
   // d default SID
   if (flags.default_sid.valid())
     {
       if (fputs_failed(fputs("\001f d ", out))
-	  || flags.default_sid.print(out)
-	  || putc_failed(putc('\n', out)))
-	{
-	  return 1;
-	}
+          || flags.default_sid.print(out)
+          || putc_failed(putc('\n', out)))
+        {
+          return 1;
+        }
     }
-	
+        
   // f floor
   if (flags.floor.valid())
     {
       if (fputs_failed(fputs("\001f f ", out))
-	  || flags.floor.print(out)
-	  || putc_failed(putc('\n', out)))
-	{
-	  return 1;
-	}
+          || flags.floor.print(out)
+          || putc_failed(putc('\n', out)))
+        {
+          return 1;
+        }
     }
-	
+        
   // i no id kw is error
   if (flags.no_id_keywords_is_fatal) {
     if (fputs_failed(fputs("\001f i\n", out))) {
@@ -266,27 +266,27 @@ sccs_file::write(FILE *out) const
   if (flags.joint_edit)
     {
       if (fputs_failed(fputs("\001f j\n", out)))
-	return 1;
+        return 1;
     }
 
   // l locked-releases
   if (flags.all_locked)
     {
       if (fputs_failed(fputs("\001f l a\n", out)))
-	{
-	  return 1;
-	}
+        {
+          return 1;
+        }
     } 
   else if ( !flags.locked.empty() )
     {
       if (fputs_failed(fputs("\001f l ", out)))
-	return 1;		// failed
+        return 1;               // failed
       
       if (!flags.locked.print(out))
-	return 1;		// failed
+        return 1;               // failed
       
       if (putc_failed(putc('\n', out)))
-	return 1;		// failed
+        return 1;               // failed
     }
 
   // m Module flag
@@ -294,16 +294,16 @@ sccs_file::write(FILE *out) const
     {
       const char *p = flags.module->c_str();
       if (printf_failed(fprintf(out, "\001f m %s\n", p)))
-	{
-	  return 1;
-	}
+        {
+          return 1;
+        }
     }
-	
+        
   // n Create empty deltas
   if (flags.null_deltas)
     {
       if (fputs_failed(fputs("\001f n\n", out)))
-	return 1;
+        return 1;
     }
 
   // q %Q% subst value (user flag)
@@ -311,27 +311,27 @@ sccs_file::write(FILE *out) const
     {
       const char *p = flags.user_def->c_str();
       if (printf_failed(fprintf(out, "\001f q %s\n", p)))
-	{
-	  return 1;
-	}
+        {
+          return 1;
+        }
     }
-	
+        
   // t %Y% subst value
   if (flags.type)
     {
       if (printf_failed(fprintf(out, "\001f t %s\n",
-				flags.type->c_str())))
-	{
-	  return 1;
-	}
+                                flags.type->c_str())))
+        {
+          return 1;
+        }
     }
-	
+        
   // v MR-validation program.
   if (flags.mr_checker)
     {
       if (printf_failed(fprintf(out, "\001f v %s\n",
-				flags.mr_checker->c_str())))
-	return 1;
+                                flags.mr_checker->c_str())))
+        return 1;
     }
 
   // Write the correct valuie for the "encoded" flag.
@@ -339,21 +339,21 @@ sccs_file::write(FILE *out) const
   // because "admin -i" goes back and updates that byte if the file 
   // turns out to have been binary.
   if (printf_failed(fprintf(out, "\001f e %c",
-			    (flags.encoded ? '1' : '0'))))
+                            (flags.encoded ? '1' : '0'))))
     return 1;
 
-	
+        
   if (printf_failed(fprintf(out, "\n")))
     return 1;
-	
+        
   if (flags.reserved)
     {
       if (printf_failed(fprintf(out, "\001f z %s\n",
-				flags.reserved->c_str()))) {
-	return 1;
+                                flags.reserved->c_str()))) {
+        return 1;
       }
     }
-	
+        
   // end of flags.
 
   if (fputs_failed(fputs("\001t\n", out)))
@@ -394,38 +394,38 @@ sccs_file::rehack_encoded_flag(FILE *f, int *sum) const
   while ( EOF != (ch=getc(f)) )
     {
       if ('\n' == last)
-	{
-	  n = 0;
-	  while (match[n] == ch)
-	    {
-	      if (nmatch-1 == n)
-		{
-		  // success; now we might change the flag.
-		  FilePosSaver *pos = new FilePosSaver(f);
-		  ch = getc(f);
-		  if ('0' == ch)
-		    {
-		      delete pos; // rewind file 1 char.
-		      putc('1', f);
-		      const int d =  ('1' - '0'); // change to checksum.
-		      *sum = (*sum + d) & 0xFFFF; // adjust checksum.
-		      return 0;
-		    }
-		  else
-		    {
-		      pos->disarm();
-		      delete pos;
-		      return 0;	// flag was already set.
-		    }
-		}
-	      ++n;		// advance match.
-	      ch = getc(f);
-	    }
-	  // match failed.
-	}
+        {
+          n = 0;
+          while (match[n] == ch)
+            {
+              if (nmatch-1 == n)
+                {
+                  // success; now we might change the flag.
+                  FilePosSaver *pos = new FilePosSaver(f);
+                  ch = getc(f);
+                  if ('0' == ch)
+                    {
+                      delete pos; // rewind file 1 char.
+                      putc('1', f);
+                      const int d =  ('1' - '0'); // change to checksum.
+                      *sum = (*sum + d) & 0xFFFF; // adjust checksum.
+                      return 0;
+                    }
+                  else
+                    {
+                      pos->disarm();
+                      delete pos;
+                      return 0; // flag was already set.
+                    }
+                }
+              ++n;              // advance match.
+              ch = getc(f);
+            }
+          // match failed.
+        }
       last = ch;
     }
-  return 1;			// failed!
+  return 1;                     // failed!
 }
 
 
@@ -436,7 +436,7 @@ maybe_sync(FILE *fp)
   if (ffsync(fp) == EOF)
     return false;
 #else
-  &fp;				// use the otherwise-unused parameter.
+  (void) &fp;                           // use the otherwise-unused parameter.
 #endif
   return true;
 }
@@ -468,9 +468,9 @@ sccs_file::end_update(FILE *out)
     {
       rewind(out);
       if (0 != rehack_encoded_flag(out, &sum))
-	{
-	  xfile_error("Write error.");
-	}
+        {
+          xfile_error("Write error.");
+        }
     }
   
   
@@ -493,7 +493,7 @@ sccs_file::end_update(FILE *out)
     }
   else
     {
-      xfile_created = false;	// What was the x-file is now the new s-file.
+      xfile_created = false;    // What was the x-file is now the new s-file.
       return true;
     }
 }
@@ -520,10 +520,10 @@ sccs_file::update_checksum(const char *name)
   else
     {
       if (fclose_failed(fclose(out)))
-	{
-	  errormsg_with_errno("%s: Write error", name);
-	  return false;
-	}
+        {
+          errormsg_with_errno("%s: Write error", name);
+          return false;
+        }
     }
   return true;
 }
@@ -549,7 +549,7 @@ sccs_file::update()
   
   FILE *out = start_update();
   if (NULL == out)
-    return false;		// don't start writing the x-file.
+    return false;               // don't start writing the x-file.
   
   if (write(out))
     {
@@ -564,10 +564,10 @@ sccs_file::update()
   while (read_line() != -1)
     {
       if (fputs_failed(fputs(plinebuf->c_str(), out))
-	  || putc_failed(putc('\n', out)))
-	{
-	  xfile_error("Write error.");
-	}
+          || putc_failed(putc('\n', out)))
+        {
+          xfile_error("Write error.");
+        }
     }
   
   end_update(out);

@@ -150,10 +150,10 @@ struct optact actions[]=
 
 void usage(const char *name, int retval)
 {
-  int j;
+  unsigned int j;
   
   fprintf(stderr, "usage: %s ", name);
-  for (j=0; j<NOPTIONS; ++j)
+  for (j=0u; j<NOPTIONS; ++j)
     fprintf(stderr, "[%s] ", actions[j].option);
   fprintf(stderr, "\n");
   exit(retval);
@@ -161,32 +161,33 @@ void usage(const char *name, int retval)
 
 int main(int argc, char *argv[])
 {
-  int i, j;
+  int i;
+  unsigned int j;
 
   
   for (i=1; i<argc; ++i)
     {
       if ('-' == argv[i][0])
-	{
-	  for (j=0; j<NOPTIONS; ++j)
-	    {
-	      if (0 == strcmp(argv[i], actions[j].option))
-		{
-		  (*actions[j].action)(argv[0]);
-		  break;
-		}
-	    }
-	  
-	  if (NOPTIONS == j)
-	    {
-	      fprintf(stderr, "Unknown option `%s'\n", argv[i]);
-	      usage(argv[0], ERR_USAGE);	/* unknown option */
-	    }
-	}
-      else			/* not an option */
-	{
-	  usage(argv[0], ERR_USAGE);
-	}
+        {
+          for (j=0u; j<NOPTIONS; ++j)
+            {
+              if (0 == strcmp(argv[i], actions[j].option))
+                {
+                  (*actions[j].action)(argv[0]);
+                  break;
+                }
+            }
+          
+          if (NOPTIONS == j)
+            {
+              fprintf(stderr, "Unknown option `%s'\n", argv[i]);
+              usage(argv[0], ERR_USAGE);        /* unknown option */
+            }
+        }
+      else                      /* not an option */
+        {
+          usage(argv[0], ERR_USAGE);
+        }
     }
 #ifdef HAVE_FSETPOS
   try_getpos(stdin);

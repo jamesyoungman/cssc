@@ -13,8 +13,12 @@ EXTRA_DIST = BUGS FIXED TODO CREDITS TESTING \
 #      based on the results of running "configure".  That's usually 
 #      undesirable.  However, I can't get "makeinfo" and "texi2dvi"
 #      to include files except those in the $(srcdir).
-$(srcdir)/config-info.texi: config-info.texi
-	cp $< $@
+## $(srcdir)/config-info.texi: config-info.texi
+## 	   cp $(srcdir)/config-info.texi x
+## 	   cp x config-info.texi
+## 	   $(RM) x
+##*c	
+
 
 # The .ispell_english file is included in the distribution because it
 # is useful for the list of correct spellings in this document to

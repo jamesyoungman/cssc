@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.23 2000/11/12 15:28:10 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.24 2001/07/31 08:28:07 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_BORLANDC
@@ -57,21 +57,21 @@ void
 set_prg_name(const char *name) {
 #ifdef CONFIG_BORLANDC
 
-	static char file[MAXFILE + MAXEXT];
-	char ext[MAXEXT];
+        static char file[MAXFILE + MAXEXT];
+        char ext[MAXEXT];
 
-	fnsplit(name, NULL, NULL, file, ext);
-	strlwr(file);
-	strlwr(ext);
+        fnsplit(name, NULL, NULL, file, ext);
+        strlwr(file);
+        strlwr(ext);
 
-	if (strcmp(ext, ".exe") != 0 && strcmp(ext, ".com") != 0) {
-		strcat(file, ext);
-	}
-	prg_name = file;
+        if (strcmp(ext, ".exe") != 0 && strcmp(ext, ".com") != 0) {
+                strcat(file, ext);
+        }
+        prg_name = file;
 
 #else /* CONFIG_BORLANDC */
 
-	prg_name = name;
+        prg_name = name;
 
 #endif /* CONFIG_BORLANDC */
 }
@@ -80,7 +80,7 @@ static void
 v_errormsg(const char *fmt, va_list ap)
 {
   putc('\n', stderr);
-	
+        
   if (prg_name != NULL)
     fprintf(stderr, "%s: ", prg_name);
 
@@ -107,8 +107,6 @@ void v_errormsg_with_errno(const char *fmt, va_list ap)
 
 void errormsg_with_errno(const char *fmt, ...)
 {
-  int saved_errno = errno;
-  
   va_list ap;
   va_start(ap, fmt);
   v_errormsg_with_errno(fmt, ap);
@@ -130,72 +128,72 @@ static void print_err(int err)
 
 static NORETURN
 v_quit(int err, const char *fmt, va_list ap) {
-	fflush(stdout);
-	cleanup::run_cleanups();
+        fflush(stdout);
+        cleanup::run_cleanups();
 
-	fflush(stdout);
+        fflush(stdout);
 
 
-	if (err == -2) {
-	  putc('\n', stderr);
-	  usage();
-	}
-	else
-	  {
-	    putc('\n', stderr);
-	  }
+        if (err == -2) {
+          putc('\n', stderr);
+          usage();
+        }
+        else
+          {
+            putc('\n', stderr);
+          }
 
-	if (fmt)
-	  {
-	    v_errormsg(fmt, ap);
-	    putc('\n', stderr);
-	  }
-	
-	if (err >= 1) {
-	  print_err(err);
-	}
+        if (fmt)
+          {
+            v_errormsg(fmt, ap);
+            putc('\n', stderr);
+          }
+        
+        if (err >= 1) {
+          print_err(err);
+        }
 
-	fflush(stderr); // probably not required, stderr is unbuffered.
+        fflush(stderr); // probably not required, stderr is unbuffered.
 
 #ifdef HAVE_ABORT
-	if (err == -3) {
-		abort();
-	}
+        if (err == -3) {
+                abort();
+        }
 #endif
 
 #ifdef USE_PIPE
-	if (cleanup::in_child()) {
-		if (err > 0) {
-			_exit(1);
-		} else {
-			_exit(-err);
-		}
-	}
+        if (cleanup::in_child()) {
+                if (err > 0) {
+                        _exit(1);
+                } else {
+                        _exit(-err);
+                }
+        }
 #endif
 
-#ifdef HAVE_EXCEPTIONS	
-	if (err < 0)
-	  err = -err;
-	throw CsscQuitException(err);
+#ifdef HAVE_EXCEPTIONS  
+        if (err < 0)
+          err = -err;
+        throw CsscQuitException(err);
 #else
-	if (err > 0) {
-		exit(1);
-	} else {
-		exit(-err);
-	}
-#endif	
+        if (err > 0) {
+                exit(1);
+        } else {
+                exit(-err);
+        }
+#endif  
 }
 
 
 NORETURN
 quit(int err, const char *fmt, ...) {
-	va_list ap;
+        va_list ap;
 
 
-	va_start(ap, fmt);
-	v_quit(err, fmt, ap);
-	va_end(ap);
-	
+        va_start(ap, fmt);
+        v_quit(err, fmt, ap);
+        va_end(ap);
+        
         ASSERT(0);              // not reached.
 }
 
@@ -208,116 +206,127 @@ quit(int err, const char *fmt, ...) {
 // we'll use exceptions.
 NORETURN
 ctor_fail(int err, const char *fmt, ...) {
-	va_list ap;
+        va_list ap;
 
 
-	va_start(ap, fmt);
+        va_start(ap, fmt);
 #ifdef HAVE_EXCEPTIONS
-	if (fmt)
-	  {
-	    v_errormsg(fmt, ap);
-	    putc('\n', stderr);
-	  }
-	throw CsscContstructorFailedException(err);
+        if (fmt)
+          {
+            v_errormsg(fmt, ap);
+            putc('\n', stderr);
+          }
+        throw CsscContstructorFailedException(err);
 #else
-	v_quit(err, fmt, ap);
+        v_quit(err, fmt, ap);
 #endif
-	/*NOTREACHED*/
-	va_end(ap);
-	ASSERT(0);		// not reached.
+        /*NOTREACHED*/
+        va_end(ap);
+        ASSERT(0);              // not reached.
 }
+
+NORETURN ctor_fail_nomsg(int err)  
+{
+#ifdef HAVE_EXCEPTIONS
+    throw CsscContstructorFailedException(err);
+#else
+    v_quit(err, fmt, ap);
+#endif
+}
+
+
 
 NORETURN
 s_corrupt_quit(const char *fmt, ...) {
-	va_list ap;
+        va_list ap;
 
 
-	va_start(ap, fmt);
-#ifdef HAVE_EXCEPTIONS	
-	v_errormsg(fmt, ap);
-	putc('\n', stderr);
-	throw CsscSfileCorruptException();
+        va_start(ap, fmt);
+#ifdef HAVE_EXCEPTIONS  
+        v_errormsg(fmt, ap);
+        putc('\n', stderr);
+        throw CsscSfileCorruptException();
 #else
-	v_quit(-1, fmt, ap);
+        v_quit(-1, fmt, ap);
 #endif
-	/*NOTREACHED*/
-	va_end(ap);
-	ASSERT(0);		// not reached.
+        /*NOTREACHED*/
+        va_end(ap);
+        ASSERT(0);              // not reached.
 }
 
 NORETURN
 s_missing_quit(const char *fmt, ...) {
-	va_list ap;
+        va_list ap;
 
 
-#ifdef HAVE_EXCEPTIONS	
-	va_start(ap, fmt);
-	v_errormsg_with_errno(fmt, ap);
-	va_end(ap);
-	
-	putc('\n', stderr);
-	throw CsscSfileMissingException();
+#ifdef HAVE_EXCEPTIONS  
+        va_start(ap, fmt);
+        v_errormsg_with_errno(fmt, ap);
+        va_end(ap);
+        
+        putc('\n', stderr);
+        throw CsscSfileMissingException();
 #else
-	va_start(ap, fmt);
-	v_quit(-1, NULL, ap);
-	va_end(ap);
+        va_start(ap, fmt);
+        v_quit(-1, NULL, ap);
+        va_end(ap);
 #endif
-	/*NOTREACHED*/
-	ASSERT(0);		// not reached.
+        /*NOTREACHED*/
+        ASSERT(0);              // not reached.
 }
 
 
 NORETURN
 p_corrupt_quit(const char *fmt, ...) {
-	va_list ap;
+        va_list ap;
 
 
-	va_start(ap, fmt);
-#ifdef HAVE_EXCEPTIONS	
-	v_errormsg(fmt, ap);
-	putc('\n', stderr);
-	throw CsscPfileCorruptException();
+        va_start(ap, fmt);
+#ifdef HAVE_EXCEPTIONS  
+        v_errormsg(fmt, ap);
+        putc('\n', stderr);
+        throw CsscPfileCorruptException();
 #else
-	v_quit(-1, fmt, ap);
+        v_quit(-1, fmt, ap);
 #endif
-	/*NOTREACHED*/
-	va_end(ap);
-	ASSERT(0);		// not reached.
+        /*NOTREACHED*/
+        va_end(ap);
+        ASSERT(0);              // not reached.
 }
 
 // fatal_quit() is ALWAYS immediately fatal.
 NORETURN
 fatal_quit(int err, const char *fmt, ...) {
-	va_list ap;
+        va_list ap;
 
-	va_start(ap, fmt);
-	v_quit(err, fmt, ap);
-	/*NOTREACHED*/
-	va_end(ap);
-	ASSERT(0);		// not reached.
+        va_start(ap, fmt);
+        v_quit(err, fmt, ap);
+        /*NOTREACHED*/
+        va_end(ap);
+        ASSERT(0);              // not reached.
 }
 
 
 
 NORETURN
 nomem() {
-	fatal_quit(-4, "Out of memory!");
+        fatal_quit(-4, "Out of memory!");
 }
 
 NORETURN
 assert_failed(const char *file, int line,
-	      const char *func,
-	      const char *test)
+              const char *func,
+              const char *test)
 {
   if (func[0])
     {
       fatal_quit(-3, "Assertion failed in %s:\nFile: %s  Line: %d: assert(%s)",
-		 func, file, line, test);
+                 func, file, line, test);
     }
   else
     {
       fatal_quit(-3, "Assertion failed: %s\nFile: %s  Line: %d",
-		 test, file, line);
+                 test, file, line);
     }
 }
 
@@ -330,42 +339,42 @@ int cleanup::in_child_flag = 0;
 #endif
 
 cleanup::cleanup() {
-	next = head;
-	head = this;
+        next = head;
+        head = this;
 }
 
 cleanup::~cleanup() {
-	class cleanup *p = head;
+        class cleanup *p = head;
 
-	if (p == this) {
-		head = next;
-		return;
-	}
+        if (p == this) {
+                head = next;
+                return;
+        }
 
-	while (p->next != this) {
-		p = p->next;
-		ASSERT(p != NULL);
-	}
+        while (p->next != this) {
+                p = p->next;
+                ASSERT(p != NULL);
+        }
 
-	p->next = next;
-}		
+        p->next = next;
+}               
 
 void
 cleanup::run_cleanups() {
-	if (running || all_disabled) {
-		return;
-	}
-	running = 1;
+        if (running || all_disabled) {
+                return;
+        }
+        running = 1;
 
-	class cleanup *p = head;
-	while (p != NULL) {
-		p->do_cleanup();
-		p = p->next;
-	}
+        class cleanup *p = head;
+        while (p != NULL) {
+                p->do_cleanup();
+                p = p->next;
+        }
 
-	running = 0;
-	all_disabled++;
-	return;
+        running = 0;
+        all_disabled++;
+        return;
 }
 
 

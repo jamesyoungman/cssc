@@ -39,7 +39,17 @@
  * VE3TCP, <gwoods@acm.org>, <woods@planix.com>, <woods@wierd.com>.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#if HAVE_STDIO_H
 #include <stdio.h>
+#endif
+
+#if HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 int
 main(argc, argv)
@@ -61,9 +71,9 @@ main(argc, argv)
   else 
     {
       for (j = 1; i > 0; i--, j++)
-	{
-	  fprintf(stdout, "%d %s\n", j, argv[2]);
-	}
+        {
+          fprintf(stdout, "%d %s\n", j, argv[2]);
+        }
       return 0;
     }
 }

@@ -38,10 +38,10 @@
 // #include "linebuf.h"
 #include "rel_list.h"
 
-class sccs_pfile;	/* pfile.h */
-class seq_state;	/* seqstate.h */
+class sccs_pfile;       /* pfile.h */
+class seq_state;        /* seqstate.h */
 class cssc_linebuf;
-class FilePosSaver;		// filepos.h
+class FilePosSaver;             // filepos.h
 
 struct delta;
 class cssc_delta_table;
@@ -90,7 +90,7 @@ private:
   mylist<mystring> comments;
 
   static FILE *open_sccs_file(const char *name, enum _mode mode,
-			      int *sump);
+                              int *sump);
   NORETURN corrupt(const char *why) const POSTDECL_NORETURN;
   void check_arg() const;
   void check_noarg() const;
@@ -148,28 +148,28 @@ private:
     int found_id;
     
     subst_parms(FILE *o, const char *w, struct delta const &d,
-		int l, sccs_date n)
+                int l, sccs_date n)
       : out(o), wstring(w), delta(d), out_lineno(l), now(n),
-	found_id(0) {}
+        found_id(0) {}
   };
 
   bool prepare_seqstate(seq_state &state, seq_no seq);
 
   typedef int (sccs_file::*subst_fn_t)(const char *,
-				       struct subst_parms *,
-				       struct delta const&) const;
+                                       struct subst_parms *,
+                                       struct delta const&) const;
 
   bool get(mystring name, class seq_state &state,
-	   struct subst_parms &parms,
-	   subst_fn_t subst_fn = 0,
-	   int show_sid = 0, int show_module = 0, int debug = 0,
-	   bool no_decode = false);
+           struct subst_parms &parms,
+           bool do_kw_subst,
+           int show_sid = 0, int show_module = 0, int debug = 0,
+           bool no_decode = false);
   enum { GET_NO_DECODE = true };
   
   /* sf-get2.c */
   int write_subst(const char *start,
-		  struct subst_parms *parms,
-		  struct delta const& gotten_delta) const;
+                  struct subst_parms *parms,
+                  struct delta const& gotten_delta) const;
 
 public:
   struct get_status
@@ -180,23 +180,23 @@ public:
   };
 
   bool find_requested_sid(sid requested, sid &found,
-			  bool include_branches=false) const ;
+                          bool include_branches=false) const ;
   sid find_next_sid(sid requested, sid got, int branch,
-		    sccs_pfile &pfile, int *failed) const;
+                    sccs_pfile &pfile, int *failed) const;
   bool test_locks(sid got, sccs_pfile &pfile) const;
   
   struct get_status get(FILE *out, mystring name, sid id,
-			sccs_date cutoff_date = NULL,
-			sid_list include = sid_list(""),
-			sid_list exclude = sid_list(""),
-			int keywords = 0, const char *wstring = NULL,
-			int show_sid = 0, int show_module = 0,
-			int debug = 0);
+                        sccs_date cutoff_date = NULL,
+                        sid_list include = sid_list(""),
+                        sid_list exclude = sid_list(""),
+                        int keywords = 0, const char *wstring = NULL,
+                        int show_sid = 0, int show_module = 0,
+                        int debug = 0);
 
   /* sf-get3.c */
 private:
   bool prepare_seqstate(seq_state &state, sid_list include,
-			sid_list exclude, sccs_date cutoff_date);
+                        sid_list exclude, sccs_date cutoff_date);
 
   /* sf-write.c */
 private:
@@ -233,8 +233,8 @@ public:
   int check_mrs(mylist<mystring> mrs);
 
   bool add_delta(mystring gname, sccs_pfile &pfile,
-		 mylist<mystring> mrs, mylist<mystring> comments,
-		 bool display_diff_output);
+                 mylist<mystring> mrs, mylist<mystring> comments,
+                 bool display_diff_output);
 
   /* sccsfile.cc */
   void set_mr_checker_flag(const char *s);
@@ -253,22 +253,22 @@ public:
   
   /* sf-admin.c */
   bool admin(const char *file_comment,
-	     bool force_binary,
-	     mylist<mystring> set_flags, mylist<mystring> unset_flags,
-	     mylist<mystring> add_users, mylist<mystring> erase_users);
+             bool force_binary,
+             mylist<mystring> set_flags, mylist<mystring> unset_flags,
+             mylist<mystring> add_users, mylist<mystring> erase_users);
   bool create(const sid &initial_sid,
-	      const char *iname,
-	      mylist<mystring> mrs,
-	      mylist<mystring> comments,
-	      int suppress_comments,
-	      bool force_binary);
+              const char *iname,
+              mylist<mystring> mrs,
+              mylist<mystring> comments,
+              int suppress_comments,
+              bool force_binary);
 
   /* sf-prs.c */
 private:
   bool get(FILE *out, mystring name, seq_no seq);
   void print_flags(FILE *out) const;
   void print_delta(FILE *out, const char *format,
-		   struct delta const &delta);
+                   struct delta const &delta);
 
   /* sf-kw.cc */
   void no_id_keywords(const char name[]) const;
@@ -291,13 +291,13 @@ public:
   
 
   bool prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
-	   enum when when, int all_deltas);
+           enum when when, int all_deltas);
 
   bool prt(FILE *out, struct cutoff exclude, int all_deltas,
-	   //
-	   int print_body, int print_delta_table, int print_flags,
-	   int incl_excl_ignore, int first_line_only, int print_desc,
-	   int print_users) const;
+           //
+           int print_body, int print_delta_table, int print_flags,
+           int incl_excl_ignore, int first_line_only, int print_desc,
+           int print_users) const;
 
   mystring get_module_name() const;
 
@@ -326,8 +326,8 @@ protected:
 private:
   // Because we now have a pointer member, don't use the compiler's
   // default assignment and constructor.
-  const sccs_file& operator=(const sccs_file&);	// not allowed to use!
-  sccs_file(const sccs_file&);	// not allowed to use!
+  const sccs_file& operator=(const sccs_file&); // not allowed to use!
+  sccs_file(const sccs_file&);  // not allowed to use!
 };
 
 /* l-split.c */

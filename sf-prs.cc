@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.26 2000/03/19 11:18:41 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.27 2001/07/31 08:28:07 james_youngman Exp $";
 #endif
 
 inline bool
@@ -44,22 +44,22 @@ sccs_file::get(FILE *out, mystring name, seq_no seq)
   struct subst_parms parms(out, NULL, delta(), 0, sccs_date(NULL));
   class seq_state state(highest_delta_seqno());
   
-  return prepare_seqstate(state, seq) && get(name, state, parms);
+  return prepare_seqstate(state, seq) && get(name, state, parms, true);
 }
 
 /* Prints a list of sequence numbers on the same line. */
 
 static void
 print_seq_list(FILE *out, mylist<seq_no> const &list) {
-	int i;
-	int len = list.length();
+        int i;
+        int len = list.length();
 
-	if (len > 0) {
-		fprintf(out, "%u", list[0]);
-		for(i = 1; i < len; i++) {
-			fprintf(out, " %u", list[i]);
-		}
-	}
+        if (len > 0) {
+                fprintf(out, "%u", list[0]);
+                for(i = 1; i < len; i++) {
+                        fprintf(out, " %u", list[i]);
+                }
+        }
 }
 
 
@@ -67,12 +67,12 @@ print_seq_list(FILE *out, mylist<seq_no> const &list) {
 
 static void
 print_string_list(FILE *out, mylist<mystring> const &list) {
-	int i;
-	int len = list.length();
+        int i;
+        int len = list.length();
 
-	for(i = 0; i < len; i++) {
-		fprintf(out, "%s\n", list[i].c_str());
-	}
+        for(i = 0; i < len; i++) {
+                fprintf(out, "%s\n", list[i].c_str());
+        }
 }
 
 
@@ -92,11 +92,11 @@ print_flag2(FILE *out, const char *s, int it)
 template <class TYPE>
 void
 print_flag2(FILE *out, const char *s, TYPE it) {
-	if (it.valid()) {
-		fprintf(out, "%s\t", s);
-		it.print(out);
-		putc('\n', out);
-	}
+        if (it.valid()) {
+                fprintf(out, "%s\t", s);
+                it.print(out);
+                putc('\n', out);
+        }
 }
 
 // /* Prints a string flag with its name.
@@ -142,7 +142,7 @@ sccs_file::print_flags(FILE *out) const
   if (flags.encoded) fputs("encoded\n", out);
   print_flag2(out, (const char *) "floor", flags.floor);
   print_flag2(out, (const char *) "id keywd err/warn",
-	      flags.no_id_keywords_is_fatal);
+              flags.no_id_keywords_is_fatal);
   print_flag2(out, (const char *) "joint edit", flags.joint_edit);
 
   const char *locked = "locked releases";
@@ -152,14 +152,14 @@ sccs_file::print_flags(FILE *out) const
     print_flag2(out, locked, flags.locked);
   
   print_flag2(out, (const char *) "module",
-	      (flags.module ? flags.module->c_str()
-	       : (const char*)0) );
+              (flags.module ? flags.module->c_str()
+               : (const char*)0) );
   print_flag2(out, (const char *) "null delta", flags.null_deltas);
   print_flag2(out, (const char *) "csect name", flags.user_def);
   print_flag2(out, (const char *) "type", flags.type);
   print_flag2(out, (const char *) "validate MRs",
-	      (flags.mr_checker ? flags.mr_checker->c_str()
-	       : (const char*) 0));
+              (flags.mr_checker ? flags.mr_checker->c_str()
+               : (const char*) 0));
 }
 
 
@@ -167,11 +167,11 @@ sccs_file::print_flags(FILE *out) const
 
 inline static void
 print_yesno(FILE *out, int flag) {
-	if (flag) {
-		fputs("yes", out);
-	} else {
-		fputs("no", out);
-	}
+        if (flag) {
+                fputs("yes", out);
+        } else {
+                fputs("no", out);
+        }
 }
 
 /* Prints the value of a mystring flag. */
@@ -247,15 +247,15 @@ print_flag(FILE *out, const sid &it)
    data keyword in an unsigned value used in the switch statement 
    in the function below. */
 
-#define KEY1(c)		((unsigned char)(c))
-#define KEY2(c1, c2)	(((unsigned char)(c1)) * 256 + (unsigned char)(c2))
+#define KEY1(c)         ((unsigned char)(c))
+#define KEY2(c1, c2)    (((unsigned char)(c1)) * 256 + (unsigned char)(c2))
 
 /* Prints selected parts of an SCCS file and the specified entry in the
    delta table. */
 
 void
 sccs_file::print_delta(FILE *out, const char *format,
-		       struct delta const &d)
+                       struct delta const &d)
 {
   const char *s = format;
   
@@ -264,307 +264,307 @@ sccs_file::print_delta(FILE *out, const char *format,
       char c = *s++;
 
       if (c == '\0')
-	{
-	  break;	// end of format.
-	}
+        {
+          break;        // end of format.
+        }
       else if ('\\' == c)
-	{
-	  if ('\0' != *s)
-	    {
-	      // Not at the end of the format string.
-	      // Backslash escape codes.  We only recognise \n and \t.
-	      switch (*s)
-		{
-		case 'n': c = '\n'; break;
-		case 't': c = '\t'; break;
-		case '\\': c = '\\'; break;
-		default:	// not \n or \t -- print the whole thing.
-		  putc('\\', out);
-		  c = *s;
-		  break;
-		}
-	      putc(c, out);
-	      ++s;
-	    }
-	  else
-	    {
-	      putc('\\', out); // trailing backslash at and of format.
-	    }
-	  
-	  continue;
-	}
+        {
+          if ('\0' != *s)
+            {
+              // Not at the end of the format string.
+              // Backslash escape codes.  We only recognise \n and \t.
+              switch (*s)
+                {
+                case 'n': c = '\n'; break;
+                case 't': c = '\t'; break;
+                case '\\': c = '\\'; break;
+                default:        // not \n or \t -- print the whole thing.
+                  putc('\\', out);
+                  c = *s;
+                  break;
+                }
+              putc(c, out);
+              ++s;
+            }
+          else
+            {
+              putc('\\', out); // trailing backslash at and of format.
+            }
+          
+          continue;
+        }
       else if (c != ':' || s[0] == '\0')
-	{
-	  putc(c, out);
-	  continue;
-	}
+        {
+          putc(c, out);
+          continue;
+        }
       
       const char *back_to = s;
       unsigned key = 0;
       
       if (s[1] == ':')
-	{
-	  key = KEY1(s[0]);
-	  s += 2;
-	}
+        {
+          key = KEY1(s[0]);
+          s += 2;
+        }
       else if (s[2] == ':')
-	{
-	  key = KEY2(s[0], s[1]);
-	  s += 3;
-	}
+        {
+          key = KEY2(s[0], s[1]);
+          s += 3;
+        }
       else
-	{
-	  putc(':', out);
-	  continue;
-	}
+        {
+          putc(':', out);
+          continue;
+        }
 
       switch (key)
-	{
-	default:
-	  s = back_to;
-	  putc(':', out);
-	  continue;
-			
-	case KEY2('D','t'):
-	  print_delta(out, ":DT: :I: :D: :T: :P: :DS: :DP:",
-		      d);
-	  break;
+        {
+        default:
+          s = back_to;
+          putc(':', out);
+          continue;
+                        
+        case KEY2('D','t'):
+          print_delta(out, ":DT: :I: :D: :T: :P: :DS: :DP:",
+                      d);
+          break;
 
-	case KEY2('D','L'):
-	  print_delta(out, ":Li:/:Ld:/:Lu:", d);
-	  break;
-	  
-	case KEY2('L','i'):
-	  fprintf(out, "%05lu", d.inserted);
-	  break;
+        case KEY2('D','L'):
+          print_delta(out, ":Li:/:Ld:/:Lu:", d);
+          break;
+          
+        case KEY2('L','i'):
+          fprintf(out, "%05lu", d.inserted);
+          break;
 
-	case KEY2('L','d'):
-	  fprintf(out, "%05lu", d.deleted);
-	  break;
+        case KEY2('L','d'):
+          fprintf(out, "%05lu", d.deleted);
+          break;
 
-	case KEY2('L','u'):
-	  fprintf(out, "%05lu", d.unchanged);
-	  break;
+        case KEY2('L','u'):
+          fprintf(out, "%05lu", d.unchanged);
+          break;
 
-	case KEY2('D','T'):
-	  putc(d.type, out);
-	  break;
+        case KEY2('D','T'):
+          putc(d.type, out);
+          break;
 
-	case KEY1('I'):
-	  d.id.print(out);
-	  break;
+        case KEY1('I'):
+          d.id.print(out);
+          break;
 
-	case KEY1('R'):
-	  d.id.printf(out, 'R');
-	  break;
+        case KEY1('R'):
+          d.id.printf(out, 'R');
+          break;
 
-	case KEY1('L'):
-	  d.id.printf(out, 'L');
-	  break;
-	  
-	case KEY1('B'):
-	  d.id.printf(out, 'B');
-	  break;
-	  
-	case KEY1('S'):
-	  d.id.printf(out, 'S');
-	  break;
-	  
-	case KEY1('D'):
-	  d.date.printf(out, 'D');
-	  break;
-	  
-	case KEY2('D','y'):
-	  d.date.printf(out, 'y');
-	  break;
+        case KEY1('L'):
+          d.id.printf(out, 'L');
+          break;
+          
+        case KEY1('B'):
+          d.id.printf(out, 'B');
+          break;
+          
+        case KEY1('S'):
+          d.id.printf(out, 'S');
+          break;
+          
+        case KEY1('D'):
+          d.date.printf(out, 'D');
+          break;
+          
+        case KEY2('D','y'):
+          d.date.printf(out, 'y');
+          break;
 
-	case KEY2('D','m'):
-	  d.date.printf(out, 'o');
-	  break;
-	  
-	case KEY2('D','d'):
-	  d.date.printf(out, 'd');
-	  break;
-	  
-	case KEY1('T'):
-	  d.date.printf(out, 'T');
-	  break;
-	  
-	case KEY2('T','h'):
-	  d.date.printf(out, 'h');
-	  break;
-	  
-	case KEY2('T','m'):
-	  d.date.printf(out, 'm');
-	  break;
+        case KEY2('D','m'):
+          d.date.printf(out, 'o');
+          break;
+          
+        case KEY2('D','d'):
+          d.date.printf(out, 'd');
+          break;
+          
+        case KEY1('T'):
+          d.date.printf(out, 'T');
+          break;
+          
+        case KEY2('T','h'):
+          d.date.printf(out, 'h');
+          break;
+          
+        case KEY2('T','m'):
+          d.date.printf(out, 'm');
+          break;
 
-	case KEY2('T','s'):
-	  d.date.printf(out, 's');
-	  break;
+        case KEY2('T','s'):
+          d.date.printf(out, 's');
+          break;
 
-	case KEY1('P'):
-	  fputs(d.user.c_str(), out);
-	  break;
+        case KEY1('P'):
+          fputs(d.user.c_str(), out);
+          break;
 
-	case KEY2('D','S'):
-	  fprintf(out, "%u", d.seq);
-	  break;
+        case KEY2('D','S'):
+          fprintf(out, "%u", d.seq);
+          break;
 
-	case KEY2('D','P'):
-	  fprintf(out, "%u", d.prev_seq);
-	  break;
+        case KEY2('D','P'):
+          fprintf(out, "%u", d.prev_seq);
+          break;
 
-	case KEY2('D', 'I'):
-	  if (d.included.length() > 0 ||
-	      d.excluded.length() > 0 ||
-	      d.ignored.length()  > 0   )
-	    {
-	      print_delta(out, ":Dn:/:Dx:/:Dg:", d);
-	      break;
-	    }
-		  
-	case KEY2('D','n'):
-	  print_seq_list(out, d.included);
-	  break;
+        case KEY2('D', 'I'):
+          if (d.included.length() > 0 ||
+              d.excluded.length() > 0 ||
+              d.ignored.length()  > 0   )
+            {
+              print_delta(out, ":Dn:/:Dx:/:Dg:", d);
+              break;
+            }
+                  
+        case KEY2('D','n'):
+          print_seq_list(out, d.included);
+          break;
 
-	case KEY2('D','x'):
-	  print_seq_list(out, d.excluded);
-	  break;
+        case KEY2('D','x'):
+          print_seq_list(out, d.excluded);
+          break;
 
-	case KEY2('D','g'):
-	  print_seq_list(out, d.ignored);
-			break;
+        case KEY2('D','g'):
+          print_seq_list(out, d.ignored);
+                        break;
 
-	case KEY2('M','R'):
-	  print_string_list(out, d.mrs);
-	  break;
+        case KEY2('M','R'):
+          print_string_list(out, d.mrs);
+          break;
 
-	case KEY1('C'):
-	  print_string_list(out, d.comments);
-	  break;
+        case KEY1('C'):
+          print_string_list(out, d.comments);
+          break;
 
-	case KEY2('U','N'):
-	  print_string_list(out, users);
-	  break;
+        case KEY2('U','N'):
+          print_string_list(out, users);
+          break;
 
-	case KEY2('F', 'L'):
-	  print_flags(out);
-	  break;
-			
-	case KEY1('Y'):
-	  print_flag(out, flags.type);
-	  break;
-			
-	case KEY2('M','F'):
-	  print_yesno(out, flags.mr_checker != 0);
-	  break;
-	  
-	case KEY2('M','P'):
-	  print_flag(out, flags.mr_checker);
-	  break;
-			
-	case KEY2('K','F'):
-	  print_yesno(out, flags.no_id_keywords_is_fatal);
-	  break;
+        case KEY2('F', 'L'):
+          print_flags(out);
+          break;
+                        
+        case KEY1('Y'):
+          print_flag(out, flags.type);
+          break;
+                        
+        case KEY2('M','F'):
+          print_yesno(out, flags.mr_checker != 0);
+          break;
+          
+        case KEY2('M','P'):
+          print_flag(out, flags.mr_checker);
+          break;
+                        
+        case KEY2('K','F'):
+          print_yesno(out, flags.no_id_keywords_is_fatal);
+          break;
 
-	case KEY2('B','F'):
-	  print_yesno(out, flags.branch);
-	  break;
+        case KEY2('B','F'):
+          print_yesno(out, flags.branch);
+          break;
 
-	case KEY1('J'):
-	  print_yesno(out, flags.joint_edit);
-	  break;
-			
-	case KEY2('L','K'):
-	  if (flags.all_locked)
-	    {
-	      putc('a', out);
-	    }
-	  else
-	    {
-	      
-	      if (flags.locked.empty())
-		fprintf(out, "none");
-	      else
-		print_flag(out, flags.locked);
-	    }
-	  break;
+        case KEY1('J'):
+          print_yesno(out, flags.joint_edit);
+          break;
+                        
+        case KEY2('L','K'):
+          if (flags.all_locked)
+            {
+              putc('a', out);
+            }
+          else
+            {
+              
+              if (flags.locked.empty())
+                fprintf(out, "none");
+              else
+                print_flag(out, flags.locked);
+            }
+          break;
 
-	case KEY1('Q'):
-	  if (flags.user_def)
-	    print_flag(out, flags.user_def);
-	  break;
+        case KEY1('Q'):
+          if (flags.user_def)
+            print_flag(out, flags.user_def);
+          break;
 
-	case KEY1('M'):
-	  print_flag(out, get_module_name());
-	  break;
-			
-	case KEY2('F','B'):
-	  print_flag(out, flags.floor);
-	  break;
-			
-	case KEY2('C','B'):
-	  print_flag(out, flags.ceiling);
-	  break;
+        case KEY1('M'):
+          print_flag(out, get_module_name());
+          break;
+                        
+        case KEY2('F','B'):
+          print_flag(out, flags.floor);
+          break;
+                        
+        case KEY2('C','B'):
+          print_flag(out, flags.ceiling);
+          break;
 
-	case KEY2('D','s'):
-	  print_flag(out, flags.default_sid);
-	  break;
+        case KEY2('D','s'):
+          print_flag(out, flags.default_sid);
+          break;
 
-	case KEY2('N','D'):
-	  print_yesno(out, flags.null_deltas);
-	  break;
+        case KEY2('N','D'):
+          print_yesno(out, flags.null_deltas);
+          break;
 
-	case KEY2('F','D'):
-	  // The genuine article prints '(none)' if there
-	  // is no description.
-	  if (0 == comments.length())
-	    fputs("(none)\n", out);
-	  else
-	    print_string_list(out, comments);
-	  break;
+        case KEY2('F','D'):
+          // The genuine article prints '(none)' if there
+          // is no description.
+          if (0 == comments.length())
+            fputs("(none)\n", out);
+          else
+            print_string_list(out, comments);
+          break;
 
-	case KEY2('B','D'):
-	  if (seek_to_body())
-	    {
-	      while (read_line() != -1)
-		{
-		  fputs(plinebuf->c_str(), out);
-		  putc('\n', out);
-		}
-	    }
-	  else
-	    {
-	      // TODO: what should we do if the seek fails?
-	      // do nothing.
-	    }
-	  break;
+        case KEY2('B','D'):
+          if (seek_to_body())
+            {
+              while (read_line() != -1)
+                {
+                  fputs(plinebuf->c_str(), out);
+                  putc('\n', out);
+                }
+            }
+          else
+            {
+              // TODO: what should we do if the seek fails?
+              // do nothing.
+            }
+          break;
 
-	case KEY2('G','B'):
-	  get(out, "-", d.seq);	// TODO: check return value?
-	  break;
+        case KEY2('G','B'):
+          get(out, "-", d.seq); // TODO: check return value?
+          break;
 
-	case KEY1('W'):
-	  print_delta(out, ":Z::M:\t:I:", d);
-	  break;
+        case KEY1('W'):
+          print_delta(out, ":Z::M:\t:I:", d);
+          break;
 
-	case KEY1('A'):
-	  print_delta(out, ":Z::Y: :M: :I::Z:", d);
-	  break;
+        case KEY1('A'):
+          print_delta(out, ":Z::Y: :M: :I::Z:", d);
+          break;
 
-	case KEY1('Z'):
-	  fputc('@', out);
-	  fputs("(#)", out);
-	  break;
+        case KEY1('Z'):
+          fputc('@', out);
+          fputs("(#)", out);
+          break;
 
-	case KEY1('F'):
-	  fputs(base_part(name.sfile()).c_str(), out);
-	  break;
+        case KEY1('F'):
+          fputs(base_part(name.sfile()).c_str(), out);
+          break;
 
-	case KEY2('P','N'):
-	  fputs(canonify_filename(name.c_str()).c_str(), out);
-	  break;
-	}
+        case KEY2('P','N'):
+          fputs(canonify_filename(name.c_str()).c_str(), out);
+          break;
+        }
     }
 }
 
@@ -573,7 +573,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 
 bool
 sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
-	       enum when when, int all_deltas)
+               enum when when, int all_deltas)
 {
   if (!rid.valid())
     {
@@ -584,10 +584,10 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
     {
       const delta *pd = find_delta(rid);
       if (0 == pd)
-	{
-	  errormsg("%s: Requested SID doesn't exist.", name.c_str());
-	  return false;
-	}
+        {
+          errormsg("%s: Requested SID doesn't exist.", name.c_str());
+          return false;
+        }
       cutoff_date = pd->date;
     }
 
@@ -595,28 +595,28 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
   while (iter.next(all_deltas))
     {
       switch (when)
-	{
-	case EARLIER:
-	  if (iter->date > cutoff_date)
-	    {
-	      continue;
-	    }
-	  break;
+        {
+        case EARLIER:
+          if (iter->date > cutoff_date)
+            {
+              continue;
+            }
+          break;
 
-	case SIDONLY:
-	  if (rid != iter->id)
-	    {
-	      continue;
-	    }
-	  break;
+        case SIDONLY:
+          if (rid != iter->id)
+            {
+              continue;
+            }
+          break;
 
-	case LATER:
-	  if (iter->date < cutoff_date)
-	    {
-	      continue;
-	    }
-	  break;
-	}
+        case LATER:
+          if (iter->date < cutoff_date)
+            {
+              continue;
+            }
+          break;
+        }
 
       print_delta(out, format.c_str(), *iter.operator->());
       putc('\n', out);

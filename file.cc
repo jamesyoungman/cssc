@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.28 2001/07/15 15:08:40 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.29 2001/07/31 08:28:07 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -60,49 +60,49 @@ extern "C" int CDECL stat(const char *, struct stat *);
 
 static int
 eaccess(const char *name, mode_t perm) {
-	struct stat st;
+        struct stat st;
 
-	if (stat(name, &st) == -1) {
-		return -1;
-	}
+        if (stat(name, &st) == -1) {
+                return -1;
+        }
 
-	perm &= 7;
-	if (perm == 0) {
-		return 0;
-	}
+        perm &= 7;
+        if (perm == 0) {
+                return 0;
+        }
 
-	if (geteuid() == st.st_uid) {
-		st.st_mode >>= 6;
-	} else if (getegid() == st.st_gid) {
-		st.st_mode >>= 3;
-	}
+        if (geteuid() == st.st_uid) {
+                st.st_mode >>= 6;
+        } else if (getegid() == st.st_gid) {
+                st.st_mode >>= 3;
+        }
 
-	if ((st.st_mode & perm) == perm) {
-		return 0;
-	}
+        if ((st.st_mode & perm) == perm) {
+                return 0;
+        }
 
-	return -1;
+        return -1;
 }
 
 #else /* CONFIG_UIDS */
 
 inline int
 eaccess(const char *name, int perm) {
-	return access(name, perm);
+        return access(name, perm);
 }
 
 #endif /* CONFIG_UIDS */
 
 
 /* Redirects stdout to a "null" file (eg. /dev/null). */
-		
+                
 bool
 stdout_to_null()
 {
   if (NULL == freopen(CONFIG_NULL_FILENAME, "w", stdout))
     {
       errormsg_with_errno("Can't redirect stdout to "
-			  CONFIG_NULL_FILENAME );
+                          CONFIG_NULL_FILENAME );
       return false;
     }
   else
@@ -116,36 +116,36 @@ stdout_to_null()
 
 FILE *
 stdout_to_stderr() {
-	fflush(stdout);
-	fflush(stderr);
+        fflush(stdout);
+        fflush(stderr);
 
-	int out = dup(1);
-	if (out == -1)
-	  {
-	    errormsg_with_errno("dup(1) failed");
-	    return NULL;
-	  }
+        int out = dup(1);
+        if (out == -1)
+          {
+            errormsg_with_errno("dup(1) failed");
+            return NULL;
+          }
 
-	if (close(1) == -1 || dup(2) != 1)
-	  {
-	    errormsg_with_errno("Can't redirect stdout to stderr");
-	    return NULL;
-	  }
+        if (close(1) == -1 || dup(2) != 1)
+          {
+            errormsg_with_errno("Can't redirect stdout to stderr");
+            return NULL;
+          }
 
-	FILE *f = fdopen(out, "w");
-	if (f == NULL)
-	  {
-	    errormsg_with_errno("fdopen failed");
-	    return NULL;
-	  }
-	return f;
+        FILE *f = fdopen(out, "w");
+        if (f == NULL)
+          {
+            errormsg_with_errno("fdopen failed");
+            return NULL;
+          }
+        return f;
 }
 
 /* Returns true if stdin is not a file. */
 
 int
 stdin_is_a_tty() {
-	return isatty(0);
+        return isatty(0);
 }
 
 
@@ -165,7 +165,7 @@ open_null()
 
 int
 is_readable(const char *name) {
-	return access(name, 04) != -1;
+        return access(name, 04) != -1;
 }
 
 /* Determine if a given file is "writable".  If we
@@ -181,14 +181,14 @@ is_writable(const char *filename, int /* as_real_user = 1 */ )
   struct stat st;
   if (0 != stat(filename, &st))
     {
-      return 0;			// can't stat it so can't read it, probably.
+      return 0;                 // can't stat it so can't read it, probably.
     }
   else
     {
       if (st.st_mode & 0222)
-	return 1;		// at least one of the write bits is set.
+        return 1;               // at least one of the write bits is set.
       else
-	return 0;		// no write bits set.
+        return 0;               // no write bits set.
     }
   
 }
@@ -197,11 +197,11 @@ is_writable(const char *filename, int /* as_real_user = 1 */ )
 
 inline int
 old_is_writable(const char *name, int as_real_user = 1) {
-	if (as_real_user) {
-		return access(name,  (mode_t) 02) != -1;
-	} else {
-		return eaccess(name, (mode_t) 02) != -1;
-	}
+        if (as_real_user) {
+                return access(name,  (mode_t) 02) != -1;
+        } else {
+                return eaccess(name, (mode_t) 02) != -1;
+        }
 }
 
 
@@ -209,11 +209,11 @@ old_is_writable(const char *name, int as_real_user = 1) {
 
 int
 file_exists(const char *name) {
-	return access(name, 0) != -1;
+        return access(name, 0) != -1;
 }
 
 
-		
+                
 
 #ifdef CONFIG_UIDS
 
@@ -230,25 +230,25 @@ static uid_t old_euid;
 // Set-user-id is saved.  TODO: What about setuid-root binaries?
 void
 give_up_privileges() {
-	if (unprivileged++ == 0) {
-		old_euid = geteuid();
-		if (setuid(getuid()) == -1) {
-			fatal_quit(errno, "setuid(%d) failed", getuid());
-		}
-		ASSERT(getuid() == geteuid());
-	}
+        if (unprivileged++ == 0) {
+                old_euid = geteuid();
+                if (setuid(getuid()) == -1) {
+                        fatal_quit(errno, "setuid(%d) failed", getuid());
+                }
+                ASSERT(getuid() == geteuid());
+        }
 }
 
 void
 restore_privileges() {
-	if (--unprivileged == 0) {
-	  // XXX TODO: shouldn't this be setuid(old_euid) ?
-		if (setuid(old_euid) == -1) { 
-			fatal_quit(errno, "setuid(%d) failed", old_euid);
-		}
-		ASSERT(geteuid() == old_euid);
-	}
-	ASSERT(unprivileged >= 0);
+        if (--unprivileged == 0) {
+          // XXX TODO: shouldn't this be setuid(old_euid) ?
+                if (setuid(old_euid) == -1) { 
+                        fatal_quit(errno, "setuid(%d) failed", old_euid);
+                }
+                ASSERT(geteuid() == old_euid);
+        }
+        ASSERT(unprivileged >= 0);
 }
 
 #elif defined(HAVE_SETREUID)
@@ -260,28 +260,28 @@ static uid_t old_ruid, old_euid;
 
 void
 give_up_privileges() {
-	if (unprivileged++ == 0) {
-		old_ruid = getuid();
-		old_euid = geteuid();
+        if (unprivileged++ == 0) {
+                old_ruid = getuid();
+                old_euid = geteuid();
 
-		if (setreuid(old_euid, old_ruid) == -1) {
-			fatal_quit(errno, "setreuid(%d, %d) failed.",
-				   old_euid, old_ruid);
-		}
-		ASSERT(geteuid() == old_ruid);
-	}
+                if (setreuid(old_euid, old_ruid) == -1) {
+                        fatal_quit(errno, "setreuid(%d, %d) failed.",
+                                   old_euid, old_ruid);
+                }
+                ASSERT(geteuid() == old_ruid);
+        }
 }
 
 void
 restore_privileges() {
-	if (--unprivileged == 0) {
-		if (setreuid(old_ruid, old_euid) == -1) {
-			fatal_quit(errno, "setreuid(%d, %d) failed.", 
-				   old_ruid, old_euid);
-		}
-		ASSERT(geteuid() == old_euid);
-	}
-	ASSERT(unprivileged >= 0);
+        if (--unprivileged == 0) {
+                if (setreuid(old_ruid, old_euid) == -1) {
+                        fatal_quit(errno, "setreuid(%d, %d) failed.", 
+                                   old_ruid, old_euid);
+                }
+                ASSERT(geteuid() == old_euid);
+        }
+        ASSERT(unprivileged >= 0);
 }
 
 
@@ -291,26 +291,26 @@ restore_privileges() {
 // and setreuid() is not available.
 void
 give_up_privileges() {
-	++unprivileged;
-	if (geteuid() != getuid()) {
-		fatal_quit(-1, "Set UID not supported.");
-	}
+        ++unprivileged;
+        if (geteuid() != getuid()) {
+                fatal_quit(-1, "Set UID not supported.");
+        }
 }
 
 void
 restore_privileges() {
-	--unprivileged;
-	ASSERT(unprivileged >= 0);
+        --unprivileged;
+        ASSERT(unprivileged >= 0);
 }
 
 #endif /* defined(HAVE_SETREUID) */
 
 // inline int
 // open_as_real_user(const char *name, int mode, int perm) {
-// 	   give_up_privileges();
-// 	   int fd = open(name, mode, perm);
-// 	   restore_privileges();
-// 	   return fd;
+//         give_up_privileges();
+//         int fd = open(name, mode, perm);
+//         restore_privileges();
+//         return fd;
 // }
 
 #ifdef CONFIG_DECLARE_GETPWUID
@@ -351,7 +351,7 @@ get_user_name()
 
 int
 user_is_group_member(int) {
-	return 0;
+        return 0;
 }
 
 #endif /* CONFIG_UIDS */
@@ -359,15 +359,15 @@ user_is_group_member(int) {
 /* From the Linux manual page for open(2):-
  *
  * O_EXCL When used with O_CREAT, if the file already exists it is an
- *	  error and the open will fail.  O_EXCL is broken on NFS file
- *	  systems, programs which rely on it for performing locking
- *	  tasks will contain a race condition.  The solution for
- *	  performing atomic file locking using a lockfile is to create
- *	  a unique file on the same fs (e.g., incorporating hostname
- *	  and pid), use link(2) to make a link to the lockfile and use
- *	  stat(2) on the unique file to check if its link count has
- *	  increased to 2.  Do not use the return value of the link()
- *	  call.
+ *        error and the open will fail.  O_EXCL is broken on NFS file
+ *        systems, programs which rely on it for performing locking
+ *        tasks will contain a race condition.  The solution for
+ *        performing atomic file locking using a lockfile is to create
+ *        a unique file on the same fs (e.g., incorporating hostname
+ *        and pid), use link(2) to make a link to the lockfile and use
+ *        stat(2) on the unique file to check if its link count has
+ *        increased to 2.  Do not use the return value of the link()
+ *        call.
  */
 
 
@@ -410,66 +410,66 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
       errno = 0;
       int fd = open(lockstr, flags, perms);
       if (fd >= 0)
-	{
-	  if (1 == get_nlinks(lockstr))
-	    {
-	      int link_errno = 0;
-	      errno = 0;
-	      if (-1 == link(lockstr, pstr))
-		link_errno = errno;
+        {
+          if (1 == get_nlinks(lockstr))
+            {
+              int link_errno = 0;
+              errno = 0;
+              if (-1 == link(lockstr, pstr))
+                link_errno = errno;
 
-	      /* ignore other responses */
-	      
-	      if (2 == get_nlinks(lockstr))
-		{
-		  unlink(lockstr); 
-		  return fd;	/* success! */
-		}
-	      else		/* link(2) failed. */
-		{
-		  if (EPERM == link_errno)
-		    {
-		      /* containing filesystem does not support hard links. */
-		      close(fd);
-		      unlink(lockstr);
+              /* ignore other responses */
+              
+              if (2 == get_nlinks(lockstr))
+                {
+                  unlink(lockstr); 
+                  return fd;    /* success! */
+                }
+              else              /* link(2) failed. */
+                {
+                  if (EPERM == link_errno)
+                    {
+                      /* containing filesystem does not support hard links. */
+                      close(fd);
+                      unlink(lockstr);
 
-		      /* assume that the filesystem supports O_EXCL if it does
-		       * not supprort link(2).
-		       */
-		      return open(pstr, flags, perms);
-		    }
-		}
-	    }
-	  close(fd);
-	  unlink(lockstr); 
-	}
-      else			/* open() failed. */
-	{
-	  switch (errno)
-	    {
-	    case EEXIST: 
-	      /* someone else got that lock first; they may in fact not
-	       * be trying to lock the same s-file (but instead another 
-	       * s-file in the same directory)
-	       *
-	       * Try again.  Sleep first if we're not doing well,
-	       * but try to avoid pathalogical cases...
-	       */
-	      if ( (attempt > 4) && (attempt & 1) == (getpid() & 1) )
-		{
-		  errormsg("Sleeping for one second while "
-			   "waiting for lock\n");
-		  sleep(1);
-		}
-	      break;
-	      
-	    default:		/* hard failure. */
-	      /* fall back on the less-safe method, which will
-	       * probably still fail
-	       */
-	      return open(pstr, flags, perms);
-	    }
-	}
+                      /* assume that the filesystem supports O_EXCL if it does
+                       * not supprort link(2).
+                       */
+                      return open(pstr, flags, perms);
+                    }
+                }
+            }
+          close(fd);
+          unlink(lockstr); 
+        }
+      else                      /* open() failed. */
+        {
+          switch (errno)
+            {
+            case EEXIST: 
+              /* someone else got that lock first; they may in fact not
+               * be trying to lock the same s-file (but instead another 
+               * s-file in the same directory)
+               *
+               * Try again.  Sleep first if we're not doing well,
+               * but try to avoid pathalogical cases...
+               */
+              if ( (attempt > 4) && (attempt & 1) == (getpid() & 1) )
+                {
+                  errormsg("Sleeping for one second while "
+                           "waiting for lock\n");
+                  sleep(1);
+                }
+              break;
+              
+            default:            /* hard failure. */
+              /* fall back on the less-safe method, which will
+               * probably still fail
+               */
+              return open(pstr, flags, perms);
+            }
+        }
     }
   return -1;
 }
@@ -481,77 +481,77 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 
 int
 create(mystring name, int mode) {
-	int flags = O_CREAT;
+        int flags = O_CREAT;
 
-	if (mode & CREATE_FOR_UPDATE) {
-		flags |= O_RDWR;
-	} else {
-		flags |= O_WRONLY;
-	}
+        if (mode & CREATE_FOR_UPDATE) {
+                flags |= O_RDWR;
+        } else {
+                flags |= O_WRONLY;
+        }
 
-	if (mode & CREATE_EXCLUSIVE) {
-		flags |= O_EXCL;
+        if (mode & CREATE_EXCLUSIVE) {
+                flags |= O_EXCL;
 #ifdef CONFIG_USE_ARCHIVE_BIT
-	} else if ((mode & CREATE_FOR_GET)
-		   && file_exists(name.c_str())
-		   && test_archive_bit(name.c_str())) {
-		errormsg("%s: File exists and its archive attribute is set.",
-		     name.c_str());
-		return -1;
+        } else if ((mode & CREATE_FOR_GET)
+                   && file_exists(name.c_str())
+                   && test_archive_bit(name.c_str())) {
+                errormsg("%s: File exists and its archive attribute is set.",
+                     name.c_str());
+                return -1;
 #else
-	} else if ((mode & CREATE_FOR_GET)
-		   && is_writable(name.c_str(), mode & CREATE_AS_REAL_USER)) {
-		errormsg("%s: File exists and is writable.", name.c_str());
-		errno = 0;
-		return -1;
+        } else if ((mode & CREATE_FOR_GET)
+                   && is_writable(name.c_str(), mode & CREATE_AS_REAL_USER)) {
+                errormsg("%s: File exists and is writable.", name.c_str());
+                errno = 0;
+                return -1;
 #endif
-	} else if (file_exists(name.c_str()) && unlink(name.c_str()) == -1) {
-		return -1;
-	}
+        } else if (file_exists(name.c_str()) && unlink(name.c_str()) == -1) {
+                return -1;
+        }
 
 #ifdef CONFIG_MSDOS_FILES
-	int perms = 0666;
+        int perms = 0666;
 #else
-	int perms = 0644;
-	if (mode & CREATE_READ_ONLY) {
-		perms = 0444;
-	}
+        int perms = 0644;
+        if (mode & CREATE_READ_ONLY) {
+                perms = 0444;
+        }
 #endif 
 
-	int fd;
+        int fd;
 
 #ifdef CONFIG_UIDS
-	if (mode & CREATE_AS_REAL_USER)
-	  {
-	    give_up_privileges();
-	  } 
+        if (mode & CREATE_AS_REAL_USER)
+          {
+            give_up_privileges();
+          } 
 #endif
-	
+        
 #ifdef CONFIG_SHARE_LOCKING
-	if (mode & CREATE_WRITE_LOCK)
-	  {
-	    fd = sopen(name.c_str(), flags, SH_DENYWR, perms);
-	  }
-	else
-	  {
-	    /* These systems don't support link(2)... */
-	    fd = open(name.c_str(), flags, perms);
-	  }
-#else	  
-	if (mode & CREATE_NFS_ATOMIC)
-	  fd = atomic_nfs_create(name.c_str(), flags, perms);
-	else
-	  fd = open(name.c_str(), flags, perms);
+        if (mode & CREATE_WRITE_LOCK)
+          {
+            fd = sopen(name.c_str(), flags, SH_DENYWR, perms);
+          }
+        else
+          {
+            /* These systems don't support link(2)... */
+            fd = open(name.c_str(), flags, perms);
+          }
+#else     
+        if (mode & CREATE_NFS_ATOMIC)
+          fd = atomic_nfs_create(name.c_str(), flags, perms);
+        else
+          fd = open(name.c_str(), flags, perms);
 #endif
-	
+        
 #ifdef CONFIG_UIDS
-	if (mode & CREATE_AS_REAL_USER)
-	  {
-	    restore_privileges();
-	  } 
+        if (mode & CREATE_AS_REAL_USER)
+          {
+            restore_privileges();
+          } 
 #endif
 
-	return fd;
+        return fd;
 }
 
 
@@ -559,14 +559,14 @@ create(mystring name, int mode) {
 
 FILE *
 fcreate(mystring name, int mode) {
-	int fd = create(name.c_str(), mode);
-	if (fd == -1) {
-		return NULL;
-	}
-	if (mode & CREATE_FOR_UPDATE) {
-		return fdopen(fd, "w+");
-	}
-	return fdopen(fd, "w");
+        int fd = create(name.c_str(), mode);
+        if (fd == -1) {
+                return NULL;
+        }
+        if (mode & CREATE_FOR_UPDATE) {
+                return fdopen(fd, "w+");
+        }
+        return fdopen(fd, "w");
 }
 
 #ifdef CONFIG_SHARE_LOCKING
@@ -588,13 +588,13 @@ put_pid(FILE *f)
 
 #ifdef CONFIG_DUMB_LOCKING
 static int
-do_lock(FILE *f)		// dumb version
+do_lock(FILE *f)                // dumb version
 {
   return fprintf_failed(fprintf(f, "%s\n", get_user_name()))
 }
 #else
 static int
-do_lock(FILE *f)		// process-aware version
+do_lock(FILE *f)                // process-aware version
 {
   return put_pid(f) < 0;
 }
@@ -607,22 +607,22 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
   fprintf(stderr, "Lock file is \"%s\"\n", zname.c_str());
 #endif  
   FILE *f = fcreate(zname,
-		    CREATE_READ_ONLY | CREATE_EXCLUSIVE | CREATE_NFS_ATOMIC);
+                    CREATE_READ_ONLY | CREATE_EXCLUSIVE | CREATE_NFS_ATOMIC);
   if (0 == f)
     {
       if (errno == EEXIST)
-	{
-	  return;
-	}
+        {
+          return;
+        }
       errormsg_with_errno("%s: Can't create lock file", zname.c_str());
-      ctor_fail(1, NULL);
+      ctor_fail_nomsg(1);
     }
 
   if (do_lock(f) != 0 || fclose_failed(fclose(f)))
     {
       remove(zname.c_str());
       errormsg_with_errno("%s: Write error", zname.c_str());
-      ctor_fail(1, NULL);
+      ctor_fail_nomsg(1);
     }
   
   locked = 1;
@@ -630,10 +630,10 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
 }
   
   file_lock::~file_lock() {
-	if (locked) {
-		locked = 0;
-		unlink(name.c_str());
-	}
+        if (locked) {
+                locked = 0;
+                unlink(name.c_str());
+        }
 }
 
 #endif /* defined(CONFIG_PID_LOCKING) */

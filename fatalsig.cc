@@ -28,9 +28,9 @@
 #include "version.h"
 #include "quit.h"
 
-#include <signal.h>		/* TODO: consider using sigaction(). */
+#include <signal.h>             /* TODO: consider using sigaction(). */
 
-static const char rcs_id[] = "CSSC $Id: fatalsig.cc,v 1.1 2000/11/12 15:33:56 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: fatalsig.cc,v 1.2 2001/07/31 08:28:07 james_youngman Exp $";
 
 
 /* The expansion of RETSIGTYPE is automatically decided by the configure 
@@ -48,7 +48,7 @@ static const int fatal_signals_to_trap[] =
   SIGHUP, SIGINT, SIGQUIT, SIGPIPE
 };
 #define N_TRAPPED_SIGS (sizeof(fatal_signals_to_trap) /   \
-			sizeof(fatal_signals_to_trap[0]))
+                        sizeof(fatal_signals_to_trap[0]))
 
 /* In the array set_sig_handlers() we keep the initial disposition 
  * of the signals whose dispositions we alter, in order to
@@ -65,24 +65,24 @@ static int already_called = 0;
  */
 static void set_sig_handlers( sighandler pfn )
 {
-  int i;
+  unsigned int i;
 
-  for (i=0; i<N_TRAPPED_SIGS; ++i)
+  for (i=0u; i<N_TRAPPED_SIGS; ++i)
     {
       int sig = fatal_signals_to_trap[i];
       sighandler orighand = signal(sig, pfn);
       
       if (SIG_ERR == orighand)
-	{
-	  /* This is a nonfatal error. */
-	  errormsg_with_errno("Failed to set signal handler for signal %d",
-			      sig);
-	  initial_dispositions[i] = SIG_DFL;
-	}
+        {
+          /* This is a nonfatal error. */
+          errormsg_with_errno("Failed to set signal handler for signal %d",
+                              sig);
+          initial_dispositions[i] = SIG_DFL;
+        }
       else
-	{
-	  initial_dispositions[i] = orighand;
-	}
+        {
+          initial_dispositions[i] = orighand;
+        }
     }
 }
 
@@ -93,18 +93,18 @@ static void set_sig_handlers( sighandler pfn )
  */
 static void reset_sig_handlers( void )
 {
-  int i;
+  unsigned int i;
 
-  for (i=0; i; ++i)
+  for (i=0u; i; ++i)
     {
       int sig = fatal_signals_to_trap[i];
       
       if (SIG_ERR == signal(sig, initial_dispositions[i]))
-	{
-	  /* This is a nonfatal error. */
-	  errormsg_with_errno("Failed to reset signal handler for signal %d",
-			      sig);
-	}
+        {
+          /* This is a nonfatal error. */
+          errormsg_with_errno("Failed to reset signal handler for signal %d",
+                              sig);
+        }
     }
 }
 
@@ -115,7 +115,7 @@ static void reset_sig_handlers( void )
  * It does some cleanup and exits the program. 
  */ 
 static RETSIGTYPE
-handle_fatal_sig(int whatsig)
+handle_fatal_sig(int /* whatsig */ )
 {
   /* Reset the signal handler to the original setting. */
   /* Also reset all the others too.  This is in order to 
