@@ -41,7 +41,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.24 1998/08/13 18:12:55 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.25 1998/08/13 21:35:31 james Exp $";
 #endif
 
 class diff_state
@@ -379,7 +379,10 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   if (flags.encoded)
     {
       mystring uname(name.sub_file('u'));
-      encode_file(gname.c_str(), uname.c_str());
+      if (0 != encode_file(gname.c_str(), uname.c_str()))
+	{
+	  return false;
+	}
       file_to_diff = uname;
     }
   else

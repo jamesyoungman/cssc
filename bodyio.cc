@@ -55,7 +55,9 @@ bool
 body_insert_text(const char iname[], const char oname[],
 		 FILE *in, FILE *out,
 		 unsigned long int *lines,
-		 bool *idkw)
+		 bool *idkw,
+		 bool *binary,
+		 bool *io_failure)
 {
   int ch, last;
   unsigned long int nl;		// number of lines.
@@ -63,10 +65,15 @@ body_insert_text(const char iname[], const char oname[],
 
   // If we fail, rewind these files to try binary encoding.
   FilePosSaver o_saver(out);
-  
+
   *idkw = found_id = false;
   nl = 0uL;
   last = '\n';
+  *io_failure = false;
+
+  // Make sure we don't already think it is binary -- if so, this 
+  // function should never have been called.
+  assert(false == *binary);
   
   while ( EOF != (ch=getc(in)) )
     {
@@ -81,6 +88,7 @@ body_insert_text(const char iname[], const char oname[],
 		  "treating as binary.\n",
 		  iname);
 	  ungetc(ch, in);	// push back the control character.
+	  *binary = true;
 	  return false;		// output file pointer implicitly rewound
 	}
 
@@ -89,7 +97,11 @@ body_insert_text(const char iname[], const char oname[],
       // body of an SCCS file, we will retry with binary (which of
       // course uses even more space)
       if (putc_failed(putc(ch, out)))
-	quit(errno, "%s: Write error.", oname);
+	{
+	  errormsg_with_errno("%s: Write error.", oname);
+	  *io_failure = true;
+	  return false;
+	}
 
       if (!found_id)		// Check for ID keywords.
 	{
@@ -107,13 +119,19 @@ body_insert_text(const char iname[], const char oname[],
     }
 
   if (ferror(in))
-    quit(errno, "%s: Read error.", iname);
+    {
+      errormsg_with_errno("%s: Read error.", iname);
+      *io_failure = true;
+      return false;
+    }
+
 
   // Make sure the file ended with a newline.
   if ('\n' != last)
     {
       fprintf(stderr, "%s: no newline at end of file, treating as binary\n",
 	      iname);
+      *binary = true;
       return false;		// file pointers implicitly rewound
     }
 
@@ -136,7 +154,7 @@ body_insert_text(const char iname[], const char oname[],
 // at least it doesn't expand those on output!
 
 
-void
+bool
 body_insert_binary(const char iname[], const char oname[],
 		   FILE *in, FILE *out,
 		   unsigned long int *lines,
@@ -163,25 +181,34 @@ body_insert_binary(const char iname[], const char oname[],
 	}
       
       if (fputs_failed(fputs(outbuf, out)))
-	quit(errno, "%s: Write error.", oname);
+	{
+	  errormsg_with_errno("%s: Write error.", oname);
+	  return false;
+	}
       
       ++nl;
     }
   // A space character indicates a count of zero bytes and hence
   // the end of the encoded file.
   if (fputs_failed(fputs(" \n", out)))
-    quit(errno, "%s: Write error.", oname);
+    {
+      errormsg_with_errno("%s: Write error.", oname);
+      return false;
+    }
+  
   ++nl;
-      
   
   if (ferror(in))
-    quit(errno, "%s: Read error.", iname);
+    {
+      errormsg_with_errno("%s: Read error.", iname);
+      return false;
+    }
 
   *lines = nl;
 }
 
 
-void
+bool
 copy_data(FILE *in, FILE *out)
 {
   char buf[BUFSIZ];
@@ -191,14 +218,24 @@ copy_data(FILE *in, FILE *out)
     {
       nout = fwrite(buf, 1, n, out);
       if (nout < n)
-	quit(errno, "copy_data: write error.");
+	{
+	  errormsg_with_errno("copy_data: write error.");
+	  return false;
+	}
     }
   if (ferror(in))
-    quit(errno, "copy_data: read error.");
+    {
+      errormsg_with_errno("copy_data: read error.");
+      return false;
+    }
+  else
+    {
+      return true;		// success
+    }
 }
 
 
-void
+bool
 body_insert(bool *binary,
 	    const char iname[], const char oname[],
 	    FILE *in, FILE *out,
@@ -208,19 +245,23 @@ body_insert(bool *binary,
   // If binary mode has not been forced, try text mode.
   if (*binary)
     {
-      body_insert_binary(iname, oname, in, out, lines, idkw);
-      return;
+      return body_insert_binary(iname, oname, in, out, lines, idkw);
     }
   else
     {
       // body_insert_text() takes care of rewinding the output
       // file; we may not even be able to rewind the input file.
-      if (body_insert_text(iname, oname, in, out, lines, idkw))
+      bool io_failure = false;
+      if (body_insert_text(iname, oname, in, out, lines, idkw, binary,
+			   &io_failure))
 	{
-	  return;			// Success.
+	  return true;		// Success.
 	}
       else
 	{
+	  if (io_failure)
+	    return false;
+	  
 	  // It wasn't text after all.  We may be reading from
 	  // stdin, so we can't seek on it.  But we have 
 	  // the first segment of the file written to the x-file
@@ -234,17 +275,27 @@ body_insert(bool *binary,
 	      // file and then rewind it, so that we can overwrite
 	      // it with the encoded version.
 	      FilePosSaver *fp_out = new FilePosSaver(out);
-	      copy_data(out, tmp);
-	      copy_data(in,  tmp); // encode the unread remainder of the data.
+	      bool ret = true;
 	      
-	      delete fp_out;	// rewind the file OUT.
-	      rewind(tmp);
-	      body_insert_binary("temporary file", oname, tmp, out, lines, idkw);
+	      if (copy_data(out, tmp) && copy_data(in,  tmp))
+		{
+		  delete fp_out;	// rewind the file OUT.
+		  rewind(tmp);
+		  
+		  ret = body_insert_binary("temporary file",
+					   oname, tmp, out, lines, idkw);
+		}
+	      else
+		{
+		  ret = false;
+		}
 	      fclose(tmp);
+	      return ret;
 	    }
 	  else
 	    {
-	      quit(errno, "Could not create temporary file\n");
+	      errormsg_with_errno("Could not create temporary file\n");
+	      return false;
 	    }
 	}
     }
@@ -273,21 +324,31 @@ encode_file(const char *nin, const char *nout)
 {
   FILE *fin = fopen(nin, "rb");	// binary
   if (0 == fin)
-    quit(errno, "Failed to open \"%s\" for reading.\n", nin);
+    {
+      errormsg_with_errno("Failed to open \"%s\" for reading.\n", nin);
+      return -1;
+    }
   
   FILE *fout = fopen(nout, "w"); // text
   if (0 == fout)
-    quit(errno, "Failed to open \"%s\" for writing.\n", nout);
-  
+    {
+      errormsg_with_errno("Failed to open \"%s\" for writing.\n", nout);
+      return -1;
+    }
   
   encode_stream(fin, fout);
 
   
   if (ferror(fin) || fclose_failed(fclose(fin)))
-    quit(errno, "%s: Read error.\n", nin);
+    {
+      errormsg_with_errno("%s: Read error.\n", nin);
+      return -1;
+    }
   
   if (ferror(fout) || fclose_failed(fclose(fout)))
-    quit(errno, "%s: Write error.\n", nout);
-
+    {
+      errormsg_with_errno("%s: Write error.\n", nout);
+      return -1;
+    }
   return 0;
 }

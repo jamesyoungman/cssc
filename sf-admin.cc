@@ -36,7 +36,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.21 1998/06/15 20:50:01 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.22 1998/08/13 21:35:29 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -308,6 +308,7 @@ sccs_file::create(release first_release, const char *iname,
   if (fprintf_failed(fprintf(out, "\001I 1\n")))
     return false;
 
+  bool ret = true;
   if (iname != NULL)
     {
     FILE *in;
@@ -332,16 +333,21 @@ sccs_file::create(release first_release, const char *iname,
     unsigned long int lines = 0uL;
 
     // Insert the body...
-    body_insert(&force_binary,
-		iname,		// input file name
-		name.xfile().c_str(), // output file name
-		in, out,
-		&lines, &found_id);
-
-    new_delta.inserted = lines;
-    
-    if (force_binary)
-      flags.encoded = true;	// fixup file in sccs_file::end_update()
+    if (body_insert(&force_binary,
+		     iname,		// input file name
+		     name.xfile().c_str(), // output file name
+		     in, out,
+		     &lines, &found_id))
+      {
+	new_delta.inserted = lines;
+	
+	if (force_binary)
+	  flags.encoded = true;	// fixup file in sccs_file::end_update()
+      }
+    else
+      {
+	ret = false;
+      }
     
     if (in != stdin)
       fclose(in);
@@ -359,7 +365,7 @@ sccs_file::create(release first_release, const char *iname,
   // end_update() will change it.
   end_update(out, new_delta);
 
-  return true;
+  return ret;
 }
 
 /* Local variables: */

@@ -22,19 +22,19 @@
  *
  */
 #ifndef CSSC_INC_BODYIO_H
-#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.3 1998/02/21 14:27:02 james Exp $"
+#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.4 1998/08/13 21:35:33 james Exp $"
 
 bool body_insert_text(const char iname[], const char oname[],
 		      FILE *in, FILE *out,
 		      unsigned long int *lines,
-		      bool *idkw);
+		      bool *idkw, bool *binary, bool *fail);
 
-void body_insert_binary(const char iname[], const char oname[],
+bool body_insert_binary(const char iname[], const char oname[],
 			FILE *in, FILE *out,
 			unsigned long int *lines,
 			bool *idkw);
 
-void body_insert(bool *binary,
+bool body_insert(bool *binary,
 		 const char iname[], const char oname[],
 		 FILE *in, FILE *out,
 		 unsigned long int *lines,
