@@ -36,7 +36,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.37 2001/08/29 17:17:02 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.38 2001/09/23 12:45:03 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -405,16 +405,25 @@ main(int argc, char **argv)
               }
               else
               {
-                  if (!set_file_mode(gname, 0444))
-                      retval = 1;
-                  maybe_clear_archive_bit(gname);
+		/* The g-file was created with the real uid,
+		 * and so if we want to change its mode, we 
+		 * will have to temporarily set EUID=RUID.
+		 */
+		give_up_privileges();
+		if (!set_file_mode(gname, 0444))
+		  retval = 1;
+		restore_privileges();
+		
+		maybe_clear_archive_bit(gname);
               }
             }
           
-          if (!status.success) // get failed.
+          if (retval || !status.success) // get failed.
             {
               retval = 1;
+	      give_up_privileges();
               remove(gname.c_str());
+	      restore_privileges();
               continue;
             }
           
@@ -440,8 +449,11 @@ main(int argc, char **argv)
                 {
                   // Failed to add the lock to the p-file.
                   if (real_file)
-                    remove(gname.c_str());
-
+		    {
+		      give_up_privileges();
+		      remove(gname.c_str());
+		      restore_privileges();
+		    }
                   retval = 1;   // remember the failure.
                 }
               delete pfile;
