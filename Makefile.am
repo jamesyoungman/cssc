@@ -57,11 +57,13 @@ unget_SOURCES = unget.cc pfile.cc pf-del.cc \
 prt_SOURCES = prt.cc sf-prt.cc \
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
 prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc sf-get.cc \
+	bodyio.cc encoding.cc \
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
 
 
 get_SOURCES = get.cc pf-add.cc pfile.cc sf-chkid.cc canonify.cc sf-kw.cc \
 	sf-get.cc sf-get2.cc sf-get3.cc rl-merge.cc \
+	bodyio.cc encoding.cc \
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES)
 
 rmdel_SOURCES = rmdel.cc sf-rmdel.cc \
@@ -72,13 +74,15 @@ cdc_SOURCES = cdc.cc sf-cdc.cc \
 	$(moddelta_SOURCES) \
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
 
-admin_SOURCES = admin.cc sf-admin.cc bodyio.cc \
-	rl-merge.cc encoding.cc \
+admin_SOURCES = admin.cc sf-admin.cc \
+	rl-merge.cc \
+	bodyio.cc encoding.cc \
 	$(moddelta_SOURCES) $(newdelta_SOURCES)\
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
 
 delta_SOURCES = delta.cc sf-delta.cc \
 	pf-del.cc pfile.cc pipe.cc sf-get.cc sf-get3.cc \
+	bodyio.cc encoding.cc \
 	$(moddelta_SOURCES) $(newdelta_SOURCES)\
 	$(common_SOURCES) $(sname_SOURCES) $(sfile_SOURCES) $(mod_SOURCES)
 
