@@ -1,34 +1,41 @@
-#!/bin/sh
-# Make directory hierarchy. 
-# Written by Noah Friedman <friedman@prep.ai.mit.edu>
-# Public domain.
-# $Id: mkinstalldirs,v 1.1 1997/10/29 23:01:43 james Stab $
+#! /bin/sh
+# mkinstalldirs --- make directory hierarchy
+# Author: Noah Friedman <friedman@prep.ai.mit.edu>
+# Created: 1993-05-16
+# Public domain
 
-defaultIFS=' 	
-'
-IFS="${IFS-${defaultIFS}}"
+# $Automake: mkinstalldirs,v 1.13 1999/01/05 03:18:55 bje Exp $
+# $Id: mkinstalldirs,v 1.2 2000/12/03 21:02:40 james_youngman Exp $
 
-for file in ${1+"$@"} ; do 
-   oIFS="${IFS}"
-   # Some sh's can't handle IFS=/ for some reason.
-   IFS='%'
-   set - `echo ${file} | sed -e 's@/@%@g' -e 's@^%@/@'`
-   IFS="${oIFS}"
-   test ".${1}" = "." && shift
+errstatus=0
 
-   pathcomp=''
+for file
+do
+   set fnord `echo ":$file" | sed -ne 's/^:\//#/;s/^://;s/\// /g;s/^#/\//;p'`
+   shift
 
-   while test $# -ne 0 ; do
-     pathcomp="${pathcomp}${1}"
-     shift
+   pathcomp=
+   for d
+   do
+     pathcomp="$pathcomp$d"
+     case "$pathcomp" in
+       -* ) pathcomp=./$pathcomp ;;
+     esac
 
-     if test ! -d "${pathcomp}"; then
-        echo "mkdir $pathcomp" 1>&2
-        mkdir "${pathcomp}"
+     if test ! -d "$pathcomp"; then
+        echo "mkdir $pathcomp"
+
+        mkdir "$pathcomp" || lasterr=$?
+
+        if test ! -d "$pathcomp"; then
+  	  errstatus=$lasterr
+        fi
      fi
 
-     pathcomp="${pathcomp}/"
+     pathcomp="$pathcomp/"
    done
 done
 
-# eof
+exit $errstatus
+
+# mkinstalldirs ends here
