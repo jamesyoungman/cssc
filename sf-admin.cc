@@ -37,7 +37,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.12 1997/11/09 13:57:46 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.13 1997/11/11 23:23:58 james Exp $";
 #endif
 
 /* Changes the file comment, flags, and/or the user authorization list
@@ -233,8 +233,10 @@ sccs_file::create(release first_release, const char *iname,
   sccs_date now = sccs_date::now();
   if (!suppress_comments && comments.length() == 0)
     {
-      mystring one("date and time created ", now.as_string()),
-	two(" by ", get_user_name());
+      // The two casts to (char*) on the following line are required
+      // by GCC 2.6.3, according to Dave Bodenstab <imdave@mcs.net>.
+      mystring one("date and time created ", (char*)now.as_string()),
+	two(" by ", (char*)get_user_name());
       mystring it(one, two);
       comments.add(it);
     }
