@@ -5,12 +5,6 @@
 	  difference.  There may be security implications here for
 	  bsd/sccs.c (see try_to_exec).
 
-1998-05-25  James Youngman  <jay@gnu.org>
-
-	* file.cc: Consider using getpwuid(getuid()) in preference
-	  to getlogin().  Perhaps also remove 
-	  CONFIG_DECLARE_GET{WUID,LOGIN} from cssc.h.
-
 1998-04-08  James Youngman  <jay@gnu.org>
 
 	* Find out if SCO's "unget" produces any output.  We currently
