@@ -6,7 +6,7 @@ URL: http://www.free-lunch.demon.co.uk/CSSC/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: James Youngman <jay@gnu.org>
 Group: Development/Version Control
-Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-@VERSION@.tar.gz
+Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-%{PACKAGE_VERSION}.tar.gz
 Prereq: /sbin/install-info
 Requires: /usr/bin/diff
 
@@ -19,11 +19,14 @@ CSSC is a clone for the traditional Unix version control suite SCCS.
 It aims for near-total compatibility with SCCS.  CSSC stands for
 "Compatibly Stupid Source Control".  
 
-
 %prep
 %setup
 
 %build
+if test x"$RPM_BUILD_ROOT" != x/
+then
+    exit 1
+fi
 rm -rf $RPM_BUILD_ROOT
 rm -f docs/cssc.info
 ./configure --prefix=/usr
@@ -33,13 +36,15 @@ make
 make prefix=$RPM_BUILD_ROOT/usr install-strip
 # [ -L /usr/sccs ] && rm -f /usr/sccs
 ln -s libexec/cssc $RPM_BUILD_ROOT/usr/sccs
+cd $RPM_BUILD_ROOT/usr/bin 
+ln -s ../libexec/cssc/* .
 
 %post
 /sbin/install-info /usr/info/cssc.info /usr/info/dir
 
 %preun
 if [ $1 = 0 ]; then
-	/sbin/install-info --delete /usr/info/cssc.info /usr/info/dir
+    /sbin/install-info --delete /usr/info/cssc.info /usr/info/dir
 fi
 
 %clean
@@ -48,6 +53,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
+* Mon Jun 15 1998 Aron Griffis <agriffis@coat.com>
+Added symbolic links in /usr/bin to call programs directly
 
 * Wed Jun 10 1998 jay@gnu.org <James Youngman>
 Added sccs.1 to the list of files.
