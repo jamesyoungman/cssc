@@ -17,15 +17,23 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
- * placed in the Public Domain.
- *
- *
- * Functions for cleaning up and quitting.
- *
  */
+
+/* This class exists to ensure that the standard file descriptors are
+ * not closed.  That would mean that we could open an ordinary file
+ * and then corrupt it since we don't realise that output to stdout or
+ * stderr will go to it.
+ *
+ *
+ * If any of the file descriptors 0, 1, 2 are not open, attach them
+ * to /dev/null so that we don't fopen() a file, get a low numbered
+ * file descriptor, and accidentally corrupt our file with a printf()
+ * to stdout or stderr, or trying to read from stdin (hence changing
+ * the file pointer on our file too).
+ */
+
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fdclosed.cc,v 1.1 1998/06/13 23:08:19 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fdclosed.cc,v 1.2 1998/06/13 23:13:43 james Exp $";
 #endif
 
 #include "cssc.h"
@@ -36,20 +44,11 @@ static const char rcs_id[] = "CSSC $Id: fdclosed.cc,v 1.1 1998/06/13 23:08:19 ja
 #inlcude <unistd.h>
 #endif
 
-#ifdef STDC_HEADERS
-#include <stdarg.h>
-#endif
-
 #ifdef HAVE_STDIO_H
-#include <stdio.h>
+#include <stdio.h>		/* perror() */
 #endif
 
 
-/* This class exists to ensure that the standard file descriptors are
- * not closed.  That would mean that we could open an ordinary file
- * and then corrupt it since we don't realise that output to stdout or
- * stderr will go to it.
- */
 class SafeFdCheck
 {
 public:
@@ -59,19 +58,18 @@ public:
 
 /* We want to emit an error message.  If stderr has been closed, this
  * is difficult.  We just send the output to the closed file
- * descriptor.
+ * descriptor (using perror()).
  *
  * We do this becauase (1) there isn't really a better option, and
  * (2) because the output will still show up in the strace(8) output
  * if the user really needs to track down the problem.
+ *
+ * If you have an idea for a better way of implementing it, please
+ * feel free to do so; but remember, it needs to work when we just
+ * failed to open() /dev/null.  So opening another file (e.g. /dev/log
+ * with syslog) isn't going to work.
  */
 
-/* If any of the file descriptors 0, 1, 2 are not open, attach them
- * to /dev/null so that we don't fopen() a file, get a low numbered
- * file descriptor, and accidentally corrupt our file with a printf()
- * to stdout or stderr, or trying to read from stdin (hence changing
- * the file pointer on our file too).
- */
 SafeFdCheck::SafeFdCheck()
 {
   int i, fd;
