@@ -7,8 +7,11 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.6 1998/03/09 23:25:00 james Exp $
+# $Id: sccsdiff.sh.in,v 1.7 1998/03/10 00:22:00 james Stab $
 # LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.7  1998/03/10 00:22:00  james
+# LOG   Support for filenames containing spaces.
+# LOG
 # LOG   Revision 1.6  1998/03/09 23:25:00  james
 # LOG   Bug report from Richard Polton: IRIX's pr(1) requires a space between
 # LOG   the "-h" and its argument.
@@ -45,7 +48,7 @@ then
     fi
 fi
 
-version='$Revision: 1.6 $ $State: Exp $'
+version='$Revision: 1.7 $ $State: Stab $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
@@ -66,7 +69,7 @@ do
 		exit 0
 		;;
 	    --version)
-		echo $version
+		echo "$version"
 		exit 0
 		;;
 	    -p) use_pr=true 
@@ -125,55 +128,55 @@ first_sid=`echo   $first_sid | sed -e 's/^-r//' `
 second_sid=`echo $second_sid | sed -e 's/^-r//' `
 
 getprefix=/tmp/get.$$.
-g1=${getprefix}${first_sid}
-g2=${getprefix}${second_sid}
+g1="${getprefix}${first_sid}"
+g2="${getprefix}${second_sid}"
 dfile=${getprefix}d${first_sid}${second_sid}
 
 while test $# -gt 0
 do
-    rm -f $g1 $g2 $dfile
-    sccsfile=$1
+    rm -f "$g1" "$g2" "$dfile"
+    sccsfile="$1"
     shift 
 
     header="$sccsfile: $first_sid vs. $second_sid"
 
-    ${get:-get} -r$first_sid -s -k -G${g1} ${sccsfile} || {
+    ${get:-get} -r$first_sid -s -k "-G${g1}" "${sccsfile}" || {
 	exec >&2
-	echo Failed to get version $first_sid from $sccsfile
+	echo "Failed to get version $first_sid from $sccsfile"
 	exit 1
     }
-    ${get:-get} -r$second_sid -s -k -G${g2} ${sccsfile} || {
-	rm -f $g1
+    ${get:-get} -r$second_sid -s -k "-G${g2}" "${sccsfile}" || {
+	rm -f "$g1"
 	exec >&2
-	echo Failed to get version $second_sid from $sccsfile
+	echo "Failed to get version $second_sid from $sccsfile"
 	exit 1
     }
     # in case noclobber is set...
-    rm -f $dfile
+    rm -f "$dfile"
 
     # Ignore return value of diff since it just tells us
     # if the two files are different.
-    $diff $diff_options $g1 $g2 > $dfile
-    if test -f $dfile 
+    "$diff" $diff_options "$g1" "$g2" > "$dfile"
+    if test -f "$dfile" 
     then				  # Output file exists.
-        if test -s $dfile 
+        if test -s "$dfile" 
         then				  # Output file is not empty.
 	    if $use_pr
 	    then
 		$pr -h "$header"        < $dfile  
 	    else
 		echo $header
-		cat $dfile
+		cat "$dfile"
 	    fi
         else				  # Output file is empty.
 	    echo No differences.
 	fi
     else				  # No output file at all!
-        echo $diff produced no output file. >&2
+        echo "$diff produced no output file." >&2
         exit 2
     fi
 done					  # Loop over all named SCCS files.
-rm -f $g1 $g2 $dfile
+rm -f "$g1" "$g2" "$dfile"
 exit 0
 
 # Local Variables:
