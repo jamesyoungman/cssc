@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.26 1998/03/15 17:16:50 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.27 1998/05/30 08:54:01 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -187,15 +187,21 @@ sccs_file::find_next_sid(sid requested, sid got,
 	&& flags.ceiling.valid() && release(requested) > flags.ceiling;
 
       // have we collided with an existing SID?
-      const bool branch_again = find_delta(next) && !requested.partial_sid();
-
+      bool branch_again;
+      const delta *pnext = find_any_delta(next);
+      if (pnext && !pnext->removed() && !requested.partial_sid())
+	branch_again = true;
+      else
+	branch_again = false;
+	
       // If we have the revision sequence 1.1 -> 1.2 -> 2.1, then we
       // get 1.2 for editing, we must create a branch (1.2.1.1),
-      // because we can't create a 1.3 (as 2.1 alreasy exists).  If
+      // because we can't create a 1.3 (as 2.1 already exists).  If
       // the release number of the gotten SID is not the highest, we
       // have to branch.  Otherwise I think the normal anti-collision
       // rules take care of it.
-      const bool not_trunk_top = got < highest_delta_release();
+      const bool not_trunk_top =
+	release(got) < release(highest_delta_release());
       
       if (too_high || branch_again || not_trunk_top)
 	{

@@ -121,6 +121,7 @@ public:
   /* Forwarding functions for the delta table.
    */
   const delta *find_delta(sid id) const; 
+  const delta *find_any_delta(sid id) const; 
   delta *find_delta(sid id); 
   seq_no highest_delta_seqno() const;
   sid highest_delta_release() const;

@@ -194,6 +194,26 @@ find(sid id) const
   return NULL;
 }
 
+/* Finds a delta in the delta table by its SID.
+ * Removed deltas are counted.
+ */
+
+delta const * cssc_delta_table::
+find_any(sid id) const
+{
+  ASSERT(0 != this);
+  const_delta_iterator iter(this);
+  
+  while (iter.next(1))
+    {
+      if (iter->id == id)
+	{
+	  return iter.operator->();
+	}
+    }
+  return NULL;
+}
+
 // This non-const variety is used by sf-cdc.cc.
 delta * cssc_delta_table::
 find(sid id)

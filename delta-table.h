@@ -21,13 +21,13 @@
  *
  * Definition of the classes cssc_delta_table and delta_iterator.
  *
- * $Id: delta-table.h,v 1.1 1997/11/30 21:08:08 james Exp $
+ * $Id: delta-table.h,v 1.2 1998/05/30 08:53:59 james Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_TABLE_H
-#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.1 1997/11/30 21:08:08 james Exp $"
+#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.2 1998/05/30 08:53:59 james Exp $"
 
 #include "delta.h"
 
@@ -57,6 +57,7 @@ public:
 
   const delta & delta_at_seq(seq_no seq);
   const delta *find(sid id) const; 
+  const delta *find_any(sid id) const; // includes removed deltas.
   delta *find(sid id); 
 
   seq_no highest_seqno() const { return high_seqno; }
