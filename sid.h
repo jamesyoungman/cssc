@@ -39,7 +39,7 @@ class sid {
 	}
 
 public:
-	sid(): rel(-1) {}
+	sid(): rel(-1), level(0), branch(0), sequence(0) {}
 	sid(const char *s);
 	sid(release);		/* Defined below */
 
@@ -114,6 +114,13 @@ public:
 	next_branch() {
 		branch++;
 		sequence = 1;
+		return *this;
+	}
+
+	const sid &
+	next_level() {
+		++level;
+		branch = sequence = 0;
 		return *this;
 	}
 
