@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.47 2002/03/10 17:54:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.48 2002/03/25 00:07:09 james_youngman Exp $";
 #endif
 
 
@@ -413,7 +413,7 @@ sccs_file::read_delta() {
 		/* check_arg(); */
 		if (bufchar(2) != ' ')
 		  {
-		    saw_unknown_feature("Special comment intro %c%c",
+		    saw_unknown_feature("Unknown special comment intro %c%c",
 					c, bufchar(2));
 		  }
 		tmp.comments.add(plinebuf->c_str() + 3);
@@ -966,7 +966,7 @@ void sccs_file::saw_unknown_feature(const char *fmt, ...)
     {
     case READ:
     case FIX_CHECKSUM:
-      v_errormsg(fmt, ap);
+      v_unknown_feature_warning(fmt, ap);
       break;
       
     case UPDATE:
