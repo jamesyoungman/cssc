@@ -69,14 +69,10 @@ inline void restore_privileges() {}
 #endif
 
 #ifndef HAVE_REMOVE
-#undef remove
-#define remove LIDENT(remove)
 int remove(const char *name);
 #endif
 
 #ifndef HAVE_RENAME
-#undef rename
-#define rename LIDENT(rename)
 int rename(const char *from, const char *to);
 #endif
 
