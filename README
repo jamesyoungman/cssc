@@ -1,6 +1,5 @@
-This is the README file for the package CSSC, a workalike for the
-source code control system SCCS.  It is based on the MySC package by
-Ross Ridge.
+This is the README file for GNU CSSC, a workalike for the source code
+control system SCCS.  It is based on the MySC package by Ross Ridge.
 
 CSSC is currently under development so expect problems with compiling
 the package on older machines and perhaps even incorrect operation.
@@ -16,8 +15,7 @@ see docs/FIXED.
  make
 
 2.	Testing 
- cd work/tests
- if make all-tests 2>&1 | tee make.log 
+ if make check 2>&1 | tee make.log 
  then
 	uname -a | mail -s "CSSC success" jay@gnu.org
  else
@@ -40,12 +38,13 @@ see docs/FIXED.
 ==============================================================================
 
 SCCS commands implemented this package are: admin, cdc, delta, get,
-prs, rmdel, sact, unget and what.  Not all options and capabilities of
-the commands have been implemented yet, and the comb, val and vc
-commands are not provided at all.  Features soon to be provided but
-not yet available are the BSD sccs-driver command "sccs", and a Bourne
-shell script for converting SCCS files to RCS files (a csh script
-exists for this purpose [sccs2rcs.csh] but not everybody has csh).
+prs, prt, sccsdiff, rmdel, sact, unget and what.  Not all options and
+capabilities of the commands have been implemented yet, and the comb,
+val and vc commands are not provided at all.  Features soon to be
+provided but not yet available are the BSD sccs-driver command "sccs",
+and a Bourne shell script for converting SCCS files to RCS files (a
+csh script exists for this purpose [sccs2rcs.csh] but not everybody
+has csh).
 
 The utilities use traditional getopt-like command-line argument
 parsing which differs from how the standard SCCS commands parse
@@ -65,10 +64,10 @@ upper case (eg. use "delta -Y" instead of "delta -y").
 
 Unimplemented features include support for binary files, consistency
 checking (admin -h), ignored deltas (delta -g), printing the
-differences after a delta (delta -p), l-files (get -l), getting the
-most recent delta of a release (get -t), and getting a delta by
-sequence number (get -a).  Some features like including and excluding
-deltas (get -i -x) have been implemented but not extensively tested.
+differences after a delta (delta -p), l-files (get -l), and getting a
+delta by sequence number (get -a).  Some features like including and
+excluding deltas (get -i -x) have been implemented but not extensively
+tested.
 
 See the file INSTALL for information on how to compile this package.
 Send any questions or bug reports by e-mail to the current maintainer,
