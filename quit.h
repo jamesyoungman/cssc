@@ -4,7 +4,7 @@
  * By Ross Ridge
  * Public Domain
  *
- * @(#) MySC quit.h 1.1 93/11/09 17:17:49
+ * @(#) CSSC quit.h 1.1 93/11/09 17:17:49
  *
  */
 
