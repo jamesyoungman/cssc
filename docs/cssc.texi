@@ -256,10 +256,11 @@ Initialize the @sc{sccs} file with the contents of the file @var{foo}.
 If no argument is given, read from standard input.  This implies the
 @samp{-n} option.
 
-@item -l@var{rel1},@var{rel2},...
-Unlock the specified releases.   If @samp{a} is specified as the
-release, that denotes ``all releases''.  Untested.
-@c TODO: Write the test cases.
+@c XXX: do people actually use this?
+@c @item -l@var{rel1},@var{rel2},...
+@c Unlock the specified releases.   If @samp{a} is specified as the
+@c release, that denotes ``all releases''.  Untested.
+@c @c TODO: Write the test cases.
 
 @item -m@var{MR-list}
 When initializing a file, add the specified list of @sc{mr} numbers
@@ -577,8 +578,7 @@ with which you are working is numbered 2677, for example.
 If this option is given, the edited file is not deleted once processing
 has succeeded.  The edited file is referred to as the ``g-file'', since
 it is the file which was previously ``gotten'' by the @code{get}
-command.  Untested.
-@c TODO: Write the test cases.
+command.
 
 @item -p
 Display the differences between the old and new versions of the file

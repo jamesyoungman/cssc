@@ -233,7 +233,8 @@ public:
   int check_mrs(list<mystring> mrs);
 
   bool add_delta(mystring gname, sccs_pfile &pfile,
-		 list<mystring> mrs, list<mystring> comments);
+		 list<mystring> mrs, list<mystring> comments,
+		 bool display_diff_output);
 
   /* sccsfile.cc */
   void set_mr_checker_flag(const char *s);

@@ -37,7 +37,7 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.23 1998/10/20 17:27:22 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.24 1999/03/14 14:58:21 james Exp $";
 
 void
 usage() {
@@ -53,17 +53,17 @@ delta_main(int argc, char **argv)
   int c;
   sid rid = NULL;		/* -r */
   int silent = 0;		/* -s */
-  int keep_gfile = 0;	/* -n */
+  int keep_gfile = 0;		/* -n */
 #if 0
-  sid_list ignore;	/* -g */
+  sid_list ignore;		/* -g */
 #endif
-  mystring mrs;		/* -m -M */
-  mystring comments;	/* -y -Y */
-  int suppress_mrs = 0;	// if -m given with no arg.
-  int got_mrs = 0;	// if no need to prompt for MRs.
-  int suppress_comments = 0; // if -y given with no arg.
+  mystring mrs;			/* -m -M */
+  mystring comments;		/* -y -Y */
+  int suppress_mrs = 0;		// if -m given with no arg.
+  int got_mrs = 0;		// if no need to prompt for MRs.
+  int suppress_comments = 0;	// if -y given with no arg.
   int got_comments = 0;
-
+  bool display_diff_output = false; // -p
   if (argc > 0) {
     set_prg_name(argv[0]);
   } else {
@@ -93,6 +93,10 @@ delta_main(int argc, char **argv)
 
     case 'n':
       keep_gfile = 1;
+      break;
+
+    case 'p':
+      display_diff_output = true;
       break;
 
     case 'm':
@@ -252,7 +256,8 @@ delta_main(int argc, char **argv)
 		    
 	      mystring gname = name.gfile();
 		    
-	      if (!file.add_delta(gname, pfile, mr_list, comment_list))
+	      if (!file.add_delta(gname, pfile, mr_list, comment_list,
+				  display_diff_output))
 		{
 		  retval = 1;
 		  // if delta failed, don't delete the g-file.

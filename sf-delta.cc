@@ -42,48 +42,64 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.30 1999/03/13 11:57:24 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.31 1999/03/14 14:58:21 james Exp $";
 #endif
 
 class diff_state
 {
 public:
-	enum state { START, NOCHANGE, DELETE, INSERT, END };
-
+  enum state { START, NOCHANGE, DELETE, INSERT, END };
+  
 private:
-	enum state _state;
-	int in_lineno, out_lineno;
-	int lines_left;
-	int change_left;
+  enum state _state;
+  int in_lineno, out_lineno;
+  int lines_left;
+  int change_left;
+  bool echo_diff_output;
+  
+  FILE *in;
+  cssc_linebuf linebuf;
+  
+  NORETURN diff_output_corrupt() POSTDECL_NORETURN;
+  NORETURN diff_output_corrupt(const char *msg) POSTDECL_NORETURN;
+  
+  void next_state();
+  int read_line()
+    {
+      int read_ret = linebuf.read_line(in);
 
-	FILE *in;
-	cssc_linebuf linebuf;
-
-	NORETURN diff_output_corrupt() POSTDECL_NORETURN;
-	NORETURN diff_output_corrupt(const char *msg) POSTDECL_NORETURN;
-
-	void next_state();
-	int read_line() { return linebuf.read_line(in); }
-
+      if (echo_diff_output)
+	{
+	  // If and only if we read in a new line, echo it.
+	  if (0 == read_ret)
+	    {
+	      printf("%s", linebuf.c_str());
+	    }
+	}
+      return read_ret;
+    }
+  
 public:
-  diff_state(FILE *f)
+  diff_state(FILE *f, bool echo)
     : _state(START), 
       in_lineno(0), out_lineno(0),
-      lines_left(0), change_left(0), in(f)
+      lines_left(0), change_left(0), in(f),
+      echo_diff_output(echo)
     {
     }
-
-	enum state process(FILE *out, seq_no seq);
-
-	const char *
-	get_insert_line() {
-		ASSERT(_state == INSERT);
-		ASSERT(linebuf[0] == '>' && linebuf[1] == ' ');
-		return linebuf + 2;
-	}
-
-	int in_line() { return in_lineno; }
-	int out_line() { return out_lineno; }
+  
+  enum state process(FILE *out, seq_no seq);
+  
+  const char *
+  get_insert_line()
+    {
+      ASSERT(_state == INSERT);
+      ASSERT(linebuf[0] == '>' && linebuf[1] == ' ');
+      return linebuf + 2;
+    }
+  
+  int in_line() { return in_lineno; }
+  int out_line() { return out_lineno; }
 };
 
 
@@ -384,7 +400,8 @@ public:
 
 bool
 sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
-		     list<mystring> mrs, list<mystring> comments)
+		     list<mystring> mrs, list<mystring> comments,
+		     bool display_diff_output)
 {
   ASSERT(mode == UPDATE);
 
@@ -466,7 +483,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   FILE *diff_out = differ.start();
 
   
-  class diff_state dstate(diff_out);
+  class diff_state dstate(diff_out, display_diff_output);
 
   
   // The delta operation consists of:-
@@ -559,6 +576,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   new_delta.unchanged = 0;
 
 	
+  new_delta.id.print(stdout);
+  printf("\n");
+  
   // Begin the update by writing out the new delta.
   // This also writes out the information for all the
   // earlier deltas.
@@ -766,9 +786,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   
   end_update(out, new_delta);
       
-  new_delta.id.print(stdout);
-  printf("\n"
-	 "%lu inserted\n%lu deleted\n%lu unchanged\n",
+  printf("%lu inserted\n%lu deleted\n%lu unchanged\n",
 	 new_delta.inserted, new_delta.deleted, new_delta.unchanged);
 
   if (pfile.update())

@@ -1,7 +1,224 @@
+1999-03-13  James Youngman  <jay@gnu.org>
+
+	* configure.in: Bumped to 0.09alpha.pl3.
+
+	* NEWS: Added NEWS remark regarding the removal of AC_C_CONST.
+
+	* tests/admin/r-option.sh: val has now been implemented.
+
+	* docs/TODO, docs/cssc.texi, docs/missing.txt, sccsfile.cc, sccsfile.h, sf-admin.cc, sf-delta.cc, what.cc, NEWS, admin.cc, configure.in, file.cc, get.cc, pfile.cc, quit.cc, run.cc:
+	Allow "admin -ifoo -r1.2.2.1 s.foo", and make it work correctly.
+	Also added tests for the -r option.
+
+	* tests/admin/init-mr.sh: Corrected an error message.
+
+1998-12-12  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi:
+	Warn that "admin -z" may silently fix errors and get it wrong.
+
+	* val.cc, sf-val.cc, sf-write.cc, quit.cc, quit.h, sccsfile.cc, except.h, file.cc, get.cc, bodyio.cc, delta-table.cc:
+	Enhancements to "val".
+
+1998-12-10  James Youngman  <jay@gnu.org>
+
+	* configure.in: Went to 0.09alpha.pl2.
+
+1998-12-09  James Youngman  <jay@gnu.org>
+
+	* NEWS: Added news for CSSC-0.09alpha-pl2.
+
+	* sccsfile.h:
+	Added declarations of functions implemented in sf-val.cc and also a
+	forward declaration of class delta_iterator.
+
+	* what.cc: Duh.  getchar() returns int, remember?
+
+	* sf-prt.cc:
+	If a (mystring*) flag in the SCCS file is not NULL, then the flag must
+	be set even if the length of the string is zero; consider lines like
+	"^Af v" rather than "^A f v ".
+
+	* sid.h, sid.cc: Implemented sid::as_string().
+
+	* sccsfile.cc:
+	We have to be careful to not crash on input lines like "^Af v".  That
+	is, bufchar(4) may well be zero for a flag line!  Thanks to William
+	W. Austin <bill@baustin.alph.att.com> for this diagnosis.
+
+	* sf-val.cc:
+	Traverse the delta table checking some things.  Not finished yet.
+
+1998-11-29  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi, docs/TODO, val.cc, sf-val.cc, sccsfile.h, Makefile.am, NEWS:
+	Initial implementation of "val".
+
+	* sf-admin.cc: Make it possible to delete the "m" flag.
+
+	* valcodes.h: Return codes for "val".
+
+	* docs/CREDITS: Fixed typo.
+
+1998-11-21  James Youngman  <jay@gnu.org>
+
+	* admin.cc: Ensure that if we specified -h, we do *nothing* else.
+
+	* tests/admin/admin-hz.sh:
+	Make sure that if we specify -h and -z, we do not update the checksum.
+
+	* tests/admin/admin-hz.sh:
+	Added tests for the -h and the -z options of admin.
+
+	* docs/cssc.texi: Elaborated on comments about "admin -z".
+
+	* sf-get.cc:
+	For get(), ensure that the file was not opened with the mode
+	FIX_CHECKSUM, because that doesn't make sense.
+
+	* sccsfile.cc:
+	Emit helpful message if we fail to open the s-file.   If we are doing
+	"admin -z", don't complain if the checsum was previously wrong.
+
+	* sccsfile.h: Added new open mode FIX_CHECKSUM.
+
+	* admin.cc: Better operation of the -z (reset checksum) option.
+
+	* sf-write.cc:
+	Rethought update_checksum().  It now works even though the s-file is
+	mode 444 (which is what it should be).
+
+	* file.cc: Eliminated compiler warning.
+
+1998-11-13  James Youngman  <jay@gnu.org>
+
+	* NEWS: Added changes for 0.09alpha.pl1.
+
+	* configure.in: Bumped up the patchlevel.
+
+	* docs/cssc.texi: Documented sccsdiff.
+
+	* run.cc: Call errormsg_with_errno() correctly.
+
+1998-11-12  James Youngman  <jay@gnu.org>
+
+	* cdc.cc: Reformatted the error message that you get when trying to get
+	arguments from stdin without also using the -y option.
+
+1998-11-01  James Youngman  <jay@gnu.org>
+
+	* docs/FIXED: Added fixes from Dick Streefland.
+
+	* testutils/Makefile.am: Added the "yammer" program.
+
+	* docs/Platforms: Also tested on Red Hat 5.1.
+
+	* docs/CREDITS: Added credit to Greg Woods.
+
+	* tests/binary/seeking.sh: Avoid requiring the "nl" utility.
+
+	* testutils/yammer.c:
+	This program is not installed as part of CSSC.  It's just used by
+	the test suite.  It takes two arguments, the first being a repeat
+	count, and the second being a string that should be repeated that
+	many times.  For example, "yammer 2 blah" should emit
+	  1 blah
+	  2 blah
+
+	The program was designed to eliminate the requirement to do
+	  yes blah | nl | head -2
+	because some systems, for example NetBSD/SPARC 1.3.2, lack the "nl"
+	utility.
+
+	* run.cc:
+	When calling errormsg_with_errno(), actually pass errno as the first argument.
+
+1998-10-29  James Youngman  <jay@gnu.org>
+
+	* sccsfile.cc:
+	Added toleration for some features that Larry is putting into
+	BitKeeper.
+
+	* auxfiles/Makefile.am: Added newline at the end of the file.
+
+	* show-disp.sh:
+	Don't use the --lint --posix for awk, because only GNU awk likes them.
+
+1998-10-21  James Youngman  <jay@gnu.org>
+
+	* file.cc:
+	Use stat(2) rather than fstat(2), so that the file locking does indeed
+	work over NFS.
+
+1998-10-20  James Youngman  <jay@gnu.org>
+
+	* auxfiles/Makefile.am:
+	Ensure that CSSC.spec and CSSC.spec.in both get distributed.
+
+	* tests/get/no-sfile.sh:
+	Added no-sfile.sh, which tests for the existence of a bug pointed out
+	by Dick Streefland <dick_streefland@tasking.com> (we core dump when we
+	should exit with status 1, if no SCCS file is specified for some
+	tools)
+
+	* unget.cc, sf-prs.cc, sf-get2.cc, sact.cc, rmdel.cc, run.cc, prt.cc, prs.cc, get.cc, fileiter.cc, fileiter.h, delta.cc, cdc.cc, admin.cc:
+	Patches from Dick Streefland <dick_streefland@tasking.com>:-
+	> I'm sending you three patches for CSSC-0.09alpha.pl0. Patch #1 fixes
+	> two prototype mismatches. Patch #2 makes sure that "get" and "prs"
+	> return a proper exit status in the case of an output file error
+	> (e.g.  disk full). Patch #3 fixes the problem that when you invoke
+	> one of the tools without an SCCS file, it will abort with a core
+	> dump. Abort() is called because an exception is raised that is not
+	> handled. I removed the exception, and added explicit tests in each
+	> tool.
+
+1998-09-07  James Youngman  <jay@gnu.org>
+
+	* file.h: Added fcreate() flag enum for atomic locking over NFS.
+
+	* file.cc:
+	Made the lockfile create more robustly atomic over NFS by using the
+	lock-then-stat approach.  Fall back on using the regular open() with
+	O_EXCL if it look slike the underlying filesystem does not support
+	hard links.
+
+1998-09-06  James Youngman  <jay@gnu.org>
+
+	* sf-delta.cc, pf-del.cc, bodyio.cc:
+	Use fcreate() to create files for writing, rather than fopen().
+	This allows us to use open(.., O_CREAT|O_EXCL).
+
+	* get.cc:
+	If we fail to add the lock to the p-file, delete the gotten editable file.
+
+	* docs/cssc.texi:
+	Documented the various prefixes used for files, temporary and otherwise.
+
+	* tests/get/writable.sh:
+	Make sure "get -k" produces a writable g-file and "get" without -k
+	does not.
+
+	* tests/admin/i-option.sh, sf-write.cc, sf-delta.cc, sccsfile.h, sccsfile.cc, pf-del.cc, get.cc, pf-add.cc, file.cc, bodyio.cc, bodyio.h:
+	Take special care to close and delete temporary files if an exception
+	is thrown.
+
+	* README: Typo.
+
+1998-09-05  James Youngman  <jay@gnu.org>
+
+	* configure.in:
+	Generate auxfiles/CSSC.spec from auxfiles/CSSC.spec.in, to get the
+	version number substituted.
+
+	* auxfiles/CSSC.spec.in, auxfiles/CSSC.spec:
+	Generate CSSC.spec from CSSC.spec.in, using substitution of @VERSION@.
+
 1998-09-04  James Youngman  <jay@gnu.org>
 
-	* Released 0.09alpha.pl0.
-	
+	* NEWS: UPdated for 0.09alpha.pl0.
+
+	* ChangeLog: Added in the changes for 0.09alpha.pl0.
+
 	* README: Fixed typo.
 
 1998-09-03  James Youngman  <jay@gnu.org>
