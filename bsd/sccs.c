@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.36 2003/12/09 18:51:39 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.37 2003/12/09 23:46:58 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -2139,10 +2139,14 @@ dodiff (char * getv[], const char *gfile)
       if (close (pipev[1]) < 0 || close (0) < 0 ||
           dup (pipev[0]) != 0 || close (pipev[0]) < 0)
         {
-          syserr ("dodiff: magic failed");
+          syserr ("dodiff: failed to set up the 'diff' end of the pipe");
           exit (CSSC_EX_OSERR);
         }
-      command (&getv[1], FALSE, "-diff:elsfhbCu");
+      /* The aBdHpqsvy options are (usually) specific to GNU diff. */
+      /* GNU diff supports -v (show version) but I don't think
+       *  this is useful.  Nevertheless we pass it through.
+       */
+      command (&getv[1], FALSE, "-diff:elsfhbCunaBdHpqsvy");
     }
   return rval;
 }
