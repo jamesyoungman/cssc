@@ -35,6 +35,8 @@
  */
 
 #define _BSD_SOURCE
+#define DEBUG (1)
+
 
 #ifndef lint
 static char copyright[] =
@@ -82,7 +84,7 @@ static char copyright[] =
 #include <sys/dir.h>		/* TODO: replace with autoconf mechanism. */
 #include <signal.h>		/* TODO: consider using sigaction(). */
 #include <errno.h>		/* TODO: same as in parent directory. */
-#include <pwd.h>
+#include <pwd.h>		/* getpwuid() */
 
 #include <sysexits.h>		/* TODO: we should probably define our own. */
 
@@ -202,10 +204,10 @@ typedef char	bool;
 
 struct sccsprog
 {
-	char	*sccsname;	/* name of SCCS routine */
-	short	sccsoper;	/* opcode, see below */
-	short	sccsflags;	/* flags, see below */
-	char	*sccspath;	/* pathname of binary implementing */
+  const char *sccsname;		/* name of SCCS routine */
+  short	      sccsoper;		/* opcode, see below */
+  short	      sccsflags;	/* flags, see below */
+  const char *sccspath;		/* pathname of binary implementing */
 };
 
 /* values for sccsoper */
@@ -238,7 +240,7 @@ struct sccsprog
 **	macro definition, or the arg to a sub-algorithm.
 */
 
-struct sccsprog SccsProg[] = {
+const struct sccsprog SccsProg[] = {
 { "admin",	PROG,	REALUSER,	  _PATH_SCCSADMIN  },
 { "cdc",	PROG,	0,		  _PATH_SCCSRMDEL  },
 { "comb",	PROG,	0,		  _PATH_SCCSCOMB  },
@@ -253,7 +255,7 @@ struct sccsprog SccsProg[] = {
 { "sccsdiff",	SHELL,	REALUSER,	  _PATH_SCCSDIFF  },
 { "edit",	CMACRO,	NO_SDOT,	  "get -e"  },
 { "delget",	CMACRO,	NO_SDOT,	  "delta:mysrp/get:ixbeskcl -t"  },
-{ "deledit",	CMACRO,	NO_SDOT,          "delta:mysrp -n/get:ixbskcl -e -t -g"  },
+{ "deledit",	CMACRO,	NO_SDOT,         "delta:mysrp -n/get:ixbskcl -e -t -g"},
 { "fix",	FIX,	NO_SDOT,	  NULL  },
 { "clean",	CLEAN,	REALUSER|NO_SDOT, (char *) CLEANC  },
 { "info",	CLEAN,	REALUSER|NO_SDOT, (char *) INFOC  },
@@ -280,53 +282,47 @@ struct pfile
 	char	*p_aux;		/* extra info at end */
 };
 
-char	*SccsPath = SCCSPATH;	/* pathname of SCCS files */
+const char	*SccsPath = SCCSPATH;	/* pathname of SCCS files */
 # ifdef SCCSDIR
-char	*SccsDir = SCCSDIR;	/* directory to begin search from */
+const char *SccsDir = SCCSDIR;	/* directory to begin search from */
 # else
-char	*SccsDir = "";
+const char *SccsDir = "";
 # endif
-char	MyName[] = MYNAME;	/* name used in messages */
+const char MyName[] = MYNAME;	/* name used in messages */
 int	OutFile = -1;		/* override output file for commands */
 bool	RealUser;		/* if set, running as real user */
 # ifdef DEBUG
 bool	Debug;			/* turn on tracing */
 # endif
-# ifndef V6
-extern char	*getenv();
-# endif
+
 
 void syserr(const char *fmt, ...);
 void usrerr(const char *fmt, ...);
-int command(char **argv, bool forkflag, char *arg0);
-int callprog(char *progpath, short flags, char **argv, bool forkflag);
-int clean(int mode, char **argv);
-int dodiff(char **getv, char *gfile);
-int isbranch(char *sid);
-void putpfent(register struct pfile *pf, register FILE *f);
-bool safepath();
-bool isdir();
-struct sccsprog *lookup();
-struct sccsprog *lookup();
-bool unedit();
-char *index();
-char *makefile();
-char *tail();
-char *index();
-struct pfile *getpfent();
-char *username();
-char *username();
-struct pfile *getpfent();
-char *makefile(), *rindex(), *tail();
-char *nextfield();
-struct passwd *getpwuid();
-char *getlogin();
+int command(char *const argv[], bool forkflag, const char *arg0);
+int callprog(const char *progpath, short flags,
+	     char * const argv[], bool forkflag);
+int clean(int mode, char *const argv[]);
+int dodiff(char * const getv[], const char *gfile);
+int isbranch(const char *sid);
+void putpfent(register const struct pfile *pf, register FILE *f);
+bool safepath(register const char* p);
+bool isdir(const char *name);
+const struct sccsprog *lookup(const char *name);
+bool unedit(const char *fn);
+char *makefile(const char *name);
+const char * tail(register const char *fn);
+const struct pfile *getpfent(FILE *pfp);
+const char *username(void);
+char * nextfield(register char *p);
 
+     
+static char *gstrcat(char *to,  const char *from, int length);
+static char *gstrncat(char *to, const char *from, int n, int length);
+static char *gstrcpy(char *to,  const char *from, int length);
+static void  gstrbotch(const char *str1, const char *str2);
 
-static char *gstrcat();
-static char *gstrncat();
-static char *gstrcpy();
-static void  gstrbotch(char *str1, char *str2);
+static char *str_dup(const char*);
+
 
 #define	FBUFSIZ	BUFSIZ
 
@@ -419,236 +415,261 @@ int main(int argc, char **argv)
 **		none.
 */
 
-int command(char **argv, bool forkflag, char *arg0)
+int command(char * const argv[], bool forkflag, const char *arg0)
 {
-	register struct sccsprog *cmd;
-	register char *p;
-	char buf[FBUFSIZ];
-	char *nav[1000];
-	char **np;
-	register char **ap;
-	register int i;
-	register char *q;
-	int rval = 0;
-	char *editchs;
+  const struct sccsprog *cmd;
+  const char *p;
+  char buf[FBUFSIZ];
+  char *nav[1000];
+  char *  *np;
+  char *  *ap;
+  int i;
+  char *q;
+  int rval = 0;
+  char *editchs;
 
 # ifdef DEBUG
-	if (Debug)
-	{
-		printf("command:\n\t\"%s\"\n", arg0);
-		for (np = argv; *np != NULL; np++)
-			printf("\t\"%s\"\n", *np);
-	}
+  if (Debug)
+    {
+      printf("command:\n\t\"%s\"\n", arg0);
+      for (np = argv; *np != NULL; np++)
+	printf("\t\"%s\"\n", *np);
+    }
 # endif
 
-	/*
-	**  Copy arguments.
-	**	Copy from arg0 & if necessary at most one arg
-	**	from argv[0].
-	*/
+  /*
+  **  Copy arguments.
+  **	Copy from arg0 & if necessary at most one arg
+  **	from argv[0].
+  */
 
-	np = ap = &nav[1];
-	editchs = NULL;
-	for (p = arg0, q = buf; *p != '\0' && *p != '/'; )
+  np = ap = &nav[1];
+  editchs = NULL;
+  for (p = arg0, q = buf; *p != '\0' && *p != '/'; )
+    {
+      *np++ = q;
+      while (*p == ' ')		/* wind p to next word. */
+	p++;
+      while (*p != ' ' && *p != '\0' && *p != '/' && *p != ':')
+	*q++ = *p++;
+      *q++ = '\0';
+      if (*p == ':')
 	{
-		*np++ = q;
-		while (*p == ' ')
-			p++;
-		while (*p != ' ' && *p != '\0' && *p != '/' && *p != ':')
-			*q++ = *p++;
-		*q++ = '\0';
-		if (*p == ':')
-		{
-			editchs = q;
-			while (*++p != '\0' && *p != '/' && *p != ' ')
-				*q++ = *p;
-			*q++ = '\0';
-		}
+	  editchs = q;
+	  while (*++p != '\0' && *p != '/' && *p != ' ')
+	    *q++ = *p;
+	  *q++ = '\0';
 	}
+    }
+  *np = NULL;
+  if (*ap == NULL)
+    *np++ = *argv++;
+
+  /*
+  **  Look up command.
+  **	At this point, *ap is the command name.
+  */
+
+  cmd = lookup(*ap);
+  if (cmd == NULL)
+    {
+      usrerr("Unknown command \"%s\"", *ap);
+      return (EX_USAGE);
+    }
+
+  /*
+  **  Copy remaining arguments doing editing as appropriate.
+  */
+
+  for (; *argv != NULL; argv++)
+    {
+      p = *argv;
+      if (*p == '-')
+	{
+	  if (p[1] == '\0' || editchs == NULL || index(editchs, p[1]) != NULL)
+	    *np++ = p;		/* ERR */
+	}
+      else
+	{
+	  if (!bitset(NO_SDOT, cmd->sccsflags))
+	    p = makefile(p); /* LEAK */
+	  if (p != NULL)
+	    *np++ = p;		/* ERR */
+	}
+    }
+  *np = NULL;
+
+  /*
+  **  Interpret operation associated with this command.
+  */
+
+  switch (cmd->sccsoper)
+    {
+    case SHELL:		/* call a shell file */
+      {
+	*ap = cmd->sccspath;	/* ERR */
+	*--ap = "sh";
+	rval = callprog(_PATH_BSHELL, cmd->sccsflags, ap, forkflag);
+      }
+      break;
+      
+    case PROG:		/* call an sccs prog */
+      {
+	rval = callprog(cmd->sccspath, cmd->sccsflags, ap, forkflag);
+      }
+      break;
+
+    case CMACRO:		/* command macro */
+      {
+	/* step through & execute each part of the macro */
+	for (p = cmd->sccspath; *p != '\0'; p++)
+	  {
+	    const char *qq = p;
+	    while (*p != '\0' && *p != '/')
+	      p++;
+	    rval = command(&ap[1], *p != '\0', qq);
+	    if (rval != 0)
+	      break;
+	  }
+      }
+      break;
+
+    case FIX:		/* fix a delta */
+      {
+	if (ap[1]==0 || strncmp(ap[1], "-r", 2)!=0)
+	  {
+	    usrerr("-r flag needed for fix command");
+	    rval = EX_USAGE;
+	    break;
+	  }
+	
+	/* get the version with all changes */
+	rval = command(&ap[1], TRUE, "get -k");
+	
+	/* now remove that version from the s-file */
+	if (rval == 0)
+	  rval = command(&ap[1], TRUE, "rmdel:r");
+	
+	/* and edit the old version (but don't clobber new vers) */
+	if (rval == 0)
+	  rval = command(&ap[2], FALSE, "get -e -g");
+      }
+      break;
+
+    case CLEAN:
+      {
+	rval = clean((int) cmd->sccspath, ap);
+      }
+      break;
+
+    case UNEDIT:
+      {
+	for (argv = np = &ap[1]; *argv != NULL; argv++)
+	  {
+	    if (unedit(*argv))
+	      *np++ = *argv;
+	  }
 	*np = NULL;
-	if (*ap == NULL)
-		*np++ = *argv++;
+	
+	/* get all the files that we unedited successfully */
+	if (np > &ap[1])
+	  rval = command(&ap[1], FALSE, "get");
+      }
+      break;
 
-	/*
-	**  Look up command.
-	**	At this point, *ap is the command name.
-	*/
+    case DIFFS:		/* diff between s-file & edit file */
+      {
+	/* find the end of the flag arguments */
+	for (np = &ap[1]; *np != NULL && **np == '-'; np++)
+	  continue;
+	argv = np;
+	
+	/* for each file, do the diff */
+	p = argv[1];
+	while (*np != NULL)
+	  {
+	    /* messy, but we need a null terminated argv */
+	    *argv = *np++;	/* ERR */
+	    argv[1] = NULL;	/* ERR */
+	    i = dodiff(ap, tail(*argv));
+	    if (rval == 0)
+	      rval = i;
+	    argv[1] = p;	/* ERR */
+	  }
+      }
+      break;
 
-	cmd = lookup(*ap);
-	if (cmd == NULL)
-	{
-		usrerr("Unknown command \"%s\"", *ap);
-		return (EX_USAGE);
-	}
-
-	/*
-	**  Copy remaining arguments doing editing as appropriate.
-	*/
-
-	for (; *argv != NULL; argv++)
-	{
-		p = *argv;
-		if (*p == '-')
-		{
-			if (p[1] == '\0' || editchs == NULL || index(editchs, p[1]) != NULL)
-				*np++ = p;
-		}
-		else
-		{
-			if (!bitset(NO_SDOT, cmd->sccsflags))
-				p = makefile(p);
-			if (p != NULL)
-				*np++ = p;
-		}
-	}
-	*np = NULL;
-
-	/*
-	**  Interpret operation associated with this command.
-	*/
-
-	switch (cmd->sccsoper)
-	{
-	  case SHELL:		/* call a shell file */
-		*ap = cmd->sccspath;
-		*--ap = "sh";
-		rval = callprog(_PATH_BSHELL, cmd->sccsflags, ap, forkflag);
-		break;
-
-	  case PROG:		/* call an sccs prog */
-		rval = callprog(cmd->sccspath, cmd->sccsflags, ap, forkflag);
-		break;
-
-	  case CMACRO:		/* command macro */
-		/* step through & execute each part of the macro */
-		for (p = cmd->sccspath; *p != '\0'; p++)
-		{
-			q = p;
-			while (*p != '\0' && *p != '/')
-				p++;
-			rval = command(&ap[1], *p != '\0', q);
-			if (rval != 0)
-				break;
-		}
-		break;
-
-	  case FIX:		/* fix a delta */
-		if (ap[1]==0 || strncmp(ap[1], "-r", 2)!=0)
-		{
-			usrerr("-r flag needed for fix command");
-			rval = EX_USAGE;
-			break;
-		}
-
-		/* get the version with all changes */
-		rval = command(&ap[1], TRUE, "get -k");
-
-		/* now remove that version from the s-file */
-		if (rval == 0)
-			rval = command(&ap[1], TRUE, "rmdel:r");
-
-		/* and edit the old version (but don't clobber new vers) */
-		if (rval == 0)
-			rval = command(&ap[2], FALSE, "get -e -g");
-		break;
-
-	  case CLEAN:
-		rval = clean((int) cmd->sccspath, ap);
-		break;
-
-	  case UNEDIT:
-		for (argv = np = &ap[1]; *argv != NULL; argv++)
-		{
-			if (unedit(*argv))
-				*np++ = *argv;
-		}
-		*np = NULL;
-
-		/* get all the files that we unedited successfully */
-		if (np > &ap[1])
-			rval = command(&ap[1], FALSE, "get");
-		break;
-
-	  case DIFFS:		/* diff between s-file & edit file */
-		/* find the end of the flag arguments */
-		for (np = &ap[1]; *np != NULL && **np == '-'; np++)
-			continue;
-		argv = np;
-
-		/* for each file, do the diff */
-		p = argv[1];
-		while (*np != NULL)
-		{
-			/* messy, but we need a null terminated argv */
-			*argv = *np++;
-			argv[1] = NULL;
-			i = dodiff(ap, tail(*argv));
-			if (rval == 0)
-				rval = i;
-			argv[1] = p;
-		}
-		break;
-
-	  case DODIFF:		/* internal diff call */
-		setuid(getuid());
-		for (np = ap; *np != NULL; np++)
-		{
-			if ((*np)[0] == '-' && (*np)[1] == 'C')
-				(*np)[1] = 'c';
-		}
-
-		/* insert "-" argument */
-		np[1] = NULL;
-		np[0] = np[-1];
-		np[-1] = "-";
-
-		/* execute the diff program of choice */
+    case DODIFF:		/* internal diff call */
+      {
+	setuid(getuid());
+	for (np = ap; *np != NULL; np++)
+	  {
+	    if ((*np)[0] == '-' && (*np)[1] == 'C')
+	      (*np)[1] = 'c';
+	  }
+	
+	/* insert "-" argument */
+	np[1] = NULL;
+	np[0] = np[-1];
+	np[-1] = "-";
+	
+	/* execute the diff program of choice */
 # ifndef V6
-		execvp("diff", ap);
+	execvp("diff", ap);
 # endif
-		execv(cmd->sccspath, argv);
-		syserr("cannot exec %s", cmd->sccspath);
-		exit(EX_OSERR);
+	execv(cmd->sccspath, argv);
+	syserr("cannot exec %s", cmd->sccspath);
+	exit(EX_OSERR);
+      }
+      /*NOTREACHED*/
+      break;
+      
+    case ENTER:		/* enter new sccs files */
+      {
+	/* skip over flag arguments */
+	for (np = &ap[1]; *np != NULL && **np == '-'; np++)
+	  continue;
+	argv = np;
+	
+	/* do an admin for each file */
+	p = argv[1];
+	while (*np != NULL)
+	  {
+	    printf("\n%s:\n", *np);
+	    strcpy(buf, "-i");
+	    gstrcat(buf, *np, sizeof(buf));
+	    ap[0] = buf;	/* sccs enter foo --> admin -ifoo */
+	    argv[0] = tail(*np); /* ERR */
+	    argv[1] = NULL;	/* ERR */
+	    rval = command(ap, TRUE, "admin");
+	    argv[1] = p;	/* ERR */
+	    if (rval == 0)
+	      {
+		strcpy(buf, ",");
+		gstrcat(buf, tail(*np), sizeof(buf));
+		if (link(*np, buf) >= 0)
+		  unlink(*np);
+	      }
+	    np++;
+	  }
+      }
+      break;
 
-	  case ENTER:		/* enter new sccs files */
-		/* skip over flag arguments */
-		for (np = &ap[1]; *np != NULL && **np == '-'; np++)
-			continue;
-		argv = np;
-
-		/* do an admin for each file */
-		p = argv[1];
-		while (*np != NULL)
-		{
-			printf("\n%s:\n", *np);
-			strcpy(buf, "-i");
-			gstrcat(buf, *np, sizeof(buf));
-			ap[0] = buf;
-			argv[0] = tail(*np);
-			argv[1] = NULL;
-			rval = command(ap, TRUE, "admin");
-			argv[1] = p;
-			if (rval == 0)
-			{
-				strcpy(buf, ",");
-				gstrcat(buf, tail(*np), sizeof(buf));
-				if (link(*np, buf) >= 0)
-					unlink(*np);
-			}
-			np++;
-		}
-		break;
-
-	  default:
-		syserr("oper %d", cmd->sccsoper);
-		exit(EX_SOFTWARE);
-	}
+    default:
+      {
+	syserr("oper %d", cmd->sccsoper);
+	exit(EX_SOFTWARE);
+      }
+      /*NOTREACHED*/
+      break;
+    }
 # ifdef DEBUG
-	if (Debug)
-		printf("command: rval=%d\n", rval);
+  if (Debug)
+    printf("command: rval=%d\n", rval);
 # endif
-	return (rval);
+  return (rval);
 }
+
 
 /*
 **  LOOKUP -- look up an SCCS command name.
@@ -664,18 +685,17 @@ int command(char **argv, bool forkflag, char *arg0)
 **		none.
 */
 
-struct sccsprog *
-lookup(name)
-	char *name;
+const struct sccsprog *
+lookup(const char *name)
 {
-	register struct sccsprog *cmd;
+  register const struct sccsprog *cmd;
 
-	for (cmd = SccsProg; cmd->sccsname != NULL; cmd++)
-	{
-		if (strcmp(cmd->sccsname, name) == 0)
-			return (cmd);
-	}
-	return (NULL);
+  for (cmd = SccsProg; cmd->sccsname != NULL; cmd++)
+    {
+      if (strcmp(cmd->sccsname, name) == 0)
+	return cmd;
+    }
+  return NULL;
 }
 
 /*
@@ -698,7 +718,10 @@ lookup(name)
 **		Can exit if forkflag == FALSE.
 */
 
-int callprog(char *progpath, short flags, char **argv, bool forkflag)
+int callprog(const char *progpath,
+	     short flags,
+	     char * const argv[],
+	     bool forkflag)
 {
 	register int i;
 	register int wpid;
@@ -744,6 +767,7 @@ int callprog(char *progpath, short flags, char **argv, bool forkflag)
 				st = (st >> 8) & 0377;
 			else
 			{
+				/* TODO: Use WIFEXITED etc. */
 				coredumped = sigcode & 0200;
 				sigcode &= 0177;
 				if (sigcode != SIGINT && sigcode != SIGPIPE)
@@ -796,6 +820,49 @@ int callprog(char *progpath, short flags, char **argv, bool forkflag)
 }
 
 /*
+**  STR_DUP -- make filename of SCCS file
+**
+**	Allocate and return a copy of a string.
+**
+**	There are cases when it is not clear what you want to
+**	do.  For example, if SccsPath is an absolute pathname
+**	and the name given is also an absolute pathname, we go
+**	for SccsPath (& only use the last component of the name
+**	passed) -- this is important for security reasons (if
+**	sccs is being used as a setuid front end), but not
+**	particularly intuitive.
+**
+**	Parameters:
+**		S -- the string to be cpied.
+**
+**	Returns:
+**		A duplicate copy of that string.
+**		NULL on error.
+**
+**	Side Effects:
+**		none.
+*/
+
+static char *
+str_dup(const char *s)
+{
+  char *p;
+  size_t len = strlen(s) + 1u;	/* include space for terminating '\0' */
+  p = malloc(len);
+  if (p)
+    {
+      memcpy(p, s, len);
+    }
+  else
+    {
+      perror("Sccs: no mem");
+      exit(EX_OSERR);
+    }
+  return p;
+}
+
+
+/*
 **  MAKEFILE -- make filename of SCCS file
 **
 **	If the name passed is already the name of an SCCS file,
@@ -822,76 +889,66 @@ int callprog(char *progpath, short flags, char **argv, bool forkflag)
 */
 
 char *
-makefile(name)
-	char *name;
+makefile(const char *name)
 {
-	register char *p;
-	char buf[3*FBUFSIZ];
-	register char *q;
+  register const char *p;
+  char buf[3*FBUFSIZ];
+  register char *q;
 
-	p = rindex(name, '/');
-	if (p == NULL)
-		p = name;
-	else
-		p++;
+  p = rindex(name, '/');
+  if (p == NULL)
+    p = name;
+  else
+    p++;
 
-	/*
-	**  Check to see that the path is "safe", i.e., that we
-	**  are not letting some nasty person use the setuid part
-	**  of this program to look at or munge some presumably
-	**  hidden files.
-	*/
+  /*
+  **  Check to see that the path is "safe", i.e., that we
+  **  are not letting some nasty person use the setuid part
+  **  of this program to look at or munge some presumably
+  **  hidden files.
+  */
 
-	if (SccsDir[0] == '/' && !safepath(name))
-		return (NULL);
+  if (SccsDir[0] == '/' && !safepath(name))
+    return (NULL);
 
-	/*
-	**  Create the base pathname.
-	*/
+  /*
+  **  Create the base pathname.
+  */
 
-	/* first the directory part */
-	if (SccsDir[0] != '\0' && name[0] != '/' && strncmp(name, "./", 2) != 0)
-	{
-		gstrcpy(buf, SccsDir, sizeof(buf));
-		gstrcat(buf, "/", sizeof(buf));
-	}
-	else
-		gstrcpy(buf, "", sizeof(buf));
+  /* first the directory part */
+  if (SccsDir[0] != '\0' && name[0] != '/' && strncmp(name, "./", 2) != 0)
+    {
+      gstrcpy(buf, SccsDir, sizeof(buf));
+      gstrcat(buf, "/", sizeof(buf));
+    }
+  else
+    {
+      gstrcpy(buf, "", sizeof(buf));
+    }
+  
 	
-	/* then the head of the pathname */
-	gstrncat(buf, name, p - name, sizeof(buf));
-	q = &buf[strlen(buf)];
+  /* then the head of the pathname */
+  gstrncat(buf, name, p - name, sizeof(buf));
+  q = &buf[strlen(buf)];
 
-	/* now copy the final part of the name, in case useful */
-	gstrcpy(q, p, sizeof(buf));
+  /* now copy the final part of the name, in case useful */
+  gstrcpy(q, p, sizeof(buf));
 
-	/* so is it useful? */
-	if (strncmp(p, "s.", 2) != 0 && !isdir(buf))
-	{
-		/* sorry, no; copy the SCCS pathname & the "s." */
-		gstrcpy(q, SccsPath, sizeof(buf));
-		gstrcat(buf, "/s.", sizeof(buf));
+  /* so is it useful? */
+  if (strncmp(p, "s.", 2) != 0 && !isdir(buf))
+    {
+      /* sorry, no; copy the SCCS pathname & the "s." */
+      gstrcpy(q, SccsPath, sizeof(buf));
+      gstrcat(buf, "/s.", sizeof(buf));
 
-		/* and now the end of the name */
-		gstrcat(buf, p, sizeof(buf));
-	}
+      /* and now the end of the name */
+      gstrcat(buf, p, sizeof(buf));
+    }
 
-	/* if i haven't changed it, why did I do all this? */
-	if (strcmp(buf, name) == 0)
-		p = name;
-	else
-	{
-		/* but if I have, squirrel it away */
-		p = malloc(strlen(buf) + 1);
-		if (p == NULL)
-		{
-			perror("Sccs: no mem");
-			exit(EX_OSERR);
-		}
-		strcpy(p, buf);
-	}
-
-	return (p);
+  /* if I haven't changed it, why did I do all this? */
+  /* but if I have, squirrel it away */
+  /* So our actions are the same in either case... */
+  return str_dup(buf);
 }
 
 /*
@@ -908,12 +965,11 @@ makefile(name)
 */
 
 bool
-isdir(name)
-	char *name;
+isdir(const char *name)
 {
-	struct stat stbuf;
+  struct stat stbuf;
 
-	return (stat(name, &stbuf) >= 0 && (stbuf.st_mode & S_IFMT) == S_IFDIR);
+  return (stat(name, &stbuf) >= 0 && (stbuf.st_mode & S_IFMT) == S_IFDIR);
 }
 
 /*
@@ -935,22 +991,21 @@ isdir(name)
 */
 
 bool
-safepath(p)
-	register char *p;
+safepath(register const char* p)
 {
-	if (*p != '/')
+  if (*p != '/')
+    {
+      while (strncmp(p, "../", 3) != 0 && strcmp(p, "..") != 0)
 	{
-		while (strncmp(p, "../", 3) != 0 && strcmp(p, "..") != 0)
-		{
-			p = index(p, '/');
-			if (p == NULL)
-				return (TRUE);
-			p++;
-		}
+	  p = index(p, '/');
+	  if (p == NULL)
+	    return TRUE;
+	  p++;
 	}
+    }
 
-	printf("You may not use full pathnames or \"..\"\n");
-	return (FALSE);
+  printf("You may not use full pathnames or \"..\"\n");
+  return FALSE;
 }
 
 /*
@@ -973,7 +1028,7 @@ safepath(p)
 **		Exits if a "check" command.
 */
 
-int clean(int mode, char **argv)
+int clean(int mode, char * const *argv)
 {
 	struct direct *dir;
 	register DIR *dirp;
@@ -984,11 +1039,11 @@ int clean(int mode, char **argv)
 	bool gotpfent;
 	FILE *pfp;
 	bool nobranch = FALSE;
-	register struct pfile *pf;
-	register char **ap;
-	char *usernm = NULL;
-	char *subdir = NULL;
-	char *cmdname;
+	register const struct pfile *pf;
+	register char * const *ap;
+	const char *usernm = NULL;
+	const char *subdir = NULL;
+	const char *cmdname;
 
 	/*
 	**  Process the argv
@@ -1133,20 +1188,20 @@ int clean(int mode, char **argv)
 **		none.
 */
 
-int isbranch(char *sid)
+int isbranch(const char *sid)
 {
-	register char *p;
-	int dots;
-
-	dots = 0;
-	for (p = sid; *p != '\0'; p++)
-	{
-		if (*p == '.')
-			dots++;
-		if (dots > 1)
-			return (TRUE);
-	}
-	return (FALSE);
+  register const char *p;
+  int dots;
+  
+  dots = 0;
+  for (p = sid; *p != '\0'; p++)
+    {
+      if (*p == '.')
+	dots++;
+      if (dots > 1)
+	return TRUE;
+    }
+  return FALSE;
 }
 
 /*
@@ -1169,22 +1224,22 @@ int isbranch(char *sid)
 */
 
 bool
-unedit(fn)
-	char *fn;
+unedit(const char *fn)
 {
 	register FILE *pfp;
-	char *cp, *pfn;
+	const char *cp;
+	char *pfn;
 	static char tfn[] = _PATH_TMP;
 	FILE *tfp;
 	register char *q;
 	bool delete = FALSE;
 	bool others = FALSE;
-	char *myname;
-	struct pfile *pent;
+	const char *myname;
+	const struct pfile *pent;
 	char buf[PFILELG];
 
 	/* make "s." filename & find the trailing component */
-	pfn = makefile(fn);
+	pfn = makefile(fn);	/* LEAK */
 	if (pfn == NULL)
 		return (FALSE);
 	q = rindex(pfn, '/');
@@ -1322,54 +1377,54 @@ unedit(fn)
 **		none.
 */
 
-int dodiff(char **getv, char *gfile)
+int dodiff(char * const getv[], const char *gfile)
 {
-	int pipev[2];
-	int rval;
-	register int i;
-	register int pid;
-	auto int st;
-	extern int errno;
-	sig_t osig;
-
-	printf("\n------- %s -------\n", gfile);
-	fflush(stdout);
-
-	/* create context for diff to run in */
-	if (pipe(pipev) < 0)
+  int pipev[2];
+  int rval;
+  register int i;
+  register int pid;
+  auto int st;
+  extern int errno;
+  sig_t osig;
+  
+  printf("\n------- %s -------\n", gfile);
+  fflush(stdout);
+  
+  /* create context for diff to run in */
+  if (pipe(pipev) < 0)
+    {
+      syserr("dodiff: pipe failed");
+      exit(EX_OSERR);
+    }
+  if ((pid = fork()) < 0)
+    {
+      syserr("dodiff: fork failed");
+      exit(EX_OSERR);
+    }
+  else if (pid > 0)
+    {
+      /* in parent; run get */
+      OutFile = pipev[1];
+      close(pipev[0]);
+      rval = command(&getv[1], TRUE, "get:rcixt -s -k -p");
+      osig = signal(SIGINT, SIG_IGN);
+      while (((i = wait(&st)) >= 0 && i != pid) || errno == EINTR)
+	errno = 0;
+      signal(SIGINT, osig);
+      /* ignore result of diff */
+    }
+  else
+    {
+      /* in child, run diff */
+      if (close(pipev[1]) < 0 || close(0) < 0 ||
+	  dup(pipev[0]) != 0 || close(pipev[0]) < 0)
 	{
-		syserr("dodiff: pipe failed");
-		exit(EX_OSERR);
+	  syserr("dodiff: magic failed");
+	  exit(EX_OSERR);
 	}
-	if ((pid = fork()) < 0)
-	{
-		syserr("dodiff: fork failed");
-		exit(EX_OSERR);
-	}
-	else if (pid > 0)
-	{
-		/* in parent; run get */
-		OutFile = pipev[1];
-		close(pipev[0]);
-		rval = command(&getv[1], TRUE, "get:rcixt -s -k -p");
-		osig = signal(SIGINT, SIG_IGN);
-		while (((i = wait(&st)) >= 0 && i != pid) || errno == EINTR)
-			errno = 0;
-		signal(SIGINT, osig);
-		/* ignore result of diff */
-	}
-	else
-	{
-		/* in child, run diff */
-		if (close(pipev[1]) < 0 || close(0) < 0 ||
-		    dup(pipev[0]) != 0 || close(pipev[0]) < 0)
-		{
-			syserr("dodiff: magic failed");
-			exit(EX_OSERR);
-		}
-		command(&getv[1], FALSE, "-diff:elsfhbC");
-	}
-	return (rval);
+      command(&getv[1], FALSE, "-diff:elsfhbC");
+    }
+  return rval;
 }
 
 /*
@@ -1386,16 +1441,15 @@ int dodiff(char **getv, char *gfile)
 **		none.
 */
 
-char *
-tail(fn)
-	register char *fn;
+const char *
+tail(register const char *fn)
 {
-	register char *p;
+  register const char *p;
 
-	for (p = fn; *p != 0; p++)
-		if (*p == '/' && p[1] != '\0' && p[1] != '/')
-			fn = &p[1];
-	return (fn);
+  for (p = fn; *p != 0; p++)
+    if (*p == '/' && p[1] != '\0' && p[1] != '/')
+      fn = &p[1];
+  return fn;
 }
 
 /*
@@ -1412,43 +1466,43 @@ tail(fn)
 **		Each call wipes out results of previous call.
 */
 
-struct pfile *
-getpfent(pfp)
-	FILE *pfp;
+const struct pfile *
+getpfent(FILE *pfp)
 {
-	static struct pfile ent;
-	static char buf[PFILELG];
-	register char *p;
+  static struct pfile ent;
+  static char buf[PFILELG];
+  register char *p;
+  
+  if (fgets(buf, sizeof buf, pfp) == NULL)
+    return NULL;
 
-	if (fgets(buf, sizeof buf, pfp) == NULL)
-		return (NULL);
+  ent.p_osid = p = buf;
+  ent.p_nsid = p = nextfield(p);
+  ent.p_user = p = nextfield(p);
+  ent.p_date = p = nextfield(p);
+  ent.p_time = p = nextfield(p);
+  ent.p_aux  = p = nextfield(p);
 
-	ent.p_osid = p = buf;
-	ent.p_nsid = p = nextfield(p);
-	ent.p_user = p = nextfield(p);
-	ent.p_date = p = nextfield(p);
-	ent.p_time = p = nextfield(p);
-	ent.p_aux = p = nextfield(p);
-
-	return (&ent);
+  return &ent;
 }
 
 
 char *
-nextfield(p)
-	register char *p;
+nextfield(register char *p)
 {
-	if (p == NULL || *p == '\0')
-		return (NULL);
-	while (*p != ' ' && *p != '\n' && *p != '\0')
-		p++;
-	if (*p == '\n' || *p == '\0')
-	{
-		*p = '\0';
-		return (NULL);
-	}
-	*p++ = '\0';
-	return (p);
+  if (p == NULL || *p == '\0')
+    return NULL;
+  
+  while (*p != ' ' && *p != '\n' && *p != '\0')
+    p++;
+  
+  if (*p == '\n' || *p == '\0')
+    {
+      *p = '\0';
+      return NULL;
+    }
+  *p++ = '\0';
+  return p;
 }
 /*
 **  PUTPFENT -- output a p-file entry to a file
@@ -1464,14 +1518,15 @@ nextfield(p)
 **		pf is written onto file f.
 */
 
-void putpfent(register struct pfile *pf, register FILE *f)
+void putpfent(register const struct pfile *pf, register FILE *f)
 {
-	fprintf(f, "%s %s %s %s %s", pf->p_osid, pf->p_nsid,
-		pf->p_user, pf->p_date, pf->p_time);
-	if (pf->p_aux != NULL)
-		fprintf(f, " %s", pf->p_aux);
-	else
-		fprintf(f, "\n");
+  fprintf(f, "%s %s %s %s %s", pf->p_osid, pf->p_nsid,
+	  pf->p_user, pf->p_date, pf->p_time);
+  
+  if (pf->p_aux != NULL)
+    fprintf(f, " %s", pf->p_aux);
+  else
+    fprintf(f, "\n");
 }
 
 /*
@@ -1555,11 +1610,11 @@ syserr(const char *fmt, ...)
 **		none
 */
 
-char *
-username()
+const char *
+username(void)
 {
 # ifdef UIDUSER
-	register struct passwd *pw;
+	const struct passwd *pw;
 
 	pw = getpwuid(getuid());
 	if (pw == NULL)
@@ -1584,40 +1639,36 @@ username()
 **	is to be done.
 */
 static char *
-gstrcat(to, from, length)
-	char	*to, *from;
-	int	length;
+gstrcat(char *to, const char *from, int length)
 {
-	if (strlen(from) + strlen(to) >= length) {
-		gstrbotch(to, from);
-	}
-	return(strcat(to, from));
+  if (strlen(from) + strlen(to) >= length)
+    {
+      gstrbotch(to, from);
+    }
+  return(strcat(to, from));
 }
 
 static
-char *gstrncat(to, from, n, length)
-	char	*to, *from;
-	int	n;
-	int	length;
+char *gstrncat(char *to, const char *from, int n, int length)
 {
-	if (n + strlen(to) >= length) {
-		gstrbotch(to, from);
-	}
-	return(strncat(to, from, n));
+  if (n + strlen(to) >= length)
+    {
+      gstrbotch(to, from);
+    }
+  return strncat(to, from, n);
 }
 
 static char *
-gstrcpy(to, from, length)
-	char	*to, *from;
-	int	length;
+gstrcpy(char *to, const char *from, int length)
 {
-	if (strlen(from) >= length) {
-		gstrbotch(from, (char *)0);
-	}
-	return(strcpy(to, from));
+  if (strlen(from) >= length)
+    {
+      gstrbotch(from, (char *)0);
+    }
+  return strcpy(to, from);
 }
 
-static void  gstrbotch(char *str1, char *str2)
+static void  gstrbotch(const char *str1, const char *str2)
 {
   usrerr("Filename(s) too long: %s %s",
 	 (str1 ? str1 : ""),
