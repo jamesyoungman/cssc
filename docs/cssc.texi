@@ -318,6 +318,10 @@ comments.  If this flag is not set, no validation is performed and no
 @sc{mr} numbers are prompted for.  If the @samp{-m} option is given on
 the command line for @samp{delta}, the user is not prompted.
 
+@sc{mr} numbers are not required by @sc{cssc} to be actual numbers; they
+may contain any non-whitespace printable characters; other
+implementations may not be so flexible.
+
 
 @node cdc, comb, admin, Invoking Programs
 @section @code{cdc}
@@ -378,7 +382,7 @@ that a modified version can be checked in later using @code{delta}.
 @subsection Basic Usage for @code{get}
 @table @samp
 There are very few common basic usage patterns for @samp{get}.  Below,
-@file{s.file} denotes the name of any existing @sc{sccs} file.
+@file{s.foo.c} denotes the name of any existing @sc{sccs} file.
 
 @item get s.foo.c
 Get a copy of the most recent trunk revision of @file{s.foo.c} into the
@@ -674,23 +678,27 @@ SCCS suite and absent from this one.
 Some programs behave subtly differently to their original counterparts.
 There are two reasons for this:-
 
- @itemize --
- @item
- The procesing of command-line options is done in a way which is
- standard for GNU programs, and this is incompatible with the way SCCS
- processes its command-line options.  This is being changed, and so for
- the moment there will be some inconsistency.  You will be able to tell
- if this has been fixed in the version of @sc{cssc} you are using
- because this paragraph will be missing.
+@itemize --
+@item
+The procesing of command-line options is done in a way which is
+standard for GNU programs, and this is incompatible with the way SCCS
+processes its command-line options.  This is being changed, and so for
+the moment there will be some inconsistency.  You will be able to tell
+if this has been fixed in the version of @sc{cssc} you are using
+because this paragraph will be missing.
 
- @item
- Error messages are different, and also extra warnings are provided in 
- some circumstances.
+@item
+Error messages are different, and also extra warnings are provided in 
+some circumstances.
 
- @item
- All other differences are bugs.  Please report them 
- (@pxref{Problems}).
- @end itemize
+@item 
+If a bug is listed in @samp{docs/TODO} but has in fact been fixed, this
+is a bug in the bug list.  Please report this.
+
+@item
+All other differences are also bugs.  Please report them 
+(@pxref{Problems}).
+@end itemize
 
 @item
 Some programs are partially implemented.  Not all programs support all
@@ -702,6 +710,21 @@ request it in the same way you would report a bug; I'd like to know
 which features are required first.
 @end itemize
 
+@section Known Problems
+
+There are a small number of known problems documented in the files
+@samp{docs/BUGS} and @samp{docs/TODO}.  These will be fixed at some
+point in the future.
+
+Additionally, there is currently one problem that may not ever be fixed.
+This problem occurs only in the @code{prt} program when the list of
+ignored or excluded deltas is present for a @sc{sid} @emph{but that list is
+empty}.  In this case @sc{sccs} prints the @samp{Included:} or
+@samp{Excluded:} line in its output (with no numbers afterward) and
+@sc{cssc} prints nothing.  Since ``fixing'' this problem would require a
+horrible kludge, this has not been done.  It is not expected that this
+will cause a problem for any users; if this is a problem for you, let
+the maintainer know and it will be fixed.
 
 @node Problems, Concept Index, Incomplete, Top
 @chapter Reporting Bugs
@@ -713,9 +736,16 @@ If you find a bug in GNU @code{CSSC}, please send electronic mail to
 @w{@samp{JYoungman@@vggas.com}}.  Include the version number, which you
 can find by giving the option @w{@samp{--version}} to any @code{CSSC}
 command.  Also include in your message the output that the program
-produced and the output you expected.  An @code{s.} file and instructions
-for reproducing the error are almost essential unless the bug is very
-trivial.@refill
+produced and the output you expected.  An @code{s.} file and
+instructions for reproducing the error are almost essential unless the
+bug is very trivial.@refill
+
+Because the author receives electronic mail on the other side of a
+Microsoft Mail gateway, @sc{mime}-encoded mail will be unintelligible by
+the time it reaches him.  Please encode any files with @samp{uuencode}
+first (please also compress them, preferably with GNU @samp{gzip}, if
+they are large files.  ``Microsoft'' is a registered trademark of
+Microsoft Corporation.@refill
 
 If you have other questions, comments or suggestions about GNU
 @code{CSSC}, contact the maintainer via electronic mail to
