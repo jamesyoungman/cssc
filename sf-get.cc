@@ -17,8 +17,8 @@
 #include "pfile.h"
 #include "seqstate.h"
 
-#ifdef CONFIG_NO_STRSTR
-#include "strstr.c"
+#ifndef HAVE_STRSTR
+#include "strstr.cc"
 #endif
 
 #ifdef CONFIG_SCCS_IDS

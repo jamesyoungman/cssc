@@ -17,10 +17,10 @@
 #include "mysc.h"
 #include "linebuf.h"
 #include "sid.h"
-#include "quit.c"
-#include "xalloc.c"
-#include "linebuf.c"
-#include "sid.c"
+#include "quit.cc"
+#include "xalloc.cc"
+#include "linebuf.cc"
+#include "sid.cc"
 #endif
 
 #ifdef __GNUC__

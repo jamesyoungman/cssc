@@ -59,7 +59,8 @@ sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
 
 			struct dirent *dent = readdir(dir);
 			while(dent != NULL) {
-				mystring name = mystring(dirname, dent->d_name);
+				mystring name = mystring(dirname) + mystring(dent->d_name, NAMLEN(dent));
+				
 				if (sccs_name::valid_filename(name)
 				    && is_readable(name)) {
 					files.add(name);

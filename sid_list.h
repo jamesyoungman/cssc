@@ -61,18 +61,18 @@ public:
 	int valid() const { return head != invalid_range; }
 	int member(TYPE id) const;
 
-	range_list &merge (range_list const &list);
-	range_list &remove (range_list const &list);
+  	range_list &merge (range_list const &list);
+  	range_list &remove (range_list const &list);
 
 	int print(FILE *out) const;
 
 	~range_list() { destroy(); }
 };
 
-#include "sid_list.c"
-#ifdef CONFIG_COMPLETE_TEMPLATES
-#include "sl-merge.c"
-#endif
+#include "sid_list.cc"
+// #ifdef CONFIG_COMPLETE_TEMPLATES
+#include "sl-merge.cc"
+// #endif
 
 #endif /* __SID_LIST_H__ */
 	

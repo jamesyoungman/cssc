@@ -16,8 +16,8 @@
 #include "run.h"
 #include "linebuf.h"
 
-#ifdef CONFIG_NO_STRSTR
-#include "strstr.c"
+#ifndef HAVE_STRSTR
+#include "strstr.cc"
 #endif
 
 #ifdef CONFIG_SCCS_IDS
@@ -321,7 +321,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	if (get_out != NULL) {
 		struct subst_parms parms(get_out, NULL, delta(), 
 					 0, sccs_date(NULL));
-#ifdef CONFIG_NO_PIPE
+#ifndef HAVE_PIPE
 		seq_state gsstate = sstate;
 		get("diff pipe", gsstate, parms);
 #else
@@ -336,7 +336,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	int ret;
 
-#ifdef CONFIG_NO_PIPE
+#ifndef HAVE_PIPE
 
 	ret = run_diff(gname, diff_in, diff_out);
 	if (ret != STATUS(0) && ret != STATUS(1)) {
@@ -346,7 +346,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 	diff_in.read_close();
 
-#else /* CONFIG_NO_PIPE */
+#else /* HAVE_PIPE */
 
 	run_diff(gname, diff_in, diff_out);
 
@@ -356,7 +356,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 		         STATUS_MSG(ret));
 	}
 
-#endif /* CONFIG_NO_PIPE */
+#endif /* HAVE_PIPE */
 
 	diff_out.write_close();
 
@@ -490,7 +490,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 	fclose(df);
 #endif
 
-#ifdef CONFIG_NO_PIPE
+#ifndef HAVE_PIPE
 	diff_out.read_close();
 #else
 	ret = diff_out.read_close();

@@ -18,7 +18,7 @@
 #include "config.h"
 #include "defaults.h"
 
-#ifdef CONFIG_INCLUDE_SYS_TYPES_H
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 

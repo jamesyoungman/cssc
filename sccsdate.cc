@@ -21,7 +21,7 @@
 static const char sccs_id[] = "@(#) MySC sccsdate.c 1.1 93/11/09 17:17:58";
 #endif
 
-#ifdef CONFIG_NO_MKTIME
+#ifndef HAVE_MKTIME
 
 #define mktime LIDENT(mktime)
 
@@ -62,7 +62,7 @@ mktime(struct tm const *tm) {
 
 	t += tm->tm_sec + tm->tm_min * 60 + (long) tm->tm_hour * 60 * 60;
 
-#ifndef CONFIG_NO_TIMEZONE_VAR
+#ifdef HAVE_TIMEZONE
 	tzset();
 	t += timezone;
 #endif
@@ -74,7 +74,7 @@ mktime(struct tm const *tm) {
 	return t;
 }	       
 	
-#endif /* CONFIG_NO_MKTIME */   
+#endif /* HAVE_MKTIME */   
 
 
 static int

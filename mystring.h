@@ -47,7 +47,7 @@ public:
 	mystring(): str(NULL) {}
 	mystring(const char *s) { create(s); }
 	mystring(const char *s1, const char *s2) { create(s1, s2); }
-
+        mystring(const char *s, size_t len);
 
 	mystring(mystring const &s) {
 		copy(s);
@@ -56,6 +56,9 @@ public:
 	mystring &operator =(mystring const &s);
 	mystring &operator =(const char *s);
 
+  	const mystring& operator+=(const mystring& s);
+  	mystring  operator+ (const mystring& s);
+  
 	operator const char *() const {
 		return str;
 	}

@@ -56,7 +56,7 @@ public:
 	~list() { destroy(); }
 };
 
-#include "list.c"
+#include "list.cc"
 
 
 /* Appends the contents of one list to another. */

@@ -210,11 +210,13 @@ main(int argc, char **argv) {
 template class list<mystring>;
 template class list<seq_no>;
 template class list<sccs_file::delta>;
-template class range_list<release>;
 template list<char const*>& operator+=(list<char const *> &, list<mystring> const &);
 template class list<char const *>;
 template list<mystring>& operator+=(list<mystring> &, list<mystring> const &);
 template list<mystring>& operator-=(list<mystring> &, list<mystring> const &);
+template class range_list<release>;
+template range_list<release> & range_list<release>::merge(range_list<release> const &);
+template range_list<release> & range_list<release>::remove(range_list<release> const &);
 
 /* Local variables: */
 /* mode: c++ */

@@ -17,6 +17,34 @@
 static const char sccs_id[] = "@(#) MySC run.c 1.1 93/11/09 17:17:58";
 #endif
 
+// According to the ANSI standard, id the argument to system()
+// is not NULL, the return value is implementation-defined.
+//
+// Under Unix, system() returns -1 or 127 for two
+// kinds of failure not involving the called program,
+// and otherwise the return value of the program.
+// Success is indicated by a zero return value.
+
+#if !defined(SYSTEM_FAILS_RETURNING_MINUS_ONE) && !defined(SYSTEM_FAILS_RETURNING_NONZERO)
+#error Please define either SYSTEM_FAILS_RETURNING_NONZERO or SYSTEM_FAILS_RETURNING_MINUS_ONE
+stop compiling now please.
+#endif
+
+void call_system(const char *s)
+{
+  int failed;
+  int ret = system(s);
+
+#ifdef SYSTEM_FAILS_RETURNING_MINUS_ONE
+  failed = (-1 == ret);
+#else
+  failed = (ret != 0);
+#endif
+  
+  if (failed)
+    quit(errno, "system(\"%s\") failed, returning %d.", s, ret);
+}
+
 /* Runs a programme and returns its exit status. */
 
 int
@@ -24,7 +52,7 @@ run(const char *prg, list<const char *> const &args) {
 	int i;
 	int len = args.length();
 
-#if defined(CONFIG_NO_FORK) && defined(CONFIG_NO_SPAWN)
+#if !(HAVE_FORK) && !(HAVE_SPAWN)
 
 	int cmdlen = strlen(prg) + 1;
 	
@@ -41,19 +69,10 @@ run(const char *prg, list<const char *> const &args) {
 		strcat(s, args[i]);
 	}
 
-	int ret = system(s);
-
-#ifdef CONFIG_DJGPP
-	if (ret == -1) {
-#else
-	if (ret != 0) {
-#endif
-		quit(errno, "system(\"%s\") failed.", s);
-	}
-
+	call_system(s);
 	free(s);
 
-#else /* defined(CONFIG_NO_FORK) && defined(CONFIG_NO_SPAWN) */
+#else /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 
 	const char *  *argv = (const char *  *) xmalloc((len + 2) 
 						      * sizeof(const char *  *));
@@ -66,16 +85,16 @@ run(const char *prg, list<const char *> const &args) {
 	
 	argv[i + 1] = NULL;
 
-#ifdef CONFIG_NO_FORK
-
+#ifndef HAVE_FORK
+	// Use spawn() instead then
 	int ret = spawnvp(P_WAIT, (char *) prg, (char **) argv);
 	if (ret == -1) {
 		quit(errno, "spawnvp(\"%s\") failed.", prg);
 	}
 
 #else /* CONFIG_NO_FORK */
-
-	int pid = fork(); 
+	// We _do_ have fork().
+	pid_t pid = fork(); 
 	if (pid < 0) {
 		quit(errno, "fork() failed.");
 	}
@@ -87,7 +106,7 @@ run(const char *prg, list<const char *> const &args) {
 	}
 
 	int ret;
-	int r = wait(&ret);
+	pid_t r = wait(&ret);
 	while(r != pid) {
 		if (r == -1 && errno != EINTR) {
 			quit(errno, "wait() failed.");
@@ -99,7 +118,7 @@ run(const char *prg, list<const char *> const &args) {
 
 	free(argv);
 
-#endif /* defined(CONFIG_NO_FORK) && defined(CONFIG_NO_SPAWN) */
+#endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 
 	return ret;
 }

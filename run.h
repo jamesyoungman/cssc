@@ -13,26 +13,26 @@
 
 #include "list.h"
 
-#ifdef CONFIG_NO_FORK
+#ifndef HAVE_FORK
 
-#if defined(CONFIG_NO_SPAWN) && !defined(CONFIG_DJGPP)
+#if !defined(HAVE_SPAWN) && !defined(CONFIG_DJGPP)
 
 #define STATUS(n) (0)
 #define STATUS_MSG(n) 
 
-#else /* defined(CONFIG_NO_SPAWN) && !defined(CONFIG_DJGPP) */
+#else /* !defined(HAVE_SPAWN) && !defined(CONFIG_DJGPP) */
 
 #define STATUS(n) (n)
 #define STATUS_MSG(n) "(status = %d)", (n)
 
-#endif /* defined(CONFIG_NO_SPAWN) && !defined(CONFIG_DJGPP) */
+#endif /* !defined(HAVE_SPAWN) && !defined(CONFIG_DJGPP) */
 
-#else /* CONFIG_NO_FORK */
+#else /* HAVE_FORK is defined */
 
 #define STATUS(n) ((n) << 8)
 #define STATUS_MSG(n) "(status = %d, %d)", (n) >> 8, (n) & 0xff
 
-#endif /* CONFIG_NO_FORK */
+#endif /* HAVE_FORK */
 
 int run(const char *prg, list<const char *> const &args);
 int run_mr_checker(const char *prg, const char *arg1,

@@ -13,34 +13,34 @@
 #ifndef __SYSDEP_H__
 #define __SYSDEP_H__
 
-#ifdef CONFIG_INCLUDE_FCNTL_H 
+#ifdef HAVE_FCNTL_H 
 #include <fcntl.h>
 #endif
 
-#ifdef CONFIG_INCLUDE_SYS_FILE_H
+#ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
 
-#ifdef CONFIG_INCLUDE_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#ifdef CONFIG_INCLUDE_PROTOTYPES_H
+#ifdef HAVE_PROTOTYPES_H
 #include <prototypes.h>
 #endif
 
-#ifdef CONFIG_INCLUDE_IO_H
+#ifdef HAVE_IO_H
 #include <io.h>
 #endif
 
-#ifdef CONFIG_INCLUDE_SYS_WAIT_H
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #ifdef CONFIG_WAIT_IS_A_USELESS_MACRO
 #undef wait
 #endif
 #endif
 
-#ifdef CONFIG_INCLUDE_PROCESS_H
+#ifdef HAVE_PROCESS_H
 #include <process.h>
 #endif
 

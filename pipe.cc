@@ -26,7 +26,7 @@ static const char sccs_id[] = "@(#) MySC pipe.c 1.1 93/11/09 17:17:57";
 
 extern int create(mystring name, int mode); /* file.c */
 
-#ifdef CONFIG_NO_PIPE
+#ifndef HAVE_PIPE
 
 /* Deletes the temporary file if the programme quits prematurely. */
 
@@ -153,10 +153,10 @@ run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out) {
 }
 
 
-#else /* CONFIG_NO_PIPE */
+#else /* HAVE_PIPE */
 
-#ifdef CONFIG_NO_FORK
-#error "CONFIG_NO_FORK may not be defined if CONFIG_NO_PIPE isn't defined."
+#ifndef HAVE_FORK
+#error "HAVE_FORK must be defined if HAVE_PIPE is defined."
 #endif
 
 
@@ -194,17 +194,17 @@ wait_pid::unlink() {
 
 int
 wait_pid::wait() {
-	assert(pid != -1 && pid != 0);
+	assert(pid != (pid_t)-1 && pid != 0);
 
 	if (reaped) {
-		pid = -1;
+		pid = (pid_t)-1;
 		return status;
 	}
 
 	int st;
-	int r = ::wait(&st);
+	pid_t r = ::wait(&st);
 	while(r != pid) {
-		if (r != -1) {
+		if (r != (pid_t)-1) {
 			class wait_pid *p = head;
 
 			while(p != NULL) {
@@ -223,7 +223,7 @@ wait_pid::wait() {
 	}
 
 	unlink();
-	pid = -1;
+	pid = (pid_t)-1;
 
 	return st;
 }
@@ -249,7 +249,7 @@ Pipe::Pipe() {
 	}
 
 	pid = fork();
-	if (pid == -1) {
+	if (pid == (pid_t)-1) {
 		quit(errno, "fork() failed.");
 	}
 
@@ -303,7 +303,7 @@ run_diff(const char *gname, Pipe &pipe_in, Pipe &pipe_out)
 
 }
 
-#endif /* CONFIG_NO_PIPE */
+#endif /* HAVE_PIPE */
 
 /* Local variables: */
 /* mode: c++ */

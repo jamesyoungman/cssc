@@ -19,7 +19,7 @@ class cleanup {
 	static class cleanup *head;
 	static int running;
 	static int all_disabled;
-#ifndef CONFIG_NO_FORK
+#if HAVE_FORK
 	static int in_child_flag;
 #endif
 
@@ -39,7 +39,7 @@ public:
 	static void run_cleanups();
 	static int active() { return running; }
 	static void disable_all() { all_disabled++; }
-#ifndef CONFIG_NO_FORK
+#ifdef HAVE_FORK
 	static void set_in_child() { in_child_flag = 1; disable_all(); }
 	static int in_child() { return in_child_flag; }
 #endif

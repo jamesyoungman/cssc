@@ -14,6 +14,7 @@
 
 #include "mysc.h"
 #include "sysdep.h"
+#include "quit.h"
 
 #include <stdarg.h>
 
@@ -86,7 +87,7 @@ quit(int err, const char *fmt, ...) {
 	putc('\n', stderr);
 
 	if (err >= 1) {
-#ifdef CONFIG_NO_STRERROR
+#ifndef HAVE_STRERROR
 		if (err <= sys_nerr) {
 			fprintf(stderr, "%d - %s\n", err, sys_errlist[err]);
 		} else {
@@ -99,13 +100,13 @@ quit(int err, const char *fmt, ...) {
 
 	fflush(stderr);
 
-#ifndef CONFIG_NO_ABORT
+#ifdef HAVE_ABORT
 	if (err == -3) {
 		abort();
 	}
 #endif
 
-#ifndef CONFIG_NO_PIPE
+#if HAVE_PIPE
 	if (cleanup::in_child()) {
 		if (err > 0) {
 			_exit(1);
@@ -136,7 +137,7 @@ assert_failed(const char *file, int line, const char *test) {
 class cleanup *cleanup::head = NULL;
 int cleanup::running = 0;
 int cleanup::all_disabled = 0;
-#ifndef CONFIG_NO_FORK
+#if HAVE_FORK
 int cleanup::in_child_flag = 0;
 #endif
 

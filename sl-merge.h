@@ -9,6 +9,9 @@
  * @(#) MySC sl-merge.c 1.1 93/11/09 17:18:03
  *
  */
+#include "mysc.h"
+#include "sid.h"
+#include "sid_list.h"
 
 #ifndef __SL_MERGE_C__
 #define __SL_MERGE_C__

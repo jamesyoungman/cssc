@@ -48,13 +48,13 @@ inline void give_up_privileges() {}
 inline void restore_privileges() {}
 #endif
 
-#ifdef CONFIG_NO_REMOVE
+#ifndef HAVE_REMOVE
 #undef remove
 #define remove LIDENT(remove)
 int remove(const char *name);
 #endif
 
-#ifdef CONFIG_NO_RENAME
+#ifndef HAVE_RENAME
 #undef rename
 #define rename LIDENT(rename)
 int rename(const char *from, const char *to);

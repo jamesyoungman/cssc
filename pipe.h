@@ -13,6 +13,8 @@
 #ifndef __PIPE_H__
 #define __PIPE_H__
 
+#include <stdio.h>
+
 #ifdef __GNUC__
 #pragma interface
 #endif
@@ -23,7 +25,7 @@
    called in order: constructor, write_stream(), write_close(),
    read_stream(), read_close(), destructor. */
 
-#ifdef CONFIG_NO_PIPE
+#ifndef HAVE_PIPE
 
 class Pipe: cleanup {
 	friend int run_diff(const char *gname, Pipe &in, Pipe &out);
@@ -44,23 +46,23 @@ public:
 	~Pipe() { assert(f == NULL); }
 };
 
-#else /*  CONFIG_NO_PIPE */
+#else /*  HAVE_PIPE */
 
 /* Definition of the class wait_pid.  It handles the problem of
    other child processes exiting while waiting a for a specific
    child process to exit. */
 
 class wait_pid {
-	int pid;
+	pid_t pid;
 	int reaped;
 	int status;
 	class wait_pid *next;
 	static class wait_pid *head;
 
 	void
-	link(int p) {
+	link(pid_t p) {
 		pid = p;
-		if (p != -1 && p != 0) {
+		if (p != (pid_t)-1 && p != 0) {
 			reaped = 0;
 			next = head;
 			head = this;
@@ -78,19 +80,19 @@ public:
 
 	int
 	operator =(int p) {
-		assert(pid == -1);
+		assert(pid == (pid_t)-1);
 		link(p);
 		return p;
 	}
 
-	operator int() {
+	operator pid_t() {
 		return pid;
 	}
 
 	int wait();
 
 	~wait_pid() {
-		if (pid != -1 && pid != 0) {
+		if (pid != (pid_t)-1 && pid != 0) {
 			unlink();
 		}
 	}
@@ -147,7 +149,7 @@ public:
 	}
 };	
 
-#endif /* CONFIG_NO_PIPE */
+#endif /* HAVE_PIPE */
 
 #endif /* __PIPE_H__ */
 

@@ -34,6 +34,7 @@ mystring::create(const char *s) {
 	str = (char *) p + STR_OFFSET;
 }
 
+
 void
 mystring::create(const char *s1, const char *s2) {
 	if (s1 == NULL) {
@@ -52,6 +53,35 @@ mystring::create(const char *s1, const char *s2) {
 	p->refs = 1;
 
 	str = (char *) p + STR_OFFSET;
+}
+
+mystring::mystring(const char *s, size_t len)
+{
+  ptr *p = (ptr *) xmalloc(STR_OFFSET + len + 1);
+  memcpy(p->str, s, len);
+  p->str[len] = '\0';
+  p->refs = 1;
+  str = (char *) p + STR_OFFSET;
+}
+
+const mystring& mystring::operator+=(const mystring& s)
+{
+  size_t newlen = strlen(str) + strlen(s.str) + 1;
+  ptr *p = (ptr *) xmalloc(STR_OFFSET + newlen);
+  strcpy(p->str, str);
+  strcat(p->str, s.str);
+  destroy();
+  create(p->str);
+  free(p);
+  return *this;
+}
+
+
+mystring mystring::operator+(const mystring& s)
+{
+  mystring ret(str);
+  ret += s;
+  return ret;
 }
 
 

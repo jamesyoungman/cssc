@@ -11,10 +11,10 @@
 
 #include "mysc.h"
 #include "sccsfile.h"
-#include "sl-merge.c"
+#include "sl-merge.cc"
 
-#ifdef CONFIG_NO_STRSTR
-#include "strstr.c"
+#ifndef HAVE_STRSTR
+#include "strstr.cc"
 #endif
 
 #ifdef CONFIG_SCCS_IDS
