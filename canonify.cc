@@ -23,8 +23,12 @@
 
 #include "cssc.h"
 #include "mystring.h"
+#include "sccsname.h"
 
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>		// chdir()
+#endif
+#include <stddef.h>		// chdir()
 
 static mystring
 get_current_directory()
@@ -58,12 +62,12 @@ get_current_directory()
 
 
 mystring
-canonify_filename(const mystring& fname)
+canonify_filename(const char* fname)
 {
   mystring dirname(".");
   mystring basename(fname);
   
-  for (size_t i=fname.length(); i>0; --i)
+  for (size_t i=strlen(fname)-1; i>0; --i)
     {
       if ('/' == fname[i])
 	{
