@@ -1,4 +1,17 @@
+1998-06-11  James Youngman  <jay@gnu.org>
+
+	* bsd/Makefile.am:
+	Even though sccs.1 is in man_MANS, we still need to get it added to
+	EXTRA_DIST in order to get it in the distribution.   Argh.
+
 1998-06-10  James Youngman  <jay@gnu.org>
+
+	* configure.in: Bumped the patchlevel.
+
+	* auxfiles/CSSC.spec:
+	Fixe dchangelog, added sccs manpage, included all the info files.
+
+	* NEWS, ChangeLog: Added changes for CSSC-0.07alpha-pl3.
 
 	* bsd/Makefile.am:
 	Added COPYNG.bsd to the distribution.   Also .ispell_english.
