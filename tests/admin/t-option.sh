@@ -12,7 +12,7 @@ expands_to () {
 docommand $1 "${prs} \"-d$2\" s.bar" 0 "$3"
 }
 
-remove s.bar 
+remove [sxzp].bar x.bar.bak
 
 # Create file with description.
 echo "Descriptive Text" > DESC
@@ -34,6 +34,6 @@ remove s.bar
 docommand T5 "${admin} -n -t s.bar" 1 "" IGNORE
 
 
-remove s.bar 
+remove [sxzp].bar  x.bar.bak
 success
 
