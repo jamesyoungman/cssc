@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.25 1998/06/15 20:49:59 james Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.26 1998/08/14 08:23:35 james Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -225,10 +225,13 @@ main(int argc, char **argv) {
 	if (use_stdout) {
 		gname = "-";
 		out = stdout_to_stderr();
+		if (NULL == out)
+		  return 1;	// fatal error.
 	}
 
 	if (silent) {
-		stdout_to_null();
+		if (!stdout_to_null())
+		  return 1;	// fatal error.
 	}
 
 	if (no_output) {
@@ -282,7 +285,12 @@ main(int argc, char **argv) {
 				name.c_str());
 		      }
 		    
-		    file.test_locks(retrieve, *pfile);
+		    if (!file.test_locks(retrieve, *pfile))
+		      {
+			retval = 1;
+			continue; // continue with next file...
+		      }
+		    
 		    new_delta = file.find_next_sid(rid, retrieve,
 						   branch, *pfile);
 		  }
@@ -318,13 +326,6 @@ main(int argc, char **argv) {
 			= file.get(out, gname, retrieve, cutoff_date,
 				   include, exclude, keywords, wstring,
 				   show_sid, show_module, debug);
-
-		if (!status.success) // get failed.
-		  {
-		    retval = 1;
-		    continue;
-		  }
-			  
 		if (!use_stdout && !no_output) {
 			fclose(out);
 #ifdef CONFIG_USE_ARCHIVE_BIT
@@ -334,6 +335,13 @@ main(int argc, char **argv) {
 #endif
 		}
 		
+
+		if (!status.success) // get failed.
+		  {
+		    retval = 1;
+		    continue;
+		  }
+			  
 		// Print the name of the SCCS file unless exactly one
 		// was specified.
 		if (!iter.unique())

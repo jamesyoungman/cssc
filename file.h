@@ -46,7 +46,7 @@ enum create_mode {
 #endif
 };
 
-void stdout_to_null();
+bool stdout_to_null();
 FILE *stdout_to_stderr();
 int stdin_is_a_tty();
 FILE *open_null();

@@ -32,13 +32,13 @@
 #include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.8 1997/12/26 17:00:14 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.9 1998/08/14 08:23:41 james Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are
    to be included and which are to be excluded. */
 
-void
+bool
 sccs_file::prepare_seqstate(seq_state &state, sid_list include,
 			    sid_list exclude, sccs_date cutoff_date)
 {
@@ -66,6 +66,8 @@ sccs_file::prepare_seqstate(seq_state &state, sid_list include,
       ASSERT(0 != delta_table);
     }
   ASSERT(0 != delta_table);
+  
+  return true;
 }
 
 /* Local variables: */

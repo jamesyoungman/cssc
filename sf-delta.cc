@@ -41,7 +41,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.25 1998/08/13 21:35:31 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.26 1998/08/14 08:23:38 james Exp $";
 #endif
 
 class diff_state
@@ -367,7 +367,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 {
   ASSERT(mode == UPDATE);
 
-  check_keywords_in_file(gname.c_str());
+  if (!check_keywords_in_file(gname.c_str()))
+    return false;
 
 
   /*
@@ -402,10 +403,14 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   // one for the delta.
   seq_no predecessor_seq = got_delta->seq;
 
-  prepare_seqstate(sstate, predecessor_seq);
-  prepare_seqstate(sstate, pfile->include, pfile->exclude,
-		   sccs_date(NULL));
+  if (!prepare_seqstate(sstate, predecessor_seq))
+    return false;
+  
+  if (!prepare_seqstate(sstate, pfile->include, pfile->exclude,
+		   sccs_date(NULL)))
+    return false;
 
+  
   mystring dname(name.sub_file('d'));
   FILE *get_out = fopen(dname.c_str(), "wt");
   if (NULL == get_out)

@@ -45,34 +45,41 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.21 1998/08/13 18:17:35 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.22 1998/08/14 08:23:39 james Exp $";
 #endif
 
-void
-sccs_file::prepare_seqstate(seq_state &state, seq_no seq) {
-	while (seq != 0) {
-		if (state.is_predecessor(seq)) {
-			quit(-1, "%s: Loop in deltas.", name.c_str());
-		}
-		state.set_predecessor(seq);
-
-		int len;
-		int i;
-
-		const delta &d = delta_table->delta_at_seq(seq);
-
-		len = d.included.length();
-		for(i = 0; i < len; i++) {
-			state.pred_include(d.included[i]);
-		} 		
-
-		len = d.excluded.length();
-		for(i = 0; i < len; i++) {
-			state.pred_exclude(d.excluded[i]);
-		} 		
-
-		seq = d.prev_seq;
+bool
+sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
+{
+  while (seq != 0)
+    {
+      if (state.is_predecessor(seq))
+	{
+	  errormsg("%s: Loop in deltas.", name.c_str());
+	  return false;
 	}
+      state.set_predecessor(seq);
+      
+      int len;
+      int i;
+      
+      const delta &d = delta_table->delta_at_seq(seq);
+      
+      len = d.included.length();
+      for(i = 0; i < len; i++)
+	{
+	  state.pred_include(d.included[i]);
+	} 		
+      
+      len = d.excluded.length();
+      for(i = 0; i < len; i++)
+	{
+	  state.pred_exclude(d.excluded[i]);
+	} 		
+      
+      seq = d.prev_seq;
+    }
+  return true;
 }
 
 bool

@@ -32,7 +32,7 @@
 #include "my-getopt.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.15 1998/08/13 18:14:19 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.16 1998/08/14 08:23:44 james Exp $";
 
 void
 usage() {
@@ -91,7 +91,10 @@ main(int argc, char **argv)
   
   if (silent)
     {
-      stdout_to_null();
+      if (!stdout_to_null())
+	{
+	  return 1;		// fatal error.  Process no files.
+	}
     }
 
   int retval = 0;

@@ -151,7 +151,7 @@ private:
 	found_id(0) {}
   };
 
-  void prepare_seqstate(seq_state &state, seq_no seq);
+  bool prepare_seqstate(seq_state &state, seq_no seq);
 
   typedef int (sccs_file::*subst_fn_t)(const char *,
 				       struct subst_parms *,
@@ -181,7 +181,7 @@ public:
 			  bool include_branches=false) const ;
   sid find_next_sid(sid requested, sid got, int branch,
 		    sccs_pfile &pfile) const;
-  void test_locks(sid got, sccs_pfile &pfile) const;
+  bool test_locks(sid got, sccs_pfile &pfile) const;
   
   struct get_status get(FILE *out, mystring name, sid id,
 			sccs_date cutoff_date = NULL,
@@ -193,7 +193,7 @@ public:
 
   /* sf-get3.c */
 private:
-  void prepare_seqstate(seq_state &state, sid_list include,
+  bool prepare_seqstate(seq_state &state, sid_list include,
 			sid_list exclude, sccs_date cutoff_date);
 
   /* sf-write.c */
@@ -206,7 +206,7 @@ private:
   int rehack_encoded_flag(FILE *out, int *sum) const;
 
 public:
-  static void update_checksum(const char *name);
+  static bool update_checksum(const char *name);
   bool update();
 
   /* sf-add.c */
@@ -216,7 +216,7 @@ public:
 
   /* sf-delta.c */
 private:
-  void check_keywords_in_file(const char *name);
+  bool check_keywords_in_file(const char *name);
 
 public:
   int

@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.19 1998/08/13 18:13:25 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.20 1998/08/14 08:23:43 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -455,7 +455,7 @@ sccs_file::end_update(FILE *out) const
   if (flags.encoded)
     {
       rewind(out);
-      if (rehack_encoded_flag(out, &sum))
+      if (0 != rehack_encoded_flag(out, &sum))
 	{
 	  xfile_error("Write error.");
 	}
@@ -471,8 +471,7 @@ sccs_file::end_update(FILE *out) const
   
   if (mode != CREATE && remove(name.c_str()) == -1)
     {
-      errormsg_with_errno(errno, "%s: Can't remove old SCCS file.",
-			  name.c_str());
+      errormsg_with_errno("%s: Can't remove old SCCS file.", name.c_str());
       return false;
     }
   else if (rename(xname.c_str(), name.c_str()) == -1)
@@ -490,16 +489,19 @@ sccs_file::end_update(FILE *out) const
 
 /* Recalculate and update the checksum of a SCCS file. */
 
-void
-sccs_file::update_checksum(const char *name) {
-	int sum;
-	FILE *out = open_sccs_file(name, UPDATE, &sum);
-
-	if (fprintf_failed(fprintf(out, "\001h%05d", sum))
-	    || fclose_failed(fclose(out)))
-	  {
-	    quit(errno, "%s: Write error.", name);
-	  }
+bool
+sccs_file::update_checksum(const char *name)
+{
+  int sum;
+  FILE *out = open_sccs_file(name, UPDATE, &sum);
+  
+  if (fprintf_failed(fprintf(out, "\001h%05d", sum))
+      || fclose_failed(fclose(out)))
+    {
+      errormsg_with_errno("%s: Write error.", name);
+      return false;
+    }
+  return true;
 }
 
 

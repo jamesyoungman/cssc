@@ -34,7 +34,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.20 1998/08/13 18:17:02 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.21 1998/08/14 08:23:33 james Exp $";
 
 void
 usage() {
@@ -123,8 +123,12 @@ main(int argc, char **argv) {
 
 	sccs_file_iterator iter(opts);
 
-     	if (silent) {
-		stdout_to_null();
+     	if (silent)
+	  {
+	  if (!stdout_to_null())
+	    {
+	      return 1;		// fatal error.  Process no files.
+	    }
 	}
 
 	list<mystring> mr_list, comment_list;

@@ -46,13 +46,14 @@ no_id_keywords(const char name[]) const
 
 /* Warns or quits if the new delta doesn't include any id keywords */
 
-void
+bool
 sccs_file::check_keywords_in_file(const char *name)
 {
   FILE *f = fopen(name, "r");
   if (NULL == f)
     {
-      quit(errno, "%s: Can't open file for reading.", name);
+      errormsg_with_errno("%s: Can't open file for reading.", name);
+      return false;
     }
   else
     {
@@ -67,7 +68,7 @@ sccs_file::check_keywords_in_file(const char *name)
 	      if ('%' == peek)
 		{
 		  fclose(f);
-		  return;
+		  return true;
 		}
 	      else if (EOF == peek)
 		{
@@ -80,6 +81,7 @@ sccs_file::check_keywords_in_file(const char *name)
       no_id_keywords(name);
     }
   fclose(f);
+  return true;
 }
 
 

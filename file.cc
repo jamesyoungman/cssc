@@ -43,7 +43,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.18 1998/08/13 18:08:40 james Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.19 1998/08/14 08:23:34 james Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -95,13 +95,18 @@ eaccess(const char *name, int perm) {
 
 /* Redirects stdout to a "null" file (eg. /dev/null). */
 		
-void
+bool
 stdout_to_null()
 {
   if (NULL == freopen(CONFIG_NULL_FILENAME, "w", stdout))
     {
-      quit(errno, "Can't redirect stdout to "
-	   CONFIG_NULL_FILENAME ".");
+      errormsg_with_errno("Can't redirect stdout to "
+			  CONFIG_NULL_FILENAME ".");
+      return false;
+    }
+  else
+    {
+      return true;
     }
 }
 
@@ -114,19 +119,24 @@ stdout_to_stderr() {
 	fflush(stderr);
 
 	int out = dup(1);
-	if (out == -1) {
-		quit(errno, "dup(1) failed.");
-	}
+	if (out == -1)
+	  {
+	    errormsg_with_errno("dup(1) failed.");
+	    return NULL;
+	  }
 
-	if (close(1) == -1 || dup(2) != 1) {
-		quit(errno, "Can't redirect stdout to stderr.");
-	}
+	if (close(1) == -1 || dup(2) != 1)
+	  {
+	    errormsg_with_errno("Can't redirect stdout to stderr.");
+	    return NULL;
+	  }
 
 	FILE *f = fdopen(out, "w");
-	if (f == NULL) {
-		quit(errno, "fdopen failed.");
-	}
-
+	if (f == NULL)
+	  {
+	    errormsg_with_errno("fdopen failed.");
+	    return NULL;
+	  }
 	return f;
 }
 
@@ -361,13 +371,14 @@ create(mystring name, int mode) {
 	} else if ((mode & CREATE_FOR_GET)
 		   && file_exists(name.c_str())
 		   && test_archive_bit(name.c_str())) {
-		quit(-1, "%s: File exists and its archive attribute is set.",
+		errormsg("%s: File exists and its archive attribute is set.",
 		     name.c_str());
+		return -1;
 #else
 	} else if ((mode & CREATE_FOR_GET)
 		   && is_writable(name.c_str(), mode & CREATE_AS_REAL_USER)) {
-		quit(-1, "%s: File exists and is writable.",
-		     name.c_str());
+		errormsg("%s: File exists and is writable.", name.c_str());
+		return -1;
 #endif
 	} else if (file_exists(name.c_str()) && unlink(name.c_str()) == -1) {
 		return -1;
@@ -460,7 +471,7 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
 	{
 	  return;
 	}
-      quit(errno, "%s: Can't create lock file.", 
+      ctor_quit(errno, "%s: Can't create lock file.", 
 	   zname.c_str());
     }
 
@@ -469,7 +480,7 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
       // Here, the file is open (i.e. has been created)
       // but we quit without deleting it.  
       // TODO: does this need fixing?
-      quit(errno, "%s: Write error.", zname.c_str());
+      ctor_quit(errno, "%s: Write error.", zname.c_str());
     }
   
   locked = 1;

@@ -102,8 +102,8 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
       size_t len = comma - s;
       if (len > sizeof(buf) - 1)
 	{
-	  quit(-1, "Range in list too long: '%s'",
-	       list);
+	  ctor_quit(-1, "Range in list too long: '%s'",
+		    list);
 	}
 
       memcpy(buf, s, len);

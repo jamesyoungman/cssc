@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.29 1998/08/13 18:18:11 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.30 1998/08/14 08:23:40 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -230,7 +230,7 @@ sccs_file::find_next_sid(sid requested, sid got,
    requested is locked or if the requested SID has an edit lock and
    the joint edit flag isn't set. */
 
-void
+bool
 sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 	int i;
 	int len;
@@ -269,8 +269,9 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 		}
 		
 		if (!found) {
-			quit(-1, "%s: You are not authorized to make deltas.",
+			errormsg("%s: You are not authorized to make deltas.",
 			     name.c_str());
+			return false;
 		}
 	}
 
@@ -278,14 +279,17 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
 	    || (flags.floor.valid() && flags.floor > got)
 	    || (flags.ceiling.valid() && flags.ceiling < got)
 	    || flags.locked.member(got)) {
-		quit(-1, "%s: Requested release is locked.",
-		     name.c_str());
+		errormsg("%s: Requested release is locked.",
+			 name.c_str());
+		return false;
 	}
 	
 	if (pfile.is_locked(got) && !flags.joint_edit) {
-		quit(-1, "%s: Requested SID locked by '%s'.\n",
+		errormsg("%s: Requested SID locked by '%s'.\n",
 		     name.c_str(), pfile->user.c_str());
+		return false;
 	}
+	return true;
 }
 
 
@@ -479,6 +483,10 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	       int keywords, const char *wstring,
 	       int show_sid, int show_module, int debug) {
 
+	/* Set the return status. */
+	struct get_status status;
+	status.success = true;
+	
 	ASSERT(0 != delta_table);
 	
 	seq_state state(highest_delta_seqno());
@@ -486,10 +494,19 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	ASSERT(d != NULL);
 
 	ASSERT(0 != delta_table);
-	prepare_seqstate(state, d->seq);
+	if (!prepare_seqstate(state, d->seq))
+	  {
+	    status.success = false;
+	    return status;
+	  }
+	
 
 	ASSERT(0 != delta_table);
-	prepare_seqstate(state, include, exclude, cutoff_date);
+	if (!prepare_seqstate(state, include, exclude, cutoff_date))
+	  {
+	    status.success = false;
+	    return status;
+	  }
 
 	// The subst_parms here may not be the Whole Truth since
 	// the cutoff date may affect which version is actually
@@ -530,10 +547,6 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
 	    no_id_keywords(name.c_str());
 	  }
 				     
-	/* Set the return status. */
-	struct get_status status;
-	status.success = true;
-	
 	status.lines = parms.out_lineno;
 	
 	seq_no seq;	

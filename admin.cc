@@ -36,7 +36,7 @@
 #include "version.h"
 #include "delta.h"
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.27 1998/06/15 20:49:57 james Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.28 1998/08/14 08:23:32 james Exp $";
 
 
 static bool
@@ -213,7 +213,8 @@ main(int argc, char **argv) {
 			  retval = 1;
 			  continue; // with next file
 			}
-			sccs_file::update_checksum(name.c_str());
+			if (!sccs_file::update_checksum(name.c_str()))
+			  retval = 1; // some kind of error.
 			continue;
 		}
 
