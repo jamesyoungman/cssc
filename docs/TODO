@@ -1,3 +1,28 @@
+1998-02-10  James Youngman  <jay@gnu.org>
+
+	* tests/binary/binbasic.sh: Add the larger files too (currently 
+	  commented out).
+
+1998-02-08  James Youngman  <jay@gnu.org>
+
+	* Rewrite sf-delta.cc to not use the Pipe class.  Use 
+	  a mechanism similar to popen() first.  Don't insist on
+	  a diff(1) that understands that "-" means stdin; that is,
+	  pass two proper filenames to diff.
+
+	* Find out if genuine SCCS works when the s-file's name
+	  contains a space.  Find out particularly if the right
+	  thing happens when delta invokes diff.
+
+1998-02-01  James Youngman  <jay@gnu.org>
+
+	* tests: Testing for binary files: auto detects binary files OK,
+	check that admin -b works OK, "prs -d:GB:", "prs -d:BD:" and "prt
+	-b" work OK.  Also check deltaing of binary files, zero-length
+	files, keyword substitution, large binary files, "text" files with
+	zero-bytes in them, and files that do not end in newline.
+	
+
 1998-01-27  James Youngman  <jay@gnu.org>
 
 	* admin: check that the # of lines inserted is correct for the
@@ -32,7 +57,7 @@ Wed Nov 12 00:00:44 1997  James Youngman  <jay@gnu.org>
 	* Write test cases for admin's -h, -l, -r, -V, and -z
  	flags.
 
-	* Write code and test cases for admin's -b flag.
+	* Write test cases for admin's -b flag.
 
 	* Write test cases for delta's -g, -n, -p, -r, -s flags.
 

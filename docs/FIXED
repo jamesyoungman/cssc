@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-01-24 20:21:02 james>
+Time-stamp: <1998-02-11 08:15:04 james>
 
 List of fixed bugs 
 
@@ -16,6 +16,18 @@ it's easier to just fix the bug than list it in BUGS _and_ I do it
 promptly, it does not get listed.  If you don't like this (lack of?)
 policy, let me know.  All bugfixes are listed in ChangeLog, in some
 fashion.
+
+
+Mon Feb  9 23:47:08 1998: Marty Leisner <leisner@sdsp.mc.xerox.com>
+In version 0.05-devel-pl0.  Fixed in 0.05-devel-pl1.
+  SunOS 4.1.4 makes tests/common/test-common emit the "Unusual
+  system" warning regarding the options accepted by "echo", and 
+  so the escape codes in the strings in the test suites don't work.
+  So we have to roll out own echo, I think.   Very slow, no doubt.
+-
+  Our own echo is in testutils/ekko.c, taken from GNU sh-utils.
+  It seems to work fine.  tests/common/test-common has been updated
+  to use this if the system echo(1) is unsatisfactory.
 
 
 Sat Jan 24 16:58:50 1998: James Youngman <jay@gnu.org>

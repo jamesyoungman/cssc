@@ -1,13 +1,40 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1998-01-24 20:22:52 james>
+Time-stamp: <1998-02-11 08:12:12 james>
 
 List of known bugs (bugs are moved to FIXED as they are fixed so it is
 valid but unlikely for there to be nothing below this line)
 
+
+Mon Feb  9 23:41:03 1998: Lars Hecking <lhecking@nmrc.ucc.ie>
+In version 0.05-pl0.  Unfixed.
+ I have downloaded and compiled CSSC 0.05alpha-pl0 on Solaris 2.5.1
+ with egcs-1.0.1 and gcc-2.8.0. All goes well, except for the sccsdiff
+ tests 
+ [this bug is now fixed -- jay]
+
+ Then, Irix 6.3. I have installed gcc-2.8.0, which supports 6.3/32-bit
+ API proper. I get tons of warnings like these at linking stage:
+
+ ld: WARNING 131: Multiply defined weak symbol:(__as__Q210sccs_pfile9edit_lockRCQ
+ 210sccs_pfile9edit_lock) in get.o and pf-add.o (2nd definition ignored).
+ ld: WARNING 131: Multiply defined weak symbol:(__as__Q210sccs_pfile9edit_lockRCQ
+ 210sccs_pfile9edit_lock) in get.o and pfile.o (2nd definition ignored).
+ ld: WARNING 131: Multiply defined weak symbol:(destroy__t4list1Z7release) in rl-
+ merge.o and sccsfile.o (2nd definition ignored).
+ ld: WARNING 131: Multiply defined weak symbol:(copy__t4list1Z7releaseRCt4list1Z7
+ release) in rl-merge.o and sccsfile.o (2nd definition ignored).
+ ld: WARNING 131: Multiply defined weak symbol:(__as__t4list1Z7releaseRCt4list1Z7
+ release) in rl-merge.o and sccsfile.o (2nd definition ignored).
+
+[JAY: looks like a template instantiation problem.  Perhaps this is
+ unavoidable given GCC-2.8's instantiation system and the IRIX linker.
+ Check the GCC release notes and FAQ]
+
+
 Wed Nov  5 18:56:06 1997: James Youngman <jay@gnu.org>
 In version 0.02-pl6.  Unfixed.
  GCC version 2.7.2.2 compiled for an Alpha running NetBSD fails to
- compile delta.cc.  If falls over with an "Unrecognised insn" error.
+ compile delta.cc.  It falls over with an "Unrecognised insn" error.
 
 
 Tue Jul 22 08:07:29 1997: Lars Hecking <lhecking@nmrc.ucc.ie>
@@ -28,7 +55,7 @@ I6...1c1
 FAIL init-mr.sh I6: stderr format error with ../../get -p s.new.txt
 
 This indicates that the -r option of "admin -i" has failed to produce
-an initial SID od 2.1, but has instead produced the default, 1.1.
+an initial SID of 2.1, but has instead produced the default, 1.1.
 Examination of the SCCS file bears this out:-
 
 begin 644 s.new.txt
