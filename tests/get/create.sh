@@ -50,6 +50,7 @@ do_output L15 "${get} -r1.4 -p test/s.passwd"      0 test/passwd.4 IGNORE
 do_output L16 "${get} -r1.5 -p test/s.passwd"      0 test/passwd.5 IGNORE
 do_output L17 "${get} -r1.3.1.1 -p test/s.passwd"  0 test/passwd.6 IGNORE
 
+rm -rf test
 remove command.log
 success
 
