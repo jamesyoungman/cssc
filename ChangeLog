@@ -1,3 +1,90 @@
+2000-07-18  James Youngman  <jay@gnu.org>
+
+	* auxfiles/CSSC.spec.in: Updated the URL.
+
+	* docs/BUGS: Refer to the bug tracking system at SourceForge.
+
+	* AUTHORS:
+	Inserted reference to file docs/CREDITS in the "AUTHORS" file.
+
+	* README: Added information about SourceForge to the README.
+
+	* configure.in: Bumped the patchlevel.
+
+	* NEWS, docs/CREDITS.short.txt, docs/CREDITS:
+	Brought into line with recent changes.
+
+	* bsd/sccs.c:
+	Patch from Albert John FitzPatrick III  <ajf_nylorac@acm.org>;
+	Added support for "unget".
+
+	* delta.cc:
+	Accept list of MRs on input even if the input is not a TTY since
+	allegedly other implementations do this.
+
+2000-03-19  James Youngman  <jay@gnu.org>
+
+	* tests/get/subst.sh, sf-get2.cc, sid.cc, sid.h:
+	Patches from Mark Fortescue relating to SID selection and cutoff dates.
+
+	* relvbr.h:
+	Removed remarks about MySC, since this file has never been part of MySC.
+
+	* relvbr.h: Fix by Mark Fortescue <mfortescue@transoft.com>.
+
+	* rmdel.cc, cdc.cc: Fix from Frank van Maarseveen <fvm@tasking.nl>:
+
+	A setuid cdc/rmdel will not unlock (i.e. remove the z-file) in
+	case of an error. Most obvious error is when the invoker is not
+	the creator of the delta.
+
+	Both cdc and rmdel revoke setuid permission when the real user
+	is not the creator of the delta. However, this should be restored
+	_before_ reaching the end of the 'try' scope because on leaving
+	it the z-file is removed indirectly by the sccs_file destructor.
+
+	Attached you will find a patch which solves this problem.
+
+	A more correct solution would be not to swap uid/euid but
+	to print something like:
+
+	ERROR [/usr/src/xxx/SCCS/s.main.c]:
+	Must be owner of file or <user> to use this command.(rc4)
+
+	* docs/cssc.texi:
+	Support for SCCS files in which timestamps have been corrupted by
+	non-Y2K-compliant versions of SCCS.  These files are correctly
+	understood on reading, and are fixed if the file is ever re-written by
+	CSSC.  (The Sun version of SCCS also performs the same fix).  Patches
+	to do this were provided by Peter Kjellerstedt
+
+	* delta-table.cc, delta-table.h, sf-get2.cc:
+	Sergey Ostashenko provided patches to allow the processing of SCCS
+	files with gaps in the chain of used sequence numbers, and to allow
+	two deltas to have the same sequence number, on the condition that one
+	of them is a removed delta.
+
+	* sccsdate.cc:
+	Patch by Peter Kjellerstedt for cleaning up after broken versions of
+	SCCS.
+
+	Some non y2k-compliant versions of SCCS will use a ":" in the decade
+	field of the date in the year 2000 (since the ASCII code for ':' is
+	one greater than that for '0').  Changed the relevant sccs_date
+	constructor to figure out the right value in this case.  A warning
+	message is issued when this happens.
+
+	* tests/bsd-sccs/driver-basic.sh, tests/cdc/2comment.sh, tests/cdc/4order.sh, tests/delta/basic2.sh, tests/delta/ignored.sh, tests/delta/iterbasic.sh, tests/get/annotate.sh, tests/get/create.sh, tests/get/doubleinc.sh, testutils/lndir.c, testutils/seeker.c, docs/BUGS, docs/CREDITS, docs/CREDITS.short.txt, docs/FIXED, docs/Platforms, docs/cssc.texi, bsd/sccs.c, run.cc, sccsfile.cc, sccsfile.h, sccsname.h, seqstate.cc, seqstate.h, sf-delta.cc, sf-get.cc, sf-get2.cc, sf-get3.cc, sf-prs.cc, val.cc, visibility.cc, ChangeLog, Makefile.am, NEWS, configure.in, file.cc, linebuf.cc, quit.cc:
+	Reverted trunk files to same contents as 0.11 patchlevel 3.
+
+1999-12-09  Mark Fortescue <mark@mtfhpc.demon.co.uk> 
+
+	* relvbr.h, sf-get2.cc, sid.cc, sid.h
+	Fixed a problem with branching
+
+	* sf-get2.cc, tests/get/subst.sh
+	Fixed a problem with Cutoff Dates
+
 1999-06-27  James Youngman  <jay@gnu.org>
 
 	* quit.cc, sccsfile.cc, file.cc:
