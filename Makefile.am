@@ -25,7 +25,7 @@ common_SOURCES = quit.cc getopt.cc version.cc
 sfile_SOURCES = fileiter.cc file.cc linebuf.cc mystring.cc xalloc.cc \
 		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc
 
-what_SOURCES = what.cc $(common_SOURCES)
+what_SOURCES = what.cc getopt.cc version.cc
 get_SOURCES = get.cc pf-add.cc pfile.cc sccsfile.cc rel_list.cc \
 	sf-chkid.cc sf-get.cc sf-get2.cc sf-get3.cc rl-merge.cc \
 	canonify.cc sf-kw.cc $(common_SOURCES) $(sfile_SOURCES)
