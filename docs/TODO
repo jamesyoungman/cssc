@@ -1,3 +1,17 @@
+Sun May 25 16:27:05 1997  James Youngman  <JYoungman@vggas.com>
+
+	* Fix unget so that test unget/output.sh/e7 passes.
+
+Sat May 10 16:27:45 1997  James Youngman  <james@bugalugs.no.where>
+
+	* Support "make install" and "make installdocs".
+
+Thu May  8 00:37:46 1997  James Youngman  <james@bugalugs.no.where>
+
+	* Try out the test scripts on a "real" version and either allow
+ 	for any output differences or -- better yet -- change CSSC to be
+ 	the same.
+
 Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
 
 	* Check the interaction between any -r option to get and the
