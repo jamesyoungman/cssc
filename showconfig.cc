@@ -25,13 +25,21 @@
  * INSTALL files for details of the specific configuration options
  * which are possible.
  *
- * $Id: showconfig.cc,v 1.3 2001/09/29 19:39:41 james_youngman Exp $
+ * $Id: showconfig.cc,v 1.4 2002/04/03 14:17:38 james_youngman Exp $
  */
 #include "cssc.h"
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#ifdef HAVE_LIMITS_H
+#include <limits.h>
+#endif
+
 
 static const char * copyright_explanation = 
-"Copyright (C) 1997-2001 Free Software Foundation, Inc.\n"
+"Copyright (C) 1997-2002 Free Software Foundation, Inc.\n"
 "\n"
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -52,6 +60,49 @@ static const char * copyright_explanation =
 void show_copyright(void)
 {
   fprintf(stderr, "%s\n\n", copyright_explanation);
+}
+
+static void show_system_line_max(void)
+{
+  long m = 0L;
+#ifdef HAVE_SYSCONF
+#ifdef _SC_LINE_MAX
+  if (0L == m)
+    m = sysconf(_SC_LINE_MAX);
+  if (m < 0L)
+    m = 0L;		   // there was an error, use LINE_MAX instead
+#endif
+#endif
+#ifdef LINE_MAX
+  /* LINE_MAX is a conservative value - _SC_LINE_MAX is likely 
+   * to be larger. 
+   */
+  if (0L == m)
+    m = LINE_MAX;
+#endif
+
+  if (m)
+    {
+      fprintf(stderr,
+	      "\n"
+	      "The system diff utility should be able to handle lines of up\n"
+	      "to %ld characters, and perhaps more.  You are using %s as your\n"
+	      "diff utility, but this program is not clever enough to determine\n"
+	      "if that is the system utility (to which the _SC_LINE_MAX limit\n"
+	      "shown above applies) or not.  If %s is GNU diff, then there\n"
+	      "will be no upper limit.\n",
+	      m,
+	      (CONFIG_DIFF_COMMAND), (CONFIG_DIFF_COMMAND));
+
+#ifdef HAVE_GNU_DIFF
+      fprintf(stderr,
+	      "\nWhen this version of CSSC was compiled, %s was GNU diff, "
+	      "which has no upper limit\n"
+	      "on line lengths.\n",
+	      (CONFIG_DIFF_COMMAND));
+#endif
+      
+    }
 }
 
 
@@ -136,4 +187,6 @@ void show_config_info(void)
   fprintf(stderr,
 	  "Set the environment variable CSSC_MAX_LINE_LENGTH "
 	  "to change this.\n");
+
+  show_system_line_max();
 }

@@ -22,13 +22,14 @@
  * Code for handling environment variables which affect CSSC.  See the
  * sections "Environment" and "Interoperability" in the CSSC manual.
  *
- * $Id: environment.cc,v 1.2 2001/09/29 19:39:41 james_youngman Exp $
+ * $Id: environment.cc,v 1.3 2002/04/03 14:16:33 james_youngman Exp $
  */
 #include "cssc.h"
 
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
 #endif
+
 
 bool binary_file_creation_allowed (void)
 {
