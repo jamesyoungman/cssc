@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.34 1998/10/29 23:29:38 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.35 1998/11/21 08:59:57 james Exp $";
 #endif
 
 
@@ -66,12 +66,9 @@ sccs_file::open_sccs_file(const char *name, enum _mode mode, int *sump)
   
   if (f == NULL)
     {
-      perror(name);
+      const char *purpose = (mode == UPDATE) ? "update" : "reading";
+      errormsg_with_errno("cannot open %s for %s", name, purpose);
       return NULL;
-      
-      // "%s: Can't open SCCS file for %s.",
-      // name,
-      // (mode == UPDATE) ? "update" : "reading");
     }
   
   if (getc(f) != '\001' || getc(f) != 'h')
@@ -457,7 +454,10 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     {
       return;
     }
-  
+
+  // Even if we are going to change the s-file, we do it by writing
+  // a new x-file and then renaming it.   This means that we open
+  // the s-file read-only.
   signed int sum = 0;
   f = open_sccs_file(name.c_str(), READ, &sum);
   if (NULL == f)
@@ -485,14 +485,22 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       
       if (false == checksum_valid)
 	{
-	  fprintf(stderr, "%s: Warning: bad checksum "
-		  "(expected=%d, calculated %d).\n",
-		  name.c_str(), given_sum, sum);
+	  if (FIX_CHECKSUM == mode)
+	    {
+	      // This supports the -z option of admin.
+	      checksum_valid = true;
+	    }
+	  else
+	    {
+	      fprintf(stderr, "%s: Warning: bad checksum "
+		      "(expected=%d, calculated %d).\n",
+		      name.c_str(), given_sum, sum);
+	    }
 	}
     }
   if (!checksum_valid)
     {
-      // TODO: throw exception here?
+      // Todo: throw exception here?
     }
   
   c = read_line();
