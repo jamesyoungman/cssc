@@ -1,0 +1,22 @@
+Brief instructions on testing.
+
+Running the tests currently requires:-
+
+1.	A Posix-like /bin/sh
+		Specifically the sourcing command (".") is required.
+		GNU Bash, for example, is fine.
+
+2.	lndir
+		Lndir is a utility from the X11 distribution for
+		making a duplicate of a directory tree using "ln".  In
+		the future, configure will work around a missing
+		"lndir".  Currently, it is required.
+
+To run the tests, first enter the direcotory "tests".  Testing is
+driven via "make".  The programs in the suite can be tested
+unduvudually or make can be used to run all the tests.  Normally,
+after compiling CSSC you would want to run all the tests and this is
+done with
+	make all-tests
+but if you are modifying code, you can re-run any failing tests by
+using one of the specific tests listed in the makefile.
