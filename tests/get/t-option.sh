@@ -110,4 +110,27 @@ toption="-t"
 get_expect tc1 ""    2.1.1.2			# This is surely wrong!
 
 remove $s
+
+##
+## Various tests for the case where the only SID in the s-file is 
+## not 1.1 (this is possible if you use the -r option to admin
+## when creating the s-file
+##
+remove $s $g $p $z
+echo "hello" > $g
+docommand oddstart-0 "cat $g" 0 "hello\n" ""
+docommand oddstart-1 "${admin} -i$g -r1.1.1.1 $s" 0 "" IGNORE
+remove $g
+
+# It should be possible to get 1.1.1.1 explicitly, but the default 
+# should fail with an error.
+docommand oddstart-2 "${get} $s" 1 "" IGNORE
+docommand oddstart-3 "${get} -r1.1.1.1 $s" 0 IGNORE IGNORE
+
+# get -t should select the topmost delta (1.1.1.1) and so should work OK.
+docommand oddstart-4 "${get} -t $s" 0 IGNORE IGNORE
+
+remove $s $g $p $z
+
+
 success
