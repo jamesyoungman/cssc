@@ -83,16 +83,6 @@ a workalike for the traditional Unix SCCS suite.
 * Concept Index::	Index of concepts.
 @end menu
 
-@node Copying, Overview, , Top
-@chapter Copying @code{CSSC}
-GNU CSSC is published under the GNU General Public License, which is
-designed to protect your rights, as the user of this program.  You have
-the right to modify this program, and distribute it.  You also have
-responsibilities to those to whom you distribute copies, as detailed in
-the license, below.
-
-@include gpl.texi
-
 @node Overview, Interface, Copying, Top
 @chapter Overview
 @cindex overview
@@ -128,9 +118,471 @@ Systems,emacs,The GNU Emacs manual}.
 @chapter Invoking CSSC programs
 @cindex invoking
 
+@ifinfo 
+The menu items are arranged in approximate order of 
+frequency of use, except @code{admin}, which is first
+because you have to use it to start off with.
+@end ifinfo
+
+@iftex
+The commands in the CSSC suite are described in alphabetical order.
+Ordered by the frequency with which I use them, they are:-
+@code{sccs, get, delta, what, sccsdiff, unget, admin,}
+@code{prs, sact, rmdel, cdc, prt, comb, help, val.}
+@end iftex
+
+@menu
+* admin::         Creating and administering SCCS files
+* sccs::          A more helpful front-end from BSD
+* get::           Checking-out a version for compilation or editing
+* delta::         Checking-in a revised version
+* what::          Identifying versions of files.
+* sccsdiff::      Finding the changes between two revisions
+* unget::         When you don't want to edit the file after all
+* prs::           Displaying the revision history of a file
+* sact::          Show which SCCS files are being edited
+* rmdel::         Expunging changes or backing out of a check-in
+* cdc::           Changing revision comments after the fact
+* prt::           Printing the delta table of a file
+* comb::          Creating a shell archive of an SCCS file
+* help::          Unimplemented hints on obscure error messages
+* val::           Validating an SCCS file for integrity
+@end menu
+
+@node admin, cdc, , Invoking Programs
+@section @code{admin}
+@cindex admin
+@cindex sccs-admin
+To create an SCCS archive of a source file @file{foo.c}, do
+@example
+admin -ifoo.c s.foo.c
+@end example
+This creates the archive file @file{s.foo.c} and initialises it
+with the current contents of your source file, @file{foo.c}.  If you use
+Emacs as your editor, you can just use @kbd{C-x v i} instead.
+
+Another frequently-used option is @samp{-b}, which indicates that the
+file is to be treated as a binary file rather than as text.  You might
+want to do this because the file actually contains binary data, or just
+characters that have other meanings within an SCCS file, for example
+@samp{^A}, the character whose code is 1.
+
+@table @samp
+
+@item -a xxx
+Add user or group @samp{xxx} the the list of those authorised 
+to check revisions in or out.  Untested.
+
+@item -b
+Ensure that the file is encoded as a binary file.   Unimplemenmted.
+
+@item -dF
+Delete flag @samp{F} from the flags present in the file (@pxref{flags}).
+Untested.
+
+@item -e xxx
+Erase the specified user or group from the list of those authorised to
+check revisions in or out.  Untested.
+
+@item -fF [xxx]
+Add the flag @samp{F} (with optional value @samp{xxx}) to the file's 
+flags (@pxref{flags}).  Untested.
+
+@item -h
+Check the SCCS file's checksum.  Untested.
+
+@item -ifoo
+Initialise the SCCS file with the contents of @file{foo}.
+
+@item -I
+As -i, but specifying no file name.  The file is instead read from
+standard input.  Untested.
+
+@item -lrel1,rel2,...
+Unlock the specified releases.   If @samp{a} is specified as the
+release, that denotes ``all releases''.  Untested.
+
+@item -mMR-list
+When initialising a file, add the specified list of MR numbers
+(@pxref{mr-numbers}) to the delta commentary for the initial version.
+The specified MRs are validated according to the setting of the @var{v}
+flag, which should be set (@pxref{flags}).  Untested.
+
+@item -M
+As for @samp{-m} but specifying no list of modification requests.
+This is the default.  Untested (although the default is tested).
+
+@item -n
+Create a new SCCS file.
+
+@item -rN
+Set the initial release number to @samp{N}.  The initial level within
+that release is always 1.  Untested.
+
+@item -tdesc
+Read in descriptive text for this file from @file{desc}.  This replaces
+any existing description.  See also the @samp{-T} option.  Untested.
+
+@item -T
+Remove the file's descriptive text.   This cannot be specified when the
+file is being created.  Under normal SCCS, it is possible to specify
+@samp{-t} without an argument, and this option is not required.
+Untested.
+
+@item -V 
+Display version information.  Untested.
+
+@item -yadayada
+When intialising a file, set the comment for that delta to
+@samp{adayada}.  Untested.
+
+@item -Y
+As for the @samp{-y} option, but specifying no comment.  This is the
+default.  Untested.
+
+@item -z
+Fix the checksum information.  Untested.
+@end table
+
+
+@node flags, mr-numbers, ,admin
+@subsection SCCS file flags
+@cindex flags
+Nothing here, sorry.
+
+@node mr-numbers, , flags, admin
+@subsection Modification Request numbers
+@cindex mr-numbers
+Nothing here, sorry.
+
+
+@node cdc, comb, admin, Invoking Programs
+@section @code{cdc}
+@cindex cdc
+@cindex sccs-cdc
+Nothing here, sorry.
+
+@node comb, delta, cdc, Invoking Programs
+@section @code{comb}
+@cindex comb
+@cindex sccs-comb
+Nothing here, sorry.
+
+@node delta, get, comb, Invoking Programs
+@section @code{delta}
+@cindex delta
+@cindex sccs-delta
+The @code{delta} command is used to add a new revision to the ones
+already stored in an SCCS file.  Before being able to do this you need
+to run @kbd{get -e} to check the file out for editing.
+
+@cindex SID
+@cindex release
+@cindex level
+@cindex branch
+@cindex sequence
+A new revision is created by the @code{delta} program.  These revisions
+are each identified by a unique @dfn{SID}.  A @sc{sid} looks like
+@samp{1.2.3.4}, where the four numbers are the @dfn{release},
+@dfn{level}, @dfn{branch} and @dfn{sequence} numbers.
+
+New revisions on the main sequence (the @dfn{trunk}) have no branch or
+sequence numbers and so just have two numbers (@samp{1.2}, for example).
+
+@node get, help, delta, Invoking Programs
+@section @code{get}
+@cindex get
+@cindex sccs-get
+The @code{get} command is to retrieve previous revisions from an SCCS
+file.  With the @samp{-e} option, it also locks the gotten revision so
+that a modified version can be checked in later using @code{delta}.  
+
+
+@menu
+* Basic Usage: get usage.           Frequently-used @samp{get} commands
+* Options: get options.             Full list of options
+* Keywords: keyword substitution.   Keyword Substitution
+@end menu
+
+@node get usage, get options, , get
+@subsection Basic Usage for @code{get}
+@table @samp
+There are very few common basic usage patterns for @samp{get}.
+Below, @file{s.file} denotes the name of any existing SCCS file.
+
+@item get s.foo.c
+Get a copy of the most recent trunk revision of @file{s.foo.c} into the
+file @file{foo.c}.
+
+@item get -Gbar s.foo.c
+Get a version from @file{s.foo.c}, into @file{bar} rather than the
+default @file{foo.c}.
+
+@item get -r1.3 s.foo.c
+Get revision 1.3 from @file{s.foo.c} into @file{foo.c}.  The @samp{-G}
+option can be used to set the name of the gotten file.
+
+@item get -p s.foo.c
+Get the most recent trunk revision, and print it on standard output.
+The @samp{-r} option could also be used to specify some other revision.
+@end table
+
+@node get options, , get usage, get
+@subsection Options for @code{get}
+@table @samp
+Full decription of options
+@item -a@i{N}
+Retrieve the version corresponding to the delta sequence number
+@i{N}.  Mainly for use by other programs in the suite.   Untested.
+
+@item -b
+Create a new branch when the resulting file is checked back in.  Used
+with the @samp{-e} option.
+
+@item -c@i{when}
+Get the version that was current at the time specified by @i{when}.  The
+format of the argument is yy[mm[dd[hh[mm[ss]]]]].  Any fields omitted
+assume their maximum possible values so that if you specify @samp{-c92},
+you get the latest version which was available in the year 1992.  This
+option is obviously not year-2000-proof.  Untested.
+
+@item -D
+Turns on debugging output, indicating what is going on as the SCCS file
+is read.  This option may go away or have its behaviour change in the
+near future.
+
+@item -e
+Indicates that the gotten version is for editing.   When checked back in
+the resulting file will have a new revision number.  The gotten file is
+writable, and keyword substitution does not take place.  A @dfn{p-file}
+is created; this file contains information about what versions of the
+s-file are being edited, and by whom.
+
+@item -g
+Do a dry-run, showing what version would be gotten, but don't actually
+get the file.  This is sometimes done by scripts, just to test the exit
+status.  
+
+@item -G@i{foo}
+Name the gotten file @file{foo}, instead of the default name.
+
+@item -i@i{list}
+Include the deltas for the listed @sc{sid}s.  See also @samp{-x}.  Untested.
+
+@item -k
+Avoid doing keyword substitution (@pxref{keyword substitution}).  This
+is assumed when @samp{-e} is specified.  Untested.
+
+@item -l
+Unsupported.
+
+@item -lp
+Unsupported.
+
+@item -m
+Prepend to each line of the result the @sc{sid} correspoding to the
+@samp{delta} which introduced this line to the file.  Untested.
+
+@item -n
+Precede each line of output with the module name, before any @sc{sid}
+added with the @samp{-m} option.  Untested.
+
+@item -p
+Write the result to the standard output, rather than to a file.  
+
+@item -r@i{X}
+Retrieve version X, rather than the default.
+
+@item -s
+Run silently.
+
+@item -t
+Get the ``top'' delta for the indicated release.   Used by @samp{comb}.
+@xref{comb}.
+
+@item -V
+Show version information.
+
+@item -w@i{XXX}
+When performing keyword substitution (@pxref{keyword substitution}), use
+XXX rather than @samp{%Z%%M%\t%I%} as the substitution value for %W%.
+
+@item -x@i{list}
+Exclude the indicated deltas from the result.  Deltas are indicated by
+specifying the @sc{sid} at which they arrived in the file.
+
+@end table
+
+@node keyword substitution, , , get
+@subsection Keyword Substitution
+@cindex keyword substitution
+Keyword substitution is performed unless the @samp{-k} option or the
+@samp{-e} option is given to @code{get}.
+
+The keywords are all of the form @samp{%@i{x}%} where @i{x} stands for
+an upper-case letter, one of:
+
+@table @asis
+
+@item A
+Expands to the same as @samp{%Z% %Y% %M% %I% %Z%}.
+@item B
+The branch number of the gotten version
+@item C
+Current line in the output file
+@item D
+The date at the time the file was gotten, in the form @i{yy/mm/dd}
+@item E
+The date that the newest delta in the gotten file was applied, @i{yy/mm/dd}
+@item F
+Name of the SCCS file, for example @samp{s.foo.c}.
+@item G
+As for %E%, but in the US format @i{mm/dd/yy}.  Year-2000-broken.
+@item H
+As for %D%, but in the US format @i{mm/dd/yy}.  Year-2000-broken.
+@item I
+Expands to the same as %R%.%L%.%B%.%S%, that is, the @sc{sid} of the
+gotten version.
+@item L
+The level number of the gotten version.
+@item M
+Module name: the value of the @code{m} (module) flag, or the base name
+of the SCCS file with the @file{s.} removed if the module flag is unset.
+@item P
+Full name of the SCCS file.
+@item Q
+Value of the @code{q} flag.  The @code{q} flag has no other purpose, and
+can be set with @samp{admin -fq@r{foo}}.   @xref{flags}.
+@item R
+Release number of the gotten version.
+@item S
+Sequence number of the gotten version.
+@item T
+Current time (@i{hh:mm:ss}) when the file was gotten, see %D% and %H%.
+@item W
+Expands to %Z% %M% <@sc{tab}> %I% or the argument for the @samp{-w}
+flag, if given.
+@item Y
+Value of the @code{t} (moudule type) flag.
+@item Z
+The literal string @code{@@(#)}.  @xref{what}.
+
+@end table
+
+
+
+@node help, prs, get, Invoking Programs
+@section @code{help}
+@cindex help
+@cindex sccs-help
+Nothing here, sorry.
+
+@node prs, prt, help, Invoking Programs
+@section @code{prs}
+@cindex prs
+@cindex sccs-prs
+Nothing here, sorry.
+
+@node prt, rmdel, prs, Invoking Programs
+@section @code{prt}
+@cindex prt
+@cindex sccs-prt
+This program is not yet implemented, and hence not yet documented here.
+
+@node rmdel, sact, prt, Invoking Programs
+@section @code{rmdel}
+@cindex rmdel
+@cindex sccs-rmdel
+Nothing here, sorry.
+
+@node sact, sccs, rmdel, Invoking Programs
+@section @code{sact}
+@cindex sact
+@cindex sccs-sact
+Nothing here, sorry.
+
+@node sccs, sccsdiff, sact, Invoking Programs
+@section @code{sccs}
+@cindex sccs
+Sorry, @code{sccs} is not integrated into this package, although it is
+available separately in source form.  You may find one on a BSD mirror.
+Eventually, @code{sccs} will be integrated, though.
+
+@node sccsdiff, unget, sccs, Invoking Programs
+@section @code{sccsdiff}
+@cindex sccsdiff
+@cindex sccs-sccsdiff
+Nothing here, sorry.
+
+@node unget, val, sccsdiff, Invoking Programs
+@section @code{unget}
+@cindex unget
+@cindex sccs-unget
+Nothing here, sorry.
+
+@node val, what, unget, Invoking Programs
+@section @code{val}
+@cindex val
+@cindex sccs-val
+This program is not yet implemented, and hence not yet documented here.
+
+@node what, , val, Invoking Programs
+@section @code{what}
+@cindex what
+The @code{what} program is designed to search in files for the
+recognition string @samp{@@(#)}.  All the strings it finds matching this
+are printed on standard output.
+
+@subsection Options for @code{what}
+@code{what [-s] [-V] file [file ...]}
+@table @samp
+@item -s
+Exit successfully after finding the first string.
+@item -V
+Show version information for @code{what}.
+@end table
+
+@subsection Example
+
+While the file is being edited (either at first or after @samp{get -e}):-
+@example
+#ifndef CONFIG_NO_SCCS_IDS
+static const char sccs_id[] = "%W%";
+#endif
+@end example
+
+When the file is checked out for compiling (with @code{get}):-
+@example
+#ifndef CONFIG_NO_SCCS_IDS
+static const char sccs_id[] = "@@(#)foo.c        1.3";
+#endif
+@end example
+
+After compiling:-
+@example
+$ what foo
+foo:
+        @@(#)foo.c       1.3
+@end example
+
+If the executable is linked from several source files, you will get a
+line of output for each string containing the identification string.
+This is useful for finding out exactly what code went into an
+executable.  This technique also works on object files, archive
+libraries, text files, and in fact any sorts of files at all.
+
+Unlike the @code{strings} command, there is no way to make @code{what}
+operate on standard input.  The data would need to be written to a file
+first.
+
+The rationale for the preprocessor construct @code{CONFIG_NO_SCCS_IDS}
+is that sometimes compilers or lint-pickers complain that the variable
+@var{sccs_id} is unused, and defining @code{CONFIG_NO_SCCS_IDS} will
+remove these @sc{id}s and thus silence the warnings.
+
 @node Incomplete, Problems, Invoking Programs, Top
 @chapter Missing Features
-@cindex invoking
+@cindex missing features
 
 @itemize @bullet
 
@@ -169,7 +621,9 @@ Some programs are partially implemented.  Not all programs support all
 the command-line options of their original counterparts.  Also, some
 features are currently missing, for example there is no support for
 encoded binary files (this mainly affects @code{delta} and @code{get}).
-
+If you would like support for some feature that is missing, please
+request it in the same way you would report a bug; I'd like to know
+which features are required first.
 @end itemize
 
 
@@ -177,6 +631,7 @@ encoded binary files (this mainly affects @code{delta} and @code{get}).
 @chapter Reporting Bugs
 @cindex bugs
 @cindex problems
+@cindex maintainer
 
 If you find a bug in GNU @code{CSSC}, please send electronic mail to
 @w{@samp{JYoungman@@vggas.com}}.  Include the version number, which you
@@ -189,6 +644,17 @@ trivial.@refill
 If you have other questions, comments or suggestions about GNU
 @code{CSSC}, contact the maintainer via electronic mail to
 @w{@samp{JYoungman@@vggas.com}}.
+
+@node Copying, Overview, , Top
+@chapter Copying @code{CSSC}
+GNU CSSC is published under the GNU General Public License, which is
+designed to protect your rights, as the user of this program.  You have
+the right to modify this program, and distribute it.  You also have
+responsibilities to those to whom you distribute copies, as detailed in
+the license, below.
+@ignore
+@include gpl.texi
+@end ignore
 
 @node Concept Index, , Problems, Top
 @unnumbered Concept Index
