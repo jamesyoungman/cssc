@@ -14,7 +14,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.7 1997/05/22 23:09:34 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.8 1997/05/31 10:18:09 james Exp $";
 #endif
 
 inline void
@@ -94,7 +94,7 @@ sccs_file::print_flags(FILE *out) const {
 	print_flag2(out, (const char *) "Module Type", flags.type);
 	print_flag2(out, (const char *) "MR Validation", flags.mr_checker);
 	print_flag2(out, (const char *) "Keyword Validation",
-		    flags.id_keywords);
+		    flags.no_id_keywords_is_fatal);
 	print_flag2(out, (const char *) "Branch", flags.branch);
 	print_flag2(out, (const char *) "Module Name", flags.module);
 	print_flag2(out, (const char *) "Floor", flags.floor);
@@ -102,12 +102,15 @@ sccs_file::print_flags(FILE *out) const {
 	print_flag2(out, (const char *) "Default SID", flags.default_sid);
 	print_flag2(out, (const char *) "Null Deltas", flags.null_deltas);
 	print_flag2(out, (const char *) "Joint Editing", flags.joint_edit);
-	if (flags.all_locked) {
-		fputs("Locked Releases: a", out);
-	} else {
-		print_flag2(out, (const char *) "Locked Releases",
-			    flags.locked);
-	}
+	
+	if (flags.all_locked)
+	  {
+	    fputs("Locked Releases: a\n", out);
+	  }
+	else
+	  {
+	    print_flag2(out, "Locked Releases: ", flags.locked);
+	  }
 	print_flag2(out, (const char *) "User Keyword", flags.user_def);
 	if (flags.encoded)
 	  fputs("encoded\n", out);
@@ -361,11 +364,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 			break;
 			
 		case KEY2('K','F'):
-			print_yesno(out, flags.id_keywords != NULL);
-			break;
-
-		case KEY2('K','V'):
-			print_flag(out, flags.id_keywords);
+			print_yesno(out, flags.no_id_keywords_is_fatal);
 			break;
 
 		case KEY2('B','F'):
@@ -511,7 +510,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
 // Explicit template instantiations.
 template void print_flag2(FILE *out, const char *s, release);
 template void print_flag2(FILE *out, const char *s, sid);
-template void print_flag2(FILE *out, const char *s, range_list<release>);
+template void print_flag2(FILE *out, const char *s, release_list);
 template void print_flag (FILE *out, release_list);
 template void print_flag (FILE *out, range_list<release>);
 template void print_flag (FILE *out, release);
