@@ -210,11 +210,6 @@ Initialise the SCCS file with the contents of @file{foo}.  If no
 argument is given, read from standard input.  This implies the @samp{-n}
 option.
 
-@item -I
-As -i, but specifying no file name.  The file is instead read from
-standard input.  This implies the @samp{-n} option.  Untested,
-nonstandard.
-
 @item -lrel1,rel2,...
 Unlock the specified releases.   If @samp{a} is specified as the
 release, that denotes ``all releases''.  Untested.
@@ -227,11 +222,6 @@ to the setting of the @var{v} flag, which should be set (@pxref{flags}).
 If the @var{v} flag is set but has no value (i.e. is set to the empty
 string), validation silently succeeds.  If the @var{v} flag is not set,
 the @samp{-m} option causes @code{delta} to fail.
-
-@item -M
-As for @samp{-m} but specifying no list of modification requests.  This
-is the default.  Untested (although the default is tested).
-Nonstandard.
 
 @item -n
 Create a new SCCS file.
@@ -255,10 +245,6 @@ is recorded as empty.  The following word in the argument list is not
 used as the comment.  @emph{Note that this behaviour is different to
 most Unix programs, but is the same as the behaviour of traditional
 @sc{sccs}}.
-
-@item -Y
-As for the @samp{-y} option, but specifying no comment.  This is the
-default.  Untested.
 
 @item -z
 Fix the checksum information.  Untested.
