@@ -1,3 +1,31 @@
+1999-03-15  James Youngman  <jay@gnu.org>
+
+	* Released 0.09alpha.pl4.
+
+	* docs/cssc.texi: Marginally improved documentation for "delta -p"
+
+	* bsd/sccs.c: Fixed "sccs sccsdiff".  Bug reported by Achim Hoffmann.
+
+1999-03-14  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi, ChangeLog, delta.cc, sccsfile.h, sf-delta.cc:
+	Implemented the -p option of delta.
+
+	* docs/TODO:
+	Added tests to make sure we correctly count the number of lines initially inserted by admin -i.
+
+	* bsd/sccs.c: Tweaks to execv() usage in try_to_exec().
+	Also, ensure that PREFIX is absolute, and refuse to run otherwise.
+
+	* configure.in: Eliminate duplicate checks for abort() and wait().
+
+	* auxfiles/CSSC.spec.in: Corrected the URL.
+
+	* tests/delta/n-option.sh: Added tests for the -n option of delta.
+
+	* tests/admin/i-option.sh:
+	Check that the "initial number of lines" is correct for admin -i.
+
 1999-03-13  James Youngman  <jay@gnu.org>
 
 	* configure.in: Bumped to 0.09alpha.pl3.
