@@ -28,6 +28,11 @@ docommand T3 "${admin} -t s.bar" 0 "" ""
 
 # Make sure the decription has been removed.
 expands_to T4 ':FD:'   '(none)\n\n'
+remove s.bar
+
+# Empty -t option is incompatible with -n and -i.
+docommand T5 "${admin} -n -t s.bar" 1 "" IGNORE
+
 
 remove s.bar 
 success
