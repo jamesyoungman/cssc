@@ -189,9 +189,20 @@ docommand g9 "test -w foo"   0 "" ""
 #
 # unedit 
 #
-docommand h1 "${sccs} unedit foo" 0 \
- "1.1\n1 lines\n         foo: removed\n" ""
-# That's 9 spaces.
+
+case `uname -s 2>/dev/null` in
+    CYGWIN*)
+	echo Skipping test h1 under CYGWIN, see docs/Platforms for explanation
+	echo "(we still perform step h1 because of its effects however)"
+	docommand h1_cygwin "${sccs} unedit foo" 0 IGNORE ""
+	;;
+	*)
+	docommand h1 "${sccs} unedit foo" 0 \
+		"1.1\n1 lines\n         foo: removed\n" ""
+		# That's 9 spaces.
+	;;
+esac
+
 
 # the g-file should have been removed.
 # actually we don't pass this test, see docs/BUGS.
