@@ -15,7 +15,9 @@ docommand $1 "${prs} \"-d$2\" -r1.1 s.1" 0 "$3"
 remove s.1 p.1 1 z.1
 
 # Create file
-docommand P1 "${admin} -n s.1" 0 "" ""
+echo "Descriptive Text" > DESC
+docommand P1 "${admin} -n -tDESC s.1" 0 "" ""
+remove DESC
 
 docommand P2 "${prs} -d':M:\n' s.1" 0 "1\n\n" ""
 
@@ -43,6 +45,7 @@ expands_to X14 ':Q:'    '\n'
 expands_to X15 'x\ty'   'x\ty\n'
 expands_to X16 'x\\ty'   'x\ty\n'
 expands_to X17 'x\\ny'   'x\ny\n'
+expands_to X18 ':FD:'   'Descriptive Text\n\n'
 
 remove got.stdout expected.stdout
 echo -n Z1...
