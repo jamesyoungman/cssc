@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.31 2002/03/17 11:10:41 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.32 2002/03/17 11:17:59 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -539,7 +539,7 @@ setuid_warn(void)
     "If you want to install this program set-user-id or set-group-id, you\n"
     "must compile it with the SCCSDIR macro defined, in order to\n"
     "prevent abuse.  Even so, abuse is probably not impossible.  This\n"
-    "is not a reccomended mode of operation for this program.\n";
+    "is not a recommended mode of operation for this program.\n";
   fprintf(stderr, "%s", str);
 }
 
