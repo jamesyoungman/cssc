@@ -28,7 +28,7 @@ AC_INIT(sccsfile.h)
 # ([0-9]+)\.([0-9]+)([a-z])?
 # ...at least according to the "Gnits" rules outlined
 # in the Automake manual.
-AM_INIT_AUTOMAKE(CSSC,0.11alpha.pl3)
+AM_INIT_AUTOMAKE(CSSC,0.11alpha.pl4)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)
