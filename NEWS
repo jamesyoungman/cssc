@@ -1,3 +1,12 @@
+New in CSSC-0.07alpha-pl3
+
+	* Corrected RPM spec file.
+	
+	* Added COPYING.bsd to the distribution.
+
+	* Ensure the test suite is not run by root (because 
+	  "test -w" gives misleading results for root).
+	
 New in CSSC-0.07alpha-pl2
 	
 	* Bugfixes for Sun Code Manager compatibility.

@@ -1,4 +1,25 @@
+1998-06-10  James Youngman  <jay@gnu.org>
+
+	* bsd/Makefile.am:
+	Added COPYNG.bsd to the distribution.   Also .ispell_english.
+	Added the manual page sccs.1 too.
+
+	* tests/common/test-common, tests/common/not-root,
+	tests/bsd-sccs/driver-basic.sh: Ensure the test suite is not run
+	by root (because that makes "test -w" return misleading results).
+
+1998-06-09  James Youngman  <jay@gnu.org>
+
+	* auxfiles/CSSC.spec, docs/CREDITS, NEWS, configure.in:
+	Bumped to CSSC-0.07alpha-pl2
+
+	* sccsfile.cc:
+	Fixes to tolerate spurious arguments on ^AU and ^At lines.
+	This problem reported by Marko Rauhamaa <marko@tekelec.com>.
+
 1998-06-08  James Youngman  <jay@gnu.org>
+
+	* NEWS, ChangeLog: Summarised changes for 0.07alpha-pl1.
 
 	* auxfiles/CSSC.spec, configure.in: Bumped to 0.07 patchlevel 1.
 
