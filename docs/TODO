@@ -1,3 +1,10 @@
+1998-06-02  James Youngman  <jay@gnu.org>
+
+	* Determine if execv("foo", argv) under glibc2 on Linux will run a
+	  "foo" in the current directory.  See if unsetting $PATH makes a
+	  difference.  There may be security implications here for
+	  bsd/sccs.c (see try_to_exec).
+
 1998-05-25  James Youngman  <jay@gnu.org>
 
 	* file.cc: Consider using getpwuid(getuid()) in preference
