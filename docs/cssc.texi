@@ -7,8 +7,8 @@
 @c %**end of header
 
 @set EDITION 1.0
-@set VERSION 0.02-devel
-@set UPDATED Mon Oct 27 19:31:38 1997
+@set VERSION 0.04alpha
+@set UPDATED Sun Nov 23 12:03:39 1997
 
 @macro authoraddr
 @w{@samp{jay@@gnu.org}}
@@ -657,22 +657,25 @@ The branch number of the gotten version
 Current line in the output file
 @item D
 @cindex Year 2000
-The date at the time the file was gotten, in the form @i{yy/mm/dd}.
-This keyword has a Year-2000 problem.
+The date at the time the file was gotten, in the form @i{yy/mm/dd}.  The
+year is always represented as two digits but this is not ambiguous since
+the two-digit year is no later than 2068 (@pxref{Year 2000 Issues}).
 @item E
 @cindex Year 2000
 The date that the newest delta in the gotten file was applied,
-@i{yy/mm/dd}.  This keyword has a Year-2000 problem.
+@i{yy/mm/dd}.  The year is always represented as two digits but this is
+not ambiguous since the two-digit year is no later than 2068
+(@pxref{Year 2000 Issues}).
 @item F
 Name of the @sc{sccs} file, for example @samp{s.foo.c}.
 @item G
 @cindex Year 2000
-As for %E%, but in the US format @i{mm/dd/yy}.  This keyword has a
-Year-2000 problem.
+As for %E%, but in the US format @i{mm/dd/yy}.  
+
 @item H
 @cindex Year 2000
-As for %D%, but in the US format @i{mm/dd/yy}.  This keyword has a
-Year-2000 problem.
+As for %D%, but in the US format @i{mm/dd/yy}.
+
 @item I
 Expands to the same as %R%.%L%.%B%.%S%, that is, the @sc{sid} of the
 gotten version.
@@ -943,7 +946,9 @@ Comments for this delta.  These may extend over several lines.
 @item :D:
 @cindex Year 2000 
 Date (yy/mm/dd) that this version was checked in.  Expands to
-@samp{:Dy:/:Dm:/:Dd:}. This keyword has a Year-2000 problem.
+@samp{:Dy:/:Dm:/:Dd:}. The year is always represented as two digits but
+is not ambiguous since the two-digit year is no later than 2068 
+(@pxref{Year 2000 Issues}).
 
 @item :Dd:
 Day-of-month on which the delta was checked in (two digits).
@@ -981,8 +986,9 @@ Sequence numbers of excluded deltas (separated by white space).
 
 @cindex Year 2000
 @item :Dy:  
-Year when this version was checked in.  Currently this
-produces two digits; this is a Year-2000 issue. 
+Year when this version was checked in.  The year is always represented
+as two digits but is not ambiguous since the two-digit year is no later
+than 2068 (@pxref{Year 2000 Issues}).
 
 @item :GB:
 The body for this version, as distinct from the 
@@ -1293,14 +1299,20 @@ All rights reserved.
 
 @end quotation
 
+@menu
+* The Good News::       CSSC works with all dates from 1969 to 2038...
+* The Bad News::        ...but with hiccups on some operating systems.
+* Year 2000 Summary::   Parting words on date issues
+@end menu
 
-@sc{cssc} itself also implements exactly the same strategy.  Two-digit
-years are a problem in two places: firstly, within the actual @sc{sccs}
-files, and secondly within command-line options.
+@node The Good News, The Bad News, Year 2000 Issues,  Year 2000 Issues
+@section The Good News
 
-The two-digit year fields in the @sc{sccs} files are correctly dealt
-with according to the strategy mandated by X/Open.  The command-line
-options are also dealt with similarly.
+Two-digit years are a problem in two places: firstly, within the actual
+@sc{sccs} files, and secondly within command-line options.  The
+two-digit year fields in the @sc{sccs} files are correctly dealt with
+according to the strategy mandated by X/Open.  The command-line options
+are also dealt with similarly.
 
 @sc{cssc} provides an additional feature for your convenience.  If the
 argument to the @samp{-c} option of @code{get} or @code{prs} contains
@@ -1312,16 +1324,54 @@ November 20, 1997).  The fields of a date can be separated with other
 the same time (but @samp{1997/11/20} is an error because there are fewer
 than twelve digits).
 
-Now that you know that whatever version of @sc{sccs} you are using has
-probably been fixed by the vendor, and that @sc{cssc} is Year-2000
-compliant even if your vendor's @sc{sccs} implementation cannot be
-updated for some reason, I'd like you to remember the conversion effort
-that this has saved you.  I'd also like to urge to to actually use that
-effort to convert your existing projects from @sc{sccs} to a more modern
-version control system, for example GNU cvs.  There are other
-considerations besides year 2000 compliance, after all.  @sc{cssc} is
-not called ``Compatibly Stupid Source Control'' for nothing.
+@sc{cssc} represents dates internally in a way that works for Gregorian
+dates up to at least the year 32767 AD.  Some countries didn't recognise
+the Gregorian calendar system until the early twentieth century but this
+of course is not really a problem now.  The useful like of @sc{sccs} is
+from 1969 until 2068.  Years are stored in two-digit form in @sc{sccs}
+files and so although @sc{cssc} has no limits internally, it's not
+possible to indicate a year outside this range in an @sc{sccs} file.
+All the @sc{cssc} programs will successfully work with any date in this
+range, all the way up to 2068, on all systems.
 
+@node The Bad News, Year 2000 Summary, The Good News,  Year 2000 Issues
+@section The Bad News
+
+It's not all good news though.  When new deltas are created with the
+@code{delta} command, @sc{cssc} must consult the operating system to
+find the current date and time.  Some operating systems have a limited
+range of date representation.  For example, the development system I use
+for most of the work on @sc{cssc} can't report any date later than
+Tuesday Jan 19 03:14:07 2038 as the current time.  When running on such
+systems, @sc{cssc} will still be able to work with @sc{sccs} files
+containing dates after this, but activities involving the current time
+will not work correctly. 
+
+This date breakdown occurs most obviously with the date stamp that the
+@code{delta} program gives each delta in the @sc{sccs} file, but also
+with the commentary-change message of @code{cdc} and the default comment
+produced by @code{admin} when an @sc{sccs} file is created.
+
+@node Year 2000 Summary, , The Bad News,  Year 2000 Issues
+@section Summary
+
+To summarise, all reporting activities of @sc{cssc} will work correctly
+throughout the range of time representible in an @sc{sccs} file (that
+is, from 1969 to 2068 inclusive).  However, commands which modify
+@sc{sccs} files and need to add dates may fail earlier than this (but
+then again, may not, depending on your operating system).
+
+
+Now that you know that whatever version of @sc{sccs} you are using has
+probably been fixed by the vendor, and that even if your vendor's
+@sc{sccs} implementation cannot be updated for some reason, @sc{cssc} is
+Year-2000 compliant and to an extent Year-2038 compliant, I'd like you
+to remember the conversion effort that this has saved you.  I'd also
+like to urge to to actually use that effort to convert your existing
+projects from @sc{sccs} to a more modern version control system, for
+example GNU CVS.  There are other considerations besides Year-2000
+compliance, after all.  @sc{cssc} is not called ``Compatibly Stupid
+Source Control'' for nothing.
 
 
 
@@ -1435,8 +1485,8 @@ one in the ``object'' directory).
 
 @item
 As much information about your system as you think is useful, for
-example the names and versions of the OS and compiler that you are
-using.
+example the names and versions of the operating system and compiler that
+you are using.
 @end itemize
 
 
@@ -1712,6 +1762,7 @@ If you have other questions, comments or suggestions about GNU
 @unnumbered Concept Index
 
 @printindex cp
+@cindex tail recursion
 
 @shortcontents
 @contents
