@@ -22,9 +22,9 @@
 #pragma implementation "seqstate.h"
 #pragma implementation "sid.h"
 #pragma implementation "sid_list.h"
-#pragma implementation "sid_list.c"
+#pragma implementation "sid_list.cc"
 #pragma implementation "filelock.h"
  
-#include "what.c" 
-#include "quit.c" 
-#include "getopt.c"
+#include "what.cc" 
+#include "quit.cc" 
+#include "getopt.cc"
