@@ -28,11 +28,6 @@
 	binary files.
 
 
-1998-01-27  James Youngman  <jay@gnu.org>
-
-	* admin: check that the # of lines inserted is correct for the
-	first delta.
-
 1998-01-25  James Youngman  <jay@gnu.org>
 
 	* bodyio.cc: Test what happens if the text input ends with
@@ -88,5 +83,3 @@ Sat May  3 11:45:19 1997  James Youngman  <james@bugalugs.no.where>
 	* Write a shell script for converting SCCS files to RCS files; use
 	the Bourne shell, since not everybody has the C shell [suggested
 	by RMS].
-
-	* sccs-val is not yet provided.   Useful for testing.
