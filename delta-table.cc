@@ -134,16 +134,19 @@ cssc_delta_table::update_highest(const delta &it)
    * any greater-than comparison always fails since 
    * operator> decides it's not comparable with it.id.
    */
-  if (high_release.is_null())
+  if (!it.removed()) /* this conditional fixes SF bug #450900 */
     {
-      if (it.id.on_trunk())
-	high_release = it.id;
+      if (high_release.is_null())
+	{
+	  if (it.id.on_trunk())
+	    high_release = it.id;
+	}
+      else if (it.id > high_release)
+	{
+	  high_release = it.id;
+	}
     }
-  else if (it.id > high_release)
-    {
-      high_release = it.id;
-    }
-
+  
   if (seq_table) 
     {
       if (seq_table[seq] != -1) 
