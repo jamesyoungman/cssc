@@ -45,7 +45,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.35 2003/12/07 22:37:49 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.36 2003/12/08 21:10:08 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -243,7 +243,6 @@ give_up_privileges() {
 void
 restore_privileges() {
         if (--unprivileged == 0) {
-          // XXX TODO: shouldn't this be setuid(old_euid) ?
                 if (setuid(old_euid) == -1) { 
                         fatal_quit(errno, "setuid(%d) failed", old_euid);
                 }
@@ -354,6 +353,23 @@ int
 user_is_group_member(int) {
         return 0;
 }
+
+
+void
+give_up_privileges()
+{
+  // Dummy implementation for systems without Unix-like UIDs.
+  unprivileged++;
+}
+
+void
+restore_privileges()
+{
+  // Dummy implementation for systems without Unix-like UIDs.
+  --unprivileged;
+}
+
+
 
 #endif /* CONFIG_UIDS */
 
@@ -569,13 +585,9 @@ bool set_file_mode(const mystring &gname, bool writable)
  */
 bool set_gfile_writable(const mystring& gname, bool writable)
 {
-#ifdef CONFIG_UIDS
   give_up_privileges();
-#endif
   bool rv = set_file_mode(gname, writable);
-#ifdef CONFIG_UIDS
   restore_privileges();
-#endif
   return rv;
 }
 
@@ -591,9 +603,7 @@ bool set_gfile_writable(const mystring& gname, bool writable)
 
 bool unlink_gfile_if_present(const char *gfile_name)
 {
-#ifdef CONFIG_UIDS
   give_up_privileges();
-#endif
   bool rv = true;
   
   if (file_exists(gfile_name))
@@ -604,9 +614,7 @@ bool unlink_gfile_if_present(const char *gfile_name)
           rv = false;
         }
     }
-#ifdef CONFIG_UIDS
   restore_privileges();
-#endif
   
   return rv;
 }
@@ -616,22 +624,18 @@ bool unlink_file_if_present(const char *gfile_name)
   /* We must also do the existence test as the real user so was 
    * can't delegate the job to unlink_file_as_real_user().
    */
-#ifdef CONFIG_UIDS
   give_up_privileges();
-#endif
   bool rv = true;
   
   if (file_exists(gfile_name))
     {
-      if (unlink(gfile_name) < 0)
+      if (remove(gfile_name) < 0)
         {
-          errormsg_with_errno("Cannot unlink the file %s", gfile_name);
+	  // The remove() funtion will already have issued an error message.
           rv = false;
         }
     }
-#ifdef CONFIG_UIDS
   restore_privileges();
-#endif
   
   return rv;
 }
@@ -639,21 +643,18 @@ bool unlink_file_if_present(const char *gfile_name)
 /* unlink_file_as_real_user
  *
  * Unlinks the specified file as the real user.
+ * The caller is responsible for issuing any error message,
  */
 bool unlink_file_as_real_user(const char *gfile_name)
 {
-#ifdef CONFIG_UIDS
   give_up_privileges();
-#endif
   bool rv = true;
   if (unlink(gfile_name) < 0)
     {
-      errormsg_with_errno("Cannot unlink the file %s", gfile_name);
+      // The caller is responsible for issuing any error message,
       rv = false;
     }
-#ifdef CONFIG_UIDS
   restore_privileges();
-#endif
   
   return rv;
 }
@@ -702,12 +703,10 @@ create(mystring name, int mode) {
 
         int fd;
 
-#ifdef CONFIG_UIDS
         if (mode & CREATE_AS_REAL_USER)
           {
             give_up_privileges();
           } 
-#endif
         
 #ifdef CONFIG_SHARE_LOCKING
         if (mode & CREATE_WRITE_LOCK)
@@ -727,13 +726,10 @@ create(mystring name, int mode) {
 #endif
 
         
-#ifdef CONFIG_UIDS
         if (mode & CREATE_AS_REAL_USER)
           {
             restore_privileges();
           } 
-#endif
-
         return fd;
 }
 
@@ -757,13 +753,9 @@ FILE *fopen_as_real_user(const char *s, const char *mode)
 {
   FILE *fp = NULL;
   
-#ifdef CONFIG_UIDS
   give_up_privileges();
-#endif
   fp = fopen(s, mode);
-#ifdef CONFIG_UIDS
   restore_privileges();
-#endif
   return fp;
 }
 

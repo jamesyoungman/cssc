@@ -66,13 +66,8 @@ bool unlink_file_as_real_user(const char *gfile_name);
 int ffsync(FILE *f);
 #endif
 
-#ifdef CONFIG_UIDS
 void give_up_privileges();
 void restore_privileges();
-#else
-inline void give_up_privileges() {}
-inline void restore_privileges() {}
-#endif
 
 #ifndef HAVE_REMOVE
 int remove(const char *name);

@@ -40,7 +40,7 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.49 2003/12/07 22:37:49 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.50 2003/12/08 21:10:08 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -433,6 +433,7 @@ main(int argc, char **argv)
               {
                   if (!set_gfile_writable(gname, true))
                       retval = 1;
+		  maybe_clear_archive_bit(gname);
               }
               else
               {
@@ -444,8 +445,6 @@ main(int argc, char **argv)
                 if (!set_gfile_writable(gname, false))
                     status.success = false;
                 restore_privileges();
-                
-                maybe_clear_archive_bit(gname);
               }
             }
 
@@ -457,9 +456,11 @@ main(int argc, char **argv)
           if (!status.success) // get failed.
             {
               retval = 1;
-              give_up_privileges();
-              remove(gname.c_str());
-              restore_privileges();
+	      if (!unlink_file_as_real_user(gname.c_str()))
+		{
+		  errormsg_with_errno("Failed to remove file %s",
+				      gname.c_str());
+		}
               continue;
             }
           
@@ -486,9 +487,11 @@ main(int argc, char **argv)
                   // Failed to add the lock to the p-file.
                   if (real_file)
                     {
-                      give_up_privileges();
-                      remove(gname.c_str());
-                      restore_privileges();
+		      if (!unlink_file_as_real_user(gname.c_str()))
+			{
+			  errormsg_with_errno("Failed to remove file %s",
+					      gname.c_str());
+			}
                     }
                   retval = 1;   // remember the failure.
                 }
