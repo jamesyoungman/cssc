@@ -370,15 +370,30 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff,
 
 	struct subst_parms parms(out, wstring, *delta, 0, sccs_date::now());
 
-	get(gname, state, parms,
 #ifdef __GNUC__
-	    (keywords ? (subst_fn_t) 0 : &sccs_file::write_subst),
+    if (keywords)
+        {
+        get(gname, state, parms, &sccs_file::write_subst,
+            show_sid, show_module, debug);
+        }
+    else
+        {
+        get(gname, state, parms, (subst_fn_t) 0,
+            show_sid, show_module, debug);
+        }
 #else
-	    (keywords ? (int (sccs_file::*)(const char *,
-					    struct subst_parms *) const) 0
-	              : &sccs_file::write_subst),
-#endif
+    if (keywords)
+        {
+        get(gname, state, parms,
+            (int (sccs_file::*)(const char *, struct subst_parms *) const) 0,
+            show_sid, show_module, debug);
+        }
+    else
+        {
+        get(gname, state, parms, &sccs_file::write_subst,
 	    show_sid, show_module, debug);
+        }
+#endif
 
 	if (!parms.found_id) {
 		if (flags.id_keywords != NULL
