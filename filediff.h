@@ -42,10 +42,10 @@ class FileDiff
   ~FileDiff();
   
   FILE * start();
-  void finish();
+  void finish(FILE * &fp);
 
  private:
-  FILE *fp;
+  FILE *fp_;
   mystring name1;
   mystring name2;
 };

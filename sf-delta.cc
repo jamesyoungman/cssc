@@ -47,7 +47,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.45 2002/03/10 17:54:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.46 2002/03/19 15:36:13 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -394,13 +394,13 @@ public:
       if (armed)
         {
           const char *s = name.c_str();
-	  bool bOK;
-	  
-	  if (as_real_user)
-	    bOK = unlink_file_as_real_user(s);
-	  else
-	    bOK = (remove(s) == 0);
-	  if (!bOK)
+          bool bOK;
+          
+          if (as_real_user)
+            bOK = unlink_file_as_real_user(s);
+          else
+            bOK = (remove(s) == 0);
+          if (!bOK)
             perror(s);
         }
     }
@@ -459,11 +459,11 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 #ifdef CONFIG_UIDS      
       if (!is_readable(s))
-	{
-	  errormsg("File %s is not readable by user %d!",
-		   s, (int) geteuid());
-	  return false;
-	}
+        {
+          errormsg("File %s is not readable by user %d!",
+                   s, (int) geteuid());
+          return false;
+        }
 #endif
     }
   else
@@ -892,12 +892,12 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   // The order of things that we do at this point is quite
   // important; we want only to update the s- and p- files if
   // everything worked.
-  diff_out = 0;
+  differ.finish(diff_out); // "give back" the FILE pointer.
+  ASSERT(0 == diff_out);
         
   // It would be nice to know if the diff failed, but actually 
   // diff's return value indicates if there was a difference 
   // or not.
-  differ.finish();
 
   pfile.delete_lock();
   
