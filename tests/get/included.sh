@@ -5,7 +5,6 @@
 . ../common/test-common
 
 
-
 g=gfile
 s=s.$g
 x=x.$g 
@@ -58,13 +57,12 @@ docommand I14 "$delta  -y $s" 0 IGNORE IGNORE
 # Add to the head of the revision tree a delta which includes the
 # delta we just made.
 docommand I14 "$get -s -e -i1.2.1.1 $s" 0 IGNORE IGNORE
+
 docommand I15 "$delta -y            $s" 0 IGNORE IGNORE
 
 # Make sure we get the right result...
 docommand I16 "$get -s -p $s" 0 \
 "seq=1 1.1\nseq=8 1.2.1.1\nseq=2 1.2\nseq=3 1.3\nseq=4 1.4\nseq=5 1.5\nseq=6 1.6\nseq=7 1.7\n" IGNORE
-
-
 
 remove $g $s $x $z $p
 success
