@@ -1,8 +1,170 @@
-2001-11-25  james_youngman  <james_youngman@periwinkle.no.where>
+2002-03-19  James Youngman  <jay@gnu.org>
 
-	* /cvsroot/cssc/gnu/CSSC/sccsdiff.sh.in:
+	* val.cc:
+	Various fixes for the value returned in all sorts of validation-faulure cases
+
+	* tests/what/Makefile.am:
+	We have a file whatbasic.sh but no keywords.sh
+
+	* tests/common/command-names: added val
+
+	* tests/Makefile.am: New test directory, 'val'
+
+	* tests/sact/sactbasic.sh, tests/val/Makefile.am, tests/val/valbasic.sh, tests/val/y2k.sh:
+	reduced lines of untested code to 2083 - tests added for valand sact
+
+	* bsd/sccs.c: Fixed typos causing compilation errors
+
+	* bsd/sccs.c:
+	Fixed SourceForge bug 531884, compiler warning on 64-bit systems
+
+	* file.cc:
+	While trying to do atomic NFS file locking, sleep for a bit if we fail
+	to make the hard link from nfslckNNNN to z.foobar.
+
+	* sf-delta.cc, filediff.cc, filediff.h:
+	Fixed SourceForge bug 530969 - FILE* leak in fildiff.cc
+
+	* docs/Platforms:
+	Updated following testing on the SourceForge compile farm
+
+	* README: Inform reader that GNU make is probably required.
+	Removed the "stop press" which is now old news.
+
+2002-03-18  James Youngman  <jay@gnu.org>
+
+	* tests/what/whatbasic.sh, what.cc:
+	Added an extra test (test w22) in whatbasic.sh to cover the whole of the print_what() function in what.cc.
+
+	* tests/Makefile.am: Added test-what.
+
+	* docs/cssc.texi, tests/Makefile.am, tests/what/Makefile.am, NEWS, my-getopt.cc, my-getopt.h, what.cc:
+	Added tests for what - and therefore some bugfixes too
+
+	* tests/what/whatbasic.sh:
+	On the other hand, this version passes when run against Solaris 2.6...
+
+	* tests/what/whatbasic.sh:
+	This version passes for CSSC but has not been checked against SCCS.
+
+	* docs/Platforms:
+	Works on Solaris 2.6 and Debian 3.0 as well as GCC version3
+
+	* docs/patches.txt: Corrected a typo
+
+2002-03-17  James Youngman  <jay@gnu.org>
+
+	* tests/common/config-data:
+	Include binary file support tests on SunOS.  Note that some tests are
+	*still* disabled on SunOS, because they still fail (e.g. the ability
+	to automatically revert to binary-mode when reading the initial body
+	from stdin).
+
+	* bsd/sccs.c:
+	Issue more helpful messages about the unimplemented comb and help commands.
+
+	* bsd/sccs.c: Corrected spelling error in warning message.
+
+	* bsd/sccs.c:
+	Since we are not includeing <strings.h> and there is not need to
+	depend on it, roll our own rindex() and index() functions from the
+	functions provided by <string.h>.
+
+2002-03-16  James Youngman  <jay@gnu.org>
+
+	* tests/prs/body.sh, tests/prs/s_foo_bd_output.txt, tests/prs/sample_foo:
+	Test the :BD: keyword of prs
+
+	* bodyio.cc:
+	valgrind-detected bug: do keyword checking on the uuencoded version of the data
+
+	* docs/cssc.texi, tests/prs/body.sh: Tests for prs -d:GB:
+
+2002-03-10  James Youngman  <jay@gnu.org>
+
+	* prompt.cc, sccsdate.cc, sccsfile.cc, sccsfile.h, sf-delta.cc, sf-prs.cc:
+	valgrind: don't use sccs_date(NULL) - previously we had an uninitialised variable sccs_date.second as a result of using sccs_date::sccs_date(NULL)
+
+2002-03-04  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi:
+	Added glossary; spelling corrections; updated copyright years
+
+2002-03-03  James Youngman  <jay@gnu.org>
+
+	* tests/sccsdiff/rap.sh:
+	Fixed sourceforge bug 489311 (Locale settings cause test failure)
+
+2002-02-25  James Youngman  <jay@gnu.org>
+
+	* tests/Makefile.am, tests/sact/Makefile.am, tests/sact/sf513800.sh, tests/sact/sf513800_1.uue, tests/sact/sf513800_2.uue, sccsdate.cc:
+	test for Sourceforge bug sf513800.sh and a fix for the same
+
+2002-02-23  James Youngman  <jay@gnu.org>
+
+	* ChangeLog, ChangeLog.2:
+	Moved the changelog entries from ChangeLog into ChangeLog.2.  New
+	changeLog entries to go into ChangeLog, and the ChangeLog.1 and
+	ChangeLog.2 files contain historical changelogs.
+
+2001-12-04  James Youngman  <jay@gnu.org>
+
+	* delta.cc: Fixed SourceForge bug 489005
+
+2001-12-02  James Youngman  <jay@gnu.org>
+
+	* NEWS, except.h, quit.cc, quit.h, sccsfile.cc, sccsfile.h, tests/prt/all-512.sh, tests/prt/default.sh, tests/prt/nodel.sh:
+	Added warning when we see an excluded delta (since we are not certain
+	we handle this correctly).  The warnig includes a pointer tot he web
+	page explaining what the user should do about this.
+
+2001-12-01  James Youngman  <jay@gnu.org>
+
+	* configure.in:
+	bumped version - to avoid confusion with previous release
+
+	* NEWS, bodyio.cc, file.cc, file.h, filediff.cc, get.cc, sf-delta.cc, sf-kw.cc:
+	Fixed sourceforge bugs 480136, 481519, 481707, 484278 - all related to setuid operation, and in fact all dupliactes of each other
+
+2001-11-29  James Youngman  <jay@gnu.org>
+
+	* docs/CREDITS, sccs-cgi/sccs.cgi, sccs-cgi/sccs.cgi.text, AUTHORS:
+	Added Richard Kettlewell's sccs.cgi script.  Updated AUTHORS and
+	CREDITS files appropriately.
+
+	* quit.cc:
+	Fixed compilation error ocurring when HAVE_EXCEPTIONS is not defined
+
+2001-11-25  James Youngman  <jay@gnu.org>
+
+	* configure.in:
+	Set the language back to C after doing the check for broken printf
+	macros in the glibc header files.  (Also set up for a release).
+
+	* get.cc, sf-get2.cc, tests/common/command-names, tests/get/sf479916.sh:
+	Fixed sourceforge bug #479916 - get -t problem
+
+	* sccsdiff.sh.in: Corrected a syntax error.
+
+	* NEWS: Fixed SF bug 450900.
+
+	* tests/get/removed-delta.sh: Test case for SourceForge bug 450900
+
+	* delta-table.cc:
+	SF bug #450900 - if you try to check out a version for
+	editing, and the SID that would ordinary be selected exists
+	but is removed, we should indeed use it.
+
+	* ChangeLog: Updated with recent change log entries.
+
+	* Makefile.am, NEWS, configure.in:
+	Fixed debian bug #120080 (sccsdiff cannot find get iuis /usr/sccs
+	symlink is missing)
+
+	* sccsdiff.sh.in:
 	fixed Debian  Bug#120080: sccs sccsdiff doesn't work (sccsdiff assumes /usr/sccs symlink exists)
 
-	* /cvsroot/cssc/gnu/CSSC/bsd/sccs.c, /cvsroot/cssc/gnu/CSSC/tests/admin/comment.sh, /cvsroot/cssc/gnu/CSSC/tests/admin/init-mr.sh, /cvsroot/cssc/gnu/CSSC/tests/admin/locks.sh, /cvsroot/cssc/gnu/CSSC/tests/admin/t-option.sh, /cvsroot/cssc/gnu/CSSC/tests/admin/users.sh, /cvsroot/cssc/gnu/CSSC/tests/prs/exists.sh, /cvsroot/cssc/gnu/CSSC/tests/prs/keywords.sh, /cvsroot/cssc/gnu/CSSC/tests/prt/all-512.sh, /cvsroot/cssc/gnu/CSSC/tests/prt/all.expected.Z, /cvsroot/cssc/gnu/CSSC/tests/prt/expected/nodel.-u, /cvsroot/cssc/gnu/CSSC/tests/prt/expected/nodel.-u-f, /cvsroot/cssc/gnu/CSSC/tests/prt/expected/nodel.-u-f-t-b, /cvsroot/cssc/gnu/CSSC/configure.in, /cvsroot/cssc/gnu/CSSC/NEWS, /cvsroot/cssc/gnu/CSSC/sf-admin.cc, /cvsroot/cssc/gnu/CSSC/sf-prs.cc, /cvsroot/cssc/gnu/CSSC/sf-prt.cc:
+	* bsd/sccs.c, tests/admin/comment.sh, tests/admin/init-mr.sh, tests/admin/locks.sh, tests/admin/t-option.sh, tests/admin/users.sh, tests/prs/exists.sh, tests/prs/keywords.sh, tests/prt/all-512.sh, tests/prt/all.expected.Z, tests/prt/expected/nodel.-u, tests/prt/expected/nodel.-u-f, tests/prt/expected/nodel.-u-f-t-b, NEWS, configure.in, sf-admin.cc, sf-prs.cc, sf-prt.cc:
 	Brought test suite - and code - into line with Solaris 2.6 behaviour; largely changes for formatting of prt/prs output, but also a change to the behaviour of admin -fl
+
 
