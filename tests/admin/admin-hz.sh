@@ -11,14 +11,11 @@ p=p.$g
 s2=s.spare
 remove foo $s $g $p [zx].$g $s2
 
-###
-### Tests for the 'v' flag; see also init-mrs.sh.
-###
-
 # Create SCCS file
 echo 'hello from %M%' >foo
 
 docommand c1 "${admin} -ifoo $s" 0 "" ""
+remove foo
 
 # Make sure the checksum is checked as correct.
 docommand c2 "${admin} -h $s" 0 "" ""
@@ -30,21 +27,30 @@ docommand c3 " (sed -e '1y/0123456789/9876453210/' <$s >$s2) " 0 "" ""
 # Check that we think that the checksum of the file is wrong.
 docommand c4 "${admin} -h $s2" 1 "" "IGNORE"
 
+# Make sure that specifying "-h -z" does not cause the checksum 
+# to be fixed (this is why we do it twice).
+docommand c5 "${admin} -h -z $s2" 1 "" "IGNORE"
+docommand c6 "${admin} -h -z $s2" 1 "" "IGNORE"
+
+# Check that we still think it is wrong if we pass both files to 
+# admin, no matter what the order.
+docommand c7 "${admin} -h $s $s2" 1 "" "IGNORE"
+docommand c8 "${admin} -h $s2 $s" 1 "" "IGNORE"
+
+
 # Fix the checksum.
-docommand c5 "${admin} -z $s2" 0 "" ""
+docommand c9 "${admin} -z $s2" 0 "" ""
 
 # Check that we are happy again.
-docommand c6 "${admin} -h $s2" 0 "" ""
+docommand c10 "${admin}  -h $s2" 0 "" ""
+docommand c11 "${admin}  -h $s $s2" 0 "" ""
+docommand c12 "${admin} -h $s2 $s" 0 "" ""
 
 # Make sure the files are again identical.
-docommand c7 "diff $s $s2" 0 "" "IGNORE"
+docommand c13 "diff $s $s2" 0 "" "IGNORE"
 
 
-###
 ### Cleanup and exit.
-###
 rm -rf test 
 remove foo $s $g $p [zx].$g command.log $s2
-
 success
-
