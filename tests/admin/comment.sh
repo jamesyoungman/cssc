@@ -17,7 +17,7 @@ test `cat foo` = '%M%' || miscarry cannot create file foo.
 docommand C1 "${admin} -ifoo $s" 0 "" ""
 
 # Check the format of the default comment.
-echo -n C2...
+echo_nonl C2...
 remove prs.$s
 ${prs} $s | sed -ne '/^COMMENTS:$/,/$/ p' > prs.$s || fail prs failed.
 test `wc -l < prs.$s` -eq 2 || fail wrong comment format.

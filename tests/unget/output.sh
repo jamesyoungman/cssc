@@ -18,7 +18,7 @@ remove $all
 
 setup_an_edit () {
 # $1 is the label.
-echo -n $1"1-6:"
+echo_nonl $1"1-6:"
 remove $all
 echo "%M%" | docommand --silent ${1}1 "${admin}   -i $s1" 0 "" ""
 echo "%M%" | docommand --silent ${1}2 "${admin} -i $s2" 0 "" ""
