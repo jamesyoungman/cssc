@@ -87,14 +87,6 @@ get
 delta
 =====
 	Running delta on an SCCS file with an unrecognised feature
-	Over-long line in the file we are checking in.
-	Unreadable g-file
-	p-file lists a delta which does not exist in the s-file (this
-	is an error)
-	Cannot create d-file
-	%A as last characters in the g-file being checked in
-	x-file already exists 
-	Fail to create x-file
 	Writing out a SCCS file with included/excluded/ignored deltas
 	Writing out a SCCS file with a release floor flag
 	Writing out a SCCS file with i, j, m, q, t, v, z flags
@@ -102,7 +94,6 @@ delta
 	Writing out a SCCS file with l flag which is set and not equal
 	to "a"
 	Can't remove old SCCS file
-	Can't rename the x-file
 	
 
 prs
@@ -245,6 +236,18 @@ Various kinds of corrupt SCCS file
 	delta - control line in body other than I,E,D
 	
 		
+Too difficult for now
+=====================
+	delta: %A as last characters in the g-file being checked in
+	   - this is difficult because "diff" will often fail 	
+	     on text files containing no terminating newline.
+	delta: Fail to create x-file
+	   - the code specifically checks for this case and does a
+	     rename, hence making this fail may be tricky
+	delta: Over-long line in the file we are checking in.
+	   - Would need to find out if we are running SCCS or CSSC
+	   - Then choose an appropriate line length for SCCS.  Bletch.
+
 
 Interactive tests required
 ==========================

@@ -12,14 +12,37 @@ s=s.$g
 p=p.$g
 z=z.$g
 q=q.$g
-files="$g $s $p $z ${g}_1 ${g}_2 $g $q"
+d=d.$g
+x=x.$g
+files="$g $s $p $z ${g}_1 ${g}_2 $g $q $d $x"
 
 remove $files
+test -d $x.bak && rmdir $x.bak
 
 append() {
    f="$1"
    shift
    echo  "$@" >> "$f" || miscarry "Could not append a line to $1" 
+}
+
+
+createfile () {
+    touch "$1" && test -r "$1" || miscarry "could not create file $1"
+}
+
+removedirs () {
+    for d
+    do
+      if test -d "$d"
+      then
+	  rmdir "$d" || miscarry "Failed to remove directory $d"
+      else 
+	  if test -f "$d"
+	  then
+	      remove "$d"
+          fi
+      fi
+    done
 }
 
 
@@ -86,8 +109,7 @@ docommand E15 "${get} -e $s"                0 IGNORE IGNORE
 # this means that the above tests should succeed.
 
 # Check - use of delta when a q-file already exists...
-touch $q
-test -r $q || miscarry "could not create file $q"
+createfile $q
 docommand E16 "${delta} -yNoComment $s" 1 IGNORE IGNORE
 remove $q
 
@@ -98,6 +120,84 @@ chmod +r $g
 docommand E18 "${delta} -yNoComment $s" 0 IGNORE IGNORE
 
 
-remove $files 
+# Failure to create the d-file should also cause a failure. 
+docommand E19 "${get} -e $s"                0 IGNORE IGNORE
+remove $x
+createfile $d
+docommand E20 "${delta} -yNoComment $s" 1 IGNORE IGNORE
+
+# This should not leave any other temporary file lying about
+# but it should also not delete the s-file or the g-file, or 
+# delete that existing d-file.
+docommand E22 "test -r $x" 1 "" ""
+docommand E23 "test -r $q" 1 "" ""
+
+docommand E23 "test -r $d" 0 "" ""
+docommand E24 "test -r $s" 0 "" "" 
+docommand E25 "test -w $g" 0 "" "" 
+
+remove $d
+docommand E26 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+
+# %A as the last two characters of the file to be checked in 
+# should not cause the world to end. 
+remove $s
+if $TESTIG_CSSC
+then
+    docommand E27 "${admin} -b -n $s" 0 IGNORE IGNORE 
+    
+    docommand E28 "${get} -e $s"                0 IGNORE IGNORE
+    echo_nonl "%A" > $g
+    cp $g $g.saved || miscarry "could not back up $g"
+    docommand E29 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+    docommand E30 "${get} -k $s"                0 IGNORE IGNORE
+    
+    echo_nonl E31...
+    if diff $g.saved $g 
+    then
+        echo passed
+    else
+        fail "E31: Expcected to get the same contents back, did we did not" 
+    fi
+    remove $g
+
+
+    # Now tests for not being able to rename an existing x-file.  This 
+    # is not an error - we just overwrite the original x-file as 
+    # SCCS does, rather than backing it up. 
+    # This test is specific to CSSC because SCCS doesn't rename the x-file...
+    mkdir $x.bak
+    createfile $x
+    docommand E32 "${get} -e $s"                0 IGNORE IGNORE
+    docommand E33 "${delta} -yNoComment $s"     0 IGNORE IGNORE
+    removedirs $x.bak
+
+else
+    echo "(Some tests skipped - we are not sure if ${admin} has binary file support)"
+fi 
+remove $s
+
+
+# Test for the case where the p-file lists a SID which is not in the 
+# SCCS file. 
+
+# Create deltas 1.1 and 1.2
+docommand E34 "${admin} -n $s"     0 IGNORE IGNORE
+docommand E35 "${get} -e $s"       0 IGNORE IGNORE
+docommand E36 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+
+# Edit delta 1.2 and then remove delta 1.2
+docommand E37 "${get} -e $s"       0 IGNORE IGNORE
+rename $p saved.$p
+docommand E38 "${rmdel} -r1.2 $s" 0 IGNORE IGNORE
+rename saved.$p $p
+
+# Try to check in the file - this should fail. 
+docommand E39 "${delta} -yNoComment $s" 1 "" IGNORE
+remove $p
+
+remove $files
+
+
 success
 
