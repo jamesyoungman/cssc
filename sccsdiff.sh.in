@@ -7,8 +7,13 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.9 2001/11/25 16:01:38 james_youngman Exp $
+# $Id: sccsdiff.sh.in,v 1.10 2004/10/17 11:45:13 james_youngman Exp $
 # LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.10  2004/10/17 11:45:13  james_youngman
+# LOG   Fixed SourceForge bug 966010, sccs sccsdiff -r cannot have space
+# LOG   before revision number.   We still will have similar problems
+# LOG   elsewhere in the suite, I suspect.
+# LOG
 # LOG   Revision 1.9  2001/11/25 16:01:38  james_youngman
 # LOG   Corrected a syntax error.
 # LOG
@@ -41,8 +46,8 @@
 # LOG   Initial revision
 
 # Values substituted by configure:-
-pr=@PR@			   # The location of the   pr(1) command:
-diff=@CONFIG_DIFF_COMMAND@ # The location of the diff(1) command:
+pr=@PR@			   # The location of the   pr(1) command
+diff=@CONFIG_DIFF_COMMAND@ # The location of the diff(1) command
 
 # Find the "get" command.  The last value tested is "get", and 
 # that's what we use if we can't find get in any other location.
@@ -58,7 +63,7 @@ then
     done
 fi
 
-version='$Revision: 1.9 $ $State: Exp $'
+version='$Revision: 1.10 $ $State: Exp $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]
@@ -73,7 +78,7 @@ sccs_files=
 
 while test $# -gt 0
 do
-	case $1 in 
+	case "$1" in 
 	    --help)
 		usage
 		exit 0
@@ -85,14 +90,25 @@ do
 	    -p) use_pr=true 
 		shift
 		;;
-	    -r*)      
-		if test x$first_sid = x
+	    -r*)
+		# Cope with "-r 1.1" or "-r1.1":
+                if test x-r = x"$1"
 		then
-		    first_sid=$1
+		    # SID is next argument.
+		    arg=-r"$2"
+		    shift;
 		else
-		    if test x$second_sid = x
+		    # SID imediately follow the "-r", in the same argument.
+		    arg="$1"
+		fi
+
+		if test x"$first_sid" = x
+		then
+		    first_sid="$arg"
+		else
+		    if test x"$second_sid" = x
 		    then
-			second_sid=$1
+			second_sid="$arg"
 		    else
 			exec >&2
 			usage
