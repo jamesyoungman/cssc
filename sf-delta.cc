@@ -41,7 +41,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.23 1998/06/15 20:50:02 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.24 1998/08/13 18:12:55 james Exp $";
 #endif
 
 class diff_state
@@ -260,7 +260,7 @@ diff_state::next_state()
       corrupt("EOL");
     }
 
-  switch(c)
+  switch (c)
     {
     case 'a':
       _state = INSERT;
@@ -391,7 +391,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   const delta *got_delta = find_delta(pfile->got);
   if (got_delta == NULL)
     {
-      quit(-1, "Locked delta doesn't exist!");
+      errormsg("Locked delta doesn't exist!");
+      return false;
     }
 
   // Remember seq number that will be the predecessor of the 
@@ -405,16 +406,22 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   mystring dname(name.sub_file('d'));
   FILE *get_out = fopen(dname.c_str(), "wt");
   if (NULL == get_out)
-    quit(-1, "Cannot open file %s", dname.c_str());
-	
-
+    {
+      errormsg_with_errno("Cannot open file %s", dname.c_str());
+      return false;
+    }
+  
   struct subst_parms parms(get_out, NULL, delta(), 
 			   0, sccs_date(NULL));
   seq_state gsstate = sstate;
   get(dname, gsstate, parms, 0, 0, 0, 0, GET_NO_DECODE);
 
   if (fclose_failed(fclose(get_out)))
-    quit(errno, "Failed to close temporary file");
+    {
+      errormsg_with_errno("Failed to close temporary file");
+      return false;
+    }
+  
 	
   FileDiff differ(dname.c_str(), file_to_diff.c_str());
   FILE *diff_out = differ.start();
@@ -731,16 +738,18 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   differ.finish();
 
   pfile.delete_lock();
-  pfile.update();
-
+  
   end_update(out, new_delta);
-
+      
   new_delta.id.print(stdout);
   printf("\n"
 	 "%lu inserted\n%lu deleted\n%lu unchanged\n",
 	 new_delta.inserted, new_delta.deleted, new_delta.unchanged);
 
-  return true;
+  if (pfile.update())
+    return true;
+  else
+    return false;
 }
 
 /* Local variables: */

@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.18 1998/06/15 20:50:05 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.19 1998/08/13 18:13:25 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -190,7 +190,7 @@ sccs_file::write(FILE *out) const
   const char *s;
 
   delta_iterator iter(delta_table);
-  while(iter.next(1)) {
+  while (iter.next(1)) {
     if (write_delta(out, *iter.operator->())) {
       return 1;
     }
@@ -223,7 +223,7 @@ sccs_file::write(FILE *out) const
   // c ceiling
   if (flags.ceiling.valid())
     {
-      if(fputs_failed(fputs("\001f c ", out))
+      if (fputs_failed(fputs("\001f c ", out))
 	 || flags.ceiling.print(out)
 	 || putc_failed(putc('\n', out)))
 	{
@@ -469,18 +469,21 @@ sccs_file::end_update(FILE *out) const
       xfile_error("Write error.");
     }
   
-#ifndef TESTING	
-  
-  if (mode != CREATE && remove(name.c_str()) == -1) {
-    quit(errno, "%s: Can't remove old SCCS file.",
-	 name.c_str());
-  }
-  
-  if (rename(xname.c_str(), name.c_str()) == -1) {
-    xfile_error("Can't rename new SCCS file.");
-  }
-  
-#endif
+  if (mode != CREATE && remove(name.c_str()) == -1)
+    {
+      errormsg_with_errno(errno, "%s: Can't remove old SCCS file.",
+			  name.c_str());
+      return false;
+    }
+  else if (rename(xname.c_str(), name.c_str()) == -1)
+    {
+      xfile_error("Can't rename new SCCS file.");
+      return false;
+    }
+  else
+    {
+      return true;
+    }
 }
 
 

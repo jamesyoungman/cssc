@@ -30,7 +30,7 @@
 #include "pfile.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.8 1997/11/23 11:57:55 james Exp $";
+static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.9 1998/08/13 18:09:38 james Exp $";
 #endif
 
 /* enum */ sccs_pfile::find_status
@@ -42,7 +42,7 @@ sccs_pfile::find_sid(sid id) {
 	sccs_pfile &it = *this;
 	int found = -1;
 
-	while(next()) {
+	while (next()) {
 		if (strcmp(username, it->user.c_str()) == 0
 		    && (id.is_null() || id == it->got || id == it->delta)) {
 			if (found != -1) {
@@ -61,7 +61,7 @@ sccs_pfile::find_sid(sid id) {
 	return FOUND;
 }
 
-void
+bool
 sccs_pfile::update()
 {
   const mystring q_name(name.qfile());
@@ -70,60 +70,54 @@ sccs_pfile::update()
   FILE *pf = fopen(qname, "w");
   if (pf == NULL)
     {
-      quit(errno, "%s: Can't create temporary file.",
-	   qname);
+      errormsg_with_errno("%s: Can't create temporary file.", qname);
+      return false;
     }
   
   int count = 0;
   
   rewind();
-  while(next())
+  while (next())
     {
-#ifdef __GNUC__
     if (write_edit_lock(pf, edit_locks[pos]))
       {
-	quit(errno, "%s: Write error.", qname);
+	errormsg_with_errno("%s: Write error.", qname);
+	return false;
       }
-    
-#else
-    if (write_edit_lock(pf, *operator->()))
-      {
-	quit(errno, "%s: Write error.", qname);
-      }
-#endif	       
     count++;
     }
   
   if (fclose_failed(fclose(pf)))
     {
-      quit(errno, "%s: Write error.", qname);
+      errormsg_with_errno("%s: Write error.", qname);
+      return false;
     }
-  
-#ifndef TESTING	
   
   if (remove(pname.c_str()) != 0)
     {
-      quit(errno, "%s: Can't remove old p-file.",
-	   pname.c_str());
+      errormsg_with_errno("%s: Can't remove old p-file.", pname.c_str());
+      return false;
     }
   
   if (count == 0)
     {
       if (remove(qname) != 0)
 	{
-	  quit(errno, "%s: Can't remove temporary file.",
-	       pname.c_str());
+	  errormsg_with_errno("%s: Can't remove temporary file.",
+			      pname.c_str());
+	  return false;
 	}
     }
   else
     {
       if (rename(qname, pname.c_str()) != 0)
 	{
-	  quit(errno, "%s: Can't rename new p-file.",
+	  errormsg_with_errno("%s: Can't rename new p-file.",
 	       qname);
+	  return false;
 	}
     }
-#endif
+  return true;
 }
 
 /* Local variables: */

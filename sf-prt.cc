@@ -39,7 +39,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.16 1998/06/15 20:50:04 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.17 1998/08/13 18:16:40 james Exp $";
 #endif
 
 static void
@@ -222,23 +222,24 @@ sccs_file::cutoff::cutoff()
 static bool 
 do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 {
+  bool ret = true;
+  
   // When pos_saver goes out of scope the file position on "fp" is restored.
   FilePosSaver pos_saver(fp);
 
   if (0 != fseek(fp, body_offset, SEEK_SET))
-    quit(errno, "%s: fseek() failed!", name);
+    {
+      errormsg_with_errno("%s: fseek() failed!", name);
+      return false;		// can't read body now, so just fail.
+    }
   
-  int ch;
-  bool ret = true;
   
   if (putc_failed(putc('\n', out)))
     ret = false;
   
+  int ch;
   while ( ret && (ch=getc(fp)) != EOF )
     {
-      if (ferror(fp))		// read error is fatal.
-	quit(errno, "%s: read failed!", name);
-      
       if ('\001' == ch)
 	{
 	  if (fputs_failed(fputs("*** ", out)))
@@ -282,6 +283,12 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 	    }
 	}
     }
+  if (ferror(fp))		// read error is fatal.
+    {
+      errormsg_with_errno("%s: read failed!", name);
+      ret = false;
+    }
+      
   // When pos_saver goes out of scope the file position is restored.
   return ret;
 }
@@ -334,7 +341,7 @@ sccs_file::prt(FILE *out,
       bool stop_now = false;
       delta_iterator iter(delta_table);
   
-      while(!stop_now && iter.next(all_deltas))
+      while (!stop_now && iter.next(all_deltas))
 	{
 	  if (exclude.excludes_delta(iter->id, iter->date, stop_now))
 	    continue;
