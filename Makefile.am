@@ -108,7 +108,8 @@ testcode = list.cc
 # in the "unused" directory but might be needed for a port (e.g. 
 # to DOS or something).
 rainyday_src = dummy.cc fsync.cc _chmod.cc sid_list.cc pipe.h pipe.cc \
-	move-if-change 
+	move-if-change \
+	dosfile.cc ffsync.cc
 
 EXTRA_DIST = ChangeLog $(testcode) $(rainyday_src) show-disp.sh
 
