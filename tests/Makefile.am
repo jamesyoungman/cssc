@@ -85,10 +85,17 @@ test-rmdel: links
 		$(SHELL) $$i || exit 1; \
 	done'
 
+test-bsd-sccs: links
+	$(SHELL) -ec 'cd bsd-sccs && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
 all-tests: 	test-rmdel \
 		test-admin test-delta test-get test-prs test-prt test-unget \
 		test-cdc  \
-		test-large test-sccsdiff test-binary 
+		test-large test-sccsdiff test-binary test-bsd-sccs
 	echo Tests passed.
 
 check: all-tests
