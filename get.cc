@@ -39,7 +39,7 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.44 2002/04/04 19:34:48 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.45 2002/08/16 10:53:01 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -112,7 +112,7 @@ main(int argc, char **argv)
 
 
   class CSSC_Options opts(argc, argv, "r!c!i!x!ebklpsmngtw!a!DVG!",
-			  EXITVAL_INVALID_OPTION);
+                          EXITVAL_INVALID_OPTION);
   for(c = opts.next();
       c != CSSC_Options::END_OF_ARGUMENTS;
       c = opts.next())
@@ -208,16 +208,16 @@ main(int argc, char **argv)
           break;
 
         case 'a':
-	  {
-	    int i;
-	    i = atoi(opts.getarg());
-	    if (i < 1 || i > USHRT_MAX)
-	      {
-		errormsg("Invalid sequence number: '%s'", opts.getarg());
-		return 2;
-	      }
-	    seq = (unsigned short) i;
-	  }
+          {
+            int i;
+            i = atoi(opts.getarg());
+            if (i < 1 || i > USHRT_MAX)
+              {
+                errormsg("Invalid sequence number: '%s'", opts.getarg());
+                return 2;
+              }
+            seq = (unsigned short) i;
+          }
           break;
           
         case 't':
@@ -304,39 +304,39 @@ main(int argc, char **argv)
           sid new_delta;
           sid retrieve;
 
-	  if (seq)
-	    {
-	      if (org_rid.valid())
-		{
-		  warning("both the the -r and the -a "
-			  "option have been specified; "
-			  "the -r option has been ignored.");
-		}
-	      
-	      if (!file.find_requested_seqno(seq, retrieve))
-		{
-		  errormsg("%s: Requested sequence number %d not found.",
-			   name.c_str(), (int) seq);
-		  retval = 1;
-		  continue; // with next file....
-		}
-	    }
-	  else
-	    {
-	      rid = org_rid;
-	      if (!file.find_requested_sid(rid, retrieve, get_top_delta))
-		{
-		  errormsg("%s: Requested SID not found.", name.c_str());
-		  retval = 1;
-		  continue; // with next file....
-		}
-	      if (!rid.valid() ||
-		  (rid.release_only() && release(rid) == release(retrieve)))
-		{
-		  rid = retrieve;
-		}
-	    }
-	  
+          if (seq)
+            {
+              if (org_rid.valid())
+                {
+                  warning("both the the -r and the -a "
+                          "option have been specified; "
+                          "the -r option has been ignored.");
+                }
+              
+              if (!file.find_requested_seqno(seq, retrieve))
+                {
+                  errormsg("%s: Requested sequence number %d not found.",
+                           name.c_str(), (int) seq);
+                  retval = 1;
+                  continue; // with next file....
+                }
+            }
+          else
+            {
+              rid = org_rid;
+              if (!file.find_requested_sid(rid, retrieve, get_top_delta))
+                {
+                  errormsg("%s: Requested SID not found.", name.c_str());
+                  retval = 1;
+                  continue; // with next file....
+                }
+              if (!rid.valid() ||
+                  (rid.release_only() && release(rid) == release(retrieve)))
+                {
+                  rid = retrieve;
+                }
+            }
+          
           
           
           if (for_edit)
@@ -447,8 +447,13 @@ main(int argc, char **argv)
                 maybe_clear_archive_bit(gname);
               }
             }
-          
-          if (retval || !status.success) // get failed.
+
+          // We delete this file if the "get" failed.
+          // However, this is not conditional on "retval" since 
+          // if the previous attempt failed, we would like the others
+          // to succeed.
+
+          if (!status.success) // get failed.
             {
               retval = 1;
               give_up_privileges();

@@ -14,35 +14,6 @@ true
 . ../common/not-root
 
 
-# Find the sccs driver program.   It's not done in 
-# tests/common/command-names because we have to run the candidate 
-# to find out if it accepts the --prefix option.
-#
-if test x${sccs} = x
-then
-    if test -f ${dir}/sccs
-    then
-	sccsprog="${dir}/sccs"
-    else
-	case ${dir} in 
-	    ../..) sccsprog="${dir}/bsd/sccs"
-		    ;;
-	    *) sccsprog="sccs"
-		    ;;
-	esac
-    fi
-
-    # Find out if it takes the --prefix option.  If so,
-    # use it.
-    if ${sccsprog} --cssc >/dev/null 2>&1
-    then
-	sccsargs="--prefix=${dir}/"
-    else
-	sccsargs=""
-    fi
-
-    sccs="${sccsprog} ${sccsargs}"
-fi
 
 # If LANG is defined but the system is misconfigured, we will produce
 # the error message "Error setting locale: No such file or directory".
