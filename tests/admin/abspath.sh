@@ -7,8 +7,10 @@
 . ../common/test-common
 
 remove s.bar 
+d=`../../testutils/realpwd`
+s=${d}/s.bar
 
-docommand P1 "${admin} -n `../../testutils/realpwd`/s.bar" 0 "" IGNORE
+docommand P1 "${admin} -n ${s}" 0 "" IGNORE
 
 remove s.bar 
 success
