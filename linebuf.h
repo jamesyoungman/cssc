@@ -29,9 +29,6 @@
 #ifndef CSSC__LINEBUF_H__
 #define CSSC__LINEBUF_H__
 
-#ifdef __GNUC__
-//#pragma interface
-#endif
 
 /* This class is used to read lines of unlimited length from a file. */
 
