@@ -30,7 +30,7 @@
 #include "except.h"
 #include "valcodes.h"
 
-const char main_rcs_id[] = "$Id: val.cc,v 1.6 2001/09/29 19:39:41 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: val.cc,v 1.7 2002/03/19 22:31:59 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -40,6 +40,13 @@ usage()
   fprintf(stderr,
 	  "usage: %s [-sV] [-m module] [-rSID] [-y type]\n",
 	  prg_name);
+}
+
+
+static void problem(int &retval, const int &newprob)
+{
+  if (newprob > retval)
+    retval = newprob;
 }
 
 
@@ -64,23 +71,28 @@ main(int argc, char **argv)
     set_prg_name("val");
 
 
-  class CSSC_Options opts(argc, argv, "sV!m!r!y!");
+  class CSSC_Options opts(argc, argv, "sV!m!r!y!", 0);
   for(c = opts.next();
       c != CSSC_Options::END_OF_ARGUMENTS;
       c = opts.next())
     {
       switch (c)
 	{
+	case CSSC_Options::UNRECOGNIZED_OPTION:
+	case CSSC_Options::MISSING_ARGUMENT:
+	  problem(retval, Val_InvalidOption);
+	  return retval;
+	  
 	default:
 	  errormsg("Unsupported option: '%c'", c);
-	  retval |= Val_InvalidOption;
+	  problem(retval, Val_InvalidOption);
 	  return retval;
 	  
 	case 'r':
 	  if (had_r_option)
 	    {
 	      errormsg("Duplicate -r option\n");
-	      retval |= Val_InvalidOption;
+	      problem(retval, Val_InvalidOption);
 	    }
 	  had_r_option = true;
 	  req_sid_str = opts.getarg();
@@ -88,7 +100,7 @@ main(int argc, char **argv)
 	  if (!rid.valid())
 	    {
 	      errormsg("Invaild SID: '%s'", opts.getarg());
-	      retval |= Val_InvalidSID;
+	      problem(retval, Val_InvalidSID);
 	    }
 	  break;
 	  
@@ -100,7 +112,7 @@ main(int argc, char **argv)
 	  if (had_m_option)
 	    {
 	      errormsg("Duplicate -m option\n");
-	      retval |= Val_InvalidOption;
+	      problem(retval, Val_InvalidOption);
 	    }
 	  had_m_option = true;
 	  mstring = mystring(opts.getarg());
@@ -110,7 +122,7 @@ main(int argc, char **argv)
 	  if (had_y_option)
 	    {
 	      errormsg("Duplicate -y option\n");
-	      retval |= Val_InvalidOption;
+	      problem(retval, Val_InvalidOption);
 	    }
 	  had_y_option = true;
 	  ystring = mystring(opts.getarg());
@@ -132,7 +144,7 @@ main(int argc, char **argv)
   if (sccs_file_iterator::NONE == iter.using_source())
     {
       errormsg("No SCCS file specified");
-      retval |= Val_MissingFile;
+      problem(retval, Val_MissingFile);
       return retval;
     }
   
@@ -145,18 +157,24 @@ main(int argc, char **argv)
 	  sccs_name &name = iter.get_name();
 	  
 	  
+	  // BUG when HAVE_EXCEPTIONS is false...
+	  // If we cannot open the SCCS file, we would normally
+	  // call ctor_fail(), with an argument of -1.  This 
+	  // makes the program exit with an exit status of -1.
+	  // 
+	  // TODO: use atexit() and _exit() to kludge it.
 	  sccs_file file(name, sccs_file::READ);
 	      
 	  if (had_r_option)
 	    {
-	      if (NULL == file.find_delta(rid))
+	      if (rid.valid() && NULL == file.find_delta(rid))
 		{
 		  if (!silent)
 		    {
 		      errormsg("%s: Requested SID %s not found.",
 			       name.c_str(), req_sid_str);
 		    }
-		  retval |= Val_NoSuchSID;
+		  problem(retval, Val_NoSuchSID);
 		}
 	    }
 	  
@@ -173,7 +191,7 @@ main(int argc, char **argv)
 			       mstring.c_str(),
 			       module_flag.c_str());
 		    }
-		  retval |= Val_MismatchedM;
+		  problem(retval, Val_MismatchedM);
 		}
 	    }
 
@@ -190,31 +208,32 @@ main(int argc, char **argv)
 			       mstring.c_str(),
 			       type_flag.c_str());
 		    }
-		  retval |= Val_MismatchedY;
+		  problem(retval, Val_MismatchedY);
 		}
 	    }
 	  
 	  
 	  if (!file.validate())
 	    {
-	      retval |= Val_CorruptFile;
+	      problem(retval, Val_CorruptFile);
 	    }
 	  
 	  
 
 #ifdef HAVE_EXCEPTIONS
 	}
-      
+      catch (CsscSfileMissingException e)
+	{
+	  problem(retval, Val_CannotOpenOrWrongFormat);
+	}
       catch (CsscContstructorFailedException e)
 	{
-	  retval |= Val_CorruptFile;
+	  problem(retval, Val_CorruptFile);
 	}
-      
       catch (CsscSfileCorruptException ce)
 	{
-	  retval |= Val_CorruptFile;
+	  problem(retval, Val_CorruptFile);
 	}
-      
       catch (CsscExitvalException e)
 	{
 	  if (e.exitval > retval)
