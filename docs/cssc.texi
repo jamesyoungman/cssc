@@ -1704,8 +1704,186 @@ indicate which edit is to be aborted.
 @cindex validating @sc{sccs} files
 @cindex Validity checking
 @cindex Checking sccs files for validity
-This program is included with the suite but not yet documented, sorry.
-@c TODO: finish the code, write the test cases, and document it.
+
+The @code{val} command is used to validate a (possibly suspect)
+@sc{sccs} file.  If an @sc{sccs} command reports that the checksum of
+an @sc{sccs} file is incorrect, this may mean that the file has been
+corrupted.  In this case, @code{val} may help to confirm this
+(but @pxref{Paranoia, Why val doesn't solve the whole problem}).  
+
+Example usages:-
+@example
+val s.foo 
+val -mfoo s.foo 
+val -r1.2 s.foo 
+val s.foo s.bar SCCS/s.*
+val /proj/python/spam/spam/eggs/spam
+@end example
+
+@menu
+* Options for val::        Full list of options
+* Validation Warnings::    Some potential problems result in warnings
+* Return Value::           What val's return value means
+* Paranoia::               Why your file might still be corrupt
+@end menu
+
+@node Options for val, Validation Warnings, ,val
+@subsection Options for @code{val}
+@table @samp
+@item -m@var{name}
+Assert that the module name flag of the @sc{sccs} file is set to
+@samp{name}.  The return value of @sc{val} will be zero only if all
+the other checks succeed and the history file has its module name flag
+set to this value.  @xref{Flags}, for a description of the @sc{sccs}
+file flags.
+
+@item -s
+Silent operation; suppress any error or warning messages that would
+otherwise be emitted; the return value of the program will still
+indicate the existence and general nature of any problems.
+
+@item -V
+Display version information .  This option does not exist in the
+traditional @sc{sccs} implementation.
+
+@item -r@var{wanted}
+Validation will succeed if the SID @var{wanted} is valid, unambiguous,
+and present in the history file. 
+
+@item -y@var{type}
+Assert that the module type flag of the @sc{sccs} file is set to
+@samp{type}.  The return value of @sc{val} will be zero only if all
+the other checks succeed and the history file has its module name flag
+set to this value.  @xref{Flags}, for a description of the @sc{sccs}
+file flags.
+@end table
+
+@node Validation Warnings, Return Value, Options for val, val
+@subsection Validation Warnings
+
+Some possible problems with @sc{sccs} files are not definitively
+errors.  In these situations, @code{val} will emit a warning message
+but the validation will not fail (that is, if there are no other
+problems the return value will be zero).  An explanation of the
+possible warnings appears below.
+
+@table @asis
+@item WARNING: date for version 1.1 is later than the date for version 1.2
+This message indicates that a delta exists in the history file where
+the ``parent'' delta has a delta creation time which is later than the
+creation time of the ``child'' delta.  This is a warning only because the
+delta creation time is measured in local time, and so if two
+developers with different time locale settings both edit the file in a
+short period of time, this can happen.  If all the developers who
+create deltas in a history file use the same timezone settings, this
+should not happen.
+
+@item Unknown special comment intro
+This message is displayed when a ``c'' control line is seen in the
+body of the @sc{sccs} file in which the initial ``c'' is not followed
+immediately by a space.  Lines of this type are used as an extension
+mechanism by some other SCCS implementations, notably the
+@emph{BitKeeper} suite.   
+@end table
+
+@node Return Value, Paranoia, Validation Warnings, val
+@subsection Return Value
+The value returned by the @code{val} program depends on the outcome of
+the validation as follows :-
+
+@table @asis
+@item 0 
+Validation succeeded.  No problems were detected.  A small number of
+potential problems may exist without causing a non-zero return value;
+see @xref{Validation Warnings}, for more information.
+
+@item 1
+The @samp{-m} option was used but the module name did not match. 
+
+@item 2
+The @samp{-y} option was used but the module type did not match. 
+
+@item 4
+The @samp{-r} option was used but the specified SID was ambiguous, or
+not present in the history file.
+
+@item 8
+The @samp{-r} option was used but the specified SID was invalid.
+
+@item 16
+Either the named file could not be opened, or it is not an @sc{sccs}
+history file.
+
+@item 32
+The history file is corrupt.
+
+@item 64
+An invalid option letter was used on the command line.
+
+@item 128
+One of the files named on the command line was not present.
+@end table
+
+
+@node Paranoia, , Return Value, val
+@subsection Why val doesn't solve the whole problem
+
+Things that paranoid people might bear in mind are 
+
+@itemize @bullet
+@item 
+Not all accidental changes to an @sc{sccs} file will necessarily make
+the file invalid.
+
+@item
+Since the checksum of an @sc{sccs} file is of finite length, there is
+a finite (though small) chance that a random change will not be
+detected by the checksum
+
+@item
+If data is corrupted in the memory of a program, then the program will
+write the incorrect data out to the history file and set the checksum
+accordingly (in other words, an on-disk checksum only protects the
+data while it is on the disk).  
+
+@item
+Even if @code{val} concludes that a history file is structurally valid,
+this does not mean that the file contains what you thought it did (for
+example, perhaps the file was corrupted by having another, valid,
+@sc{sccs} file copied over it, or perhaps it was overwritten by an old
+backup version).
+
+@item 
+Consumer-grade hardware (for example commodity PCs) generally lacks
+error-correcting memory.
+@end itemize
+
+
+Things that an optimistic person might bear in mind are
+
+@itemize @bullet
+@item 
+The chances of a random change simultaneously fooling the checksum and
+the checks that @code{val} does are very small indeed. 
+
+@item 
+Hardware failures rarely cause file corruption.  The use of ECC memory
+substantially reduces your changes of having undetected data
+corruption.  
+
+@item
+When @sc{cssc} operates on an @sc{sccs} file, most of the checks that
+@code{val} performs are done anyway (@sc{cssc} differs slightly in this
+respect from the traditional @sc{sccs} toolset).
+@end itemize
+
+The summary is that it is theoretically possible to fool the integrity
+checks performed by the @sc{sccs} file checksum and by @code{val} but
+the checksum isn't fooled often and the chances of fooling both
+together are very small.   The use of quality hardware reduces the
+chance of data corruption yet further.
+
+
 
 @node what, , val, Invoking Programs
 @section @code{what}
@@ -2327,22 +2505,29 @@ is running set-user-id or set-group-id.
 @node Interoperability, Incomplete, Environment, Top
 @chapter Interoperability
 
+This part of the @sc{cssc} manual describes how @sc{cssc}
+interoperates with @sc{sccs}.  For the enormous majority of cases,
+this occurs seamlessly; however sometimes it is not possible for
+@sc{cssc} to pick ``one right way'' to proceed unaided.  Circumstances
+where this occurs are described in detail, below.
+
 In order to interoperate better with other implementations of
-@sc{sccs}, the @sc{cssc} suite can be configured to turn off several
-features which provide flexibility beyond that which is available in
-some other implementations of @sc{sccs}.  Some other interoperability
-features of @sc{cssc} exist to maintain compatibility but do not need
-to be turned off.
+@sc{sccs}, the @sc{cssc} suite can also be configured to turn off
+several features which provide flexibility beyond that which is
+available in some other implementations of @sc{sccs}.  Some other
+interoperability features of @sc{cssc} exist to maintain compatibility
+but do not need to be turned off.
 
 @menu
-* Binary file support:: Enabling or disabling support for binary files.
-* Maximum line length:: Limiting the length of lines in the SCCS file.
-* Configuration::       Viewing the current configuration.
-* Bug-for-Bug::         We go to great lengths to be compatible
-* Incompatibilities::   Sometimes we cannot be fully compatible
+* Binary File Support::      Enabling or disabling support for binary files.
+* Maximum Line Length::      Limiting the length of lines in the SCCS file.
+* Configuration::            Viewing the current configuration.
+* Bug-for-Bug::              We go to great lengths to be compatible
+* Incompatibilities::        Sometimes we cannot be fully compatible
+* SCCS Version Differences:: Versions of @sc{sccs} behave inconsistently
 @end menu
 
-@node Binary file support, Maximum line length, , Interoperability
+@node Binary File Support, Maximum Line Length, , Interoperability
 @section Binary File Support
 Binary file support can be turned off when you run ``configure'' by
 specifying the @code{--disable-binary} option.  This will cause
@@ -2360,7 +2545,7 @@ encoded files will still be handled; @sc{cssc} will just refuse to
 create a new one.  This provides as great a degree of interoperability
 with other implementations of @sc{sccs} as possible.
 
-@node Maximum line length, Configuration, Binary file support, Interoperability
+@node Maximum Line Length, Configuration, Binary File Support, Interoperability
 @section Maximum Line Length
 Most other implementations of @sc{sccs} also have an upper limit on the
 maximum length of line that can be handled in a text file (that is,
@@ -2384,7 +2569,7 @@ This setting can be overridden with the environment variable
 @env{CSSC_MAX_LINE_LENGTH}; for a description of how to use this
 environment variable, see @ref{Environment}.
 
-@node Configuration, Bug-for-Bug, Maximum line length, Interoperability
+@node Configuration, Bug-for-Bug, Maximum Line Length, Interoperability
 @section Checking the Current Configuration
 To discover how a particular installation of @sc{cssc} is configured,
 pass the @code{-V} option to any of the @sc{cssc} tools.  The
@@ -2441,7 +2626,8 @@ accepts either but only produces the latter.  Similar situations
 exist for lines of the form ``^At 0'' and ``^A T 0''.
 @end itemize
 
-@node Incompatibilities,, Bug-for-Bug, Interoperability
+@node Incompatibilities, SCCS Version Differences, Bug-for-Bug, Interoperability
+@section Incompatibilities
 
 There are some features of @sc{sccs} implementations with which
 @sc{cssc} cannot maintain compatibility.  
@@ -2462,7 +2648,33 @@ operations, even though the significance of the special comment is
 ignored).
 @end itemize
 
+@node SCCS Version Differences,, Incompatibilities, Interoperability
+@section SCCS Version Differences
 
+This section outlines some of the ways in which various versions of
+@sc{sccs} differ from each other and therefore sometimes from
+@sc{cssc}.  
+
+@subsection Binary file support and line lengths
+
+The various versions of @sc{sccs} differ in their level of support for
+binary files (@pxref{Binary File Support}), and in the maximum line
+length that they will support (@pxref{Maximum Line Length}.
+
+@subsection sccsdiff
+
+There are some small variations in the way that the several versions
+of @code{sccsdiff} behave.  These are outlined in the table below :-
+
+@table @asis
+@item Solaris 8
+Prints a separator line between the @code{diff} output for each
+s-file.  This separator is output before the first set of diff output, 
+even if only one s-file has been named on the command line.
+
+@item Solaris 2.6 and many other versions of Unix
+Does not print a separator.
+@end table
 
 @node Incomplete, Year 2000 Issues, Interoperability, Top
 @chapter Missing Features and other Problems
