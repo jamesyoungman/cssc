@@ -38,7 +38,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.14 2002/02/25 20:10:20 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.15 2002/03/10 17:54:57 james_youngman Exp $";
 #endif
 
 // The MySC code used to just check for (year % 4) and (year == 0).
@@ -154,8 +154,8 @@ count_digits(const char *s)
 // Construct a date as specified on the command line.
 sccs_date::sccs_date(const char *s)
 {
-  if (s == 0)
-    return;
+  ASSERT(s != 0);
+  /* if (s == 0) return; */
 
   // A fully-qualified YYmmDDhhMMss specification contains
   // twelve (12) digits.  If we have more than that, assume that

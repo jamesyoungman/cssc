@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.44 2001/12/02 20:32:53 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.45 2002/03/10 17:54:57 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -187,7 +187,7 @@ public:
   bool test_locks(sid got, sccs_pfile &pfile) const;
   
   struct get_status get(FILE *out, mystring name, sid id,
-                        sccs_date cutoff_date = NULL,
+                        sccs_date cutoff_date = sccs_date(), // XXX: was sccs_date(NULL) (bad!)
                         sid_list include = sid_list(""),
                         sid_list exclude = sid_list(""),
                         int keywords = 0, const char *wstring = NULL,

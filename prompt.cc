@@ -28,7 +28,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.10 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.11 2002/03/10 17:54:57 james_youngman Exp $";
 #endif
 
 
@@ -39,8 +39,8 @@ re_new(char *p, int oldlen, int newlen)
   if (q)
     {
       memcpy(q, p, oldlen);
-      return q;
     }
+  delete[] p;
   return q;
 }
 

@@ -44,7 +44,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.46 2001/12/02 20:32:53 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.47 2002/03/10 17:54:57 james_youngman Exp $";
 #endif
 
 
@@ -803,45 +803,45 @@ void sccs_file::
 set_mr_checker_flag(const char *s)
 {
   if (flags.mr_checker)
-    *flags.mr_checker = s;
-  else
-    flags.mr_checker = new mystring(s);
+    delete flags.mr_checker;
+  
+  flags.mr_checker = new mystring(s);
 }
 
 void sccs_file::
 set_module_flag(const char *s)
 {
   if (flags.module)
-    *flags.module = s;
-  else
-    flags.module = new mystring(s);
+    delete flags.module;
+  
+  flags.module = new mystring(s);
 }
 
 void  sccs_file::
 set_user_flag(const char *s)
 {
   if (flags.user_def)
-    *flags.user_def = s;
-  else
-    flags.user_def = new mystring(s);
+    delete flags.user_def;
+  
+  flags.user_def = new mystring(s);
 }
 
 void sccs_file::
 set_type_flag(const char *s)
 {
   if (flags.type)
-    *flags.type = s;
-  else
-    flags.type = new mystring(s);
+    delete flags.type;
+  
+  flags.type = new mystring(s);
 }
 
 void sccs_file::
 set_reserved_flag(const char *s)
 {
   if (flags.reserved)
-    *flags.reserved = s;
-  else
-    flags.reserved = new mystring(s);
+    delete flags.reserved;
+  
+  flags.reserved = new mystring(s);
 }
 
 
