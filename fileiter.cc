@@ -36,71 +36,9 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.20 1998/10/20 17:27:23 james Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.21 2000/11/05 19:41:35 james_youngman Exp $";
 #endif
 
-#if 0
-sccs_file_iterator::sccs_file_iterator(int ac, char **av, int ind)
-	: argv(av + ind), argc(ac - ind) {
-
-	if (argc < 1) {
-		ctor_fail(-2, "No SCCS file specified.");
-	}
-
-	char *first = argv[0];
-
-	if (strcmp(first, "-") == 0) {
-		source = STDIN;
-		return;
-	}
-
-#ifndef CONFIG_NO_DIRECTORY
-	if (first[0] != '\0') {
-		DIR *dir = opendir(first);
-		if (dir != NULL) {
-			const char *slash = "";
-			int len = strlen(first);
-
-#ifdef CONFIG_MSDOS_FILES
-			if (first[len - 1] != '/' && first[len - 1] != '\\') {
-				if (strchr(first, '/') == NULL) {
-					slash = "\\";
-				} else {
-					slash = "/";
-				}
-			}
-#else
-			if (first[len - 1] != '/') {
-				slash = "/";
-			}
-#endif
-			
-			mystring dirname(mystring(first) + mystring(slash));
-
-			struct dirent *dent = readdir(dir);
-			while (dent != NULL) {
-				mystring name = mystring(dirname) + mystring(dent->d_name, NAMLEN(dent));
-				
-				if (sccs_name::valid_filename(name.c_str())
-				    && is_readable(name.c_str())) {
-					files.add(name);
-				}
-				dent = readdir(dir);
-			}
-
-			closedir(dir);
-
-			source = DIRECTORY;
-			pos = 0;
-			return;
-		}
-	}
-#endif /* CONFIG_NO_DIRECTORY */
-
-	source = ARGS;
-	is_unique = (1 == argc);
-}
-#else
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	: argv(opts.get_argv() + opts.get_index()),
 	  argc(opts.get_argc() - opts.get_index()),
@@ -136,8 +74,16 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 			}
 #else
 			if (first[len - 1] != '/') {
-				slash = "/";
+			  slash = "/";
+			} else {
+			  /* SourceForge bug 121605: Unix coredump in
+			   * mystring::mystring() if the directory
+			   * name contains a trailing slash.  Solution
+			   * is to make sure that "slash" is not NULL.
+			   */
+			  slash = ""; 
 			}
+			
 #endif
 			
 			mystring dirname(mystring(first) + mystring(slash));
@@ -165,7 +111,6 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	source = ARGS;
 	is_unique = (1 == argc);
 }
-#endif
 
 
 int
