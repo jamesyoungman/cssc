@@ -95,10 +95,11 @@ body_insert_text(const char iname[], const char oname[],
 	{
 	  if ('%' == last && is_id_keyword_letter(ch))
 	    {
-	      const char peek = getc(in);
+	      const int peek = getc(in);
 	      if ('%' == peek)
 		*idkw = found_id = true;
-	      ungetc(peek, in);
+	      if (EOF != peek)	// Can't put the genie back in the bottle!
+		ungetc(peek, in);
 	    }
 	}
       
