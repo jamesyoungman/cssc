@@ -50,8 +50,13 @@ then
     if test -f "${dir}/sccs"
     then
 	sccsprog="${dir}/sccs"
+    elif test -f "${dir}/bsd/sccs"
+    then
+	sccsprog="${dir}/bsd/sccs"
     else
 	case "${dir}" in 
+	    /*)    sccsprog="${dir}/bsd/sccs"
+		    ;;
 	    ../..) sccsprog="${dir}/bsd/sccs"
 		    ;;
 	    *) sccsprog="sccs"
