@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.46 2002/03/25 22:41:31 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.47 2002/03/28 18:55:49 james_youngman Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -88,21 +88,21 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
               best = iter->id;
               got_best = true;
 
-	      /* The -t option to get was specified.
-	       * This means that the user wants to find the "top"
-	       * delta - this is the one most recently added to the 
-	       * SCCS file, that is the one closest to the beginning 
-	       * of the file.  It is not possible to determine which 
-	       * SID this is by looking at the tree of SIDs alone.
-	       * The addition of this conditional fixed SourceForge bug 
-	       * number 479916.
-	       */
-	      if (get_top_delta
-		  && iter->id.matches(requested, ncomponents))
-		{
-		  found = best;
-		  return true;
-		}
+              /* The -t option to get was specified.
+               * This means that the user wants to find the "top"
+               * delta - this is the one most recently added to the 
+               * SCCS file, that is the one closest to the beginning 
+               * of the file.  It is not possible to determine which 
+               * SID this is by looking at the tree of SIDs alone.
+               * The addition of this conditional fixed SourceForge bug 
+               * number 479916.
+               */
+              if (get_top_delta
+                  && iter->id.matches(requested, ncomponents))
+                {
+                  found = best;
+                  return true;
+                }
             }
         }
     }
@@ -142,11 +142,11 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
                 {
                   best = iter->id;
                   got_best = true;
-		  if (get_top_delta)
-		  {
-		    break;
-		  }
-		}
+                  if (get_top_delta)
+                  {
+                    break;
+                  }
+                }
             }
         }
     }
@@ -316,8 +316,8 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
         int i;
         int len;
 
-	if (!authorised())
-	  return false;
+        if (!authorised())
+          return false;
 
         if (flags.all_locked 
             || (flags.floor.valid() && flags.floor > got)
@@ -365,14 +365,8 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   
   ASSERT(0 != delta_table);
 
-  if (!prepare_seqstate(state, d->seq))
-    {
-      status.success = false;
-      return status;
-    }
-  
-  ASSERT(0 != delta_table);
-  if (!prepare_seqstate(state, include, exclude, cutoff_date))
+  if (!prepare_seqstate(state, d->seq,
+                        include, exclude, cutoff_date))
     {
       status.success = false;
       return status;

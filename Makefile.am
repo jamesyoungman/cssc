@@ -64,7 +64,7 @@ prt_SOURCES = prt.cc sf-prt.cc \
 	$(common_sources) $(sname_srcs) $(sfile_srcs)
 prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc sf-get.cc writesubst.cc \
 	bodyio.cc encoding.cc canonify.cc \
-	seqstate.cc \
+	seqstate.cc sf-get3.cc \
 	$(common_sources) $(sname_srcs) $(sfile_srcs)
 
 

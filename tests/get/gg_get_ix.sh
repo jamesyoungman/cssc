@@ -38,8 +38,11 @@ then
 
     echo 
     echo "SOME TESTS OMITTED in $0"
+
     sleep 2
     exit 0
+
+    echo "We appear to be continuing anyway...."
 fi
 
 echo "%M%" > $g

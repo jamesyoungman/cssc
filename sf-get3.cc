@@ -32,7 +32,7 @@
 #include "delta-iterator.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.17 2002/03/25 23:57:27 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.18 2002/03/28 18:55:49 james_youngman Exp $";
 #endif
 
 /* Prepare a seqstate for use by marking which sequence numbers are to
@@ -40,8 +40,8 @@ static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.17 2002/03/25 23:57:27 ja
  */
 
 bool
-sccs_file::prepare_seqstate(seq_state &state, sid_list include,
-			    sid_list exclude, sccs_date cutoff_date)
+sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
+                            sid_list exclude, sccs_date cutoff_date)
 {
   
   ASSERT(0 != delta_table);
@@ -51,22 +51,22 @@ sccs_file::prepare_seqstate(seq_state &state, sid_list include,
     {
       sid const &id = iter->id;
 
-      if (include.member(id))	// explicitly included on command line
-	{
-	  state.set_explicitly_included(iter->seq);
-	}
+      if (include.member(id))   // explicitly included on command line
+        {
+          state.set_explicitly_included(iter->seq);
+        }
       else if (exclude.member(id)) // explicitly included on command line
-	{
-	  state.set_explicitly_excluded(iter->seq);
-	}
+        {
+          state.set_explicitly_excluded(iter->seq);
+        }
       else if (cutoff_date.valid() && iter->date > cutoff_date)
-	{
-	  // Delta not explicitly included/excluded by the user, but
-	  // if it is newer than the cutoff date, we don't want it.
-	  // This is the feature that allows us to retrieve a delta
-	  // that was current at some time in the past.
-	  state.set_excluded(iter->seq);
-	}
+        {
+          // Delta not explicitly included/excluded by the user, but
+          // if it is newer than the cutoff date, we don't want it.
+          // This is the feature that allows us to retrieve a delta
+          // that was current at some time in the past.
+          state.set_excluded(iter->seq);
+        }
       
       ASSERT(0 != delta_table);
     }
@@ -74,6 +74,22 @@ sccs_file::prepare_seqstate(seq_state &state, sid_list include,
   
   return true;
 }
+
+
+bool sccs_file::prepare_seqstate(seq_state &state, seq_no seq,
+                                 sid_list include,
+                                 sid_list exclude, sccs_date cutoff_date)
+{
+    if (!prepare_seqstate_1(state, seq))
+        return false;
+    
+    if (!prepare_seqstate_2(state, include, exclude, cutoff_date))
+        return false;
+    
+    return true;
+}
+
+
 
 
 bool
@@ -89,56 +105,56 @@ sccs_file::authorised() const {
     
     for(i = 0; i < len; i++)
       {
-	const char *s = users[i].c_str();
-	char c = s[0];
+        const char *s = users[i].c_str();
+        char c = s[0];
       
-	// Regular SCCS does not underatand the use of "!username" 
-	// to specifically exclude users.  Hence for compatibility 
-	// nor must we.  Hence this next if statement is commented out.
-#if 0	
+        // Regular SCCS does not underatand the use of "!username" 
+        // to specifically exclude users.  Hence for compatibility 
+        // nor must we.  Hence this next if statement is commented out.
+#if 0   
       if (c == '!')
-	{
-	  s++;
-	  if (isdigit(c))
-	    {
-	      if (user_is_group_member(atoi(s)))
-		{
-		  found = 0;
-		  break;
-		}
-	    }
-	  else if (strcmp(s, user) == 0)
-	    {
-	      found = 0;
-	      break;
-	    }
-	  else 
-	    {
-	      continue;
-	    }
-	}
+        {
+          s++;
+          if (isdigit(c))
+            {
+              if (user_is_group_member(atoi(s)))
+                {
+                  found = 0;
+                  break;
+                }
+            }
+          else if (strcmp(s, user) == 0)
+            {
+              found = 0;
+              break;
+            }
+          else 
+            {
+              continue;
+            }
+        }
 #endif
 
       if (isdigit(c))
-	{
-	  if (user_is_group_member(atoi(s)))
-	    {
-	      found = 1;
-	      break;
-	    }
-	} 
+        {
+          if (user_is_group_member(atoi(s)))
+            {
+              found = 1;
+              break;
+            }
+        } 
       else if (strcmp(s, user) == 0) 
-	{
-	  found = 1;
-	  break;
-	}
+        {
+          found = 1;
+          break;
+        }
       }
     
     if (!found) 
       {
-	errormsg("%s: You are not authorized to make deltas.",
-		 name.c_str());
-	return false;
+        errormsg("%s: You are not authorized to make deltas.",
+                 name.c_str());
+        return false;
       }
   }
   return true;

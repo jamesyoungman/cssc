@@ -45,11 +45,11 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.33 2001/09/29 19:39:41 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.34 2002/03/28 18:55:49 james_youngman Exp $";
 #endif
 
 bool
-sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
+sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 {
   bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
 
@@ -125,7 +125,7 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
           // (this fixes SourceForge bug number 111140).
           if (state.is_recursive(seq))
             {
-              state.set_included(d.prev_seq);
+                state.set_included(d.prev_seq);
             }
           
           len = d.excluded.length();
@@ -159,7 +159,7 @@ sccs_file::prepare_seqstate(seq_state &state, seq_no seq)
   if (bDebug)
     {
       fprintf(stderr,
-              "sccs_file::prepare_seqstate(seq_state &state, seq_no seq)"
+              "sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)"
               " done\n");
     }
   return true;

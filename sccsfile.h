@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.46 2002/03/25 22:41:32 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.47 2002/03/28 18:55:49 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -154,8 +154,6 @@ private:
         found_id(0) {}
   };
 
-  bool prepare_seqstate(seq_state &state, seq_no seq);
-
   typedef int (sccs_file::*subst_fn_t)(const char *,
                                        struct subst_parms *,
                                        struct delta const&) const;
@@ -199,17 +197,21 @@ private:
   void saw_unknown_feature(const char *fmt, ...);
   
   /* sf-get3.c */
-  bool prepare_seqstate(seq_state &state, sid_list include,
+  bool prepare_seqstate(seq_state &state, seq_no seq,
+                        sid_list include,
+                        sid_list exclude, sccs_date cutoff_date);
+  bool prepare_seqstate_1(seq_state &state, seq_no seq);
+  bool prepare_seqstate_2(seq_state &state, sid_list include,
                         sid_list exclude, sccs_date cutoff_date);
   bool authorised() const;
 
   /* sf-write.c */
 private:
   void xfile_error(const char *msg) const;
-  FILE *start_update();		// this opens the x-file
+  FILE *start_update();         // this opens the x-file
   int write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
-  bool end_update(FILE **out);	// NB: this closes the x-file too.
+  bool end_update(FILE **out);  // NB: this closes the x-file too.
   int rehack_encoded_flag(FILE *out, int *sum) const;
 
 public:

@@ -48,7 +48,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.49 2002/03/26 13:54:44 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-delta.cc,v 1.50 2002/03/28 18:55:49 james_youngman Exp $";
 #endif
 
 class diff_state
@@ -496,13 +496,12 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   seq_no predecessor_seq = got_delta->seq;
 
 
-  if (!prepare_seqstate(sstate, predecessor_seq))
-    return false;
-
-
-  if (!prepare_seqstate(sstate, pfile->include, pfile->exclude,
-                   sccs_date())) // XXX: was sccs_date(NULL) (bad!)
-    return false;
+  if (!prepare_seqstate(sstate, predecessor_seq,
+                        pfile->include, pfile->exclude,
+                        sccs_date())) // XXX: was sccs_date(NULL) (bad!)
+  {
+      return false;
+  }
   
   /* The d-file is created in the SCCS directory (XXX: correct?) */
   mystring dname(name.sub_file('d'));
