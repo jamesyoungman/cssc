@@ -14,7 +14,7 @@
 #include "seqstate.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.5 1997/05/10 14:49:57 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.6 1997/05/20 23:57:24 james Exp $";
 #endif
 
 inline void
@@ -125,7 +125,6 @@ print_yesno(FILE *out, int flag) {
 	}
 }
 
-
 /* Prints the the value of string flag. */
 template <class TYPE>
 void
@@ -167,14 +166,41 @@ sccs_file::print_delta(FILE *out, const char *format,
 	while(1) {
 		char c = *s++;
 
-		if (c == '\0') {
-			break;
-		}
-
-		if (c != ':' || s[0] == '\0') {
+		if (c == '\0')
+		  {
+		    break;	// end of format.
+		  }
+		else if ('\\' == c)
+		  {
+		    if ('\0' != *s)
+		      {
+			// Not at the end of the format string.
+			// Backslash escape codes.  We only recognise \n and \t.
+			switch (*s)
+			  {
+			  case 'n': c = '\n'; break;
+			  case 't': c = '\t'; break;
+			  case '\\': c = '\\'; break;
+			  default:	// not \n or \t -- print the whole thing.
+			    putc('\\', out);
+			    c = *s;
+			    break;
+			  }
 			putc(c, out);
-			continue;
-		}
+			++s;
+		      }
+		    else
+		      {
+			putc('\\', out); // trailing backslash at and of format.
+		      }
+		    
+		    continue;
+		  }
+		else if (c != ':' || s[0] == '\0')
+		  {
+		    putc(c, out);
+		    continue;
+		  }
 
 		const char *back_to = s;
 		unsigned key = 0;
@@ -286,9 +312,14 @@ sccs_file::print_delta(FILE *out, const char *format,
 			break;
 
 		case KEY2('D', 'I'):
-			print_delta(out, ":Dn:/:Dx:/:Dg:", delta);
-			break;
-
+		  if (delta.included.length() > 0 ||
+		      delta.excluded.length() > 0 ||
+		      delta.ignored.length()  > 0   )
+		    {
+		      print_delta(out, ":Dn:/:Dx:/:Dg:", delta);
+		      break;
+		    }
+		  
 		case KEY2('D','n'):
 			print_seq_list(out, delta.included);
 			break;
@@ -349,13 +380,18 @@ sccs_file::print_delta(FILE *out, const char *format,
 			if (flags.all_locked) {
 				putc('a', out);
 			} else {
-				print_flag(out, flags.locked);
+
+			  if (flags.locked.empty())
+			    fprintf(out, "none");
+			  else
+			    print_flag(out, flags.locked);
 			}
 			break;
 
 		case KEY1('Q'):
-			print_flag(out, flags.user_def);
-			break;
+		  if (flags.user_def != NULL)
+		    print_flag(out, flags.user_def);
+		  break;
 
 		case KEY1('M'):
 			print_flag(out, get_module_name());
@@ -471,6 +507,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff,
 template void print_flag2(FILE *out, const char *s, release);
 template void print_flag2(FILE *out, const char *s, sid);
 template void print_flag2(FILE *out, const char *s, range_list<release>);
+template void print_flag (FILE *out, release_list);
 template void print_flag (FILE *out, range_list<release>);
 template void print_flag (FILE *out, release);
 template void print_flag (FILE *out, sid);
