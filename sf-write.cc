@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.23 1998/09/06 09:25:31 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.24 1998/11/21 08:54:21 james Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */
@@ -493,13 +493,16 @@ sccs_file::end_update(FILE *out)
 
 
 /* Recalculate and update the checksum of a SCCS file. */
-
+#if 0
 bool
 sccs_file::update_checksum(const char *name)
 {
   int sum;
-  FILE *out = open_sccs_file(name, UPDATE, &sum);
-  
+  FILE *out;
+
+  if (NULL == (out = open_sccs_file(name, UPDATE, &sum)))
+    return false;
+
   if (fprintf_failed(fprintf(out, "\001h%05d", sum)))
     {
       errormsg_with_errno("%s: Write error", name);
@@ -516,6 +519,14 @@ sccs_file::update_checksum(const char *name)
     }
   return true;
 }
+#else
+// this version is not a static function.
+bool
+sccs_file::update_checksum()
+{
+  return update();
+}
+#endif
 
 
 /* Update the SCCS file */
