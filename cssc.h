@@ -3,7 +3,7 @@
  *
  * Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.8 1997/11/09 13:55:25 james Exp $
+ * $Id: cssc.h,v 1.9 1997/11/15 20:02:59 james Exp $
  *
  */
 
@@ -76,6 +76,10 @@
 #undef  CONFIG_BORLANDC
 #define CONFIG_DJGPP
 
+
+// Include macros for deciding if a <stdio.h> routine has returned an
+// error status.
+#include "ioerr.h"
 
 
 #include "defaults.h"
