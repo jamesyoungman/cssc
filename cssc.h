@@ -2,7 +2,7 @@
  * cssc.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1998,2001 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,2001,2002 Free Software Foundation, Inc. 
  * 
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.21 2001/09/29 19:39:41 james_youngman Exp $
+ * $Id: cssc.h,v 1.22 2002/11/02 12:15:12 james_youngman Exp $
  *
  */
 
@@ -141,10 +141,35 @@
 #include <sys/types.h>
 #endif
 
+#ifdef HAVE_STDIO_H
 #include <stdio.h>
+#else
+#error You need a <stdio.h> header file.
+#endif
+
+#ifdef HAVE_STDLIB_H 
 #include <stdlib.h>
+#else
+#error You need a <stdlib.h> header file.
+#endif
+
+#ifdef HAVE_STDDEF_H 
 #include <stddef.h>
+#else
+#error You need a <stddef.h> header file.
+#endif
+
+#ifdef HAVE_STRING_H 
 #include <string.h>
+#else
+#error You need a <string.h> header file.
+#endif
+
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
+#else
+#error You need a <ctype.h> header file.
+#endif
 
 #include "err_no.h"
 
