@@ -81,9 +81,9 @@ remove $s $output
 s=s.keys.txt
 remove $s
 uudecode < keys.uue || miscarry could not extract test file.
-#docommand K1 "${get} -p -c971025230458 $s" 0 "1.2 1.2\n" "1.2\n1 lines\n"
-#docommand K2 "${get} -p -c971025230457 $s" 0 "1.1 1.1\n" \
-#	"IGNORE"
+docommand K1 "${get} -p -c971025230458 $s" 0 "1.2 1.2\n" "1.2\n1 lines\n"
+docommand K2 "${get} -p -c971025230457 $s" 0 "1.1 1.1\n" \
+	"IGNORE"
 
 # TODO: We currently say Excluded: blah... if a version is 
 # excluded because of the cutoff date.  We should not do that.

@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.38 2000/03/19 12:56:05 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.39 2000/03/19 16:06:37 james Exp $";
 #endif
 
 /* Returns the SID of the delta to retrieve that best matches the
@@ -99,7 +99,12 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool include_branches) 
 	  // We ignore anything that is not on a branch.
 	  if (nc >= ncomponents)
 	    {
-	      if ( (release)s == (release)requested )
+	      // Fix by Mark Fortescue <mfortescue@transoft.com> for the 
+	      // situation where we specify -rx.y.z.
+	      // 
+	      // There was a branch problem here - We were only checking the
+	      // Release. We need to check Level and Branch as well
+	      if ( (relvbr)s == (relvbr)requested )
 		{
 		  if (!got_best || s >= best)
 		    {
@@ -514,6 +519,25 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
       return status;
     }
 
+  // Fix by Mark Fortescue.  
+  // Fix Cutoff Date Problem
+  const delta *dparm;
+  bool set=false;
+
+  for (seq_no s = d->seq; s>0; s--)
+    {
+      const struct delta & d = delta_table->delta_at_seq(s);
+      const sid & id = d.id;
+
+      if (!state.is_excluded(s) && !set)
+	{
+	   dparm = find_delta(id);
+	   set = true;
+	}
+    }
+  if ( !set ) dparm = d;
+  // End of fix
+
   if (getenv("CSSC_SHOW_SEQSTATE"))
     {
       for (seq_no s = d->seq; s>0; s--)
@@ -557,7 +581,8 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
   // gotten.  That's taken care of; the correct delta is
   // passed as a parameter to the substitution function.
   // (eugh...)
-  struct subst_parms parms(out, wstring, *d,
+  // Changed to use dparm not d to deal with Cutoff Date (Mark Fortescue)
+  struct subst_parms parms(out, wstring, *dparm,
 			   0, sccs_date::now());
   
   

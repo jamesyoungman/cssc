@@ -36,6 +36,8 @@
 
 #include "release.h"
 
+#include "relvbr.h"
+
 class sccs_file;
 
 class sid {
@@ -56,6 +58,7 @@ public:
 	sid(): rel(-1), level(0), branch(0), sequence(0) {}
 	sid(const char *s);
 	sid(release);		/* Defined below */
+	sid(relvbr);		/* Defined below */
 
   	bool is_null() const { return rel <= 0; }
 	int gte(sid const &id) const; // used by sccs_file::find_requested_sid().
@@ -200,6 +203,7 @@ public:
   	mystring as_string() const;
 
   friend release::release(const sid &s);
+  friend relvbr::relvbr(const sid &s);
 };
 
 

@@ -32,7 +32,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.15 1999/03/19 23:58:35 james Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.16 2000/03/19 16:06:37 james Exp $";
 #endif
 
 
@@ -76,6 +76,21 @@ get_comp(const char *&s) {
 	return n;
 }
 
+relvbr::relvbr(const char *s) {
+	if (s == NULL) {
+		rel = level = branch = 0;
+		return;
+	}
+
+	rel = get_comp(s);
+	level = get_comp(s);
+	branch = get_comp(s);
+
+	if (*s != '\0' || rel == 0) {
+		rel = level = branch = -1;
+	}
+}
+
 release::release(const char *s) {
 	if (s == NULL) {
 		rel = 0;
@@ -84,7 +99,7 @@ release::release(const char *s) {
 
 	rel = get_comp(s);
 
-	if (*s != 0 || rel == 0) {
+	if (*s != '\0' || rel == 0) {
 		rel = -1;
 	}
 }
@@ -308,6 +323,11 @@ sid::printf(FILE *out, char c, int force_zero /*=0*/) const {
           ASSERT(0);
 	}
 	return printf_failed(fprintf(out, "%d", n));
+}
+
+relvbr::relvbr(const sid &s) :  rel( (short)s.rel ), level( (short)s.level ), branch( (short)s.branch )
+{
+  // nothing.
 }
 
 release::release(const sid &s) :  rel( (short)s.rel )
