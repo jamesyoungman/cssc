@@ -37,7 +37,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.53 2003/03/08 14:29:26 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.54 2003/03/08 15:03:19 james_youngman Exp $";
 #endif
 
 
@@ -68,11 +68,10 @@ bool sccs_file::sid_matches(const sid& requested,
     }
   else if (3 == ncomponents)
     {
-      // We ignore anything that is not on a branch.
-      if (found.components() >= ncomponents)
-	  return (relvbr)found == (relvbr)requested;
-      else
+      if (found.on_trunk())
 	return false;
+      else
+	return found.matches(requested, ncomponents);
     }
   else
     {
@@ -116,74 +115,37 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
   bool got_best = false;
   sid best;
   
+  // find highest SID of any level, which is less than or equal to
+  // the requested one.
+  // 
+  // If get_top_delta (which corresponds to the -t
+  // option of "get"), this means that the user wants
+  // to find the "top" * delta - this is the one most
+  // recently added to the SCCS file, that is the one
+  // closest to the beginning of the file.  It is not
+  // possible to determine which SID this is by
+  // looking at the tree of SIDs alone.  
+  
   const_delta_iterator iter(delta_table);
-
-  if (1 == ncomponents)
+  while (iter.next())
     {
-      // find highest SID of any level, which is less than or equal to
-      // the requested one.  If get_top_delta is true, they don't
-      // have to be on the trunk.
-      while (iter.next())
-        {
-	  if (sid_matches(requested, iter->id, get_top_delta))
+      if (sid_matches(requested, iter->id, get_top_delta))
+	{
+	  if (!got_best || iter->id.gte(best))
 	    {
-	      if (!got_best || iter->id.gte(best))
+	      best = iter->id;
+	      got_best = true;
+	      
+	      if (get_top_delta
+		  && iter->id.matches(requested, ncomponents))
 		{
-		  best = iter->id;
-		  got_best = true;
-		  
-		  /* The -t option to get was specified.
-		   * This means that the user wants to find the "top"
-		   * delta - this is the one most recently added to the 
-		   * SCCS file, that is the one closest to the beginning 
-		   * of the file.  It is not possible to determine which 
-		   * SID this is by looking at the tree of SIDs alone.
-		   * The addition of this conditional fixed SourceForge bug 
-		   * number 479916.
-		   */
-		  if (get_top_delta
-		      && iter->id.matches(requested, ncomponents))
-		    {
-		      found = best;
-		      return true;
-		    }
+		  break;
 		}
 	    }
-        }
+	}
     }
-  else if (3 == ncomponents)
-    {
-      while (iter.next())
-        {
-	  if (sid_matches(requested, iter->id, get_top_delta))
-	    {
-	      if (!got_best || (iter->id) >= best)
-		{
-		  best = iter->id;
-		  got_best = true;
-		}
-	    }
-        }
-    }
-  else
-    {
-      while (iter.next())
-        {
-	  if (sid_matches(requested, iter->id, get_top_delta))
-	    {
-              if (!got_best || iter->id.gte(best))
-                {
-                  best = iter->id;
-                  got_best = true;
-                  if (get_top_delta)
-                  {
-                    break;
-                  }
-                }
-            }
-        }
-    }
-
+  
+  
   if (got_best)
     found = best;
   return got_best;
@@ -364,8 +326,6 @@ sccs_file::find_next_sid(sid requested, sid got,
 
 bool
 sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
-        int i;
-        int len;
 
         if (!authorised())
           return false;
