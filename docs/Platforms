@@ -3,10 +3,10 @@ Porting People
 The following people have helped ensure that CSSC has worked on
 these platforms (at some stage):
 
-Lars Hecking	<lhecking@nmrc.ucc.ie>		    Solaris-2.5.1
-Lars Hecking	<lhecking@nmrc.ucc.ie>		    IRIX 6.3 (GCC configured
-						    for IRIX 5.3)
-James Youngman  <jay@gnu.ai.mit.edu>		    Linux
+Lars Hecking    <lhecking@nmrc.ucc.ie>              Solaris-2.5.1
+Lars Hecking    <lhecking@nmrc.ucc.ie>              IRIX 6.3 (GCC configured
+                                                    for IRIX 5.3)
+James Youngman  <jay@gnu.org>    		    Linux (Red Hat 4.1,4.2)
 Dave Bodenstab  <imdave@mcs.net>		    FreeBSD-2.0.5
 
 Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] SunOS 4
