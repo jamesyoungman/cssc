@@ -1,5 +1,18 @@
 2003-12-07  james_youngman  <james_youngman@orbital>
 
+	* docs/Makefile.am: make mostlyclean should delete cssc.info.
+
+	* testutils/Makefile.am:
+	make distclean should delete decompress_stdin.sh.
+
+	* tests/get/sf111140.sh, tests/get/sf479916.sh:
+	Remove test files at the end of testing.
+
+	* tests/get/gg_get_ix.sh:
+	Remove the working files at the end of the tests.
+
+	* ChangeLog: Brought up to date.
+
 	* docs/cssc.texi: Indicated the new version.
 
 	* configure.ac: Bumped the version number.
@@ -7,7 +20,7 @@
 	* NEWS: Fixed SourceForg bug 581740.
 
 	* bsd/Makefile.am, testutils/condense-valgrind.pl, file.cc, file.h, get.cc:
-	Honour the user's choice of umask - fixes SourceForge bug 581740
+	Honour the user's choice of umask - fixes SpurceForge bug 581740
 
 	* docs/get-spec.txt: Removed the out of date file get-spec.txt
 
