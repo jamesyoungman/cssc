@@ -495,27 +495,7 @@ file_lock::~file_lock() {
 #endif /* defined(CONFIG_PID_LOCKING) */
 
 
-#ifndef HAVE_REMOVE
 
-int
-remove(const char *name) {
-	return unlink(name);
-}
-
-#endif /* HAVE_REMOVE */
-
-
-#ifndef HAVE_RENAME
-
-int
-rename(const char *from, const char *to) {
-	if (link(from, to) == -1 || unlink(from) == -1) {
-		return -1;
-	}
-	return 0;
-}
-
-#endif /* HAVE_RENAME */
 
 /* Local variables: */
 /* mode: c++ */
