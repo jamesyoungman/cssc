@@ -15,7 +15,7 @@ z=z.$g
 q=q.$g
 d=d.$g
 x=x.$g
-files="$g $s $p $z ${g}_1 ${g}_2 $g $q $d $x"
+files="$g $s $p $z ${g}_1 ${g}_2 $g $q $d $x $g.saved $g.old"
 
 remove $files
 test -d $x.bak && rmdir $x.bak
