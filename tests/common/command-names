@@ -17,7 +17,7 @@ then
 else
 	case ${dir} in 
 		../..) sccs=${dir}/bsd/sccs ;;
-		    *) sccs                 ;;
+		    *) sccs=sccs            ;;
 	esac
 fi
 
