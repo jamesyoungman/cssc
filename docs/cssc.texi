@@ -284,13 +284,13 @@ MR-validation flag to @file{/tmp/checkit}.
 @cindex checksum
 @item -h
 Check the @sc{sccs} file.  The exit value will be 0 if the file is
-valid, and not 0 otherwise.
+valid, and not 0 otherwise.  The checks made are the same as those
+made for @code{val}.  Some problems with the @sc{sccs} file may not be
+diagnosed.
 
 Warning messages may be emitted, indicating things that may or may not
 be wrong (e.g. time apparently going backwards), but if no actual errors
-are encountered, the exit value will still be zero.  The genuine SCCS
-suite invokes @code{val} (@pxref{val}) to perform this validation, but
-at the moment, @code{admin} only checks the checksum.
+are encountered, the exit value will still be zero.  
 
 This option is silently incompatible with all the other options; the
 specified @sc{sccs} files will not be modified by @code{admin} if the
