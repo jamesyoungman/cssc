@@ -1,0 +1,786 @@
+Sun Nov  9 21:06:59 1997  James Youngman  <jay@gnu.org>
+
+	* NEWS: Changes for CSSC-devel-0.03-pl0.
+
+	* Makefile.am:
+	Added in some extra garbage to the distribution so that 99.9% of the
+	contents of Master-Source goes into the distribution, even unuseful
+	stuff like _chmod.cc.  Someone might want it for a port.  Might move
+	it into unused/ soon though.
+
+	* configure.in:
+	Changed the package number to restore the "devel" label but
+	(apparently) conform to the Gnits standard...
+
+	* Makefile.am:
+	Added noinst_HEADERS macro so that the header files get put in the
+	distribution too.
+
+	* NEWS: Updated for CSSC-0.02-devel-pl7.
+
+	* configure.in: Package name is "CSSC", not "cssc".
+
+	* README: Removed "xxx does not work" for appropriate values of xxx.
+
+	* strstr.c:
+	Can't use LIDENT any more to "rename" strstr() since this file is now
+	compiled separately.
+
+	* strstr.c:
+	No need to guard against multiple inclusion since this is now compiled
+	separately.
+
+	* version.cc.in: Initial revision
+
+	* sf-get.cc, sf-delta.cc, sf-admin.cc:
+	Don't include strstrr.cc directly; configure now puts it into
+	@LIBOBJS@.
+
+	* acconfig.h:
+	Include the macros PACKAGE and VERSION to make autoheader happy.
+
+	* configure.in:
+	Switched to using "automake".  Also, the config header file produced
+	by "configure" is now called "config.h" (what used to be the old
+	"config.h" is now part of "cssc.h").
+
+	* cssc.h:
+	Got rid of the old config.h file by including its contents directly
+	into cssc.h.  Hence the config header file produced by "configure" is
+	now called "config.h".
+
+	* Makefile.am: Initial revision
+
+	* configure.in: Some automake changes.   Doesn't really work yet.
+
+	* cssc.h: Merged the contenst of config.h.
+
+Sat Nov  8 23:09:25 1997  James Youngman  <jay@gnu.org>
+
+	* AUTHORS: Initial revision
+
+Sat Nov  8 14:29:45 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in:
+	Changes to distclean to make sure we don't include generated files in
+	the archive if we "make dist" when the source and object dirs are the
+	same.
+
+	* Makefile.in:
+	To make life easier for those without a copy of "makeinfo", we supply
+	a ready-made info file in the distribution.
+
+Fri Nov  7 23:06:06 1997  James Youngman  <jay@gnu.org>
+
+	* sf-admin.cc: sl-merge.cc is now sl-merge.h.
+
+	* configure.in: Also produce pwd/Makefile.
+
+	* sl-merge.h:
+	This is now a .h not a .c file.  It had been #included anyway.
+
+	* sid_list.cc:
+	Added in most of what had been in sid_list.cc into sid_list.h; this
+	had been #included anyway.  The test code is all that's still left in
+	the now much shorter sid_list.cc.
+
+	* sid_list.h:
+	Added in most of what had been in sid_list.cc; this had been #included
+	anyway.  The test code is still left in the now much shorter
+	sid_list.cc.
+
+	* list.h:
+	Added in what used to be the contents of list.cc; this had been
+	#included anyway.
+
+	* admin.cc: Include sid_list.h and sl-merge.h.
+
+	* Makefile.in:
+	Use "distclean" target because it is mentioned in INSTALL.
+	Also, added "realpwd" and updated the dependencies.
+
+Thu Nov  6 22:37:22 1997  James Youngman  <jay@gnu.org>
+
+	* config.h, cssc.h, defaults.h, file.h, fileiter.h, filelock.h:
+	Don't use preprocessor identifiers beginning with two underscores;
+	that conflicts with the implementation's namespace.
+
+	* filepos.h: Protect against multiple inclusion.
+
+	* getopt.h, linebuf.h, list.h, myconfig.h, mystring.h, pfile.h, pipe.h, quit.h, run.h, sccsdate.h, sccsfile.h, sccsname.h, seqstate.h, sf-chkmr.h, sid.h, sid_list.h, stack.h, sysdep.h, xalloc.h:
+	Don't use preprocessor identifiers beginning with two underscores;
+	that conflicts with the implementation's namespace.
+
+Wed Oct 29 23:01:43 1997  James Youngman  <jay@gnu.org>
+
+	* mkinstalldirs, COPYING: Initial revision
+
+	* Makefile.in:
+	FreeBSD's "make" doesn't define "RM" by default.  So provide that
+	definition.
+
+Tue Oct 28 22:43:40 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in:
+	By default, only generate the info file and not the DVI file also.
+
+Mon Oct 27 19:28:00 1997  James Youngman  <jay@gnu.org>
+
+	* sf-get.cc:
+	write_subst(): take as a parameter the delta which is actually being
+	gotten, so that keyword substitution is correctly carried out.
+
+	* sccsfile.h, sf-admin.cc, sf-delta.cc:
+	Use the no_id_keywords() member function to indicate that situation
+	(which might result in either a fatal error or just a warning,
+	according to the setting of the "i" flag).
+
+	* sf-get2.cc:
+	write_subst(): take as a parameter the delta which is actually being
+	gotten, so that keyword substitution is correctly carried out.  Also,
+	use the no_id_keywords() member function to indicate that situation
+	(which might result in either a fatal error or just a warning,
+	according to the setting of the "i" flag).
+
+	* Makefile.in:
+	Added sf-kw.cc for get, delta and admin.  Also added targets for
+	testing each program separately.
+
+	* sf-kw.cc: Take as a parameter the name of the file.
+
+Sun Oct 26 19:48:06 1997  James Youngman  <jay@gnu.org>
+
+	* sf-kw.cc: Initial revision
+
+	* get.cc: The -m and -n options had been the wrong way around.
+
+	* what.cc: Made the output format match that of the real thing.  Most
+	importantly, we no longer emit the initial @(#).
+
+Sat Oct 25 16:53:26 1997  James Youngman  <jay@gnu.org>
+
+	* README:
+	Modified the example scripts for compiling the package, in such a way
+	that I get more information if there is some failure.  Also, update
+	the name of the GNU domain; this has changed from gnu.ai.mit.edu to
+	gnu.org.
+
+	* Makefile.in: Added canonify.cc to the sources for making "get".
+
+	* sid.h, sid.cc:
+	Sometimes we _always_ want the SID component to be printed, even if it
+	is zero.  Examples of this include the %R%,%B%,%L% and %S% keywords
+	expanded by sccs-get.  An extra argument (with a default) has been
+	added to sid::printf().  The default behaviour is the same as the old
+	behaviour.
+
+	* sf-get2.cc:
+	Corrected the expansions of the %R%, %L%, %B%, %S% and %P% keywords.
+	(Also have a new test file, get/subst.sh, to test these).
+
+	* sccsname.h:
+	Added prototype for canonify_filename(), which is used in sf-get2.cc,
+	to expand the %P% keyword.
+
+	* mystring.h, mystring.cc:
+	Added an operator[], which returns a const char&.
+
+	* canonify.cc:
+	canonify_filename() now takes a const char* as its argument.
+
+	* canonify.cc: Initial revision
+
+Mon Aug 11 21:35:36 1997  James Youngman  <jay@gnu.org>
+
+	* mystring.h: Patches from Fila Kolodny <fila@ibi.com> to support
+ 	snapshots of GCC after 2.7.2.2.
+
+Thu Jul 17 08:39:42 1997  James Youngman  <jay@gnu.org>
+
+	* tests/common/test-common: Fixed typo (which had caused echo -e
+ 	bug on Solaris).
+
+Tue Jul 15 18:59:52 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Bumped patchlevel (Solaris /bin/sh portability).
+
+Tue Jul 15 07:04:02 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in:
+	Bumped patchlevel (lndir now is happy if source & dest are the same).
+
+Mon Jul 14 21:40:20 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Bumped the version number -- another prerelease, 0.02.
+
+	* Makefile.in:
+	Made it possible to run "make dist" from the work dir.  That way, an
+	already-created makefile will be used.  No actual files from the work
+	directory are included in the distribution.
+
+	* Makefile.in: Make in "lndir" too.
+
+	* configure.in: sub-configure in "lndir" too.
+
+Thu Jul 10 20:31:17 1997  James Youngman  <jay@gnu.org>
+
+	* README: Provided quick-start info and a reference to docs/TESTING.
+
+Thu Jul 10 20:17:31 1997  James Youngman  <jay@gnu.org>
+
+	* sf-prt.cc, sccsfile.h, sccsfile.cc:
+	Horrible hack to support "empty" include/exclude lists for deltas so
+	that prt can be completely faithful to the SCCS command of the same
+	name.
+
+Wed Jul  9 21:59:21 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Bumped to 0.01-devel-pl13.
+
+Mon Jul  7 21:36:15 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Small correction to all-tests target.
+
+	* Makefile.in:
+	Don't hardwire $(prefix).  Also rationalised testing targets.
+
+	* run.h:
+	Use USE_PIPE not HAVE_PIPE because HAVE_FORK is also required in order
+	for USE_PIPE to e sensible.
+
+	* acconfig.h: Add explanation of HAVE_FORK.
+
+	* pipe.h, sf-delta.cc, pipe.cc:
+	Use USE_PIPE not HAVE_PIPE because HAVE_FORK is also required in order
+	for USE_PIPE to e sensible.
+
+	* configure.in:
+	Treak fork() specially since we have to avoid it on AmigaOS.
+
+	* quit.cc:
+	Use USE_PIPE not HAVE_PIPE because HAVE_FORK is also required in order
+	for USE_PIPE to e sensible.
+
+	* run.cc: Try to cope with the almost-completely-useless semantics of
+	system()...MR validation on systems without fork() or spawn() is
+	broken.
+
+Wed Jul  2 18:21:52 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Bumped patchlevel (attempted IRIX fix)
+
+Wed Jul  2 18:18:44 1997  James Youngman  <jay@gnu.org>
+
+	* quit.cc, prs.cc, prompt.cc, pipe.cc, pfile.cc, pf-del.cc,
+ 	pf-add.cc, mystring.cc, list.cc, linebuf.cc, l-split.cc,
+ 	getopt.cc, get.cc, fsync.cc, fileiter.cc, file.cc, delta.cc,
+ 	cdc.cc, admin.cc, _chmod.cc:
+	Oops.  Removed line that should not have been in the header.
+
+	* xalloc.h, sysdep.h, stack.h, sid_list.h, sid.h, sf-chkmr.h,
+ 	seqstate.h, sccsname.h, sccsfile.h, sccsdate.h, run.h, release.h,
+ 	rel_list.h, quit.h, pipe.h, pfile.h, mystring.h, myconfig.h:
+	Updated the copyright header.
+
+	* myconfig.h: Initial revision
+
+	* list.h, linebuf.h, getopt.h, filelock.h, fileiter.h, file.h,
+ 	defaults.h, xalloc.cc, what.cc, unget.cc, strstr.cc, split.cc,
+ 	sl-merge.cc, sid_list.cc, sid.cc, sf-write.cc, sf-rmdel.cc,
+ 	sf-prs.cc, sf-get3.cc, sf-get2.cc, sf-get.cc, sf-delta.cc,
+ 	sf-chkid.cc, sf-cdc.cc, sf-admin.cc, sf-add.cc, sccsname.cc,
+ 	sccsfile.cc, sccsdate.cc, sact.cc, run.cc, rmdel.cc, rl-merge.cc,
+ 	rel_list.cc, quit.cc, prs.cc, prompt.cc, pipe.cc, pfile.cc,
+ 	pf-del.cc, pf-add.cc, mystring.cc, list.cc, linebuf.cc,
+ 	l-split.cc:
+	Updated the copyright header.
+
+	* getopt.cc: Updated the copyright header.
+	Also made the class members non-inline to appease IRIX.
+
+	* get.cc, fsync.cc, fileiter.cc, file.cc, delta.cc, cdc.cc,
+ 	admin.cc, _chmod.cc:
+	Updated the copyright header.
+
+	* sf-prt.cc:
+	It seems that -b doesn't turn off the printing of the delta table,
+	after all.
+
+	* sccsfile.cc, sf-prt.cc:
+	Ue SEEK_SET instead of the manifest constant zero for fseek().
+	Include <unistd.h> to get it, on SunOS.
+
+	* filepos.h:
+	Ue SEEK_SET instead of the manifest constant zero for fseek().
+
+Wed Jul  2 06:55:16 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in:
+	Portability fixes for Solaris and SunOS; make sure libsubst.a is never
+	empty (Solaris ld doesn't like empty libraries), fall back on
+	fseek()/ftell() in the absence of fsetpos()/fgetpos().
+
+	* sf-prt.cc:
+	Use the helper class FilePosSaver to encapsulate fgetpos() or the lack
+	of it.
+
+	* filepos.h: Initial revision
+
+	* configure.in, acconfig.h: Added HAVE_FSETPOS.
+
+	* dummy.cc: Initial revision
+
+Tue Jul  1 07:56:48 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in:
+	Bumped to patchlevel 10 (we were installing cssc.info in the root
+	directory!)
+
+Mon Jun 30 22:15:07 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Bumped to CSSC-0.01-devel-pl9 prior to release.
+
+	* INSTALL:
+	Replace the original (MySC) INSTALL file with the generic one suitable
+	for Autoconf-generated "configure" files.
+
+	* move-if-change: Initial revision
+
+	* Makefile.in:
+	Moved version info into vernum.h, which is an auto-generated file.
+	We now avoid re-building version.o and relinking everything, if the
+	actual version information is unchanged.   Also support tar'ing the
+	RCS files into a separate tar file for possible distribution.
+
+	* version.h: Initial revision
+
+	* version.cc:
+	Moved version info into vernum.h, which is an auto-generated file.
+
+	* Makefile.in: Support "make install".
+
+Sun Jun 29 10:47:08 1997  James Youngman  <jay@gnu.org>
+
+	* configure.in: Put the *.cs files into the directory "shorter".
+
+	* Makefile.in: Added "prt" as a target.
+
+Sun Jun 29 09:38:21 1997  James Youngman  <jay@gnu.org>
+
+	* docs/Makefile.in:
+	Make PostScript output (A4 by default) too.  Support Letter-sized
+	paper as well.
+
+	* docs/gpl.texinfo: Initial revision
+
+	* docs/cssc.texi: Put the copy of the GPL back in.
+
+Sat Jun 28 15:12:58 1997  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi:
+	MR numbers do not have to be numbers.  Added "Known Problems"
+	section.  Added remarks about how to encode files sent with bug
+	reports.
+
+Sat Jun 28 14:40:04 1997  James Youngman  <jay@gnu.org>
+
+	* prt.cc: Always print the s.file's name, even of there is only one.
+
+	* sf-prt.cc:
+	Several fixes to do with the arrangement of whitespace.  Also, say
+	"none" if we have no flags.
+
+Fri Jun 27 18:51:22 1997  James Youngman  <jay@gnu.org>
+
+	* sccsfile.cc: Added next_seqno(), used by delta.
+
+	* sf-delta.cc:
+	Working creation of null deltas; this version doesn't break branching
+	(in absence of null deltas).
+
+	* sccsfile.h: Added next_seqno(), used by delta.
+
+Mon Jun 23 23:02:47 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Added rl-merge.cc.
+
+	* sid.h: Moved operator release() elsewhere.
+
+	* sid.cc: Moved release::release(const sid&) elsewhere.
+
+	* release.h: Added release(const sid&).
+
+	* sf-delta.cc: Preliminary support for null deltas.
+
+Tue Jun  3 20:23:40 1997  James Youngman  <jay@gnu.org>
+
+	* sccsfile.h:
+	Provide sid_in_use(), initially for use by find_next_sid().
+
+	* quit.h, quit.cc:
+	Added the function name to the information given when an assertion
+	fails, for GCC only.
+
+	* get.cc:
+	sccs_file::find_requested_sid() needs to pass back some information if
+	the requested sid was either unspecified or specified the release
+	number only.
+
+	* sid.h: Added sid::next_level(), initially for use by
+	sccs_file::find_next_sid().
+
+	* sf-get2.cc:
+	Better support for branching and a stab at support for the joint-edit
+	flag.
+
+Mon Jun  2 23:07:11 1997  James Youngman  <jay@gnu.org>
+
+	* sf-get2.cc:
+	Reworked find_next_sid(), which decides what SID we'll put in the
+	p.file.
+
+Sun Jun  1 20:39:03 1997  James Youngman  <jay@gnu.org>
+
+	* sid.h, sid.cc:
+	Provide new methods on_trunk(), matches(), and components(), initially
+	for use by sccs_file::find_requested_sid().
+
+	* sf-get2.cc:
+	Rewrote get_requested_sid() to be shorter, provide behaviour closer to
+	SCCS, and to allow for later support of get's -t option.
+
+	* release.h:
+	Provide informational enum member LARGEST, denoting the largest valid
+	release number.
+
+	* sccsfile.h:
+	Find_requested_sid() needs to know wether it should look along
+	branches, so provide that as a parameter.
+
+	* sf-admin.cc:
+	The "fixes" for id-keyword processing had accidentally ensured that we
+	only read the first line of the input file :-)
+
+	* sccsfile.cc, sccsfile.h: Added sccs_file::delta::removed().
+
+	* sf-get2.cc:
+	Correctly handle "get -r99" when there is only one revision in the
+	file.
+
+Sun Jun  1 00:36:37 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Bumped the patchlevel to CSSC-0.01-devel-pl6
+
+Sun Jun  1 00:32:11 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in: Updated the dependencies.
+
+	* sf-prt.cc: Fixed small bug with empty string flags.
+
+	* release.h: print() needs to return zero for success.
+
+Sat May 31 23:30:27 1997  James Youngman  <jay@gnu.org>
+
+	* sccsfile.cc:
+	Support empty 'i', 'x', and 'g' control lines with no argument.   This
+	serves no purpose, but these do turn up.
+
+	* sf-prt.cc:
+	Support -i (list included/excluded deltas) and the printing of MRs and
+	comments (i.e. -d as opposed to -s).
+
+	* sf-prs.cc, sf-get3.cc, sf-get2.cc, prs.cc, get.cc, sccsfile.h:
+	Changed variables named "cutoof" to "cutoff_date" to avoid the new
+	struct cutoff inside sccs_file.
+
+	* sccsfile.cc:
+	Added a version of find_most_recent_sid() that works purely
+	chronologically rather thann along a branch.
+
+	* sccsfile.h:
+	A version of find_most_recent_sid() that works purely chronologically
+	rather thann along a branch, plus support sccs_file::cutoff, a reified
+	object encapsulating cutoff dates and SIDs for programs like sccs-prt
+	and sccs-prs.
+
+	* sccsdate.h: valid() can be a const member of sccs_date.
+
+	* sf-prt.cc:
+	Working support for cutoff dates and SIDs, plus printing the body of
+	the file.
+
+	* prt.cc: Working support for -c, -r, -y and also -b (print body).
+
+Sat May 31 10:27:10 1997  James Youngman  <jay@gnu.org>
+
+	* Makefile.in:
+	New source files rel_list.cc, rl-merge.cc, and sysnerr.h.  Renamed
+	$(LFLAGS) to $(LDFLAGS).
+
+	* sf-delta.cc, sf-get.cc: Fixes for id-keywords-flag processing.
+
+	* quit.cc:
+	Obtain declarations of sys_nerr and sys_errlist from our own header
+	sysnerr.h, which used macros generated by "configure".
+
+	* admin.cc: Support naked -i, -m, and -y options.  Hence remove
+ 	the -I, -M, and -Y options.
+
+	* prt.cc: Initial revision
+
+	* sccsfile.cc, sf-write.cc: Fixes for id-keywords-flag processing.
+
+	* release.h: Initial revision
+
+	* sid.h: Reimplemented the class release_list.
+
+	* sf-admin.cc:
+	Fixes for id-keywords-flag processing, and support the naked "y"
+	option, which inhibits the default comment.
+
+	* sf-get2.cc: Fixes for id-keywords-flag processing.
+
+	* rl-merge.cc, rel_list.h, rel_list.cc: Initial revision
+
+	* sf-prs.cc:
+	Fixes for id-keywords-flag processing.  Reimplemented the class
+	release_list.
+
+	* sccsfile.h: Support "prt".  Fixed for id-keywords-flag
+ 	processing.  Use rel_list.h since we have now reimplemented the
+ 	class release_list.
+
+	* sf-prt.cc: Initial revision
+
+Tue May 27 20:16:39 1997  James Youngman  <jay@gnu.org>
+
+	* sysnerr.h: Initial revision
+
+	* unget.cc: Actually SCCS _doesn't_ print the locked SID twice, I
+ 	was mistaken :-(
+
+Sun May 25 15:34:00 1997  James Youngman  <jay@gnu.org>
+
+	* unget.cc:
+	Modified the output format to be closer to that of SCCS.  We're still
+	not there, and the current "unget" test script fails for us (it passes
+	for SCCS).
+
+	* fileiter.cc, fileiter.h:
+	Added unique() which returns nonzero if we're in the situation where
+	the utilities don't need to print out the name of the SCCS file
+	they're working on because it's unambiguous -- that is, exactly one
+	was specified on the command line.
+
+	* pfile.h:
+	Added print_lock_sid, which prints the SID of the lock that "pos"
+	refers to (the SID of the delta not the SID of the gotten revision).
+
+	* pfile.cc:
+	Added print_lock_sid, which prints the SID of the lock that "pos"
+	refers to.
+
+Fri May 23 00:11:28 1997  James Youngman  <jay@gnu.org>
+
+	* Support "admin -t" with no argument.
+
+	* Makefile.in (docs/Makefile): Need installdocs target.
+
+Wed May 21 00:06:46 1997  James Youngman  <jay@gnu.org>
+
+	* linebuf.h, linebuf.cc:
+	Small changes (not actually to executable code) to allow the sid_list
+	test code to work.
+
+	* sl-merge.cc:
+	Much fixing with regard to sid_lists.  Construction from,
+	comparison with, and assignment from NULL are sins no longer
+	committed.  Also, the nested class "range" is now a separate template
+	class.
+
+	* sid.cc:
+	The branch and sequence components of trunk revisions are supposed to
+	be blank.  Also some small changes (not actually to executable code)
+	to allow the sid_list test code to work.
+
+	* getopt.cc:
+	Invented the '!' modifier, similar to ':', but allowing empty
+	options.  Note that this is to support empty -m and -y options for
+	admin and delta, that this behaviour is for compatibility with "real"
+	SCCS, and is unlike traditional or POSIX option processing.
+
+Tue May 20 23:58:56 1997  James Youngman  <jay@gnu.org>
+
+	* delta.cc: Support for empty -m and -y options.
+
+	* admin.cc:
+	If admin is given a bare -y option, this means that NO comments are to
+	be entered into the SCCS file for the initial delta.  This is distinct
+	from the situation when no -y option is given, when a "date and
+	time created..." entry is added.  Hence the suppress_comments flag
+	needs to be passed down into sccs_file::create(), which is where that
+	message is normally added.
+
+	* sf-prs.cc:
+	Many, many fixes involving the output format for flags that are not
+	set, plus backslash escape processing has been implemented, as in
+	"real" SCCS.
+
+	* sf-admin.cc:
+	If admin is given a bare -y option, this means that NO comments are to
+	be entered into the SCCS file for the initial delta.  This is distinct
+	from the situation when no -y option is given, when a "date and
+	time created..." entry is added.  Hence the suppress_comments flag
+	needs to be passed down into sccs_file::create(), which is where that
+	message is normally added.
+
+	* sf-write.cc, sccsfile.h:
+	Construction from, comparison with, and assignment from NULL are sins
+	no longer committed with sid_lists.
+
+	* pfile.h:
+	Use range_list<>'s empty() method, not comparison with NULL, to find
+	out if it empty.
+
+	* sid_list.cc, sid_list.h:
+	Much fixing with regard to validity checks.  Construction from,
+	comparison with, and assignment from NULL are sins no longer
+	committed.
+
+Mon May 19 18:57:22 1997  James Youngman  <jay@gnu.org>
+
+	* sid_list.h: Eliminate range_list<>::operator=(void*), since it
+	is a carbuncle -- see comments in sid_list.h.
+
+Sat May 17 12:19:02 1997  James Youngman  <jay@gnu.org>
+
+	* run.cc:
+	If run_mr_checker() is called (because the v flag is set) but the PRG
+	argument is empty (i.e. the flag is set to the empty string), the
+	validation silently succeeds.
+
+	* delta.cc:
+	Fixed bugs involving MRs.  We now output the delta's SID to stdout even
+	though the delta fails, because that's what SCCS does.  More
+	importantly, if the MR validation flag is set, but has no value, MRs
+	are prompted for and allowed (with the -m option) but no actual
+	changing is done -- they are always assumed valid.
+
+Fri May 16 08:04:08 1997  James Youngman  <jay@gnu.org>
+
+	* Support tests for MR number processing and interactive comments
+	for delta (but the latter is only done if stdin is a tty...)
+
+Thu May 15 21:51:57 1997  James Youngman  <jay@gnu.org>
+
+	* l-split.cc:
+	Fixed split_mrs().  It now calls strtok correctly and frees the right
+	thing.  I don't see how it could ever have previously worked...but I
+	don't know that it did.
+
+Tue May 13 17:40:15 1997  James Youngman  <jay@gnu.org>
+
+	* get.cc:
+	Sense of the variable "keywords" was inverted.  We now suppress
+	keyword expansion for -e and -k, and do expansion otherwise, not vice
+	versa.
+
+Sat May 10 14:50:00 1997  James Youngman  <jay@gnu.org>
+
+	* almost all files: changed the package name
+
+	* version.cc: Modified the version strings so that they show up with
+	RCS ident and SCCS/CSSC's what, and also are human-readable.
+
+	* cssc.h: Moved the version() function into version.h.
+
+	* sccsfile.cc: Fixed problem with updating our notion of hogh_release.
+
+	* sf-delta.cc:
+	Output the inserted/deleted/unchanged lines, just like "real" SCCS.
+
+	* get.cc:
+	Go for output compatibility when reporting Included/Excluded deltas,
+	and actually make the output the same.
+
+	* Tested the test scripts themselves against the real thing, and
+	hence fixed them, and hence made some changes to CSSC, mostly in
+	the exact format of the output (sccsfile.cc, sf-delta.cc, get.cc).
+
+Wed May  7 23:39:49 1997  James Youngman  <jay@gnu.org>
+
+	* sf-get2.cc: find_requested_sid: Fix a bug in the case where
+ 	there is only one SID (1.1) in the file and no -r is specified on
+ 	the command line (i.e requested.is_null() is true).
+
+Sun May  4 17:01:36 1997  James Youngman  <jay@gnu.org>
+
+	* sf-get2.cc: Fixed the behaviour when no -r is given or the -r
+ 	that is given is of the form -rX or -rX.Y.Z (see docs/get-spec.txt
+ 	and tests/get/sid-select.sh)
+
+	* Makefile.in: Added sccsdiff to $(CMDS).
+
+	* Makefile.in:
+	Added a rule for creating sccsdiff.sh from sccsdiff.sh.in.
+
+	* configure.in:
+	Find the pr(1) program and substitute for it in sccsdiff.sh.in.
+
+	* file.cc: Corrected usage of freopen(), which returns NULL on failure.
+
+	* sccsdiff.sh.in:
+	Have to enclose the version string in single rather than double
+	quotes, to protect the dollar signs from shell expansion.
+
+	* sccsdiff.sh.in: Initial revision
+
+Sun May  4 12:11:02 1997  James Youngman  <jay@gnu.org>
+
+	* sf-get2.cc:
+	Bugfix for behaviour with "-e -r2" when latest trunk revision was
+	1.x.  Used to get a delta from 1.x, now it creates the new delta 2.1,
+	as does "real" SCCS.
+
+Sat May  3 22:42:55 1997  James Youngman  <jay@gnu.org>
+
+	* get.cc:
+	Added support for the -G option (standard and used by, for example,
+	GNU make).
+
+	* sf-get2.cc:
+	If no SID is specified with -r, and no SID id specified in the file as
+	the default, use the one furthest down the trunk from 1.1.  Don't
+	return one on a branch.
+
+Sat May  3 17:17:38 1997  James Youngman  <jay@gnu.org>
+
+	* sf-get.cc:
+	Support SCCS files whose first referred-to delta is not numbered 1.
+	SunOS can produce these.
+
+	* sf-write.cc, sf-prs.cc, sf-admin.cc, sccsfile.h, sccsfile.cc:
+	Added support for the 'e' (encoded) flag.
+
+Sat May  3 11:51:53 1997  James Youngman  <jay@gnu.org>
+
+	* sf-get2.cc:
+	In sccs_file::find_requested_sid(), if the requested sid is 0.0.0.0
+	(i.e. is_null()), accept the first sid we find as the first guess at
+	the best match (but continue to look). [oops, bad idea, see above!]
+
+	* sid.h:
+	Fixed bug in the conditionals for sid::valid() and release::valid().
+
+	* Makefile.in: Added dependencies.
+
+Tue Apr 29 01:42:14 1997  James Youngman  <jay@gnu.org>
+
+	* Decided to consider supporting setuid execution via BSD's
+ 	sccs(1) command.
+
+Sun Apr 20 22:38:13 1997  James Youngman  <jay@gnu.org>
+
+	* file.cxx: What about support for set-Group-ID execution?
+	
+
