@@ -25,7 +25,8 @@
  *
  */
 
-#ifdef __GNUC__
+#if defined(__GNUC__) \
+&& !(defined(__APPLE__) && __GNUC__ == 3 && __GNUC_MINOR__ == 1)
 #pragma implementation "quit.h"
 #endif
 
@@ -41,7 +42,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.30 2003/12/07 21:07:28 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.31 2005/06/18 23:16:25 james_youngman Exp $";
 #endif
 
 const char *prg_name = NULL;

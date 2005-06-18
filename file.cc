@@ -25,7 +25,8 @@
  *
  */
 
-#ifdef __GNUC__
+#if defined(__GNUC__) \
+&& !(defined(__APPLE__) && __GNUC__ == 3 && __GNUC_MINOR__ == 1)
 #pragma implementation "filelock.h"
 #endif
 
@@ -45,7 +46,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.37 2004/10/03 10:37:57 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.38 2005/06/18 23:16:25 james_youngman Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
