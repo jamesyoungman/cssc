@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.58 2004/10/10 12:19:16 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.59 2005/11/23 01:36:07 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -331,11 +331,35 @@ sccs_file::strict_atous(const char *s) const
 // SCCS files should top out at 9999.
 
 unsigned long
-sccs_file::strict_atoul(const char *s) const
+sccs_file::strict_atoul_idu(const char *s) const
 {
   unsigned long n = 0;
+  bool found_ws = false;
   const unsigned long limit = 99999uL;
   char c;
+
+  /* Unix System III pads to the left with spaces in the 
+   * numbers, while more modern versions of SCCS pad to 
+   * the left with zeroes.   We don't allow left-pad with 
+   * whitespace characters other than an actual space.
+   */
+  while (' ' == *s)
+    {
+      ++s;
+      found_ws = true;
+    }
+
+  if (found_ws)
+    {
+      warning("%s contains spaces in the line counts in its delta table.",
+	      name.c_str());
+      if ((UPDATE == mode) || (FIX_CHECKSUM == mode))
+	{
+	  warning("These leading spaces will be converted to leading zeroes.");
+	}
+    }
+  
+  
   while ( 0 != (c=*s++) )
     {
       if (!isdigit((unsigned char)c))
@@ -374,9 +398,9 @@ sccs_file::read_delta() {
 	// TODO: use constructor here?
 	delta tmp;	/* The new delta */
 
-	tmp.inserted = strict_atoul(args[0]);
-	tmp.deleted = strict_atoul(args[1]);
-	tmp.unchanged = strict_atoul(args[2]);
+	tmp.inserted  = strict_atoul_idu(args[0]);
+	tmp.deleted   = strict_atoul_idu(args[1]);
+	tmp.unchanged = strict_atoul_idu(args[2]);
 
 	if (read_line() != 'd') {
 		corrupt("Expected '@d'");

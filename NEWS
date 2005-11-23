@@ -1,3 +1,9 @@
+New in CSSC-1.0.2
+
+	* Support for some older SCCS files as produced by Unix System III
+	  (some of these have leading spaces in the counts of inserted/
+	  deleted/unchanged lines in the delta table).
+
 New in CSSC-1.0.1
 
 	* "admin -h" now actually validates the SCCS file.

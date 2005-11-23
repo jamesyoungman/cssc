@@ -24,7 +24,7 @@
  *
  * Definition of the class sccs_file.
  *
- * $Id: sccsfile.h,v 1.55 2004/10/10 12:19:16 james_youngman Exp $
+ * $Id: sccsfile.h,v 1.56 2005/11/23 01:36:07 james_youngman Exp $
  * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
  *
  */
@@ -100,7 +100,7 @@ private:
   void check_arg() const;
   void check_noarg() const;
   unsigned short strict_atous(const char *s) const;
-  unsigned long strict_atoul(const char *s) const;
+  unsigned long strict_atoul_idu(const char *s) const;
   
   int read_line_param(FILE *f);
 
