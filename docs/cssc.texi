@@ -3564,7 +3564,7 @@ most of the tests involve using @code{admin} to create a @sc{sccs} file
 in the first place.  However, the directory indicates which tool those
 tests concentrate on.
 
-If is possible for a test to neither pass or fail, but just go wrong.
+It is possible for a test to neither pass or fail, but just go wrong.
 This can happen when the test script comes upon something that prevents
 the test itself working correctly, for example, because it can't remove
 a temporary file or uudecode a built-in sample @sc{sccs} file.  When
