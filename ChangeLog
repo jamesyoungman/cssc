@@ -1,6 +1,53 @@
+2007-03-14  James Youngman  <jay@gnu.org>
+
+	* AUTHORS: Fixed typo
+
+	* get.cc, sf-get.cc: Fixed a typo in a comment
+
+2006-07-13  James Youngman  <jay@gnu.org>
+
+	* tests/prt/TODO: Updated email address
+
+2005-12-04  James Youngman  <jay@gnu.org>
+
+	* docs/cssc.texi: Corrected typo (tirivial change, from Alex Brincko)
+
+2005-11-23  James Youngman  <jay@gnu.org>
+
+	* configure.ac, sccsfile.cc, sccsfile.h, NEWS:
+	Tolerate leading spaces in the counts of inserted/deleted/unchanged lines in the delta table; System III seems to produce/tolerate these (see Neil Mayhew's bug report regarding a pre-1985 file)
+
+2005-06-18  James Youngman  <jay@gnu.org>
+
+	* file.cc, filelock.h, quit.cc, quit.h:
+	Applied Sourceforge patch 1223116, allowing CSSC to be compiled on Darwin.  Darwin's version of GCC doesn't like #pragma implementation.
+
+2005-04-06  James Youngman  <jay@gnu.org>
+
+	* docs/Platforms:
+	Indicate that under Cygwin, CSSC must be used on filesystems mounted
+	in 'binary mode'.
+
+2005-04-04  James Youngman  <jay@gnu.org>
+
+	* pf-add.cc: Updated copyright year.
+
+	* pf-add.cc:
+	Removed some unused code (which had already been disabled with #if 0).
+
 2005-01-22  James Youngman  <jay@gnu.org>
 
-	* Released CSSC-1.0.1.
+	* configure.ac: CSSC release 1.0.1
+
+	* NEWS: Better description of the problem for SourceForge bug 865422
+
+	* docs/cssc.texi: Added 2005 top copyright years.
+
+	* docs/cssc.texi: Updated timestamp.
+
+	* ChangeLog: Indicated the release of 1.0.1.
+
+	* ChangeLog: Updated change log from CVS comments.
 
 	* NEWS: Added latest news.
 

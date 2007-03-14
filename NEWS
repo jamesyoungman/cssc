@@ -4,6 +4,8 @@ New in CSSC-1.0.2
 	  (some of these have leading spaces in the counts of inserted/
 	  deleted/unchanged lines in the delta table).
 
+	* Compilation fixes for Darwin
+
 New in CSSC-1.0.1
 
 	* "admin -h" now actually validates the SCCS file.
