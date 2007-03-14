@@ -45,7 +45,7 @@
 // #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.39 2004/10/10 12:19:16 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.40 2007/03/14 08:46:01 james_youngman Exp $";
 #endif
 
 bool
@@ -100,7 +100,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	}
     }
   
-  // Apply any exlusions
+  // Apply any exclusions
   for (y=1; y<=seq; ++y)
     {
       if (state.is_included(y))

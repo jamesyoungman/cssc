@@ -40,7 +40,7 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.51 2004/10/03 10:37:57 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.52 2007/03/14 08:46:58 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -378,7 +378,7 @@ main(int argc, char **argv)
               /* got_gname is specified if we had -G g-file
                * on the command line.   This only works for the
                * first file on the command line (or else we'd
-               * be overwriting easrlier data.
+               * be overwriting earlier data).
                */
               if (!got_gname)
                 gname = name.gfile();
