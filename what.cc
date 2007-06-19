@@ -16,7 +16,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA
+ *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -50,7 +50,7 @@
 #include "cssc.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.21 2002/03/18 21:57:28 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.22 2007/06/19 23:14:49 james_youngman Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 

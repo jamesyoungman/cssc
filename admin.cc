@@ -15,8 +15,7 @@
  * 
  *    You should have received a copy of the GNU General Public
  *    License along with this program; if not, write to the Free
- *    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, 
- *    MA 02111, USA.
+ *    Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *    
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
@@ -40,7 +39,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.39 2004/10/17 12:40:19 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.40 2007/06/19 23:14:44 james_youngman Exp $";
 
 
 static bool

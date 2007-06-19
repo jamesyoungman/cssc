@@ -15,12 +15,12 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
+ *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
  *
- * $Id: pfile.h,v 1.17 2001/09/29 19:39:41 james_youngman Exp $
+ * $Id: pfile.h,v 1.18 2007/06/19 23:14:45 james_youngman Exp $
  * Definition of the class sccs_pfile.
  */
 

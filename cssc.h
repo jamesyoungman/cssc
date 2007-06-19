@@ -16,14 +16,14 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
+ *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.22 2002/11/02 12:15:12 james_youngman Exp $
+ * $Id: cssc.h,v 1.23 2007/06/19 23:14:45 james_youngman Exp $
  *
  */
 

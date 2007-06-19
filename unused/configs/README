@@ -1,4 +1,0 @@
-These config files date from back when CSSC was configured in the same
-way as MySC.  These days we use autoconf instead.  The only reason you
-may want to look at these is to figure out how to support some
-no-longer-supported platform, for example MS-DOS.

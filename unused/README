@@ -1,5 +1,0 @@
-This directory contains a load of stuff that isn't used, any more.  If
-you're doing a port to another system, you may want to pick over this
-stuff.  Some of it was used for DOS support (I don't have a DOS development
-system so I can't support a DOS port myself.)
-

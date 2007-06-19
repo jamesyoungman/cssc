@@ -15,7 +15,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
+ *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  *
  * Validate a SCCS file.
@@ -30,7 +30,7 @@
 #include "except.h"
 #include "valcodes.h"
 
-const char main_rcs_id[] = "$Id: val.cc,v 1.8 2002/03/25 00:07:56 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: val.cc,v 1.9 2007/06/19 23:14:49 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 

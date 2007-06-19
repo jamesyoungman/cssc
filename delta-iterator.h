@@ -16,18 +16,18 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
+ *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  *
  * Definition of the class delta_iterator.
  *
- * $Id: delta-iterator.h,v 1.3 2001/09/29 19:39:41 james_youngman Exp $
+ * $Id: delta-iterator.h,v 1.4 2007/06/19 23:14:45 james_youngman Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_ITERATOR_H
-#define CSSC_DELTA_ITERATOR_H "$Id: delta-iterator.h,v 1.3 2001/09/29 19:39:41 james_youngman Exp $"
+#define CSSC_DELTA_ITERATOR_H "$Id: delta-iterator.h,v 1.4 2007/06/19 23:14:45 james_youngman Exp $"
 
 #include "delta.h"
 

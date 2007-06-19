@@ -16,7 +16,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
+ *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -34,7 +34,7 @@
 #include "filepos.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.38 2004/10/10 12:19:16 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.39 2007/06/19 23:14:46 james_youngman Exp $";
 #endif
 
 /* Quit because an error related to the x-file. */

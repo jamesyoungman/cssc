@@ -15,7 +15,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
+ *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -37,7 +37,7 @@
 #define CONFIG_LINEBUF_CHUNK_SIZE (1024)
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.15 2003/12/13 15:11:56 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.16 2007/06/19 23:14:45 james_youngman Exp $";
 #endif
 
 cssc_linebuf::cssc_linebuf()

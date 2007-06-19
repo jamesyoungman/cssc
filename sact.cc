@@ -16,7 +16,7 @@
  * 
  *    You should have received a copy of the GNU General Public License
  *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.
+ *    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -33,7 +33,7 @@
 #include "my-getopt.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.16 2003/12/08 12:13:46 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.17 2007/06/19 23:14:46 james_youngman Exp $";
 
 void
 usage() {
