@@ -36,7 +36,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.23 2007/06/19 23:14:45 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.24 2007/06/20 09:23:32 james_youngman Exp $";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
@@ -164,6 +164,9 @@ sccs_file_iterator::next() {
 
 	return 0;
 }
+
+// Explicit template instantiations
+template void mylist<mystring>::add(mystring const&);
 					
 /* Local variables: */
 /* mode: c++ */

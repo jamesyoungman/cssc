@@ -30,7 +30,7 @@
 #include "delta-table.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: dtbl-prepend.cc,v 1.5 2007/06/19 23:14:45 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: dtbl-prepend.cc,v 1.6 2007/06/20 09:23:32 james_youngman Exp $";
 #endif
 
 
@@ -50,3 +50,9 @@ cssc_delta_table::prepend(const delta &it)
 }
 
 
+// Explicit template instantiations.
+template mylist<delta>& operator+=<delta>(mylist<delta>&, mylist<delta> const&);
+
+/* Local variables: */
+/* mode: c++ */
+/* End: */

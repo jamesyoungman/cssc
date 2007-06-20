@@ -31,7 +31,7 @@
 #include "delta.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccs-delta.cc,v 1.4 2007/06/19 23:14:46 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccs-delta.cc,v 1.5 2007/06/20 09:23:32 james_youngman Exp $";
 #endif
 
 delta &
@@ -66,6 +66,9 @@ bool delta::removed() const
 
 
 
+// Explicit template instantiations.
+template class mylist<delta>;
+template class mylist<mystring>;
 
 
 /* Local variables: */

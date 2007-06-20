@@ -30,7 +30,7 @@
 #include "except.h"
 #include "valcodes.h"
 
-const char main_rcs_id[] = "$Id: val.cc,v 1.9 2007/06/19 23:14:49 james_youngman Exp $";
+const char main_rcs_id[] = "$Id: val.cc,v 1.10 2007/06/20 09:23:32 james_youngman Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -245,7 +245,9 @@ main(int argc, char **argv)
   return retval;
 }
 
-
+// Explicit template instantiations
+template mylist<mystring>::~mylist();
+template void mylist<mystring>::destroy();
 
 /* Local variables: */
 /* mode: c++ */

@@ -1,5 +1,12 @@
 2007-06-20  James Youngman  <jay@gnu.org>
 
+
+	* cap.cc, val.cc: Add explicit template instantiation directives to
+	support compilation with GCC's -fno-implicit-templates option.
+	* dtbl-prepend.cc, fileiter.cc, sccs-delta.cc: ditto
+	* sccsfile.cc: Ditto.  Also include "mylist.h" to get the method
+	definitions for the templates.
+
 	* .gitignore, docs/.gitignore, testutils/.gitignore: New files.
 
 	* tests/common/test-common: Work around an apparent bug in Bash

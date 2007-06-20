@@ -27,7 +27,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: cap.cc,v 1.4 2007/06/19 23:14:45 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: cap.cc,v 1.5 2007/06/20 09:23:32 james_youngman Exp $";
 #endif
 
 template<class T> const T& cap_min(const T& a, const T& b)
@@ -47,3 +47,10 @@ cap5(unsigned long n)
 {
   return cap_min(n, 99999uL);
 }
+
+// Explicit template instantiations.
+template const unsigned long& cap_min(const unsigned long&, const unsigned long&);
+
+/* Local variables: */
+/* mode: c++ */
+/* End: */

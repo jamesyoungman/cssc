@@ -34,6 +34,7 @@
 #include "linebuf.h"
 #include "quit.h"
 #include "err_no.h"
+#include "mylist.h"
 
 #ifdef STDC_HEADERS
 #include <ctype.h>
@@ -49,7 +50,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.60 2007/06/19 23:14:46 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.61 2007/06/20 09:23:32 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -1288,7 +1289,11 @@ is_known_keyword_char(char c)
   return strchr("MIRLBSDHTEGUYFPQCZWA", c) != NULL;
 }
 
-
+// Explicit template instantiations.
+template class mylist<char>;
+template class mylist<unsigned short>;
+//template void mylist<unsigned short>::add(unsigned short const&);
+template void mylist<mystring>::add(mystring const&);
 
 /* Local variables: */
 /* mode: c++ */
