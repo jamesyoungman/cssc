@@ -1,5 +1,13 @@
 2007-06-20  James Youngman  <jay@gnu.org>
 
+	* bsd/sccs.c (unedit): Fix "sccs unedit /tmp/SCCS/s.foo will
+	cause ./s.foo to be unlinked" bug, by forming the g-file name
+	from the p-file name, as opposed to the name of the file on the
+	command line (because the file named on the command line gould be
+	either the g-file or the s-file).
+	* docs/BUGS: Mention the bugfix.
+	* tests/bsd-sccs/delsfile.sh: New test, for this bug.
+
 	* .gitignore: Ignore Emacs editor backups.
 
 	* cap.cc, val.cc: Add explicit template instantiation directives to

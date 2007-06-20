@@ -1,4 +1,4 @@
-New in CSSC-1.0.2
+New in CSSC-1.0.2-CVS
 
 	* Support for some older SCCS files as produced by Unix System III
 	  (some of these have leading spaces in the counts of inserted/
@@ -33,7 +33,7 @@ New in CSSC-1.00
 
 	* We now support "sccs diffs -u", which of course produces
 	  unified-format diffs.  We also support the "-n" and "-w" 
-	  options to diff and the -a, -B, -d, -H, -p, -q, -s, -v ad
+	  options to diff and the -a, -B, -d, -H, -p, -q, -s, -v and
           -y options to GNU diff.
 
 	* Some changes to support compilation with Sun CC 5.5.

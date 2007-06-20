@@ -44,7 +44,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.41 2004/10/03 10:57:35 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.42 2007/06/20 09:54:23 james_youngman Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -1994,7 +1994,7 @@ unedit (const char *fn)
   myname = username ();
 
   /*
-     **  Copy p-file to temp file, doing deletions as needed.
+   *  Copy p-file to temp file, doing deletions as needed.
    */
 
   while ((pent = getpfent (pfp)) != NULL)
@@ -2002,7 +2002,7 @@ unedit (const char *fn)
       if (strcmp (pent->p_user, myname) == 0)
         {
           /* a match */
-          delete++;
+          delete = TRUE;
         }
       else
         {
@@ -2020,7 +2020,11 @@ unedit (const char *fn)
     {
       extern int errno;
 
-      cp = tail (fn);
+      cp = tail (pfn);
+      if ('p' == cp[0] && '.' == cp[1])
+	{
+	  cp += 2;
+	}
       errno = 0;
       if (access (cp, 0) < 0 && errno != ENOENT)
         goto bad;
@@ -2065,8 +2069,8 @@ unedit (const char *fn)
 
   /* actually remove the g-file */
   
-  /* TODO: %12s in the printfs below is inappropriate
-   * for modern Unix were filenames can be longer than 11 characters...
+  /* TODO: %12s in the printfs below is inappropriate for modern Unix
+   * where filenames can be longer than 11 characters...
    */
   
   if (delete)
