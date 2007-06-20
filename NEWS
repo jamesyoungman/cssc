@@ -1,5 +1,9 @@
 New in CSSC-1.0.2-CVS
 
+	* "sccs unedit /tmp/SCCS/s.foo" will no longer cause the
+	  deletion of ./s.foo, if it exists.  Instead, ./foo will be
+          deleted, as intended.
+
 	* Support for some older SCCS files as produced by Unix System III
 	  (some of these have leading spaces in the counts of inserted/
 	  deleted/unchanged lines in the delta table).
