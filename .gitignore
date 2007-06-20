@@ -4,3 +4,4 @@ config.h.in
 Makefile.in
 configure
 autom4te.cache
+*~
