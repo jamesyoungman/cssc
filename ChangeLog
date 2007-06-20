@@ -1,5 +1,10 @@
 2007-06-21  James Youngman  <jay@gnu.org>
 
+	* sccsfile.cc (print_subsituted_flags_list): Return true if
+	nothing failed (as opposed to falling off the end of the
+	function).   This prevents spurious x-file write errors if the y
+	flag is unset.
+
 	* cssc.h: Require exception support to compile.  This is not
 	strictly necessary for successful operation, but without exception
 	support "get s.foo s.bar" will not process s.bar if we failed on

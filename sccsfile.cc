@@ -50,7 +50,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.61 2007/06/20 09:23:32 james_youngman Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.62 2007/06/20 23:30:51 james_youngman Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -1281,6 +1281,7 @@ print_subsituted_flags_list(FILE *out, const char* separator) const
       if (printf_failed(fprintf(out, "%c", members[i])))
 	return false;
     }
+  return true;
 }
 
 bool sccs_file::

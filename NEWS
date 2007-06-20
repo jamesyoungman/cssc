@@ -1,5 +1,13 @@
 New in CSSC-1.0.2-CVS
 
+	* We now require the C++ compiler to support exceptions in
+          order to compile successfully.  Previously, CSSC allowed
+          compilation without exceptions, but this meant that graceful
+	  recovery from failures was not possible.
+
+	* Fixed a spurious failure when writing out the SCCS file when
+          the Y flag is set in the SCCS file.
+	
 	* "sccs unedit /tmp/SCCS/s.foo" will no longer cause the
 	  deletion of ./s.foo, if it exists.  Instead, ./foo will be
           deleted, as intended.
