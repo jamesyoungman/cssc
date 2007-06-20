@@ -1,3 +1,9 @@
+2007-06-20  James Youngman  <jay@gnu.org>
+
+	* tests/common/test-common: Work around an apparent bug in Bash
+	3.1.17(1) in which "$@$ac_c" expands to DEL${ac_c} when $1 is "".
+	That broke echo_nonl, causing some tests to fail.
+
 2007-06-19  James Youngman  <jay@gnu.org>
 
 	* unused/configs/cf-bcc.h, unused/configs/cf-djgpp.h,

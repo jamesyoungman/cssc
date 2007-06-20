@@ -104,7 +104,14 @@ fi
 
 # Function for echoing without a newline, with escape chars enabled.
 echo_nonl () {
-${echocmd} ${ac_n} ${ac_e} "$@$ac_c" ;
+if test -z "$*"
+then
+    # this works around an apparent bug in Bash where 
+    # "$@$x" expands to something starting with char 0177 (DEL).
+    true
+else
+    ${echocmd} ${ac_n} ${ac_e} "$@$ac_c" ;
+fi
 }
 
 
