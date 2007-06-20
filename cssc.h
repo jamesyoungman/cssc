@@ -23,7 +23,7 @@
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.23 2007/06/19 23:14:45 james_youngman Exp $
+ * $Id: cssc.h,v 1.24 2007/06/20 23:21:39 james_youngman Exp $
  *
  */
 
@@ -40,7 +40,18 @@
 
 
 
-
+#if !defined(HAVE_EXCEPTIONS)
+/* The code was originally written to use exceptions or not, according to 
+ * whether they are available.  However, failure recovery is not possible in 
+ * the case where exceptions are not supported.  Therefore we artificially 
+ * refuse to compile if exceptions don't work.  You can force the program 
+ * to compile by changing the code here, but if you do this, please email
+ * James Youngman <jay@gnu.org> to let him know that exception-lacking 
+ * systems are still relevant (please describe your system).
+ */
+#error "C++ exception support is (now) required"
+stop compiling now please
+#endif
 
 
 

@@ -1,3 +1,11 @@
+2007-06-21  James Youngman  <jay@gnu.org>
+
+	* cssc.h: Require exception support to compile.  This is not
+	strictly necessary for successful operation, but without exception
+	support "get s.foo s.bar" will not process s.bar if we failed on
+	s.foo.  So exception support is required for full SCCS
+	compatibility.
+
 2007-06-20  James Youngman  <jay@gnu.org>
 
 	* bsd/sccs.c (unedit): Fix "sccs unedit /tmp/SCCS/s.foo will
