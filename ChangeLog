@@ -1,3 +1,52 @@
+2007-06-19  James Youngman  <jay@gnu.org>
+
+	* unused/configs/cf-bcc.h, unused/configs/cf-djgpp.h,
+	unused/configs/cf-redhat.h, unused/configs/cf-sls.h,
+	unused/configs/cf-xenix.h, unused/configs/mf-msdos.mak,
+	unused/configs/mf-unix.mak, unused/Makefile.am, unused/README,
+	unused/_chmod.cc, unused/configs/README, unused/dosfile.cc,
+	unused/dummy.cc, unused/ffsync.cc, unused/fsync.cc,
+	unused/linux.diffs, unused/move-if-change, unused/pipe.cc,
+	unused/pipe.h, unused/sid_list.cc: Removed unused files.
+
+	Update or add various copyright notices.
+	* sccs-cgi/sccs.cgi, testutils/ekko.c, testutils/last-time.c,
+	testutils/realpwd.cc, testutils/seeker.c, testutils/user.c,
+	testutils/uu_decode.c, testutils/yammer.c, testutils/yes.c,
+	docs/gpl.texi, docs/texinfo.tex, sid_list.h, sl-merge.h, split.cc,
+	stack.h, strstr.c, sysdep.h, unget.cc, val.cc, valcodes.h,
+	what.cc, writesubst.cc, rel_list.h, release.h, relvbr.h,
+	rl-merge.cc, rmdel.cc, run.cc, run.h, sact.cc, sccs-delta.cc,
+	sccsdate.cc, sccsdate.h, sccsfile.cc, sccsfile.h, sccsname.cc,
+	sccsname.h, seqstate.cc, seqstate.h, sf-add.cc, sf-admin.cc,
+	sf-cdc.cc, sf-chkid.cc, sf-chkmr.h, sf-delta.cc, sf-get.cc,
+	sf-get2.cc, sf-get3.cc, sf-kw.cc, sf-prs.cc, sf-prt.cc,
+	sf-rmdel.cc, sf-val.cc, sf-write.cc, show-disp.sh, showconfig.cc,
+	sid.cc, sid.h, cap.cc, cdc.cc, configure.ac, cssc.h, defaults.h,
+	delta-iterator.cc, delta-iterator.h, delta-table.cc,
+	delta-table.h, delta.cc, delta.h, depcomp, dtbl-prepend.cc,
+	encoding.cc, environment.cc, err_no.h, except.h, fatalsig.cc,
+	fdclosed.cc, file.cc, file.h, filediff.cc, filediff.h,
+	fileiter.cc, fileiter.h, filelock.h, filepos.h, fnsplit.cc,
+	get.cc, ioerr.h, l-split.cc, linebuf.cc, linebuf.h, list.cc,
+	missing, my-getopt.cc, my-getopt.h, mylist.h, myset.h,
+	mystring.cc, mystring.h, pf-add.cc, pf-del.cc, pfile.cc, pfile.h,
+	prompt.cc, prs.cc, prt.cc, quit.cc, quit.h, rel_list.cc,
+	Makefile.am, admin.cc, autogen.sh, bodyio.cc, bodyio.h,
+	canonify.cc: Updated FSF address in source files
+	* COPYING: Fixed the FSF address.
+	* Makefile.am, remove.c, rename.c, sccsdiff.sh.in, strerror.c,
+	version.h: Included copyright notices in some files where these
+	were missing 
+
+2007-03-14  James Youngman  <jay@gnu.org>
+
+	* NEWS, ChangeLog: Updated with (not very) recent changes.
+
+	* AUTHORS: Fixed typo
+
+	* get.cc, sf-get.cc: Fixed a typo in a comment
+
 2007-03-14  James Youngman  <jay@gnu.org>
 
 	* AUTHORS: Fixed typo
