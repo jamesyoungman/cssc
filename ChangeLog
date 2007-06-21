@@ -1,5 +1,8 @@
 2007-06-21  James Youngman  <jay@gnu.org>
 
+	* bsd/sccs.c: Updated the copyright text to be consistent with the
+	COPYING.bsd file (by removing the advertising clause).
+
 	* sccsfile.cc (print_subsituted_flags_list): Return true if
 	nothing failed (as opposed to falling off the end of the
 	function).   This prevents spurious x-file write errors if the y
