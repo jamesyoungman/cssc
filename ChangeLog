@@ -1,3 +1,14 @@
+2007-12-17  James Youngman  <jay@gnu.org>
+
+	Fix build problems caused by the fact that generating
+	testutils/Makefile in the top level directory produces
+	a Makefile that expects to use config.h, while we actually 
+	want to use DEFS in the testutils subdirectory.
+	* configure.ac: Call AC_OUTPUT only once.  Do not emit
+	testutils/Makefile. 
+	* testutils/configure.ac: Fixed typo.
+
+
 2007-06-21  James Youngman  <jay@gnu.org>
 
 	* bsd/sccs.c: Updated the copyright text to be consistent with the

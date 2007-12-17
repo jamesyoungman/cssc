@@ -18,7 +18,7 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 dnl 
-dnl $Id: configure.ac,v 1.12 2007/06/19 23:14:45 james_youngman Exp $
+dnl $Id: configure.ac,v 1.13 2007/12/17 12:13:14 jay Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -455,7 +455,6 @@ fi
 dnl What about saved setuid?
 AC_CONFIG_SUBDIRS(testutils)
 dnl AC_CONFIG_FILES([shorter/Makefile])
-AC_OUTPUT
 
 dnl *** NOTE:
 dnl There can be only ONE call to AC_OUTPUT in each configure.ac,
@@ -463,5 +462,5 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_CONFIG_FILES([version.cc Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh testutils/Makefile auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi])
+AC_CONFIG_FILES([version.cc Makefile sccsdiff.sh bsd/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi])
 AC_OUTPUT

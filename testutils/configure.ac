@@ -6,7 +6,7 @@ AC_INIT
 AC_CONFIG_SRCDIR([lndir.c])
 dnl AC_CONFIG_HEADER(aconf.h)
 
-dnl We have to do this next bit in order to appeast automake. 
+dnl We have to do this next bit in order to appease automake. 
 dnl We don't really want a version number for the test suite 
 dnl separate from that of CSSC itself (at least at the moment).
 AM_INIT_AUTOMAKE(CSSC-testsuite,same-version-as-CSSC-itself)
