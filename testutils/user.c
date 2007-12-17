@@ -20,10 +20,6 @@
  * Program for getting the user's login name.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -34,7 +30,6 @@
 #ifdef STDC_HEADERS
 #include <stdio.h>
 #include <string.h>
-#include <stddef.h>
 #endif
 
 const char usage_str[] = "usage: \"user name\" or \"user group\"\n";

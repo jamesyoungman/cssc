@@ -2,7 +2,7 @@
  * yes.c: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997, Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -19,10 +19,6 @@
  * 
  * clone of yes(1) -- some systems (e.g. Solaris) lack yes(1).
  */
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 
 #ifdef STDC_HEADERS
 #include <stdio.h>
