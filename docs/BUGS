@@ -1,103 +1,12 @@
-
-	
 ************************     THIS FILE IS OBSOLETE!     ***********************
 
 
 Bugs for CSSC are recorded on the CSSC bug tracking system at
+https://savannah.gnu.org/bugs/?group=cssc.
+
+There are also some historical bugs at 
 http://sourceforge.net/projects/CSSC.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <1999-04-18 18:16:55 james>
-
-List of known bugs (bugs are moved to FIXED as they are fixed so it is
-valid but unlikely for there to be nothing below this line)
-
-
-Mon Feb  9 23:41:03 1998: Lars Hecking <lhecking@nmrc.ucc.ie>
-In version 0.05-pl0.  Unfixed.
- Then, Irix 6.3. I have installed gcc-2.8.0, which supports 6.3/32-bit
- API proper. I get tons of warnings like these at linking stage:
-
- ld: WARNING 131: Multiply defined weak symbol:(__as__Q210sccs_pfile9edit_lockRCQ
- 210sccs_pfile9edit_lock) in get.o and pf-add.o (2nd definition ignored).
- ld: WARNING 131: Multiply defined weak symbol:(__as__Q210sccs_pfile9edit_lockRCQ
- 210sccs_pfile9edit_lock) in get.o and pfile.o (2nd definition ignored).
- ld: WARNING 131: Multiply defined weak symbol:(destroy__t4list1Z7release) in rl-
- merge.o and sccsfile.o (2nd definition ignored).
- ld: WARNING 131: Multiply defined weak symbol:(copy__t4list1Z7releaseRCt4list1Z7
- release) in rl-merge.o and sccsfile.o (2nd definition ignored).
- ld: WARNING 131: Multiply defined weak symbol:(__as__t4list1Z7releaseRCt4list1Z7
- release) in rl-merge.o and sccsfile.o (2nd definition ignored).
-
-[JAY: looks like a template instantiation problem.  Perhaps this is
- unavoidable given GCC-2.8's instantiation system and the IRIX linker.
- Check the GCC release notes and FAQ]
-
-
-Wed Nov  5 18:56:06 1997: James Youngman <jay@gnu.org>
-In version 0.02-pl6.  Unfixed.
- GCC version 2.7.2.2 compiled for an Alpha running NetBSD fails to
- compile delta.cc.  It falls over with an "Unrecognised insn" error.
-
-
-Tue Jul 22 08:07:29 1997: Lars Hecking <lhecking@nmrc.ucc.ie>
-In version 0.02-pl3.  Unfixed.
- Irix 6.3, gcc-2.7.2.2 configured for Irix 5.3 (32bit-64bit issue):
-  All tests passed except for test-admin. test-admin fails in
- init-mr.sh:
-laredo (53) sh ./init-mr.sh 
-I1...passed 
-I2...passed 
-I3...passed 
-I4...passed 
-I5...passed 
-I6...1c1
-< 2.1
----
-> 1.1
-FAIL init-mr.sh I6: stderr format error with ../../get -p s.new.txt
-
-This indicates that the -r option of "admin -i" has failed to produce
-an initial SID of 2.1, but has instead produced the default, 1.1.
-Examination of the SCCS file bears this out:-
-
-begin 644 s.new.txt
-M`6@P.#0U.0H!<R`P,#`P,2\P,#`P,"\P,#`P,`H!9"!$(#$N,2`Y-R\P-R\R
-M,2`Q,#HU-3HR-"!L:&5C:VEN9R`Q(#`*`6,@9&%T92!A;F0@=&EM92!C<F5A
-M=&5D(#DW+S`W+S(Q(#$P.C4U.C(T(&)Y(&QH96-K:6YG"@%E"@%U"@%5"@%T
-2"@%4"@%)(#$*)4TE"@%%(#$*
-`
-end
-
-
-Mon Jul 7 22:17:59 1997: James Youngman <jay@gnu.org>
-In version [all]: Unfixed.
- On systems with no working fork() or spawn(), we have to use system()
- to execute commands.  The return value of system() is
- implementation-defined unless its argument is NULL.  Hence we cannot
- place any interpretation on the return value.  This means that we will
- be unaware of any return value from the command and (for example) MR
- validation will not happen reliably.
 
 Local Variables:
 mode: Text

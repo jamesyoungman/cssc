@@ -3107,7 +3107,7 @@ them (@pxref{Problems,,Reporting Bugs}).
 @item 
 @cindex Known bugs 
 Known bugs are listed on the bug tracking system at 
-@uref{http://sourceforge.net/bugs/?group_id=8064}.  Some historical known
+@uref{http://savannah.gnu.org/bugs/?group=cssc}.  Some historical known
 issues are listed in the file @file{docs/BUGS}.  Once this file has
 become obsolete it will be removed from the distribution.   
 
@@ -3129,7 +3129,7 @@ report a bug; I'd like to know which features are required first.
 There are a small number of known problems documented in the files
 @samp{docs/BUGS} and @samp{docs/TODO}.  These will be fixed at some
 point in the future.  Future problems should be reported via the
-@sc{cssc} Bug Tracker, at @uref{http://sourceforge.net/bugs/?group_id=8064}.
+@sc{cssc} Bug Tracker, at @uref{http://savannah.gnu.org/bugs/?group=cssc}.
 
 
 @cindex Security problems
@@ -3818,7 +3818,7 @@ success
 @cindex maintainer
 
 If you find a bug in GNU @code{CSSC}, please report this via the
-@sc{cssc} bug tracking system at @uref{http://sourceforge.net/projects/CSSC}.
+@sc{cssc} bug tracking system at @uref{http://savannah.gnu.org/bugs/?group=cssc}.
 Please include the version number, which you can find by giving the
 option @w{@option{--version}} to any @code{CSSC} command.  Also include in
 your message the output that the program produced and the output you

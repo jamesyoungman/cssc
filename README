@@ -90,16 +90,16 @@ provided in the file "docs/Platforms".
 
 2.	Testing 
 
- The tests can be run with "make check".   This short script runs the
- test suite, and reports any problems to me:-
+ The tests can be run with "make check":
 
  if make check 2>&1 | tee make.log 
  then
-	(uname -a ; ./admin -V) | mail -s "CSSC success" jay@gnu.org
+	echo SUCCESS
  else
-	echo FAILED, please send full details to 'jay@gnu.org.'
-	(uname -a ; cat make.log) | mail -s "CSSC failure" jay@gnu.org 
+	echo FAILURE
  fi
+
+ If this fails, take a look at "make.log".
 
  Note that this test process accepts several environment variables
  which allow you to point it at a particular installation of the

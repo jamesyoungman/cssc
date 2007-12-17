@@ -1,7 +1,13 @@
 2007-12-17  James Youngman  <jay@gnu.org>
 
-	* docs/Makefile.am (cssc_TEXINFOS): Depend on fdl.texi, so that it
-	gets distributed. 
+
+	* docs/cssc.texi (Missing Features):  Updated URLs to point to the
+	GNU web site instead of SourceForge.
+	* README: Likewise
+	* auxfiles/CSSC.spec.in (URL): Likewise
+	* docs/URLs: Likewise
+	* docs/patches.txt: Likewise
+	* docs/BUGS: Likewise
 
 	Migrate to GPL version 3.
 	* COPYING, admin.cc, autogen.sh, bodyio.cc, bodyio.h, canonify.cc,
@@ -31,14 +37,15 @@
 	testutils/ekko.c, testutils/last-time.c, testutils/seeker.c,
 	testutils/user.c, testutils/yammer.c, testutils/yes.c:
 	Update license to GPL version 3.
-
 	* NEWS: Mention this change.
 	* docs/cssc.texi (Copying): Put the GPL in a separate, unnumbered,
 	section. 
 
-
 	* docs/cssc.texi: Change license to version 1.2 of the GNU Free
 	Documentation License.
+	* docs/Makefile.am (cssc_TEXINFOS): Depend on fdl.texi, so that it
+	gets distributed. 
+	* NEWS: Mention this change.
 
 	* docs/Makefile.am (cssc_TEXINFOS): Don't depend on
 	config-info.text, since we don't actually use it.  This prevents

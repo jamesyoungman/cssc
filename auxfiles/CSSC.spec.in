@@ -2,11 +2,11 @@ Summary: GNU CSSC - An SCCS clone
 Name: CSSC
 Version: @VERSION@
 Release: 1
-URL: http://cssc.sourceforge.net/
+URL: http://www.gnu.org/software/cssc/
 Copyright: GPL (one program is BSD, see COPYING.bsd)
 Packager: Thomas.Duffy.99@alumni.brown.edu
 Group: Development/Version Control
-Source: ftp://alpha.gnu.org/pub/gnu/CSSC/CSSC-%{PACKAGE_VERSION}.tar.gz
+Source: ftp://ftp.gnu.org/pub/gnu/cssc/CSSC-%{PACKAGE_VERSION}.tar.gz
 Prereq: /sbin/install-info
 Requires: /usr/bin/diff
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
@@ -59,6 +59,10 @@ fi
 %{_infodir}/*.info*
 
 %changelog
+
+* Mon Dec 17 2007 James Youngman <jay@gnu.org>
+Updated URLs to reflect the fact that we migrated from 
+SourceForge to Savannah. 
 
 * Fri Oct  4 2002 James Youngman <jay@gnu.org>
 Change reference to sccs.1 to sccs.1* because RPM version 4

@@ -14,7 +14,6 @@ One last thing; if your editor makes backup files as you work, please
 delete these backups before computing the diff, particularly if you
 use "diff -r".
 
-You can submit patches either via the SourceForge Patch Manager (at
-the URL http://sourceforge.net/patch/?group_id=8064) or by email.
-
-
+You can submit patches by email to bug-cssc@gnu.org.  However, if they
+are large, we may need you to assign copyright in those changes to the
+Free Software Foundation before applying them.
