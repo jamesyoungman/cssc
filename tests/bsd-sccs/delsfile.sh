@@ -34,7 +34,7 @@ cleanup () {
 	for i in $files; do /bin/rm -f /tmp/SCCS/[spzd].$i $i; done
 	rmdir /tmp/SCCS
     fi
-    rm -f $files
+    rm -f $files $sfiles
 }
 
 cleanup
