@@ -1,5 +1,32 @@
 2007-12-17  James Youngman  <jay@gnu.org>
 
+	Migrate to GPL version 3.
+	* COPYING, admin.cc, autogen.sh, bodyio.cc, bodyio.h, canonify.cc,
+	cap.cc, cdc.cc, configure.ac, cssc.h, defaults.h,
+	delta-iterator.cc, delta-iterator.h, delta-table.cc,
+	delta-table.h, delta.cc, delta.h, depcomp, docs/Makefile.am,
+	docs/cssc.texi, dtbl-prepend.cc, encoding.cc, environment.cc,
+	err_no.h, except.h, fatalsig.cc, fdclosed.cc, file.cc, file.h,
+	filediff.cc, filediff.h, fileiter.cc, fileiter.h, filelock.h,
+	filepos.h, fnsplit.cc, get.cc, ioerr.h, l-split.cc, linebuf.cc,
+	linebuf.h, list.cc, missing, my-getopt.cc, my-getopt.h, mylist.h,
+	myset.h, mystring.cc, mystring.h, pf-add.cc, pf-del.cc, pfile.cc,
+	pfile.h, prompt.cc, prs.cc, prt.cc, quit.cc, quit.h, rel_list.cc,
+	rel_list.h, release.h, relvbr.h, remove.c, rename.c, rl-merge.cc,
+	rmdel.cc, run.cc, run.h, sact.cc, sccs-cgi/sccs.cgi,
+	sccs-cgi/sccs.cgi.text, sccs-delta.cc, sccsdate.cc, sccsdate.h,
+	sccsdiff.sh.in, sccsfile.cc, sccsfile.h, sccsname.cc, sccsname.h,
+	seqstate.cc, seqstate.h, sf-add.cc, sf-admin.cc, sf-cdc.cc,
+	sf-chkid.cc, sf-chkmr.h, sf-delta.cc, sf-get.cc, sf-get2.cc,
+	sf-get3.cc, sf-kw.cc, sf-prs.cc, sf-prt.cc, sf-rmdel.cc,
+	sf-val.cc, sf-write.cc, show-disp.sh, showconfig.cc, sid.cc,
+	sid.h, sid_list.h, sl-merge.h, split.cc, stack.h, strerror.c,
+	strstr.c, sysdep.h, testutils/ekko.c, testutils/last-time.c,
+	testutils/realpwd.cc, testutils/seeker.c, testutils/user.c,
+	testutils/uu_decode.c, testutils/yammer.c, testutils/yes.c,
+	unget.cc, val.cc, valcodes.h, version.h, what.cc, writesubst.cc:
+	Update license to GPL version 3.
+
 	* docs/cssc.texi: Change license to version 1.2 of the GNU Free
 	Documentation License.
 

@@ -1,22 +1,20 @@
 #! /bin/sh
 # sccsdiff.sh.in: Part of GNU CSSC.
 #
-# Copyright (C) 1997,1998,2001,2004 Free Software Foundation, Inc.
+# Copyright (C) 1997,1998,2001,2004,2007 Free Software Foundation, Inc.
 #
-# This program is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
+# 
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-# USA.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
 # This file is part of CSSC.
@@ -26,8 +24,11 @@
 # sccsdiff [-p] -rsid -rsid [diff-options] s.filename
 #
 
-# $Id: sccsdiff.sh.in,v 1.11 2007/06/19 22:41:15 james_youngman Exp $
+# $Id: sccsdiff.sh.in,v 1.12 2007/12/17 21:59:50 jay Exp $
 # LOG   $Log: sccsdiff.sh.in,v $
+# LOG   Revision 1.12  2007/12/17 21:59:50  jay
+# LOG   Migrate to GPL version 3
+# LOG
 # LOG   Revision 1.11  2007/06/19 22:41:15  james_youngman
 # LOG   Included copyright notices in some files where these were missing
 # LOG
@@ -85,7 +86,7 @@ then
     done
 fi
 
-version='$Revision: 1.11 $ $State: Exp $'
+version='$Revision: 1.12 $ $State: Exp $'
 usage() {
 cat <<EOF
 $0 [-p] -rsid -rsid [diff-options] s.filename [s.secondfile...]

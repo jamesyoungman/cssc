@@ -1,22 +1,20 @@
 /*
  * admin.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998,1999,2001 Free Software Foundation, Inc. 
- * 
- *    This program is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU General Public License as
- *    published by the Free Software Foundation; either version 2 of
- *    the License, or (at your option) any later version.
- * 
+ *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc.
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *    
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- * 
- *    You should have received a copy of the GNU General Public
- *    License along with this program; if not, write to the Free
- *    Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *    
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
@@ -39,7 +37,7 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.40 2007/06/19 23:14:44 james_youngman Exp $";
+const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.41 2007/12/17 21:59:47 jay Exp $";
 
 
 static bool

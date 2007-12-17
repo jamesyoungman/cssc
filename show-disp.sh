@@ -3,25 +3,22 @@
 # show-disp.sh: CVS utility to break down CVS-controlled files
 #               by their status with respect to the repository.
 #
-#    This file is part of GNU CSSC.
+# This file is part of GNU CSSC.
 #
-#    Copyright (C) 1997, 2000 Free Software Foundation, Inc. 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 # 
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 # 
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-#
-# $Id: show-disp.sh,v 1.9 2007/06/19 23:14:46 james_youngman Exp $
+# $Id: show-disp.sh,v 1.10 2007/12/17 21:59:52 jay Exp $
 # 
 
 cvs -z3 status "$@" 2>&1 </dev/null |
