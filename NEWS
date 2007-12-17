@@ -1,7 +1,8 @@
 New in CSSC-1.0.2-CVS
 
 	* GNU CSSC is now distributed under version 3 of the GNU General 
-	  Public License. 
+	  Public License.  The documentation is distributed under
+          version 1.2 of the GNU Free Documentation License.
 
 	* We now require the C++ compiler to support exceptions in
           order to compile successfully.  Previously, CSSC allowed
