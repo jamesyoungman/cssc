@@ -8,6 +8,23 @@
 * cssc: (cssc).		The GNU work-alike replacement for SCCS.
 @end direntry
 
+@copying
+
+This file documents the the GNU @code{cssc} package for working with
+@sc{sccs} files.
+
+Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 
+              2003, 2004, 2005, 2007 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+``GNU Free Documentation License.''
+@end copying
+
+
 @finalout
 @setchapternewpage odd
 @c %**end of header
@@ -21,70 +38,6 @@
 @c @w{@samp{jay@@gnu.org}}
 @c @end macro
 
-@ifinfo
-This file documents the the GNU @code{cssc} package for working with
-@sc{sccs} files.
-
-Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 
-              2003, 2004, 2005 Free Software Foundation, Inc.
-
-Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
-
-@ignore
-Permission is granted to process this file through TeX and print the
-results, provided the printed document carries copying permission
-notice identical to this one except for the removal of this paragraph
-(this paragraph not being relevant to the printed manual).
-
-@end ignore
-Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided that the entire
-resulting derived work is distributed under the terms of a permission
-notice identical to this one.
-
-Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation approved
-by the Foundation.
-@end ifinfo
-
-@ifhtml
-
-@html
-<H1>CSSC: Compatibly Stupid Source Control</H1>
-<H2>Edition @value{EDITION}, for CSSC Version @value{VERSION}</H2>
-@value{UPDATED}
-@end html
-
-This web page documents the the GNU @code{cssc} package for working with
-@sc{sccs} files.
-
-Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004 Free Software Foundation, Inc.
-
-Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
-
-@ignore
-Permission is granted to process this file through TeX and print the
-results, provided the printed document carries copying permission
-notice identical to this one except for the removal of this paragraph
-(this paragraph not being relevant to the printed manual).
-
-@end ignore
-Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided that the entire
-resulting derived work is distributed under the terms of a permission
-notice identical to this one.
-
-Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation approved
-by the Foundation.
-@end ifhtml
-
 @titlepage
 @title CSSC
 @subtitle Compatibly Stupid Source Control
@@ -94,32 +47,20 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1997,1998,1999,2000,2001,2002,2003,2004 Free Software Foundation, Inc.
-
-Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
-
-Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided that the entire
-resulting derived work is distributed under the terms of a permission
-notice identical to this one.
-
-Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation approved
-by the Foundation.
+@insertcopying{}
 @end titlepage
 
-@node Top, Overview, , (dir)
 
-@ifinfo
+@ifnottex
+@node Top, Overview, , (dir)
+@insertcopying
+
 This file documents the the GNU @code{CSSC} package, which is 
 a work-alike for the traditional Unix SCCS suite.
 
 This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
 
-@end ifinfo
+@end ifnottex
 
 @menu
 * Overview::		   Preliminary information.
@@ -135,6 +76,7 @@ This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
 * Testing::                How to run the test suite and write new cases.
 * Problems::		   Reporting bugs.
 * Copying::		   How you can copy and share @code{CSSC}.
+* GNU Free Documentation License::  Copying and sharing this manual.
 * BSD Code::		   Parts of the code are from BSD.
 * Glossary::	           Definition of some terms relating to CSSC.
 * Concept Index::	   Index of concepts.
@@ -3902,12 +3844,16 @@ If you have other questions, comments or suggestions about GNU
 @code{CSSC}, contact the maintainer via electronic mail to
 @w{@samp{jay@@gnu.org}} .
 
-@node Copying, BSD Code, Problems, Top
+@node Copying, GNU Free Documentation License, Problems, Top
 @c @ignore
 @include gpl.texi
 @c @end ignore
 
-@node BSD Code, Glossary, Copying, Top
+@node GNU Free Documentation License, BSD Code, Copying, Top
+@unnumbered GNU Free Documentation License
+@include fdl.texi
+
+@node BSD Code, Glossary, GNU Free Documentation License, Top
 @unnumbered BSD Code
 @cindex BSD
 @cindex FreeBSD

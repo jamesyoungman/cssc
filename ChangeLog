@@ -1,5 +1,8 @@
 2007-12-17  James Youngman  <jay@gnu.org>
 
+	* docs/cssc.texi: Change license to version 1.2 of the GNU Free
+	Documentation License.
+
 	* docs/Makefile.am (cssc_TEXINFOS): Don't depend on
 	config-info.text, since we don't actually use it.  This prevents
 	us trying to rebuild the info file during "make distcheck", when
