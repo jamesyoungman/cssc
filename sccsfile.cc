@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.63 2007/12/17 21:59:50 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.64 2007/12/17 23:10:17 jay Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -444,14 +444,9 @@ sccs_file::read_delta() {
 
 		    case 'x':
 		      {
-			const char *url = 
-			  "http://cssc.sourceforge.net/"
-			  "documentation/incl_excl.shtml";
 			warning("feature not fully tested: "
-				"excluded delta in SID %s "
-				"(see %s for more details)",
-				tmp.id.as_string().c_str(),
-				url);
+				"excluded delta in SID %s ",
+				tmp.id.as_string().c_str());
 			tmp.have_excludes = true;
 		      }
 		      break;
