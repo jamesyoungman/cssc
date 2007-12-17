@@ -1,5 +1,8 @@
 2007-12-17  James Youngman  <jay@gnu.org>
 
+	* docs/Makefile.am (cssc_TEXINFOS): Depend on fdl.texi, so that it
+	gets distributed. 
+
 	Migrate to GPL version 3.
 	* COPYING, admin.cc, autogen.sh, bodyio.cc, bodyio.h, canonify.cc,
 	cap.cc, cdc.cc, configure.ac, cssc.h, defaults.h,
@@ -24,8 +27,11 @@
 	strstr.c, sysdep.h, testutils/ekko.c, testutils/last-time.c,
 	testutils/realpwd.cc, testutils/seeker.c, testutils/user.c,
 	testutils/uu_decode.c, testutils/yammer.c, testutils/yes.c,
-	unget.cc, val.cc, valcodes.h, version.h, what.cc, writesubst.cc:
+	unget.cc, val.cc, valcodes.h, version.h, what.cc, writesubst.cc,
+	testutils/ekko.c, testutils/last-time.c, testutils/seeker.c,
+	testutils/user.c, testutils/yammer.c, testutils/yes.c:
 	Update license to GPL version 3.
+
 	* NEWS: Mention this change.
 	* docs/cssc.texi (Copying): Put the GPL in a separate, unnumbered,
 	section. 

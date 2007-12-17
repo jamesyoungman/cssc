@@ -1,7 +1,8 @@
 ## CSSC's docs/Makefile.am.
 
 info_TEXINFOS = cssc.texi 
-cssc_TEXINFOS = gpl-3.0.texi
+cssc_TEXINFOS = gpl-3.0.texi fdl.texi
+thus ensuring that fdl.texi gets distributed.:docs/Makefile.am
 
 EXTRA_DIST = BUGS FIXED TODO CREDITS TESTING \
 	missing.txt patches.txt \
