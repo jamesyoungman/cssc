@@ -3846,6 +3846,8 @@ If you have other questions, comments or suggestions about GNU
 
 @node Copying, GNU Free Documentation License, Problems, Top
 @c @ignore
+@unnumbered GNU General Public License
+@cindex GPL
 @include gpl-3.0.texi
 @c @end ignore
 

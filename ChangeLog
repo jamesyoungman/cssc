@@ -27,6 +27,9 @@
 	unget.cc, val.cc, valcodes.h, version.h, what.cc, writesubst.cc:
 	Update license to GPL version 3.
 	* NEWS: Mention this change.
+	* docs/cssc.texi (Copying): Put the GPL in a separate, unnumbered,
+	section. 
+
 
 	* docs/cssc.texi: Change license to version 1.2 of the GNU Free
 	Documentation License.
