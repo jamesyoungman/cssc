@@ -21,7 +21,7 @@
  * Not all systems have uudecode.  In particular, Cygwin lacks it.
  * Hence we provide our own. 
  *
- * $Id: uu_decode.c,v 1.5 2007/12/17 21:59:53 jay Exp $
+ * $Id: uu_decode.c,v 1.6 2007/12/19 00:21:14 jay Exp $
  */
 
 /*
@@ -39,6 +39,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
 
 
 
@@ -167,7 +171,9 @@ test_decode(const char *arg)
   char inbuf[80], outbuf[80];
   int mode, nf, expect_end_line;
   FILE *fp_output;
-  
+
+  (void) arg;
+
   if ( 0 != fgets(inbuf, sizeof(inbuf)-1, stdin))
     {
       nf = sscanf(inbuf, "begin %o %[^\n]", &mode, outbuf);
@@ -238,6 +244,8 @@ int test_all(const char *arg)
   union lunch { long l; char ch[4]; } in, out;
   long l0, l1, l2, lo;
   long i;
+
+  (void) arg;
 
   /* i only has to hold a 24-bit value. */
   const long maxval = 0xff | (0xff<<8) | (0xff<<16);

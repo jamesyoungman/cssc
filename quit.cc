@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.33 2007/12/17 21:59:50 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.34 2007/12/19 00:21:14 jay Exp $";
 #endif
 
 const char *prg_name = NULL;
@@ -189,6 +189,7 @@ ctor_fail(int err, const char *fmt, ...) {
 }
 
 
+#ifndef HAVE_EXCEPTIONS
 /* We have to pass a va_list to v_quit, to we have to have 
  * a varargs function to do it...  
  */
@@ -201,6 +202,7 @@ static NORETURN  ctor_fail_nomsg_helper(int err, ...)
     /*NOTREACHED*/
     va_end(ap);
 }
+#endif
 
 NORETURN ctor_fail_nomsg(int err)  
 {

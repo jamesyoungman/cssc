@@ -30,6 +30,7 @@
 #ifdef STDC_HEADERS
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #endif
 
 const char usage_str[] = "usage: \"user name\" or \"user group\"\n";
@@ -105,11 +106,13 @@ static gid_t *get_group_list(int *ngroups)
 
 static void do_groups()
 {
-  int ngroups, i, duplicates;
-  gid_t *list = get_group_list(&ngroups);
+  int ngroups;
+  const gid_t *list = get_group_list(&ngroups);
   
   if (list)
     {
+      int i;
+
       for (i=0; i<ngroups; ++i)
         {
           fprintf(stdout, "%ld\n", (long) list[i]);
@@ -142,7 +145,7 @@ static int compare_groups(const void *pv1, const void *pv2)
  */
 static gid_t foreign_group(void)
 {
-  int ngroups, i, duplicates;
+  int ngroups, i;
   gid_t *list = get_group_list(&ngroups);
   
   qsort(list, ngroups, sizeof(*list), compare_groups);
@@ -150,7 +153,7 @@ static gid_t foreign_group(void)
   for (i=1; i<ngroups; ++i)
     {
       /* nextval is a gid_t value 1 greater than the last gid we saw */
-      int nextval = 1+list[i-1];
+      const gid_t nextval = 1+list[i-1];
       
       if (nextval < list[i] )
         {

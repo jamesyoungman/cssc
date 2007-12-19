@@ -49,7 +49,7 @@
 #include "cssc.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.23 2007/12/17 21:59:52 jay Exp $";
+const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.24 2007/12/19 00:21:14 jay Exp $";
 
 #ifdef CONFIG_WHAT_USE_STDIO
 
@@ -145,7 +145,7 @@ xgetc(XFILE f)
 	
 #endif /* CONFIG_WHAT_USE_STDIO */
 
-static char *what_prg_name = "what";
+static const char *what_prg_name = "what";
 
 void
 usage(void)

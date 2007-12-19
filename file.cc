@@ -45,7 +45,7 @@
 #include <stdio.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.40 2007/12/17 21:59:48 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.41 2007/12/19 00:21:14 jay Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -579,6 +579,7 @@ bool set_file_mode(const mystring &gname, bool writable, bool executable)
       else
 	{
 	  errormsg_with_errno("%s: cannot stat file", name);
+	  return false;
 	}
     }
 }

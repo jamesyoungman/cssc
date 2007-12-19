@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
 {
   const char newline[1] = { '\n' };
   const char *dir = get_current_directory();
+  (void) argc;
+  (void) argv;
   write(1, dir, strlen(dir));
   write(1, newline, 1);
   return 0;

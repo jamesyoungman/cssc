@@ -40,7 +40,7 @@ static const char copyright[] =
 "@(#) Copyright (c) 1998\n"
 "Free Software Foundation, Inc.  All rights reserved.\n";
 #endif /* not lint */
-static const char filever[] = "$Id: sccs.c,v 1.43 2007/06/21 00:13:55 james_youngman Exp $";
+static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $";
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -453,9 +453,9 @@ char *my_rindex(const char *s, int ch);
 char *my_index(const char *s, int ch);
 
 
-static char *gstrcat (char *to, const char *from, int length);
-static char *gstrncat (char *to, const char *from, int n, int length);
-static char *gstrcpy (char *to, const char *from, int length);
+static char *gstrcat (char *to, const char *from, size_t length);
+static char *gstrncat (char *to, const char *from, size_t n, size_t length);
+static char *gstrcpy (char *to, const char *from, size_t length);
 static void gstrbotch (const char *str1, const char *str2);
 static void  gstrbotchn (int avail, const char *, int, const char *, int);
 static int absolute_pathname (const char *);
@@ -466,7 +466,7 @@ static void childwait(int pid, int *status_ptr, int ignoreintr);
 
 /* #define      FBUFSIZ BUFSIZ */
 
-#define FBUFSIZ 1024
+#define FBUFSIZ (1024u)
 
 static void
 show_version(void)
@@ -575,7 +575,6 @@ check_data_integrity()
  */
 static void cleanup_environment(void)
 {
-  const char *pfail;
   const char * binary_support = "CSSC_BINARY_SUPPORT";
   const char * max_line_len   = "CSSC_MAX_LINE_LENGTH";
 #ifdef HAVE_UNSETENV
@@ -828,17 +827,18 @@ main (int argc, char **argv)
         {
           /* Not sure what went on, but it wasn't a useful command line. */
           usage();
+	  return 1;
         }
       else
         {
           /* Just "sccs -V" is valid. */
-          exit(0);
+          return 0;
         }
     }
   else
     {
       i = command (argv, FALSE, "");
-      exit (i);
+      return i;
     }
 }
 
@@ -1314,11 +1314,12 @@ lookup (const char *name)
 static void 
 childwait(int pid, int *status_ptr, int ignoreintr)
 {
-  struct sigaction sa={0}, osa;
+  struct sigaction sa, osa;
   int ret;
 
   /* temporarily ignore SIG_INT.
    */
+  memset (&sa, 0, sizeof(sa));
   if (ignoreintr)
     {
       sa.sa_handler = SIG_IGN;
@@ -1567,7 +1568,7 @@ makefile (const char *name)
   register const char *p;
   char buf[3 * FBUFSIZ];
   register char *q;
-  int left;
+  size_t left;
   
   p = my_rindex (name, '/');
   if (p == NULL)
@@ -1689,16 +1690,18 @@ safepath (register const char *p)
 }
   
 static void
-form_gname(char *buf, int bufsize, struct dirent *dir)
+form_gname(char *buf, size_t bufsize, struct dirent *dir)
 {
-  if (NAMLEN(dir)-2 >= bufsize)
+  size_t gname_len = NAMLEN(dir)-2u;
+  
+  if (gname_len >= bufsize)
     {
       gstrbotchn(bufsize, dir->d_name, NAMLEN(dir), (char*)0, 0);
     }
   else
     {
-      memcpy(buf, dir->d_name+2, NAMLEN(dir)-2);
-      buf[NAMLEN(dir)-2] = 0; /* terminate the string. */
+      memcpy(buf, dir->d_name+2, gname_len);
+      buf[gname_len] = 0; /* terminate the string. */
     }
 }
   
@@ -2384,7 +2387,7 @@ username (void)
    **   is to be done.
  */
 static char *
-gstrcat (char *to, const char *from, int length)
+gstrcat (char *to, const char *from, size_t length)
 {
   if (strlen (from) + strlen (to) >= length)
     {
@@ -2395,7 +2398,7 @@ gstrcat (char *to, const char *from, int length)
 
 static
 char *
-gstrncat (char *to, const char *from, int n, int length)
+gstrncat (char *to, const char *from, size_t n, size_t length)
 {
   if (n + strlen (to) >= length)
     {
@@ -2406,7 +2409,7 @@ gstrncat (char *to, const char *from, int n, int length)
 }
 
 static char *
-gstrcpy (char *to, const char *from, int length)
+gstrcpy (char *to, const char *from, size_t length)
 {
   if (strlen (from) >= length)
     {

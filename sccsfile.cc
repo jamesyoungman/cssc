@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.64 2007/12/17 23:10:17 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.65 2007/12/19 00:21:14 jay Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -681,7 +681,7 @@ sccs_file::get_module_name() const
    locked if it isn't only being read.  */
 
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
-  : name(n), mode(m), lineno(0), xfile_created(false), is_bk_file(false), f(0)
+  : name(n), f(0), mode(m), lineno(0), xfile_created(false), is_bk_file(false)
 {
   delta_table = new cssc_delta_table;
   plinebuf     = new cssc_linebuf;

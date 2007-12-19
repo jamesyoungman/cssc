@@ -1,3 +1,51 @@
+2007-12-19  James Youngman  <jay@gnu.org>
+
+	* what.cc: String constants chould be const.
+
+	* sf-val.cc (validate_substituted_flags_list): Added missing
+	return statement.
+
+	* sccsfile.cc (sccs_file): Specify the member initialisers in the
+	order they will actually be executed.
+
+	* linebuf.h (class cssc_linebuf): Make buflen size_t rather than
+	int.
+
+	* linebuf.cc (CONFIG_LINEBUF_CHUNK_SIZE): Avoid signed/unsigned
+	issues by using an unsigned constant.
+	(read_line): Ditto for constants in this function.
+
+	* file.cc (set_file_mode): Add missing return statement.
+
+	* bsd/sccs.c (makefile): Avoid signed/unsigned issues by using
+	size_t to index into strings, rather than ints.
+	(form_gname): Ditto.
+	(gstrcat): Ditto for parameter 'length'.
+	(gstrncat): Ditto for parameter 'length'.
+	(gstrcpy): Ditto for parameter 'length'.
+	(gstrncat): Ditto for parameter 'length'.
+
+2007-12-18  James Youngman  <jay@gnu.org>
+
+	* bsd/sccs.c (FBUFSIZ): Make unsigned.
+	(cleanup_environment): Removed unused variable 'pfail'.
+	(main): Avoid spurious warning about lack of return statement, by
+	putting in return statements instead of calls to exit.
+
+	* uu_decode.c: #include <sys/stat.h>, for a declaration of chmod.
+	(test_decode): Avoid compiler warnign about unused argument 'arg'.
+	(test_all): Likewise.
+
+	* user.c: #include <stdlib.h> for a declaration of qsort and malloc.
+	(do_groups): Removed unused variable 'duplicates'.
+
+	* realpwd.cc (main): Avoid compiler warning about unuised argc, argv.
+	* seeker.c (do_unbuffered): Avoid compiler warning about unused
+	argument NAME.
+	(do_blockbuffered): Likewise
+	(do_linebuffered): Likewise
+	(do_nothing): Likewise
+
 2007-12-17  James Youngman  <jay@gnu.org>
 
 

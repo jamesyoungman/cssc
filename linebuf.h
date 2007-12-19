@@ -34,7 +34,7 @@
 class cssc_linebuf
 {
   char *buf;
-  int buflen;
+  size_t buflen;
   
 public:
   cssc_linebuf();

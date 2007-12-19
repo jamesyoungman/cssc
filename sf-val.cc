@@ -31,7 +31,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.9 2007/12/17 21:59:51 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.10 2007/12/19 00:21:14 jay Exp $";
 #endif
 
 const mystring
@@ -109,6 +109,8 @@ sccs_file::validate_isomorphism() const
 static bool
 validate_substituted_flags_list(const mylist<char> entries)
 {
+  // TODO: write this later.
+  return true;
 }
 
 
