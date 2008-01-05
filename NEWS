@@ -97,7 +97,8 @@ New in CSSC-0.15alpha-pl0, 2002-12-08 (date from SourceForge)
 
 	* sccs get - all g-files processed after a failing file are deleted.
 
- 	* Fixed compilation bug - we were using idigit() in reveral places but            not including <ctype.h>. (SourceForge bug 623164).
+ 	* Fixed compilation bug - we were using idigit() in reveral places but
+          not including <ctype.h>. (SourceForge bug 623164).
 
 	* The test suite now passes when run against a genuine version of 
 	  SCCS which lacks "prt".
@@ -612,7 +613,7 @@ New in CSSC-0.03alpha-pl1, 1997-11-12
 	  remove().
 
 (I have no record of public releases from CSSC-devel-0.03a-pl0 onward,
-and no saved coped of any tar archive produced.   I suspect that I never 
+and no saved copies of any tar archive produced.   I suspect that I never 
 made these releases, they were just candidates.  Dates are taken from the
 CVS history).
 
@@ -660,11 +661,27 @@ New in CSSC-0.02-devel-pl5, 1997-07-04
 
 New in CSSC-0.02-devel-pl4, 1997-06-21
 
+	* The test suite now checks that get will refuse to overwrite a
+	  writable file.
+
+	* The test suite now works on Solaris.
+
 New in CSSC-0.02-devel-pl3, 1997-06-16
 
+	* The test suite now supports systems where "echo -e" produces
+	"-e".  
+
+	* Support for some systems which lack some standard C headers.
+	
 New in CSSC-0.02-devel-pl2, 1997-06-15
 
+	* The test suite now supports systems where echo -e blah\c works
+	  but echo -e blah\c does not.
+
 New in CSSC-0.02-devel-pl1, 1997-06-14
+
+	* Rephrased the error message that lndir gives when the source and
+	  destination are identical.
 
 New in CSSC-0.02-devel-pl0, 1997-06-13
 
