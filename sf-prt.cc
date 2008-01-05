@@ -1,7 +1,7 @@
 /*
  * sf-prt.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998,1999,2001,2004,2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2004,2007, 2008 Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 #endif
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.28 2007/12/17 21:59:51 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.29 2008/01/05 19:55:30 jay Exp $";
 #endif
 
 static void
@@ -379,7 +379,7 @@ sccs_file::prt(FILE *out,
 		  //
 		  // REAL SCCS prints an "Included" line in the output
 		  // if it sees "^Ai " and "an "Excluded" line if it
-		  // sees "^Ax ", even of the rest of the lines was
+		  // sees "^Ax ", even if the rest of the lines was
 		  // blank.  For CSSC, the rest of these lines is
 		  // built into a list of "seq_no"s. and so if the
 		  // line is blank the data structure is empty and
