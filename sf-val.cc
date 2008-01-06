@@ -31,7 +31,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.10 2007/12/19 00:21:14 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.11 2008/01/06 18:00:03 jay Exp $";
 #endif
 
 const mystring
@@ -95,12 +95,15 @@ sccs_file::validate_isomorphism() const
   // A delta is a branch point if more than one delta in the 
   // delta table references it as a predecessor.
   //
-  // A delta is on a branch if it has an ancestor which is a branch point,
-  // UNLESS it was the next revision on the trunk.  How to determine this?
+  // A delta is on a branch if 
+  // 1. Its immediate ancestor is itself on a branch OR
+  // 2. It has an immediate ancestor which is a branch point,
+  //    and the delta itself is not the next trunk revision.
+  //    (How to determine this?)
   //
   // All branch deltas must have 4-component SIDs.
   // All trunk deltas must have 2-component SIDs.
-  //
+  // Any delta may have a maximum of one descendant with a 2-component SID.
 
   // TODO: write this later.
   return true;

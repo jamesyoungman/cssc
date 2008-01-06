@@ -2,7 +2,8 @@
 /*
  * mystring.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997, 1998, 1999, 2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997, 1998, 1999, 2007, 
+ *    2008 Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -21,7 +22,7 @@
  * placed in the Public Domain.
  *
  *
- * Members of the class string.
+ * Members of the class mystring.
  *
  */
 
@@ -48,7 +49,7 @@
 #ifndef USE_STANDARD_STRING
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.16 2007/12/17 21:59:49 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.17 2008/01/06 18:00:03 jay Exp $";
 #endif
 
 
@@ -166,13 +167,13 @@ mystring::length() const
 mystring::charT
 mystring::at(size_type pos) const
 {
-  ASSERT(pos < length());	// TODO: throw exception??
+  ASSERT(pos < length());
   return rep->data[pos];
 }
 
 mystring::ModifiableReference mystring::at(mystring::size_type pos)
 {
-  ASSERT(pos < length());	// TODO: throw exception??
+  ASSERT(pos < length());
   return ModifiableReference(*this, pos);
 }
 
@@ -205,8 +206,6 @@ mystring mystring::operator+(const mystring &s) const
   return mystring(newdata, newlen);
 }
 
-// TODO: either using memcmp() here is invalid, 
-// or we could just use strcmp()...
 int
 mystring::compare(const mystring &s) const
 {

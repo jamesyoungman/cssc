@@ -27,7 +27,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.13 2007/12/17 21:59:49 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.14 2008/01/06 18:00:03 jay Exp $";
 #endif
 
 
@@ -50,9 +50,9 @@ re_new(char *p, int oldlen, int newlen)
 mystring
 prompt_user(const char *prompt)
 {
-  const int chunk_size = 4;	// TODO: Debug the code, then increase this!
-  char *linebuf = new char [chunk_size];
-  int buflen = chunk_size;
+  const int chunk_size = 16; 
+  int buflen = 4; // Ensure we resize at least once for test coverage.
+  char *linebuf = new char [buflen];
   int c, lastc;
   int i = 0;
   

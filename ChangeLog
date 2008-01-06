@@ -1,5 +1,18 @@
 2008-01-06  James Youngman  <jay@gnu.org>
 
+	* sf-val.cc (validate_isomorphism): Extend the comment setting out
+	the design for this method.  The method is still unimplemented,
+	though.  
+
+	Various tidyings-up of TODO items.
+	* prompt.cc (prompt_user): Now that this code is well tested,
+	increase the allocation chunk size and remove the TODO item
+	reminding me to do that.   Use a small _initial_ chunk size to
+	make sure that at least one reallocation takes place, for adequate
+	code coverage.
+	* mystring.cc: Removed TODO comments which actually don't need to
+	be done.
+
 	* sf-admin.cc (admin): If all releases are locked ("admin -fla")
 	and the user tries to unlock just one release, issue an error
 	message (instead of just ignoring the attempt).
