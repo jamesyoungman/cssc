@@ -31,7 +31,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.19 2007/12/17 21:59:52 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.20 2008/01/06 19:17:02 jay Exp $";
 #endif
 
 
@@ -101,6 +101,12 @@ release::release(const char *s) {
 	if (*s != '\0' || rel == 0) {
 		rel = -1;
 	}
+}
+
+sid 
+sid::null_sid() 
+{
+  return sid(0, 0, 0, 0);
 }
 
 sid::sid(const char *s) {

@@ -1,5 +1,21 @@
 2008-01-06  James Youngman  <jay@gnu.org>
 
+	* sf-delta.cc (add_delta): Removed obsolete "XXX" comments.
+	* sf-prs.cc (get): Likewise.
+	* cdc.cc (main): Avoid initialising a sid object by assignment
+	from NULL, because it's not quite clear what that is intended to
+	do.  Instead, use an assignment from sid::null_delta().
+	* sid.cc (null_sid): Implement the function.
+	* sid.h (class sid): Declare sid::null_sid().
+	* get.cc (main): Avoid initialising a sid object by assignment
+	from NULL.
+	* val.cc (main): Likewise.
+	* rmdel.cc (main): Likewise.
+	* unget.cc (main): Likewise.
+	* sccsfile.cc (sccs_file::sccs_file): Likewise.
+	* sf-admin.cc (admin): Likewise.
+	* prs.cc (main): Likewise; also disable the -R option.
+
 	* sf-val.cc (validate_isomorphism): Extend the comment setting out
 	the design for this method.  The method is still unimplemented,
 	though.  

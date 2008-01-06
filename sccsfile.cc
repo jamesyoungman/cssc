@@ -49,7 +49,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.65 2007/12/19 00:21:14 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.66 2008/01/06 19:17:01 jay Exp $";
 #endif
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -698,7 +698,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   flags.branch = 0;
   flags.floor = 0;
   flags.ceiling = 0;
-  flags.default_sid = NULL;	// (XXX: correct use of NULL?) 
+  flags.default_sid = sid::null_sid();
   flags.null_deltas = 0;
   flags.joint_edit = 0;
   flags.all_locked = 0;
@@ -710,6 +710,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   flags.reserved = 0;
   flags.user_def = 0;
   
+  ASSERT(!flags.default_sid.valid());
+
   if (mode != READ)
     {
       if (name.lock())

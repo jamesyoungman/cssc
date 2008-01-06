@@ -54,6 +54,7 @@ class sid {
 	}
 
 public:
+        static sid null_sid();
 	sid(): rel(-1), level(0), branch(0), sequence(0) {}
 	sid(const char *s);
 	sid(release);		/* Defined below */

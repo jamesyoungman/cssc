@@ -33,7 +33,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.25 2007/12/17 21:59:50 jay Exp $";
+const char main_rcs_id[] = "CSSC $Id: prs.cc,v 1.26 2008/01/06 19:17:01 jay Exp $";
 
 void
 usage() {
@@ -48,7 +48,7 @@ main(int argc, char **argv)
   Cleaner arbitrary_name;
   int c;
   mystring format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
-  sid rid = NULL;		// (XXX: correct use of NULL?) 
+  sid rid(sid::null_sid());
   /* enum */ sccs_file::when selected = sccs_file::SIDONLY;
   int all_deltas = 0;
   sccs_date cutoff_date;
@@ -59,7 +59,9 @@ main(int argc, char **argv)
   else
     set_prg_name("prs");
 
-  CSSC_Options opts(argc, argv, "d!Dr!Relc!aV");
+  ASSERT(!rid.valid());
+
+  CSSC_Options opts(argc, argv, "d!Dr!elc!aV");
   for(c = opts.next();
       c != CSSC_Options::END_OF_ARGUMENTS;
       c = opts.next())
@@ -95,12 +97,7 @@ main(int argc, char **argv)
 	    }
 	  default_processing = 0;
 	  break;
-	  
-	case 'R':	// obsolete MySC-ism.
-	  rid = NULL;		// (XXX: correct use of NULL?) 
-	  default_processing = 0;
-	  break;
-	  
+
 	case 'c':
 	  cutoff_date = sccs_date(opts.getarg());
 	  if (!cutoff_date.valid())

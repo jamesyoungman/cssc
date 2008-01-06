@@ -9,6 +9,8 @@ New in CSSC-1.1.1
 	  releases are locked, an explanatory error message is issued.
 	  Previously, the attempt was simply silently ignored.
 
+	* prs no longer has a -R option.
+
 New in CSSC-1.1.0, 2007-12-17
 
 	* GNU CSSC is now distributed under version 3 of the GNU General 

@@ -32,7 +32,7 @@
 #include "delta.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.26 2007/12/17 21:59:47 jay Exp $";
+const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.27 2008/01/06 19:17:01 jay Exp $";
 
 void
 usage()
@@ -56,7 +56,7 @@ main(int argc, char *argv[])
 {
   Cleaner arbitrary_name;
   int c;
-  sid rid = NULL;		// XXX: does this need correcting? s/NULL/0/?
+  sid rid(sid::null_sid());
   mystring mrs;
   mystring comments;
   int got_comments = 0;
@@ -66,7 +66,9 @@ main(int argc, char *argv[])
     set_prg_name(argv[0]);
   else
     set_prg_name("cdc");
-  
+
+  ASSERT(!rid.valid());
+
   CSSC_Options opts(argc, argv, "r!m!y!V");
   for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS; c = opts.next())
     {

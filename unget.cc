@@ -33,7 +33,7 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.25 2007/12/17 21:59:52 jay Exp $";
+const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.26 2008/01/06 19:17:02 jay Exp $";
 
 void
 usage() {
@@ -47,7 +47,7 @@ main(int argc, char **argv)
 {
   Cleaner arbitrary_name;
   int c;
-  sid rid = NULL;		// (XXX: correct use of NULL?) 
+  sid rid(sid::null_sid());
   int silent = 0;
   int keep_gfile = 0;
   
@@ -55,6 +55,8 @@ main(int argc, char **argv)
     set_prg_name(argv[0]);
   else
     set_prg_name("unget");
+
+  ASSERT(!rid.valid());
 
   class CSSC_Options opts(argc, argv, "r!snV");
   for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS; c = opts.next())

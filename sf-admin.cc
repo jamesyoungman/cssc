@@ -35,7 +35,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.37 2008/01/06 17:37:06 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.38 2008/01/06 19:17:01 jay Exp $";
 #endif
 
 
@@ -261,7 +261,8 @@ sccs_file::admin(const char *file_comment,
 	  
 	  
 	case 'd':
-	  flags.default_sid = NULL; // (XXX: correct use of NULL?) 
+	  flags.default_sid = sid::null_sid();
+	  ASSERT(!flags.default_sid.valid());
 	  break;
 	  
 	case 'i':

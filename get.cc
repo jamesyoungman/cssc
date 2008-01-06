@@ -39,7 +39,7 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.55 2008/01/06 12:33:55 jay Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.56 2008/01/06 19:17:01 jay Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -85,8 +85,8 @@ main(int argc, char **argv)
   Cleaner arbitrary_name;
   int retval = 0;
   int c;
-  sid rid = NULL;                       /* -r (XXX: correct use of NULL?) */
-  sid org_rid = NULL;           // (XXX: correct use of NULL?) 
+  sid rid(sid::null_sid());
+  sid org_rid(sid::null_sid());
   int for_edit = 0;                     /* -e */
   int branch = 0;                       /* -b */
   int suppress_keywords = 0;            /* -k */
@@ -112,6 +112,8 @@ main(int argc, char **argv)
   else
     set_prg_name("get");
 
+  ASSERT(!rid.valid());
+  ASSERT(!org_rid.valid());
 
   class CSSC_Options opts(argc, argv, "r!c!i!x!ebkl!psmngtw!a!DVG!L",
                           EXITVAL_INVALID_OPTION);
