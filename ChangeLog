@@ -1,3 +1,33 @@
+2008-01-06  James Youngman  <jay@gnu.org>
+
+	Implement "get -l", "get -L" and "get -lp".
+	* get.cc (main): Added options -l and -L for get.
+	(main): Print the name of the s-file before the delta summary (for
+	-l) and the gotten body (for -p).
+	* tests/get/delta-summary.sh: New tests for the -L, -l and -lp
+	options of get.
+	* sccsname.h (class sccs_name): new method lfile(), returning the
+	name of the l-file.
+	* sccsname.cc (sccs_name::lfile): Implement it.
+	* sccsfile.h (sccs_file::get): Take a parameter summary_file,
+	being a FILE* pointer to which we should emit a delta summary if
+	it's not NULL.
+	* sf-get2.cc (sccs_file::get): Add the new summary_file parameter
+	and, if it's not NULL, emit a delta summary.
+	* docs/cssc.texi (get options): Document the options -l, -lp and
+	-L.  
+	(Filenames): Mention the l-file.
+	(prt usage): Mention that the delta summary file contains much the
+	same information.
+	* NEWS: Mention this change.
+
+2008-01-05  James Youngman  <jay@gnu.org>
+
+	* sf-prt.cc (sccs_file::prt): Fixed typo in comment.
+
+	* NEWS: Updated with changes for the early 0.02 releases by
+	diffing the unpacked tar archives.  
+
 2007-12-19  James Youngman  <jay@gnu.org>
 
 	* what.cc: String constants chould be const.

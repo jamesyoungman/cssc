@@ -47,6 +47,7 @@ class sccs_name
   //  dir/s.foo.c
   //  dir/p.foo.c
   //  dir/z.foo.c
+  //  dir/l.foo.c
   // In these cases, name_front is "dir/" and name_rear is ".foo.c".
   
   mystring name_front, name_rear;
@@ -82,12 +83,10 @@ public:
   mystring sub_file(char insertme) const;
   mystring sfile() const { return sname; }
   mystring gfile() const { return gname; }
+  mystring lfile() const;
   
   mystring pfile() const { return sub_file('p'); }
   mystring qfile() const { return sub_file('q'); }
-#if 0
-  mystring lfile() const { return base_part(_file('l')); }
-#endif
   mystring xfile() const { return sub_file('x'); }
   mystring zfile() const { return sub_file('z'); }
   

@@ -39,7 +39,7 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.54 2007/12/17 21:59:49 jay Exp $";
+const char main_rcs_id[] = "$Id: get.cc,v 1.55 2008/01/06 12:33:55 jay Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
@@ -63,7 +63,7 @@ print_id_list(const char *s, mylist<sid> const &list)
 void
 usage() {
         fprintf(stderr,
-"usage: %s [-begkmnpstV] [-c date] [-r SID] [-i range] [-w string]\n"
+"usage: %s [-begkmnpstLV] [-c date] [-r SID] [-i range] [-w string]\n"
 "\t[-x range] [-G gfile] file ...\n",
                 prg_name);
 }
@@ -104,6 +104,8 @@ main(int argc, char **argv)
   seq_no seq = 0;                       /* -a */
   int get_top_delta = 0;                /* -t */
   bool real_file;
+  bool delta_summary = false;	        /* -L, -l */
+  bool create_lfile = false;            /* -l */
   
   if (argc > 0)
       set_prg_name(argv[0]);
@@ -111,7 +113,7 @@ main(int argc, char **argv)
     set_prg_name("get");
 
 
-  class CSSC_Options opts(argc, argv, "r!c!i!x!ebklpsmngtw!a!DVG!",
+  class CSSC_Options opts(argc, argv, "r!c!i!x!ebkl!psmngtw!a!DVG!L",
                           EXITVAL_INVALID_OPTION);
   for(c = opts.next();
       c != CSSC_Options::END_OF_ARGUMENTS;
@@ -155,7 +157,7 @@ main(int argc, char **argv)
                 }
           break;
           
-            case 'x':
+	case 'x':
                 {
                     sid_list exclude_arg(opts.getarg());
                     if (!exclude_arg.valid())
@@ -187,6 +189,32 @@ main(int argc, char **argv)
           got_gname = 0;
           break;
 
+	case 'l':
+	  delta_summary = true;
+	  if (opts.getarg() && opts.getarg()[0])
+	    {
+	      if (0 == strcmp(opts.getarg(), "p"))
+		{
+		  /* -lp is a traditional synonym for -L */
+		  create_lfile = false;
+		}
+	      else
+		{
+		  errormsg ("Unsupported -l option: '-l%s'", opts.getarg());
+		  return EXITVAL_INVALID_OPTION;
+		}
+	    }
+	  else
+	    {
+	      create_lfile = true;
+	    }
+	  break;
+
+	case 'L':
+	  delta_summary = true;
+	  create_lfile = false;
+	  break;
+	  
         case 's':
           silent = 1;
           break;
@@ -293,6 +321,14 @@ main(int argc, char **argv)
         {
 #endif        
           sccs_name &name = iter.get_name();
+
+          // Print the name of the SCCS file unless exactly one
+          // was specified.
+          if (!iter.unique())
+            {
+              fprintf(stdout, "\n%s:\n", name.c_str());
+            }
+          
           
           sccs_pfile *pfile = NULL;
           if (for_edit)
@@ -406,6 +442,20 @@ main(int argc, char **argv)
                 }
             }
 
+	  FILE *summary_file = NULL;
+	  if (delta_summary)
+	    {
+	      if (create_lfile)
+		{
+		  mystring lname = name.lfile();
+		  summary_file = fcreate(lname, CREATE_READ_ONLY);
+		}
+	      else
+		{
+		  summary_file = stdout;
+		}
+	    }
+
           const int keywords = !suppress_keywords;
           struct sccs_file::get_status status;
           
@@ -413,7 +463,7 @@ main(int argc, char **argv)
           try
             {
 #endif    
-          status = file.get(out, gname, retrieve, cutoff_date,
+          status = file.get(out, gname, summary_file, retrieve, cutoff_date,
                             include, exclude, keywords, wstring,
                             show_sid, show_module, debug, for_edit);
 #ifdef HAVE_EXCEPTIONS
@@ -468,13 +518,6 @@ main(int argc, char **argv)
 				      gname.c_str());
 		}
               continue;
-            }
-          
-          // Print the name of the SCCS file unless exactly one
-          // was specified.
-          if (!iter.unique())
-            {
-              fprintf(stdout, "\n%s:\n", name.c_str());
             }
           
           print_id_list("Included", status.included);

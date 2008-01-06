@@ -770,12 +770,22 @@ is assumed when @option{-e} is specified.  The gotten file is writable.
 
 
 @item -l
-Unsupported.
-@c TODO: Write the test cases, and document it.
+Generates a delta summary file in the current working directory.  The
+name of the file is @file{l.foo} where @file{foo} is the name that
+would normally be used for the gotten file.  The name of the delta
+summary file is not affected by the @option{-G} option.  The delta
+summary file is similar in content to the output of @code{prt}, though
+it contains less information.
 
 @item -lp
-Unsupported.
-@c TODO: Write the test cases, and document it.
+This is obsolete; use @option{-L} instead.
+@c TODO: Write the test cases
+
+@item -L
+Generate a delta summary as for the @option{-l} option, but print it
+on stdout instead of creating a file.  If @option{-L} and @option{-p}
+are both specified, the delta summary is printed first.
+@c TODO: Write the test cases
 
 @item -m
 Prepend to each line of the result the @sc{sid} corresponding to the
@@ -1387,8 +1397,9 @@ prt s.umsp.c
 @end example
 
 @noindent
-If you require more detail, the @option{-e} (``everything'') option
-produces more detail:-
+The default output contains slightly more information than the output
+of @code{get -L}.  If you require more detail, the @option{-e}
+(``everything'') option produces more detail:-
 
 @example
 prt -e s.umsp.c
@@ -2033,6 +2044,9 @@ various files used by @sc{cssc} are listed in the table below.
 @table @samp
 @item s.
 The history file itself.
+@item l.
+The delta summary file created by @code{get -l}.  Unlike the other
+files in this table, the l-file is created in the current directory.
 @item p.
 The file containing the list of edit locks.
 @item z.
@@ -2042,7 +2056,7 @@ versions of @sc{sccs} (but @emph{not} @sc{cssc}) will break the lock
 after 60 seconds if the specified PID is not running on the local
 machine.  In order to work more reliably over networked filesystems,
 @sc{cssc} will not do this; stale lock files would have to be removed
-manually.
+manually.  
 @item x.
 Temporary file into which is written the new s-file.  Once processing is
 complete, the old s-file is replaced by the x-file.
@@ -2057,8 +2071,9 @@ puts the output of @code{diff} in this file instead.
 Encoded version of the gotten file; created by delta.
 @end table
 
-All of the temporary files in the above table are created in the same
-directory as the s-file, rather than in the current working directory.
+Except for the l-file, all of the temporary files in the above table
+are created in the same directory as the s-file.  The l-file is
+created in the current working directory.
 
 Since these filenames are always fixed, it is important that the
 permissions on the directory containing the @sc{sccs} file be secure;

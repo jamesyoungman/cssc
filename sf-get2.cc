@@ -36,7 +36,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.60 2007/12/17 21:59:51 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.61 2008/01/06 12:33:56 jay Exp $";
 #endif
 
 
@@ -369,7 +369,9 @@ sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
    should be included in the output file. */
         
 /* struct */ sccs_file::get_status
-sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
+sccs_file::get(FILE *out, mystring gname,
+	       FILE *summary_file,
+	       sid id, sccs_date cutoff_date,
                sid_list include, sid_list exclude,
                int keywords, const char *wstring,
                int show_sid, int show_module, int debug,
@@ -465,6 +467,39 @@ sccs_file::get(FILE *out, mystring gname, sid id, sccs_date cutoff_date,
         }
     }
 
+  if (summary_file)
+    {
+      bool first = true;
+      
+      for (seq_no s = d->seq; s>0; s--)
+        {
+          if (delta_table->delta_at_seq_exists(s)
+	      && state.is_included(s))
+	    {
+	      const struct delta & it = delta_table->delta_at_seq(s);
+	      
+	      fprintf (summary_file, "%s   ",
+		       first ? "" : "\n");
+	      first = false;
+	      it.id.print(summary_file);
+	      fprintf (summary_file, "\t");
+	      it.date.print(summary_file);
+	      fprintf (summary_file, " %s\n", it.user.c_str());
+	      
+	      if (it.comments.length())
+		{
+		  const int len = it.comments.length();
+		  for(int i = 0; i < len; i++)
+		    {
+		      fprintf (summary_file, "\t%s\n",
+			       it.comments[i].c_str());
+		    }
+		}
+	    }
+	}
+    }
+  
+  
   
   // The subst_parms here may not be the Whole Truth since
   // the cutoff date may affect which version is actually

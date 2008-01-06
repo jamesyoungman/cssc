@@ -35,7 +35,7 @@
 #include <ctype.h>
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.12 2007/12/17 21:59:51 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.13 2008/01/06 12:33:55 jay Exp $";
 #endif
 
 #ifdef CONFIG_MSDOS_FILES 
@@ -147,6 +147,14 @@ sub_file(char insertme) const
 	  insertme, ret.c_str());
 #endif
   return ret;
+}
+
+mystring sccs_name::
+lfile() const
+{
+  // Can't use sub_file since, like for the g-file, 
+  // we need to omit the directory.
+  return mystring("l") + name_rear;
 }
 
 
