@@ -35,7 +35,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.36 2007/12/17 21:59:51 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.37 2008/01/06 17:37:06 jay Exp $";
 #endif
 
 
@@ -280,7 +280,18 @@ sccs_file::admin(const char *file_comment,
 	    }
 	  else
 	    {
-	      flags.locked.remove(release_list(s));
+	      if (flags.all_locked)
+		{
+		  errormsg("Unlocking just release %s of %s is not possible, "
+			   "since all releases are locked.  "
+			   "Use admin -dla to unlock all releases.",
+			   s, name.c_str());
+		  return false;
+		}
+	      else
+		{
+		  flags.locked.remove(release_list(s));
+		}
 	    }
 	  break;
 	  

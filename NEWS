@@ -5,6 +5,10 @@ New in CSSC-1.1.1
 
 	* The -l and -L options of "get" are now implemented.
 
+	* If you use "admin -dlX" to unlock release X, but all
+	  releases are locked, an explanatory error message is issued.
+	  Previously, the attempt was simply silently ignored.
+
 New in CSSC-1.1.0, 2007-12-17
 
 	* GNU CSSC is now distributed under version 3 of the GNU General 

@@ -1,5 +1,11 @@
 2008-01-06  James Youngman  <jay@gnu.org>
 
+	* sf-admin.cc (admin): If all releases are locked ("admin -fla")
+	and the user tries to unlock just one release, issue an error
+	message (instead of just ignoring the attempt).
+	* docs/cssc.texi (admin): Explain the (already existing)
+	restriction and how to get around it.
+
 	Implement "get -l", "get -L" and "get -lp".
 	* get.cc (main): Added options -l and -L for get.
 	(main): Print the name of the s-file before the delta summary (for
