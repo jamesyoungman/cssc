@@ -1,7 +1,7 @@
 /*
  * prompt.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998,2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,2007,2008 Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include "cssc.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.14 2008/01/06 18:00:03 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.15 2008/01/06 19:42:23 jay Exp $";
 #endif
 
 

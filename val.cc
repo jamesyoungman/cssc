@@ -1,7 +1,7 @@
 /*
  * val.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998,2001,2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,2001,2007,2008 Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include "except.h"
 #include "valcodes.h"
 
-const char main_rcs_id[] = "$Id: val.cc,v 1.12 2008/01/06 19:17:02 jay Exp $";
+const char main_rcs_id[] = "$Id: val.cc,v 1.13 2008/01/06 19:42:24 jay Exp $";
 
 /* Prints a list of included or excluded SIDs. */
 
