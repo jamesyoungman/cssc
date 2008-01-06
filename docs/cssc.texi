@@ -250,12 +250,6 @@ Initialise the @sc{sccs} file with the contents of the file @var{foo}.
 If no argument is given, read from standard input.  This implies the
 @option{-n} option.
 
-@c XXX: do people actually use -l ?
-@c @item -l@var{rel1},@var{rel2},...
-@c Unlock the specified releases.   If @option{a} is specified as the
-@c release, that denotes ``all releases''.  Untested.
-@c @c TODO: Write the test cases.
-
 @item -m@var{MR-list}
 When initialising a file, add the specified list of @sc{mr} numbers
 (@pxref{Modification Request Numbers}) to the delta commentary for the
