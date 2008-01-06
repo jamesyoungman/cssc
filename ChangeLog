@@ -9,6 +9,7 @@
 	* sid.h (class sid): Declare sid::null_sid().
 	* get.cc (main): Avoid initialising a sid object by assignment
 	from NULL.
+	* delta.cc (delta_main): Likewise.
 	* val.cc (main): Likewise.
 	* rmdel.cc (main): Likewise.
 	* unget.cc (main): Likewise.

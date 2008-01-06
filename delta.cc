@@ -36,7 +36,7 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.35 2007/12/17 21:59:48 jay Exp $";
+const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.36 2008/01/06 19:20:22 jay Exp $";
 
 void
 usage() {
@@ -52,7 +52,7 @@ delta_main(int argc, char **argv)
 {
   Cleaner arbitrary_name;
   int c;
-  sid rid = NULL;		/* -r  ... XXX: does this need correcting? s/NULL/0/? */
+  sid rid(sid::null_sid());
   int silent = 0;		/* -s */
   int keep_gfile = 0;		/* -n */
 #if 0
@@ -70,6 +70,8 @@ delta_main(int argc, char **argv)
   } else {
     set_prg_name("delta");
   }
+
+  ASSERT(!rid.valid());
 
   class CSSC_Options opts(argc, argv, "r!sng!m!y!pV", EXITVAL_INVALID_OPTION);
   for(c = opts.next();
