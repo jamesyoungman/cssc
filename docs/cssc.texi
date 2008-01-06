@@ -779,13 +779,11 @@ it contains less information.
 
 @item -lp
 This is obsolete; use @option{-L} instead.
-@c TODO: Write the test cases
 
 @item -L
 Generate a delta summary as for the @option{-l} option, but print it
 on stdout instead of creating a file.  If @option{-L} and @option{-p}
 are both specified, the delta summary is printed first.
-@c TODO: Write the test cases
 
 @item -m
 Prepend to each line of the result the @sc{sid} corresponding to the
