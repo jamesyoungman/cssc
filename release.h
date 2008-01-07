@@ -1,8 +1,8 @@
 /* 
- * sf-prt.cc: Part of GNU CSSC.
+ * release.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,2007,2008 Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
  * placed in the Public Domain.
  *
  *
- * Members of the class sccs_file for doing sccs-prt.
+ * Declaration of class release
  *
  */
 

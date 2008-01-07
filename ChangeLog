@@ -1,5 +1,7 @@
 2008-01-07  James Youngman  <jay@gnu.org>
 
+	* release.h: Fixed typo in the file header comment.
+
 	* delta-table.h (class cssc_delta_table): Don't initialise sid
 	objects from NULL.  
 
