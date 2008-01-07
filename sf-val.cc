@@ -31,7 +31,7 @@
 
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.12 2008/01/06 19:42:23 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.13 2008/01/07 01:09:29 jay Exp $";
 #endif
 
 const mystring
@@ -89,24 +89,55 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
 bool 
 sccs_file::validate_isomorphism() const
 {
-  // First decide for each delta if it is a branch point or not.
-  // then decide for each delta if it is on the branch or on the trunk.
-  //
-  // A delta is a branch point if more than one delta in the 
-  // delta table references it as a predecessor.
-  //
-  // A delta is on a branch if 
-  // 1. Its immediate ancestor is itself on a branch OR
-  // 2. It has an immediate ancestor which is a branch point,
-  //    and the delta itself is not the next trunk revision.
-  //    (How to determine this?)
-  //
-  // All branch deltas must have 4-component SIDs.
-  // All trunk deltas must have 2-component SIDs.
-  // Any delta may have a maximum of one descendant with a 2-component SID.
+  // SCCS files exist where a delta on the trunk has as a parent
+  // a delta which is itself not on the trunk.  This makes it 
+  // hard to verify that the SID values are consistent with the 
+  // tree of seqno values.
 
-  // TODO: write this later.
-  return true;
+  int *trunk_child_count = new int[1+delta_table->highest_seqno()];
+  seq_no seq;
+
+  
+  // Count how many children on the trunk each delta has.
+  for (seq=0; seq<=delta_table->highest_seqno(); ++seq)
+    {
+      trunk_child_count[seq] = 0;
+      if (seq)
+	{
+	  if (delta_table->delta_at_seq_exists(seq)
+	      && !delta_table->delta_at_seq(seq).removed())
+	    
+	    {
+	      const delta & d = delta_table->delta_at_seq(seq);
+	      if (d.id.on_trunk())
+		{
+		  ++trunk_child_count[d.prev_seq];
+		}
+	    }
+	}
+    }
+  
+
+  bool problem = false;
+  for (seq=1; seq<=delta_table->highest_seqno(); ++seq)
+    {
+      if (delta_table->delta_at_seq_exists(seq)
+	  && !delta_table->delta_at_seq(seq).removed())
+	{
+	  if (trunk_child_count[seq] > 1)
+	    {
+	      const delta & d = delta_table->delta_at_seq(seq);
+	      const char *sz_sid = d.id.as_string().c_str();
+	      warning("%s: SID %s has %d children on the trunk",
+		      name.c_str(), sz_sid,
+		      trunk_child_count[seq]);
+	      problem = true;
+	      
+	    }
+	}
+    }
+
+  return !problem;
 }
 
 static bool
@@ -189,7 +220,6 @@ sccs_file::validate() const
 	  errormsg("%s: SID %s: empty username", name.c_str(), sz_sid);
 	  retval = false;
 	}
-      
       else if (iter->user.find_last_of(':') != mystring::npos)
 	{
 	  errormsg("%s: SID %s: invalid username '%s'",
@@ -215,7 +245,7 @@ sccs_file::validate() const
       if (seen_ever[s - 1] > 1)
 	{
 	  errormsg("%s: seqno %d appears more than once (%d times)",
-		   name.c_str(), (int)s, seen_ever[iter->seq - 1]);
+		   name.c_str(), (int)s, seen_ever[s - 1]);
 	  retval = false;		// seqno appears more than once.
 	}
 
@@ -310,6 +340,34 @@ sccs_file::validate() const
 		  flag, flag);
 	}
     }
+
+  if (flags.floor > delta_table->highest_release())
+    {
+      warning("%s has a release floor of %d but the highest actual release "
+	      "in the file is %d",
+	      name.c_str(), (short)flags.floor,
+	      delta_table->highest_release().as_string().c_str());
+    }
+
+  if (!flags.default_sid.is_null())
+    {
+      const delta* pd = delta_table->find_any(flags.default_sid);
+      if (pd)
+	{
+	  if (pd->removed())
+	    {
+	      warning("%s has a default SID of %s, but that SID has "
+		      "been removed",
+		      name.c_str(), flags.default_sid.as_string().c_str());
+	    }
+	}
+      else
+	{
+	  warning("%s has a default SID of %s, but that SID is not present",
+		  name.c_str(), flags.default_sid.as_string().c_str());	      
+	}
+    }
+  
 
   
   // TODO: check for unknown flags

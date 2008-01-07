@@ -1,5 +1,8 @@
 2008-01-07  James Youngman  <jay@gnu.org>
 
+	* sf-val.cc (validate_isomorphism): Warn if a delta has two
+	derived deltas on the trunk.  
+
 	* release.h: Fixed typo in the file header comment.
 
 	* delta-table.h (class cssc_delta_table): Don't initialise sid
