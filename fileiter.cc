@@ -1,7 +1,7 @@
 /*
  * fileiter.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,2007,2008 Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 #include "my-getopt.h"
 
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.25 2007/12/17 21:59:48 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.26 2008/01/07 00:57:36 jay Exp $";
 #endif
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
@@ -92,9 +92,18 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 				mystring name = mystring(dirname) + mystring(dent->d_name, NAMLEN(dent));
 				
 				if (sccs_name::valid_filename(name.c_str())
-				    && is_readable(name.c_str())) {
+				    && is_readable(name.c_str()))
+				  {
+				    if (is_directory(name.c_str()))
+				      {
+					warning("Ignoring subdirectory %s",
+						name.c_str());
+				      }
+				    else
+				      {
 					files.add(name);
-				}
+				      }
+				  }
 				dent = readdir(dir);
 			}
 

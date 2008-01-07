@@ -1,7 +1,7 @@
 /*
  * file.cc: Part of GNU CSSC.
  * 
- *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -44,8 +44,29 @@
 
 #include <stdio.h>
 
+#if HAVE_DIRENT_H
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
+# undef CONFIG_NO_DIRECTORY
+#else
+# define dirent direct
+# define NAMLEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# undef CONFIG_NO_DIRECTORY
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# undef CONFIG_NO_DIRECTORY
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# undef CONFIG_NO_DIRECTORY
+# endif
+#endif
+
 #ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.41 2007/12/19 00:21:14 jay Exp $";
+static const char rcs_id[] = "CSSC $Id: file.cc,v 1.42 2008/01/07 00:57:36 jay Exp $";
 #endif
 
 #ifdef CONFIG_UIDS
@@ -168,6 +189,21 @@ int
 is_readable(const char *name) {
         return access(name, 04) != -1;
 }
+
+int 
+is_directory(const char *name) 
+{
+  bool retval = false;
+  DIR *p = opendir(name);
+  if (p)
+    {
+      retval = true;
+      closedir(p);
+    }
+  return retval;
+}
+
+
 
 /* Determine if a given file is "writable".  If we
  * are root, we can write to a mode 000 file, but

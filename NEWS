@@ -11,6 +11,12 @@ New in CSSC-1.1.1
 
 	* prs no longer has a -R option.
 
+	* When CSSC tools are passed the name of a directory on the 
+	  command line, they operate on the SCCS files in that directory.  
+	  As of this release, subdirectories are ignored (instead of 
+	  generating an error when CSSC tries to open the directory as 
+	  a file).
+
 New in CSSC-1.1.0, 2007-12-17
 
 	* GNU CSSC is now distributed under version 3 of the GNU General 
