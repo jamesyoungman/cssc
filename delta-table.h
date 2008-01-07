@@ -2,7 +2,7 @@
  * delta-table.h: Part of GNU CSSC.
  * 
  * 
- *    Copyright (C) 1997,1999,2007 Free Software Foundation, Inc. 
+ *    Copyright (C) 1997,1999,2007,2008 Free Software Foundation, Inc. 
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
  *
  * Definition of the classes cssc_delta_table and delta_iterator.
  *
- * $Id: delta-table.h,v 1.8 2007/12/17 21:59:48 jay Exp $
+ * $Id: delta-table.h,v 1.9 2008/01/07 01:02:41 jay Exp $
  *
  */
 
 
 #ifndef CSSC_DELTA_TABLE_H
-#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.8 2007/12/17 21:59:48 jay Exp $"
+#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.9 2008/01/07 01:02:41 jay Exp $"
 
 #include "delta.h"
 
@@ -47,7 +47,7 @@ public:
   cssc_delta_table()
     : seq_table(NULL),
       high_seqno(0),
-      high_release(NULL)
+      high_release(sid::null_sid())
   {
   }
 

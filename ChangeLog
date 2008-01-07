@@ -1,5 +1,7 @@
 2008-01-07  James Youngman  <jay@gnu.org>
 
+	* delta-table.h (class cssc_delta_table): Don't initialise sid
+	objects from NULL.  
 
 	* fileiter.cc (sccs_file_iterator): Ignore subdirectories, even if
 	they do start with "s.".
