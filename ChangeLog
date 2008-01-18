@@ -1,3 +1,17 @@
+2008-01-18  James Youngman  <jay@gnu.org>
+
+	* configure.ac: Prepare for release of version 1.1.1.
+	* NEWS: Likewise.
+	* docs/cssc.texi: Updated copyright year.  Bumped the revision
+	number and updated the VERSION macro.  Updated the "UPDATED"
+	variable to the current time.
+	
+	* version.h (version): Don't show the RCS ID of the main program
+	in the version output; just keep the existing CSSC release number.
+
+	* showconfig.cc: Updated copyright notice to GPL3.
+	 (show_system_line_max): Removed awkward line break.
+
 2008-01-07  James Youngman  <jay@gnu.org>
 
 	* sf-val.cc (validate_isomorphism): Warn if a delta has two
