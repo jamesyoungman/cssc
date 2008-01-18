@@ -15,7 +15,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-extern const char main_rcs_id[];
 extern const char cssc_version[];
 void show_config_info(void);
 void show_copyright(void);
@@ -23,7 +22,7 @@ void show_copyright(void);
 inline void
 version() 
 {
-  fprintf(stderr, "%s\n%s\n", cssc_version, main_rcs_id);
+  fprintf(stderr, "%s\n", cssc_version);
   show_copyright();
   show_config_info();
 }
