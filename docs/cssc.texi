@@ -14,7 +14,7 @@ This file documents the the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
 Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 
-              2003, 2004, 2005, 2007 Free Software Foundation, Inc.
+              2003, 2004, 2005, 2007, 2008 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.2 or
@@ -29,9 +29,9 @@ Texts.  A copy of the license is included in the section entitled
 @setchapternewpage odd
 @c %**end of header
 
-@set EDITION 1.08
-@set VERSION 1.01
-@set UPDATED Sat Jan 22 16:39:38 2005
+@set EDITION 1.09
+@set VERSION 1.1.1
+@set UPDATED Fri Jan 18 09:44:31 2008
 
 @c Macros don't work with texi2html!
 @c @macro authoraddr
