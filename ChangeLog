@@ -1,3 +1,11 @@
+2009-01-03  Alain Williams <addw@phcomp.co.uk> (tiny change)
+
+	* auxfiles/CSSC.spec.in: Reflect changes in the RPM spec
+	file format and requrements since 2003.
+	(License): Changed "Copyright" tag to "License".  
+	(%makeinstall): Do not make the /usr/sccs symbolic link.  
+	(%files): Add various binaries to %files.
+
 2008-01-18  James Youngman  <jay@gnu.org>
 
 	* configure.ac: Prepare for release of version 1.1.1.

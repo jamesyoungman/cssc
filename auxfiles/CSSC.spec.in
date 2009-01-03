@@ -3,7 +3,7 @@ Name: CSSC
 Version: @VERSION@
 Release: 1
 URL: http://www.gnu.org/software/cssc/
-Copyright: GPL (one program is BSD, see COPYING.bsd)
+License: GPL (one program is BSD, see COPYING.bsd)
 Packager: Thomas.Duffy.99@alumni.brown.edu
 Group: Development/Version Control
 Source: ftp://ftp.gnu.org/pub/gnu/cssc/CSSC-%{PACKAGE_VERSION}.tar.gz
@@ -27,7 +27,7 @@ make
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 %makeinstall
-ln -s libexec/cssc $RPM_BUILD_ROOT/usr/sccs
+#ln -s libexec/cssc $RPM_BUILD_ROOT/usr/sccs
 cd $RPM_BUILD_ROOT/usr/bin 
 ln -s ../libexec/cssc/* .
 gzip $RPM_BUILD_ROOT/%{_infodir}/cssc* || true
@@ -55,10 +55,27 @@ fi
 %dir %{_libexecdir}/cssc
 %{_libexecdir}/cssc
 %{_bindir}/sccs
+%{_bindir}/admin
+%{_bindir}/cdc
+%{_bindir}/delta
+%{_bindir}/get
+%{_bindir}/prs
+%{_bindir}/prt
+%{_bindir}/rmdel
+%{_bindir}/sact
+%{_bindir}/sccsdiff
+%{_bindir}/unget
+%{_bindir}/val
+%{_bindir}/what
 %{_mandir}/man*/*
 %{_infodir}/*.info*
 
 %changelog
+
+* Sat Jan  3 2009 Alain Williams <addw@phcomp.co.uk>
+Changed "Copyright" tag to "License".  
+Do not make the /usr/sccs symbolic link.  
+Add various binaries to %files.
 
 * Mon Dec 17 2007 James Youngman <jay@gnu.org>
 Updated URLs to reflect the fact that we migrated from 
