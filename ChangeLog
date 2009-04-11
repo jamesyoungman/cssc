@@ -1,5 +1,8 @@
 2009-04-11  James Youngman  <jay@gnu.org>
 
+	* INSTALL: Remove from the source repository; allow Automake to
+	use its own copy.
+	
 	* configure.ac (AC_CHECK_DECL_IN_HEADER): Quote the definition of
 	the function.
 	(AC_CHECK_GLOBAL): Likewise.
