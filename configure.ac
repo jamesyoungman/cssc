@@ -18,7 +18,7 @@ dnl
 dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 dnl 
-dnl $Id: configure.ac,v 1.17 2008/01/18 10:07:33 jay Exp $
+dnl $Id: configure.ac,v 1.18 2009/04/11 17:59:18 jay Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -31,7 +31,7 @@ AC_CONFIG_SRCDIR([sccsfile.h])
 # in the Automake manual.
 #   usually use -CVSDEVEL to indicate that the person who compiled 
 #   the code got it from CVS.
-AM_INIT_AUTOMAKE(CSSC,1.1.1)
+AM_INIT_AUTOMAKE(CSSC,1.2.0)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)
@@ -316,8 +316,8 @@ AC_TRY_COMPILE(
 
 
 dnl AC_CHECK_DECL_IN_HEADER(IDENTIFIER, HEADERS)
-AC_DEFUN(AC_CHECK_DECL_IN_HEADER,
-AC_MSG_CHECKING(for $1 in $2)
+AC_DEFUN([AC_CHECK_DECL_IN_HEADER],
+[AC_MSG_CHECKING(for $1 in $2)
 ac_tr_ident=`echo $1 | tr '.abcdefghijklmnopqrstuvwxyz' '_ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
 ac_tr_header=`echo $2 | tr '.abcdefghijklmnopqrstuvwxyz' '_ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
 ac_tr_define=${ac_tr_header}_DECLARES_${ac_tr_ident}
@@ -333,7 +333,7 @@ else
 	 # echo 'NOT defining' $ac_tr_define 
 	 AC_MSG_RESULT(no)
 fi
-)
+])
 
 dnl Deductions from proprocessor macros...
 AC_MSG_CHECKING([for _POSIX_SAVED_IDS])
@@ -404,12 +404,7 @@ else
 fi
 
 
-
-dnl AC_SUBST(LIBOBJS)dnl
-
-
-
-AC_DEFUN(AC_CHECK_GLOBAL,
+AC_DEFUN([AC_CHECK_GLOBAL],
 [
 # JY: AC_CHECK_GLOBAL begins
 for ac_global in $1
