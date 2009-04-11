@@ -1,5 +1,7 @@
 2009-04-11  James Youngman  <jay@gnu.org>
 
+	* configure.ac, NEWS: Prepare for release of version 1.2.0.
+
 	* INSTALL: Remove from the source repository; allow Automake to
 	use its own copy.
 	* missing: Likewise.
