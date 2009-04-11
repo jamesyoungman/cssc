@@ -6,3 +6,4 @@ configure
 autom4te.cache
 INSTALL
 missing
+install-sh

@@ -3,6 +3,7 @@
 	* INSTALL: Remove from the source repository; allow Automake to
 	use its own copy.
 	* missing: Likewise.
+	* install-sh: Likewise.
 	
 	* configure.ac (AC_CHECK_DECL_IN_HEADER): Quote the definition of
 	the function.
