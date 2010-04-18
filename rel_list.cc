@@ -25,10 +25,6 @@
 #include "rel_list.h"
 #include <stdlib.h>
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: rel_list.cc,v 1.11 2007/12/17 21:59:50 jay Exp $";
-#endif
-
 // Because we use member() all the time, this
 // is a quadratic algorithm...but N is usually very small.
 release_list::release_list(const char *s)

@@ -24,7 +24,6 @@
  * INSTALL files for details of the specific configuration options
  * which are possible.
  *
- * $Id: showconfig.cc,v 1.7 2008/01/18 10:00:58 jay Exp $
  */
 #include "cssc.h"
 

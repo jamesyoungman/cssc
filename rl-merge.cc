@@ -25,10 +25,6 @@
 #include "cssc.h"
 #include "rel_list.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: rl-merge.cc,v 1.7 2007/12/17 21:59:50 jay Exp $";
-#endif
-
 // another horrendously inefficient implementation.
 void release_list::merge(const release_list& m)
 {

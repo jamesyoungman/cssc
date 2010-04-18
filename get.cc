@@ -39,8 +39,6 @@
 #include <limits.h>
 #endif
 
-const char main_rcs_id[] = "$Id: get.cc,v 1.57 2008/01/06 19:42:23 jay Exp $";
-
 /* Prints a list of included or excluded SIDs. */
 
 static void

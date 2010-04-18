@@ -34,9 +34,6 @@
 
 #include <ctype.h>
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: writesubst.cc,v 1.6 2007/12/17 21:59:52 jay Exp $";
-#endif
 
 /* Return TRUE if the specified keyword letter should be 
  * expanded in the gotten file.  If the y flag is set, it controls the 

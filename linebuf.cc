@@ -35,10 +35,6 @@
 // Use a small chunk size for testing...
 #define CONFIG_LINEBUF_CHUNK_SIZE (1024u)
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: linebuf.cc,v 1.18 2007/12/19 00:21:14 jay Exp $";
-#endif
-
 cssc_linebuf::cssc_linebuf()
   : buf(new char[CONFIG_LINEBUF_CHUNK_SIZE]),
     buflen(CONFIG_LINEBUF_CHUNK_SIZE)

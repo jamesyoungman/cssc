@@ -31,10 +31,6 @@
 #include "sysdep.h"
 #include "err_no.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: run.cc,v 1.29 2007/12/17 21:59:50 jay Exp $";
-#endif
-
 #if !defined(HAVE_FORK) && !defined(HAVE_SPAWN)
 #define NEED_CALL_SYSTEM
 #else

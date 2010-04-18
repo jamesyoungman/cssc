@@ -31,10 +31,6 @@
 #include <string.h>
 #endif
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-chkid.cc,v 1.10 2007/12/17 21:59:51 jay Exp $";
-#endif
-
 bool
 is_id_keyword_letter(char ch)
 {

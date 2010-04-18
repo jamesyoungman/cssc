@@ -29,8 +29,6 @@
 #include "except.h"
 #include "valcodes.h"
 
-const char main_rcs_id[] = "$Id: val.cc,v 1.13 2008/01/06 19:42:24 jay Exp $";
-
 /* Prints a list of included or excluded SIDs. */
 
 void

@@ -30,10 +30,6 @@
 #include "except.h"
 
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-del.cc,v 1.16 2007/12/17 21:59:49 jay Exp $";
-#endif
-
 /* enum */ sccs_pfile::find_status
 sccs_pfile::find_sid(sid id) {
 

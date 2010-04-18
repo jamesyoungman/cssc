@@ -30,11 +30,6 @@
 
 #include <ctype.h>
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sid.cc,v 1.21 2008/01/06 19:42:24 jay Exp $";
-#endif
-
-
 mystring sid::as_string() const
 {
   char buf[32];

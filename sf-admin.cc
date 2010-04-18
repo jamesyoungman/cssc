@@ -34,12 +34,6 @@
 #include "bodyio.h"
 
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-admin.cc,v 1.39 2008/01/06 19:42:23 jay Exp $";
-#endif
-
-
-
 /* #define ADMIN_MERGE_LOCKED_RELEASES if you want
  * admin -fl1 s.foo ;  admin -fl2 s.foo 
  * to result in both releases 1 and 2 being locked; 

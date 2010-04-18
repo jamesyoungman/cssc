@@ -21,10 +21,6 @@
  *
  *
  * Definition of the class sccs_file.
- *
- * $Id: sccsfile.h,v 1.60 2008/01/06 19:42:23 jay Exp $
- * from @(#) MySC sccsfile.h 1.2 93/11/13 00:11:17
- *
  */
  
 #ifndef CSSC__SCCSFILE_H__

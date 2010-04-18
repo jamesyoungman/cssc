@@ -32,10 +32,6 @@
 #include "delta-table.h"
 
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: delta-iterator.cc,v 1.7 2007/12/17 21:59:48 jay Exp $";
-#endif
-
 delta_iterator::delta_iterator(cssc_delta_table *d)
   : dtbl(d), pos(-1)
 {

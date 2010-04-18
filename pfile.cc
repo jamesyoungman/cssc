@@ -29,10 +29,6 @@
 #include "pfile.h"
 #include "err_no.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pfile.cc,v 1.18 2007/12/17 21:59:49 jay Exp $";
-#endif
-
 NORETURN
 sccs_pfile::corrupt(int lineno, const char *msg) const {
         p_corrupt_quit("%s: line %d: p-file is corrupt.  (%s)",

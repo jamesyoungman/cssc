@@ -26,10 +26,6 @@
 
 #include "cssc.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: prompt.cc,v 1.15 2008/01/06 19:42:23 jay Exp $";
-#endif
-
 
 static char *
 re_new(char *p, int oldlen, int newlen)

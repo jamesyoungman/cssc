@@ -40,10 +40,6 @@
 
 #include <stdarg.h>
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: quit.cc,v 1.34 2007/12/19 00:21:14 jay Exp $";
-#endif
-
 const char *prg_name = NULL;
 
 void

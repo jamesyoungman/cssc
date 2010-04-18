@@ -31,10 +31,6 @@
 #include "delta.h"
 #include "delta-table.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-add.cc,v 1.12 2007/12/17 21:59:51 jay Exp $";
-#endif
-
 /* Starts an update of an SCCS file that includes a new entry to be
    prepended to delta table. */
 

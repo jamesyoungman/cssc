@@ -48,10 +48,6 @@
 #endif
 
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsfile.cc,v 1.67 2008/01/06 19:42:23 jay Exp $";
-#endif
-
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
 /* If an SCCS file has a link count greater than one, then the normal 
  * process of updating the file will break the link.  We try to detect this 

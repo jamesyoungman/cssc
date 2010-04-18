@@ -19,14 +19,11 @@
  * 
  *
  * Definition of the class delta_iterator.
- *
- * $Id: delta-iterator.h,v 1.5 2007/12/17 21:59:48 jay Exp $
- *
  */
 
 
 #ifndef CSSC_DELTA_ITERATOR_H
-#define CSSC_DELTA_ITERATOR_H "$Id: delta-iterator.h,v 1.5 2007/12/17 21:59:48 jay Exp $"
+#define CSSC_DELTA_ITERATOR_H 1
 
 #include "delta.h"
 

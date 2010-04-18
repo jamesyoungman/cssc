@@ -33,8 +33,6 @@
 #include "except.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: unget.cc,v 1.27 2008/01/06 19:42:24 jay Exp $";
-
 void
 usage() {
 	fprintf(stderr,

@@ -31,10 +31,6 @@
  * the file pointer on our file too).
  */
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fdclosed.cc,v 1.7 2007/12/17 21:59:48 jay Exp $";
-#endif
-
 #include "cssc.h"
 #include "sysdep.h"
 

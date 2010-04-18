@@ -34,10 +34,6 @@
 #include "delta-iterator.h"
 #include "linebuf.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prs.cc,v 1.44 2008/01/06 19:42:23 jay Exp $";
-#endif
-
 inline bool
 sccs_file::get(FILE *out, mystring name, seq_no seq, bool for_edit)
 {

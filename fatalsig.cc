@@ -29,8 +29,6 @@
 
 #include <signal.h>             /* TODO: consider using sigaction(). */
 
-static const char rcs_id[] = "CSSC $Id: fatalsig.cc,v 1.5 2007/12/17 21:59:48 jay Exp $";
-
 
 /* The expansion of RETSIGTYPE is automatically decided by the configure 
  * script; its value is define in config.h.

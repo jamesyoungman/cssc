@@ -34,10 +34,6 @@
 
 #include <ctype.h>
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsname.cc,v 1.14 2008/01/06 19:42:23 jay Exp $";
-#endif
-
 #ifdef CONFIG_MSDOS_FILES 
 #error The CONFIG_MSDOS_FILES option is no longer supported.  See sccsname.cc.
 // Please feel free to add the support yourself.  Don't forget

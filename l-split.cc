@@ -29,9 +29,6 @@
 
 #include <string.h>
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: l-split.cc,v 1.15 2007/12/17 21:59:49 jay Exp $";
-#endif
 
 mylist<mystring>
 split_mrs(mystring mrs)

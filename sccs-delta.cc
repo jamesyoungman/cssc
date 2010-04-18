@@ -29,10 +29,6 @@
 #include "sccsfile.h"
 #include "delta.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccs-delta.cc,v 1.6 2007/12/17 21:59:50 jay Exp $";
-#endif
-
 delta &
 delta::operator =(delta const &it)
 {

@@ -65,10 +65,6 @@
 # endif
 #endif
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: file.cc,v 1.42 2008/01/07 00:57:36 jay Exp $";
-#endif
-
 #ifdef CONFIG_UIDS
 
 #ifdef CONFIG_DECLARE_STAT

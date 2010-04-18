@@ -36,8 +36,6 @@
 
 
 
-const char main_rcs_id[] = "CSSC $Id: delta.cc,v 1.37 2008/01/06 19:42:23 jay Exp $";
-
 void
 usage() {
 	fprintf(stderr,

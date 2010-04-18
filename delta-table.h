@@ -19,14 +19,11 @@
  * 
  *
  * Definition of the classes cssc_delta_table and delta_iterator.
- *
- * $Id: delta-table.h,v 1.9 2008/01/07 01:02:41 jay Exp $
- *
  */
 
 
 #ifndef CSSC_DELTA_TABLE_H
-#define CSSC_DELTA_TABLE_H "$Id: delta-table.h,v 1.9 2008/01/07 01:02:41 jay Exp $"
+#define CSSC_DELTA_TABLE_H 1
 
 #include "delta.h"
 

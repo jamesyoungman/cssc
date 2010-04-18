@@ -37,9 +37,6 @@
 #include "err_no.h"
 
 
-const char main_rcs_id[] = "CSSC $Id: admin.cc,v 1.41 2007/12/17 21:59:47 jay Exp $";
-
-
 static bool
 well_formed_sccsname(const sccs_name& n)
 {

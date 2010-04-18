@@ -22,10 +22,6 @@
  *
  *
  * Defines the template range_list.
- *
- * $Id: sid_list.h,v 1.18 2007/12/17 21:59:52 jay Exp $
- * @(#) CSSC sid_list.h 1.1 93/11/09 17:17:51
- *
  */
 
 #ifndef CSSC__SID_LIST_H__

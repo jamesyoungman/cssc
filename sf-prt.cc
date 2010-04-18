@@ -36,10 +36,6 @@
 #include <unistd.h>		// SEEK_SET on SunOS.
 #endif
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-prt.cc,v 1.30 2008/01/06 19:42:23 jay Exp $";
-#endif
-
 static void
 print_string_list(FILE *out,
 		  mylist<mystring> const &l,

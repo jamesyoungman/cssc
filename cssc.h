@@ -22,8 +22,6 @@
  *
  * cssc.h: Master include file for CSSC.
  *
- * $Id: cssc.h,v 1.25 2007/12/17 21:59:47 jay Exp $
- *
  */
 
 

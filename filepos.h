@@ -25,7 +25,7 @@
 
 
 #ifndef CSSC__FILEPOS_H
-#define CSSC__FILEPOS_H "$Id: filepos.h,v 1.10 2007/12/17 21:59:49 jay Exp $"
+#define CSSC__FILEPOS_H 1
 
 #include "cssc.h"
 

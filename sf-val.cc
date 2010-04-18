@@ -30,10 +30,6 @@
 #include "delta-iterator.h"
 
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-val.cc,v 1.13 2008/01/07 01:09:29 jay Exp $";
-#endif
-
 const mystring
 sccs_file::get_module_type_flag()
 {

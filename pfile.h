@@ -19,7 +19,6 @@
  * CSSC was originally Based on MySC, by Ross Ridge, which was 
  * placed in the Public Domain.
  *
- * $Id: pfile.h,v 1.19 2007/12/17 21:59:49 jay Exp $
  * Definition of the class sccs_pfile.
  */
 

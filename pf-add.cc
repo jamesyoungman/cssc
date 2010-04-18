@@ -28,11 +28,6 @@
 #include "except.h"
 
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: pf-add.cc,v 1.18 2007/12/17 21:59:49 jay Exp $";
-#endif
-
-
 bool
 sccs_pfile::add_lock(sid got, sid delta, 
 		     sid_list &included, sid_list &excluded) {

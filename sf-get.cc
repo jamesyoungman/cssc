@@ -44,10 +44,6 @@
 // #include "strstr.cc"
 // #endif
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get.cc,v 1.43 2008/01/06 19:42:23 jay Exp $";
-#endif
-
 bool
 sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 {

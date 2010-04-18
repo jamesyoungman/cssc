@@ -36,9 +36,6 @@
 
 #include <ctype.h>
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sccsdate.cc,v 1.18 2007/12/17 21:59:50 jay Exp $";
-#endif
 
 // The MySC code used to just check for (year % 4) and (year == 0).
 // This implementation is "right", but in any case it won't make a

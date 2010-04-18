@@ -25,9 +25,6 @@
 
 #include "cssc.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: cap.cc,v 1.6 2007/12/17 21:59:47 jay Exp $";
-#endif
 
 template<class T> const T& cap_min(const T& a, const T& b)
 {

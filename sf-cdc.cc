@@ -31,10 +31,6 @@
 #include "delta.h"
 
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-cdc.cc,v 1.15 2007/12/17 21:59:51 jay Exp $";
-#endif
-
 /* Adds new MRs and comments to the specified delta. */
 
 static bool

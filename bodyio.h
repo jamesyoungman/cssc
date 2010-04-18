@@ -21,7 +21,7 @@
  *
  */
 #ifndef CSSC_INC_BODYIO_H
-#define CSSC_INC_BODYIO_H "$Id: bodyio.h,v 1.8 2007/12/17 21:59:47 jay Exp $"
+#define CSSC_INC_BODYIO_H 1
 
 bool body_insert_text(const char iname[], const char oname[],
 		      FILE *in, FILE *out,

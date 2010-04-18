@@ -32,7 +32,6 @@
 #include "delta.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: cdc.cc,v 1.28 2008/01/06 19:42:22 jay Exp $";
 
 void
 usage()

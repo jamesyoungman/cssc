@@ -69,10 +69,6 @@
 #include "my-getopt.h"
 #include "cssc.h" // basically, just for the declaration of quit().
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: my-getopt.cc,v 1.14 2007/12/17 21:59:49 jay Exp $";
-#endif
-
 int
 CSSC_Options::next()
 {

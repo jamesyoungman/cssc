@@ -33,10 +33,6 @@
 #include "linebuf.h"
 #include "filepos.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-write.cc,v 1.40 2007/12/17 21:59:51 jay Exp $";
-#endif
-
 /* Quit because an error related to the x-file. */
 void
 sccs_file::xfile_error(const char *msg) const

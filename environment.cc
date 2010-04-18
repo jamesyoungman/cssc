@@ -21,7 +21,6 @@
  * Code for handling environment variables which affect CSSC.  See the
  * sections "Environment" and "Interoperability" in the CSSC manual.
  *
- * $Id: environment.cc,v 1.5 2007/12/17 21:59:48 jay Exp $
  */
 #include "cssc.h"
 

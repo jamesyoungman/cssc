@@ -30,10 +30,6 @@
 #include "cssc.h"
 #include "filediff.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: filediff.cc,v 1.9 2007/12/17 21:59:48 jay Exp $";
-#endif
-
 
 FileDiff::FileDiff(const char *n1, const char *n2)
   : fp_(0), name1(n1), name2(n2)

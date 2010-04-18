@@ -22,9 +22,6 @@
  *
  *
  * Defines the class mystring.
- *
- * $Id: mystring.h,v 1.19 2007/12/17 21:59:49 jay Exp $
- *
  */
 
 #ifndef CSSC__MYSTRING_H__

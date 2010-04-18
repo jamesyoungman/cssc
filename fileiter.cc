@@ -34,10 +34,6 @@
 #include "linebuf.h"
 #include "my-getopt.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: fileiter.cc,v 1.26 2008/01/07 00:57:36 jay Exp $";
-#endif
-
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	: argv(opts.get_argv() + opts.get_index()),
 	  argc(opts.get_argc() - opts.get_index()),

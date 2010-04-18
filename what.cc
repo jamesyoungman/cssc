@@ -49,8 +49,6 @@
 #include "cssc.h"
 #include "version.h"
 
-const char main_rcs_id[] = "CSSC $Id: what.cc,v 1.24 2007/12/19 00:21:14 jay Exp $";
-
 #ifdef CONFIG_WHAT_USE_STDIO
 
 /* Inline fuctions for reading files with stdio. */

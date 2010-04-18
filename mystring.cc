@@ -48,11 +48,6 @@
 
 #ifndef USE_STANDARD_STRING
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: mystring.cc,v 1.17 2008/01/06 18:00:03 jay Exp $";
-#endif
-
-
 
 
 struct mystring::MyStrRep

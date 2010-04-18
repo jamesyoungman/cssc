@@ -32,10 +32,6 @@
 #include "delta-iterator.h"
 #include "linebuf.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-rmdel.cc,v 1.18 2007/12/17 21:59:51 jay Exp $";
-#endif
-
 static int
 is_seqlist_member(seq_no seq, mylist<seq_no> const &seq_list) {
 	int i;

@@ -22,9 +22,6 @@
  *
  *
  * Defines the class seqstate.  
- *
- * $Id: seqstate.h,v 1.21 2007/12/17 21:59:51 jay Exp $
- *
  */
 
 #ifndef CSSC__SEQSTATE_H__

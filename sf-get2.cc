@@ -35,11 +35,6 @@
 
 #include <ctype.h>
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get2.cc,v 1.62 2008/01/06 19:42:23 jay Exp $";
-#endif
-
-
 bool sccs_file::sid_matches(const sid& requested,
 			    const sid& found,
 			    bool get_top_delta) const

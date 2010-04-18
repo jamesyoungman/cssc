@@ -32,8 +32,6 @@
 #include "my-getopt.h"
 #include "except.h"
 
-const char main_rcs_id[] = "CSSC $Id: sact.cc,v 1.18 2007/12/17 21:59:50 jay Exp $";
-
 void
 usage() {
 	fprintf(stderr,

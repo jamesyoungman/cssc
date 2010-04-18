@@ -19,14 +19,11 @@
  * 
  *
  * Definition of the class sccs_delta.
- *
- * $Id: delta.h,v 1.6 2007/12/17 21:59:48 jay Exp $
- *
  */
 
 
 #ifndef CSSC_DELTA_H
-#define CSSC_DELTA_H "$Id: delta.h,v 1.6 2007/12/17 21:59:48 jay Exp $"
+#define CSSC_DELTA_H 1
 
 struct delta
 {

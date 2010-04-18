@@ -27,10 +27,6 @@
  
 #include "cssc.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: split.cc,v 1.9 2007/12/17 21:59:52 jay Exp $";
-#endif
-
 /* Destructively spilts a string into an argument list. */
 
 #if 0

@@ -30,10 +30,6 @@
 #include "seqstate.h"
 #include "delta-iterator.h"
 
-#ifdef CONFIG_SCCS_IDS
-static const char rcs_id[] = "CSSC $Id: sf-get3.cc,v 1.21 2007/12/17 21:59:51 jay Exp $";
-#endif
-
 /* Prepare a seqstate for use by marking which sequence numbers are to
  * be included and which are to be excluded.
  */
