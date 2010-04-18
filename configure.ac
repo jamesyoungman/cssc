@@ -29,9 +29,9 @@ AC_CONFIG_SRCDIR([sccsfile.h])
 # ([0-9]+)\.([0-9]+)([a-z])?
 # ...at least according to the "Gnits" rules outlined
 # in the Automake manual.
-#   usually use -CVSDEVEL to indicate that the person who compiled 
-#   the code got it from CVS.
-AM_INIT_AUTOMAKE(CSSC,1.2.0)
+#   usually use -git to indicate that the person who compiled 
+#   the code got it from git.
+AM_INIT_AUTOMAKE(CSSC,1.2.1-git)
 
 dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)

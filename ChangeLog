@@ -1,3 +1,8 @@
+2010-04-18  James Youngman  <jay@gnu.org>
+
+	* NEWS: Move on from CSSC-1.2.0 to CSSC-1.2.1-git.
+	* configure.ac: Likewise.
+
 2009-04-11  James Youngman  <jay@gnu.org>
 
 	* configure.ac, NEWS: Prepare for release of version 1.2.0.
