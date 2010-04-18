@@ -30,10 +30,7 @@
 #include "cssc.h"
 #include <cerrno>
 
-// SunOS requires <unistd.h> for SEEK_SET, for some bizarre reason.
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
 
 
 

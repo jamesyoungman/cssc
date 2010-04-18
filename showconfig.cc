@@ -27,13 +27,8 @@
  */
 #include "cssc.h"
 
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#ifdef HAVE_LIMITS_H
 #include <limits.h>
-#endif
 
 
 static const char * copyright_explanation = 

@@ -26,3 +26,8 @@ version()
   show_copyright();
   show_config_info();
 }
+
+/* Local variables: */
+/* mode: c++ */
+/* End: */
+

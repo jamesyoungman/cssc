@@ -28,9 +28,7 @@
 
 #include "cssc.h"
 
-#ifdef HAVE_LIMITS_H
 #include <limits.h>
-#endif
 
 
 bool binary_file_creation_allowed (void)

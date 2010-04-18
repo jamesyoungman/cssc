@@ -32,9 +32,8 @@
 #include "delta-iterator.h"
 
 
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>		// SEEK_SET on SunOS.
-#endif
+
 
 static void
 print_string_list(FILE *out,

@@ -23,9 +23,7 @@
  * Functions for diffing two files.
  *
  */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "cssc.h"
 #include "cssc-assert.h"

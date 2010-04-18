@@ -27,9 +27,7 @@
 #include "sccsfile.h"
 #include "linebuf.h"
 
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 
 bool
 is_id_keyword_letter(char ch)

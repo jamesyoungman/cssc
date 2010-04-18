@@ -36,17 +36,9 @@
 #include "mylist.h"
 #include "ioerr.h"
 
-#ifdef STDC_HEADERS
 #include <ctype.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>		// SEEK_SET on SunOS.
-#endif
-
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>		/* fstat(), struct stat */
-#endif
 
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)

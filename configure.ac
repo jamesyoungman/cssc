@@ -122,9 +122,11 @@ AC_SUBST(max_line_length_description)dnl
 
 
 dnl Checks for programs.
-AC_PROG_INSTALL
-AC_PROG_CC
 
+AC_PROG_CC
+gl_EARLY
+
+AC_PROG_INSTALL
 dnl Figure out how to get a POSIX compilation environment on ISC.
 dnl We have to call this macro after the [AC_PROG_CC] macro and
 dnl before any other macro that calls the compiler.   We also do
@@ -194,6 +196,8 @@ fi
 )
 
 AC_LANG([C])
+gl_INIT
+
 	 
 AC_OBJEXT
 AC_EXEEXT
@@ -305,12 +309,12 @@ AC_HEADER_STDC
 
 AC_LANG([C++])
 echo "Start checking accessibility of C headers while compiling as C++"
-AC_CHECK_HEADERS(stdarg.h stdlib.h string.h stdio.h errno.h locale.h limits.h ctype.h stddef.h)
+AC_CHECK_HEADERS(locale.h)
 echo "Done checking accessibility of C headers while compiling as C++"
 
 dnl Posix/Unix header files:-
-AC_CHECK_HEADERS(fcntl.h prototypes.h io.h process.h pwd.h unistd.h)
-AC_CHECK_HEADERS(sys/stat.h sys/param.h sys/types.h sys/file.h)
+AC_CHECK_HEADERS(prototypes.h io.h process.h pwd.h)
+AC_CHECK_HEADERS(sys/param.h sys/types.h)
 AC_HEADER_DIRENT
 AC_HEADER_SYS_WAIT
 AC_HEADER_STAT

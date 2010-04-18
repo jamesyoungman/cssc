@@ -35,9 +35,8 @@
 #include "except.h"
 #include "file.h"
 
-#ifdef HAVE_LIMITS_H
 #include <limits.h>
-#endif
+
 
 /* Prints a list of included or excluded SIDs. */
 

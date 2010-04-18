@@ -864,9 +864,31 @@
 	* val.cc: Likewise.
 	* what.cc: Likewise.
 	* writesubst.cc: Likewise.
-
-	* NEWS: Move on from CSSC-1.2.0 to CSSC-1.2.1-git.
+=======
+	Import gnulib modules for various standard headers.
+	* bodyio.cc: Remove HAVE_STDIO_H guards for various standard
+	headers which gnulib will provide/adjust.
+	* bootstrap.conf: Likewise.
+	* canonify.cc: Likewise.
 	* configure.ac: Likewise.
+	* cssc.h: Likewise.
+	* environment.cc: Likewise.
+	* err_no.h: Likewise.
+	* fdclosed.cc: Likewise.
+	* file.cc: Likewise.
+	* filediff.cc: Likewise.
+	* filepos.h: Likewise.
+	* get.cc: Likewise.
+	* my-getopt.cc: Likewise.
+	* sccsfile.cc: Likewise.
+	* sf-chkid.cc: Likewise.
+	* sf-delta.cc: Likewise.
+	* sf-prt.cc: Likewise.
+	* showconfig.cc: Likewise.
+	* sysdep.h: Likewise.
+	* what.cc: Likewise.
+	* gnulib-tests/.gitignore: Ignore various files imported by gnulib.
+	* lib/.gitignore: Likewise.
 
 	Adopt the use of the "bootstrap" command.
 	* bootstrap: New file (copied from coreutils).
@@ -882,6 +904,9 @@
 	* docs/texinfo.tex: Remove.
 	* docs/Makefile.am (EXTRA_DIST): Remove texinfo.tex, which is not
 	in this directory any more.
+
+	* NEWS: Move on from CSSC-1.2.0 to CSSC-1.2.1-git.
+	* configure.ac: Likewise.
 
 2009-04-11  James Youngman  <jay@gnu.org>
 

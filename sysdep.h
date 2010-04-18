@@ -30,17 +30,10 @@
 #ifndef CSSC__SYSDEP_H__
 #define CSSC__SYSDEP_H__
 
-#ifdef HAVE_FCNTL_H 
 #include <fcntl.h>
-#endif
-
-#ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
+
 
 #ifdef HAVE_PROTOTYPES_H
 #include <prototypes.h>

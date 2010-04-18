@@ -35,13 +35,8 @@
 #include "sysdep.h"
 #include "defaults.h"		// CONFIG_NULL_FILENAME
 
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#ifdef HAVE_STDIO_H
 #include <stdio.h>		/* perror() */
-#endif
 
 
 class SafeFdCheck

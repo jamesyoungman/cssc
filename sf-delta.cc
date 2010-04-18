@@ -43,9 +43,8 @@
 
 #undef JAY_DEBUG
 
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
+
 
 
 class diff_state

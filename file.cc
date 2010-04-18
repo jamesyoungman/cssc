@@ -38,14 +38,8 @@
 #include "ioerr.h"
 #include "defaults.h"
 
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
-
 #include <stdio.h>
 
 #if HAVE_DIRENT_H

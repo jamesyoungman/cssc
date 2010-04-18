@@ -26,10 +26,8 @@
 
 #include <cstring>
 
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>		// chdir()
-#endif
-#include <stddef.h>		// chdir()
+#include <stddef.h>
 
 static mystring
 get_current_directory()

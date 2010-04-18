@@ -35,8 +35,6 @@
 #include <cstdio>
 #include <cstring>
 
-
-
 /* Check if we have exceeded the maximum line length. 
  */
 static bool check_line_len(const char *iname,
