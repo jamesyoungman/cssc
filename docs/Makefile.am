@@ -6,7 +6,6 @@ cssc_TEXINFOS = gpl-3.0.texi fdl.texi
 EXTRA_DIST = BUGS FIXED TODO CREDITS TESTING \
 	missing.txt patches.txt \
 	Platforms mailing-list.txt style.txt \
-	texinfo.tex \
 	.ispell_english
 
 # The .ispell_english file is included in the distribution because it

@@ -1,7 +1,8 @@
-aclocal.m4
-stamp-h.in 
-config.h.in
+*~
 Makefile.in
+aclocal.m4
+autom4te.cache
+config.h.in
 configure
 autom4te.cache
 *~
@@ -10,3 +11,6 @@ depcomp
 install-sh
 missing
 cl-desc
+m4
+stamp-h.in 
+

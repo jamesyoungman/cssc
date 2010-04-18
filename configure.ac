@@ -26,6 +26,7 @@ dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
 AC_INIT
 AC_CONFIG_SRCDIR([sccsfile.h])
+AC_CONFIG_AUX_DIR([build-aux])
 
 # The package version should match the regexp
 # ([0-9]+)\.([0-9]+)([a-z])?

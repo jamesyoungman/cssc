@@ -868,6 +868,21 @@
 	* NEWS: Move on from CSSC-1.2.0 to CSSC-1.2.1-git.
 	* configure.ac: Likewise.
 
+	Adopt the use of the "bootstrap" command.
+	* bootstrap: New file (copied from coreutils).
+	* bootstrap.conf: New file (adapted from coreutils; no modules are
+	imported just now).
+	* autogen.sh: Remove (obsoleted by bootstrap).
+	* gnulib-tests/.gitignore: New file.
+	* configure.ac: Use AC_CONFIG_AUX_DIR to select build-aux as the
+	aux dir.
+	* README-hacking: New file (copied from coreutils).
+	* .gitmodules: New file.
+	* .gitignore: New file.
+	* docs/texinfo.tex: Remove.
+	* docs/Makefile.am (EXTRA_DIST): Remove texinfo.tex, which is not
+	in this directory any more.
+
 2009-04-11  James Youngman  <jay@gnu.org>
 
 	* configure.ac, NEWS: Prepare for release of version 1.2.0.
