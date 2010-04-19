@@ -37,21 +37,6 @@
 
 
 
-#if !defined(HAVE_EXCEPTIONS)
-/* The code was originally written to use exceptions or not, according to 
- * whether they are available.  However, failure recovery is not possible in 
- * the case where exceptions are not supported.  Therefore we artificially 
- * refuse to compile if exceptions don't work.  You can force the program 
- * to compile by changing the code here, but if you do this, please email
- * James Youngman <jay@gnu.org> to let him know that exception-lacking 
- * systems are still relevant (please describe your system).
- */
-#error "C++ exception support is (now) required"
-stop compiling now please
-#endif
-
-
-
 #undef  CONFIG_DECLARE_STAT
 #undef  CONFIG_DECLARE_GETPWUID
 #undef  CONFIG_DECLARE_TIMEZONE

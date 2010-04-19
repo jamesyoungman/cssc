@@ -111,10 +111,8 @@ main(int argc, char **argv)
   
   while (iter.next())
     {
-#ifdef HAVE_EXCEPTIONS
       try 
 	{
-#endif	  
 	  sccs_name &name = iter.get_name();
 	  sccs_file file(name, sccs_file::UPDATE);
 	  
@@ -141,7 +139,6 @@ main(int argc, char **argv)
 		  tossed_privileges = 0;
 		}
 	    }
-#ifdef HAVE_EXCEPTIONS
 	}
       catch (CsscExitvalException e)
 	{
@@ -153,7 +150,6 @@ main(int argc, char **argv)
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
-#endif      
     }
   return retval;
 }

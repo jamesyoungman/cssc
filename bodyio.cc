@@ -335,10 +335,8 @@ body_insert(bool *binary,
 	    {
 	      bool ret = true;
 	      
-#ifdef HAVE_EXCEPTIONS
 	      try 
 		{
-#endif		  
 		  // Recover the data already written to the output
 		  // file and then rewind it, so that we can overwrite
 		  // it with the encoded version.
@@ -356,14 +354,13 @@ body_insert(bool *binary,
 		    {
 		      ret = false;
 		    }
-#ifdef HAVE_EXCEPTIONS
 		}
 	      catch (CsscException)
 		{
 		  fclose(tmp);
 		  throw;
 		}
-#endif
+
 	      fclose(tmp);
 	      return ret;
 	    }
@@ -416,10 +413,8 @@ encode_file(const char *nin, const char *nout)
     }
   else
     {
-#ifdef HAVE_EXCEPTIONS
       try
 	{
-#endif
 	  encode_stream(fin, fout);
 	  
 	  if (ferror(fin) || fclose_failed(fclose(fin)))
@@ -435,14 +430,12 @@ encode_file(const char *nin, const char *nout)
 		  retval = -1;
 		}
 	    }
-#ifdef HAVE_EXCEPTIONS
 	}
       catch (CsscException)
 	{
 	  remove(nout);
 	  throw;
 	}
-#endif
       if (0 != retval)
 	remove(nout);
     }

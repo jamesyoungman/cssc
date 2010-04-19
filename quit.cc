@@ -144,23 +144,15 @@ v_quit(int err, const char *fmt, va_list ap) {
         }
 #endif
 
-#ifdef HAVE_EXCEPTIONS  
         if (err < 0)
           err = -err;
         throw CsscQuitException(err);
-#else
-        if (err > 0) {
-                exit(1);
-        } else {
-                exit(-err);
-        }
-#endif  
 }
 
 // We eventually want to change the code to eliminate most calls
 // to quit (because processing should continue with the next input
 // file).  We just use this differently-named function to indicate
-// the places where a failure odducrs in a constructor, which cannot
+// the places where a failure occurs in a constructor, which cannot
 // return a failure status.  When they become commonly supported,
 // we'll use exceptions.
 NORETURN
@@ -169,45 +161,21 @@ ctor_fail(int err, const char *fmt, ...) {
 
 
         va_start(ap, fmt);
-#ifdef HAVE_EXCEPTIONS
         if (fmt)
           {
             v_errormsg(fmt, ap);
             putc('\n', stderr);
           }
         throw CsscContstructorFailedException(err);
-#else
-        v_quit(err, fmt, ap);
-#endif
         /*NOTREACHED*/
         va_end(ap);
         ASSERT(0);              // not reached.
 }
 
 
-#ifndef HAVE_EXCEPTIONS
-/* We have to pass a va_list to v_quit, to we have to have 
- * a varargs function to do it...  
- */
-
-static NORETURN  ctor_fail_nomsg_helper(int err, ...)
-{
-    va_list ap;
-    va_start(ap, err);
-    v_quit(err, NULL, ap);
-    /*NOTREACHED*/
-    va_end(ap);
-}
-#endif
-
 NORETURN ctor_fail_nomsg(int err)  
 {
-#ifdef HAVE_EXCEPTIONS
     throw CsscContstructorFailedException(err);
-#else
-    ctor_fail_nomsg_helper(err);
-    /*NOTREACHED*/
-#endif
 }
 
 
@@ -218,13 +186,9 @@ s_corrupt_quit(const char *fmt, ...) {
 
 
         va_start(ap, fmt);
-#ifdef HAVE_EXCEPTIONS  
         v_errormsg(fmt, ap);
         putc('\n', stderr);
         throw CsscSfileCorruptException();
-#else
-        v_quit(-1, fmt, ap);
-#endif
         /*NOTREACHED*/
         va_end(ap);
         ASSERT(0);              // not reached.
@@ -235,18 +199,12 @@ s_missing_quit(const char *fmt, ...) {
         va_list ap;
 
 
-#ifdef HAVE_EXCEPTIONS  
         va_start(ap, fmt);
         v_errormsg_with_errno(fmt, ap);
         va_end(ap);
         
         putc('\n', stderr);
         throw CsscSfileMissingException();
-#else
-        va_start(ap, fmt);
-        v_quit(-1, NULL, ap);
-        va_end(ap);
-#endif
         /*NOTREACHED*/
         ASSERT(0);              // not reached.
 }
@@ -261,13 +219,9 @@ s_unrecognised_feature_quit(const char *fmt, va_list ap)
   if (prg_name != NULL)
     fprintf(stderr, "%s: Warning: unknown feature: ", prg_name);
   
-#ifdef HAVE_EXCEPTIONS  
   vfprintf(stderr, fmt, ap);
   putc('\n', stderr);
   throw CsscUnrecognisedFeatureException();
-#else
-  v_quit(-1, fmt, ap);
-#endif
 }
 
 void
@@ -286,13 +240,9 @@ p_corrupt_quit(const char *fmt, ...) {
 
 
         va_start(ap, fmt);
-#ifdef HAVE_EXCEPTIONS  
         v_errormsg(fmt, ap);
         putc('\n', stderr);
         throw CsscPfileCorruptException();
-#else
-        v_quit(-1, fmt, ap);
-#endif
         /*NOTREACHED*/
         va_end(ap);
         ASSERT(0);              // not reached.

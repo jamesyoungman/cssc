@@ -156,10 +156,8 @@ delta_main(int argc, char **argv)
 
   while (iter.next())
     {
-#ifdef HAVE_EXCEPTIONS
       try
 	{
-#endif	    
 	  bool failed = false;
 	  sccs_name &name = iter.get_name();
 	  sccs_file file(name, sccs_file::UPDATE);
@@ -280,7 +278,6 @@ delta_main(int argc, char **argv)
 		    }
 		}
 	    }
-#ifdef HAVE_EXCEPTIONS
 	}
       catch (CsscReallyFatalException e)
 	{
@@ -291,7 +288,6 @@ delta_main(int argc, char **argv)
 	  if (e.exitval > retval)
 	    retval = e.exitval;	// continue with next file.
 	}
-#endif	
     }
   return retval;
 }

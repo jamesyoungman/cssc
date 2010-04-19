@@ -108,10 +108,8 @@ main(int argc, char **argv)
   
   while (iter.next())
     {
-#ifdef HAVE_EXCEPTIONS
       try
 	{
-#endif	  
 	  sccs_name &name = iter.get_name();
 	  sccs_pfile pfile(name, sccs_pfile::UPDATE);
 	  
@@ -159,14 +157,12 @@ main(int argc, char **argv)
 	    default:
 	      abort();
 	    }
-#ifdef HAVE_EXCEPTIONS
 	}
       catch (CsscExitvalException e)
 	{
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
-#endif
     }
   return retval;
 }

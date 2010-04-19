@@ -148,19 +148,9 @@ main(int argc, char **argv)
   
   while (iter.next())
     {
-#ifdef HAVE_EXCEPTIONS
       try
 	{
-#endif	      
 	  sccs_name &name = iter.get_name();
-	  
-	  
-	  // BUG when HAVE_EXCEPTIONS is false...
-	  // If we cannot open the SCCS file, we would normally
-	  // call ctor_fail(), with an argument of -1.  This 
-	  // makes the program exit with an exit status of -1.
-	  // 
-	  // TODO: use atexit() and _exit() to kludge it.
 	  sccs_file file(name, sccs_file::READ);
 	      
 	  if (had_r_option)
@@ -215,10 +205,6 @@ main(int argc, char **argv)
 	    {
 	      problem(retval, Val_CorruptFile);
 	    }
-	  
-	  
-
-#ifdef HAVE_EXCEPTIONS
 	}
       catch (CsscSfileMissingException e)
 	{
@@ -237,7 +223,6 @@ main(int argc, char **argv)
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
-#endif		
     }
 
   return retval;

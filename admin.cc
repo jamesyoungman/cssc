@@ -242,11 +242,8 @@ main(int argc, char **argv)
   
   while (iter.next())
     {
-#ifdef HAVE_EXCEPTIONS
       try
 	{
-#endif	  
-
 	  // can't set first to 0 at end of loop because we may
 	  // use "continue".
 	  int me_first = was_first;
@@ -378,14 +375,12 @@ main(int argc, char **argv)
 	      if (!file.update())
 		retval = 1;
 	    }		
-#ifdef HAVE_EXCEPTIONS
 	}
       catch (CsscExitvalException e)
 	{
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
-#endif  
     }
   return retval;
 }

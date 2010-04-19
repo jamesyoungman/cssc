@@ -1,5 +1,24 @@
 2010-04-18  James Youngman  <jay@gnu.org>
 
+	Assume exception support.
+	* configure.ac: Don't detect exception support, assume it.
+	* admin.cc: Require exception support.
+	* bodyio.cc: Likewise.
+	* cdc.cc: Likewise.
+	* cssc.h: Likewise.
+	* delta.cc: Likewise.
+	* except.h: Likewise.
+	* get.cc: Likewise.
+	* pf-del.cc: Likewise.
+	* prs.cc: Likewise.
+	* prt.cc: Likewise.
+	* quit.cc: Likewise.
+	* rmdel.cc: Likewise.
+	* sact.cc: Likewise.
+	* sf-kw.cc: Likewise.
+	* unget.cc: Likewise.
+	* val.cc: Likewise.
+
 	Remove RCS keywords.
 	* admin.cc: Remove RCS keywords (since we're using git now).
 	* bodyio.h: Likewise.

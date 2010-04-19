@@ -179,10 +179,8 @@ main(int argc, char **argv)
   
   while (iter.next())
     {
-#ifdef HAVE_EXCEPTIONS
       try
 	{
-#endif	  
 	  sccs_name &name = iter.get_name();
 	  
 	  if (!exclude.enabled)
@@ -205,14 +203,12 @@ main(int argc, char **argv)
 	    {
 	      retval = 1;
 	    }
-#ifdef HAVE_EXCEPTIONS
 	}
       catch (CsscExitvalException e)
 	{
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
-#endif      
     }
   return retval;
 }

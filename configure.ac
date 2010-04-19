@@ -289,15 +289,6 @@ AC_TYPE_MODE_T
 AC_TYPE_PID_T
 AC_TYPE_UID_T
 
-dnl Can we use exceptions?
-AC_MSG_CHECKING([for support for C++ exceptions])
-AC_TRY_COMPILE( ,
-	[throw int(1);],
-	AC_DEFINE_UNQUOTED(HAVE_EXCEPTIONS,1,
-             [Define if C++ exceptions are supported])
-	AC_MSG_RESULT(yes),
-	AC_MSG_RESULT(no))
-
 dnl Does the compiler support the "std" namespace?
 dnl GCC version 3 not only supports this but insists on it, 
 dnl so if this feature is supported, we always use it. 

@@ -150,10 +150,8 @@ main(int argc, char **argv)
   
   while (iter.next())
     {
-#ifdef HAVE_EXCEPTIONS
       try 
 	{
-#endif	  
 	  sccs_name &name = iter.get_name();
 	  sccs_file file(name, sccs_file::READ);
 	  
@@ -166,14 +164,12 @@ main(int argc, char **argv)
 	    {
 	      retval = 1;
 	    }
-#ifdef HAVE_EXCEPTIONS
 	} // end of try block.
       catch (CsscExitvalException e)
 	{
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
-#endif
     }
   return retval;
 }

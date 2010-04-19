@@ -73,10 +73,8 @@ sccs_pfile::update(bool pfile_already_exists)
   
   int count = 0;
 
-#ifdef HAVE_EXCEPTIONS  
   try
     {
-#endif      
       rewind();
       while (next())
 	{
@@ -95,7 +93,6 @@ sccs_pfile::update(bool pfile_already_exists)
 	  remove(qname);
 	  return false;
 	}
-#ifdef HAVE_EXCEPTIONS
     }
   catch (CsscException)
     {
@@ -103,8 +100,6 @@ sccs_pfile::update(bool pfile_already_exists)
       remove(qname);
       throw;
     }
-#endif  
-
 
   if (pfile_already_exists)
     {

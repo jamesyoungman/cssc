@@ -19,8 +19,6 @@
  *
  */
 
-#ifdef HAVE_EXCEPTIONS
-
 // Exception classes
 struct CsscException
 {
@@ -75,5 +73,3 @@ struct CsscUnrecognisedFeatureException : public CsscExitvalException
   CsscUnrecognisedFeatureException() : CsscExitvalException(1) { }
 };
 
-
-#endif

@@ -316,10 +316,8 @@ main(int argc, char **argv)
   
   while (iter.next())
     {
-#ifdef HAVE_EXCEPTIONS
       try
         {
-#endif        
           sccs_name &name = iter.get_name();
 
           // Print the name of the SCCS file unless exactly one
@@ -459,14 +457,11 @@ main(int argc, char **argv)
           const int keywords = !suppress_keywords;
           struct sccs_file::get_status status;
           
-#ifdef HAVE_EXCEPTIONS
           try
             {
-#endif    
           status = file.get(out, gname, summary_file, retrieve, cutoff_date,
                             include, exclude, keywords, wstring,
                             show_sid, show_module, debug, for_edit);
-#ifdef HAVE_EXCEPTIONS
             }
           catch (CsscException)
             {
@@ -478,7 +473,6 @@ main(int argc, char **argv)
                   throw;
                 }
             }
-#endif
           
           if (real_file)
             {
@@ -552,14 +546,12 @@ main(int argc, char **argv)
             {
               printf("%d lines\n", status.lines);
             }
-#ifdef HAVE_EXCEPTIONS
         }
       catch (CsscExitvalException e)
         {
           if (e.exitval > retval)
             retval = e.exitval;
         }
-#endif          
     }
 
   return retval;
