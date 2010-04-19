@@ -56,6 +56,11 @@
 
 2010-04-19  James Youngman  <jay@gnu.org>
 
+	Actually configure in and recurse into the googletest directory.
+	* configure.ac: Add googletest in the call to AC_CONFIG_SUBDIRS.
+	* autogen.sh: Run libtoolize in googletest.
+	* Makefile.am (SUBDIRS): Add googletest.
+
 	Implement myset<T> with std::set<T>.
 	* myset.h (myset): Switch to implementing with std::set.  This
 	should reduce the O(N) operations to O(log(N)).

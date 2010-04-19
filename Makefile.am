@@ -29,7 +29,7 @@ csscutildir = $(libexecdir)/cssc
 # so that when we do "make check", the "Tests passed" message
 # is emitted last (we wouldn't want "entering directory unused"
 # messages to make that scroll off the screen).
-SUBDIRS = bsd docs testutils auxfiles sccs-cgi tests 
+SUBDIRS = bsd docs testutils auxfiles sccs-cgi googletest tests 
 
 noinst_LIBRARIES = libcssc.a
 

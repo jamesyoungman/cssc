@@ -422,7 +422,7 @@ AC_CHECK_DECL_IN_HEADER(sys_nerr,stdio.h)
 fi
 
 dnl What about saved setuid?
-AC_CONFIG_SUBDIRS(testutils)
+AC_CONFIG_SUBDIRS(testutils googletest)
 dnl AC_CONFIG_FILES([shorter/Makefile])
 
 dnl *** NOTE:

@@ -68,6 +68,7 @@ generate_in ()
     done
 }
 
+( cd googletest && libtoolize --force )
 if generate_in . 
 then
     echo "All successful; you can now run configure and make."
