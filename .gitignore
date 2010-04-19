@@ -5,3 +5,8 @@ Makefile.in
 configure
 autom4te.cache
 *~
+INSTALL
+depcomp
+install-sh
+missing
+cl-desc
