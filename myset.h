@@ -27,42 +27,47 @@
 #ifndef CSSC__MYSETLIST_H__
 #define CSSC__MYSETLIST_H__
 
+#include <set>
+
 template <class TYPE>
 class myset
 {
-    mylist<TYPE> members;
+  std::set<TYPE> members;
     
 public:
+  typedef typename std::set<TYPE>::size_type my_size_type;
+  typedef typename std::set<TYPE>::iterator iterator;
+
     myset()
         {
         }
     
     
-    int count() const
+    my_size_type count() const
         {
-            return members.length();
+            return members.size();
         }
 
-    const mylist<TYPE>& list() const
+    const mylist<TYPE> list() const
         {
-            return members;
+	  mylist<TYPE> result;
+
+	  for (iterator it=members.begin(); it != members.end(); it++)
+	    result.add(*it);
+	  return result;
         }
     
     bool is_member(TYPE const &ent) const
         {
-            const int n = count();
-            for (int i=0; i<n; ++i)
-            {
-                if (members[i] == ent)
-                    return true;
-            }
-            return false;
+	  if (members.find(ent) == members.end())
+	    return false;
+	  else
+	    return true;
         }
     
     void add(TYPE const &ent)
         {
-            if (!is_member(ent))
-                members.add(ent);
+	  members.insert(ent);
         }
 };
 
