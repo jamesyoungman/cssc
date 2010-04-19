@@ -289,23 +289,6 @@ AC_TYPE_MODE_T
 AC_TYPE_PID_T
 AC_TYPE_UID_T
 
-dnl Does the compiler support the "std" namespace?
-dnl GCC version 3 not only supports this but insists on it, 
-dnl so if this feature is supported, we always use it. 
-AC_MSG_CHECKING([for support for C++ "std" namespace])
-AC_TRY_COMPILE(
-#ifdef HAVE_STRING
-#include <string>
-#endif
-,
-	[std::string s;],
-	AC_DEFINE_UNQUOTED(HAVE_STD_NAMESPACE,1,[Define if the C++ compiler supports the "std" namespace correctly])
-	AC_DEFINE(STD_NAMESPACE,std::,[Name of the C++ std namespace])
-	AC_MSG_RESULT(yes),
-	AC_DEFINE(STD_NAMESPACE,/*nothing*/,[Name of the C++ std namespace])
-	AC_MSG_RESULT(no))
-
-
 dnl AC_CHECK_DECL_IN_HEADER(IDENTIFIER, HEADERS)
 AC_DEFUN([AC_CHECK_DECL_IN_HEADER],
 [AC_MSG_CHECKING(for $1 in $2)

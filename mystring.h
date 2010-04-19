@@ -37,7 +37,7 @@
 #ifdef USE_STANDARD_STRING
 
 #include <string>
-typedef STD_NAMESPACE string mystring;
+typedef std::string mystring;
 
 
 #else /* Use our own "mystring". */
