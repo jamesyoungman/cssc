@@ -51,7 +51,7 @@ common_sources = my-getopt.cc version.cc fdclosed.cc \
 		showconfig.cc  environment.cc
 
 # Sources required by programs working with lists of SCCS files.
-sname_srcs = fileiter.cc file.cc linebuf.cc mystring.cc \
+sname_srcs = fileiter.cc file.cc linebuf.cc \
 		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc \
 		quit.cc fatalsig.cc
 

@@ -1,5 +1,11 @@
 2010-04-19  James Youngman  <jay@gnu.org>
 
+	Use the standard string class.
+	* mystring.h: Assume the availability of the <string> header, so
+	that mystring is always a typedef for std::string.
+	* mystring.cc: Delete.
+	* Makefile.am (sname_srcs): Delete mystring.cc.
+
 	Assume support for the std namespace.
 	* configure.ac: Don't check for the 'std' namespace.  Don't
 	#define STD_NAMESPACE.
