@@ -8,6 +8,9 @@
 
 2010-04-20  James Youngman  <jay@gnu.org>
 
+	* unit-tests/Makefile.am (TESTS): don't duplicate the contents of
+	$(check_PROGRAMS), just use that variable.
+	
 	New unit test for myset<T>.
 	* unit-tests/Makefile.am (check_PROGRAMS): Add test_myset.
 	(LDADD): Just use one LDADD variable for all unit tests.
