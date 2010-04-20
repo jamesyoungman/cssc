@@ -10,7 +10,10 @@
 
 	* unit-tests/Makefile.am (TESTS): don't duplicate the contents of
 	$(check_PROGRAMS), just use that variable.
-	
+	(LDADD): Add ../libcssc.a.
+	(test_mylist_SOURCES): Don't list object files in libcssc.a.
+	(test_myset_SOURCES): Don't list object files in libcssc.a.
+
 	New unit test for myset<T>.
 	* unit-tests/Makefile.am (check_PROGRAMS): Add test_myset.
 	(LDADD): Just use one LDADD variable for all unit tests.

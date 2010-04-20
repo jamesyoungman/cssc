@@ -12,10 +12,11 @@ endif
 
 # Build rules for libraries.
 LDADD = ../googletest/lib/libgtest.la \
-	../googletest/lib/libgtest_main.la
+	../googletest/lib/libgtest_main.la \
+	../libcssc.a
 
 TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test_mylist test_myset
 
-test_mylist_SOURCES = test_mylist.cc ../quit.cc ../fatalsig.cc
-test_myset_SOURCES = test_myset.cc ../quit.cc ../fatalsig.cc
+test_mylist_SOURCES = test_mylist.cc
+test_myset_SOURCES = test_myset.cc
