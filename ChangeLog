@@ -8,6 +8,11 @@
 
 2010-04-20  James Youngman  <jay@gnu.org>
 
+	Add unit test for sid.h.
+	* unit-tests/test_sid.cc: New unit test.
+	* unit-tests/Makefile.am (test_sid_SOURCES): Add this test.
+	(check_PROGRAMS): Likewise.
+
 	* unit-tests/Makefile.am (TESTS): don't duplicate the contents of
 	$(check_PROGRAMS), just use that variable.
 	(LDADD): Add ../libcssc.a.
