@@ -24,12 +24,12 @@
  * Routines for running programmes.
  *
  */
+#include <errno.h>
 
 #include "cssc.h"
 #include "run.h"
 #include "mylist.h"
 #include "sysdep.h"
-#include "err_no.h"
 
 #if !defined(HAVE_FORK) && !defined(HAVE_SPAWN)
 #define NEED_CALL_SYSTEM

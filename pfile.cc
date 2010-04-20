@@ -23,11 +23,11 @@
  * Common members of the class sccs_pfile.
  *
  */
+#include <errno.h>
 
 #include "cssc.h"
 #include "linebuf.h"
 #include "pfile.h"
-#include "err_no.h"
 
 NORETURN
 sccs_pfile::corrupt(int lineno, const char *msg) const {

@@ -25,6 +25,7 @@
  * Members of sccs_file for adding a delta to the SCCS file.
  *
  */
+#include <errno.h>
 
 #include "cssc.h"
 #include "sccsfile.h"
@@ -37,7 +38,6 @@
 #include "delta-iterator.h"
 #include "bodyio.h"
 #include "filediff.h"
-#include "err_no.h"
 #include "myset.h"
 
 #undef JAY_DEBUG

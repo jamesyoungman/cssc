@@ -23,6 +23,7 @@
  * Extract a requested delta from a SCCS file.
  * 
  */
+#include <errno.h>
 
 #include "cssc.h"
 #include "fileiter.h"
@@ -32,7 +33,6 @@
 #include "my-getopt.h"
 #include "version.h"
 #include "except.h"
-#include "err_no.h"
 #include "file.h"
 
 #ifdef HAVE_LIMITS_H

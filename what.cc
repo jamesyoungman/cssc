@@ -42,8 +42,8 @@
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
+#include <errno.h>
 
-#include "err_no.h"
 #include "defaults.h"
 #include "my-getopt.h"
 #include "cssc.h"

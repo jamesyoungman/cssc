@@ -1,5 +1,19 @@
 2010-04-20  James Youngman  <jay@gnu.org>
 
+	Include <errno.h> unconditionally where we need it.
+	* admin.cc: Include <errno.h> instead of "err_no.h".
+	* pfile.cc: Likewise.
+	* cssc.h: Likewise.
+	* file.cc: Likewise.
+	* get.cc: Likewise.
+	* run.cc: Likewise.
+	* quit.cc: Likewise.
+	* sccsfile.cc: Likewise.
+	* sf-delta.cc: Likewise.
+	* what.cc: Likewise.
+	* err_no.h: Remove useless file.
+	* Makefile.am (noinst_HEADERS): Remove err_no.h.
+
 	Instead of linking all objects explicitly, use a library.
 	* Makefile.am (noinst_LIBRARIES): Build new library libcssc.a.
 	(libcssc_a_SOURCES): list the source files for the library.

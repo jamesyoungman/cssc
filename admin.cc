@@ -23,6 +23,7 @@
  * Administer and create SCCS files.
  *
  */ 
+#include <errno.h>
 
 #include "cssc.h"
 #include "sccsfile.h"
@@ -34,7 +35,6 @@
 #include "version.h"
 #include "delta.h"
 #include "except.h"
-#include "err_no.h"
 
 
 static bool

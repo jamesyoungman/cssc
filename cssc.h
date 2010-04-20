@@ -163,8 +163,7 @@
 #else
 #error You need a <ctype.h> header file.
 #endif
-
-#include "err_no.h"
+#include <errno.h>
 
 #ifndef NO_COMMON_HEADERS
 #include "quit.h"

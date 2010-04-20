@@ -23,6 +23,7 @@
  * Functions for cleaning up and quitting.
  *
  */
+#include <errno.h>
 
 #if defined(__GNUC__) \
 && !(defined(__APPLE__) && __GNUC__ == 3 && __GNUC_MINOR__ == 1)
@@ -34,7 +35,6 @@
 #include "quit.h"
 #include "sysnerr.h"
 #include "except.h"
-#include "err_no.h"
 
 // #include "pipe.h"
 

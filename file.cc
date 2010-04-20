@@ -23,6 +23,7 @@
  * System dependent routines for accessing files.
  *
  */
+#include <errno.h>
 
 #if defined(__GNUC__) \
 && !(defined(__APPLE__) && __GNUC__ == 3 && __GNUC_MINOR__ == 1)
@@ -31,7 +32,6 @@
 
 #include "cssc.h"
 #include "sysdep.h"
-#include "err_no.h"
 #include "file.h"
 
 #ifdef HAVE_UNISTD_H

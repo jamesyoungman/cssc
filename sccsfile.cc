@@ -25,6 +25,7 @@
  * the members in this file are used to read from the SCCS file.
  *
  */
+#include <errno.h>
 
 #include "cssc.h"
 #include "sccsfile.h"
@@ -32,7 +33,6 @@
 #include "delta-iterator.h"
 #include "linebuf.h"
 #include "quit.h"
-#include "err_no.h"
 #include "mylist.h"
 
 #ifdef STDC_HEADERS
