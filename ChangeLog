@@ -6,6 +6,11 @@
 	(admin_SOURCES): Likewise.
 	* rel_list.h: Remove some unnecessary blank lines.
 
+	Add unit test for sid_list.h
+	* unit-tests/test_sid_list.cc: New unit test; tests sid_list.h.
+	* unit-tests/Makefile.am (check_PROGRAMS): Add test_sid_list.
+	(test_sid_list_SOURCES): Add test_sid_list.cc.
+
 2010-04-20  James Youngman  <jay@gnu.org>
 
 	Add unit test for release.h.
