@@ -31,6 +31,7 @@ csscutildir = $(libexecdir)/cssc
 # messages to make that scroll off the screen).
 SUBDIRS = bsd docs testutils auxfiles sccs-cgi tests 
 
+noinst_LIBRARIES = libcssc.a
 
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
 csscutil_SCRIPTS = sccsdiff 
@@ -46,89 +47,46 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
 	relvbr.h myset.h
 
-# Sources required by everybody.
-common_sources = my-getopt.cc version.cc fdclosed.cc \
-		showconfig.cc  environment.cc
-
-# Sources required by programs working with lists of SCCS files.
-sname_srcs = fileiter.cc file.cc linebuf.cc \
-		sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc \
-		quit.cc fatalsig.cc
-
-# Sources required by programs working with the contents of SCCS files.
-sfile_srcs = sccsfile.cc rel_list.cc \
-	sccs-delta.cc delta-table.cc delta-iterator.cc 
-
-
-# Source files required by programs that modify SCCS files.
-mod_srcs = cap.cc sf-write.cc
-
-# Source files required by programs that modify delta entries.
-moddelta_srcs = l-split.cc prompt.cc run.cc filediff.cc
-
-# Source files required by programs that add new delta entries.
-newdelta_srcs = sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc
-
+libcssc_a_SOURCES = \
+	bodyio.cc sf-get.cc sf-get3.cc \
+	seqstate.cc canonify.cc writesubst.cc \
+	pfile.cc encoding.cc \
+	sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc \
+	l-split.cc prompt.cc run.cc filediff.cc \
+	cap.cc sf-write.cc \
+	sccsfile.cc rel_list.cc \
+	sccs-delta.cc delta-table.cc delta-iterator.cc \
+	fileiter.cc file.cc linebuf.cc \
+	sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc \
+	quit.cc fatalsig.cc \
+	my-getopt.cc version.cc fdclosed.cc \
+	showconfig.cc  environment.cc
 
 # The source lists for the actual executables....
+what_SOURCES = what.cc
+sact_SOURCES = sact.cc
+unget_SOURCES = unget.cc pf-del.cc
+prt_SOURCES = prt.cc sf-prt.cc
+prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc
+get_SOURCES = get.cc pf-add.cc sf-chkid.cc sf-kw.cc \
+	rl-merge.cc sf-get2.cc pf-del.cc
+rmdel_SOURCES = rmdel.cc sf-rmdel.cc
+cdc_SOURCES = cdc.cc sf-cdc.cc
+admin_SOURCES = admin.cc sf-admin.cc rl-merge.cc sf-val.cc
+delta_SOURCES = delta.cc sf-delta.cc pf-del.cc
+val_SOURCES = val.cc sf-val.cc
 
-
-what_SOURCES = what.cc \
-	$(common_sources)
-sact_SOURCES = sact.cc pfile.cc \
-	$(common_sources) $(sname_srcs)
-unget_SOURCES = unget.cc pfile.cc pf-del.cc \
-	$(common_sources) $(sname_srcs)
-
-prt_SOURCES = prt.cc sf-prt.cc \
-	$(common_sources) $(sname_srcs) $(sfile_srcs)
-prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc sf-get.cc writesubst.cc \
-	bodyio.cc encoding.cc canonify.cc \
-	seqstate.cc sf-get3.cc \
-	$(common_sources) $(sname_srcs) $(sfile_srcs)
-
-
-get_SOURCES = get.cc pf-add.cc pfile.cc sf-chkid.cc canonify.cc sf-kw.cc \
-	sf-get.cc sf-get2.cc writesubst.cc sf-get3.cc rl-merge.cc \
-	bodyio.cc encoding.cc \
-	seqstate.cc pf-del.cc \
-	$(common_sources) $(sname_srcs) $(sfile_srcs)
-
-rmdel_SOURCES = rmdel.cc sf-rmdel.cc \
-	pfile.cc \
-	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
-
-cdc_SOURCES = cdc.cc sf-cdc.cc \
-	$(moddelta_srcs) \
-	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
-
-admin_SOURCES = admin.cc sf-admin.cc \
-	rl-merge.cc \
-	bodyio.cc encoding.cc sf-val.cc \
-	$(moddelta_srcs) $(newdelta_srcs)\
-	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
-
-delta_SOURCES = delta.cc sf-delta.cc \
-	pf-del.cc pfile.cc sf-get.cc writesubst.cc sf-get3.cc \
-	bodyio.cc encoding.cc \
-	seqstate.cc canonify.cc \
-	$(moddelta_srcs) $(newdelta_srcs)\
-	$(common_sources) $(sname_srcs) $(sfile_srcs) $(mod_srcs)
-
-val_SOURCES = val.cc sf-val.cc \
-	$(common_sources) $(sname_srcs) $(sfile_srcs)
-
-get_LDADD = @LIBOBJS@
-delta_LDADD = @LIBOBJS@
-admin_LDADD = @LIBOBJS@
-prs_LDADD = @LIBOBJS@
-what_LDADD = @LIBOBJS@
-unget_LDADD = @LIBOBJS@
-sact_LDADD = @LIBOBJS@
-cdc_LDADD = @LIBOBJS@
-rmdel_LDADD = @LIBOBJS@
-prt_LDADD = @LIBOBJS@
-val_LDADD = @LIBOBJS@
+get_LDADD = libcssc.a @LIBOBJS@ 
+delta_LDADD = libcssc.a @LIBOBJS@
+admin_LDADD = libcssc.a @LIBOBJS@
+prs_LDADD = libcssc.a @LIBOBJS@
+what_LDADD = libcssc.a @LIBOBJS@
+unget_LDADD = libcssc.a @LIBOBJS@
+sact_LDADD = libcssc.a @LIBOBJS@
+cdc_LDADD = libcssc.a @LIBOBJS@
+rmdel_LDADD = libcssc.a @LIBOBJS@
+prt_LDADD = libcssc.a @LIBOBJS@
+val_LDADD = libcssc.a @LIBOBJS@
 
 # $(testcode) is test code that isn't normally used.
 testcode = list.cc 

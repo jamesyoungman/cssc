@@ -1,3 +1,37 @@
+2010-04-20  James Youngman  <jay@gnu.org>
+
+	Instead of linking all objects explicitly, use a library.
+	* Makefile.am (noinst_LIBRARIES): Build new library libcssc.a.
+	(libcssc_a_SOURCES): list the source files for the library.
+	(common_sources): Remove unused variable.
+	(sname_srcs): Likewise.
+	(sfile_srcs): Likewise.
+	(mod_srcs): Likewise.
+	(moddelta_srcs): Likewise.
+	(newdelta_srcs): Likewise.
+	(get_LDADD): Add the new library libcssc.a.
+	(delta_LDADD): Likewise.
+	(admin_LDADD): Likewise.
+	(prs_LDADD): Likewise.
+	(what_LDADD): Likewise.
+	(unget_LDADD): Likewise.
+	(sact_LDADD): Likewise.
+	(cdc_LDADD): Likewise.
+	(rmdel_LDADD): Likewise.
+	(prt_LDADD): Likewise.
+	(val_LDADD): Likewise.
+	(what_SOURCES): Remove object files which are now in libcssc.a.
+	(sact_SOURCES): Likewise.
+	(unget_SOURCES): Likewise.
+	(prt_SOURCES): Likewise.
+	(prs_SOURCES): Likewise.
+	(get_SOURCES): Likewise.
+	(rmdel_SOURCES): Likewise.
+	(cdc_SOURCES): Likewise.
+	(admin_SOURCES): Likewise.
+	(delta_SOURCES): Likewise.
+	(val_SOURCES): Likewise.
+
 2010-04-19  James Youngman  <jay@gnu.org>
 
 	Implement myset<T> with std::set<T>.
