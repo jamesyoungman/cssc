@@ -10,6 +10,7 @@
 
 	New unit test for myset<T>.
 	* unit-tests/Makefile.am (check_PROGRAMS): Add test_myset.
+	(LDADD): Just use one LDADD variable for all unit tests.
 	* unit-tests/test_myset.cc: New unit test.
 
 	Add a unit test.
