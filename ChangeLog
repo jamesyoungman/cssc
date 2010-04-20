@@ -8,6 +8,16 @@
 
 2010-04-20  James Youngman  <jay@gnu.org>
 
+	Add unit test for release.h.
+	* unit-tests/Makefile.am (check_PROGRAMS): Add test_release.
+	(test_release_SOURCES): Add test_release.cc.
+	* unit-tests/test_release.cc: New unit test.
+
+	Add unit test for relvbr.
+	* unit-tests/Makefile.am (check_PROGRAMS): Add test_relvbr.
+	(test_relvbr_SOURCES): Add test_relvbr.cc.
+	* unit-tests/test_relvbr.cc: New unit test.
+
 	Add unit test for sid.h.
 	* unit-tests/test_sid.cc: New unit test.
 	* unit-tests/Makefile.am (test_sid_SOURCES): Add this test.
