@@ -48,6 +48,7 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	relvbr.h myset.h
 
 libcssc_a_SOURCES = \
+	rl-merge.cc \
 	bodyio.cc sf-get.cc sf-get3.cc \
 	seqstate.cc canonify.cc writesubst.cc \
 	pfile.cc encoding.cc \
@@ -68,11 +69,10 @@ sact_SOURCES = sact.cc
 unget_SOURCES = unget.cc pf-del.cc
 prt_SOURCES = prt.cc sf-prt.cc
 prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc
-get_SOURCES = get.cc pf-add.cc sf-chkid.cc sf-kw.cc \
-	rl-merge.cc sf-get2.cc pf-del.cc
+get_SOURCES = get.cc pf-add.cc sf-chkid.cc sf-kw.cc sf-get2.cc pf-del.cc
 rmdel_SOURCES = rmdel.cc sf-rmdel.cc
 cdc_SOURCES = cdc.cc sf-cdc.cc
-admin_SOURCES = admin.cc sf-admin.cc rl-merge.cc sf-val.cc
+admin_SOURCES = admin.cc sf-admin.cc sf-val.cc
 delta_SOURCES = delta.cc sf-delta.cc pf-del.cc
 val_SOURCES = val.cc sf-val.cc
 

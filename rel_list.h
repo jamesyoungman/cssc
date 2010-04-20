@@ -55,12 +55,6 @@ public:
   bool member(release r) const;
 };
 
-
-
-
-
-
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

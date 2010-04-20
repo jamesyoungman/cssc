@@ -1,3 +1,11 @@
+2010-04-21  James Youngman  <jay@gnu.org>
+
+	Move rl-merge.cc into libcssc.a
+	* Makefile.am (libcssc_a_SOURCES): Move rl-merge.cc into the library.
+	(get_SOURCES): Remove rl-merge.cc.
+	(admin_SOURCES): Likewise.
+	* rel_list.h: Remove some unnecessary blank lines.
+
 2010-04-20  James Youngman  <jay@gnu.org>
 
 	Include <errno.h> unconditionally where we need it.
