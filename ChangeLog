@@ -8,6 +8,17 @@
 
 2010-04-20  James Youngman  <jay@gnu.org>
 
+	Add a unit test.
+	* unit-tests/test_mylist.cc: New file; unit test for mylist<T>.
+	* unit-tests/Makefile.am: New file.
+	* configure.ac: Call AC_LIBTOOL.  Include
+	googletest/m4/acx_pthread.m4.  Add --with-pthreads so that our
+	main build and googletest libraries are compatible.  Add
+	unit-tests/Makefile to AC_CONFIG_FILES.
+	* autogen.sh: Run libtoolize in the top level and the googletest
+	directories.
+	* Makefile.am (SUBDIRS): Add unit-tests.
+
 	Include <errno.h> unconditionally where we need it.
 	* admin.cc: Include <errno.h> instead of "err_no.h".
 	* pfile.cc: Likewise.

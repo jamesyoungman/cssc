@@ -68,6 +68,7 @@ generate_in ()
     done
 }
 
+( libtoolize --force )
 ( cd googletest && libtoolize --force )
 if generate_in . 
 then
