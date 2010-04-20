@@ -16,8 +16,9 @@ LDADD = ../googletest/lib/libgtest.la \
 	../libcssc.a
 
 TESTS = $(check_PROGRAMS)
-check_PROGRAMS = test_mylist test_myset test_sid
+check_PROGRAMS = test_mylist test_myset test_sid test_relvbr
 
 test_mylist_SOURCES = test_mylist.cc
 test_myset_SOURCES = test_myset.cc
 test_sid_SOURCES = test_sid.cc
+test_relvbr_SOURCES = test_relvbr.cc
