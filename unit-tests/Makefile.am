@@ -13,7 +13,10 @@ endif
 # Build rules for libraries.
 test_mylist_LDADD = ../googletest/lib/libgtest.la \
 	../googletest/lib/libgtest_main.la
+test_myset_LDADD = ../googletest/lib/libgtest.la \
+	../googletest/lib/libgtest_main.la
 
-TESTS = test_mylist
-check_PROGRAMS = test_mylist
+TESTS = test_mylist test_myset
+check_PROGRAMS = test_mylist test_myset
 test_mylist_SOURCES = test_mylist.cc ../quit.cc ../fatalsig.cc
+test_myset_SOURCES = test_myset.cc ../quit.cc ../fatalsig.cc
