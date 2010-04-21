@@ -1,5 +1,10 @@
 2010-04-21  James Youngman  <jay@gnu.org>
 
+	Unit test sid_list::merge and sid_list::remove
+	* unit-tests/test_sid_list.cc: Enable unit tests for
+	sid_list::merge and sid_list::remove.  Include rl-merge.h since
+	that file defines these methods.
+
 	Unit test release_list::merge and release_list::remove
 	* unit-tests/test_rel_list.cc: Add unit tests for
 	release_list::merge and release_list::remove.

@@ -22,6 +22,7 @@
  */
 #include "cssc.h"
 #include "sid.h"
+#include "sl-merge.h"
 #include <gtest/gtest.h>
 
 
@@ -174,8 +175,6 @@ TEST(SidListTest, Assignment)
   ASSERT_TRUE(x.member(sid("1.2.1.19")));
 }
 
-#if 0
-// FIXME: sid_list::merge() is not defined, so remove the declaration.
 TEST(SidListTest, Merge)
 {
   sid_list x("1.2.1.7-1.2.1.14");
@@ -186,22 +185,19 @@ TEST(SidListTest, Merge)
   x.merge(z);
 
   // Verify that the pre-merge conditions still hold.
-  ASSERT_TRUE(z.member(sid("1.2.1.7")));
+  ASSERT_TRUE(x.member(sid("1.2.1.7")));
   ASSERT_TRUE(y.member(sid("1.2.1.10")));
   ASSERT_TRUE(z.member(sid("1.10")));
 
   // Now verify that the y and z were merged into x.
-  ASSERT_TRUE(z.member(sid("1.2.1.7")));
+  ASSERT_TRUE(x.member(sid("1.2.1.7")));
   ASSERT_TRUE(x.member(sid("1.2.1.10")));
   ASSERT_TRUE(x.member(sid("1.10")));
 
   // Verify that we don't just answer all questions with yes.
   ASSERT_FALSE(x.member(sid("1.2.1.51")));
 }
-#endif
 
-#if 0
-// FIXME: range_list<T>::remove() is declared but not defined; remove the decl
 TEST(SidListTest, Remove)
 {
   sid_list x("1.2.1.7-1.2.1.14");
@@ -209,4 +205,4 @@ TEST(SidListTest, Remove)
   x.remove("1.2.1.10");
   ASSERT_FALSE(x.member(sid("1.2.1.10")));
 }
-#endif
+
