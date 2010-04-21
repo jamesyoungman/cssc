@@ -1,5 +1,11 @@
 2010-04-21  James Youngman  <jay@gnu.org>
 
+	Add unit test cases for ASSERT failures.
+	* unit-tests/test_mylist.cc (MylistDeathTest): Various unit test
+	cases for ASSERT failures.
+	* unit-tests/test_sid.cc (SidTest.Successor): Verify that the null
+	SID's successor is 1.1.
+
 	Unit test sid_list::merge and sid_list::remove
 	* unit-tests/test_sid_list.cc: Enable unit tests for
 	sid_list::merge and sid_list::remove.  Include rl-merge.h since

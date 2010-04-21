@@ -142,3 +142,67 @@ TEST(MylistTest, AssignmentDoesNotNeedElementCopyConstructor) {
   b = a;
 }
 
+TEST(MylistTest, ValidPointerAssignment)
+{
+  void *p = 0;
+  mylist<int> a;
+
+  a.add(42);
+  a = p;
+  EXPECT_EQ(0, a.length());
+}
+
+
+TEST(MylistDeathTest, InvalidPointerAssignment)
+{
+  mylist<int> a;
+  void *p = &a;
+  EXPECT_EXIT(a = p, ::testing::KilledBySignal(SIGABRT), "NULL");
+}
+
+TEST(MylistDeathTest, IndexTooLow)
+{
+  mylist<int> a;
+  a.add(2);
+  EXPECT_EXIT(a[-1], ::testing::KilledBySignal(SIGABRT), "index");
+}
+
+TEST(MylistDeathTest, IndexTooHigh)
+{
+  mylist<int> a;
+  a.add(2);
+  EXPECT_EXIT(a[1], ::testing::KilledBySignal(SIGABRT), "index");
+}
+
+TEST(MylistDeathTest, IndexOnEmpty)
+{
+  mylist<int> a;
+  EXPECT_EXIT(a[0], ::testing::KilledBySignal(SIGABRT), "index");
+}
+
+
+TEST(MylistDeathTest, SelectTooLow)
+{
+  mylist<int> a;
+  a.add(2);
+  EXPECT_EXIT(a.select(-1), ::testing::KilledBySignal(SIGABRT), "index");
+}
+
+TEST(MylistDeathTest, SelectTooHigh)
+{
+  mylist<int> a;
+  a.add(2);
+  EXPECT_EXIT(a.select(1), ::testing::KilledBySignal(SIGABRT), "index");
+}
+
+TEST(MylistDeathTest, SelectOnEmpty)
+{
+  mylist<int> a;
+  EXPECT_EXIT(a.select(0), ::testing::KilledBySignal(SIGABRT), "index");
+}
+
+
+
+
+
+

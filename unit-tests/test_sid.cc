@@ -177,6 +177,9 @@ TEST(SidTest, Successor)
 
   const sid b("5.6");
   ASSERT_EQ(b.successor(), sid("5.7"));
+
+  const sid nullsid;
+  ASSERT_EQ(nullsid.successor(), sid("1.1"));
 }
 
 TEST(SidTest, NextBranch)
@@ -365,5 +368,3 @@ TEST(SidTest, ConstructFromRelvbr)
   EXPECT_EQ("1.2.3.0", s.as_string());
 }
 #endif
-
-
