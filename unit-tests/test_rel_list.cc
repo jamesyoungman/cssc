@@ -83,5 +83,137 @@ TEST(RelListTest, MembershipOreder)
 }
 
 
-// FIXME: release_list::merge and release_list::remove are
-// declared but not defined; remove the declarations too.
+
+TEST(RLMerge, MergeBothEmpty)
+{
+  release_list x, y;
+  ASSERT_TRUE(x.empty());
+  ASSERT_TRUE(y.empty());
+  x.merge(y);
+  ASSERT_TRUE(x.empty());
+  ASSERT_TRUE(y.empty());
+}
+
+TEST(RLMerge, MergeOntoEmpty)
+{
+  release_list x;
+  release_list y("2,4");
+
+  ASSERT_TRUE(y.valid());
+
+  ASSERT_TRUE(x.empty());
+  x.merge(y);
+  ASSERT_FALSE(x.empty());
+
+  ASSERT_TRUE(x.member(release(2)));
+  ASSERT_TRUE(x.member(release(4)));
+  ASSERT_FALSE(x.member(release(3)));
+}
+
+TEST(RLMerge, MergeDisjoint)
+{
+  release_list x, y("2,6");
+  x.merge(y);
+
+  ASSERT_TRUE(x.member(release(2)));
+  ASSERT_TRUE(x.member(release(6)));
+
+  // Make sure we didn't destroy the original.
+  ASSERT_TRUE(y.member(release(2)));
+  ASSERT_TRUE(y.member(release(6)));
+}
+
+TEST(RLMerge, MergeInterior)
+{
+  release_list x("2,6"), y("4");
+  x.merge(y);
+
+  ASSERT_TRUE(x.member(release(2)));
+  ASSERT_TRUE(x.member(release(4)));
+  ASSERT_TRUE(x.member(release(6)));
+  ASSERT_FALSE(x.member(release(3)));
+}
+
+TEST(RLMerge, MergeNoOp)
+{
+  release_list x("2,6"), y("6,2");
+  x.merge(y);
+
+  ASSERT_TRUE(x.member(release(2)));
+  ASSERT_TRUE(x.member(release(6)));
+}
+
+
+
+TEST(RLRemove, BothEmpty)
+{
+  release_list x, y;
+  ASSERT_TRUE(x.empty());
+  ASSERT_TRUE(y.empty());
+  x.remove(y);
+  ASSERT_TRUE(x.empty());
+  ASSERT_TRUE(y.empty());
+}
+
+TEST(RLRemove, RhsEmpty)
+{
+  release_list x("4,8"), y;
+  ASSERT_FALSE(x.empty());
+  ASSERT_TRUE(y.empty());
+  x.remove(y);
+  ASSERT_TRUE(y.empty());
+  ASSERT_TRUE(x.member(release(4)));
+  ASSERT_TRUE(x.member(release(8)));
+}
+
+TEST(RLRemove, LhsEmpty)
+{
+  release_list x("4,8"), y;
+  ASSERT_FALSE(x.empty());
+  ASSERT_TRUE(y.empty());
+  y.remove(x);
+  ASSERT_TRUE(y.empty());
+  ASSERT_TRUE(x.member(release(4)));
+  ASSERT_TRUE(x.member(release(8)));
+}
+
+TEST(RLRemove, Identical)
+{
+  const char *content = "4,8";
+  release_list x(content), y(content);
+  ASSERT_FALSE(x.empty());
+  ASSERT_FALSE(y.empty());
+  y.remove(x);
+  ASSERT_TRUE(y.empty());
+}
+
+TEST(RLRemove, RemoveSome)
+{
+  release_list x("4,6,8"), y("6");
+  ASSERT_FALSE(x.empty());
+  ASSERT_FALSE(y.empty());
+  x.remove(y);
+  ASSERT_TRUE(x.member(release(4)));
+  ASSERT_TRUE(x.member(release(8)));
+  ASSERT_FALSE(x.member(release(6)));
+  ASSERT_TRUE(y.member(release(6)));
+}
+
+TEST(RLRemove, RemoveAll)
+{
+  release_list x("4,6,8");
+  ASSERT_FALSE(x.empty());
+  ASSERT_TRUE(x.member(release(4)));
+  ASSERT_TRUE(x.member(release(6)));
+  ASSERT_TRUE(x.member(release(8)));
+  x.remove(release_list("4"));
+  ASSERT_FALSE(x.empty());
+  ASSERT_TRUE(x.member(release(6)));
+  ASSERT_TRUE(x.member(release(8)));
+  x.remove(release_list("6"));
+  ASSERT_FALSE(x.empty());
+  ASSERT_TRUE(x.member(release(8)));
+  x.remove(release_list("8"));
+  ASSERT_TRUE(x.empty());
+  ASSERT_FALSE(x.member(release(8)));
+}

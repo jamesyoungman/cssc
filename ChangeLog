@@ -1,5 +1,9 @@
 2010-04-21  James Youngman  <jay@gnu.org>
 
+	Unit test release_list::merge and release_list::remove
+	* unit-tests/test_rel_list.cc: Add unit tests for
+	release_list::merge and release_list::remove.
+
 	Move rl-merge.cc into libcssc.a
 	* Makefile.am (libcssc_a_SOURCES): Move rl-merge.cc into the library.
 	(get_SOURCES): Remove rl-merge.cc.
