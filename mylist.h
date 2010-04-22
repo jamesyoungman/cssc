@@ -53,7 +53,7 @@ public:
       len = 0;
       left = 0;
     }
-  
+
   void add(TYPE const &ent);
 
   int length() const
@@ -185,6 +185,24 @@ operator -=(mylist<T1> &l1, mylist<T2> const &l2) {
 	}
 
 	return l1;
+}
+
+
+template <class T1, class T2>
+bool 
+operator==(const mylist<T1>& left, const mylist<T2>& right)
+{
+  const int len = left.length();
+
+  if (len != right.length())
+    return false;
+
+  for (int i=0; i<len; i++)
+    {
+      if (!(left[i] == right[i]))
+	return false;
+    }
+  return true;
 }
 
 #endif /* __LIST_H__ */

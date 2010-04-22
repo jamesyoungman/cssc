@@ -1,7 +1,13 @@
 2010-04-22  James Youngman  <jay@gnu.org>
 
+	Implement equality test for mylist<T>.
+	* mylist.h (operator==): Implement operator==.
+	* unit-tests/test_mylist.cc (MylistTest): Add unit tests for
+	operator==.
+	
 	Remove some obsolete comments.
 	* mylist.h: Remove a spurious extra "Local Variables" comment.
+
 	* sid_list.h: Remove some obsolete (and long commented-out) code.
 	* relvbr.h (class relvbr): Likewise.
 	* release.h (class release): Likewise.

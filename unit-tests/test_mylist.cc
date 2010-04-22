@@ -152,6 +152,45 @@ TEST(MylistTest, ValidPointerAssignment)
   EXPECT_EQ(0, a.length());
 }
 
+TEST(MylistTest, EqualityEmpty)
+{
+  mylist<int> a, b, c;
+  EXPECT_TRUE(a.length() == b.length());
+  EXPECT_TRUE(a == b);
+
+  c.add(4);
+  EXPECT_FALSE(a == c);
+  EXPECT_FALSE(c == a);
+}
+
+TEST(MylistTest, EqualityNonEmpty)
+{
+  mylist<int> a, b;
+  a.add(1);
+  a.add(2);
+  b.add(1);
+  b.add(2);
+  EXPECT_TRUE(a == b);
+}
+
+TEST(MylistTest, EqualityLengthDifferent)
+{
+  mylist<int> a, b;
+  a.add(1);
+  a.add(2);
+  b.add(1);
+  EXPECT_FALSE(a == b);
+}
+
+TEST(MylistTest, Different)
+{
+  mylist<int> a, b;
+  a.add(1);
+  a.add(2);
+  b.add(2);
+  b.add(1);
+  EXPECT_FALSE(a == b);
+}
 
 TEST(MylistDeathTest, InvalidPointerAssignment)
 {
