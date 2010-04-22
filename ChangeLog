@@ -1,5 +1,11 @@
 2010-04-22  James Youngman  <jay@gnu.org>
 
+	* AUTHORS: Mention that googletest/CONTRIBUTORS enumerates the
+	contributors to the Google C++ Testing Framework.
+
+	* googletest/Makefile.am (EXTRA_DIST): Distribute README.cssc.
+	* unit-tests/Makefile.am (EXTRA_DIST): Distribute TODO.txt.
+
 	Add TODO list for unit tests we need to write.
 	* unit-tests/TODO.txt: New file; a working list of what unit tests
 	are still needed.

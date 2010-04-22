@@ -11,6 +11,9 @@ The CGI script "sccs.cgi" and its associated documentation was written
 by Richard Kettlewell <rjk@greenend.org.uk> and is Copyright 2001
 Richard Kettlewell.
 
+The "googletest" directory contains the Google C++ Testing Framework.
+See the file googletest/CONTRIBUTORS for a list of contributors.
+
 See also the file docs/CREDITS for a list of other contributors
 without whose input CSSC would be much less useful than it is today.
 I'd like to take this opportuniity to thank them.

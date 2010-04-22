@@ -10,6 +10,8 @@ else
   AM_CXXFLAGS = -DGTEST_HAS_PTHREAD=0
 endif
 
+EXTRA_DIST = TODO.txt
+
 # Build rules for libraries.
 LDADD = ../googletest/lib/libgtest.la \
 	../googletest/lib/libgtest_main.la \

@@ -2,6 +2,7 @@
 
 # Nonstandard package files for distribution
 EXTRA_DIST = \
+  README.cssc \
   CHANGES \
   CONTRIBUTORS \
   include/gtest/gtest-param-test.h.pump \
