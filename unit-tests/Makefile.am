@@ -29,3 +29,7 @@ test_release_SOURCES = test_release.cc
 test_sid_list_SOURCES = test_sid_list.cc
 test_rel_list_SOURCES = test_rel_list.cc
 test_sccsdate_SOURCES = test_sccsdate.cc
+
+# The death tests may leave a core file behind.  Some systems also use
+# core.NNNN as the name of a core file (NNNN is usually the PID).
+DISTCLEANFILES = core core.*

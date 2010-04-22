@@ -1,5 +1,8 @@
 2010-04-22  James Youngman  <jay@gnu.org>
 
+	Remove core files for "make distclean".
+	* unit-tests/Makefile.am (DISTCLEANFILES): Remove core files.
+
 	* AUTHORS: Mention that googletest/CONTRIBUTORS enumerates the
 	contributors to the Google C++ Testing Framework.
 
