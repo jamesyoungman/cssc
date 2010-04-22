@@ -5,11 +5,11 @@ directory.
 
 
 COPYING		   GPL version 2
-install-sh	   From the autoconf distribution (last update 2.13)
-missing		   From the automake distribution (last update 1.4a)
-mkinstalldirs      From the automake distribution (last update 1.4a)
-docs/texinfo.tex   From the automake distribution (last update 1.4a)
-
+install-sh	   From the autoconf distribution
+missing		   From the automake distribution
+mkinstalldirs      From the automake distribution
+docs/texinfo.tex   From the automake distribution
+googletest/*	   See googletest/README.cssc
 
 The following files are either forked from their original
 counterparts, or I can't find/recall the original source or version:-

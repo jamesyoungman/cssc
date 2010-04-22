@@ -1,3 +1,15 @@
+2010-04-22  James Youngman  <jay@gnu.org>
+
+	Explain what the googletest directory is and how to run unit tests.
+	* README (Testing): Expand to include a description of the unit
+	tests and how to run them.
+	* docs/borrowed-files.txt: Mention googletest/*.  Also remove tghe
+	out-of-date information about the last update to the files which
+	autoconf updates.
+	* googletest/README.cssc: Add README file explaining the
+	relationship between the code in this directory and the rest of
+	CSSC.
+
 2010-04-21  James Youngman  <jay@gnu.org>
 
 	Add unit test cases for ASSERT failures.

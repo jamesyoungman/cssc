@@ -1,0 +1,8 @@
+The code in this directory is the Google C++ Testing Framework.  This
+is not part of GNU CSSC, but it's used with GNU CSSC.
+
+The purpose of the code in this directory is to support unit testing.
+The installed CSSC binaries don't include this code.
+
+For instructions on how to get a newer version of the Google C++
+Testing Framework, please see the README file.

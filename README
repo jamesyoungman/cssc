@@ -90,7 +90,17 @@ provided in the file "docs/Platforms".
 
 2.	Testing 
 
- The tests can be run with "make check":
+ Two types of tests are included with CSSC.  First, the unit tests in
+ the subdirectory "unit-tests".  These mostly test individual classes
+ or modules of CSSC (as opposed to running the CSSC binaries).
+ Second, there are regression tests in the subdirectory "tests".  The
+ regression tests are run on the built CSSC binaries.
+
+ The unit tests are much newer than the regression tests and for the
+ moment they have lower test coverage.
+
+ To run all the tests (unit tests and regresion tests), run "make
+ check" in the top-level directory:
 
  if make check 2>&1 | tee make.log 
  then
@@ -99,21 +109,31 @@ provided in the file "docs/Platforms".
 	echo FAILURE
  fi
 
- If this fails, take a look at "make.log".
+ This runs the unit tests first and if they succeed, the regression
+ tests.  If either fails, take a look at "make.log".
 
- Note that this test process accepts several environment variables
- which allow you to point it at a particular installation of the
- tools.  If you have used these variables for something else, the test
- will fail.  These variables are :-
+ If you want to run just the unit tests, do this:
+  cd unit-tests && make check
+
+ If you want to run just the regression tests, do this:
+  cd tests && make check
+
+ Note that the regression test process accepts several environment
+ variables which allow you to point it at a particular installation of
+ the tools.  If you have used these variables for something else, the
+ test will fail.  These variables are :-
 
  $dir, $get, $admin, $cdc, $prs, $prt, $delta, $sact, $sccsdiff,
  $unget, $what, $rmdel, $sccs
 
- If the tests failed, I'll definitely need some more information and
- so it would be best to keep the test outputs in case I need them in
- order to fix the bug ("tar cf failed-tests.tar tests" should do fine
- for that).  I may need to ask you to send a compressed version of
- this to me.
+ If the regression tests failed, I'll definitely need some more
+ information and so it would be best to keep the test outputs in case
+ I need them in order to fix the bug ("tar cf failed-tests.tar tests"
+ should do fine for that).  I may need to ask you to send a compressed
+ version of this to me.
+
+ If the unit tests failed, I only need you to send the stderr output
+ (i.e. "make.log" from the example above).
 
 
 3.	Installing
