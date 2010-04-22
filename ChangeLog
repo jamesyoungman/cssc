@@ -1,6 +1,11 @@
 2010-04-22  James Youngman  <jay@gnu.org>
 
-
+	Remove some obsolete comments.
+	* mylist.h: Remove a spurious extra "Local Variables" comment.
+	* sid_list.h: Remove some obsolete (and long commented-out) code.
+	* relvbr.h (class relvbr): Likewise.
+	* release.h (class release): Likewise.
+	
 	Finish test_sccsdate.cc.
 	* unit-tests/test_sccsdate.cc: Added unit tests for the remaining
 	public methods of sccs_date.

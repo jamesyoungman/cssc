@@ -156,10 +156,6 @@ mylist<TYPE>::add(TYPE const &ent) {
 
 #endif /* __LIST_C__ */
 
-/* Local variables: */
-/* mode: c++ */
-/* End: */
-
 
 /* Deletes the contents of one my mylist from another. */
 

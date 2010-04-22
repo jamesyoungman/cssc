@@ -85,10 +85,6 @@ public:
     }
 
   int print(FILE *out) const { return (fprintf(out, "%d", rel) < 0); }
-
-  
-  //  friend sid::operator release() const;
-  //  friend sid::sid(release);
 };
 
 

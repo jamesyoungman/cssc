@@ -93,10 +93,6 @@ public:
     }
 
   int print(FILE *out) const { return (fprintf(out, "%d.%d.%d", rel, level, branch) < 0); }
-
-  
-  //  friend sid::operator relvbr() const;
-  //  friend sid::sid(relvbr);
 };
 
 
