@@ -1,5 +1,9 @@
 2010-04-22  James Youngman  <jay@gnu.org>
 
+	Add a unit test for delta.h.
+	* unit-tests/test_delta.cc: New file.
+	* unit-tests/Makefile.am (check_PROGRAMS): Add test_delta.
+
 	Implement equality test for mylist<T>.
 	* mylist.h (operator==): Implement operator==.
 	* unit-tests/test_mylist.cc (MylistTest): Add unit tests for
