@@ -1,5 +1,12 @@
 2010-04-22  James Youngman  <jay@gnu.org>
 
+
+	Finish test_sccsdate.cc.
+	* unit-tests/test_sccsdate.cc: Added unit tests for the remaining
+	public methods of sccs_date.
+	* unit-tests/TODO.txt: sccsdate.h has unit tests now, remove it
+	from the TODO list.
+
 	Remove core files for "make distclean".
 	* unit-tests/Makefile.am (DISTCLEANFILES): Remove core files.
 

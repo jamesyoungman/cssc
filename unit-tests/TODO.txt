@@ -14,7 +14,6 @@ my-getopt.h
 pfile.h
 quit.h
 run.h
-sccsdate.h
 sccsfile.h
 sccsname.h
 seqstate.h

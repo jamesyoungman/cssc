@@ -22,6 +22,7 @@
  */
 #include "cssc.h"
 #include "sccsdate.h"
+#include "quit.h"
 #include <gtest/gtest.h>
 
 
@@ -35,11 +36,130 @@ TEST(SccsdateTest, StringConstructor)
 {
   sccs_date d12("990519014208");
   ASSERT_TRUE(d12.valid());
-  ASSERT_EQ("99/05/19 01:42:08",
-	    d12.as_string());
+  EXPECT_EQ("99/05/19 01:42:08", d12.as_string());
 
   sccs_date d14("19990519014208");
   ASSERT_TRUE(d14.valid());
-  ASSERT_EQ("99/05/19 01:42:08",
-	    d14.as_string());
+  EXPECT_EQ("99/05/19 01:42:08", d14.as_string());
 }
+
+TEST(SccsdateTest, StringDateTimeConstructor) 
+{
+  sccs_date d12("99/05/19", "01:42:08");
+  ASSERT_TRUE(d12.valid());
+  EXPECT_EQ("99/05/19 01:42:08", d12.as_string());
+}
+
+TEST(SccsdateTest, FourDigitYear)
+{
+  // This test generates a warning on stderr.
+  // That's OK.
+  sccs_date d14("1999/05/19", "01:42:08");
+  ASSERT_TRUE(d14.valid());
+  EXPECT_EQ("99/05/19 01:42:08", d14.as_string());
+}
+
+TEST(SccsdateDeathTest, BuckRogers)
+{
+  // As a sanity check we verify that the year is within the window
+  // described by the X/Open convention for handling 2-digit years.
+  //
+  // We could support such years quite easily, except for the fact that
+  // interoperation with other versions of SCCS would become harder.
+  EXPECT_EXIT(sccs_date("2429/05/19", "01:42:08"),
+	      ::testing::KilledBySignal(SIGABRT), 
+	      "year < 2069");
+}
+
+TEST(SccsdateTest, ColonYear)
+{
+  // This test generates a warning on stderr.
+  // That's OK.
+  //
+  // Some versions of SCCS roll from 99 to :0 instead of 99 to 00.
+  // Yes, that's a bug in those versions of SCCS.
+  // Check that we correctly convert those dates.
+  sccs_date d12(":0/05/19", "01:42:08");
+  ASSERT_TRUE(d12.valid());
+  EXPECT_EQ("00/05/19 01:42:08", d12.as_string());
+}
+
+TEST(SccsdateTest, Now)
+{
+  // Make sure the now method at least returns.
+  sccs_date::now();
+}
+
+TEST(SccsdateTest, Greater)
+{
+  EXPECT_TRUE(sccs_date("99/01/01 00:00:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_FALSE(sccs_date("98/01/01 00:00:00") >
+	       sccs_date("99/01/01 00:00:00"));
+	       
+  EXPECT_TRUE(sccs_date("98/02/01 00:00:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/10/01 00:00:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/02 00:00:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/10 00:00:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 01:00:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 10:00:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:01:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:10:00") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:01") > 
+	      sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:10") > 
+	      sccs_date("98/01/01 00:00:00"));
+
+  // Leap year.
+  EXPECT_TRUE(sccs_date("00/02/29 00:00:00") > 
+	      sccs_date("00/02/28 00:00:00"));
+  EXPECT_TRUE(sccs_date("00/03/01 00:00:00") > 
+	      sccs_date("00/02/29 00:00:00"));
+}
+
+
+TEST(SccsdateTest, Less)
+{
+  EXPECT_FALSE(sccs_date("99/01/01 00:00:00") < sccs_date("98/01/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("99/01/01 00:00:00"));
+
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/02/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/10/01 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/01/02 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/01/10 00:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/01/01 01:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/01/01 10:00:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/01/01 00:01:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/01/01 00:10:00"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/01/01 00:00:01"));
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:00") < sccs_date("98/01/01 00:00:10"));
+
+  // Leap year.
+  EXPECT_TRUE(sccs_date("00/02/28 00:00:00") < sccs_date("00/02/29 00:00:00"));
+  EXPECT_TRUE(sccs_date("00/02/29 00:00:00") < sccs_date("00/03/01 00:00:00"));
+}
+
+TEST(SccsdateTest, Equality)
+{
+  const char *datestr = "99/01/01 00:00:00";
+
+  EXPECT_FALSE(sccs_date(datestr) < sccs_date(datestr));
+  EXPECT_FALSE(sccs_date(datestr) > sccs_date(datestr));
+
+  EXPECT_TRUE(sccs_date(datestr) <= sccs_date(datestr));
+}
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  set_prg_name("test_sccsdate");
+  return RUN_ALL_TESTS();
+}
+
