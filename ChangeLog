@@ -1,5 +1,11 @@
 2010-04-22  James Youngman  <jay@gnu.org>
 
+	Add unit tests for sccsdate.h.
+	* unit-tests/test_sccsdate.cc: New file.
+	* unit-tests/Makefile.am (test_sccsdate_SOURCES): Add
+	test_sccsdate.cc.  
+	(check_PROGRAMS): Add test_sccsdate.
+
 	Explain what the googletest directory is and how to run unit tests.
 	* README (Testing): Expand to include a description of the unit
 	tests and how to run them.
