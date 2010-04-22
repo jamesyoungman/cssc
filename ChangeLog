@@ -1,5 +1,9 @@
 2010-04-22  James Youngman  <jay@gnu.org>
 
+	Add TODO list for unit tests we need to write.
+	* unit-tests/TODO.txt: New file; a working list of what unit tests
+	are still needed.
+					 
 	Add unit tests for sccsdate.h.
 	* unit-tests/test_sccsdate.cc: New file.
 	* unit-tests/Makefile.am (test_sccsdate_SOURCES): Add
