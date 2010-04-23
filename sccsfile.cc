@@ -406,16 +406,22 @@ sccs_file::read_delta() {
 
 	plinebuf->split(3, args, 7, ' ');
 
-	tmp.type = args[0][0];
+	if (delta::is_valid_delta_type(args[0][0])
+	    && (args[0][1] == 0))
+	  {
+	    tmp.set_type(args[0][0]);
+	  }
+	else
+	  {
+	    corrupt("Bad delta type");
+	  }
+
 	tmp.id = sid(args[1]);
 	tmp.date = sccs_date(args[2], args[3]);
 	tmp.user = args[4];
 	tmp.seq = strict_atous(args[5]);
 	tmp.prev_seq = strict_atous(args[6]);
 
-	if ((tmp.type != 'R' && tmp.type != 'D') || args[0][1] != '\0') {
-		corrupt("Bad delta type");
-	}
 	if (!tmp.id.valid()) {
 		corrupt("Bad SID");
 	}

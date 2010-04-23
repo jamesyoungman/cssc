@@ -35,7 +35,7 @@ delta::operator =(delta const &it)
   inserted = it.inserted;
   deleted = it.deleted;
   unchanged = it.unchanged;
-  type = it.type;
+  set_type(it.delta_type);
   id = it.id;
   date = it.date;
   user = it.user;
@@ -56,7 +56,7 @@ delta::operator =(delta const &it)
 
 bool delta::removed() const
 {
-  return 'R' == type;
+  return 'R' == delta_type;
 }
 
 

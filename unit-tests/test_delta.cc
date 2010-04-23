@@ -57,7 +57,7 @@ TEST(DeltaTest, Constructor)
   excl.add(seq_no(6));
   
   delta d('R', s, then, user, seq, pred, incl, excl, mrlist, comments);
-  EXPECT_EQ(d.type, 'R');
+  EXPECT_EQ(d.get_type(), 'R');
   EXPECT_EQ(d.id, s);
   EXPECT_EQ(d.date.as_string(), then.as_string());
   EXPECT_EQ(d.user, user);
@@ -68,11 +68,11 @@ TEST(DeltaTest, Constructor)
 
   EXPECT_EQ(1, d.included.length());
   EXPECT_EQ(seq_no(1), d.included[0]);
-  //EXPECT_TRUE(d.have_includes);
+  EXPECT_TRUE(d.have_includes);
 
   EXPECT_EQ(1, d.excluded.length());
   EXPECT_EQ(seq_no(6), d.excluded[0]);
-  //EXPECT_TRUE(d.have_excludes);
+  EXPECT_TRUE(d.have_excludes);
 
   EXPECT_NE(&d.id, &s);
   EXPECT_NE(&d.date, &then);
@@ -86,7 +86,7 @@ TEST(DeltaTest, Constructor)
 
 
   const delta e('D', s, then, user, seq, pred, mrlist, comments);
-  EXPECT_EQ(e.type, 'D');
+  EXPECT_EQ(e.get_type(), 'D');
   EXPECT_EQ(e.id, s);
   EXPECT_EQ(e.date.as_string(), then.as_string());
   EXPECT_EQ(e.user, user);
@@ -113,7 +113,7 @@ TEST(DeltaTest, Assignment)
 		sccs_date("990519014208"),
 		mystring("fred"), seq_no(6), seq_no(3),
 		mrlist, comments);
-  ASSERT_EQ('D', e.type);
+  ASSERT_EQ('D', e.get_type());
   ASSERT_EQ(1, e.comments.length());
   ASSERT_EQ(mystring("yada"), e.comments[0]);
 
@@ -121,7 +121,7 @@ TEST(DeltaTest, Assignment)
   ASSERT_EQ(0, d.comments.length());
 
   d = e;
-  ASSERT_EQ('D', d.type);
+  ASSERT_EQ('D', d.get_type());
   ASSERT_EQ(1, d.comments.length());
   ASSERT_EQ(mystring("yada"), d.comments[0]);
 }
@@ -133,5 +133,15 @@ TEST(DeltaTest, Removed)
   const delta e('R', sid("1.9"), sccs_date("990519014208"),
 		mystring("fred"), seq_no(6), seq_no(3), mrlist, comments);
   EXPECT_TRUE(e.removed());
+}
+
+TEST(DeltaDeathTest, InvalidType)
+{
+  const mylist<mystring> mrlist;
+  const mylist<mystring> comments;
+  EXPECT_EXIT(delta e('X', sid("1.9"), sccs_date("990519014208"),
+		      mystring("fred"), seq_no(6), seq_no(3), mrlist, comments),
+	      ::testing::KilledBySignal(SIGABRT), 
+	      "valid");
 }
 

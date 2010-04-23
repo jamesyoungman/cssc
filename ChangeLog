@@ -1,3 +1,33 @@
+2010-04-23  James Youngman  <jay@gnu.org>
+
+	Rename delta::type to delta_type, make it private, validate it.
+	* delta.h (struct delta): Rename the 'type' member to 'delta_type'
+	and make it private, to support better data validation.
+	(delta::delta()): Initialise delta_type to 'D' rather than leaving
+	it uninitialised.  Also initialise members id, seq and prev_seq.
+	(delta::delta(...): Set have_includes and have_excludes to true if
+	the relevant list is starting off non-empty.
+	(delta::get_type, delta::set_type): New accessor/mutator methods.
+	* unit-tests/test_delta.cc: Verify that have_includes and
+	have_excludes are true if the delta was constructed with
+	(respectively) includes or excludes.
+	(DeltaDeathTest.Includes): verify that invalid delta types are
+	diagnosed.
+	(delta::is_valid_delta_type): new method, validates delta::delta_type.
+	* sf-rmdel.cc (rmdel): Use the accessor method to access
+	delta::delta_type.
+	* sccsfile.cc (read_delta): Delegate delta type validation to
+	delta::is_valid_delta_type.
+	* sccs-delta.cc (delta::operator=): delta::type renamed to
+	delta::delta_type.
+	(delta::removed): Likewise.
+	* sf-prs.cc (print_delta): Likewise.
+	* sf-prt.cc (prt): Likewise.
+	* sf-write.cc (write_delta): Likewise.
+	* sf-val.cc (validate): There is no longer a need to validate
+	delta::type, as this field is validater by the delta(...)
+	constructors and by delta::set_type().
+
 2010-04-22  James Youngman  <jay@gnu.org>
 
 	Add a unit test for delta.h.

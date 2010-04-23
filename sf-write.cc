@@ -138,7 +138,7 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
                             cap5(d.inserted),
                             cap5(d.deleted),
                             cap5(d.unchanged)))
-      || printf_failed(fprintf(out, "\001d %c ", d.type))
+      || printf_failed(fprintf(out, "\001d %c ", d.get_type()))
       || d.id.print(out)
       || putc_failed(putc(' ', out))
       || d.date.print(out)

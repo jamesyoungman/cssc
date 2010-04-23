@@ -353,7 +353,7 @@ sccs_file::prt(FILE *out,
 	    putc('\n', out);
       
 	  // Print the stuff from the delta...
-	  fprintf(out, "%c ", iter->type);
+	  fprintf(out, "%c ", iter->get_type());
 	  iter->id.print(out);
 	  putc('\t', out);
 	  iter->date.printf(out, 'D');

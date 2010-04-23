@@ -388,7 +388,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY2('D','T'):
-          putc(d.type, out);
+          putc(d.get_type(), out);
           break;
 
         case KEY1('I'):

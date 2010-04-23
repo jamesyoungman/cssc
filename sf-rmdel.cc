@@ -107,7 +107,7 @@ sccs_file::rmdel(sid id)
 	}
     }
 
-  d->type = 'R';
+  d->set_type('R');
 	
   FILE *out = start_update();
   if (NULL == out)

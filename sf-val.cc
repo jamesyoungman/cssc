@@ -177,14 +177,6 @@ sccs_file::validate() const
       const char *sz_sid = iter->id.as_string().c_str();
       
       // validate that the included/excluded/unchanged line counts are valid.
-      // check that type is either R or D
-      if ('R' != iter->type && 'D' != iter->type)
-	{
-	  errormsg("%s: SID %s: Unknown delta type %c",
-		   name.c_str(), sz_sid, iter->type);
-	  retval = false;
-	}
-
       if (iter->inserted > 99999uL)
 	{
 	  errormsg("%s: SID %s: out-of-range inserted line count %lu",
