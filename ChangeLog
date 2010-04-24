@@ -1,5 +1,12 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Add unit tests for delta-table.h.
+	* unit-tests/test_delta-table.cc: New file, contains unit tests
+	for delta-table.h. 
+	* unit-tests/Makefile.am (test_delta_table_SOURCES): New
+	variable.
+	(check_PROGRAMS): Add test_delta-table.
+
 	Cosmetic fixes for stack.h.
 	* stack.h: Remove obsolete version comment.
 	(stack::operator=): Correct indentation.
