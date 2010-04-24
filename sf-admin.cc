@@ -32,6 +32,7 @@
 #include "delta.h"
 #include "linebuf.h"
 #include "bodyio.h"
+#include "file.h"
 
 
 /* #define ADMIN_MERGE_LOCKED_RELEASES if you want

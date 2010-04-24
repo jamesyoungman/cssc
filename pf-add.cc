@@ -26,6 +26,7 @@
 #include "cssc.h"
 #include "pfile.h"
 #include "except.h"
+#include "file.h"
 
 
 bool

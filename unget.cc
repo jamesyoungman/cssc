@@ -31,6 +31,7 @@
 #include "my-getopt.h"
 #include "version.h"
 #include "except.h"
+#include "file.h"
 
 
 void

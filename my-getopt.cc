@@ -67,7 +67,7 @@
 #endif
 
 #include "my-getopt.h"
-#include "cssc.h" // basically, just for the declaration of quit().
+#include "quit.h"
 
 int
 CSSC_Options::next()

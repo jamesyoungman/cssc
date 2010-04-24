@@ -30,6 +30,7 @@
 #include "sccsfile.h"
 #include "delta.h"
 #include "delta-table.h"
+#include "ioerr.h"
 
 /* Starts an update of an SCCS file that includes a new entry to be
    prepended to delta table. */

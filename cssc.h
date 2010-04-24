@@ -23,28 +23,21 @@
  * cssc.h: Master include file for CSSC.
  *
  */
-
-
 #ifndef CSSC__CSSC_H__
 #define CSSC__CSSC_H__
 
 #undef TESTING
 
 // Get the definitions deduced by "configure".
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
-
+#include "mystring.h"
 
 #undef  CONFIG_DECLARE_STAT
 #undef  CONFIG_DECLARE_GETPWUID
 #undef  CONFIG_DECLARE_TIMEZONE
 #undef  CONFIG_DECLARE_TZSET
 #undef  CONFIG_DECLARE_FDOPEN
-
-
-
 
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 //           TODO
@@ -64,14 +57,10 @@
  */
 #undef  CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
 
-
-
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 //           Tunable
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #define CONFIG_FILE_NAME_GUESSING
-
-
 
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 //           Deduced
@@ -95,9 +84,6 @@
 #define CONFIG_CAN_HARD_LINK_AN_OPEN_FILE 1
 #endif
 
-
-
-
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 //           MS-DOS
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -116,33 +102,14 @@
 #define CONFIG_EOL_CHARACTER ('\n')
 #endif
 
-
 #undef  CONFIG_MSDOS_FILES
 #undef  CONFIG_BORLANDC
 #define CONFIG_DJGPP
 
-
-// Include macros for deciding if a <stdio.h> routine has returned an
-// error status.
-#include "ioerr.h"
-
-
-#include "defaults.h"
-
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
 #ifndef NO_COMMON_HEADERS
-#include "quit.h"
-#include "mystring.h"
-#include "file.h"
-
-
 // Some declarations are only useful if we know what a "mystring" is.
 //
 mystring prompt_user(const char *prompt);
-
 #endif /* NO_COMMON_HEADERS */
 
 unsigned long cap5(unsigned long); // see cap.cc

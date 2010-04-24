@@ -27,6 +27,7 @@
 #include "my-getopt.h"
 #include "version.h"
 #include "except.h"
+#include "file.h"
 #include "valcodes.h"
 
 /* Prints a list of included or excluded SIDs. */

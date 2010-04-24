@@ -20,10 +20,12 @@
  * placed in the Public Domain.
  *
  */
+#include <cstdlib>
 
 #include "cssc.h"
 #include "rel_list.h"
-#include <stdlib.h>
+#include "ioerr.h"
+#include "quit.h"
 
 // Because we use member() all the time, this
 // is a quadratic algorithm...but N is usually very small.

@@ -33,6 +33,8 @@
 #include <cstdio>
 
 #include "mystring.h"
+#include "ioerr.h"
+#include "quit.h"
 
 #ifdef __GNUC__
 #pragma interface

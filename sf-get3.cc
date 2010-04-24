@@ -29,6 +29,7 @@
 #include "sccsfile.h"
 #include "seqstate.h"
 #include "delta-iterator.h"
+#include "file.h"
 
 /* Prepare a seqstate for use by marking which sequence numbers are to
  * be included and which are to be excluded.

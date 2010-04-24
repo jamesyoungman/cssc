@@ -33,6 +33,7 @@
 
 #include "cssc.h"
 #include "sysdep.h"
+#include "defaults.h"		// CONFIG_NULL_FILENAME
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

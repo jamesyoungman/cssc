@@ -29,6 +29,8 @@
 #include "filepos.h"
 #include "except.h"
 #include "linebuf.h"
+#include "ioerr.h"
+#include "file.h"
 
 #include <cstdio>
 #include <cstring>

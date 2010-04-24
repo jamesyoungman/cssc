@@ -29,6 +29,7 @@
 #include "cssc.h"
 #include "sccsfile.h"
 #include "delta.h"
+#include "file.h"
 
 
 /* Adds new MRs and comments to the specified delta. */

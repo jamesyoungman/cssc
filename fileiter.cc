@@ -34,6 +34,8 @@
 #include "fileiter.h"
 #include "linebuf.h"
 #include "my-getopt.h"
+#include "file.h"
+#include "quit.h"
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	: argv(opts.get_argv() + opts.get_index()),

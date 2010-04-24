@@ -35,6 +35,7 @@
 #include "version.h"
 #include "except.h"
 #include "ioerr.h"
+#include "file.h"
 
 
 

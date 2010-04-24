@@ -34,6 +34,8 @@
 #include "cssc-assert.h"
 #include "sysdep.h"
 #include "file.h"
+#include "quit.h"
+#include "ioerr.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

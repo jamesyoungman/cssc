@@ -32,6 +32,8 @@
 #include "delta-iterator.h"
 #include "linebuf.h"
 #include "filepos.h"
+#include "file.h"
+#include "ioerr.h"
 
 /* Quit because an error related to the x-file. */
 void

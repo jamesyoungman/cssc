@@ -33,6 +33,7 @@
 #include "version.h"
 #include "delta.h"
 #include "except.h"
+#include "file.h"
 
 
 void

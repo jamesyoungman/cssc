@@ -27,6 +27,7 @@
 
 #include "cssc.h"
 #include "sid.h"
+#include "ioerr.h"
 
 #include <ctype.h>
 

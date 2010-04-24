@@ -1,9 +1,40 @@
+2010-04-25  James Youngman  <jay@gnu.org>
+
+	Include cssc headers where they are needed, not in cssc.h.
+	* my-getopt.cc: Include quit.h but not cssc.h.
+	* linebuf.cc: Include ioerr.h.
+	* writesubst.cc: Likewise.
+	* sccsfile.cc: Likewise.
+	* sf-add.cc: Likewise.
+	* sid.cc: Likewise.
+	* fileiter.cc: Include file.h and quit.h.
+	* file.cc: Include quit.h and ioerr.h.
+	* sccsdate.h: Likewise.
+	* sf-write.cc: Likewise.
+	* rel_list.cc: Likewise.
+	* cdc.cc: Include file.h.
+	* sf-csc.cc: Likewise.
+	* sccsname.cc: Likewise.
+	* sf-get3.cc: Likewise.
+	* sf-delta.cc: Likewise.
+	* val.cc: Likewise.
+	* unget.cc: Likewise.
+	* rmdel.cc: Likewise.
+	* delta.cc: Likewise.
+	* filediff.cc: Likewise.
+	* pf-add.cc: Likewise.
+	* pf-del.cc: Likewise.
+	* sf-admin.cc: Likewise.
+	* prompt.cc: Likewise.
+	* fdclosed.cc: Include defaults.h.
+	* run.cc: Include quit.h
+	
 2010-04-24  James Youngman  <jay@gnu.org>
 
 	Include system headers where they are needed, not in cssc.h.
 	* except.h: Add a multiple-include guard.  #include <cstdlib>.
 	* environment.cc: #include <cstdlib>, <cstring>, <cerrno>
-	* bodyio.cc: #include <cstring>
+	* bodyio.cc: #include <cstring>, ioerr.h, file.h.	
 	* fileiter.cc: Likewise.
 	* linebuf.cc: Likewise.
 	* prompt.cc: Likewise.
@@ -14,6 +45,8 @@
 	<cstring> also.
 	* cssc.h: Don't include standard headers: stdio.h, stdlib.h,
 	stddef.h, string.h, ctype.h, errno.h.
+	Unconditionally include <config.h>.
+	Don't include quit.h or file.h.
 
 	Further include-what-you-use fixes.
 	* delta.cc: Include cleanup.h, and ioerr.h.  Include delta.h earlier.

@@ -28,6 +28,7 @@
 #include "cssc.h"
 #include "pfile.h"
 #include "except.h"
+#include "file.h"
 
 
 /* enum */ sccs_pfile::find_status

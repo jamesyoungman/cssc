@@ -34,6 +34,7 @@
 #include "linebuf.h"
 #include "quit.h"
 #include "mylist.h"
+#include "ioerr.h"
 
 #ifdef STDC_HEADERS
 #include <ctype.h>

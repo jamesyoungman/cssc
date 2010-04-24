@@ -39,6 +39,7 @@
 #include "bodyio.h"
 #include "filediff.h"
 #include "myset.h"
+#include "file.h"
 
 #undef JAY_DEBUG
 

@@ -24,8 +24,10 @@
  *
  */
 
-#include "cssc.h"
 #include <cstring>
+
+#include "cssc.h"
+#include "file.h"
 
 static char *
 re_new(char *p, int oldlen, int newlen)
