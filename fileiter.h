@@ -28,6 +28,10 @@
 #ifndef CSSC__FILEITER_H__
 #define CSSC__FILEITER_H__
 
+#if !defined CONFIG_DIFF_COMMAND
+#error "You need to include config.h before this file."
+#endif
+
 #include "mylist.h"
 #include "sccsname.h"
 

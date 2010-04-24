@@ -1,5 +1,11 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Produce a compile failiure when config.h was not included before
+	fileiter.h.  Doing things the other way around produces a
+	regression test failure.
+	* fileiter.h: Force a compilation failure if config.h was not included.
+	* delta.cc: Include config.h before fileiter.h.
+
 	Remove some obsolete preprocessor macros.
 	* cssc.h (CONFIG_WAIT_IS_A_USELESS_MACRO): Remove obsolete macro.
 	* sysdep.h: Assume wait is declared in sys/wait.h.
