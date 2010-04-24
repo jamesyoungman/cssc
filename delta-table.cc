@@ -189,7 +189,7 @@ cssc_delta_table::add(const delta &it)
   update_highest(it);
 }
 
-/* for the prepend() operation, see sf-add.cc. */
+/* for the prepend() operation, see dtbl-prepend.cc. */
 
 
 /* Finds a delta in the delta table by its SID. */

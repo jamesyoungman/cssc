@@ -1,5 +1,12 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Add/correct some comments.
+	* delta-table.cc: Correct the comment giving the location of
+	dtbl-prepend.cc.
+	* delta-table.h (class cssc_delta_table): Add a comment explaining
+	why cssc_delta_table::delta_at_seq_exists and
+	cssc_delta_table::delta_at_seq are not const.
+
 	Add unit tests for delta-table.h.
 	* unit-tests/test_delta-table.cc: New file, contains unit tests
 	for delta-table.h. 
