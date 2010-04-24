@@ -1,5 +1,9 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include what you use; include sid_list.h first.
+	* unit-tests/test_sid_list.cc: Include only what we use; don't
+	include cssc.h or sid.h.
+
 	Include what you use; make it possible to include quit.h first or
 	sccsdate.h first.
 	* sccsdate.h: Include <cstdio> and mystring.h.

@@ -20,9 +20,9 @@
  * Unit tests for sid_list.h.
  *
  */
-#include "cssc.h"
-#include "sid.h"
+#include "sid_list.h"
 #include "sl-merge.h"
+
 #include <gtest/gtest.h>
 
 
