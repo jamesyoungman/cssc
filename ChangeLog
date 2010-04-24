@@ -1,5 +1,9 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Cosmetic fixes for stack.h.
+	* stack.h: Remove obsolete version comment.
+	(stack::operator=): Correct indentation.
+
 	Make the data members of struct delta private.
 	* delta.h (delta): Make all the data members private and add
 	accessor and mutator methods.  Rename the data members to have a

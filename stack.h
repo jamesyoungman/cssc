@@ -23,9 +23,6 @@
  *
  * Defines a simple template that implements a stack for types without
  * constructors and destructors. 
- *
- * @(#) CSSC stack.h 1.2 93/11/13 00:12:55
- *
  */
 
 #ifndef CSSC__STACK_H__
@@ -58,7 +55,7 @@ public:
         operator =(stack<TYPE> const &it) {
 		if (this != &it) {
 		  delete [] array;
-			copy(it);
+		  copy(it);
 		}
 		return *this;
 	}
