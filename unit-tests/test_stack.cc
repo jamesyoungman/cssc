@@ -20,7 +20,6 @@
  * Unit tests for stack.h.
  *
  */
-#include "cssc.h"
 #include "stack.h"
 #include <gtest/gtest.h>
 

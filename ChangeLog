@@ -1,5 +1,10 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include what you use; make it possible to use stack<T> by
+	including only stack.h.
+	* unit-tests/test_stack.cc: Include what you use: include
+	"stack.h" but not "cssc.h".
+
 	Include what you use; make it possible to use myset<T> by
 	including only myset.h.
 	* unit-tests/test_myset.cc: Include myset.h first.
