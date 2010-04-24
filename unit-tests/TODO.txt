@@ -1,6 +1,5 @@
 bodyio.h
 delta-iterator.h
-delta-table.h
 except.h
 filediff.h
 file.h

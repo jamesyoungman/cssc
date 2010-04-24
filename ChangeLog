@@ -13,6 +13,8 @@
 	* unit-tests/Makefile.am (test_delta_table_SOURCES): New
 	variable.
 	(check_PROGRAMS): Add test_delta-table.
+	* unit-tests/TODO.txt: Remove delta-table.h; there are tests for
+	it now.
 
 	Cosmetic fixes for stack.h.
 	* stack.h: Remove obsolete version comment.
