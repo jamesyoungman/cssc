@@ -24,8 +24,6 @@
  * 
  */
 
-#include "cssc.h"
-#include "sccsfile.h"
 #include "delta-table.h"
 
 

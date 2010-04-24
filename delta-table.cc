@@ -22,9 +22,6 @@
  *
  */
 
-#include "cssc.h"
-#include "sccsfile.h"
-#include "delta.h"
 #include "delta-table.h"
 #include "delta-iterator.h"
 
