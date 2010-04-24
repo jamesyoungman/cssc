@@ -30,9 +30,15 @@
 #ifndef CSSC__SCCSDATE_H__
 #define CSSC__SCCSDATE_H__
 
+#include <cstdio>
+
+#include "mystring.h"
+
 #ifdef __GNUC__
 #pragma interface
 #endif
+
+
 
 class sccs_date
 {

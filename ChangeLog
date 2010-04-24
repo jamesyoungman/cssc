@@ -1,5 +1,11 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include what you use; make it possible to include quit.h first or
+	sccsdate.h first.
+	* sccsdate.h: Include <cstdio> and mystring.h.
+	* quit.h: Include cssc-assert.h (for ASSERT).
+	* unit-tests/test_sccsdate.cc: Include sccsdate.h first.
+
 	Include what you use; make it possible to use class relvbr by
 	including only relvbr.h.
 	* unit-tests/test_relvbr.cc: Include relvbr.h first, don't include

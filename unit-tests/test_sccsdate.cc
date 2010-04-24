@@ -20,11 +20,10 @@
  * Unit tests for sccsdate.h.
  *
  */
-#include "cssc.h"
 #include "sccsdate.h"
 #include "quit.h"
-#include <gtest/gtest.h>
 
+#include <gtest/gtest.h>
 
 TEST(SccsdateTest, NullConstructor)
 {
