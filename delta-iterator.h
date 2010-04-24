@@ -25,7 +25,8 @@
 #ifndef CSSC_DELTA_ITERATOR_H
 #define CSSC_DELTA_ITERATOR_H 1
 
-#include "delta.h"
+class cssc_delta_table;
+class delta;
 
 class delta_iterator
 {

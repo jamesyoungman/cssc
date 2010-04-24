@@ -23,6 +23,8 @@
 #ifndef CSSC_INC_BODYIO_H
 #define CSSC_INC_BODYIO_H 1
 
+#include <cstdio>
+
 bool body_insert_text(const char iname[], const char oname[],
 		      FILE *in, FILE *out,
 		      unsigned long int *lines,

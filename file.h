@@ -61,6 +61,9 @@ bool set_file_mode(const mystring &gname, bool writable, bool executable);
 bool set_gfile_writable(const mystring &gname, bool writable, bool executable);
 bool unlink_gfile_if_present(const char *gfile_name);
 bool unlink_file_as_real_user(const char *gfile_name);
+void split_filename(const mystring &fullname, 
+		    mystring& dirname, 
+		    mystring& basename);
 
 
 #ifdef CONFIG_SYNC_BEFORE_REOPEN

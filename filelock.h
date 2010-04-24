@@ -22,13 +22,12 @@
  *
  *
  * Defines the class file_lock.
- *
- * @(#) CSSC filelock.h 1.1 93/11/09 17:17:47
- *
  */
 
 #ifndef CSSC__FILELOCK_H__
 #define CSSC__FILELOCK_H__
+
+#include "cleanup.h"
 
 #if defined(__GNUC__) \
 && !(defined(__APPLE__) && __GNUC__ == 3 && __GNUC_MINOR__ == 1)

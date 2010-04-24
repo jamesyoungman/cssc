@@ -30,6 +30,9 @@
 #ifndef CSSC__SCCSNAME_H__
 #define CSSC__SCCSNAME_H__
 
+#include "mystring.h"
+#include "filelock.h"
+
 #ifdef __GNUC__
 #pragma interface
 #endif

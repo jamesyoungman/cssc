@@ -1,5 +1,23 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Various include-what-you-use fixes.
+	* delta-iterator.cc: Don't include cssc.h, sccsfile.h or delta.h,
+	since we don't use them.  Do include cssc-assert.h, since we do
+	use that.
+	* delta-iterator.h: add forward declarations of cssc_delta_table
+	and delta.
+	* bodyio.cc: Include what you use; include bodyio.h first.
+	* bodyio.h: Include <cstdio>.
+	* canonify.cc: Don't include cssc.h.  Include sccsname.h first.
+	Include file.h.
+	* cleanup.h: Move class cleanup into this separate file (out of quit.h).
+	* quit.h: Don't declare class cleanup (we moved it).
+	* filelock.h: Include cleanup.h.
+	* sccsname.h: Include mystring.h and filelock.h.
+	* cssc.h: Move declaration of split_filename into file.h.
+	* file.h: Declare split_filename.
+	* pfile.h: Include ioerr.h.
+
 	Include what you use; include sid_list.h first.
 	* unit-tests/test_sid_list.cc: Include only what we use; don't
 	include cssc.h or sid.h.

@@ -25,12 +25,9 @@
  *
  */
 
-#include "cssc.h"
-#include "sccsfile.h"
-#include "delta.h"
 #include "delta-iterator.h"
 #include "delta-table.h"
-
+#include "cssc-assert.h"
 
 delta_iterator::delta_iterator(cssc_delta_table *d)
   : dtbl(d), pos(-1)

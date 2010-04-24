@@ -23,16 +23,15 @@
  *
  */
 
-#include "cssc.h"
-#include "filepos.h"
 #include "bodyio.h"
-#include "sccsfile.h"
-#include "linebuf.h"
+#include "quit.h"
+#include "cssc-assert.h"
+#include "filepos.h"
 #include "except.h"
+#include "linebuf.h"
 
-#ifdef HAVE_STDIO_H
-#include <stdio.h>
-#endif
+#include <cstdio>
+
 
 
 /* Check if we have exceeded the maximum line length. 

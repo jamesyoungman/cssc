@@ -172,14 +172,11 @@
 
 // Some declarations are only useful if we know what a "mystring" is.
 //
-void
-split_filename(const mystring &fullname,
-               mystring& dirname, mystring& basename);
 mystring prompt_user(const char *prompt);
 
 #endif /* NO_COMMON_HEADERS */
 
-unsigned long cap5(unsigned long);
+unsigned long cap5(unsigned long); // see cap.cc
 bool is_id_keyword_letter(char ch);
 
 /* functions from environment.cc. */

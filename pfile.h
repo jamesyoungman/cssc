@@ -29,6 +29,7 @@
 #include "sid.h"
 #include "sccsdate.h"
 #include "mylist.h"
+#include "ioerr.h"
 
 class sccs_pfile {
 public:

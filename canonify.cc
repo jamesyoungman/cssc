@@ -20,9 +20,11 @@
  * Functions for canonifying filenames.
  */
 
-#include "cssc.h"
-#include "mystring.h"
 #include "sccsname.h"
+#include "file.h"
+#include "mystring.h"
+
+#include <cstring>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>		// chdir()
