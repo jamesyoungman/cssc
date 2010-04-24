@@ -20,7 +20,6 @@
  * Unit tests for rel_list.h.
  *
  */
-#include "cssc.h"
 #include "rel_list.h"
 #include <gtest/gtest.h>
 

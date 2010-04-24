@@ -1,5 +1,15 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include what you use; make it possible to use class release by
+	including only release.h and release_list by including only
+	rel_list.h.
+	* release.h: Include <cstdio>.
+	* unit-tests/test_release.cc: Don't include cssc.h.
+	* unit-tests/test_rel_list.cc: Likewise for rel_list.h.
+
+	Include what you use; include delta-table.h first in the unit test.
+	* unit-tests/test_delta-table.cc: Include delta-table.h first.
+
 	Include what you use; make it possible to use delta by
 	including only delta.h.
 	* delta.h: Include sid.h, sccsdate.h, mystring.h, mylist.h.

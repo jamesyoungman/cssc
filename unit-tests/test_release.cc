@@ -20,7 +20,6 @@
  * Unit tests for relvbr.h.
  *
  */
-#include "cssc.h"
 #include "release.h"
 #include "sid.h"
 #include <gtest/gtest.h>

@@ -29,8 +29,9 @@
 #ifndef INC_RELEASE_H
 #define INC_RELEASE_H
 
+#include <cstdio>
+
 class sid;
-//#include "sid.h"
 
 class release
 {
