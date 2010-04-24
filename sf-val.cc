@@ -43,13 +43,13 @@ sccs_file::get_module_type_flag()
 bool 
 sccs_file::validate_seq_lists(const delta_iterator& d) const
 {
-  const char *sz_sid = d->id.as_string().c_str();
+  const char *sz_sid = d->id().as_string().c_str();
   int i;
   seq_no s;
   
-  for (i=0; i<d->included.length(); ++i)
+  for (i=0; i<d->get_included_seqnos().length(); ++i)
     {
-      s = d->included[i];
+      s = d->get_included_seqnos()[i];
       if (s > delta_table->highest_seqno())
 	{
 	  errormsg("%s: SID %s: included seqno %u does not exist\n",
@@ -58,9 +58,9 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
 	}
     }
 
-   for (i=0; i<d->excluded.length(); ++i)
+  for (i=0; i<d->get_excluded_seqnos().length(); ++i)
      {
-       s = d->excluded[i];
+       s = d->get_excluded_seqnos()[i];
        if (s > delta_table->highest_seqno())
 	 {
 	   errormsg("%s: SID %s: excluded seqno %u does not exist\n",
@@ -69,9 +69,9 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
 	 }
      }
 
-   for (i=0; i<d->ignored.length(); ++i)
+  for (i=0; i<d->get_ignored_seqnos().length(); ++i)
      {
-       s = d->ignored[i];
+       s = d->get_ignored_seqnos()[i];
        if (s > delta_table->highest_seqno())
 	 {
 	   errormsg("%s: SID %s: ignored seqno %u does not exist\n",
@@ -105,9 +105,9 @@ sccs_file::validate_isomorphism() const
 	    
 	    {
 	      const delta & d = delta_table->delta_at_seq(seq);
-	      if (d.id.on_trunk())
+	      if (d.id().on_trunk())
 		{
-		  ++trunk_child_count[d.prev_seq];
+		  ++trunk_child_count[d.prev_seq()];
 		}
 	    }
 	}
@@ -123,7 +123,7 @@ sccs_file::validate_isomorphism() const
 	  if (trunk_child_count[seq] > 1)
 	    {
 	      const delta & d = delta_table->delta_at_seq(seq);
-	      const char *sz_sid = d.id.as_string().c_str();
+	      const char *sz_sid = d.id().as_string().c_str();
 	      warning("%s: SID %s has %d children on the trunk",
 		      name.c_str(), sz_sid,
 		      trunk_child_count[seq]);
@@ -167,51 +167,51 @@ sccs_file::validate() const
   
   while ( retval && iter.next())
     {
-      seq_no s = iter->seq;
+      seq_no s = iter->seq();
       
       for (i=0; i<delta_table->highest_seqno(); ++i)
 	{
 	  seen_in_ancestry[i] = 0;
 	}
   
-      const char *sz_sid = iter->id.as_string().c_str();
+      const char *sz_sid = iter->id().as_string().c_str();
       
       // validate that the included/excluded/unchanged line counts are valid.
-      if (iter->inserted > 99999uL)
+      if (iter->inserted() > 99999uL)
 	{
 	  errormsg("%s: SID %s: out-of-range inserted line count %lu",
-		   name.c_str(), sz_sid, iter->inserted);
+		   name.c_str(), sz_sid, iter->inserted());
 	  retval = false;
 	}
-      if (iter->deleted > 99999uL)
+      if (iter->deleted() > 99999uL)
 	{
 	  errormsg("%s: SID %s: out-of-range deleted line count %lu",
-		   name.c_str(), sz_sid, iter->deleted);
+		   name.c_str(), sz_sid, iter->deleted());
 	  retval = false;
 	}
-      if (iter->unchanged > 99999uL)
+      if (iter->unchanged() > 99999uL)
 	{
 	  errormsg("%s: SID %s: out-of-range unchanged line count %lu",
-		   name.c_str(), sz_sid, iter->unchanged);
+		   name.c_str(), sz_sid, iter->unchanged());
 	  retval = false;
 	}
       
-      if (!iter->date.valid())
+      if (!iter->date().valid())
 	{
 	  errormsg("%s: SID %s: invalid date", name.c_str(), sz_sid);
 	  retval = false;
 	}
       
       // check that username contains no colon.
-      if (iter->user.empty())
+      if (iter->user().empty())
 	{
 	  errormsg("%s: SID %s: empty username", name.c_str(), sz_sid);
 	  retval = false;
 	}
-      else if (iter->user.find_last_of(':') != mystring::npos)
+      else if (iter->user().find_last_of(':') != mystring::npos)
 	{
 	  errormsg("%s: SID %s: invalid username '%s'",
-		   name.c_str(), sz_sid, iter->user.c_str());
+		   name.c_str(), sz_sid, iter->user().c_str());
 	  retval = false;
 	}
 
@@ -223,10 +223,10 @@ sccs_file::validate() const
 	  retval = false;
 	}
       
-      if (iter->prev_seq > delta_table->highest_seqno())
+      if (iter->prev_seq() > delta_table->highest_seqno())
 	{
 	  errormsg("%s: SID %s: invalid predecessor seqno %d",
-		   name.c_str(), sz_sid, (int)iter->prev_seq);
+		   name.c_str(), sz_sid, (int)iter->prev_seq());
 	  retval = false;
 	}
       
@@ -242,7 +242,7 @@ sccs_file::validate() const
       // TODO:  Check for loops in predecessor list.
 
 
-      s = delta_table->delta_at_seq(s).prev_seq;
+      s = delta_table->delta_at_seq(s).prev_seq();
       
       while (s != 0)
 	{
@@ -263,24 +263,24 @@ sccs_file::validate() const
 	  else
 	    {
 	      ++seen_in_ancestry[s - 1];
-	      s = delta_table->delta_at_seq(s).prev_seq;
+	      s = delta_table->delta_at_seq(s).prev_seq();
 	    }
 	}
       
       // check time doesn't go backward (warning only, because this is
       // possible if developers in different timezones are
       // collaborating on the same file).
-      if (0 != iter->prev_seq)
+      if (0 != iter->prev_seq())
 	{
-	  const delta& ancestor(delta_table->delta_at_seq(iter->prev_seq));
-	  if (ancestor.date > iter->date)
+	  const delta& ancestor(delta_table->delta_at_seq(iter->prev_seq()));
+	  if (ancestor.date() > iter->date())
 	    {
 	      // Time has apparently gone backward...
 	      warning("%s: date for version %s"
 		       " is later than the date for version %s",
 		       name.c_str(),
-		       ancestor.id.as_string().c_str(),
-		       iter->id.as_string().c_str());
+		      ancestor.id().as_string().c_str(),
+		      iter->id().as_string().c_str());
 	    }
 	}
       

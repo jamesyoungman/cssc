@@ -139,8 +139,8 @@ bool sccs_file::cutoff::excludes_delta(sid /* s */,
     }
   if (cutoff_delta)
     {
-      stop_now = stop_now || (date <= cutoff_delta->date);
-      if (date < cutoff_delta->date)
+      stop_now = stop_now || (date <= cutoff_delta->date());
+      if (date < cutoff_delta->date())
 	return true;
     }
   return false;
@@ -187,7 +187,7 @@ sccs_file::cutoff::print(FILE *out) const
       if (cutoff_delta)
 	{
 	  fputs("' cutoff_delta->date='", out);
-	  if (cutoff_delta->date.valid())
+	  if (cutoff_delta->date().valid())
 	    {
 	      last_accepted.printf(out, 'D');
 	      fprintf(out, " ");
@@ -340,7 +340,7 @@ sccs_file::prt(FILE *out,
   
       while (!stop_now && iter.next(all_deltas))
 	{
-	  if (exclude.excludes_delta(iter->id, iter->date, stop_now))
+	  if (exclude.excludes_delta(iter->id(), iter->date(), stop_now))
 	    continue;
 
 	  // Unless -a was specified, don't print removed deltas.
@@ -354,17 +354,17 @@ sccs_file::prt(FILE *out,
       
 	  // Print the stuff from the delta...
 	  fprintf(out, "%c ", iter->get_type());
-	  iter->id.print(out);
+	  iter->id().print(out);
 	  putc('\t', out);
-	  iter->date.printf(out, 'D');
+	  iter->date().printf(out, 'D');
 	  putc(' ', out);
-	  iter->date.printf(out, 'T');
+	  iter->date().printf(out, 'T');
 	  fprintf(out, " %s\t%hu %hu",
-		  iter->user.c_str(),
-		  (unsigned short)iter->seq,
-		  (unsigned short)iter->prev_seq);
+		  iter->user().c_str(),
+		  (unsigned short)iter->seq(),
+		  (unsigned short)iter->prev_seq());
 	  fprintf(out, "\t%05lu/%05lu/%05lu",
-		  iter->inserted, iter->deleted, iter->unchanged);
+		  iter->inserted(), iter->deleted(), iter->unchanged());
 
 
 	  if (!first_line_only)
@@ -382,39 +382,39 @@ sccs_file::prt(FILE *out,
 		  // nothing is printed.  This is a behavioural
 		  // difference that to fix seems to require a real
 		  // kludge.
-		  if (iter->included.length())
+		  if (iter->get_included_seqnos().length())
 		    {
 		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Included:\t");
-		      print_seq_list(out, iter->included);
+		      print_seq_list(out, iter->get_included_seqnos());
 		    }
-		  else if (iter->have_includes)
+		  else if (iter->has_includes())
 		    {
 		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Included:\t");
 		    }
-		  if (iter->excluded.length())
+		  if (iter->get_excluded_seqnos().length())
 		    {
 		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Excluded:\t");
-		      print_seq_list(out, iter->excluded);
+		      print_seq_list(out, iter->get_excluded_seqnos());
 		    }
-		  else if (iter->have_excludes)
+		  else if (iter->has_excludes())
 		    {
 		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Excluded:\t");
 		    }
 		}
 	      // Print any MRs and then the comments.
-	      if (iter->mrs.length())
+	      if (iter->mrs().length())
 		{
 		  fputs(nl_sep, out);	// either newline or space.
-		  print_string_list(out, iter->mrs, "MRs:\t", nl_sep, "");
+		  print_string_list(out, iter->mrs(), "MRs:\t", nl_sep, "");
 		}
-	      if (iter->comments.length())
+	      if (iter->comments().length())
 		{
 		  fputs(nl_sep, out);	// either newline or space.
-		  print_string_list(out, iter->comments, "", nl_sep, "");
+		  print_string_list(out, iter->comments(), "", nl_sep, "");
 		}
 	    }
 	  putc('\n', out);

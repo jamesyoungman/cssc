@@ -89,7 +89,7 @@ cssc_delta_table::build_seq_table()
   delta_iterator iter(this);
   while (iter.next(1))
     {
-      seq_no seq = iter->seq;
+      const seq_no seq = iter->seq();
       if (seq_table[seq] != -1)
 	{
           /* ignore duplicate sequence number: some old sccs files
@@ -108,7 +108,7 @@ void
 cssc_delta_table::update_highest(const delta &it) 
 {
   ASSERT(0 != this);
-  seq_no seq = it.seq;
+  const seq_no seq = it.seq();
   
   if (seq > high_seqno) 
     {
@@ -126,7 +126,7 @@ cssc_delta_table::update_highest(const delta &it)
 	      seq_table[i] = -1;
 	    }
 	}
-      high_seqno = it.seq;
+      high_seqno = it.seq();
     }
 
   /* high_release is initialised to {0} so 
@@ -137,12 +137,12 @@ cssc_delta_table::update_highest(const delta &it)
     {
       if (high_release.is_null())
 	{
-	  if (it.id.on_trunk())
-	    high_release = it.id;
+	  if (it.id().on_trunk())
+	    high_release = it.id();
 	}
-      else if (it.id > high_release)
+      else if (it.id() > high_release)
 	{
-	  high_release = it.id;
+	  high_release = it.id();
 	}
     }
   
@@ -150,12 +150,12 @@ cssc_delta_table::update_highest(const delta &it)
     {
       if (seq_table[seq] != -1) 
 	{
-	  sid sid_using_this_seqno = delta_at_seq(seq).id;
+	  const sid sid_using_this_seqno = delta_at_seq(seq).id();
 
 	  sid_using_this_seqno.print(stderr);
-	  it.id.print(stderr);
+	  it.id().print(stderr);
 
-	  if (it.id != sid_using_this_seqno)
+	  if (it.id() != sid_using_this_seqno)
 	    {
 	      // diagnose...
 	      for (int i = 1; i < high_seqno + 1; i++) 
@@ -202,7 +202,7 @@ find(sid id) const
   
   while (iter.next())
     {
-      if (iter->id == id)
+      if (iter->id() == id)
 	{
 	  return iter.operator->();
 	}
@@ -222,7 +222,7 @@ find_any(sid id) const
   
   while (iter.next(1))
     {
-      if (iter->id == id)
+      if (iter->id() == id)
 	{
 	  return iter.operator->();
 	}
@@ -239,7 +239,7 @@ find(sid id)
   
   while (iter.next())
     {
-      if (iter->id == id)
+      if (iter->id() == id)
 	{
 	  return iter.operator->();
 	}

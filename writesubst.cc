@@ -114,23 +114,23 @@ sccs_file::write_subst(const char *start,
             break;
                         
             case 'I':
-              err = d.id.print(out);
+              err = d.id().print(out);
               break;
 
             case 'R':
-              err = d.id.printf(out, 'R', 1);
+              err = d.id().printf(out, 'R', 1);
               break;
 
             case 'L':
-              err = d.id.printf(out, 'L', 1);
+              err = d.id().printf(out, 'L', 1);
               break;
 
             case 'B':
-              err = d.id.printf(out, 'B', 1);
+              err = d.id().printf(out, 'B', 1);
               break;
 
             case 'S':
-              err = d.id.printf(out, 'S', 1);
+              err = d.id().printf(out, 'S', 1);
               break;
 
             case 'D':
@@ -146,15 +146,15 @@ sccs_file::write_subst(const char *start,
               break;
 
             case 'E':
-              err = d.date.printf(out, 'D');
+              err = d.date().printf(out, 'D');
               break;
 
             case 'G':
-              err = d.date.printf(out, 'H');
+              err = d.date().printf(out, 'H');
               break;
 
             case 'U':
-              err = d.date.printf(out, 'T');
+              err = d.date().printf(out, 'T');
               break;
 
             case 'Y':

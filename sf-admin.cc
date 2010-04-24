@@ -370,9 +370,9 @@ sccs_file::create(const sid &id,
 
   delta new_delta('D', id, now, get_user_name(), 1, 0,
 		  mrs, comments);
-  new_delta.inserted = 0;
-  new_delta.deleted = 0;
-  new_delta.unchanged = 0;
+  ASSERT (new_delta.inserted() == 0);
+  ASSERT (new_delta.deleted() == 0);
+  ASSERT (new_delta.unchanged() == 0);
 
   FILE *out = start_update(new_delta);
   if (NULL == out)
@@ -412,7 +412,7 @@ sccs_file::create(const sid &id,
 		     in, out,
 		     &lines, &found_id))
       {
-	new_delta.inserted = lines;
+	new_delta.set_inserted(lines);
 	
 	if (force_binary)
 	  flags.encoded = true;	// fixup file in sccs_file::end_update()

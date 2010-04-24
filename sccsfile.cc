@@ -393,10 +393,9 @@ sccs_file::read_delta() {
 
 	// TODO: use constructor here?
 	delta tmp;	/* The new delta */
-
-	tmp.inserted  = strict_atoul_idu(args[0]);
-	tmp.deleted   = strict_atoul_idu(args[1]);
-	tmp.unchanged = strict_atoul_idu(args[2]);
+	tmp.set_idu(strict_atoul_idu(args[0]),
+		    strict_atoul_idu(args[1]),
+		    strict_atoul_idu(args[2]));
 
 	if (read_line() != 'd') {
 		corrupt("Expected '@d'");
@@ -416,16 +415,16 @@ sccs_file::read_delta() {
 	    corrupt("Bad delta type");
 	  }
 
-	tmp.id = sid(args[1]);
-	tmp.date = sccs_date(args[2], args[3]);
-	tmp.user = args[4];
-	tmp.seq = strict_atous(args[5]);
-	tmp.prev_seq = strict_atous(args[6]);
+	tmp.set_id(sid(args[1]));
+	tmp.set_date(sccs_date(args[2], args[3]));
+	tmp.set_user(args[4]);
+	tmp.set_seq(strict_atous(args[5]));
+	tmp.set_prev_seq(strict_atous(args[6]));
 
-	if (!tmp.id.valid()) {
+	if (!tmp.id().valid()) {
 		corrupt("Bad SID");
 	}
-	if (!tmp.date.valid()) {
+	if (!tmp.date().valid()) {
 		corrupt("Bad Date/Time");
 	}
 
@@ -441,20 +440,20 @@ sccs_file::read_delta() {
 		  switch (c)
 		    {
 		    case 'i':
-		      tmp.have_includes = true;
+		      tmp.set_has_includes(true);
 		      break;
 
 		    case 'x':
 		      {
 			warning("feature not fully tested: "
 				"excluded delta in SID %s ",
-				tmp.id.as_string().c_str());
-			tmp.have_excludes = true;
+				tmp.id().as_string().c_str());
+			tmp.set_has_excludes(true);
 		      }
 		      break;
 
 		    case 'g':
-		      tmp.have_ignores = true;
+		      tmp.set_has_ignores(true);
 		      break;
 		    }
 		  
@@ -489,7 +488,7 @@ sccs_file::read_delta() {
 					      (unsigned long)seq);
 				    }
 
-					tmp.included.add(seq);
+					tmp.add_include(seq);
 					break;
 
 				case 'x':
@@ -498,11 +497,11 @@ sccs_file::read_delta() {
 				      fprintf(stderr, "Excluding seq %lu\n",
 					      (unsigned long)seq);
 				    }
-					tmp.excluded.add(seq);
+					tmp.add_exclude(seq);
 					break;
 
 				case 'g':
-					tmp.ignored.add(seq);
+					tmp.add_ignore(seq);
 					break;
 				}
 				start = end;
@@ -526,7 +525,7 @@ sccs_file::read_delta() {
 	      {
 		if (bufchar(2) == ' ')
 		  {
-		    tmp.mrs.add(plinebuf->c_str() + 3);
+		    tmp.add_mr(plinebuf->c_str() + 3);
 		  }
 	      }
 	    else if (c == 'c') 
@@ -555,7 +554,7 @@ sccs_file::read_delta() {
 					    c, bufchar(2));
 		      }
 		  }
-		tmp.comments.add(plinebuf->c_str() + 3);
+		tmp.add_comment(plinebuf->c_str() + 3);
 	      }
 	    
 	    c = read_line();
@@ -1029,10 +1028,10 @@ sccs_file::find_most_recent_sid(sid id) const {
 	const_delta_iterator iter(delta_table);
 
 	while (iter.next()) {
-		if (id.trunk_match(iter->id)) {
-			if (found.is_null() || newest < iter->date) {
-				newest = iter->date;
-				found = iter->id;
+	  if (id.trunk_match(iter->id())) {
+			if (found.is_null() || newest < iter->date()) {
+				newest = iter->date();
+				found = iter->id();
 			}
 		}
 	}
@@ -1051,10 +1050,10 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
   const_delta_iterator iter(delta_table);
   while (iter.next())
     {
-      if (!found || iter->date > d)
+      if (!found || iter->date() > d)
 	{
-	  d = iter->date;
-	  s = iter->id;
+	  d = iter->date();
+	  s = iter->id();
 	  found = true;
 	}
     }
@@ -1142,7 +1141,7 @@ int
 sccs_file::is_delta_creator(const char *user, sid id) const
 {
   const delta *d = find_delta(id);
-  return (d != 0) && (strcmp(d->user.c_str(), user) == 0);
+  return (d != 0) && (strcmp(d->user().c_str(), user) == 0);
 }
 
 
@@ -1179,7 +1178,7 @@ sid sccs_file::highest_delta_release() const
 sid sccs_file::seq_to_sid(seq_no seq) const
 {
   ASSERT(0 != delta_table);
-  return delta_table->delta_at_seq(seq).id;
+  return delta_table->delta_at_seq(seq).id();
 }
 
 

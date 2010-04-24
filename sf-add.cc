@@ -64,9 +64,9 @@ sccs_file::end_update(FILE **pout, const delta &d)
   rewind(*pout);
 
   if (printf_failed(fprintf(*pout, "\001h-----\n\001s %05lu/%05lu/%05lu",
-			    cap5(d.inserted),
-			    cap5(d.deleted),
-			    cap5(d.unchanged))))
+			    cap5(d.inserted()),
+			    cap5(d.deleted()),
+			    cap5(d.unchanged()))))
     {
       fclose(*pout);
       *pout = NULL;

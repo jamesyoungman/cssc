@@ -46,19 +46,18 @@ inlist(mylist<mystring> l, const mystring& find)
 }
 
 // Do the MR addition and deletion; if any have been deleted,
-// return true.
-static bool
-process_mrs(mylist<mystring>& current,
-	   mylist<mystring> to_add,
-	   mylist<mystring> to_delete,
-	   mylist<mystring>& comments)
+// set deleted to true.   Return the updated set of MRs.
+static mylist<mystring>
+process_mrs(const mylist<mystring>& old_mrs,
+	    mylist<mystring> to_add,
+	    mylist<mystring> to_delete,
+	    mylist<mystring>& comments,
+	    bool& deleted)
 {
-  mylist<mystring> old_mrs = current;
-
-  current = to_add;
+  mylist<mystring> current(to_add);
 
   const int len = old_mrs.length();
-  bool deleted = false;
+  deleted = false;
   
   for (int i=0; i<len; ++i)
     {
@@ -76,7 +75,7 @@ process_mrs(mylist<mystring>& current,
 	  current.add(mr);
 	}
     }
-  return deleted;
+  return current;
 }
 
 
@@ -98,7 +97,7 @@ sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
   
   mylist<mystring> not_mrs;
   mylist<mystring> deletion_comment;
-  int mrs_deleted = 0;
+  bool mrs_deleted = false;
   int len = mrs.length();
   if (0 != len)
     {
@@ -113,8 +112,9 @@ sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
 	    yes_mrs.add(s);
 	}
 
-      if (process_mrs(d.mrs, yes_mrs, not_mrs, deletion_comment))
-	mrs_deleted = 1;
+      mylist<mystring> new_mrs;
+      new_mrs = process_mrs(d.mrs(), yes_mrs, not_mrs, deletion_comment, mrs_deleted);
+      d.set_mrs(new_mrs);
     }
   
   if (mrs_deleted || comments.length())	// Prepend the new comments.
@@ -143,8 +143,8 @@ sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
 	  newcomments.add(changeline);
 	}
       
-      newcomments += d.comments;
-      d.comments = newcomments;
+      newcomments += d.comments();
+      d.set_comments(newcomments);
     }
 
   return true;

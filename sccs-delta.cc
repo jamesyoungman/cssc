@@ -32,31 +32,31 @@
 delta &
 delta::operator =(delta const &it)
 {
-  inserted = it.inserted;
-  deleted = it.deleted;
-  unchanged = it.unchanged;
-  set_type(it.delta_type);
-  id = it.id;
-  date = it.date;
-  user = it.user;
-  seq = it.seq;
-  prev_seq = it.prev_seq;
+  inserted_ = it.inserted_;
+  deleted_ = it.deleted_;
+  unchanged_ = it.unchanged_;
+  set_type(it.delta_type_);
+  id_ = it.id_;
+  date_ = it.date_;
+  user_ = it.user_;
+  seq_ = it.seq_;
+  prev_seq_ = it.prev_seq_;
   
-  included = it.included;
-  excluded = it.excluded;
-  ignored = it.ignored;
-  have_includes = it.have_includes;
-  have_excludes = it.have_excludes;
-  have_ignores  = it.have_ignores;
+  included_ = it.included_;
+  excluded_ = it.excluded_;
+  ignored_ = it.ignored_;
+  have_includes_ = it.have_includes_;
+  have_excludes_ = it.have_excludes_;
+  have_ignores_  = it.have_ignores_;
   
-  mrs = it.mrs;
-  comments = it.comments;
+  mrs_ = it.mrs_;
+  comments_ = it.comments_;
   return *this;
 }
 
 bool delta::removed() const
 {
-  return 'R' == delta_type;
+  return 'R' == delta_type_;
 }
 
 

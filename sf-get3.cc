@@ -44,25 +44,25 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
 
   while (iter.next())
     {
-      sid const &id = iter->id;
+      sid const &id = iter->id();
 
       if (include.member(id))   // explicitly included on command line
         {
-          state.set_explicitly_included(iter->seq,
+          state.set_explicitly_included(iter->seq(),
 					(seq_no) seq_state::BY_COMMAND_LINE );
         }
       else if (exclude.member(id)) // explicitly included on command line
         {
-          state.set_explicitly_excluded(iter->seq,
+          state.set_explicitly_excluded(iter->seq(),
 					(seq_no) seq_state::BY_COMMAND_LINE );
         }
-      else if (cutoff_date.valid() && iter->date > cutoff_date)
+      else if (cutoff_date.valid() && iter->date() > cutoff_date)
         {
           // Delta not explicitly included/excluded by the user, but
           // if it is newer than the cutoff date, we don't want it.
           // This is the feature that allows us to retrieve a delta
           // that was current at some time in the past.
-          state.set_excluded(iter->seq, (seq_no) seq_state::BY_COMMAND_LINE);
+          state.set_excluded(iter->seq(), (seq_no) seq_state::BY_COMMAND_LINE);
         }
       
       ASSERT(0 != delta_table);

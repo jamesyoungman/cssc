@@ -135,42 +135,42 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
   int i;
 
   if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
-                            cap5(d.inserted),
-                            cap5(d.deleted),
-                            cap5(d.unchanged)))
+                            cap5(d.inserted()),
+                            cap5(d.deleted()),
+                            cap5(d.unchanged())))
       || printf_failed(fprintf(out, "\001d %c ", d.get_type()))
-      || d.id.print(out)
+      || d.id().print(out)
       || putc_failed(putc(' ', out))
-      || d.date.print(out)
+      || d.date().print(out)
       || printf_failed(fprintf(out, " %s %u %u\n",
-                               d.user.c_str(),
-                               d.seq, d.prev_seq)))
+                               d.user().c_str(),
+                               d.seq(), d.prev_seq())))
     {
       return 1;
     }
 
-  if (print_seqs(out, 'i', d.included)
-      || print_seqs(out, 'x', d.excluded)
-      || print_seqs(out, 'g', d.ignored))
+  if (print_seqs(out, 'i', d.get_included_seqnos())
+      || print_seqs(out, 'x', d.get_excluded_seqnos())
+      || print_seqs(out, 'g', d.get_ignored_seqnos()))
     {
       return 1;
     }
   
-  len = d.mrs.length();
+  len = d.mrs().length();
   for(i = 0; i < len; i++)
     {
       if (printf_failed(fprintf(out, "\001m %s\n",
-                                d.mrs[i].c_str())))
+                                d.mrs()[i].c_str())))
         {
           return 1;
         }
     }
 
-  len = d.comments.length();
+  len = d.comments().length();
   for(i = 0; i < len; i++)
     {
       if (printf_failed(fprintf(out, "\001c %s\n",
-                                d.comments[i].c_str())))
+                                d.comments()[i].c_str())))
         {
           return 1;
         }

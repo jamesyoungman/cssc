@@ -489,7 +489,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
   // Remember seq number that will be the predecessor of the 
   // one for the delta.
-  seq_no predecessor_seq = got_delta->seq;
+  seq_no predecessor_seq = got_delta->seq();
 
 
   if (!prepare_seqstate(sstate, predecessor_seq,
@@ -599,7 +599,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
       release last_auto_rel = release(pfile->delta);
       // --last_auto_rel;
             
-      sid id(got_delta->id);
+      sid id(got_delta->id());
       release null_rel = release(id);
       ++null_rel;
             
@@ -621,9 +621,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
           delta null_delta('D', id, sccs_date::now(),
                            get_user_name(), new_seq, predecessor_seq,
                            mrs, auto_comment);
-          null_delta.inserted = 0;
-          null_delta.deleted = 0;
-          null_delta.unchanged = 0;
+	  ASSERT (null_delta.inserted() == 0);
+	  ASSERT (null_delta.deleted() == 0);
+	  ASSERT (null_delta.unchanged() == 0);
 
           delta_table->prepend(null_delta);
                 
@@ -649,9 +649,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
       const_delta_iterator iter(delta_table);
       while (iter.next())
         {
-          if (pfile->include.member(iter->id))
+          if (pfile->include.member(iter->id()))
             {
-              included.add(iter->seq);
+              included.add(iter->seq());
             }
         }
     }
@@ -660,9 +660,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
       const_delta_iterator iter(delta_table);
       while (iter.next())
         {
-          if (pfile->exclude.member(iter->id))
+          if (pfile->exclude.member(iter->id()))
             {
-              excluded.add(iter->seq);
+              excluded.add(iter->seq());
             }
         }
     }
@@ -675,12 +675,11 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
   // We don't know how many lines will be added/changed yet.
   // end_update() fixes that.
-  new_delta.inserted = 0;
-  new_delta.deleted = 0;
-  new_delta.unchanged = 0;
-
+  ASSERT (new_delta.inserted() == 0);
+  ASSERT (new_delta.deleted() == 0);
+  ASSERT (new_delta.unchanged() == 0);
         
-  new_delta.id.print(stdout);
+  new_delta.id().print(stdout);
   printf("\n");
   
   // Begin the update by writing out the new delta.
@@ -763,7 +762,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
               // decide what to do with this line.
               // process() also emits the neccesary command
               // (insert, delete, end).
-              action = dstate.process(out, new_delta.seq);
+              action = dstate.process(out, new_delta.seq());
               switch (action)
                 {
 
@@ -793,7 +792,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
                           linebuf.c_str());
                   fflush(df);
 #endif
-                  new_delta.deleted++;
+		  new_delta.increment_deleted();
                   break;
 
                 case diff_state::INSERT:
@@ -813,7 +812,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
                           dstate.get_insert_line());
                   fflush(df);
 #endif
-                  new_delta.inserted++;
+                  new_delta.increment_inserted();
                   
                   pline = dstate.get_insert_line();
                   len = strlen(pline);
@@ -855,7 +854,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
                           linebuf.c_str());
                   fflush(df);
 #endif
-                  new_delta.unchanged++;
+                  new_delta.increment_unchanged();
                   break;
 
                 default:
@@ -872,9 +871,9 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
         {
           // If we've exhausted the input we may still have a block to
           // insert at the end.
-          while (diff_state::INSERT == dstate.process(out, new_delta.seq))
+          while (diff_state::INSERT == dstate.process(out, new_delta.seq()))
             {
-              new_delta.inserted++;
+              new_delta.increment_inserted();
               
               pline = dstate.get_insert_line();
               len = strlen(pline);
@@ -930,7 +929,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
     return false;
       
   printf("%lu inserted\n%lu deleted\n%lu unchanged\n",
-         new_delta.inserted, new_delta.deleted, new_delta.unchanged);
+         new_delta.inserted(), new_delta.deleted(), new_delta.unchanged());
 
   if (pfile.update(true))
     return true;

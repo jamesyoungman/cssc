@@ -1,3 +1,82 @@
+2010-04-24  James Youngman  <jay@gnu.org>
+
+	Make the data members of struct delta private.
+	* delta.h (delta): Make all the data members private and add
+	accessor and mutator methods.  Rename the data members to have a
+	trailing underscore.
+	(delta::id): Accessor for id_.
+	(delta::set_id): Mutator for id_.
+	(delta::date): Accessor for date_.
+	(delta::set_date): Mutator for date_.
+	(delta::user): Accessor for user_.
+	(delta::set_user): Mutator for user_.
+	(delta::seq): Accessor for seq_.
+	(delta::set_seq): Mutator for set_seq.
+	(delta::prev_seq): Accessor for prev_seq_.
+	(delta::set_prev_seq): Mutator for prev_seq_.
+	(delta::inserted): Accessor for inserted_.
+	(delta::set_inserted): Mutator for inserted_.
+	(delta::deleted): Accessor for deleted_ (there is no mutator).
+	(delta::unchanged): Accessor for unchanged (there is no mutator).
+	(delta::set_idu): Set inserted_, deleted_, unchanged_ all at once.
+	(delta::increment_inserted): Increments inserted_.
+	(delta::increment_deleted): Increments deleted_.
+	(delta::increment_unchanged): Increments unchanged_.
+	(delta::get_included_seqnos): Accessor for included_.
+	(delta::get_excluded_seqnos): Accessor for excluded_.
+	(delta::get_ignored_seqnos): Accessor for ignored_.
+	(delta::has_includes): Accessor for have_includes_.
+	(delta::set_has_includes): Mutator for have_includes_.
+	(delta::add_include): Add an item to included_.
+	(delta::has_excludes): Accessor for have_excludes_.
+	(delta::set_has_excludes): Mutator for have_excludes_.
+	(delta::add_exclude): Add an item to excluded_.
+	(delta::has_ignores): Accessor for have_ignores_.
+	(delta::set_has_ignores): Mutator for have_ignores_.
+	(delta::add_ignore): Add an item to ignored_.
+	(delta::mrs): Accessor for mrs_.
+	(delta::set_mrs): Mutator for mrs_.
+	(delta::add_mr): Add an item to mrs_.
+	(delta::comments): Accessor for comments_.
+	(delta::set_comments): Mutator for comments_.
+	(delta::add_comment): Add an item to comments_.
+	* unit-tests/test_delta.cc (DeltaTest.Constructor): Modify unit
+	test to use the new accessor methods.
+	(DeltaTest.Assignment): Likewise.
+	(DeltaTest.Mutators): New unit test for the new mutator methods.
+	* sccs-delta.cc (delta::operator=): Use the new member names.
+	(removed): Likewise.
+	* delta-table.cc: Use the new accessor functions.
+	* sccsfile.cc: Likewise.
+	* writesubst.cc: Likewise.
+	* sf-add.cc: Likewise.
+	* sf-admin.cc: Likewise.
+	* sf-write.cc: Likewise.
+	* sf-get.cc: Likewise.
+	* sf-get2.cc: Likewise.
+	* sf-get3.cc: Likewise.
+	* sf-delta.cc: Likewise.
+	(add_delta): Instead of zeroing inserted/deleted/unchanged counts,
+	simply verify that the constructor did that.
+	* sf-cdc.cc : Use the new accessor functions.
+	(process_mrs): Since delta no longer offers access to a mutable
+	list of MRs, modify process_mrs to return the updates list of MRs.
+	The deleted flag which used to be the return value is now an
+	output parameter.
+	(cdc): Change the type of mrs_deleted from int to bool.
+	* sf-prs.cc (print_delta): Use the new accessor functions.  Also
+	fix a typo in a comment.
+	(prs): Use the new accessor functions.
+	* sf-prt.cc (cutoff::excludes_delta): Use the new accessor functions.
+	(cutoff::print): Likewise.	
+	(sccs_file::prt): Likewise.	
+	* sf-rmdel.cc (sccs_file::rmdel): Use the new accessor functions.
+	* sf-val.cc (sccs_file::validate_seq_lists): Use the new accessor functions.
+	(sccs_file::validate_isomorphism): Likewise.
+	(validate): Likewise.
+	* unit-tests/TODO.txt: delta.h has tests now, remove it from the
+	TODO list.
+
 2010-04-23  James Youngman  <jay@gnu.org>
 
 	Rename delta::type to delta_type, make it private, validate it.

@@ -116,15 +116,15 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
   const_delta_iterator iter(delta_table);
   while (iter.next())
     {
-      if (sid_matches(requested, iter->id, get_top_delta))
+      if (sid_matches(requested, iter->id(), get_top_delta))
 	{
-	  if (!got_best || iter->id.gte(best))
+	  if (!got_best || iter->id().gte(best))
 	    {
-	      best = iter->id;
+	      best = iter->id();
 	      got_best = true;
 	      
 	      if (get_top_delta
-		  && iter->id.matches(requested, ncomponents))
+		  && iter->id().matches(requested, ncomponents))
 		{
 		  break;
 		}
@@ -147,7 +147,7 @@ sccs_file::find_requested_seqno(seq_no requested, sid &found) const
       && requested <= delta_table->highest_seqno()
       && delta_table->delta_at_seq_exists(requested))
     {
-      found = delta_table->delta_at_seq(requested).id;
+      found = delta_table->delta_at_seq(requested).id();
       return true;
     }
   else
@@ -392,7 +392,7 @@ sccs_file::get(FILE *out, mystring gname,
     }
   
   
-  if (!prepare_seqstate(state, d->seq,
+  if (!prepare_seqstate(state, d->seq(),
                         include, exclude, cutoff_date))
     {
       status.success = false;
@@ -404,10 +404,10 @@ sccs_file::get(FILE *out, mystring gname,
   const delta *dparm;
   bool set=false;
 
-  for (seq_no s = d->seq; s>0; s--)
+  for (seq_no s = d->seq(); s>0; s--)
     {
       const struct delta & d = delta_table->delta_at_seq(s);
-      const sid & id = d.id;
+      const sid & id(d.id());
 
       if (!state.is_excluded(s) && !set)
         {
@@ -420,7 +420,7 @@ sccs_file::get(FILE *out, mystring gname,
 
   if (getenv("CSSC_SHOW_SEQSTATE"))
     {
-      for (seq_no s = d->seq; s>0; s--)
+      for (seq_no s = d->seq(); s>0; s--)
         {
           if (!delta_table->delta_at_seq_exists(s))
             {
@@ -429,7 +429,7 @@ sccs_file::get(FILE *out, mystring gname,
             }
 
           const struct delta & d = delta_table->delta_at_seq(s);
-          const sid & id = d.id;
+          const sid & id(d.id());
 
           fprintf(stderr, "%4d (", s);
           id.dprint(stderr);
@@ -466,7 +466,7 @@ sccs_file::get(FILE *out, mystring gname,
     {
       bool first = true;
       
-      for (seq_no s = d->seq; s>0; s--)
+      for (seq_no s = d->seq(); s>0; s--)
         {
           if (delta_table->delta_at_seq_exists(s)
 	      && state.is_included(s))
@@ -476,18 +476,18 @@ sccs_file::get(FILE *out, mystring gname,
 	      fprintf (summary_file, "%s   ",
 		       first ? "" : "\n");
 	      first = false;
-	      it.id.print(summary_file);
+	      it.id().print(summary_file);
 	      fprintf (summary_file, "\t");
-	      it.date.print(summary_file);
-	      fprintf (summary_file, " %s\n", it.user.c_str());
+	      it.date().print(summary_file);
+	      fprintf (summary_file, " %s\n", it.user().c_str());
 	      
-	      if (it.comments.length())
+	      if (it.comments().length())
 		{
-		  const int len = it.comments.length();
+		  const int len = it.comments().length();
 		  for(int i = 0; i < len; i++)
 		    {
 		      fprintf (summary_file, "\t%s\n",
-			       it.comments[i].c_str());
+			       it.comments()[i].c_str());
 		    }
 		}
 	    }

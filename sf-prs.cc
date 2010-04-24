@@ -376,15 +376,15 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
           
         case KEY2('L','i'):
-          fprintf(out, "%05lu", d.inserted);
+          fprintf(out, "%05lu", d.inserted());
           break;
 
         case KEY2('L','d'):
-          fprintf(out, "%05lu", d.deleted);
+          fprintf(out, "%05lu", d.deleted());
           break;
 
         case KEY2('L','u'):
-          fprintf(out, "%05lu", d.unchanged);
+          fprintf(out, "%05lu", d.unchanged());
           break;
 
         case KEY2('D','T'):
@@ -392,98 +392,98 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY1('I'):
-          d.id.print(out);
+          d.id().print(out);
           break;
 
         case KEY1('R'):
-          d.id.printf(out, 'R');
+          d.id().printf(out, 'R');
           break;
 
         case KEY1('L'):
-          d.id.printf(out, 'L');
+          d.id().printf(out, 'L');
           break;
           
         case KEY1('B'):
-          d.id.printf(out, 'B');
+          d.id().printf(out, 'B');
           break;
           
         case KEY1('S'):
-          d.id.printf(out, 'S');
+          d.id().printf(out, 'S');
           break;
           
         case KEY1('D'):
-          d.date.printf(out, 'D');
+          d.date().printf(out, 'D');
           break;
           
         case KEY2('D','y'):
-          d.date.printf(out, 'y');
+          d.date().printf(out, 'y');
           break;
 
         case KEY2('D','m'):
-          d.date.printf(out, 'o');
+          d.date().printf(out, 'o');
           break;
           
         case KEY2('D','d'):
-          d.date.printf(out, 'd');
+          d.date().printf(out, 'd');
           break;
           
         case KEY1('T'):
-          d.date.printf(out, 'T');
+          d.date().printf(out, 'T');
           break;
           
         case KEY2('T','h'):
-          d.date.printf(out, 'h');
+          d.date().printf(out, 'h');
           break;
           
         case KEY2('T','m'):
-          d.date.printf(out, 'm');
+          d.date().printf(out, 'm');
           break;
 
         case KEY2('T','s'):
-          d.date.printf(out, 's');
+          d.date().printf(out, 's');
           break;
 
         case KEY1('P'):
-          fputs(d.user.c_str(), out);
+          fputs(d.user().c_str(), out);
           break;
 
         case KEY2('D','S'):
-          fprintf(out, "%u", d.seq);
+          fprintf(out, "%u", d.seq());
           break;
 
         case KEY2('D','P'):
-          fprintf(out, "%u", d.prev_seq);
+          fprintf(out, "%u", d.prev_seq());
           break;
 
         case KEY2('D', 'I'):
-          if (d.included.length() > 0 ||
-              d.excluded.length() > 0 ||
-              d.ignored.length()  > 0   )
+          if (d.get_included_seqnos().length() > 0 ||
+              d.get_excluded_seqnos().length() > 0 ||
+              d.get_ignored_seqnos().length()  > 0   )
             {
-              /* Testing witht he SOlaris version only shows one slash! */
+              /* Testing with the Solaris version only shows one slash! */
               /* print_delta(out, ":Dn:/:Dx:/:Dg:", d); */
               print_delta(out, ":Dn:/:Dx:", d);
               break;
             }
                   
         case KEY2('D','n'):
-          print_seq_list(out, d.included);
+          print_seq_list(out, d.get_included_seqnos());
           break;
 
         case KEY2('D','x'):
-          print_seq_list(out, d.excluded);
+          print_seq_list(out, d.get_excluded_seqnos());
           break;
 
         case KEY2('D','g'):
-          print_seq_list(out, d.ignored);
-                        break;
+          print_seq_list(out, d.get_ignored_seqnos());
+	  break;
 
         case KEY2('M','R'):
-          print_string_list(out, d.mrs);
+          print_string_list(out, d.mrs());
           break;
 
         case KEY1('C'):
-          print_string_list(out, d.comments);
+          print_string_list(out, d.comments());
           break;
 
         case KEY2('U','N'):
@@ -589,7 +589,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY2('G','B'):
-          get(out, "-", d.seq, false); // TODO: check return value?
+          get(out, "-", d.seq(), false); // TODO: check return value?
           break;
 
         case KEY1('W'):
@@ -636,7 +636,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
           errormsg("%s: Requested SID doesn't exist.", name.c_str());
           return false;
         }
-      cutoff_date = pd->date;
+      cutoff_date = pd->date();
     }
 
   const_delta_iterator iter(delta_table);
@@ -645,21 +645,21 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
       switch (when)
         {
         case EARLIER:
-          if (iter->date > cutoff_date)
+          if (iter->date() > cutoff_date)
             {
               continue;
             }
           break;
 
         case SIDONLY:
-          if (rid != iter->id)
+          if (rid != iter->id())
             {
               continue;
             }
           break;
 
         case LATER:
-          if (iter->date < cutoff_date)
+          if (iter->date() < cutoff_date)
             {
               continue;
             }

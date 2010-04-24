@@ -87,19 +87,19 @@ sccs_file::rmdel(sid id)
       errormsg("%s: Specified SID not found in SCCS file.", name.c_str());
       return false;
     }
-  seq_no seq = d->seq;
+  const seq_no seq = d->seq();
 
   const_delta_iterator iter(delta_table);
   while (iter.next())
     {
-      if (iter->prev_seq == seq)
+      if (iter->prev_seq() == seq)
 	{
 	  errormsg("%s: Specified SID has a successor.", name.c_str());
 	  return false;
 	}
-      if (is_seqlist_member(seq, iter->included)
-	  || is_seqlist_member(seq, iter->excluded)
-	  || is_seqlist_member(seq, iter->ignored))
+      if (is_seqlist_member(seq, iter->get_included_seqnos())
+	  || is_seqlist_member(seq, iter->get_excluded_seqnos())
+	  || is_seqlist_member(seq, iter->get_ignored_seqnos()))
 	{
 	  errormsg("%s: Specified SID is used in another delta.",
 	       name.c_str());
