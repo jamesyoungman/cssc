@@ -20,9 +20,9 @@
  * Unit tests for sid.h.
  *
  */
-#include "cssc.h"
-#include "release.h"
+
 #include "sid.h"
+#include "release.h"
 #include <gtest/gtest.h>
 
 

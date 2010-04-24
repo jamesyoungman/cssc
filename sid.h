@@ -37,6 +37,7 @@
 #include "release.h"
 
 #include "relvbr.h"
+#include "mystring.h"
 
 class sccs_file;
 

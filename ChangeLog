@@ -1,5 +1,11 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include what you use; make it possible to use range_list<T> by
+	including only sid_list.h.
+	* unit-tests/test_sid.cc: Include sid.h first.   Don't include cssc.h.
+	* sid_list.h: Include cstdio, cstring, and qui.t.h (for ctor_fail).
+	* sid.h: Include mystring.h.
+
 	Include what you use; make it possible to use stack<T> by
 	including only stack.h.
 	* unit-tests/test_stack.cc: Include what you use: include

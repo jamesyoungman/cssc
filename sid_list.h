@@ -27,6 +27,12 @@
 #ifndef CSSC__SID_LIST_H__
 #define CSSC__SID_LIST_H__
 
+#include <cstdio>
+#include <cstring>
+
+#include "quit.h"
+
+
 #ifdef __GNUC__
 // #pragma this does not work with templates interface
 #endif
