@@ -69,7 +69,6 @@
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 //           Tunable
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#define CONFIG_LIST_CHUNK_SIZE          16
 #define CONFIG_FILE_NAME_GUESSING
 
 

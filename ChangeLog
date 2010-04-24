@@ -1,5 +1,10 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Move CONFIG_LIST_CHUNK_SIZE from cssc.h to mylist.h.
+	* cssc.h (CONFIG_LIST_CHUNK_SIZE): Move into mylist.h.
+	* mylist.h (mylist): Relocate CONFIG_LIST_CHUNK_SIZE here from
+	cssc.h, but convert it to an enum.
+
 	Add/correct some comments.
 	* delta-table.cc: Correct the comment giving the location of
 	dtbl-prepend.cc.

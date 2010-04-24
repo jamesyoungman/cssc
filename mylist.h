@@ -31,6 +31,8 @@
 template <class TYPE>
 class mylist
 {
+  enum { CONFIG_LIST_CHUNK_SIZE = 16 };
+  
 protected:
   TYPE *array;
   int len;
