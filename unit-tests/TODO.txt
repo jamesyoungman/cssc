@@ -17,7 +17,6 @@ sccsfile.h
 sccsname.h
 seqstate.h
 sf-chkmr.h
-stack.h
 version.h
 
 // should go, but means an autoconf/gnulib change.
