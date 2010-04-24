@@ -50,12 +50,7 @@
 #include <io.h>
 #endif
 
-#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
-#ifdef CONFIG_WAIT_IS_A_USELESS_MACRO
-#undef wait
-#endif
-#endif
 
 #ifdef HAVE_PROCESS_H
 #include <process.h>

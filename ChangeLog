@@ -1,11 +1,18 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Remove some obsolete preprocessor macros.
+	* cssc.h (CONFIG_WAIT_IS_A_USELESS_MACRO): Remove obsolete macro.
+	* sysdep.h: Assume wait is declared in sys/wait.h.
+	* cssc.h (CONFIG_DJGPP): Remove obsolete macro.
+
 	Remove some obsolete manual declarations of functions.
 	* file.cc: Don't manually declare stat.  Likewise for getpwuid.
 	* cssc.h: Don't undefine the TESTING macro; nobody defines it
 	either.  Don't undefine CONFIG_DECLARE_STAT,
 	CONFIG_DECLARE_GETPWUID, CONFIG_DECLARE_TIMEZONE,
 	CONFIG_DECLARE_TZSET,
+
+
 	* sysdep.h: Don't manually declare fdopen.
 
 	Include cssc headers where they are needed, not in cssc.h.

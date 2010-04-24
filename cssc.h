@@ -31,17 +31,6 @@
 
 #include "mystring.h"
 
-//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-//           TODO
-//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-/* Ancient versions of SLS Linux apparently need this. */
-#define CONFIG_WAIT_IS_A_USELESS_MACRO
-
-/* Switches we want to pass to diff.  Perhaps we might want to */
-/* pass special switches to GNU diff (e.g. heuristic mode).  Later maybe. */
-#undef  CONFIG_DIFF_SWITCHES
-
 /* Define if you want to open SCCS files in binary instead of text mode.
  * If you do this, you will probably need to jump through hoops on
  * Microsoft systems, in order to avoid falling over all those
@@ -95,7 +84,6 @@
 #endif
 
 #undef  CONFIG_MSDOS_FILES
-#undef  CONFIG_BORLANDC
 #define CONFIG_DJGPP
 
 #ifndef NO_COMMON_HEADERS
