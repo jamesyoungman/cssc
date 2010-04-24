@@ -28,6 +28,7 @@
 #define CSSC__MYSETLIST_H__
 
 #include <set>
+#include "mylist.h"
 
 template <class TYPE>
 class myset
