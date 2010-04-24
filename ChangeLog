@@ -1,5 +1,11 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include what you use; make it possible to use class relvbr by
+	including only relvbr.h.
+	* unit-tests/test_relvbr.cc: Include relvbr.h first, don't include
+	release.h or sid.h.
+	* relvbr.h: Include <cstdio>.
+
 	Include what you use; make it possible to use class release by
 	including only release.h and release_list by including only
 	rel_list.h.

@@ -25,8 +25,9 @@
 #ifndef INC_RELVBR_H
 #define INC_RELVBR_H
 
+#include <cstdio>
+
 class sid;
-//#include "sid.h"
 
 class relvbr
 {
