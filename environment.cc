@@ -22,6 +22,10 @@
  * sections "Environment" and "Interoperability" in the CSSC manual.
  *
  */
+#include <cstdlib>
+#include <cstring>
+#include <cerrno>
+
 #include "cssc.h"
 
 #ifdef HAVE_LIMITS_H

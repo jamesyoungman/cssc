@@ -1,5 +1,20 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include system headers where they are needed, not in cssc.h.
+	* except.h: Add a multiple-include guard.  #include <cstdlib>.
+	* environment.cc: #include <cstdlib>, <cstring>, <cerrno>
+	* bodyio.cc: #include <cstring>
+	* fileiter.cc: Likewise.
+	* linebuf.cc: Likewise.
+	* prompt.cc: Likewise.
+	* sccsdate.cc: Likewise.
+	* fatalsig.cc: #include <cstdlib>
+	* filepos.h: #include <cerrno>.
+	* quit.cc: #include <cerrno> instead of <errno.h>.  Include
+	<cstring> also.
+	* cssc.h: Don't include standard headers: stdio.h, stdlib.h,
+	stddef.h, string.h, ctype.h, errno.h.
+
 	Further include-what-you-use fixes.
 	* delta.cc: Include cleanup.h, and ioerr.h.  Include delta.h earlier.
 

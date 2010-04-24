@@ -133,37 +133,6 @@
 #include <sys/types.h>
 #endif
 
-#ifdef HAVE_STDIO_H
-#include <stdio.h>
-#else
-#error You need a <stdio.h> header file.
-#endif
-
-#ifdef HAVE_STDLIB_H 
-#include <stdlib.h>
-#else
-#error You need a <stdlib.h> header file.
-#endif
-
-#ifdef HAVE_STDDEF_H 
-#include <stddef.h>
-#else
-#error You need a <stddef.h> header file.
-#endif
-
-#ifdef HAVE_STRING_H 
-#include <string.h>
-#else
-#error You need a <string.h> header file.
-#endif
-
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#else
-#error You need a <ctype.h> header file.
-#endif
-#include <errno.h>
-
 #ifndef NO_COMMON_HEADERS
 #include "quit.h"
 #include "mystring.h"

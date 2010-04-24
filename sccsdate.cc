@@ -24,6 +24,7 @@
  * Members of the class sccs_date.
  *
  */
+#include <cstring>
 
 #ifdef __GNUC__
 #pragma implementation "sccsdate.h"

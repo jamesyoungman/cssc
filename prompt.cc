@@ -25,7 +25,7 @@
  */
 
 #include "cssc.h"
-
+#include <cstring>
 
 static char *
 re_new(char *p, int oldlen, int newlen)

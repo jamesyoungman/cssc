@@ -18,6 +18,10 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef CSSC_INC_EXCEPT_H
+#define CSSC_INC_EXCEPT_H 1
+
+#include <cstdlib>
 
 // Exception classes
 struct CsscException
@@ -73,3 +77,4 @@ struct CsscUnrecognisedFeatureException : public CsscExitvalException
   CsscUnrecognisedFeatureException() : CsscExitvalException(1) { }
 };
 
+#endif

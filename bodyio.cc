@@ -31,6 +31,7 @@
 #include "linebuf.h"
 
 #include <cstdio>
+#include <cstring>
 
 
 

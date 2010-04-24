@@ -22,6 +22,7 @@
  * Handle fatal signals...
  *
  */
+#include <cstdlib>
 
 #include "cssc.h"
 #include "version.h"

@@ -23,6 +23,7 @@
  * Members of the class fileiter.
  *
  */
+#include <cstring>
 
 #ifdef __GNUC__
 #pragma implementation "fileiter.h"

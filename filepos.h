@@ -28,6 +28,7 @@
 #define CSSC__FILEPOS_H 1
 
 #include "cssc.h"
+#include <cerrno>
 
 // SunOS requires <unistd.h> for SEEK_SET, for some bizarre reason.
 #ifdef HAVE_UNISTD_H
