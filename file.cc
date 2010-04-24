@@ -70,12 +70,6 @@
 
 #ifdef CONFIG_UIDS
 
-#ifdef CONFIG_DECLARE_STAT
-extern "C" int CDECL stat(const char *, struct stat *);
-#endif
-
-
-
 /* Tests the accessability of file, but unlike access() uses the
    effective uid and gid, not the real uid and gid. */
 
@@ -347,10 +341,6 @@ restore_privileges() {
 //         restore_privileges();
 //         return fd;
 // }
-
-#ifdef CONFIG_DECLARE_GETPWUID
-extern "C" struct passwd * CDECL getpwuid(int uid);
-#endif
 
 const char *
 get_user_name()

@@ -26,18 +26,10 @@
 #ifndef CSSC__CSSC_H__
 #define CSSC__CSSC_H__
 
-#undef TESTING
-
 // Get the definitions deduced by "configure".
 #include <config.h>
 
 #include "mystring.h"
-
-#undef  CONFIG_DECLARE_STAT
-#undef  CONFIG_DECLARE_GETPWUID
-#undef  CONFIG_DECLARE_TIMEZONE
-#undef  CONFIG_DECLARE_TZSET
-#undef  CONFIG_DECLARE_FDOPEN
 
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 //           TODO

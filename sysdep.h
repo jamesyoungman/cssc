@@ -78,10 +78,6 @@
 #include <share.h>
 #endif
 
-#ifdef CONFIG_DECLARE_FDOPEN
-extern "C" FILE * CDECL fdopen(int, const char *);
-#endif
-
 #endif /* __SYSDEP_H__ */
 
 /* Local variables: */
