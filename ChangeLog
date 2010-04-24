@@ -3,6 +3,17 @@
 	Further include-what-you-use fixes.
 	* delta.cc: Include cleanup.h, and ioerr.h.  Include delta.h earlier.
 
+	Run the uu(en|de)coding self-test as part of the unit tests.
+	* bodyio.h: Move a couple of inline functions to here (out of
+	encoding.cc) so that I can use them in the self-test.
+	* encoding.cc: Make the corresponding deletion.  Move the test
+	code itself into test_encodingcc.
+	* unit-tests/test_encoding.cc: Moved the encoding self-test to
+	here instead of leaving it in encding.c, where it was not used.
+	* unit-tests/Makefile.am (check_PROGRAMS): Add test_encoding.
+	Also define test_encoding_SOURCES.  Modify the usage semantics of
+	the test program so that the default is to run the self-test.
+
 	Avoid redundant inclusion of cssc.h, sccsfile.h, delta.h.
 	* dtbl-prepend.cc: Don't include cssc.h or sccsfile.h, since we
 	don't use them.
