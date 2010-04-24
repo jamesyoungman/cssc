@@ -33,6 +33,7 @@
 #include "myset.h"
 // #include "linebuf.h"
 #include "rel_list.h"
+#include "delta.h"
 
 class sccs_pfile;       /* pfile.h */
 class seq_state;        /* seqstate.h */

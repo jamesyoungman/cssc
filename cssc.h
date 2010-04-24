@@ -179,8 +179,6 @@ mystring prompt_user(const char *prompt);
 
 #endif /* NO_COMMON_HEADERS */
 
-typedef unsigned short seq_no;
-
 unsigned long cap5(unsigned long);
 bool is_id_keyword_letter(char ch);
 

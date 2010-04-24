@@ -20,11 +20,10 @@
  * Unit tests for sid.h.
  *
  */
-#include "cssc.h"
+#include "delta.h"
 #include "mylist.h"
 #include "sccsdate.h"
 #include "sid.h"
-#include "delta.h"
 #include <gtest/gtest.h>
 
 

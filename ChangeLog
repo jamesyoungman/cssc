@@ -1,5 +1,14 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include what you use; make it possible to use delta by
+	including only delta.h.
+	* delta.h: Include sid.h, sccsdate.h, mystring.h, mylist.h.
+	Move typedef of seq_no to here from cssc.h
+	* cssc.h: Move typesef of seq_no from here to delta.h.
+	* sccsfile.h: Include delta.h.
+	* seqstate.h: Likewise.
+	* unit-tests/test_delta.cc: Include delta.h first.  Don't include cssc.h.
+
 	Include what you use; make it possible to use range_list<T> by
 	including only sid_list.h.
 	* unit-tests/test_sid.cc: Include sid.h first.   Don't include cssc.h.

@@ -25,6 +25,13 @@
 #ifndef CSSC_DELTA_H
 #define CSSC_DELTA_H 1
 
+#include "sid.h"
+#include "sccsdate.h"
+#include "mystring.h"
+#include "mylist.h"
+
+typedef unsigned short seq_no;
+
 class delta
 {
   char delta_type_;
