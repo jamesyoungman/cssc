@@ -1,5 +1,8 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Further include-what-you-use fixes.
+	* delta.cc: Include cleanup.h, and ioerr.h.  Include delta.h earlier.
+
 	Various include-what-you-use fixes.
 	* delta-iterator.cc: Don't include cssc.h, sccsfile.h or delta.h,
 	since we don't use them.  Do include cssc-assert.h, since we do
