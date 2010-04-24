@@ -20,10 +20,8 @@
  * Unit tests for delta-table.h.
  *
  */
-#include "cssc.h"
-#include "sccsfile.h"
-#include "delta.h"
 #include "delta-table.h"
+#include "delta.h"
 #include <gtest/gtest.h>
 
 
