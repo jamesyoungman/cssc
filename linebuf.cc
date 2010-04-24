@@ -30,6 +30,7 @@
 
 #include "cssc.h"
 #include "linebuf.h"
+#include "cssc-assert.h"
 
 
 // Use a small chunk size for testing...

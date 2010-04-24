@@ -31,6 +31,7 @@
 
 #include "cssc.h"
 #include "sccsdate.h"
+#include "cssc-assert.h"
 
 #include <time.h>
 

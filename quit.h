@@ -127,18 +127,6 @@ NORETURN ctor_fail(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 NORETURN s_unrecognised_feature_quit(const char *fmt, va_list ap) POSTDECL_NORETURN;
 NORETURN ctor_fail_nomsg(int err)  POSTDECL_NORETURN;
 NORETURN nomem()  POSTDECL_NORETURN;
-NORETURN assert_failed(const char *file, int line, const char *func,
-                       const char *test) POSTDECL_NORETURN;
-
-#ifdef __GNUC__
-#define ASSERT(test) ((test) ? (void) 0                                 \
-                             : assert_failed(__FILE__, __LINE__,        \
-                                             __PRETTY_FUNCTION__, #test))
-#else
-#define ASSERT(test) ((test) ? (void) 0                                 \
-                             : assert_failed(__FILE__, __LINE__, "", #test))
-#endif
-
 extern void usage();
 
 #endif /* __QUIT_H__ */

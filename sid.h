@@ -31,6 +31,7 @@
 #ifndef CSSC__SID_H__
 #define CSSC__SID_H__
 
+#include "cssc-assert.h"
 #include "sid_list.h"
 
 #include "release.h"

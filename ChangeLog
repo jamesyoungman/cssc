@@ -1,5 +1,24 @@
 2010-04-24  James Youngman  <jay@gnu.org>
 
+	Include what you use; make it possible to use mylist<> by
+	including only mylist.h.
+	* cssc-assert.h: New file; defines the ASSERT macro.
+	* quit.h: Delete old definition of ASSERT and declaration of
+	assert_failed.
+	* mylist.h: Include cssc-assert.h to define ASSERT, and
+	<cstdlib> for NULL.
+	* unit-tests/test_mylist.cc: Don't include "cssc.h" any more.
+	* quit.cc: Include cssc-assert.h for ASSERT and declaration of assert_failed.
+	* fatalsig.cc: Include cssc-assert.h since we use ASSERT.
+	* file.cc: Likewise.
+	* filediff.cc: Likewise.
+	* fnsplit.cc: Likewise.
+	* linebuf.cc: Likewise.
+	* sccsdate.cc: Likewise.
+	* sccsname.cc: Likewise.
+	* sid.h: Likewise.
+	* stack.h: Likewise.
+
 	Move CONFIG_LIST_CHUNK_SIZE from cssc.h to mylist.h.
 	* cssc.h (CONFIG_LIST_CHUNK_SIZE): Move into mylist.h.
 	* mylist.h (mylist): Relocate CONFIG_LIST_CHUNK_SIZE here from

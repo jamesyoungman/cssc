@@ -28,6 +28,7 @@
 #endif
 
 #include "cssc.h"
+#include "cssc-assert.h"
 #include "filediff.h"
 
 

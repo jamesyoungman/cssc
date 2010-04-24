@@ -35,6 +35,7 @@
 #include "quit.h"
 #include "sysnerr.h"
 #include "except.h"
+#include "cssc-assert.h"
 
 // #include "pipe.h"
 

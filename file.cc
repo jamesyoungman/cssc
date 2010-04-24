@@ -31,6 +31,7 @@
 #endif
 
 #include "cssc.h"
+#include "cssc-assert.h"
 #include "sysdep.h"
 #include "file.h"
 

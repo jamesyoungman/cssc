@@ -31,6 +31,7 @@
 
 #include "cssc.h"
 #include "sccsname.h"
+#include "cssc-assert.h"
 
 #include <ctype.h>
 

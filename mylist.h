@@ -28,6 +28,10 @@
 #ifndef CSSC__LIST_H__
 #define CSSC__LIST_H__
 
+#include <cstdlib>
+
+#include "cssc-assert.h"
+
 template <class TYPE>
 class mylist
 {

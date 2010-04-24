@@ -28,6 +28,8 @@
 #ifndef CSSC__STACK_H__
 #define CSSC__STACK_H__
 
+#include "cssc-assert.h"
+
 template <class TYPE>
 class stack {
 	TYPE *array;

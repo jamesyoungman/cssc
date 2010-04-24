@@ -21,7 +21,6 @@
  *
  */
 #include <config.h>
-#include "cssc.h"
 #include "mylist.h"
 #include <gtest/gtest.h>
 

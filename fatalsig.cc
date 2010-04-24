@@ -28,6 +28,7 @@
 #include "quit.h"
 
 #include <signal.h>             /* TODO: consider using sigaction(). */
+#include "cssc-assert.h"
 
 
 /* The expansion of RETSIGTYPE is automatically decided by the configure 

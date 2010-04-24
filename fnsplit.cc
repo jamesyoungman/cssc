@@ -22,6 +22,7 @@
 
 #include "cssc.h"
 #include "mystring.h"
+#include "cssc-assert.h"
 
 void
 split_filename(const mystring &fullname,
