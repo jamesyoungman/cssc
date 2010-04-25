@@ -34,13 +34,8 @@
 #include "except.h"
 #include "ioerr.h"
 #include "file.h"
-
-// If we include fileiter.h before config.h, then 
-// we get regression test failures.  These appear to
-// be caused by the fact that <config.h> was not
-// included.
-#include "cssc.h"
 #include "fileiter.h"
+#include "cssc.h"
 
 
 

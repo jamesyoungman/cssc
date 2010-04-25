@@ -1,5 +1,14 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Isolate directory-handling logic in fileiter.cc.
+	* fileiter.cc: Move the complex logic around trying to include
+	<dirent.h> out of fileiter.h and into fileiter.cc.
+	* fileiter.h: Make the corresponding deletion and remove the
+	#error trap which demanded that <cofnig.h> had been included.
+	* delta.cc: Remove the now-obsolete explanatory comment.
+	* file.cc: Move is_directory into fileiter.cc, since it also needs
+	opendir.
+
 	Produce a compile failiure when config.h was not included before
 	fileiter.h.  Doing things the other way around produces a
 	regression test failure.

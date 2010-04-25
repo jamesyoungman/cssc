@@ -183,21 +183,6 @@ is_readable(const char *name) {
         return access(name, 04) != -1;
 }
 
-int 
-is_directory(const char *name) 
-{
-  bool retval = false;
-  DIR *p = opendir(name);
-  if (p)
-    {
-      retval = true;
-      closedir(p);
-    }
-  return retval;
-}
-
-
-
 /* Determine if a given file is "writable".  If we
  * are root, we can write to a mode 000 file, but
  * we deem files of that sort not writable for these

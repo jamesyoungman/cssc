@@ -23,6 +23,8 @@
  * Members of the class fileiter.
  *
  */
+#include <config.h>
+
 #include <cstring>
 
 #ifdef __GNUC__
@@ -36,6 +38,52 @@
 #include "my-getopt.h"
 #include "file.h"
 #include "quit.h"
+
+
+#define CONFIG_NO_DIRECTORY
+
+#if HAVE_DIRENT_H
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
+# undef CONFIG_NO_DIRECTORY
+#else
+# define dirent direct
+# define NAMLEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# undef CONFIG_NO_DIRECTORY
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# undef CONFIG_NO_DIRECTORY
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# undef CONFIG_NO_DIRECTORY
+# endif
+#endif
+
+
+
+// This function is only defined in this module in order to 
+// take advantage of the macros above.
+// FIXME: when/if we start to use gnulib, move it to file.c
+int 
+is_directory(const char *name) 
+{
+  bool retval = false;
+  DIR *p = opendir(name);
+  if (p)
+    {
+      retval = true;
+      closedir(p);
+    }
+  return retval;
+}
+
+
+
+
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	: argv(opts.get_argv() + opts.get_index()),

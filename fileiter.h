@@ -28,36 +28,8 @@
 #ifndef CSSC__FILEITER_H__
 #define CSSC__FILEITER_H__
 
-#if !defined CONFIG_DIFF_COMMAND
-#error "You need to include config.h before this file."
-#endif
-
 #include "mylist.h"
 #include "sccsname.h"
-
-#define CONFIG_NO_DIRECTORY
-
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-# undef CONFIG_NO_DIRECTORY
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# undef CONFIG_NO_DIRECTORY
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# undef CONFIG_NO_DIRECTORY
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# undef CONFIG_NO_DIRECTORY
-# endif
-#endif
-
 
 #ifdef __GNUC__
 #pragma interface
