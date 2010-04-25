@@ -35,9 +35,9 @@ do
 done
 
 
-docommand e1 "${get} -e SCCS/s.b" 0 IGNORE IGNORE
+docommand e1 "${vg_get} -e SCCS/s.b" 0 IGNORE IGNORE
 docommand e2 "test -w b" 0 "" ""
-docommand e3 "${get} SCCS" 1 IGNORE IGNORE
+docommand e3 "${vg_get} SCCS" 1 IGNORE IGNORE
 
 # At this point, a read-only copy of a and c should exist.
 # b should still be writable. 

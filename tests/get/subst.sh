@@ -20,7 +20,7 @@ remove $s $f
 # a temporary file.   We then examine this file later.
 echo_nonl "Preparing..."
 remove ${output}
-if ${get} -p $s > ${output} 2>/dev/null
+if ${vg_get} -p $s > ${output} 2>/dev/null
 then
     echo passed
 else
@@ -28,7 +28,7 @@ else
 fi
 
 # Ckeck that the format of stderr is correct.
-docommand "stderr format" "${get} -p $s" 0 "IGNORE" "1.1\n83 lines\n"
+docommand "stderr format" "${vg_get} -p $s" 0 "IGNORE" "1.1\n83 lines\n"
 
 expands_to () {
     # $1 -- format
@@ -61,7 +61,7 @@ expands_to Z "_Z_ @(#)\n"
 
 
 # Test the -k flag, which disables keyword substitution.
-if percents=`${get} -p -k $s 2>/dev/null | tr -dc % | wc -c`
+if percents=`${vg_get} -p -k $s 2>/dev/null | tr -dc % | wc -c`
 then
     if [ $percents -eq 68 ]
     then
@@ -81,8 +81,8 @@ remove $s $output
 s=s.keys.txt
 remove $s
 ../../testutils/uu_decode --decode < keys.uue || miscarry could not extract test file.
-docommand K1 "${get} -p -c971025230458 $s" 0 "1.2 1.2\n" "1.2\n1 lines\n"
-docommand K2 "${get} -p -c971025230457 $s" 0 "1.1 1.1\n" \
+docommand K1 "${vg_get} -p -c971025230458 $s" 0 "1.2 1.2\n" "1.2\n1 lines\n"
+docommand K2 "${vg_get} -p -c971025230457 $s" 0 "1.1 1.1\n" \
 	"IGNORE"
 
 # TODO: We currently say Excluded: blah... if a version is 

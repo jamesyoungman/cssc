@@ -7,7 +7,7 @@
 . ../common/test-common
 
 
-docommand N1 "${get} -p" 1 IGNORE IGNORE
+docommand N1 "${vg_get} -p" 1 IGNORE IGNORE
 
 remove command.log
 success

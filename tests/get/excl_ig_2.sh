@@ -17,7 +17,7 @@ remove $files
 do_change() {
     baselabel="$1"; shift
 
-    docommand ${baselabel}.0 "${get} -e $s" 0 IGNORE IGNORE
+    docommand ${baselabel}.0 "${vg_get} -e $s" 0 IGNORE IGNORE
 
     for sedcmd
     do
@@ -37,16 +37,16 @@ echo "%I% inserted in 1.1" > $g
 docommand ei1 "${admin} -n -i$g s.foo" 0 IGNORE IGNORE
 remove $g
 
-docommand ei2 "${get} -s -p $s" 0 "1.1 inserted in 1.1\n" IGNORE
+docommand ei2 "${vg_get} -s -p $s" 0 "1.1 inserted in 1.1\n" IGNORE
 
 do_change ei3 '1 a\
 This line inserted in 1.2 and deleted in 1.3'
-docommand ei4 "${get} -s -p $s" 0 '1.2 inserted in 1.1
+docommand ei4 "${vg_get} -s -p $s" 0 '1.2 inserted in 1.1
 This line inserted in 1.2 and deleted in 1.3
 ' IGNORE
 
 
-docommand "bi1" "${get} -e -r1.1 $s" 0 "1.1\nnew delta 1.1.1.1\n1 lines\n" ""
+docommand "bi1" "${vg_get} -e -r1.1 $s" 0 "1.1\nnew delta 1.1.1.1\n1 lines\n" ""
 echo "inserted on branch 1.1.1.1" >> $g
 docommand "bi1" "${delta} -yNone $s" 0 "1.1.1.1
 1 inserted
@@ -57,66 +57,66 @@ docommand "bi1" "${delta} -yNone $s" 0 "1.1.1.1
 
 do_change ei5 '2d' 'a\
 This line inserted in 1.3 and deleted in 1.4'
-docommand ei6 "${get} -s -p $s" 0 '1.3 inserted in 1.1
+docommand ei6 "${vg_get} -s -p $s" 0 '1.3 inserted in 1.1
 This line inserted in 1.3 and deleted in 1.4
 ' IGNORE
 
 do_change ei7 '2d' 
-docommand ei8 "${get} -s -p $s" 0 '1.4 inserted in 1.1
+docommand ei8 "${vg_get} -s -p $s" 0 '1.4 inserted in 1.1
 ' IGNORE
 
-docommand ei9 "${get} -g $s" 0 "1.4\n" "IGNORE" 
+docommand ei9 "${vg_get} -g $s" 0 "1.4\n" "IGNORE" 
 
-docommand ei10 "${get} -e -i1.1.1.1 -x1.3 $s" 0 IGNORE IGNORE
+docommand ei10 "${vg_get} -e -i1.1.1.1 -x1.3 $s" 0 IGNORE IGNORE
 echo "inserted in 1.5" >> $g
 docommand ei11 "${delta} -yNone $s" 0 IGNORE IGNORE
 
 expect_fail=true
-docommand ei12 "${get} -s -p $s" 0 '1.5 inserted in 1.1
+docommand ei12 "${vg_get} -s -p $s" 0 '1.5 inserted in 1.1
 inserted on branch 1.1.1.1
 This line inserted in 1.2 and deleted in 1.3
 inserted in 1.5
 ' IGNORE
 
 
-docommand ei13 "${get} -e -x1.4 $s" 0 IGNORE IGNORE
+docommand ei13 "${vg_get} -e -x1.4 $s" 0 IGNORE IGNORE
 echo "inserted in 1.6" >> $g
 docommand ei14 "${delta} -yNone $s" 0 IGNORE IGNORE
-docommand ei15 "${get} -s -p $s" 0 '1.6 inserted in 1.1
+docommand ei15 "${vg_get} -s -p $s" 0 '1.6 inserted in 1.1
 inserted on branch 1.1.1.1
 This line inserted in 1.2 and deleted in 1.3
 inserted in 1.5
 inserted in 1.6
 ' IGNORE
 
-docommand ei16 "${get} -e -x1.1.1.1 $s" 0 IGNORE IGNORE
+docommand ei16 "${vg_get} -e -x1.1.1.1 $s" 0 IGNORE IGNORE
 docommand ei17 "${delta} -yNone $s" 0 IGNORE IGNORE
-docommand ei18 "${get} -s -p $s" 0 '1.7 inserted in 1.1
+docommand ei18 "${vg_get} -s -p $s" 0 '1.7 inserted in 1.1
 This line inserted in 1.2 and deleted in 1.3
 inserted in 1.5
 inserted in 1.6
 ' IGNORE
 
-docommand ei19 "${get} -e $s" 0 IGNORE IGNORE
+docommand ei19 "${vg_get} -e $s" 0 IGNORE IGNORE
 docommand ei20 "${delta} -yNone $s" 0 IGNORE IGNORE
-docommand ei21 "${get} -s -p $s" 0 '1.8 inserted in 1.1
+docommand ei21 "${vg_get} -s -p $s" 0 '1.8 inserted in 1.1
 This line inserted in 1.2 and deleted in 1.3
 inserted in 1.5
 inserted in 1.6
 ' IGNORE
 
-docommand ei22 "${get} -i1.1.1.1 -e $s" 0 IGNORE IGNORE
+docommand ei22 "${vg_get} -i1.1.1.1 -e $s" 0 IGNORE IGNORE
 docommand ei23 "${delta} -yNone $s" 0 IGNORE IGNORE
-docommand ei24 "${get} -s -p $s" 0 '1.9 inserted in 1.1
+docommand ei24 "${vg_get} -s -p $s" 0 '1.9 inserted in 1.1
 inserted on branch 1.1.1.1
 This line inserted in 1.2 and deleted in 1.3
 inserted in 1.5
 inserted in 1.6
 ' IGNORE
 
-docommand ei25 "${get}  -e $s" 0 IGNORE IGNORE
+docommand ei25 "${vg_get}  -e $s" 0 IGNORE IGNORE
 docommand ei26 "${delta} -g1.5 -yNone $s" 0 IGNORE IGNORE
-docommand ei27 "${get} -s -p $s" 0 '1.10 inserted in 1.1
+docommand ei27 "${vg_get} -s -p $s" 0 '1.10 inserted in 1.1
 inserted on branch 1.1.1.1
 inserted in 1.6
 This line inserted in 1.3 and deleted in 1.4

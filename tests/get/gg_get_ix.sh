@@ -35,41 +35,41 @@ remove $g
 
 # "get" the new file and check its contents.
 
-docommand Init_2 "$get -p $s" 0 "$g\n" IGNORE
+docommand Init_2 "${vg_get} -p $s" 0 "$g\n" IGNORE
 
 # Try excluding V1.1 (the only version)
 # Returns a NULL file.
 
-# docommand Excl_1 "$get -x1.1 -p $s" 0 "" IGNORE
+# docommand Excl_1 "${vg_get} -x1.1 -p $s" 0 "" IGNORE
 
 # Edit the file and insert a line that identifies the version.
 
-docommand Edit_1 "$get -e $s" 0 "1.1\nnew delta 1.2\n1 lines\n" ""
+docommand Edit_1 "${vg_get} -e $s" 0 "1.1\nnew delta 1.2\n1 lines\n" ""
 echo "Inserted in V1.2" >> $g
 docommand Delt_1 "$delta -yNoComment $s" 0 "1.2\n1 inserted\n0 deleted\n1 unchanged\n" ""
 
 # Now let's extract a read-only copy of V1.2 excluding V1.1
 
-docommand Excl_2 "$get -x1.1 -p $s" 0 "Inserted in V1.2\n" IGNORE
+docommand Excl_2 "${vg_get} -x1.1 -p $s" 0 "Inserted in V1.2\n" IGNORE
 
 # Edit V1.2 excluding V1.1
 
-docommand Edit_2 "$get -e -x1.1 $s | grep -v co25" 0 "Excluded:\n1.1\n1.2\nnew delta 1.3\n1 lines\n" IGNORE
+docommand Edit_2 "${vg_get} -e -x1.1 $s | grep -v co25" 0 "Excluded:\n1.1\n1.2\nnew delta 1.3\n1 lines\n" IGNORE
 echo "V1.3 excluded V1.1" >> $g
 docommand Delt_2 "$delta -yNoComment $s" 0 "1.3\n1 inserted\n0 deleted\n1 unchanged\n" IGNORE
 
 # Now let's see what happens with various gets.
 
 # Manually exclude 1.1 (it should be excluded anyway even if we didn't)
-docommand Get_0 "$get -x1.1 -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
+docommand Get_0 "${vg_get} -x1.1 -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
 
 # First get V1.3 which should automatically exclude V1.1
 
-docommand Get_1 "$get -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
+docommand Get_1 "${vg_get} -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
 
 # Then do a "get" including V1.1.  All 3 lines should bee present.
 
-docommand Get_2 "$get -p -i1.1 $s" 0 "$g\nInserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
+docommand Get_2 "${vg_get} -p -i1.1 $s" 0 "$g\nInserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
 
 remove [zxsp].$g $g
 remove command.log

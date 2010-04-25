@@ -17,16 +17,16 @@ remove $s $p $e
 get_expect () { 
 label=$1 ; shift 
 sid_expected=$1 ; shift 
-docommand $label "${get} -g $*" 0 "$sid_expected\n" IGNORE 
+docommand $label "${vg_get} -g $*" 0 "$sid_expected\n" IGNORE 
 } 
 
 # Create the file and set up the test conditions.
 docommand p1 "${admin} -n            $s"   0 IGNORE IGNORE
-docommand p2 "${get}   -e            $s"   0 IGNORE IGNORE
+docommand p2 "${vg_get}   -e            $s"   0 IGNORE IGNORE
 docommand p3 "${delta}          -y'' $s"   0 IGNORE IGNORE
-docommand p4 "${get}   -e -r2        $s"   0 IGNORE IGNORE
+docommand p4 "${vg_get}   -e -r2        $s"   0 IGNORE IGNORE
 docommand p5 "${delta}          -y'' $s"   0 IGNORE IGNORE
-docommand p6 "${get}   -e -r1.2      $s"   0 IGNORE IGNORE
+docommand p6 "${vg_get}   -e -r1.2      $s"   0 IGNORE IGNORE
 docommand p7 "${delta}          -y'' $s"   0 IGNORE IGNORE
 
 
@@ -39,12 +39,12 @@ get_expect Y4 1.2.1.1 -r1.2.1.1 $s
 
 
 # now check for bug... 
-docommand Z1 "${get} -e -r1.2.1.1 $s" 0 \
+docommand Z1 "${vg_get} -e -r1.2.1.1 $s" 0 \
     "1.2.1.1\nnew delta 1.2.1.2\n0 lines\n" IGNORE 
 docommand Z2 "${delta} -yNoComment $s" 0 IGNORE IGNORE 
 
 docommand Z3 "${admin} -fb $s" 0 IGNORE IGNORE 
-docommand Z4 "${get} -e -b -r1.2.1.2 $s" 0 \
+docommand Z4 "${vg_get} -e -b -r1.2.1.2 $s" 0 \
     "1.2.1.2\nnew delta 1.2.2.1\n0 lines\n" IGNORE 
 
 remove $s 

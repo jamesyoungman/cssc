@@ -21,7 +21,7 @@ remove $g $s $x $z $p
 # CSSC used not to do that - SourceForge bug number #450900.
 
 docommand rd1 "${admin} -n $s" 0 IGNORE IGNORE
-docommand rd2 "${get} -r2 -e $s"   0 "1.1
+docommand rd2 "${vg_get} -r2 -e $s"   0 "1.1
 new delta 2.1
 0 lines
 " IGNORE
@@ -31,7 +31,7 @@ docommand rd4 "${rmdel} -r2.1 $s"         0 IGNORE IGNORE
 
 # It's the second get -e which we exp[ect to fail if we are 
 # suffering from SourceForge bug number #450900.
-docommand rd5 "${get} -r2 -e $s"   0 "1.1
+docommand rd5 "${vg_get} -r2 -e $s"   0 "1.1
 new delta 2.1
 0 lines
 " IGNORE
@@ -44,14 +44,14 @@ new delta 2.1
 remove $g $s $x $z $p
 
 docommand rd10 "${admin} -n $s" 0 IGNORE IGNORE
-docommand rd11 "${get} -r2 -e $s"   0 "1.1
+docommand rd11 "${vg_get} -r2 -e $s"   0 "1.1
 new delta 2.1
 0 lines
 " IGNORE
 
 docommand rd12 "${delta} -yNoComment $s"   0 IGNORE IGNORE
 
-docommand rd13 "${get} -r2.1 -e $s"   0 "2.1
+docommand rd13 "${vg_get} -r2.1 -e $s"   0 "2.1
 new delta 2.2
 0 lines
 " IGNORE
@@ -62,7 +62,7 @@ docommand rd14 "${delta} -yNoComment $s"   0 IGNORE IGNORE
 docommand rd15 "${rmdel} -r2.2 $s"         0 IGNORE IGNORE
 docommand rd16 "${rmdel} -r2.1 $s"         0 IGNORE IGNORE
 
-docommand rd17 "${get} -r2 -e $s"   0 "1.1
+docommand rd17 "${vg_get} -r2 -e $s"   0 "1.1
 new delta 2.1
 0 lines
 " IGNORE

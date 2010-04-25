@@ -33,7 +33,7 @@ do_pair() {
     if awk "\$1 == $seq {print}" <  sf111140_full.txt | 
 	sed 's/^[0-9]* //'> wanted.tmp
     then
-	do_output f${seq} "${get} -r${sid} -p $s" 0 wanted.tmp IGNORE
+	do_output f${seq} "${vg_get} -r${sid} -p $s" 0 wanted.tmp IGNORE
     else
 	miscarry "awk failed"
     fi
@@ -45,12 +45,12 @@ record_pair() {
     sid="$2"
 
     echo_nonl "${seq} " >&2
-    ${get} -p -r${sid} ${s} 2>/dev/null | 
+    ${vg_get} -p -r${sid} ${s} 2>/dev/null | 
     awk "{printf(\"%s %s\n\", $seq, \$0);}" 
 }
 
 
-do_output s1 "${get} -r1.16 -p $s"      0 sf111140.wtd IGNORE
+do_output s1 "${vg_get} -r1.16 -p $s"      0 sf111140.wtd IGNORE
 
 # echo_nonl "Preparing test file... "
 # (

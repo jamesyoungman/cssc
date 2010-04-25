@@ -19,7 +19,7 @@ get_expect () {
 label=$1         ; shift
 r_option=$1      ; shift
 sid_expected=$1  ; shift
-docommand $label "${get} ${toption} -g ${r_option} $s" \
+docommand $label "${vg_get} ${toption} -g ${r_option} $s" \
     0 "$sid_expected\n" IGNORE
 }
 
@@ -124,11 +124,11 @@ remove $g
 
 # It should be possible to get 1.1.1.1 explicitly, but the default 
 # should fail with an error.
-docommand oddstart-2 "${get} $s" 1 "" IGNORE
-docommand oddstart-3 "${get} -r1.1.1.1 $s" 0 IGNORE IGNORE
+docommand oddstart-2 "${vg_get} $s" 1 "" IGNORE
+docommand oddstart-3 "${vg_get} -r1.1.1.1 $s" 0 IGNORE IGNORE
 
 # get -t should select the topmost delta (1.1.1.1) and so should work OK.
-docommand oddstart-4 "${get} -t $s" 0 IGNORE IGNORE
+docommand oddstart-4 "${vg_get} -t $s" 0 IGNORE IGNORE
 
 remove $s $g $p $z
 

@@ -18,7 +18,7 @@ touch $g
 docommand t1 "${admin} -i$g -r1.1.1.1 -n $s" 0 IGNORE IGNORE 
 remove foo 
 
-docommand t2 "${get} $s" 1 IGNORE IGNORE
+docommand t2 "${vg_get} $s" 1 IGNORE IGNORE
 
 remove $g $s $x $z $p
 success

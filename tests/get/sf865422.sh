@@ -24,16 +24,16 @@ touch $g
 echo one > $g
 
 docommand E1 "${admin} -i$g -fb -fj $s" 0 IGNORE IGNORE
-docommand E2 "${get} -e -g -r1.1 $s"    0 IGNORE IGNORE
+docommand E2 "${vg_get} -e -g -r1.1 $s"    0 IGNORE IGNORE
 docommand E3 "${delta} -n -yok $s"      0 IGNORE IGNORE
-docommand E4 "${get} -e -g -r1.2 $s"    0 IGNORE IGNORE
+docommand E4 "${vg_get} -e -g -r1.2 $s"    0 IGNORE IGNORE
 docommand E5 "${delta} -n -yok $s"      0 IGNORE IGNORE
 docommand E6 "${rmdel} -r1.3 $s"        0 IGNORE IGNORE
 
 # The two get commands under consideration follow.  The second
 # of the two is the one that would fail.
-docommand E7 "${get} -e -g -r1.2 $s"    0 IGNORE IGNORE
-docommand E8 "${get} -e -g -r1.2 $s"    0 IGNORE IGNORE
+docommand E7 "${vg_get} -e -g -r1.2 $s"    0 IGNORE IGNORE
+docommand E8 "${vg_get} -e -g -r1.2 $s"    0 IGNORE IGNORE
 
 # Check the pfile - make sure both edits are listed.
 docommand E9  "${sact} $s | grep '^1\.2 1\.3 '"      0 IGNORE IGNORE

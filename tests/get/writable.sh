@@ -25,19 +25,19 @@ echo foo > $f
 chmod +w $f
 
 # Try running get when gfile was writable -- it should fail.
-docommand W2 "$get s.$f" 1 IGNORE IGNORE
+docommand W2 "${vg_get} s.$f" 1 IGNORE IGNORE
 remove $gfile
 test -f $gfile	    && miscarry could not remove _g.$f
 
 # Now run get with the -G option and it should work even
 # though the file's usual name is occupied by a writable file.
-docommand W3 "$get -G$gfile s.$f" 0 "1.1\n0 lines\n" IGNORE
+docommand W3 "${vg_get} -G$gfile s.$f" 0 "1.1\n0 lines\n" IGNORE
 
 
 # If you specify the "-k" option, the gotten file should be read-write.
 # If you don't specify -k or -e, it will be read-only.  -e implies -k.
 remove $gfile $f
-docommand W4 "$get s.$f" 0 "1.1\n0 lines\n" IGNORE
+docommand W4 "${vg_get} s.$f" 0 "1.1\n0 lines\n" IGNORE
 
 # Make sure the file is read only.
 echo_nonl "W5..."
@@ -51,7 +51,7 @@ echo passed
 
 # Now do the same again, using the -k option.
 remove $gfile $f
-docommand W6 "$get -k s.$f" 0 "1.1\n0 lines\n" IGNORE
+docommand W6 "${vg_get} -k s.$f" 0 "1.1\n0 lines\n" IGNORE
 
 # Make sure the file is read only.
 echo_nonl "W7..."

@@ -1,5 +1,32 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Use valgrind for get tests.
+	* tests/get/annotate.sh: Use valgrind.
+	* tests/get/a-option.sh: Likewise.
+	* tests/get/branch.sh: Likewise.
+	* tests/get/create.sh: Likewise.
+	* tests/get/defsid.sh: Likewise.
+	* tests/get/delta-summary.sh: Likewise.
+	* tests/get/errorcases.sh: Likewise.
+	* tests/get/excl_ig_1.sh: Likewise.
+	* tests/get/excl_ig_2.sh: Likewise.
+	* tests/get/gg_get_ix.sh: Likewise.
+	* tests/get/included.sh: Likewise.
+	* tests/get/middle-fail.sh: Likewise.
+	* tests/get/no-sfile.sh: Likewise.
+	* tests/get/only-one.sh: Likewise.
+	* tests/get/optorder.sh: Likewise.
+	* tests/get/removed-delta.sh: Likewise.
+	* tests/get/sep_subst.sh: Likewise.
+	* tests/get/sf111140.sh: Likewise.
+	* tests/get/sf479916.sh: Likewise.
+	* tests/get/sf664900.sh: Likewise.
+	* tests/get/sf865422.sh: Likewise.
+	* tests/get/sid-select.sh: Likewise.
+	* tests/get/sid-select2.sh: Likewise.
+	* tests/get/subst.sh: Likewise.
+	* tests/get/t-option.sh: Likewise.
+
 	Use valgrind for delta tests.
 	* tests/delta/basic.sh: Use valgrind.
 	* tests/delta/errorcase.sh: Likewise.

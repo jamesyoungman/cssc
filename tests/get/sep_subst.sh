@@ -32,9 +32,9 @@ docommand prep3 "$delta '-yAdded line three' $s" 0 \
     IGNORE
 
 
-docommand G1 "${get} -p -r1.1 $s" 0 "line1 1.1\nline2\n" \
+docommand G1 "${vg_get} -p -r1.1 $s" 0 "line1 1.1\nline2\n" \
 	    "1.1\n2 lines\n"
-docommand G2 "${get} -p -r1.2 $s" 0 "line1 1.2\nline2\nline3 1.2\n" \
+docommand G2 "${vg_get} -p -r1.2 $s" 0 "line1 1.2\nline2\nline3 1.2\n" \
 	    "1.2\n3 lines\n"
 
 

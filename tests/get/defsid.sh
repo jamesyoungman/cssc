@@ -59,12 +59,12 @@ remove [zxsp].$g $g
 
 docommand e1 "${admin} -n $s" 0 IGNORE IGNORE
 docommand e2 "${admin} -fd100 $s" 0 IGNORE IGNORE
-docommand e3 "${get} -e $s" 0 "1.1\nnew delta 100.1\n0 lines\n" ""
+docommand e3 "${vg_get} -e $s" 0 "1.1\nnew delta 100.1\n0 lines\n" ""
 docommand e4 "echo "hello" >> $g" 0 "" ""
 docommand e5 "${delta} -y"NoComment" $s" 0 IGNORE IGNORE
 # prs $s
 
-docommand e6 "${get} -e $s" 0 "100.1\nnew delta 100.2\n1 lines\n" ""
+docommand e6 "${vg_get} -e $s" 0 "100.1\nnew delta 100.2\n1 lines\n" ""
 docommand e7 "echo "there" >> $g" 0 "" ""
 docommand e8 "${delta} -y"NoComment" $s" 0 IGNORE IGNORE
 # prs $s

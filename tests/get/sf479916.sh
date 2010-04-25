@@ -40,7 +40,7 @@ docommand prep5 "${delta} -yNoComment $s" 0 IGNORE IGNORE
 # Now for the actual test - the "-t" option should pich the 
 # most recent delata, which is 1.1.2.1, not 1.1.1.1.
 
-docommand T1 "${get} -t $s" 0 "1.1.2.1
+docommand T1 "${vg_get} -t $s" 0 "1.1.2.1
 2 lines
 " IGNORE
 
@@ -53,11 +53,11 @@ new delta 1.2
 docommand prep7 "${delta} -yNoComment $s" 0 IGNORE IGNORE
 
 
-docommand T2 "${get} -t $s" 0 "1.2
+docommand T2 "${vg_get} -t $s" 0 "1.2
 2 lines
 " IGNORE
 
-docommand T3 "${get}  $s" 0 "1.2
+docommand T3 "${vg_get}  $s" 0 "1.2
 2 lines
 " IGNORE
 
@@ -77,43 +77,43 @@ new delta 1.2.1.1
 docommand prep11 "${delta} -yNoComment $s" 0 IGNORE IGNORE
 
 
-docommand T4 "${get} -t -r2 $s" 0 "2.1
+docommand T4 "${vg_get} -t -r2 $s" 0 "2.1
 2 lines
 " IGNORE
 
-docommand T5 "${get} -t -r2.1 $s" 0 "2.1
+docommand T5 "${vg_get} -t -r2.1 $s" 0 "2.1
 2 lines
 " IGNORE
 
-docommand T6 "${get} -r2.1 $s" 0 "2.1
+docommand T6 "${vg_get} -r2.1 $s" 0 "2.1
 2 lines
 " IGNORE
 
-docommand T7 "${get} -t $s" 0 "2.1
+docommand T7 "${vg_get} -t $s" 0 "2.1
 2 lines
 " IGNORE
 
-docommand T8 "${get} -t -r1 $s" 0 "1.2.1.1
+docommand T8 "${vg_get} -t -r1 $s" 0 "1.2.1.1
 2 lines
 " IGNORE
 
-docommand T9 "${get} -t -r1.1 $s" 0 "1.1.2.1
+docommand T9 "${vg_get} -t -r1.1 $s" 0 "1.1.2.1
 2 lines
 " IGNORE
 
-docommand T10 "${get} -t -r1.1.1 $s" 0 "1.1.1.1
+docommand T10 "${vg_get} -t -r1.1.1 $s" 0 "1.1.1.1
 2 lines
 " IGNORE
 
-docommand T11 "${get} -t -r1.1.2 $s" 0 "1.1.2.1
+docommand T11 "${vg_get} -t -r1.1.2 $s" 0 "1.1.2.1
 2 lines
 " IGNORE
 
-docommand T12 "${get} -t -r1.1.1.1 $s" 0 "1.1.1.1
+docommand T12 "${vg_get} -t -r1.1.1.1 $s" 0 "1.1.1.1
 2 lines
 " IGNORE
 
-docommand T13 "${get} -t -r1.1.2.1 $s" 0 "1.1.2.1
+docommand T13 "${vg_get} -t -r1.1.2.1 $s" 0 "1.1.2.1
 2 lines
 " IGNORE
 

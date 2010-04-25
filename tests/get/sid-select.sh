@@ -14,7 +14,7 @@ remove $s
 get_expect () {
 label=$1         ; shift
 sid_expected=$1  ; shift
-docommand $label "${get} -g $*" 0 "$sid_expected\n" IGNORE
+docommand $label "${vg_get} -g $*" 0 "$sid_expected\n" IGNORE
 }
 
 # Do various forms of get on the file and make sure we get the right SID.
@@ -32,8 +32,8 @@ get_expect X11 2.1        ""         $s
 get_expect X12 2.1        -r3        $s
 get_expect X13 2.1        -r9000     $s
 
-docommand F1 "${get} -r3.1   s.testfile" 1 "" IGNORE
-docommand F2 "${get} -r3.1.1 s.testfile" 1 "" IGNORE
+docommand F1 "${vg_get} -r3.1   s.testfile" 1 "" IGNORE
+docommand F2 "${vg_get} -r3.1.1 s.testfile" 1 "" IGNORE
 
 remove $s
 success

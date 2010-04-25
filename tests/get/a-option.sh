@@ -19,7 +19,7 @@ label="$1"         ; shift
 r_option=$1      ; shift
 a_option=$1      ; shift
 sid_expected=$1  ; shift
-docommand "$label" "${get} ${toption} -g ${r_option} ${a_option} ${t_option} \
+docommand "$label" "${vg_get} ${toption} -g ${r_option} ${a_option} ${t_option} \
 $s" 0 "$sid_expected\n" IGNORE
 }
 
