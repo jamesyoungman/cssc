@@ -12,7 +12,7 @@ expands_to () {
     # $1 -- label
     # $2 -- format
     # $3 -- expansion
-docommand $1 "${prs} \"-d$2\" -r${sid} s.1" 0 "$3" IGNORE
+docommand $1 "${vg_prs} \"-d$2\" -r${sid} s.1" 0 "$3" IGNORE
 }
 
 remove s.1 p.1 1 z.1
@@ -22,7 +22,7 @@ echo "Descriptive Text" > DESC
 docommand P1 "${admin} -n -tDESC s.1" 0 "" ""
 remove DESC
 
-docommand P2 "${prs} -d':M:\n' s.1" 0 "1
+docommand P2 "${vg_prs} -d':M:\n' s.1" 0 "1
 " ""
 
 docommand P3 "${get} -e s.1" 0 "1.1\nnew delta 1.2\n0 lines\n" IGNORE
@@ -56,7 +56,7 @@ expands_to X18 ':FD:'   'Descriptive Text\n\n'
 
 remove got.stdout expected.stdout
 echo_nonl Z1...
-${prs}  -d'\\' s.1 > got.stdout 2>got.stderr || fail prs failed.
+${vg_prs}  -d'\\' s.1 > got.stdout 2>got.stderr || fail prs failed.
 echo \\            > expected.stdout || miscarry redirection to expected.stdout
 diff expected.stdout got.stdout >/dev/null || fail stdout format error.
 test -s got.stderr && fail expected empty stderr output
@@ -65,7 +65,7 @@ echo passed
 
 
 # Make sure prs accepts an empty "-r" option.
-docommand Z2 "${prs} -r -d':M:\n' s.1" 0 "1
+docommand Z2 "${vg_prs} -r -d':M:\n' s.1" 0 "1
 " ""
 
 remove s.1

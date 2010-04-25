@@ -17,7 +17,7 @@ docommand b2 "${get} -p s.1" 0 "hello
 " IGNORE
 
 # get -d :GB: should emit the body followed by a newline
-docommand b3 "${prs} -d:GB: s.1" 0 "hello
+docommand b3 "${vg_prs} -d:GB: s.1" 0 "hello
 
 " IGNORE
 
@@ -36,7 +36,7 @@ docommand b5 "${get} -p s.1" 0 "@(#)
 " IGNORE
 
 # get -d :GB: should emit the body followed by a newline with kw expansion
-docommand b6 "${prs} -d:GB: s.1" 0 "@(#)
+docommand b6 "${vg_prs} -d:GB: s.1" 0 "@(#)
 
 " IGNORE
 
@@ -50,7 +50,7 @@ docommand b7 "${get} -p -k s.1" 0 "%Z%
 ## Testing for :BD:
 docommand b7 "cp sample_foo s.foo" 0 IGNORE IGNORE
 
-do_output b8 "${prs} -d:BD: s.foo" 0 s_foo_bd_output.txt IGNORE
+do_output b8 "${vg_prs} -d:BD: s.foo" 0 s_foo_bd_output.txt IGNORE
 
 
 

@@ -14,7 +14,7 @@ expands_to () {
     # $1 -- label
     # $2 -- format
     # $3 -- expansion
-docommand $1 "${prs} \"-d$2\" -r1.1 s.1 s.foobar" 1 "$3" "IGNORE"
+docommand $1 "${vg_prs} \"-d$2\" -r1.1 s.1 s.foobar" 1 "$3" "IGNORE"
 }
 
 remove s.1 p.1 1 z.1 s.foobar
@@ -24,9 +24,9 @@ echo "Descriptive Text" > DESC
 docommand e1 "${admin} -n -tDESC s.1" 0 "" ""
 remove DESC
 
-docommand e2a "${prs} -d':M:\nX' s.1" 0 "1\nX\n" ""
-docommand e2b "${prs} -d':M:\n' s.1" 0 "1\n" ""
-docommand e2c "${prs} -d':M:
+docommand e2a "${vg_prs} -d':M:\nX' s.1" 0 "1\nX\n" ""
+docommand e2b "${vg_prs} -d':M:\n' s.1" 0 "1\n" ""
+docommand e2c "${vg_prs} -d':M:
 ' s.1" 0 "1
 
 " ""
