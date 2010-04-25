@@ -117,6 +117,13 @@ test-val: links
 		$(SHELL) $$i || exit 1; \
 	done'
 
+test-year-2000: links
+	$(SHELL) -ec 'cd year-2000 && for i in *.sh ; \
+	do \
+		echo Running test $$i; \
+		$(SHELL) $$i || exit 1; \
+	done'
+
 test-bsd-sccs: links
 	$(SHELL) -ec 'cd bsd-sccs && for i in *.sh ; \
 	do \
@@ -129,7 +136,8 @@ all-tests: 	test-initial \
 		test-rmdel \
 		test-admin test-delta test-get test-prs test-prt test-unget \
 		test-cdc  test-sact test-val \
-		test-large test-sccsdiff test-binary test-bsd-sccs test-what
+		test-large test-sccsdiff test-binary test-bsd-sccs test-what \
+		test-year-2000
 	echo Tests passed.
 
 check: all-tests

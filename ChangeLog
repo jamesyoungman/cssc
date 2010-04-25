@@ -1,5 +1,8 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Enable the y2k tests.
+	* tests/Makefile.am (test-year-2000): Actually run the y2k tests.
+
 	Use valgrind for y2k tests.
 	* tests/year-2000/ext.sh: Use valgrind.
 	* tests/year-2000/prs-y2k.sh: Likewise.
