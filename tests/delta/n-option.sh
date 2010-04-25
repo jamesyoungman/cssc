@@ -17,7 +17,7 @@ docommand d1 "${admin} -n $s"    0 "" IGNORE
 docommand d2 "${get} -e $s"      0 IGNORE IGNORE
 
 # Check the file back in with delta, using the -n option.
-docommand d3 "${delta} -n -y $s" 0 IGNORE IGNORE
+docommand d3 "${vg_delta} -n -y $s" 0 IGNORE IGNORE
 
 # Make sure the g-file hasn't been deleted, and is still writable.
 docommand d4 "test -w $g" 0 "" IGNORE

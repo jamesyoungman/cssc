@@ -60,7 +60,7 @@ fi
 docommand E1 "${admin} -n $s" 0 IGNORE IGNORE 
 docommand E2 "${get} -e $s"   0 IGNORE IGNORE 
 append $g "test data"
-docommand E3 "${delta} -yNoComment $s"   0 IGNORE IGNORE 
+docommand E3 "${vg_delta} -yNoComment $s"   0 IGNORE IGNORE 
 
 # Now set up the authorised groups list.   
 docommand E4 "${admin} -a${wrong_group} $s" 0 IGNORE IGNORE
@@ -77,11 +77,11 @@ append $g "more test data"
 
 # delta should still fail if we are not in the authorised user list
 # (in other words the list is checked both by get -e and delta).
-docommand E9 "${delta} -yNoComment $s"   1 IGNORE IGNORE
+docommand E9 "${vg_delta} -yNoComment $s"   1 IGNORE IGNORE
 
 # Remove the authorised group list; check-in should now work
 docommand E10 "${admin} -e${wrong_group} $s" 0 IGNORE IGNORE
-docommand E11 "${delta} -yNoComment $s"   0 IGNORE IGNORE 
+docommand E11 "${vg_delta} -yNoComment $s"   0 IGNORE IGNORE 
 
 
 # Now, what if the authorised user list just excludes?
@@ -111,21 +111,21 @@ docommand E15 "${get} -e $s"                0 IGNORE IGNORE
 
 # Check - use of delta when a q-file already exists...
 createfile $q
-docommand E16 "${delta} -yNoComment $s" 1 IGNORE IGNORE
+docommand E16 "${vg_delta} -yNoComment $s" 1 IGNORE IGNORE
 remove $q
 
 # Unreadable g-file should also cause a failure. 
 chmod 0 $g
-docommand E17 "${delta} -yNoComment $s" 1 IGNORE IGNORE
+docommand E17 "${vg_delta} -yNoComment $s" 1 IGNORE IGNORE
 chmod +r $g
-docommand E18 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+docommand E18 "${vg_delta} -yNoComment $s" 0 IGNORE IGNORE
 
 
 # Failure to create the d-file should NOT cause a failure. 
 docommand E19 "${get} -e $s"                0 IGNORE IGNORE
 remove $x
 createfile $d
-docommand E20 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+docommand E20 "${vg_delta} -yNoComment $s" 0 IGNORE IGNORE
 
 # This should not leave any other temporary file lying about
 # but it should also not delete the s-file
@@ -140,7 +140,7 @@ docommand E26 "test -w $g" 1 "" ""
 
 # Since E20 was successful, no need to do the delta again
 #remove $d
-#docommand E27 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+#docommand E27 "${vg_delta} -yNoComment $s" 0 IGNORE IGNORE
 
 # %A as the last two characters of the file to be checked in 
 # should not cause the world to end. 
@@ -152,7 +152,7 @@ then
     docommand E29 "${get} -e $s"                0 IGNORE IGNORE
     echo_nonl "%A" > $g
     cp $g $g.saved || miscarry "could not back up $g"
-    docommand E30 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+    docommand E30 "${vg_delta} -yNoComment $s" 0 IGNORE IGNORE
     docommand E31 "${get} -k $s"                0 IGNORE IGNORE
     
     echo_nonl E32...
@@ -172,7 +172,7 @@ then
     mkdir $x.bak
     createfile $x
     docommand E33 "${get} -e $s"                0 IGNORE IGNORE
-    docommand E34 "${delta} -yNoComment $s"     0 IGNORE IGNORE
+    docommand E34 "${vg_delta} -yNoComment $s"     0 IGNORE IGNORE
     removedirs $x.bak
 
 else
@@ -187,7 +187,7 @@ remove $s
 # Create deltas 1.1 and 1.2
 docommand E35 "${admin} -n $s"     0 IGNORE IGNORE
 docommand E36 "${get} -e $s"       0 IGNORE IGNORE
-docommand E37 "${delta} -yNoComment $s" 0 IGNORE IGNORE
+docommand E37 "${vg_delta} -yNoComment $s" 0 IGNORE IGNORE
 
 # Edit delta 1.2 and then remove delta 1.2
 docommand E38 "${get} -e $s"       0 IGNORE IGNORE

@@ -1,5 +1,12 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Use valgrind for delta tests.
+	* tests/delta/basic.sh: Use valgrind.
+	* tests/delta/errorcase.sh: Likewise.
+	* tests/delta/n-option.sh: Likewise.
+	* tests/delta/options.sh: Likewise.
+	* tests/delta/nulldelta.sh: Likewise
+
 	Use valgrind for binary file tests, sccs tests and cdc tests.
 	* tests/binary/auto.sh: Use valgrind.
 	* tests/binary/binbasic.sh: Likewise.
