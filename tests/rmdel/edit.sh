@@ -25,7 +25,7 @@ docommand a3 "${delta} -yNoComment $s" 0 \
     IGNORE
 
 # Remove 1.2.
-docommand a4 "${rmdel} -r1.2 $s" 0 "" ""
+docommand a4 "${vg_rmdel} -r1.2 $s" 0 "" ""
 
 # Now edit 1.1 and make sure that the new SID is 1.2.
 docommand a5 "${get} -e $s" 0 "1.1\nnew delta 1.2\n1 lines\n" ""

@@ -24,7 +24,7 @@ docommand a3 "${delta} -yNoComment $s" 0 \
 	"1.2\n0 inserted\n0 deleted\n1 unchanged\n"   \
     IGNORE
 # Remove the second revision.
-docommand a4 "${rmdel} -r1.2 $s" 0 "" ""
+docommand a4 "${vg_rmdel} -r1.2 $s" 0 "" ""
 
 # Now get the first revision and check it still contains the right data.
 # CSSC had a bug in 0.06alpha-pl3 (and earlier), where the delta control

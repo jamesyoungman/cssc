@@ -7,7 +7,7 @@
 s=s.testfile
 
 remove $s
-docommand e1 "${rmdel} -r1.1 $s" 1 "IGNORE" "IGNORE"
+docommand e1 "${vg_rmdel} -r1.1 $s" 1 "IGNORE" "IGNORE"
 remove $s
 
 success

@@ -1,5 +1,10 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Use valgrind for rmdel tests.
+	* tests/rmdel/basic.sh: Use valgrind.
+	* tests/rmdel/exists.sh: Likewise.
+	* tests/rmdel/edit.sh: Likewise.
+
 	Use valgrind for prt tests.
 	* tests/prt/default.sh: Use valgrind.
 	* tests/prt/nodel.sh: Likewise.
