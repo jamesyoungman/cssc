@@ -1,5 +1,9 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Use valgrind for unget tests.
+	* tests/unget/exists.sh: Use valgrind.
+	* tests/unget/output.sh: Likewise.
+
 	Use valgrind for sact tests.
 	* tests/sact/sactbasic.sh: Use valgrind.
 	* tests/sact/sf513800.sh: Likewise.
