@@ -62,25 +62,25 @@ docommand k1 "${admin} -ifoo $s" 0 "" ""
 ## 		return;
 ## 	     }
 ## 
-## which emulates a class creation with no arguements.
+## which emulates a class creation with no arguments.
 ## 
 
-docommand k2 "${admin} -dla $s" 0 IGNORE IGNORE
+docommand k2 "${vg_admin} -dla $s" 0 IGNORE IGNORE
 
 
-docommand k3 "${admin} -fla $s" 0 IGNORE IGNORE
+docommand k3 "${vg_admin} -fla $s" 0 IGNORE IGNORE
 
 # Now, all revisions are locked.   A 'get' must fail.
 docommand k4 "${get} -e $s" 1 IGNORE IGNORE
 
 # Remove the locks and try again. (This test is a repeat of 
 # test k2, but is required for the next test to work).
-docommand k5 "${admin} -dla $s" 0 IGNORE IGNORE
+docommand k5 "${vg_admin} -dla $s" 0 IGNORE IGNORE
 docommand k6 "${get} -e $s" 0 IGNORE IGNORE
 remove  $p $g
 
 # Lock just release 2; a get should work, since we are getting release 1.
-docommand k7 "${admin} -fl2 $s" 0 IGNORE IGNORE
+docommand k7 "${vg_admin} -fl2 $s" 0 IGNORE IGNORE
 docommand k8 "${get} -e $s" 0 IGNORE IGNORE
 
 # we may not have "prt".
@@ -91,26 +91,26 @@ docommand k8a "${prs} -d:LK: $s" 0 "2\n" IGNORE
 remove $p $g
 
 # Lock release 1 as well; a get should fail.
-docommand k9 "${admin} -fl1 $s" 0 IGNORE IGNORE
+docommand k9 "${vg_admin} -fl1 $s" 0 IGNORE IGNORE
 
 # CSSC and SCCS differ in terms of the order they list the locked
 # releases in.
 # Locking release 1 should implicitly unlock release 2
 # (Solaris 2.6 does this).
-docommand k9a "${prs} -d:LK: $s" 0 "1\n" IGNORE
+docommand k9a "${vg_prs} -d:LK: $s" 0 "1\n" IGNORE
 
 docommand k10 "${get} -e $s" 1 IGNORE IGNORE
 remove $p $g
 
 
 # Remove lock on release 1; things should work now.
-docommand k13 "${admin} -dl1 $s" 0 IGNORE IGNORE
+docommand k13 "${vg_admin} -dl1 $s" 0 IGNORE IGNORE
 docommand k14 "${get} -e $s" 0 IGNORE IGNORE
 remove $p $g
 
 
 
-docommand k15 "${admin} -fla $s" 0 IGNORE IGNORE
+docommand k15 "${vg_admin} -fla $s" 0 IGNORE IGNORE
 docommand k16 "${prs} -d:LK: $s" 0 "a\n" IGNORE
 
 remove $s $g $p

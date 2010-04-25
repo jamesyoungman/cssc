@@ -38,7 +38,7 @@ docommand I6a "${prs} -d:MF: $s" 0 "no\n" ""
 docommand I6b "${prs} -d:MP: $s" 0 "none\n" ""
 
 # We should not be able to admin -i if the s-file already exists.
-docommand I7 "${admin} -ifoo $s" 1 "" IGNORE
+docommand I7 "${vg_admin} -ifoo $s" 1 "" IGNORE
 remove $s
 
 
@@ -60,19 +60,19 @@ remove $s
 # Hence this test cannot work with both CSSC and Solaris SCCS
 # unless CSSC migrates to a (later) traditional getopt option
 # parsing scheme instead of one where this distinction is made. 
-docommand I9 "${admin} -fv -m'' -r2 -ifoo $s" 0 "" ""
+docommand I9 "${vg_admin} -fv -m'' -r2 -ifoo $s" 0 "" ""
 # Check for absence of MRs
 #docommand I10 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
 #    0  "MRs:\nCOMMENTS:\n" ""
 
 # One MR -- v flag unset, should fail.
 remove $s
-docommand I13 "${admin} -m13 -ifoo $s" 1 "" IGNORE
+docommand I13 "${vg_admin} -m13 -ifoo $s" 1 "" IGNORE
 test  -f $s && fail I13b stage I13 should not have created $s.
 
 # Set MR flag -- should work.
 remove $s
-docommand I14 "${admin} -fv -m13 -ifoo $s" 0 "" IGNORE
+docommand I14 "${vg_admin} -fv -m13 -ifoo $s" 0 "" IGNORE
 # Check for correct MRs
 docommand I15 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
     0  "MRs:\n13\nCOMMENTS:\n" ""
@@ -91,12 +91,12 @@ docommand I18 "${prs} -d:MP: $s" 0 "true\n" ""
 
 # Make sure validation checks can succeed, ever.
 remove $s
-docommand I19 "${admin} -fvtrue -m19 -ifoo $s" 0 "" ""
+docommand I19 "${vg_admin} -fvtrue -m19 -ifoo $s" 0 "" ""
 
 # Check compatible behaviour with regard to MR validation 
 # failure at initialisation.
 remove $s
-docommand I20 "${admin} -fv/bin/false -m20 -ifoo $s" 1 "" IGNORE
+docommand I20 "${vg_admin} -fv/bin/false -m20 -ifoo $s" 1 "" IGNORE
 test  -f $s && fail I21 stage I20 should not have created $s.
 
 rm -rf test 

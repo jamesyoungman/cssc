@@ -19,7 +19,7 @@ docommand C1 "${admin} -ifoo $s" 0 "" ""
 # Check the format of the default comment.
 echo_nonl C2...
 remove prs.$s
-${prs} $s | sed -ne '/^COMMENTS:$/,/$/ p' > prs.$s || fail prs failed.
+${vg_prs} $s | sed -ne '/^COMMENTS:$/,/$/ p' > prs.$s || fail prs failed.
 test `wc -l < prs.$s` -eq 2 || fail wrong comment format.
 test `head -1 prs.$s` = "COMMENTS:" || fail Comment doesn\'t start COMMENTS:
 tail -1 prs.$s | egrep \
@@ -30,7 +30,7 @@ remove $s prs.$s
 
 # Force a blank comment and check it was blank.
 docommand C3 "${admin} -ifoo -y $s" 0 "" ""
-docommand C4 "${prs} $s | \
+docommand C4 "${vg_prs} $s | \
 	    sed -ne '/^COMMENTS:$/,/$/ p'"   0  \
 	    "COMMENTS:\n\n" ""
 remove $s
@@ -38,21 +38,21 @@ remove $s
 
 # Specify some comment and check it works.
 docommand C5 "${admin} -ifoo -yMyComment $s" 0 "" ""
-docommand C6 "${prs} $s | \
+docommand C6 "${vg_prs} $s | \
 	    sed -ne '/^COMMENTS:$/,/$/ p'"   0  \
 	    "COMMENTS:\nMyComment\n" ""
 
 # Detach the comment arg and check it no longer works.
 remove MyComment $s
-docommand C7 "${admin} -y MyComment -n $s" 1 "" IGNORE
+docommand C7 "${vg_admin} -y MyComment -n $s" 1 "" IGNORE
 
 # Ensure the same form does work normally.
 remove MyComment $s
-docommand C8 "${admin} -n -yMyComment $s" 0 "" IGNORE
+docommand C8 "${vg_admin} -n -yMyComment $s" 0 "" IGNORE
 
 
 # Can we create multiple files if we don't use -i ?
-docommand C9 "${admin} -n s.1 s.2" 0 "" ""
+docommand C9 "${vg_admin} -n s.1 s.2" 0 "" ""
 
 # Check both generated files.
 for n in 1 2
@@ -65,7 +65,7 @@ do
   ""
 done
 
-docommand C12 "${prs} -d':M:\n' s.1 s.2" 0 "1
+docommand C12 "${vg_prs} -d':M:\n' s.1 s.2" 0 "1
 2
 " ""
 

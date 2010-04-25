@@ -52,7 +52,7 @@ remove foo
 # docommand A2 "${admin} -dy $s" 0 IGNORE IGNORE
 
 # default situation is that everything is expanded.
-docommand Y2 "${get} -p -r1.1 ${s}" 0 "\
+docommand Y2 "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M bar
  2 R 1
  3 L 1
@@ -68,7 +68,7 @@ docommand Y2 "${get} -p -r1.1 ${s}" 0 "\
 " IGNORE
 
 
-docommand YMa "${admin} -fyM ${s}" 0 "" IGNORE
+docommand YMa "${vg_admin} -fyM ${s}" 0 "" IGNORE
 docommand YMg "${get} -p -r1.1 ${s}" 0 "\
  1 M bar\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W %W%
@@ -81,71 +81,71 @@ docommand YMg "${get} -p -r1.1 ${s}" 0 "\
 # " IGNORE
 
 
-docommand YRa "${admin} -fyR ${s}" 0 "" IGNORE
+docommand YRa "${vg_admin} -fyR ${s}" 0 "" IGNORE
 docommand YRg "${get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R 1\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W %W%
 " IGNORE
 
 
-docommand YLa "${admin} -fyL ${s}" 0 "" IGNORE
-docommand YLg "${get} -p -r1.1 ${s}" 0 "\
+docommand YLa "${vg_admin} -fyL ${s}" 0 "" IGNORE
+docommand YLg "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L 1\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W %W%
 " IGNORE
 
-docommand YBa "${admin} -fyB ${s}" 0 "" IGNORE
-docommand YBg "${get} -p -r1.1 ${s}" 0 "\
+docommand YBa "${vg_admin} -fyB ${s}" 0 "" IGNORE
+docommand YBg "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B 0\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W %W%
 " IGNORE
 
-docommand YSa "${admin} -fyS ${s}" 0 "" IGNORE
-docommand YSg "${get} -p -r1.1 ${s}" 0 "\
+docommand YSa "${vg_admin} -fyS ${s}" 0 "" IGNORE
+docommand YSg "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S 0\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W %W%
 " IGNORE
 
-docommand YYa "${admin} -fyY ${s}" 0 "" IGNORE
-docommand YYg "${get} -p -r1.1 ${s}" 0 "\
+docommand YYa "${vg_admin} -fyY ${s}" 0 "" IGNORE
+docommand YYg "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y 
  7 F %F%\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W %W%
 " IGNORE
 
 
-docommand YFa "${admin} -fyF ${s}" 0 "" IGNORE
-docommand YFg "${get} -p -r1.1 ${s}" 0 "\
+docommand YFa "${vg_admin} -fyF ${s}" 0 "" IGNORE
+docommand YFg "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F s.bar\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W %W%
 " IGNORE
 
-docommand YQa "${admin} -fyQ ${s}" 0 "" IGNORE
-docommand YQg "${get} -p -r1.1 ${s}" 0 "\
+docommand YQa "${vg_admin} -fyQ ${s}" 0 "" IGNORE
+docommand YQg "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q  \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W %W%
 " IGNORE
 
 
-docommand YCa "${admin} -fyC ${s}" 0 "" IGNORE
-docommand YCg "${get} -p -r1.1 ${s}" 0 "\
+docommand YCa "${vg_admin} -fyC ${s}" 0 "" IGNORE
+docommand YCg "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C 9\n10 C 10\n11 Z %Z%\n12 W %W%
 " IGNORE
 
 
-docommand YZa "${admin} -fyZ ${s}" 0 "" IGNORE
-docommand YZg "${get} -p -r1.1 ${s}" 0 "\
+docommand YZa "${vg_admin} -fyZ ${s}" 0 "" IGNORE
+docommand YZg "${vg_get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z @(#)\n12 W %W%
 " IGNORE
 
-docommand YWa "${admin} -fyW ${s}" 0 "" IGNORE
+docommand YWa "${vg_admin} -fyW ${s}" 0 "" IGNORE
 docommand YWg "${get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C %C%\n10 C %C%\n11 Z %Z%\n12 W @(#)bar	1.1
 " IGNORE
 
-docommand YCWa "${admin} -fyW,C ${s}" 0 "" IGNORE
+docommand YCWa "${vg_admin} -fyW,C ${s}" 0 "" IGNORE
 docommand YCWg "${get} -p -r1.1 ${s}" 0 "\
  1 M %M%\n 2 R %R%\n 3 L %L%\n 4 B %B%\n 5 S %S%\n 6 Y %Y%
  7 F %F%\n 8 Q %Q% \n 9 C 9\n10 C 10\n11 Z %Z%\n12 W @(#)bar	1.1
@@ -166,7 +166,7 @@ test -r foo || miscarry cannot create file foo.
 docommand YA1 "${admin} -ifoo ${s}" 0 "" IGNORE
 remove foo
 
-docommand YA2 "${admin} -dy ${s}" 0 "" IGNORE
+docommand YA2 "${vg_admin} -dy ${s}" 0 "" IGNORE
 docommand YA3 "${get} -p -r1.1 ${s}" 0 "\
  1 @(#) bar 1.1@(#)
  2 @(#) bar 1.1@(#)
@@ -174,7 +174,7 @@ docommand YA3 "${get} -p -r1.1 ${s}" 0 "\
 
 # Disable expansion of %Z% and %I%, and check that it is still expanded in 
 # %A%.
-docommand YA4 "${admin} -fyA,M ${s}" 0 "" IGNORE
+docommand YA4 "${vg_admin} -fyA,M ${s}" 0 "" IGNORE
 docommand YA5 "${get} -p -r1.1 ${s}" 0 "\
  1 %Z%%Y% bar %I%%Z%
  2 @(#) bar 1.1@(#)
@@ -183,7 +183,7 @@ docommand YA5 "${get} -p -r1.1 ${s}" 0 "\
 # Disable M as well and check again.
 # Disable expansion of %Z% and %I%, and check that it is still expanded in 
 # %A%.
-docommand YA6 "${admin} -fyA ${s}" 0 "" IGNORE
+docommand YA6 "${vg_admin} -fyA ${s}" 0 "" IGNORE
 docommand YA7 "${get} -p -r1.1 ${s}" 0 "\
  1 %Z%%Y% %M% %I%%Z%
  2 @(#) bar 1.1@(#)

@@ -252,8 +252,17 @@ echo "WARNING: please set the variable ZCAT_PROGRAM and re-run configure."
 echo 
 fi
 
-# Locate valgrind and use it (for running tests)
-AC_CHECK_PROG([VALGRIND], [valgrind], [valgrind -q --trace-children=yes], [])
+AC_ARG_WITH([valgrind],
+	AS_HELP_STRING([--with-valgrind],
+		[Run tests under Valgrind, if it is installed]),
+	[with_valgrind=$withval],
+	[with_valgrind=yes])
+if test "$with_valgrind" = yes; then
+   AC_CHECK_PROG([VALGRIND], [valgrind], [valgrind -q --trace-children=yes], [])
+else
+   VALGRIND=""
+   AC_SUBST(VALGRIND)
+fi
 
 #--- begin code taken from googletest/configure.ac
 # Configure pthreads.

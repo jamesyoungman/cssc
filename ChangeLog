@@ -1,8 +1,29 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Support running the regression tests under valgrind.
+	* configure.ac: Allow the user to specify --without-valgrind.
+	* tests/admin/admin-hz.sh: Use valgrind.
+	* tests/admin/abspath.sh: Likewise.
+	* tests/admin/comment.sh: Likewise.
+	* tests/admin/flags.sh: Likewise.
+	* tests/admin/hardlinks.sh: Likewise.
+	* tests/admin/i-option.sh: Likewise.
+	* tests/admin/init-mr.sh: Likewise.
+	* tests/admin/locks.sh: Likewise.
+	* tests/admin/r-option.sh: Likewise.
+	* tests/admin/t-option.sh: Likewise.
+	* tests/admin/users.sh: Likewise.
+	* tests/admin/y-flag.sh: Likewise.
+	* tests/common/command-names: Define vg_... versions of $admin,
+	$get, etc.  These invoke the named command under valgrind (it
+	would be too slow to invoke everything under valgrind).
+	* tests/Makefile.am (VALGRIND): substitute this variable and
+	export it to the tests.
+
 	Run the unit tests under valgrind.
 	* configure.ac: Check for the presence of valgrind.  If we find
 	it, use valgrind -q --trace-children=yes.
+	
 	* unit-tests/Makefile.am (TESTS_ENVIRONMENT): Run the tests under
 	valgrind.
 	* tests/README: Explain that these are regression tests and point

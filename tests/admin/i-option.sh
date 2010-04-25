@@ -13,14 +13,14 @@ remove $g
 echo '%M%' > foo
 test x`cat foo` = x'%M%' || miscarry cannot create file foo.
 
-docommand I1 "${admin} -ifoo $s" 0 "" IGNORE
+docommand I1 "${vg_admin} -ifoo $s" 0 "" IGNORE
 docommand I2 "${get} -r1.1 -p $s"      0 "$g\n" IGNORE
 remove foo s.bar
 
 # -i on its own means read from stdin.
 
 echo baz | \
-docommand I3 "${admin} -i $s" 0 "" IGNORE
+docommand I3 "${vg_admin} -i $s" 0 "" IGNORE
 docommand I4 "${get} -r1.1 -p $s"      0 "baz\n" IGNORE
 
 
@@ -35,7 +35,7 @@ s=s.$g
 x=x.$g
 
 remove $g $s $x
-docommand I5 "${admin} -i$g $s" 1 "" IGNORE
+docommand I5 "${vg_admin} -i$g $s" 1 "" IGNORE
 
 echo_nonl "I6..."
 if test -f $s; then
@@ -57,7 +57,7 @@ echo 'passed'
 
 remove $g $s $x
 echo_nonl "" > $g
-docommand I8 "${admin} -i$g $s" 0 "" IGNORE
+docommand I8 "${vg_admin} -i$g $s" 0 "" IGNORE
 docommand I9 "${prs}  -d:Li: $s" 0 "00000\n" IGNORE
 
 # Check that the deleted and unchanged lines are also zero.
@@ -66,7 +66,7 @@ docommand I11 "${prs} -d:Lu: $s" 0 "00000\n" IGNORE
 
 remove $g $s $x
 echo_nonl "\n" > $g
-docommand I12 "${admin} -i$g $s" 0 "" IGNORE
+docommand I12 "${vg_admin} -i$g $s" 0 "" IGNORE
 docommand I13 "${prs}  -d:Li: $s" 0 "00001\n" IGNORE
 
 # Check that the deleted and unchanged lines are also zero.
@@ -76,7 +76,7 @@ docommand I15 "${prs} -d:Lu: $s" 0 "00000\n" IGNORE
 
 remove $g $s $x
 echo_nonl "hello\nworld\n" > $g
-docommand I16 "${admin} -i$g $s" 0 "" IGNORE
+docommand I16 "${vg_admin} -i$g $s" 0 "" IGNORE
 docommand I17 "${prs}  -d:Li: $s" 0 "00002\n" IGNORE
 
 

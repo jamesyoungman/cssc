@@ -1,6 +1,8 @@
 TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel \
 		bsd-sccs year-2000 initial what val
 MKDIR = mkdir
+VALGRIND = @VALGRIND@
+export VALGRIND
 
 links: $(TESTDIRS)
 	../testutils/lndir $(srcdir) 

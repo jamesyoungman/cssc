@@ -24,9 +24,9 @@ then
 
     # SCCS commands should fail on the SCCS file now, since the link 
     # count is not 1.  We try a selection. 
-    docommand L3 "${prs} ${s}"           1 IGNORE IGNORE
-    docommand L4 "${admin} -anobby ${s}" 1 IGNORE IGNORE
-    docommand L5 "${get} -g ${s}"        1 IGNORE IGNORE
+    docommand L3 "${vg_prs} ${s}"           1 IGNORE IGNORE
+    docommand L4 "${vg_admin} -anobby ${s}" 1 IGNORE IGNORE
+    docommand L5 "${vg_get} -g ${s}"        1 IGNORE IGNORE
 
     # For some reason the SCCS version of "val" does not make this check.
     # We do, but I don't think this functional difference is very 

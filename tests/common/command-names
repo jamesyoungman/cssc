@@ -1,4 +1,3 @@
-
 dir=${dir:-../..}
 
 # Get the canonical directory name
@@ -11,8 +10,11 @@ case "$dir" in
 esac
 # echo "Directory under test is $dir"
 
+# Make a variable for each CSSC command.  These are the commands we run 
+# in order to set up each test.  Because they are variables, we can set
+# them (and $dir) to test any set of binaries we want.
 get=${get:-${dir}/get}
-admin=${admin:-${dir}/admin}
+admin=${admin:- ${dir}/admin}
 cdc=${cdc:-${dir}/cdc}
 prs=${prs:-${dir}/prs}
 prt=${prt:-${dir}/prt}
@@ -75,3 +77,20 @@ then
 
     sccs="${sccsprog} ${sccsargs}"
 fi
+
+# Set up some valgrind-enabled commands so that we can use these
+# in a targeted way.   If we use valgrind for every invocation,
+# the regression tests will run very slowly.
+vg_get="${VALGRIND} ${get}"
+vg_admin="${VALGRIND} ${admin}"
+vg_cdc="${VALGRIND} ${cdc}"
+vg_prs="${VALGRIND} ${prs}"
+vg_prt="${VALGRIND} ${prt}"
+vg_delta="${VALGRIND} ${delta}"
+vg_sact="${VALGRIND} ${sact}"
+vg_sccsdiff="${VALGRIND} ${sccsdiff}"
+vg_unget="${VALGRIND} ${unget}"
+vg_what="${VALGRIND} ${what}"
+vg_val="${VALGRIND} ${val}"
+vg_rmdel="${VALGRIND} ${rmdel}"
+vg_sccs="${VALGRIND} ${sccs}"

@@ -24,7 +24,7 @@ docommand R2 "${prs} -d:I: $s" 0 "1.1\n" ""
 # Create an empty SCCS file to work on, with initial SID 2.1.
 remove $g $s
 echo "%M%" > $g
-docommand R3 "${admin} -i$g -r2 $s" 0 "" ""
+docommand R3 "${vg_admin} -i$g -r2 $s" 0 "" ""
 
 # Make sure it really is ID 2.1.
 docommand R4 "${prs} -d:I: $s" 0 "2.1\n" ""
@@ -41,7 +41,7 @@ then
     # Create an empty SCCS file to work on.
     remove $g $s
     echo "%M%" > $g
-    docommand t1 "${admin} -i$g -r1.2 $s" 0 "" IGNORE
+    docommand t1 "${vg_admin} -i$g -r1.2 $s" 0 "" IGNORE
     
     # Make sure it really is ID 1.2.
     docommand t2 "${prs} -d:I: $s" 0 "1.2\n" ""
@@ -50,7 +50,7 @@ then
     # Now try a 4-component SID.
     remove $g $s
     echo "%M%" > $g
-    docommand t3 "${admin} -i$g -r1.2.2.1 $s" 0 "" IGNORE
+    docommand t3 "${vg_admin} -i$g -r1.2.2.1 $s" 0 "" IGNORE
     
     # Make sure it really is ID 1.2.
     docommand t4 "${prs} -d:I: $s" 0 "1.2.2.1\n" ""

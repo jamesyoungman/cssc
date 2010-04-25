@@ -16,7 +16,7 @@ remove [sxzp].bar x.bar.bak
 
 # Create file with description.
 echo "Descriptive Text" > DESC
-docommand T1 "${admin} -n -tDESC s.bar" 0 "" ""
+docommand T1 "${vg_admin} -n -tDESC s.bar" 0 "" ""
 remove DESC
 
 # Make sure the decription is there.
@@ -24,7 +24,7 @@ expands_to T2 ':FD:'   'Descriptive Text\n\n'
 
 
 # Remove the description.
-docommand T3 "${admin} -t s.bar" 0 "" ""
+docommand T3 "${vg_admin} -t s.bar" 0 "" ""
 
 # Make sure the decription has been removed.
 expands_to T4 ':FD:'   'none\n\n'
