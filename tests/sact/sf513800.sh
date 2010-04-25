@@ -18,7 +18,7 @@ do
     ../../testutils/uu_decode --decode < $filename || miscarry could not uudecode $filename
 done
 
-docommand s1 "${sact} $s" 0 IGNORE IGNORE 
+docommand s1 "${vg_sact} $s" 0 IGNORE IGNORE 
 
 
 
