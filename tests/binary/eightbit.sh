@@ -42,8 +42,8 @@ cleanup
 # is that they are outside the range 0...127.
 remove $g
 echo "garחon maסana בףהזטךכלסועפשי" >$g
-docommand a1 "${admin} -i$g $s" 0 IGNORE IGNORE
-docommand a2 "${get} -p $s" 0 "garחon maסana בףהזטךכלסועפשי\n" IGNORE
+docommand a1 "${vg_admin} -i$g $s" 0 IGNORE IGNORE
+docommand a2 "${vg_get} -p $s" 0 "garחon maסana בףהזטךכלסועפשי\n" IGNORE
 
 echo_nonl a3...
 if ../../testutils/uu_decode --decode < s.umsp.uue
@@ -53,7 +53,7 @@ else
     miscarry uudecode failed.
 fi
 
-docommand a4 "${get} -p s.umsp.txt" 0 "garחon maסana בףהזטךכלסועפשי\n" IGNORE
+docommand a4 "${vg_get} -p s.umsp.txt" 0 "garחon maסana בףהזטךכלסועפשי\n" IGNORE
 
 
 ## We must be able to manipulate normally files containing 
@@ -71,8 +71,8 @@ else
 fi
 
 remove s.char255.txt
-docommand a6 "${admin} -ichar255.txt s.char255.txt" 0 IGNORE IGNORE
-docommand a7 "${get} -k -p s.char255.txt" 0 "ÿ\n" "1.1\n1 lines\n"
+docommand a6 "${vg_admin} -ichar255.txt s.char255.txt" 0 IGNORE IGNORE
+docommand a7 "${vg_get} -k -p s.char255.txt" 0 "ÿ\n" "1.1\n1 lines\n"
 
 cleanup
 success

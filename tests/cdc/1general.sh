@@ -24,18 +24,18 @@ docommand G1 "${admin} -i$g $s" 0 "" ""
 remove $g
 
 # Test general behaviour works.
-docommand G2 "${cdc} -r1.1 '-yNewComment
+docommand G2 "${vg_cdc} -r1.1 '-yNewComment
 NewComment2' $s" 0 "" "" 
 
 # Make sure a SID is required
-docommand G3 "${cdc} -yNewComment2 $s" 1 "" IGNORE
+docommand G3 "${vg_cdc} -yNewComment2 $s" 1 "" IGNORE
 
 
 # Make sure an SCCS file is required
-docommand G4 "${cdc} -yNewComment2" 1 "" IGNORE
+docommand G4 "${vg_cdc} -yNewComment2" 1 "" IGNORE
 
 # Make sure a complete lack or args is diagnosed.
-docommand G5 "${cdc}" 1 "" IGNORE 
+docommand G5 "${vg_cdc}" 1 "" IGNORE 
 
 
 

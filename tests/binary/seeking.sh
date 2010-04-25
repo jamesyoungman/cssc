@@ -49,9 +49,9 @@ shift
 
 if ${use_stdin}
 then
-    cmd="cat ${infile} | ${admin} -i ${adminflags} $s"
+    cmd="cat ${infile} | ${vg_admin} -i ${adminflags} $s"
 else
-    cmd="${admin} -i${infile} ${adminflags} $s"
+    cmd="${vg_admin} -i${infile} ${adminflags} $s"
 fi
 
 rm -f $s

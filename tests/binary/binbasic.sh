@@ -36,9 +36,9 @@ cleanup() {
 do_delta() {
    n=$1
    shift
-   docommand d${n}a "${get} -e $s" 0 IGNORE IGNORE
+   docommand d${n}a "${vg_get} -e $s" 0 IGNORE IGNORE
    cp test/passwd.${n} passwd
-   docommand d${n}b "${delta} -y\"\" $s" 0 IGNORE IGNORE
+   docommand d${n}b "${vg_delta} -y\"\" $s" 0 IGNORE IGNORE
    
    remove gotten
    rev=-r1.`expr $n + 1`

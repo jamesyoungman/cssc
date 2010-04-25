@@ -1,9 +1,9 @@
 #! /bin/sh
 #
 # This is a test for SourceForge Bug ID 595594, reported by Joel Young.
-# This is where "sccs get SCCS" where there are three fiules (a, b, c) in the
+# This is where "sccs get SCCS" where there are three files (a, b, c) in the
 # SCCS difrectory stops processing at b, because a writable version of 
-# b exists.  In fact iot should carry on a check out a copy of c.
+# b exists.  In fact it should carry on a check out a copy of c.
 
 . ../common/test-common
 . ../common/not-root
@@ -53,7 +53,7 @@ done
 
 docommand e1 "${sccs} edit b" 0 IGNORE IGNORE
 docommand e2 "test -w b" 0 "" ""
-docommand e3 "${sccs} get SCCS" 1 IGNORE IGNORE
+docommand e3 "${vg_sccs} get SCCS" 1 IGNORE IGNORE
 
 # At this point, a read-only copy of a and c should exist.
 # b should still be writable. 

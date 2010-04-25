@@ -24,7 +24,7 @@ docommand C1 "${admin} -i$g $s" 0 "" ""
 remove $g
 
 # Now change the (initial) comment.
-docommand C2 "${cdc} -r1.1 '-yNewComment
+docommand C2 "${vg_cdc} -r1.1 '-yNewComment
 NewComment2' $s" 0 "" "" 
 
 # Extract only the comment.
@@ -45,7 +45,7 @@ docommand C5 "sed -n 3p <comment|egrep \
 
 
 # Now change the (already changed) comment.
-docommand C6 "${cdc} -r1.1 '-yAnother Comment' $s" 0 "" "" 
+docommand C6 "${vg_cdc} -r1.1 '-yAnother Comment' $s" 0 "" "" 
 
 
 # Again, extract only the comment.

@@ -46,13 +46,13 @@ ${admin} -n /tmp/SCCS/s.foo
 ${admin} -n s.foo
 
 docommand d1 "test -f s.foo" 0 "" IGNORE
-docommand d2 "${sccs} edit /tmp/SCCS/s.foo" 0 IGNORE IGNORE
+docommand d2 "${vg_sccs} edit /tmp/SCCS/s.foo" 0 IGNORE IGNORE
 docommand d3 "test -f foo" 0 "" IGNORE
 
 # When we have the bug, this step will probably fail, because the delete
 # removes the wrong file, so the subsequent get finds that ./foo exists and 
 # is writable, so it fails.
-docommand d4 "${sccs} unedit /tmp/SCCS/s.foo" 0 IGNORE IGNORE
+docommand d4 "${vg_sccs} unedit /tmp/SCCS/s.foo" 0 IGNORE IGNORE
 
 # This is the heart of the test; make sure sccs.c deleted the right file.
 # (the file should have been recreated as read-only).

@@ -1,6 +1,6 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
-	Use valgrind for binary file tests and sccs tests.
+	Use valgrind for binary file tests, sccs tests and cdc tests.
 	* tests/binary/auto.sh: Use valgrind.
 	* tests/binary/binbasic.sh: Likewise.
 	* tests/binary/eightbit.sh: Likewise.
@@ -8,6 +8,10 @@
 	* tests/bsd-sccs/sf595594.sh: Likewise.
 	* tests/bsd-sccs/driver-basic.sh: Likewise.
 	* tests/bsd-sccs/delsfile.sh: Likewise.
+	* tests/cdc/1general.sh: Use valgrind.
+	* tests/cdc/2comment.sh: Likewise.
+	* tests/cdc/3MRs.sh: Likewise.
+	* tests/cdc/4order.sh: Likewise.
 
 	Support running the regression tests under valgrind.
 	* configure.ac: Allow the user to specify --without-valgrind.

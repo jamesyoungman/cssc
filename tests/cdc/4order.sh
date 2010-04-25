@@ -29,13 +29,13 @@ docommand O2 "${admin} -fvtrue $s" 0 "" ""
 
 
 # Add another MR.   Check the order is correct.
-docommand O3 "${cdc} -r1.1 -yahoo '-mMR2 MR3 MR1' $s" 0 "" "" 
+docommand O3 "${vg_cdc} -r1.1 -yahoo '-mMR2 MR3 MR1' $s" 0 "" "" 
 docommand O4 "${prs} -r1.1 -d:MR: $s" 0 "MR2\nMR3\nMR1\n\n" "" 
 
 # Make sure that when we add another comment AND delete 
 # an MT, the two parts of the comment end up in the 
 # correct order.
-docommand O5 "${cdc} -r1.1 -yMyExtraComment '-m!MR3' $s" 0 "" ""
+docommand O5 "${vg_cdc} -r1.1 -yMyExtraComment '-m!MR3' $s" 0 "" ""
 
 remove comment
 ${prs} -d:C: -r1.1 $s > comment || fail prs failed unexpectedly
