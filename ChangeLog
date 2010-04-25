@@ -1,5 +1,9 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Use valgrind for val tests.
+	* tests/val/valbasic.sh: Use valgrind.
+	* tests/val/y2k.sh: Likewise.
+
 	Use valgrind for unget tests.
 	* tests/unget/exists.sh: Use valgrind.
 	* tests/unget/output.sh: Likewise.

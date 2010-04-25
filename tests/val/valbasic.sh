@@ -10,70 +10,70 @@ files="f s.f"
 remove $files
 
 docommand v1 "${admin} -n s.f" 0 IGNORE IGNORE
-docommand v2 "${val} s.f" 0 IGNORE IGNORE
+docommand v2 "${vg_val} s.f" 0 IGNORE IGNORE
 
-docommand v3 "${val} -r1.1 s.f" 0 IGNORE IGNORE
-docommand v4 "${val} -s s.f" 0 IGNORE IGNORE
+docommand v3 "${vg_val} -r1.1 s.f" 0 IGNORE IGNORE
+docommand v4 "${vg_val} -s s.f" 0 IGNORE IGNORE
 
 # Having no args is an error.
-docommand v5 "${val}" 128 IGNORE IGNORE
+docommand v5 "${vg_val}" 128 IGNORE IGNORE
 
 
 # Module flag mismatch
-docommand v6 "${val} -mZ s.f" 1 IGNORE IGNORE
+docommand v6 "${vg_val} -mZ s.f" 1 IGNORE IGNORE
 
 # Change the module flag
 docommand v7 "${admin} -fmZ s.f" 0 IGNORE IGNORE
 
 # Module flag match
-docommand v8 "${val} -mZ s.f" 0 IGNORE IGNORE
+docommand v8 "${vg_val} -mZ s.f" 0 IGNORE IGNORE
 
 
 # Type flag mismatch
-docommand v9 "${val} -yA s.f" 2 IGNORE IGNORE
+docommand v9 "${vg_val} -yA s.f" 2 IGNORE IGNORE
 
 # Change the type flag
 docommand v10 "${admin} -ftA s.f" 0 IGNORE IGNORE
 
 # Module flag match
-docommand v11 "${val} -yA s.f" 0 IGNORE IGNORE
+docommand v11 "${vg_val} -yA s.f" 0 IGNORE IGNORE
 
 # SID not found
-docommand v12 "${val} -r1.2 s.f" 4 IGNORE IGNORE
+docommand v12 "${vg_val} -r1.2 s.f" 4 IGNORE IGNORE
 
 # SID not valid
-docommand v13 "${val} -r1.2xyzzy s.f" 8 IGNORE IGNORE
+docommand v13 "${vg_val} -r1.2xyzzy s.f" 8 IGNORE IGNORE
 
 chmod 0 s.f || miscarry "Cannot change permissions for file s.f"
 # Cannot read file
-docommand v14 "${val} s.f" 16 IGNORE IGNORE
+docommand v14 "${vg_val} s.f" 16 IGNORE IGNORE
 chmod +r s.f || miscarry "Cannot reset permissions for file s.f"
 
 # Missing file
-docommand v15 "${val} -r1.1" 128 IGNORE IGNORE
+docommand v15 "${vg_val} -r1.1" 128 IGNORE IGNORE
 
 # Too many -r options
-docommand v16 "${val} -r1.1 -r1.2 s.f" 64 IGNORE IGNORE
+docommand v16 "${vg_val} -r1.1 -r1.2 s.f" 64 IGNORE IGNORE
 
 
 # A corrupt file
 remove s.corrupt
 cat valbasic.sh s.f > s.corrupt || miscarry "cannot create file s.corrupt"
-docommand v17 "${val} -r1.1 s.corrupt" 32 IGNORE IGNORE
+docommand v17 "${vg_val} -r1.1 s.corrupt" 32 IGNORE IGNORE
 remove s.corrupt
 
 
 # Too many -r options (a different way)
-docommand v18 "${val} -r1.1 -s -r1.1 s.f" 64 IGNORE IGNORE
+docommand v18 "${vg_val} -r1.1 -s -r1.1 s.f" 64 IGNORE IGNORE
 
 # Too many -m options
-docommand v19 "${val} -mX -mX s.f" 64 IGNORE IGNORE
+docommand v19 "${vg_val} -mX -mX s.f" 64 IGNORE IGNORE
 
 # Too many -y options
-docommand v20 "${val} -yX -yX s.f" 64 IGNORE IGNORE
+docommand v20 "${vg_val} -yX -yX s.f" 64 IGNORE IGNORE
 
 # Unknown option
-docommand v21 "${val} -X s.f" 64 IGNORE IGNORE
+docommand v21 "${vg_val} -X s.f" 64 IGNORE IGNORE
 
 
 
