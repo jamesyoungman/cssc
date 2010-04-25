@@ -9,7 +9,7 @@
 s=s.testfile
 
 remove $s
-docommand e1 "${prt} $s" 1 "IGNORE" "IGNORE"
+docommand e1 "${vg_prt} $s" 1 "IGNORE" "IGNORE"
 remove $s
 
 success

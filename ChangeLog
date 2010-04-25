@@ -1,5 +1,11 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Use valgrind for prt tests.
+	* tests/prt/default.sh: Use valgrind.
+	* tests/prt/nodel.sh: Likewise.
+	* tests/prt/exists.sh: Likewise.
+	* tests/prt/reportmr.sh: Likewise.n
+
 	Use valgrind for prs tests.
 	* tests/prs/keywords.sh: Use valgrind.
 	* tests/prs/format.sh: Likewise.
