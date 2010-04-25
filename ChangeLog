@@ -1,5 +1,8 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Use valgrind for large tests.
+	* tests/large/admin.sh: Use valgrind.
+
 	Use valgrind for get tests.
 	* tests/get/annotate.sh: Use valgrind.
 	* tests/get/a-option.sh: Likewise.

@@ -16,11 +16,11 @@ remove command.log log log.stdout log.stderr $g $s $z $x $p
 
 ( ../../testutils/yes '%C%' | head -${lines} > $g )  || miscarry Cannot create large input file.
 
-docommand A1 "${admin} -i${g} ${s}" 0 "" ""
+docommand A1 "${vg_admin} -i${g} ${s}" 0 "" ""
 mv ${g} old.${g} || miscarry "Rename failed"
 
 # Make sure we can retrieve the file.
-docommand A2 "${get} -k $s" 0 "1.1\n100002 lines\n" ""
+docommand A2 "${vg_get} -k $s" 0 "1.1\n100002 lines\n" ""
 diff old.${g} ${g} || fail A2 "cannot correctly retrieve stored file"
 remove old.${g} ${g}
 docommand A3 "${get} $s" 0 "1.1\n100002 lines\n" ""
