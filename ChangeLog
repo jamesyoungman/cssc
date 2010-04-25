@@ -1,5 +1,8 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Use valgrind for what tests.
+	* tests/what/whatbasic.sh: Use valgrind.
+
 	Use valgrind for val tests.
 	* tests/val/valbasic.sh: Use valgrind.
 	* tests/val/y2k.sh: Likewise.
