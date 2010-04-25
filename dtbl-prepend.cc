@@ -42,10 +42,6 @@ cssc_delta_table::prepend(const delta &it)
   update_highest(it);
 }
 
-
-// Explicit template instantiations.
-template mylist<delta>& operator+=<delta>(mylist<delta>&, mylist<delta> const&);
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

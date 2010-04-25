@@ -229,10 +229,6 @@ main(int argc, char **argv)
   return retval;
 }
 
-// Explicit template instantiations
-template mylist<mystring>::~mylist();
-template void mylist<mystring>::destroy();
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

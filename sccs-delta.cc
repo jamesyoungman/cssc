@@ -59,13 +59,6 @@ bool delta::removed() const
   return 'R' == delta_type_;
 }
 
-
-
-// Explicit template instantiations.
-template class mylist<delta>;
-template class mylist<mystring>;
-
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

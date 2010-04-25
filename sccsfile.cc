@@ -1288,12 +1288,6 @@ is_known_keyword_char(char c)
   return strchr("MIRLBSDHTEGUYFPQCZWA", c) != NULL;
 }
 
-// Explicit template instantiations.
-template class mylist<char>;
-template class mylist<unsigned short>;
-//template void mylist<unsigned short>::add(unsigned short const&);
-template void mylist<mystring>::add(mystring const&);
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

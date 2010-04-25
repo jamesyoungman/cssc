@@ -70,8 +70,6 @@ FileDiff::start()
   return fp_;
 }
 
-
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

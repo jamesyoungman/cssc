@@ -220,8 +220,6 @@ sccs_file_iterator::next() {
 	return 0;
 }
 
-// Explicit template instantiations
-template void mylist<mystring>::add(mystring const&);
 					
 /* Local variables: */
 /* mode: c++ */

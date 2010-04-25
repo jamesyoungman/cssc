@@ -168,14 +168,6 @@ main(int argc, char **argv)
   return retval;
 }
 
-
-// Explicit template instantiations.
-template class range_list<sid>;
-template class mylist<sccs_pfile::edit_lock>;
-template class mylist<mystring>;
-
-
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

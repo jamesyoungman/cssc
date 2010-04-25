@@ -44,9 +44,6 @@ cap5(unsigned long n)
   return cap_min(n, 99999uL);
 }
 
-// Explicit template instantiations.
-template const unsigned long& cap_min(const unsigned long&, const unsigned long&);
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

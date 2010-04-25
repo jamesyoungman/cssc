@@ -678,11 +678,6 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
   return true;
 }
 
-// Explicit template instantiations.
-template void print_flag2(FILE *out, const char *s, release);
-template void print_flag2(FILE *out, const char *s, sid);
-template void print_flag2(FILE *out, const char *s, release_list);
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

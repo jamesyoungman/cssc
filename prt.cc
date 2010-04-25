@@ -214,17 +214,6 @@ main(int argc, char **argv)
 }
 
 
-// Explicit template instantiations.
-template class mylist<mystring>;
-template class mylist<seq_no>;
-template class range_list<release>;
-template class mylist<delta>;
-// template class range_list<sid>;
-
-
-// #include "stack.h"
-// template class stack<seq_no>;
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

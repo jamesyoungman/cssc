@@ -1,5 +1,26 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Remove explicit template instantiations.
+	* admin.cc: Remove explicit template instantiations.
+	* cap.cc: Likewise.
+	* cdc.cc: Likewise.
+	* delta.cc: Likewise.
+	* dtbl-prepend.cc: Likewise.
+	* fileiter.cc: Likewise.
+	* get.cc: Likewise.
+	* prs.cc: Likewise.
+	* prt.cc: Likewise.
+	* rel_list.cc: Likewise.
+	* rmdel.cc: Likewise.
+	* sact.cc: Likewise.
+	* sccs-delta.cc: Likewise.
+	* sccsfile.cc: Likewise.
+	* sf-prs.cc: Likewise.
+	* unget.cc: Likewise.
+	* val.cc: Likewise.
+	* filediff.cc: Trimmed some blank lines.
+	* sf-kw.cc: Likewise.
+
 	Isolate directory-handling logic in fileiter.cc.
 	* fileiter.cc: Move the complex logic around trying to include
 	<dirent.h> out of fileiter.h and into fileiter.cc.

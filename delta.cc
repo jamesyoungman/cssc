@@ -305,20 +305,6 @@ main(int argc, char **argv)
   return ret;
 }
 
-
-// Explicit template instantiations.
-template class range_list<sid>;
-template class mylist<mystring>;
-template class mylist<delta>;
-template class mylist<seq_no>;
-template class mylist<sccs_pfile::edit_lock>;
-template class mylist<char const*>;
-//template mylist<char const*>& operator+=(mylist<char const *> &, mylist<mystring> const &);
-template class range_list<release>;
-
-#include "stack.h"
-template class stack<unsigned short>;
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

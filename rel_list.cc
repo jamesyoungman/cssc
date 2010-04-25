@@ -96,8 +96,7 @@ bool release_list::print(FILE * out) const
     }
   return true;
 }
-// Explicit template instantiations...
-template class mylist<release>;
+
 
 /* Local variables: */
 /* mode: c++ */

@@ -85,5 +85,3 @@ sccs_file::check_keywords_in_file(const char *name)
   fclose(f);
   return true;
 }
-
-

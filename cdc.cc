@@ -247,15 +247,6 @@ main(int argc, char *argv[])
   return retval;
 }
 
-// Explicit template instantiations.
-template class mylist<mystring>;
-template class mylist<seq_no>;
-template class mylist<delta>;
-template class range_list<release>;
-template class mylist<const char*>;
-template mylist<mystring>& operator+=(mylist<mystring> &, mylist<mystring> const &);
-template mylist<mystring>& operator-=(mylist<mystring> &, mylist<mystring> const &);
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

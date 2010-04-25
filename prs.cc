@@ -174,18 +174,6 @@ main(int argc, char **argv)
   return retval;
 }
 
-
-// Explicit template instantiations.
-template class range_list<sid>;
-template class mylist<mystring>;
-template class mylist<seq_no>;
-template class mylist<delta>;
-template class range_list<release>;
-
-
-#include "stack.h"
-template class stack<seq_no>;
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */
