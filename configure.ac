@@ -258,7 +258,12 @@ AC_ARG_WITH([valgrind],
 	[with_valgrind=$withval],
 	[with_valgrind=yes])
 if test "$with_valgrind" = yes; then
-   AC_CHECK_PROG([VALGRIND], [valgrind], [valgrind -q --trace-children=yes], [])
+   # Most CSSC programs exit with status 1 when there is a problem, and
+   # some of the regression tests check those cases.  However, if valgrind
+   # detects a problem, we need to exit with some other status so that
+   # a test expecting an exit status of 1 will actually fail.
+   AC_CHECK_PROG([VALGRIND], [valgrind], 
+                 [valgrind -q --trace-children=yes --error-exitcode=10], [])
 else
    VALGRIND=""
    AC_SUBST(VALGRIND)
@@ -465,5 +470,5 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_CONFIG_FILES([version.cc Makefile sccsdiff.sh bsd/Makefile unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi])
+AC_CONFIG_FILES([version.cc Makefile sccsdiff.sh bsd/Makefile unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
 AC_OUTPUT

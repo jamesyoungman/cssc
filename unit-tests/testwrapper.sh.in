@@ -1,0 +1,12 @@
+#! /bin/sh
+
+VALGRIND="@VALGRIND@"
+prefix=""
+
+if test -n "$VALGRIND"; then
+   if test -z "$CSSC_DISABLE_VALGRIND"; then
+      prefix="$VALGRIND"
+   fi
+fi
+
+exec $prefix "$@"

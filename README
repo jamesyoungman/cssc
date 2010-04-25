@@ -59,6 +59,14 @@ provided in the file "docs/Platforms".
     handle lines of any length).
 
 
+--disable-valgrind
+
+    Disables the use of valgrind for the unit and regression tests.
+    By default, valgrind will be used if it is available.  If you
+    would like to disable valgrind at configure time, pass the
+    --disable-valgrind option.  To disable it afterward, you can
+    simply set the enviroment variable CSSC_DISABLE_VALGRIND.
+
 
 1.	Compiling
 
@@ -135,6 +143,10 @@ provided in the file "docs/Platforms".
  If the unit tests failed, I only need you to send the stderr output
  (i.e. "make.log" from the example above).
 
+ Valgrind will be used for the tests, if it is available and
+ --disable-valgrind was not in the options passed to configure.  This
+ slows the tests down quite a lot.  To prevent the use of valgrind,
+ you can set the environment variable CSSC_DISABLE_VALGRIND.
 
 3.	Installing
  cd work
@@ -158,16 +170,21 @@ like including and excluding deltas (get -i -x) have been implemented
 but not extensively tested.
 
 See the file INSTALL for information on how to compile this package.
-Send any questions or bug reports by e-mail to the current maintainer,
-<jay@gnu.org>.  After you have compiled CSSC, _PLEASE_ run the test
-suite, as described in docs/TESTING, unless you are using GCC or EGCS
-under Linux, in which case please don't bother sending success reports
-[since I already know that works].  I'm particularly intersested in
+Send any questions or bug reports by e-mail to the <bug-cssc@gnu.org>
+mailing list.  After you have compiled CSSC, _PLEASE_ run the test
+suite, as described in docs/TESTING.  I'm particularly intersested in
 success reports for platforms not in the "docs/Platforms" file.
 
-To generate the manual, type "make dvi".  For the PostScript version,
-type "cd docs ; make cssc.ps".  If you don't have TeX, you can read
-the "info" documentation with either the GNU "info" program, or Emacs.
+To generate the manual, use one of these commands:
+
+   To make the PDF format manual:        make pdf
+   To make the PostScript format manual: make ps
+   To make the DVI format manual:	 make dvi
+   To make the HTML format manual:	 make html
+   To make the Info format manual:	 make info
+
+If you don't have TeX, you can read the "info" documentation with
+either the GNU "info" program, or Emacs.
 
 
 To regenerate all the machine-generated files from their ultimate

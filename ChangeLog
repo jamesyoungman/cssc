@@ -1,5 +1,22 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Allow the user to disable valgrind after running configure.
+	* README (--enable-max-line-length): Document this configure
+	option.  Explain how to make the other formats of manual (PDF,
+	HTML).  Explain how to use CSSC_DISABLE_VALGRIND.
+	* unit-tests/Makefile.am (TESTS_ENVIRONMENT): Invoke the unit
+	tests via 'testwrapper.sh'.
+	* unit-tests/testwrapper.sh.in: New file; used to invoke the unit
+	tests.
+	Make sure error tests don't pass if there is a valgrind problem;
+	allow the user to disable valgrind.
+	* tests/common/command-names: Allow the user to disable Valgrind
+	by setting the environment variable CSSC_DISABLE_VALGRIND.
+	* configure.ac: Make valgrind exit with status 10 when there is a
+	problem, so tests which exercise failure cases in CSSC don't
+	mistakenly pass when there is a valgrind problem.  Create
+	unit-tests/testwrapper.sh from unit-tests/testwrapper.sh.in.
+
 	Enable the y2k tests.
 	* tests/Makefile.am (test-year-2000): Actually run the y2k tests.
 

@@ -78,6 +78,13 @@ then
     sccs="${sccsprog} ${sccsargs}"
 fi
 
+# Allow the user to disable Valgrind via the 
+# environment, so that we can still execute
+# "make dist" quickly when that's useful.
+if test -n "$CSSC_DISABLE_VALGRIND"; then
+   unset VALGRIND
+fi
+
 # Set up some valgrind-enabled commands so that we can use these
 # in a targeted way.   If we use valgrind for every invocation,
 # the regression tests will run very slowly.

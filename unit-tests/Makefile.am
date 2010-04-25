@@ -1,7 +1,6 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
 AM_CPPFLAGS = -I$(srcdir)/../googletest -I$(srcdir)/../googletest/include -I$(srcdir)/..
-VALGRIND = @VALGRIND@
 
 # Modifies compiler and linker flags for pthreads compatibility.
 if HAVE_PTHREADS
@@ -18,8 +17,9 @@ LDADD = ../googletest/lib/libgtest.la \
 	../googletest/lib/libgtest_main.la \
 	../libcssc.a
 
-TESTS_ENVIRONMENT = $(VALGRIND)
+TESTS_ENVIRONMENT = sh testwrapper.sh
 TESTS = $(check_PROGRAMS)
+check_SCRIPTS = testwrapper.sh
 check_PROGRAMS = test_mylist test_myset test_sid test_relvbr \
 	test_release test_sid_list test_rel_list test_sccsdate \
 	test_delta test_stack test_delta-table test_encoding
