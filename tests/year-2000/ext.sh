@@ -31,17 +31,17 @@ then
 
     # Ask for exerything after the end of 1968.  Since the first
     # year we have int he s. file is 1969, we should get everything.
-    docommand c1 "${prs} ${brief} -l -c19681231235959  $s" 0 \
+    docommand c1 "${vg_prs} ${brief} -l -c19681231235959  $s" 0 \
 	"${allrevs}" ""
 
     # Ask for exerything before the end of 1968.  Since the first
     # year we have int he s. file is 1969, we should get NOTHING.
-    docommand c2 "${prs} ${brief} -e -c19681231235959  $s" 0 \
+    docommand c2 "${vg_prs} ${brief} -e -c19681231235959  $s" 0 \
 	"" ""
 
     # Ask for exerything before the end of 2069.  
     # We chould get everything.
-    docommand c3 "${prs} ${brief} -e -c20691231235959  $s" 0 \
+    docommand c3 "${vg_prs} ${brief} -e -c20691231235959  $s" 0 \
 	"${allrevs}" ""
 
 

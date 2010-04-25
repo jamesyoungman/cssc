@@ -25,38 +25,38 @@ allrevs="${r1_5}${r1_4}${r1_3}${r1_2}${r1_1}"
 
 ## If we just specify -e without -c we should get all the revisions.
 ## Check that the dates are printed correctly.
-docommand A1 "${prs} ${brief} -e $s" 0 "${allrevs}" ""
+docommand A1 "${vg_prs} ${brief} -e $s" 0 "${allrevs}" ""
 
-docommand t1 "${prs} ${brief} -e -c690101000000  $s" 0 \
+docommand t1 "${vg_prs} ${brief} -e -c690101000000  $s" 0 \
     "${r1_1}" ""
-docommand t2 "${prs} ${brief} -l -c690101000000  $s" 0 \
+docommand t2 "${vg_prs} ${brief} -l -c690101000000  $s" 0 \
     "${allrevs}" ""
 
-docommand t3 "${prs} ${brief} -l -c690101000001  $s" 0 \
+docommand t3 "${vg_prs} ${brief} -l -c690101000001  $s" 0 \
     "${r1_5}${r1_4}${r1_3}${r1_2}" ""
 
-docommand t4 "${prs} ${brief} -e -c991231235959  $s" 0 \
+docommand t4 "${vg_prs} ${brief} -e -c991231235959  $s" 0 \
     "${r1_2}${r1_1}" ""
 
-docommand t5 "${prs} ${brief} -l -c991231235959  $s" 0 \
+docommand t5 "${vg_prs} ${brief} -l -c991231235959  $s" 0 \
     "${r1_5}${r1_4}${r1_3}${r1_2}" ""
 
-docommand t6 "${prs} ${brief} -e -c000101000000  $s" 0 \
+docommand t6 "${vg_prs} ${brief} -e -c000101000000  $s" 0 \
     "${r1_3}${r1_2}${r1_1}" ""
-docommand t7 "${prs} ${brief} -l -c000101000000  $s" 0 \
+docommand t7 "${vg_prs} ${brief} -l -c000101000000  $s" 0 \
     "${r1_5}${r1_4}${r1_3}" ""
 
-docommand t8 "${prs} ${brief} -l -c000101000001  $s" 0 \
+docommand t8 "${vg_prs} ${brief} -l -c000101000001  $s" 0 \
     "${r1_5}${r1_4}" ""
 
-docommand t9 "${prs} ${brief} -e -c000229000000  $s" 0 \
+docommand t9 "${vg_prs} ${brief} -e -c000229000000  $s" 0 \
     "${r1_4}${r1_3}${r1_2}${r1_1}" ""
-docommand t10 "${prs} ${brief} -e -c000229000001  $s" 0 \
+docommand t10 "${vg_prs} ${brief} -e -c000229000001  $s" 0 \
     "${r1_4}${r1_3}${r1_2}${r1_1}" ""
-docommand t11 "${prs} ${brief} -l -c000229000000  $s" 0 \
+docommand t11 "${vg_prs} ${brief} -l -c000229000000  $s" 0 \
     "${r1_5}${r1_4}" ""
 
-docommand t12 "${prs} ${brief} -l -c681231235959  $s" 0 \
+docommand t12 "${vg_prs} ${brief} -l -c681231235959  $s" 0 \
     "${r1_5}" ""
 
 
@@ -64,18 +64,18 @@ docommand t12 "${prs} ${brief} -l -c681231235959  $s" 0 \
 
 # Just giving the year should be equivalent to explicitly
 # specifying the last second of that year.
-docommand d1 "${prs} ${brief} -l -c99  $s" 0 \
+docommand d1 "${vg_prs} ${brief} -l -c99  $s" 0 \
     "${r1_5}${r1_4}${r1_3}${r1_2}" ""
 
-docommand d2 "${prs} ${brief} -l -c0001  $s" 0 \
+docommand d2 "${vg_prs} ${brief} -l -c0001  $s" 0 \
     "${r1_5}${r1_4}" ""
 
-docommand d3 "${prs} ${brief} -l -c000228  $s" 0 \
+docommand d3 "${vg_prs} ${brief} -l -c000228  $s" 0 \
     "${r1_5}${r1_4}" ""
-docommand d4 "${prs} ${brief} -e -c68  $s" 0 \
+docommand d4 "${vg_prs} ${brief} -e -c68  $s" 0 \
     "${r1_5}${r1_4}${r1_3}${r1_2}${r1_1}" ""
 
-docommand d5 "${prs} ${brief} -l -c68  $s" 0 \
+docommand d5 "${vg_prs} ${brief} -l -c68  $s" 0 \
     "${r1_5}" ""
 
 
