@@ -1,4 +1,5 @@
-This directory contains rudimentary tests for the CSSC package.
+This directory contains regression tests for the CSSC package (unit
+tests are in ../unit-tests).
 
 The environment variable "dir" selects where the programs to be tested
 are found, so if your machine has "genuine" SCCS in (say) /usr/sccs,

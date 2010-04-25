@@ -1,5 +1,13 @@
 2010-04-25  James Youngman  <jay@gnu.org>
 
+	Run the unit tests under valgrind.
+	* configure.ac: Check for the presence of valgrind.  If we find
+	it, use valgrind -q --trace-children=yes.
+	* unit-tests/Makefile.am (TESTS_ENVIRONMENT): Run the tests under
+	valgrind.
+	* tests/README: Explain that these are regression tests and point
+	to the unit tests.
+
 	Remove explicit template instantiations.
 	* admin.cc: Remove explicit template instantiations.
 	* cap.cc: Likewise.
