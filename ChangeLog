@@ -1,3 +1,12 @@
+2010-04-26  James Youngman  <jay@gnu.org>
+
+	Add a tool for creating (large) SCCS files.
+	* unit-tests/Makefile.am: Build test_bigfile.
+	* unit-tests/test_bigfile.cc: New test program; produces a large
+	SCCS file.
+	* sid.h (class sid): Make sid::sid(short,short,short,short)
+	public, so that we can use it from one of the test programs.
+
 2010-04-25  James Youngman  <jay@gnu.org>
 
 	Allow the user to disable valgrind after running configure.

@@ -42,167 +42,168 @@
 class sccs_file;
 
 class sid {
-	short rel, level, branch, sequence;
-
-	int comparable(sid const &id) const;
-	int gt(sid const &id) const;
-
-	sid(short r, short l, short b, short s)
-		: rel(r), level(l), branch(b), sequence(s) {
-		ASSERT((!r && !l && !b && !s)
-		       || (r && !l && !b && !s)
-		       || (r && l && !b && !s)
-		       || (r && l && b));
-	}
-
+  short rel, level, branch, sequence;
+  
+  int comparable(sid const &id) const;
+  int gt(sid const &id) const;
+  
 public:
-        static sid null_sid();
-	sid(): rel(-1), level(0), branch(0), sequence(0) {}
-	sid(const char *s);
-	sid(release);		/* Defined below */
-	sid(relvbr);		/* Defined below */
-
-  	bool is_null() const { return rel <= 0; }
-	int gte(sid const &id) const; // used by sccs_file::find_requested_sid().
-
+  sid(short r, short l, short b, short s)
+    : rel(r), level(l), branch(b), sequence(s) 
+  {
+    ASSERT((!r && !l && !b && !s)
+	   || (r && !l && !b && !s)
+	   || (r && l && !b && !s)
+	   || (r && l && b));
+  }
+  
+  static sid null_sid();
+  sid(): rel(-1), level(0), branch(0), sequence(0) {}
+  sid(const char *s);
+  sid(release);		/* Defined below */
+  sid(relvbr);		/* Defined below */
+  
+  bool is_null() const { return rel <= 0; }
+  int gte(sid const &id) const; // used by sccs_file::find_requested_sid().
+  
 #if 1
-	sid(sid const &id): rel(id.rel), level(id.level),
-			    branch(id.branch), sequence(id.sequence) {}
-
-	sid &
-	operator =(sid const &id) {
-		rel = id.rel;
-		level = id.level;
-		branch = id.branch;
-		sequence = id.sequence;
-		return *this;
-	}
+  sid(sid const &id): rel(id.rel), level(id.level),
+		      branch(id.branch), sequence(id.sequence) {}
+  
+  sid &
+  operator =(sid const &id) {
+    rel = id.rel;
+    level = id.level;
+    branch = id.branch;
+    sequence = id.sequence;
+    return *this;
+  }
 #endif
-
-	bool valid() const { return rel > 0; }
-
-	int
-	partial_sid() const {
-		return level == 0 || (branch != 0 && sequence == 0);
-	}
-	int components() const;
-  	bool on_trunk() const;
   
-	operator void const *() const {
-		if (rel == 0)  {
-			return NULL;
-		}
-		return (void const *) this;
-	}
-
+  bool valid() const { return rel > 0; }
+  
+  int
+  partial_sid() const {
+    return level == 0 || (branch != 0 && sequence == 0);
+  }
+  int components() const;
+  bool on_trunk() const;
+  
+  operator void const *() const {
+    if (rel == 0)  {
+      return NULL;
+    }
+    return (void const *) this;
+  }
+  
   //	operator release() const;	/* Defined below */
-
-	friend int
-	operator >(sid const &i1, sid const &i2) {
-		return i1.comparable(i2) && i1.gt(i2);
-	}
-
-	friend int
-	operator >=(sid const &i1, sid const &i2) {
-		return i1.comparable(i2) && i1.gte(i2);
-	}
-
-	friend int
-	operator <(sid const &i1, sid const &i2) {
-		return i1.comparable(i2) && !i1.gte(i2);
-	}
-
-	friend int
-	operator <=(sid const &i1, sid const &i2) {
-		return i1.comparable(i2) && !i1.gt(i2);
-	}
-
-	friend int
-	operator ==(sid const &i1, sid const &i2) {
-		return memcmp(&i1, &i2, sizeof(sid)) == 0;
-	}
-
-	friend int
-	operator !=(sid const &i1, sid const &i2) {
-		return memcmp(&i1, &i2, sizeof(sid)) != 0;
-	}
-
-	sid successor() const;
-
-	sid &
-	next_branch() {
-		branch++;
-		sequence = 1;
-		return *this;
-	}
-
-	const sid &
-	next_level() {
-		++level;
-		branch = sequence = 0;
-		return *this;
-	}
-
-	sid &
-	operator++() { 
-		if (branch != 0) {
-			sequence++;
-		} else if (level != 0) {
-			level++;
-		} else {
-			rel++;
-		}
-		return *this;
-	}
-
-	sid &
-	operator--() {
-		if (branch != 0) {
-			sequence--;
-		} else if (level != 0) {
-			level--;
-		} else {
-			rel--;
-		}
-		return *this;
-	}
-
-	int
-	is_trunk_successor(sid const &id) const {
-		return branch == 0 && *this < id;
-	}
-
-	int
-	branch_greater_than(sid const &id) const {
-		return rel == id.rel && level == id.level
-		       && branch > id.branch;
-	}
-
-	int partial_match(sid const &id) const;
-  	bool matches(const sid &m, int nfields) const;
-
-	int
-	release_only() const {
-		return rel != 0 && level == 0;
-	}
-
-	int
-	trunk_match(sid const &id) const {
-		return rel == 0 
-		       || (rel == id.rel && (level == 0
-					     || level == id.level));
-	}
-
-	int print(FILE *f) const;
-	int printf(FILE *f, char fmt, int force_zero=0) const;
-
-  	int			// 0 return means success.
-	dprint(FILE *f) const {
-		return EOF == fprintf(f, "%d.%d.%d.%d",
-				      rel, level, branch, sequence);
-	}
   
-  	mystring as_string() const;
+  friend int
+  operator >(sid const &i1, sid const &i2) {
+    return i1.comparable(i2) && i1.gt(i2);
+  }
+  
+  friend int
+  operator >=(sid const &i1, sid const &i2) {
+    return i1.comparable(i2) && i1.gte(i2);
+  }
+  
+  friend int
+  operator <(sid const &i1, sid const &i2) {
+    return i1.comparable(i2) && !i1.gte(i2);
+  }
+  
+  friend int
+  operator <=(sid const &i1, sid const &i2) {
+    return i1.comparable(i2) && !i1.gt(i2);
+  }
+  
+  friend int
+  operator ==(sid const &i1, sid const &i2) {
+    return memcmp(&i1, &i2, sizeof(sid)) == 0;
+  }
+  
+  friend int
+  operator !=(sid const &i1, sid const &i2) {
+    return memcmp(&i1, &i2, sizeof(sid)) != 0;
+  }
+  
+  sid successor() const;
+  
+  sid &
+  next_branch() {
+    branch++;
+    sequence = 1;
+    return *this;
+  }
+  
+  const sid &
+  next_level() {
+    ++level;
+    branch = sequence = 0;
+    return *this;
+  }
+  
+  sid &
+  operator++() { 
+    if (branch != 0) {
+      sequence++;
+    } else if (level != 0) {
+      level++;
+    } else {
+      rel++;
+    }
+    return *this;
+  }
+  
+  sid &
+  operator--() {
+    if (branch != 0) {
+      sequence--;
+    } else if (level != 0) {
+      level--;
+    } else {
+      rel--;
+    }
+    return *this;
+  }
+
+  int
+  is_trunk_successor(sid const &id) const {
+    return branch == 0 && *this < id;
+  }
+
+  int
+  branch_greater_than(sid const &id) const {
+    return rel == id.rel && level == id.level
+      && branch > id.branch;
+  }
+
+  int partial_match(sid const &id) const;
+  bool matches(const sid &m, int nfields) const;
+
+  int
+  release_only() const {
+    return rel != 0 && level == 0;
+  }
+
+  int
+  trunk_match(sid const &id) const {
+    return rel == 0 
+      || (rel == id.rel && (level == 0
+			    || level == id.level));
+  }
+
+  int print(FILE *f) const;
+  int printf(FILE *f, char fmt, int force_zero=0) const;
+
+  int			// 0 return means success.
+  dprint(FILE *f) const {
+    return EOF == fprintf(f, "%d.%d.%d.%d",
+			  rel, level, branch, sequence);
+  }
+  
+  mystring as_string() const;
 
   friend release::release(const sid &s);
   friend relvbr::relvbr(const sid &s);

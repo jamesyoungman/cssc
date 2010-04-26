@@ -18,11 +18,12 @@ LDADD = ../googletest/lib/libgtest.la \
 	../libcssc.a
 
 TESTS_ENVIRONMENT = sh testwrapper.sh
-TESTS = $(check_PROGRAMS)
+TESTS = $(unit_tests)
 check_SCRIPTS = testwrapper.sh
-check_PROGRAMS = test_mylist test_myset test_sid test_relvbr \
+unit_tests = test_mylist test_myset test_sid test_relvbr \
 	test_release test_sid_list test_rel_list test_sccsdate \
 	test_delta test_stack test_delta-table test_encoding
+check_PROGRAMS = $(unit_tests) test_bigfile
 
 test_mylist_SOURCES = test_mylist.cc
 test_myset_SOURCES = test_myset.cc
@@ -36,6 +37,8 @@ test_delta_SOURCES = test_delta.cc
 test_stack_SOURCES = test_stack.cc
 test_delta_table_SOURCES = test_delta-table.cc
 test_encoding_SOURCES = test_encoding.cc
+test_bigfile_SOURCES = test_bigfile.cc
+test_bigfile_LDADD = ../libcssc.a
 
 # The death tests may leave a core file behind.  Some systems also use
 # core.NNNN as the name of a core file (NNNN is usually the PID).
