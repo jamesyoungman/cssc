@@ -36,6 +36,7 @@
 #include "file.h"
 #include "quit.h"
 #include "ioerr.h"
+#include "defaults.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
