@@ -406,14 +406,17 @@ sccs_file::get(FILE *out, mystring gname,
 
   for (seq_no s = d->seq(); s>0; s--)
     {
-      const struct delta & d = delta_table->delta_at_seq(s);
-      const sid & id(d.id());
-
-      if (!state.is_excluded(s) && !set)
-        {
-           dparm = find_delta(id);
-           set = true;
-        }
+      if (delta_table->delta_at_seq_exists(s))
+	{
+	  const struct delta & d = delta_table->delta_at_seq(s);
+	  const sid & id(d.id());
+	  
+	  if (!state.is_excluded(s) && !set)
+	    {
+	      dparm = find_delta(id);
+	      set = true;
+	    }
+	}
     }
   if ( !set ) dparm = d;
   // End of fix

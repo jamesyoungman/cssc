@@ -1,5 +1,10 @@
 2010-04-27  James Youngman  <jay@gnu.org>
 
+	Avoid touching missing sequence numbers in 'get'.
+	* sf-get2.cc (get): Don't call delta_table->delta_at_seq() for
+	sequence numbers for which delta_table->delta_at_seq_exists()
+	returns false.
+
 	When generating the test output file, set the checksum correctly.
 	* unit-tests/test_bigfile.cc: Set the file's checksum correctly.
 
