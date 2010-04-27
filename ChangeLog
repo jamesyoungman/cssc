@@ -1,3 +1,8 @@
+2010-04-27  James Youngman  <jay@gnu.org>
+
+	When generating the test output file, set the checksum correctly.
+	* unit-tests/test_bigfile.cc: Set the file's checksum correctly.
+
 2010-04-26  James Youngman  <jay@gnu.org>
 
 	Add a tool for creating (large) SCCS files.

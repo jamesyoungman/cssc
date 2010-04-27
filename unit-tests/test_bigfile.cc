@@ -21,6 +21,7 @@
  *
  */
 #include <stdio.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <assert.h>
 
@@ -29,8 +30,18 @@
 #include "sid.h"
 #include "sccsdate.h"
 #include "delta.h"
+#include "sccsfile.h"
+#include "version.h"
+#include "my-getopt.h"
+#include "fileiter.h"
 
 const char control = '\001';
+
+void
+usage () 
+{
+  fprintf(stderr, "usage: %s [-V] file ...\n", prg_name);
+}
 
 static bool
 emit_ixg(FILE *fp, char signifier, const mylist<sid>& items)
@@ -108,12 +119,19 @@ getseq(int release, int level, int branch, int revision,
        int branches_per_level,
        int revisions_per_branch)
 {
-  int result;
+  int result = 0;
+  int ir, il, ib, is;
+  int revisions_per_level = 1 + revisions_per_branch * branches_per_level;
+  int revisions_per_release = revisions_per_level * levels_per_release;
+  
   fprintf(stderr, "getseq: input: %d.%d.%d.%d\n", release, level, branch, revision);
-  result = revision+1;
-  result += ((branch) * revisions_per_branch);
-  result += ((level-1) * branches_per_level * revisions_per_branch);
-  result += ((release-1) * levels_per_release * branches_per_level * revisions_per_branch);
+
+  result += revisions_per_release * (release-1);
+  result += revisions_per_level   * (level-1);
+  result += revisions_per_branch  * branch;
+  result += revision;
+  result += 1;
+
   fprintf(stderr, "getseq: output: %d\n", result);
   assert (result >= 0);
   return result;
@@ -180,9 +198,9 @@ static bool make_delta(FILE *fp,
   getpred(&prev[0], &prev[1], &prev[2], &prev[3]);
 
   fprintf(stderr,
-	  "sid: %d.%d.%d.%d => prev: %d.%d.%d.%d\n",
-	  release, level, branch, revision,
-	  prev[0], prev[1], prev[2], prev[3]);
+  	  "sid: %d.%d.%d.%d => prev: %d.%d.%d.%d\n",
+  	  release, level, branch, revision,
+  	  prev[0], prev[1], prev[2], prev[3]);
 
   const sid id(release, level, branch, revision);
   const int this_seq = getseq(release, level, branch, revision,
@@ -216,14 +234,19 @@ create_sccs_file(FILE *fp,
   
   fprintf(fp, "%ch00000\n", control);
 
+  if (revisions_per_branch)
+    assert (branches_per_level > 0);
+  if (branches_per_level)
+    assert (revisions_per_branch > 0);
+
   // make the branches
-  for (revision=revisions_per_branch; revision>=0; --revision)
+  for (release=releases; release>0; --release)
     {
-      for (branch=branches_per_level; branch>0; --branch)
+      for (level=levels_per_release; level>0; --level)
 	{
-	  for (level=levels_per_release; level>0; --level)
+	  for (branch=branches_per_level; branch>0; --branch)
 	    {
-	      for (release=releases; release>0; --release)
+	      for (revision=revisions_per_branch; revision>0; --revision)
 		{
 		  if (revision && branch)
 		    {
@@ -237,12 +260,12 @@ create_sccs_file(FILE *fp,
     }
   // make the trunk.
   revision = branch = 0;
-  for (level=levels_per_release; level>0; --level)
+  for (release=releases; release>0; --release)
     {
-      for (release=releases; release>0; --release)
+      for (level=levels_per_release; level>0; --level)
 	{
 	  make_delta(fp, current_time, username,
-		     release, level, branch, revision,
+		     release, level, 0, 0,
 		     releases, levels_per_release, branches_per_level, revisions_per_branch);
 	}
     }
@@ -251,16 +274,61 @@ create_sccs_file(FILE *fp,
   fprintf(fp, "%cU\n", control);
   fprintf(fp, "%ct\n", control);
   fprintf(fp, "%cT\n", control);
+
+  fprintf(fp, "%cI 1\n", control);
+  fprintf(fp, "%cE 1\n", control);
 }
 
 int 
 main (int argc, char *argv[]) 
 {
   const mystring username("fred");
-  create_sccs_file(stdout, username,
-		   4,		// releases
-		   20,		// levels per release
-		   5,		// branches per level,
-		   60);		// revisions per branch
-  return 0;
+  int i, rv, c;
+
+  set_prg_name (argv[0]);
+  rv = 0;
+  class CSSC_Options opts(argc, argv, "V");
+  for (c = opts.next();
+       c != CSSC_Options::END_OF_ARGUMENTS;
+       c = opts.next()) 
+    {
+      switch (c) 
+	{
+	default:
+	  errormsg("Unsupported option: '%c'", c);
+	  return 2;
+	  
+	case 'V':
+	  version();
+	  if (2 == argc)
+	    return 0; // "admin -V" should succeed.
+	}
+    }
+  sccs_file_iterator iter(opts);
+  while (iter.next())
+    {
+      sccs_name &name = iter.get_name();
+      
+      int fd = open (name.sfile().c_str(), O_WRONLY|O_CREAT, 0400);
+      if (fd >= 0)
+	{
+	  FILE *fp = fdopen(fd, "w");
+	  create_sccs_file(fp, 
+			   username,
+			   2,		// releases
+			   2,		// levels per release
+			   2,		// branches per level,
+			   2);		// revisions per branch
+	  fclose (fp);
+
+	  // Fix the checksum.
+	  sccs_file file (name, sccs_file::FIX_CHECKSUM);
+	  if (!file.update_checksum())
+	    {
+	      fprintf (stderr, "Failed to update the checksum of file %s", argv[i]);
+	      rv = 1;
+	    }
+	}
+    }
+  return rv;
 }
