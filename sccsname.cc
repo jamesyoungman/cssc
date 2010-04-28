@@ -59,9 +59,6 @@ sccs_name::valid_filename(const char *thename)
     {
       mystring base = base_part(mystring(thename));
       const int valid = (base.at(0) == 's' && base.at(1) == '.');
-#if 0
-      fprintf(stderr, "valid_filename returning %d\n", valid);
-#endif
       return valid;
     }
   else
@@ -74,20 +71,11 @@ sccs_name::valid_filename(const char *thename)
 void
 sccs_name::create()
 {
-#if 0
-  fprintf(stderr, "sccs_name::create(): sname='%s'\n", sname.c_str());
-#endif  
-
   // derive all other names from "name",
   // when they're asked for.
   mystring dirname, basename;
   split_filename(sname, dirname, basename);
 
-#if 0  
-  fprintf(stderr, "sccs_name::create(): dirname='%s', basename='%s'\n",
-	  dirname.c_str(), basename.c_str());
-#endif
-  
   name_front = dirname;
 
   if (basename.length() >= 2)
@@ -120,12 +108,6 @@ sccs_name &
 sccs_name::operator =(const mystring &newname)
 {
   ASSERT(newname.length() != 0);
-
-#if 0
-  fprintf(stderr, "sccs_name::operator=(const mystring&): newname='%s'\n",
-		newname.c_str());
-#endif
-  
   sname = newname;
   create();
   return *this;
@@ -139,11 +121,6 @@ sub_file(char insertme) const
   prefix[0] = insertme;
   prefix[1] = 0;
   mystring ret = name_front + mystring(prefix) + name_rear;
-#if 0
-  fprintf(stderr,
-	  "sccs_name::sub_file('%c') returning \"%s\".\n",
-	  insertme, ret.c_str());
-#endif
   return ret;
 }
 
@@ -164,11 +141,6 @@ sccs_name::make_valid()
   ASSERT(sname.length() != 0);
   ASSERT(!valid_filename(sname.c_str()));
 
-#if 0
-  fprintf(stderr, "Making filename '%s' valid...\n",
-	  sname.c_str());
-#endif
-  
   mystring dirpart, basepart;
   split_filename(sname, dirpart, basepart);
   

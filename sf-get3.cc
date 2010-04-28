@@ -106,46 +106,20 @@ sccs_file::authorised() const {
         const char *s = users[i].c_str();
         char c = s[0];
       
-        // Regular SCCS does not underatand the use of "!username" 
-        // to specifically exclude users.  Hence for compatibility 
-        // nor must we.  Hence this next if statement is commented out.
-#if 0   
-      if (c == '!')
-        {
-          s++;
-          if (isdigit(c))
-            {
-              if (user_is_group_member(atoi(s)))
-                {
-                  found = 0;
-                  break;
-                }
-            }
-          else if (strcmp(s, user) == 0)
-            {
-              found = 0;
-              break;
-            }
-          else 
-            {
-              continue;
-            }
-        }
-#endif
 
-      if (isdigit(c))
-        {
-          if (user_is_group_member(atoi(s)))
-            {
-              found = 1;
-              break;
-            }
-        } 
-      else if (strcmp(s, user) == 0) 
-        {
-          found = 1;
-          break;
-        }
+	if (isdigit(c))
+	  {
+	    if (user_is_group_member(atoi(s)))
+	      {
+		found = 1;
+		break;
+	      }
+	  } 
+	else if (strcmp(s, user) == 0) 
+	  {
+	    found = 1;
+	    break;
+	  }
       }
     
     if (!found) 

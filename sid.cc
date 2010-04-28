@@ -43,12 +43,6 @@ mystring sid::as_string() const
 }
 
 
-/* This pointer is used by the template range_list to denote an
-   invalid range. */
-#if 0
-void *invalid_range = new char;
-#endif
-
 static int
 get_comp(const char *&s) {
 	int n = 0;

@@ -819,9 +819,6 @@ do_lock(FILE *f)                // process-aware version
 file_lock::file_lock(mystring zname): locked(0), name(zname)
 {
   ASSERT(name == zname);
-#if 0
-  fprintf(stderr, "Lock file is \"%s\"\n", zname.c_str());
-#endif  
   FILE *f = fcreate(zname,
                     CREATE_READ_ONLY | CREATE_EXCLUSIVE | CREATE_NFS_ATOMIC);
   if (0 == f)

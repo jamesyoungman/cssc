@@ -561,41 +561,11 @@ sccs_file::end_update(FILE **pout)
 
 
 
-/* Recalculate and update the checksum of a SCCS file. */
-#if 0
-bool
-sccs_file::update_checksum(const char *name)
-{
-  int sum;
-  FILE *out;
-
-  if (NULL == (out = open_sccs_file(name, UPDATE, &sum)))
-    return false;
-
-  if (fprintf_failed(fprintf(out, "\001h%05d", sum)))
-    {
-      errormsg_with_errno("%s: Write error", name);
-      fclose(out);
-      return false;
-    }
-  else
-    {
-      if (fclose_failed(fclose(out)))
-        {
-          errormsg_with_errno("%s: Write error", name);
-          return false;
-        }
-    }
-  return true;
-}
-#else
-// this version is not a static function.
 bool
 sccs_file::update_checksum()
 {
   return update();
 }
-#endif
 
 
 /* Update the SCCS file */

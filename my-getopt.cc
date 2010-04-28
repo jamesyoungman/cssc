@@ -261,15 +261,6 @@ void CSSC_Options::reorder(void)
   
   argc = n;			// we might have removed some...
 
-#if 0  
-  fprintf(stderr, "** args [%d]: ", argc);
-  for (i=0; i<argc; i++)
-    {
-      fprintf(stderr, "%s ", argv[i]);
-    }
-  fprintf(stderr, "\n");
-#endif
-  
   delete[] files;
   delete[] options;
   

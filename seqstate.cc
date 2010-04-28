@@ -247,9 +247,7 @@ seq_state::decide_disposition()
   
   if (our_highest_delete > our_highest_insert)
     {
-#if 0
-      fprintf(stderr, "Our deletion supercedes insertion\n");
-#endif      
+      // Our deletion supercedes insertion
       inserting = false;
     }
   else if (our_highest_insert > owner_of_current_insertion)
@@ -258,38 +256,23 @@ seq_state::decide_disposition()
       
       active = our_highest_insert;
       inserting = true;
-#if 0      
-      for (seq_no s=0; s <= active; ++s)
-	{
-	  if (pActive[s] && is_ignored(s))
-	    ignored = true;
-	}
-#else
       if (is_ignored(active))
 	ignored = true;
-#endif      
+
       if (ignored)
 	{
-#if 0
-	  fprintf(stderr,
-		  "Our insertion is in scope and is unsuperceded "
-		  "but is ignored\n");
-#endif
+	  // Our insertion is in scope and is unsuperceded but is ignored
 	  inserting = false;
 	}
       else
 	{
-#if 0
-	  fprintf(stderr, "Our insertion is in scope and is unsuperceded\n");
-#endif
+	  // Our insertion is in scope and is unsuperceded
 	  inserting = true;
 	}
     }
   else
     {
-#if 0
-      fprintf(stderr, "We have no unsuperceded insertion in scope\n");
-#endif      
+      // We have no unsuperceded insertion in scope
       inserting = false;
     }
 }

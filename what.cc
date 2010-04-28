@@ -288,9 +288,6 @@ main(int argc, char **argv)
 		  argv[arg], strerror(errno));
 	  fail();
 	}
-#if 0
-      putchar('\n');
-#endif
       xclose(f);
     }
   if (matchcount)

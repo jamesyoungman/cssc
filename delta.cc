@@ -57,9 +57,6 @@ delta_main(int argc, char **argv)
   sid rid(sid::null_sid());
   int silent = 0;		/* -s */
   int keep_gfile = 0;		/* -n */
-#if 0
-  sid_list ignore;		/* -g */
-#endif
   mystring mrs;			/* -m -M */
   mystring comments;		/* -y -Y */
   int suppress_mrs = 0;		// if -m given with no arg.
@@ -109,28 +106,12 @@ delta_main(int argc, char **argv)
       suppress_mrs = (mrs == "");
       got_mrs = 1;
       break;
-#if 0
-      /* not a standard option */
-    case 'M':
-      mrs = "";
-      suppress_mrs = 1;
-      got_mrs = 1;
-      break;
-#endif
+
     case 'y':
       comments = opts.getarg();
       suppress_comments = (comments == "");
       got_comments = 1;
       break;
-
-#if 0
-      /* not a standard option */
-    case 'Y':
-      comments = "";
-      suppress_comments = 1;
-      got_comments = 1;
-      break;
-#endif
 
     case 'V':
       version();

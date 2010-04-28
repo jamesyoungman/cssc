@@ -1,3 +1,19 @@
+2010-04-29  James Youngman  <jay@gnu.org>
+
+	Removed some unused code.
+	* delta.cc (delta_main): Removed some unused '#if 0' code.
+	* sf-write.cc (update_checksum): Likewise.
+	* my-getopt.cc (reorder): Likewise.
+	* file.cc (file_lock): Likewise.
+	* sccsname.cc (valid_filename): Likewise.
+	(create): Likewise.
+	(sub_file): Likewise.
+	(make_valid): Likewise.
+	* seqstate.cc (decide_disposition): Likewise.
+	* sf-get3.cc (authorised): Likewise.
+	* sid.cc (invalid_range): Likewise.
+	* what.cc (main): Likewise.
+
 2010-04-28  James Youngman  <jay@gnu.org>
 
 	Use STL to implement mylist<T>.
