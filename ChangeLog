@@ -1,5 +1,14 @@
 2010-04-28  James Youngman  <jay@gnu.org>
 
+	Use STL to implement mylist<T>.
+	* mylist.h (mylist): Implement mylist<T> as std::vector<T>.
+	* delta-table.h (mylist<T>::select(i)): delegate to l[i].
+	* unit-tests/test_mylist.cc: Drop the requirement that the
+	mylist<T> implementation does not need there to be a T::T(const
+	T&) copy constructor.
+	* mylist.h (mylist): Implement mylist<T>::operator==(const
+	mylist<T>&) const, which the unit tests need.
+
 	Inline delta::removed(), for a small performance boost.
 	* delta.h (class delta): Inline delta::removed().
 	* sccs-delta.cc: Remove the non-inline version. 

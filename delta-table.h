@@ -127,7 +127,7 @@ public:
 
   virtual const delta& select(int i) const
   {
-    return l.select(i);
+    return l[i];
   }
   
   virtual delta& select(int i)

@@ -24,32 +24,6 @@
 #include "mylist.h"
 #include <gtest/gtest.h>
 
-
-class NoCopyConstructor
-{
-  int value_;
-  
-public:
-  NoCopyConstructor(int val = 1) 		// default constructor
-    : value_(val)
-  {
-  }
-
-  
-  NoCopyConstructor &operator =(NoCopyConstructor const &other)
-  {
-    value_ = other.value_;
-  }
-
-private:
-  // The copy constructor is private.
-  NoCopyConstructor(const NoCopyConstructor& other)
-    : value_(other.value_)
-  {
-  }
-};
-
-
 TEST(MylistTest, Empty) {
   mylist<int> empty;
   const int len = empty.length();
@@ -128,17 +102,6 @@ TEST(MylistTest, Minus) {
   a -= b;
   EXPECT_EQ(1, a.length());
   EXPECT_EQ(96, a[0]);
-}
-
-TEST(MylistTest, AssignmentDoesNotNeedElementCopyConstructor) {
-  mylist<NoCopyConstructor> a;
-  mylist<NoCopyConstructor> b;
-  NoCopyConstructor val(12);
-
-  // Make sure we can perform an assignment of a mylist<T> when 
-  // T has a private copy constructor.
-  a.add(val);
-  b = a;
 }
 
 TEST(MylistTest, ValidPointerAssignment)

@@ -29,11 +29,107 @@
 #define CSSC__LIST_H__
 
 #include <cstdlib>
+#include <vector>
+#include <set>
 
 #include "cssc-assert.h"
 
+#if 1
 template <class TYPE>
 class mylist
+{
+protected:
+  typedef typename std::vector<TYPE> impl_type;
+  impl_type items_;
+  
+public:
+  mylist()
+  {
+  }
+  
+  mylist(mylist const &l)
+    : items_(l.items_)
+  {
+  }
+  
+  mylist &operator =(mylist const &l)
+  {
+    items_ = l.items_;
+  }
+  
+  bool operator ==(mylist const &l) const
+  {
+    return items_ == l.items_;
+  }
+  
+  void
+  operator =(void *p)
+    {
+      ASSERT(p == NULL);
+      items_.clear();
+    }
+
+  void add(TYPE const &ent)
+  {
+    items_.push_back(ent);
+  }
+
+  int length() const
+    {
+      return items_.size();
+    }
+
+  TYPE const &
+  operator [](int index) const
+    {
+      ASSERT(index >= 0 && index < items_.size());
+      return items_[index];
+    }
+
+  TYPE &
+  select(int index)
+    {
+      ASSERT(index >= 0 && index < items_.size());
+      return items_[index];
+    }
+
+  const mylist<TYPE>& operator+=(const mylist& other)
+  {
+    typename impl_type::const_iterator ci;
+    for (ci=other.items_.begin(); ci!=other.items_.end(); ++ci)
+      {
+	items_.push_back(*ci);
+      }
+  }
+  
+  const mylist<TYPE>& operator-=(const mylist& other)
+  {
+    if (other.items_.size())
+      {
+	impl_type remaining;
+	std::set<TYPE> unwanted(other.items_.begin(), other.items_.end());
+	
+	typename impl_type::const_iterator ci;
+	for (ci=items_.begin(); ci!=items_.end(); ++ci)
+	  {
+	    if (unwanted.find(*ci) == unwanted.end())
+	      {
+		remaining.push_back(*ci);
+	      }
+	  }
+	items_.swap(remaining);
+      }
+  }
+  
+
+  ~mylist()
+  {
+  }
+};
+#else
+
+template <class TYPE>
+class old_mylist
 {
   enum { CONFIG_LIST_CHUNK_SIZE = 16 };
   
@@ -210,6 +306,7 @@ operator==(const mylist<T1>& left, const mylist<T2>& right)
     }
   return true;
 }
+#endif
 
 #endif /* __LIST_H__ */
 
