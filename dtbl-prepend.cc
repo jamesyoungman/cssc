@@ -32,14 +32,12 @@
 void
 cssc_delta_table::prepend(const delta &it)
 {
-  mylist<struct delta> newlist;
+  delta_list newlist;
 
   newlist.add(it);
   newlist += l;
 
   l = newlist;
-  
-  update_highest(it);
 }
 
 /* Local variables: */

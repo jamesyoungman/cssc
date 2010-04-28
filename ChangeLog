@@ -1,5 +1,26 @@
 2010-04-28  James Youngman  <jay@gnu.org>
 
+	Switch to using an STL data structure to represent the delta list.
+	* delta-table.h (stl_delta_list): Reimplement delta_list using
+	STL, reducing the time it takes to validate an SCCS file with
+	30,000 deltas from 45s to 3s.   Separate the cssc_delta_table
+	class from the data structure (a typedef delta_list) for looser
+	coupling.  Retain the old data structure in the unused class
+	mylist_delta_list.
+	* delta-table.cc (delta_at_seq_exists): Delegate to the
+	delta_list.
+	(delta_at_seq): Likewise.
+	(cssc_delta_table::~cssc_delta_table()): Since we no longer have a
+	pointer member, the destructor no longer needs to do anything.
+	(cssc_delta_table::build_seq_table): Push down into
+	mylist_delta_list.
+	(cssc_delta_table::add(const delta&)): Don't call update_highest
+	since this work is done in delta_list::add(const delta&).
+	(cssc_delta_table::update_highest): Remove obsolete function.
+	* dtbl-prepend.cc (prepend): Don't call obsolete method
+	update_highest, and use the correct (updated) type for the class
+	member l (delta_list).
+
 	Performance improvement for val.
 	* sf-val.cc (check_loop_free): Use an O(N) method of
 	consistency-checking the delta graph, rather than the old O(N^2)
