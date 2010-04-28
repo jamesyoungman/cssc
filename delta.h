@@ -95,19 +95,19 @@ public:
     ASSERT(is_valid_delta_type(delta_type_));
   }
 
-  const sid id() const { return id_; }
+  inline const sid& id() const { return id_; }
   void set_id(const sid& id) { id_ = id; }
     
-  sccs_date date() const { return date_; }
+  inline const sccs_date& date() const { return date_; }
   void set_date(const sccs_date& d) { date_ = d; }
 
-  mystring user() const {return user_; }
+  inline const mystring& user() const {return user_; }
   void set_user(const mystring& u) { user_ = u; }
 
-  seq_no seq() const { return seq_; }
+  inline seq_no seq() const { return seq_; }
   void set_seq(const seq_no& s) { seq_ = s; }
 
-  seq_no prev_seq() const { return prev_seq_; }
+  inline const seq_no& prev_seq() const { return prev_seq_; }
   void set_prev_seq(const seq_no& p) { prev_seq_ = p; }
 
   unsigned long inserted() const { return inserted_; }
@@ -269,9 +269,6 @@ public:
 	return false;
       }
   }
-
-private:
-  delta(struct delta const &); /* undefined */
 };
 
 

@@ -4,6 +4,8 @@
 	* sf-val.cc (check_loop_free): Use an O(N) method of
 	consistency-checking the delta graph, rather than the old O(N^2)
 	method.
+	* delta.h (class delta): Make accessor functions id(), date(),
+	user(), seq() and prev_seq() inline.
 
 2010-04-27  James Youngman  <jay@gnu.org>
 
