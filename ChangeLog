@@ -1,3 +1,10 @@
+2010-04-28  James Youngman  <jay@gnu.org>
+
+	Performance improvement for val.
+	* sf-val.cc (check_loop_free): Use an O(N) method of
+	consistency-checking the delta graph, rather than the old O(N^2)
+	method.
+
 2010-04-27  James Youngman  <jay@gnu.org>
 
 	Avoid touching missing sequence numbers in 'get'.

@@ -22,12 +22,74 @@
  * Members of class sccs_file used by "val". 
  * 
  */
-
+#include <vector>
 #include "cssc.h"
 #include "sccsfile.h"
 #include "delta.h"
 #include "delta-table.h"
 #include "delta-iterator.h"
+
+
+namespace {
+
+  // Check that there are no loops on the way from s to the first delta.
+  bool check_loop_free(const char *name,
+		       cssc_delta_table* t,
+		       seq_no starting_seq,
+		       std::vector<bool>& loopfree,
+		       std::vector<bool>& seen)
+  {
+    bool ok = true;
+    const seq_no highest_seqno = t->highest_seqno();
+    seq_no lowest_dirty_seq = highest_seqno;
+
+    std::vector<bool>::iterator i;
+
+    // Check there are no loops.
+    for (seq_no s=starting_seq;
+	 s;
+	 s = t->delta_at_seq(s).prev_seq())
+      {
+	if (s < lowest_dirty_seq)
+	  lowest_dirty_seq = s;
+
+	if (loopfree[s])
+	  {
+	    break;
+	  }
+	else if (seen[s])
+	  {
+	    errormsg("%s: loop in predecessors at sequence number %u\n",
+		     name, (unsigned)s);
+	    ok = false;
+	    break;
+	  }
+	else
+	  {
+	    seen[s] = true;
+	  }
+      }
+
+    // Mark the newly-explored loop-free graph as being loop-free.
+    if (ok)
+      {
+	for (seq_no s=starting_seq;
+	     s;
+	     s = t->delta_at_seq(s).prev_seq())
+	  {
+	    if (loopfree[s])
+	      break;
+	    else if (seen[s])
+	      loopfree[s] = true;
+	  }
+      }
+    for (i = seen.begin()+lowest_dirty_seq; i != seen.end(); ++i)
+      *i = false;
+
+    return ok;
+  }
+}
+
 
 
 const mystring
@@ -46,11 +108,12 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
   const char *sz_sid = d->id().as_string().c_str();
   int i;
   seq_no s;
+  const seq_no highest_seq = delta_table->highest_seqno();
   
   for (i=0; i<d->get_included_seqnos().length(); ++i)
     {
       s = d->get_included_seqnos()[i];
-      if (s > delta_table->highest_seqno())
+      if (s > highest_seq)
 	{
 	  errormsg("%s: SID %s: included seqno %u does not exist\n",
 		   name.c_str(), sz_sid, (unsigned)s);
@@ -61,7 +124,7 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
   for (i=0; i<d->get_excluded_seqnos().length(); ++i)
      {
        s = d->get_excluded_seqnos()[i];
-       if (s > delta_table->highest_seqno())
+       if (s > highest_seq)
 	 {
 	   errormsg("%s: SID %s: excluded seqno %u does not exist\n",
 		    name.c_str(), sz_sid, (unsigned)s);
@@ -72,7 +135,7 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
   for (i=0; i<d->get_ignored_seqnos().length(); ++i)
      {
        s = d->get_ignored_seqnos()[i];
-       if (s > delta_table->highest_seqno())
+       if (s > highest_seq)
 	 {
 	   errormsg("%s: SID %s: ignored seqno %u does not exist\n",
 		    name.c_str(), sz_sid, (unsigned)s);
@@ -85,55 +148,8 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
 bool 
 sccs_file::validate_isomorphism() const
 {
-  // SCCS files exist where a delta on the trunk has as a parent
-  // a delta which is itself not on the trunk.  This makes it 
-  // hard to verify that the SID values are consistent with the 
-  // tree of seqno values.
-
-  int *trunk_child_count = new int[1+delta_table->highest_seqno()];
-  seq_no seq;
-
-  
-  // Count how many children on the trunk each delta has.
-  for (seq=0; seq<=delta_table->highest_seqno(); ++seq)
-    {
-      trunk_child_count[seq] = 0;
-      if (seq)
-	{
-	  if (delta_table->delta_at_seq_exists(seq)
-	      && !delta_table->delta_at_seq(seq).removed())
-	    
-	    {
-	      const delta & d = delta_table->delta_at_seq(seq);
-	      if (d.id().on_trunk())
-		{
-		  ++trunk_child_count[d.prev_seq()];
-		}
-	    }
-	}
-    }
-  
-
-  bool problem = false;
-  for (seq=1; seq<=delta_table->highest_seqno(); ++seq)
-    {
-      if (delta_table->delta_at_seq_exists(seq)
-	  && !delta_table->delta_at_seq(seq).removed())
-	{
-	  if (trunk_child_count[seq] > 1)
-	    {
-	      const delta & d = delta_table->delta_at_seq(seq);
-	      const char *sz_sid = d.id().as_string().c_str();
-	      warning("%s: SID %s has %d children on the trunk",
-		      name.c_str(), sz_sid,
-		      trunk_child_count[seq]);
-	      problem = true;
-	      
-	    }
-	}
-    }
-
-  return !problem;
+  // TODO: write a bug-free version
+  return true;
 }
 
 static bool
@@ -157,10 +173,13 @@ sccs_file::validate() const
 
   // for each delta:-
   delta_iterator iter(delta_table);
-  int *seen_ever = new int[delta_table->highest_seqno()];
-  int *seen_in_ancestry = new int[delta_table->highest_seqno()];
+  const seq_no highest_seq = delta_table->highest_seqno();
+  int *seen_ever = new int[highest_seq];
+  std::vector<bool> seen(highest_seq+1, false);
+  std::vector<bool> loopfree(highest_seq+1, false);
 
-  for (i=0; i<delta_table->highest_seqno(); ++i)
+  
+  for (i=0; i<highest_seq; ++i)
     {
       seen_ever[i] = 0;
     }
@@ -168,12 +187,7 @@ sccs_file::validate() const
   while ( retval && iter.next())
     {
       seq_no s = iter->seq();
-      
-      for (i=0; i<delta_table->highest_seqno(); ++i)
-	{
-	  seen_in_ancestry[i] = 0;
-	}
-  
+
       const char *sz_sid = iter->id().as_string().c_str();
       
       // validate that the included/excluded/unchanged line counts are valid.
@@ -216,14 +230,14 @@ sccs_file::validate() const
 	}
 
       // check seqno is valid - loops, dangling references.
-      if (s > delta_table->highest_seqno())
+      if (s > highest_seq)
 	{
 	  errormsg("%s: SID %s: invalid seqno %d",
 		   name.c_str(), sz_sid, (int)s);
 	  retval = false;
 	}
       
-      if (iter->prev_seq() > delta_table->highest_seqno())
+      if (iter->prev_seq() > highest_seq)
 	{
 	  errormsg("%s: SID %s: invalid predecessor seqno %d",
 		   name.c_str(), sz_sid, (int)iter->prev_seq());
@@ -239,32 +253,12 @@ sccs_file::validate() const
 
       ++seen_ever[s - 1];
 
-      // TODO:  Check for loops in predecessor list.
-
-
-      s = delta_table->delta_at_seq(s).prev_seq();
-      
-      while (s != 0)
+      if (!check_loop_free(name.c_str(), 
+			   delta_table, delta_table->delta_at_seq(s).seq(),
+			   loopfree, seen))
 	{
-	  if (s > delta_table->highest_seqno())
-	    {
-	      errormsg("%s: invalid seqno %d", name.c_str(), (int)s);
-	      retval = false;
-	      break;
-	    }
-	  else if (seen_in_ancestry[s - 1])
-	    {
-	      errormsg("%s: SID %s: "
-		       "multiply-descended from seqno %d",
-		       name.c_str(), sz_sid, (int)s);
-	      retval = false;
-	      break;
-	    }
-	  else
-	    {
-	      ++seen_in_ancestry[s - 1];
-	      s = delta_table->delta_at_seq(s).prev_seq();
-	    }
+	  // We already issued an error message.
+	  retval = false;
 	}
       
       // check time doesn't go backward (warning only, because this is
@@ -287,7 +281,6 @@ sccs_file::validate() const
       // check included/excluded/ignored deltas actually exist.
       validate_seq_lists(iter);
     }
-  delete[] seen_in_ancestry;
   delete[] seen_ever;
   
   if (false == retval)
