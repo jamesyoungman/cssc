@@ -61,7 +61,7 @@ libcssc_a_SOURCES = \
 	sccsfile.cc rel_list.cc \
 	sccs-delta.cc delta-table.cc delta-iterator.cc \
 	fileiter.cc file.cc linebuf.cc \
-	sccsname.cc sid.cc sccsdate.cc split.cc fnsplit.cc \
+	sccsname.cc sid.cc sccsdate.cc fnsplit.cc \
 	quit.cc fatalsig.cc \
 	my-getopt.cc version.cc fdclosed.cc \
 	showconfig.cc  environment.cc

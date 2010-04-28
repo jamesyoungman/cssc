@@ -1,5 +1,9 @@
 2010-04-29  James Youngman  <jay@gnu.org>
 
+	Delete unused file split.cc.
+	* split.cc: Delete unused file.
+	* Makefile.am (libcssc_a_SOURCES): Remove split.cc.
+
 	Removed some unused code.
 	* delta.cc (delta_main): Removed some unused '#if 0' code.
 	* sf-write.cc (update_checksum): Likewise.
