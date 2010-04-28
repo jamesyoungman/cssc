@@ -245,7 +245,11 @@ public:
   
   delta &operator =(delta const &);
   
-  bool removed() const;
+  bool removed() const
+  {
+    return 'R' == delta_type_;
+  }
+  
   char get_type() const
   {
     return delta_type_;

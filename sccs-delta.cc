@@ -54,11 +54,6 @@ delta::operator =(delta const &it)
   return *this;
 }
 
-bool delta::removed() const
-{
-  return 'R' == delta_type_;
-}
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */

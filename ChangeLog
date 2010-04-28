@@ -1,5 +1,9 @@
 2010-04-28  James Youngman  <jay@gnu.org>
 
+	Inline delta::removed(), for a small performance boost.
+	* delta.h (class delta): Inline delta::removed().
+	* sccs-delta.cc: Remove the non-inline version. 
+
 	Call strtoul to do the actual conversion, for a small performance boost.
 	* sccsfile.cc (strict_atoul_idu): Call strtoul to perform the
 	conversion itself.
