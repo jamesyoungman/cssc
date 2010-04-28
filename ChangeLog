@@ -1,5 +1,9 @@
 2010-04-28  James Youngman  <jay@gnu.org>
 
+	Call strtoul to do the actual conversion, for a small performance boost.
+	* sccsfile.cc (strict_atoul_idu): Call strtoul to perform the
+	conversion itself.
+
 	Generate a larger test file.
 	* unit-tests/test_bigfile.cc (main): Increase the number of deltas
 	in the produced file to about 30,000.

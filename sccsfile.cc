@@ -355,16 +355,21 @@ sccs_file::strict_atoul_idu(const char *s) const
 	  warning("These leading spaces will be converted to leading zeroes.");
 	}
     }
-  
-  
-  while ( 0 != (c=*s++) )
+
+  if ('-' == *s)
     {
-      if (!isdigit((unsigned char)c))
-	{
-	  corrupt("Invalid number");
-	}
-      n = n * 10 + (c - '0');
+      corrupt ("Line counts should be positive");
     }
+  else
+    {
+      char *end;
+      n = strtoul (s, &end, 10);
+      if (*end && (*end) != ' ')
+	{
+	  corrupt ("Unexpected suffix %s on line number count", end);
+	}
+    }
+
   if (n > limit)
     {
       warning("%s: line %d: number field exceeds %lu.", 
