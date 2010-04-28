@@ -1,5 +1,9 @@
 2010-04-28  James Youngman  <jay@gnu.org>
 
+	Generate a larger test file.
+	* unit-tests/test_bigfile.cc (main): Increase the number of deltas
+	in the produced file to about 30,000.
+
 	Switch to using an STL data structure to represent the delta list.
 	* delta-table.h (stl_delta_list): Reimplement delta_list using
 	STL, reducing the time it takes to validate an SCCS file with

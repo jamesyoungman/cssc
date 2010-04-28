@@ -315,10 +315,10 @@ main (int argc, char *argv[])
 	  FILE *fp = fdopen(fd, "w");
 	  create_sccs_file(fp, 
 			   username,
-			   2,		// releases
-			   2,		// levels per release
-			   2,		// branches per level,
-			   2);		// revisions per branch
+			   8,		// releases
+			   40,		// levels per release
+			   10,		// branches per level,
+			   10);		// revisions per branch
 	  fclose (fp);
 
 	  // Fix the checksum.
