@@ -59,19 +59,30 @@ decode_line(const char in[], char out[])
 }
 
 
-// encode a line, returning the number of characters in it.
+// encode a line
 void
 encode_line(const char in[], char out[], int len)
 {
   *out++ = UUENC(len);
   
-  while (len > 0)
+  while (len > 2)
     {
       encode(in, out);
       in += 3;
       out += 4;
       len -= 3;
     }
+  // deal with the tail of the buffer.
+  if (len)
+    {
+      char tail[3];
+      tail[0] = in[0];
+      tail[1] = (len > 1) ? in[1] : 0;
+      tail[2] = 0;
+      encode(tail, out);
+      out += 4;
+    }
+  
   *out++ = '\n';
   *out++ = '\0';
 }
