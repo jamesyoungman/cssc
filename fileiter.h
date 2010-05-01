@@ -52,10 +52,8 @@ private:
   int argc;
   int is_unique;
   
-#ifndef CONFIG_NO_DIRECTORY
   mylist<mystring> files;
   int pos;
-#endif
   sccs_name name;
 
 public:

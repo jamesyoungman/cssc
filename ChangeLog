@@ -1,3 +1,11 @@
+2010-05-01  James Youngman  <jay@gnu.org>
+
+	Handling of directories in get is mandatory in POSIX, so remove CONFIG_NO_DIRECTORY.
+	* fileiter.cc: don't define CONFIG_NO_DIRECTORY
+	(sccs_file_iterator::sccs_file_iterator): don't check CONFIG_NO_DIRECTORY
+	* fileiter.h (class sccs_file_iterator): Likewise.
+	* file.cc: don't define CONFIG_NO_DIRECTORY
+
 2010-04-29  James Youngman  <jay@gnu.org>
 
 	Delete unused file split.cc.

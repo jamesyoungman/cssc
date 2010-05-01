@@ -40,26 +40,20 @@
 #include "quit.h"
 
 
-#define CONFIG_NO_DIRECTORY
-
 #if HAVE_DIRENT_H
 # include <dirent.h>
 # define NAMLEN(dirent) strlen((dirent)->d_name)
-# undef CONFIG_NO_DIRECTORY
 #else
 # define dirent direct
 # define NAMLEN(dirent) (dirent)->d_namlen
 # if HAVE_SYS_NDIR_H
 #  include <sys/ndir.h>
-# undef CONFIG_NO_DIRECTORY
 # endif
 # if HAVE_SYS_DIR_H
 #  include <sys/dir.h>
-# undef CONFIG_NO_DIRECTORY
 # endif
 # if HAVE_NDIR_H
 #  include <ndir.h>
-# undef CONFIG_NO_DIRECTORY
 # endif
 #endif
 
@@ -103,7 +97,6 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 		return;
 	}
 
-#ifndef CONFIG_NO_DIRECTORY
 	if (first[0] != '\0') {
 		DIR *dir = opendir(first);
 		if (dir != NULL) {
@@ -161,7 +154,6 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 			return;
 		}
 	}
-#endif /* CONFIG_NO_DIRECTORY */
 
 	source = ARGS;
 	is_unique = (1 == argc);
@@ -190,14 +182,12 @@ sccs_file_iterator::next() {
 	    return 1;
 	  }
 	
-#ifndef CONFIG_NO_DIRECTORY	
 	case DIRECTORY:
 		if (pos < files.length()) {
 			name = files[pos++];
 			return 1;
 		}
 		return 0;
-#endif
 
 	case ARGS:
 		if (argc-- <= 0) {
