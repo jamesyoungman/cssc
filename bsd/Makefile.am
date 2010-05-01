@@ -5,7 +5,7 @@ itbm = sccs.1
 EXTRA_DIST = sccs.me COPYING.bsd .ispell_english $(itbm)
 man_MANS = sccs.1
 
-AM_CPPFLAGS = "-DPREFIX=\"$(csscutildir)/\"" -I ../lib -I $(srcdir)/../lib
+AM_CPPFLAGS = "-DPREFIX=\"$(csscutildir)/\"" -I ../gl/lib -I $(srcdir)/../gl/lib
 
 
 # The .ispell_english file is included in the distribution because it
