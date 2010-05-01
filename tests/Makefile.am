@@ -11,6 +11,7 @@ common:
 	ln -s $(srcdir)/common .
 
 test-initial: links
+	@echo "Valgrind is: $(VALGRIND)"
 	$(SHELL) -ec 'cd initial && for i in *.sh ; \
 	do \
 		echo Running test $$i; \

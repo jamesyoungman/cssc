@@ -1,5 +1,8 @@
 2010-05-01  James Youngman  <jay@gnu.org>
 
+	Show the value of $(VALGRIND) at the start of regression testing.
+	* tests/Makefile.am (test-initial): echo $(VALGRIND).
+	
 	Add unit test verifying that we don't read uninitialised data in encode.
 	* unit-tests/test_encoding2.cc: New unit test file.  Verifies that
 	we don't read uninitialised data when we reach the end of the
