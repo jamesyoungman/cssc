@@ -1,5 +1,21 @@
 2010-05-01  James Youngman  <jay@gnu.org>
 
+	Adopt the use of the first gnulib module: dirent.
+	* gnulib-tests/.gitignore: Ignore gnulib test files (since they're
+	imported rather than checked into git).
+	* lib/.gitignore: Ignore gnulib source files (for the same reason).
+	* configure.ac (AC_CONFIG_FILES): generate lib/Makefile.a
+	* Makefile.am (SUBDIRS): Add "lib", which is where the gnulib code is.
+	* bsd/sccs.c: Remove HAVE_XXX_H header guards.
+	Include dirent-safer.h.  Remove the hand-hacked dirent portability
+	macros (and remove NAMLEN as a side-effect).
+	(do_clean): Don't assume the NAMLEN macro is defined.
+	* file.cc: Include dirent-safer.h.  Remove the hand-hacked dirent
+	portability macros (and remove NAMLEN as a side-effect).
+	(is_directory): Move this function here from fileiter.cc.
+	* fileiter.cc: Include dirent-safer.h.  Remove the hand-hacked
+	dirent portability macros (and remove NAMLEN as a side-effect).
+
 	Show the value of $(VALGRIND) at the start of regression testing.
 	* tests/Makefile.am (test-initial): echo $(VALGRIND).
 	

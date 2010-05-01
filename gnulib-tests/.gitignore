@@ -1,5 +1,9 @@
 binary-io.h
+cloexec.c
+cloexec.h
 dummy.c
+dup-safer-flag.c
+fd-safer-flag.c
 gnulib.mk
 ignore-value.h
 intprops.h
@@ -15,9 +19,12 @@ stdbool.in.h
 symlink.c
 test-binary-io.c
 test-binary-io.sh
+test-cloexec.c
 test-ctype.c
 test-dirent-c++.cc
+test-dirent-safer.c
 test-dirent.c
+test-dup-safer.c
 test-dup2.c
 test-errno.c
 test-fcntl-h-c++.cc

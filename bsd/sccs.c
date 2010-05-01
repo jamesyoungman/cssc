@@ -42,33 +42,16 @@ static const char copyright[] =
 #endif /* not lint */
 static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $";
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
-#ifdef HAVE_STDIO_H
 #include <stdio.h>
-#endif
-
-#ifdef HAVE_LOCALE_H
 #include <locale.h>
-#endif
-
-#ifdef STDC_HEADERS
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
 #include <sys/types.h>
-
-#if HAVE_SYS_WAIT_H
 #include <sys/wait.h>
-#endif
 
 /* Cope with systems that have no (compatible) sys/wait.h.
  */
@@ -85,34 +68,8 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
 #define WCOREDUMP(stat_val) ( (stat_val) & 0200 )
 #endif
 
-#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>          /* TODO: this does what? */
-#endif
-
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
-
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
-#endif
-
-
-
-
 #include <signal.h>             /* TODO: consider using sigaction(). */
 #include <errno.h>              /* TODO: same as in parent directory. */
 #include <pwd.h>                /* getpwuid() */
@@ -121,6 +78,8 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
 /* The next few lines inserted from @(#)pathnames.h     8.1 (Berkeley) 6/6/93
  */
 /* #include <paths.h> */
+
+#include "dirent-safer.h"
 
 #ifndef _PATH_BSHELL
 #define _PATH_BSHELL "/bin/sh"
@@ -1692,11 +1651,12 @@ safepath (register const char *p)
 static void
 form_gname(char *buf, size_t bufsize, struct dirent *dir)
 {
-  size_t gname_len = NAMLEN(dir)-2u;
+  size_t len = strlen (dir->d_name);
+  size_t gname_len = len-2u;
   
   if (gname_len >= bufsize)
     {
-      gstrbotchn(bufsize, dir->d_name, NAMLEN(dir), (char*)0, 0);
+      gstrbotchn(bufsize, dir->d_name, len, (char*)0, 0);
     }
   else
     {
@@ -1808,7 +1768,9 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
   gotedit = FALSE;
   while (NULL != (dir = readdir (dirp)))
     {
-      if (NAMLEN(dir) < 2 || 's' != dir->d_name[0] || '.' != dir->d_name[1])
+      if ('s' != dir->d_name[0] || 
+	  '.' != dir->d_name[1] ||
+	  0 == dir->d_name[2])
         continue;
 
       /* got an s. file -- see if the p. file exists */

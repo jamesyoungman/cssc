@@ -38,45 +38,7 @@
 #include "my-getopt.h"
 #include "file.h"
 #include "quit.h"
-
-
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
-#endif
-
-
-
-// This function is only defined in this module in order to 
-// take advantage of the macros above.
-// FIXME: when/if we start to use gnulib, move it to file.c
-int 
-is_directory(const char *name) 
-{
-  bool retval = false;
-  DIR *p = opendir(name);
-  if (p)
-    {
-      retval = true;
-      closedir(p);
-    }
-  return retval;
-}
-
-
-
+#include "dirent-safer.h"
 
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
@@ -129,7 +91,7 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 
 			struct dirent *dent = readdir(dir);
 			while (dent != NULL) {
-				mystring name = mystring(dirname) + mystring(dent->d_name, NAMLEN(dent));
+				mystring name = mystring(dirname) + mystring(dent->d_name);
 				
 				if (sccs_name::valid_filename(name.c_str())
 				    && is_readable(name.c_str()))

@@ -32,7 +32,10 @@ csscutildir = $(libexecdir)/cssc
 # 
 # We run the unit tests before the regression tests in order to make
 # it more ovbious where the bug is when there is a test failure.
-SUBDIRS = bsd docs testutils auxfiles sccs-cgi googletest unit-tests tests 
+SUBDIRS = lib bsd docs testutils auxfiles sccs-cgi googletest unit-tests tests 
+
+ACLOCAL_AMFLAGS = "-I m4"
+AM_CPPFLAGS = -I lib -I $(srcdir)/lib
 
 noinst_LIBRARIES = libcssc.a
 
