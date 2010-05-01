@@ -1,5 +1,11 @@
 2010-05-01  James Youngman  <jay@gnu.org>
 
+	Add unit test verifying that we don't read uninitialised data in encode.
+	* unit-tests/test_encoding2.cc: New unit test file.  Verifies that
+	we don't read uninitialised data when we reach the end of the
+	encoding input.
+	* unit-tests/Makefile.am (unit_tests): Add test_encoding2.
+
 	Avoid reading uninitialised input.
 	* encoding.cc (encode_line): Encode the tail of the input without
 	running over the end of in[].
