@@ -1,5 +1,12 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Ignore some maintainer-makefile lint complaints I don't plan to fix.
+	* .x-sc_error_message_period: Avoid syntax-check errors for error
+	messages ending in a full stop.  Some error messages contain more
+	than one sentence.
+	* .x-sc_error_message_uppercase: Avoid syntax-check errors for
+	error messages starting with a capital letter.
+
 	Fix a maintainer-makefile if-before-free lint issue.
 	* bsd/sccs.c (set_prefix): Remove useless if-before-free.
 
