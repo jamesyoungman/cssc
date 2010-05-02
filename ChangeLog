@@ -1,5 +1,8 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Remove obsolete file gnulib-tests/.gitignore.
+	* gnulib-tests/.gitignore: Remove.
+
 	Clean up core files in the unit test directory.
 	* unit-tests/Makefile.am (COREFILES): Clean up "vgcore.*" files
 	for distclean.
