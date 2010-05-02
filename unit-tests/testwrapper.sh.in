@@ -9,4 +9,14 @@ if test -n "$VALGRIND"; then
    fi
 fi
 
-exec $prefix "$@"
+# Turn off core dumps.
+ulimit -c 0
+
+$prefix "$@"
+rv=$?
+
+if [ $rv -ne 10 ]; then
+    # No need to retain the core file for diagnosis.
+    rm -f vgcore.*
+fi
+exit $rv

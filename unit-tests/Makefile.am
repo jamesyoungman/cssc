@@ -43,6 +43,10 @@ test_encoding2_SOURCES = test_encoding2.cc
 test_bigfile_SOURCES = test_bigfile.cc
 test_bigfile_LDADD = ../libcssc.a
 
+
 # The death tests may leave a core file behind.  Some systems also use
 # core.NNNN as the name of a core file (NNNN is usually the PID).
-DISTCLEANFILES = core core.*
+# Files with names like vgcore.* are produced by valgrind.
+COREFILES = core core.* vgcore.*
+
+DISTCLEANFILES = $(COREFILES)
