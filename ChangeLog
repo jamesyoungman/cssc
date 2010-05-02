@@ -1,5 +1,21 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Use the gnulib module progname.
+	* bsd/sccs.c: Include progname.h.
+	Remove unused variable MyName.
+	(show_version): Use program_name not MyName.
+	(usage): Likewise.
+	(callprog): Likewise.
+	(usrerr): Likewise.
+	(syserr): Likewise.
+	(main): Call set_program_name.
+
+	* bsd/Makefile.am: Link against gnulib.
+	* bootstrap.conf (gnulib_name): Give the gnulib library a sensible
+	name (instead of lib.a).
+	(gnulib_modules): Import the progname module.
+	* gl/lib/.gitignore: Ignore files from the progname module.
+
 	Use $(FOO) in Makefile.am rather than @FOO@.
 	* tests/Makefile.am: Automake defines $(VALGRIND) from @VALGRIND@
 	automatically anyway.

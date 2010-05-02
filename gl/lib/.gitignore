@@ -19,6 +19,8 @@ getdtablesize.c
 gnulib.mk
 opendir-safer.c
 pipe-safer.c
+progname.c
+progname.h
 signal.h
 signal.in.h
 stdarg.h

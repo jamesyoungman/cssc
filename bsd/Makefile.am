@@ -6,7 +6,8 @@ EXTRA_DIST = sccs.me COPYING.bsd .ispell_english $(itbm)
 man_MANS = sccs.1
 
 AM_CPPFLAGS = "-DPREFIX=\"$(csscutildir)/\"" -I ../gl/lib -I $(srcdir)/../gl/lib
-
+AM_LDFLAGS = -L../gl/lib
+LDADD = -lgnulib
 
 # The .ispell_english file is included in the distribution because it
 # is useful for the list of correct spellings in this document to

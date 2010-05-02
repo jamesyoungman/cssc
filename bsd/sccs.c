@@ -80,6 +80,7 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
 /* #include <paths.h> */
 
 #include "dirent-safer.h"
+#include "progname.h"
 
 #ifndef _PATH_BSHELL
 #define _PATH_BSHELL "/bin/sh"
@@ -380,7 +381,6 @@ const char *SccsDir = "";
 #endif
 char *subprogram_exec_prefix = NULL; /* see try_to_exec(). */
 
-const char MyName[] = MYNAME;   /* name used in messages */
 int OutFile = -1;               /* override output file for commands */
 bool RealUser;                  /* if set, running as real user */
 #ifdef DEBUG
@@ -430,7 +430,7 @@ static void childwait(int pid, int *status_ptr, int ignoreintr);
 static void
 show_version(void)
 {
-  fprintf(stderr, "%s from GNU CSSC %s\n%s\n", MyName, (VERSION), filever);
+  fprintf(stderr, "%s from GNU CSSC %s\n%s\n", program_name, (VERSION), filever);
   fprintf(stderr, "SccsPath = '%s'\nSccsDir = '%s'\n", SccsPath, SccsDir);
   fprintf(stderr, "Default prefix for SCCS subcommands is '%s'\n", (PREFIX));
 }
@@ -561,7 +561,7 @@ static void cleanup_environment(void)
 static void 
 usage(void)
 {
-  fprintf (stderr, "Usage: %s [flags] command [flags]\n", MyName);
+  fprintf (stderr, "Usage: %s [flags] command [flags]\n", program_name);
 }
 
 char * my_rindex(const char *p, int ch)
@@ -587,6 +587,8 @@ main (int argc, char **argv)
   int hadver = 0;
   
   (void) &copyright;            /* prevent warning about unused variable. */
+
+  set_program_name (argv[0]);
 
   if (!absolute_pathname(PREFIX))
     {
@@ -1410,7 +1412,7 @@ callprog (const char *progpath,
                   char sigmsgbuf[11];
                   fprintf (stderr,
                            "%s: %s: %s%s\n",
-                           MyName,
+                           program_name,
                            argv[0],
                            get_sig_name(sigcode, sigmsgbuf),
                            (WCOREDUMP(st) ? " (core dumped)" : "") );
@@ -2265,7 +2267,7 @@ usrerr (const char *fmt,...)
   va_list ap;
 
 
-  fprintf (stderr, "\n%s: ", MyName);
+  fprintf (stderr, "\n%s: ", program_name);
 
   va_start (ap, fmt);
   vfprintf (stderr, fmt, ap);
@@ -2295,7 +2297,7 @@ syserr (const char *fmt,...)
   extern int errno;
   va_list ap;
 
-  fprintf (stderr, "\n%s SYSERR: ", MyName);
+  fprintf (stderr, "\n%s SYSERR: ", program_name);
 
   va_start (ap, fmt);
   vfprintf (stderr, fmt, ap);
