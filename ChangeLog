@@ -1,8 +1,12 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Adopt the use of the gnulib maintainer-makefile module.
+	(gnulib_modules): Add maintainer-makefile.
+	
 	Update to GNU Free Documentation License, Version 1.3 (from 1.2).
 	* docs/cssc.texi (@copying): Update from FDL 1.2 to FDL 1.3.
 	* bootstrap.conf (gnulib_modules): Import module fdl.
+
 	* docs/fdl.texi: Symlink to ../gl/doc/fdl.texi.
 	* NEWS: Mention this change.
 
