@@ -1,5 +1,8 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Fix a maintainer-makefile if-before-free lint issue.
+	* bsd/sccs.c (set_prefix): Remove useless if-before-free.
+
 	Adopt the use of the gnulib maintainer-makefile module.
 	(gnulib_modules): Add maintainer-makefile.
 	

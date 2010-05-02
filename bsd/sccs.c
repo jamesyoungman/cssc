@@ -470,8 +470,7 @@ set_prefix(const char *pfx)
 #endif
       if (p)
         {
-          if (subprogram_exec_prefix)
-            free(subprogram_exec_prefix);
+	  free (subprogram_exec_prefix);
           strcpy(p, pfx);
           subprogram_exec_prefix = p;
         }
