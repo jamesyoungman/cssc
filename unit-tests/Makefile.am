@@ -4,8 +4,8 @@ AM_CPPFLAGS = -I$(srcdir)/../googletest -I$(srcdir)/../googletest/include -I$(sr
 
 # Modifies compiler and linker flags for pthreads compatibility.
 if HAVE_PTHREADS
-  AM_CXXFLAGS = @PTHREAD_CFLAGS@ -DGTEST_HAS_PTHREAD=1
-  AM_LIBS = @PTHREAD_LIBS@
+  AM_CXXFLAGS = $(PTHREAD_CFLAGS) -DGTEST_HAS_PTHREAD=1
+  AM_LIBS = $(PTHREAD_LIBS)
 else
   AM_CXXFLAGS = -DGTEST_HAS_PTHREAD=0
 endif

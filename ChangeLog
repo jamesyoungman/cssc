@@ -1,5 +1,14 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Use $(FOO) in Makefile.am rather than @FOO@.
+	* tests/Makefile.am: Automake defines $(VALGRIND) from @VALGRIND@
+	automatically anyway.
+	* cfg.mk (_makefile_at_at_check_exceptions): Exempt a couple of
+	usages by the Google C++ Testing Framework.
+	* Makefile.am: Use $(LIBOBJS) instead of @LIBOBJS@.
+	* unit-tests/Makefile.am (AM_LIBS): Likewise for $(PTHREAD_LIBS).
+	(AM_CXXFLAGS): Likewise for  $(PTHREAD_CFLAGS).
+
 	Silence an error about m4 quoting in the Google C++ Testing Framework.
 	* .x-sc_m4_quote_check: Silence error message about insufficient
 	quoting in googletest/m4/acx_pthread.m4.  We do this rather than
