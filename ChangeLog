@@ -1,3 +1,29 @@
+2010-05-03  James Youngman  <jay@gnu.org>
+
+	Don't configure separately in testutils.
+	* testutils/ekko.c: Include "config.h", don't use include guards.
+	* testutils/lndir.c: Include "config.h", don't use include guards.
+	(dodir): Don't use NAMLEN (since the replacement dirent.h does not
+	define it).
+	* testutils/seeker.c: Remove useless HAVE_FOO_H checks.  Assume
+	fseek is available (gnulib provides it).
+	* testutils/user.c: Remove useless HAVE_FOO_H checks.
+	* testutils/uu_decode.c: Remove useless HAVE_FOO_H checks.
+	* testutils/yammer.c: Likewise.
+	* testutils/yes.c: Likewise.
+	* testutils/realpwd.cc: Likewise.
+	* gl/lib/.gitignore: Ignore fseek.c, fseeko.c, lseek.c, stdio-impl.h.
+	* testutils/configure.ac: Delete.
+	* testutils/NEWS: Delete.
+	* testutils/AUTHORS: Delete.
+	* testutils/COPYING: Delete.
+	* testutils/ChangeLog: Delete.
+	* testutils/INSTALL: Delete.
+	* configure.ac: Don't run configure in ./testutils.
+	AC_CONFIG_FILES: generate testutils/Makefile.
+	* bootstrap.conf (gnulib_modules): Use the fseek module.
+	* testutils/Makefile.am: Search for headers and libraries in ../gl/lib.
+
 2010-05-02  James Youngman  <jay@gnu.org>
 
 	Remove redundant inclusion guards for unistd.h and string.h.

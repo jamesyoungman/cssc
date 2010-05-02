@@ -33,6 +33,7 @@
  * two octal digits make six bits.
  *
 */
+#include "config.h"
 
 #include <stdio.h>
 #include <stddef.h>
@@ -40,9 +41,8 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
+
 
 
 

@@ -19,19 +19,14 @@
  * 
  * Program for getting the user's login name.
  */
+#include "config.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#include <sys/types.h>
-#include <pwd.h>
-
-#ifdef STDC_HEADERS
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#endif
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 const char usage_str[] = "usage: \"user name\" or \"user group\"\n";
 

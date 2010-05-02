@@ -53,6 +53,7 @@ in this Software without prior written authorization from the X Consortium.
         %  cd /usr/local/src/new-X
         %  lndir ../X
 */
+#include "config.h"
 
 #ifndef HAVE_SYMLINK
 #error I need to be patched to support either hard links or copying.
@@ -63,59 +64,17 @@ in this Software without prior written authorization from the X Consortium.
 #endif
 
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
-#ifdef HAVE_STDARG_H
 #include <stdarg.h>
-#endif
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
-
-#ifdef HAVE_STDIO_H
 #include <stdio.h>
-#endif
-#ifdef HAVE_ERRNO_H
 #include <errno.h>
-#endif
-
-#if HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#if HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
-
-#if HAVE_SYS_PARAM_H
 #include <sys/param.h>
-#endif
-
-#if HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
-#endif
-
-#ifdef STAT_MACROS_BROKEN
-#undef S_ISDIR
-#endif
+#include "dirent-safer.h"
 
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 2048
@@ -184,11 +143,7 @@ int equivalent(char *lname, const char *rname)
 
 static int is_dir(const struct stat *p)
 {
-#ifdef S_ISDIR
-    return S_ISDIR(p->st_mode);
-#else
-    return p->st_mode & S_IFDIR;
-#endif
+  return S_ISDIR(p->st_mode);
 }
 
 static int ignored(const char *n)
@@ -244,8 +199,11 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
     *p++ = '/';
     n_dirs = fs->st_nlink;
     while ( (struct dirent*)0 != (dp = readdir (df)) ) {
-        if (dp->d_name[NAMLEN(dp) - 1] == '~')
+        const size_t namlen = strlen(dp->d_name);
+	if (namlen) {
+	  if (dp->d_name[namlen - 1] == '~')
             continue;
+	}
         strcpy (p, dp->d_name);
 
         if (n_dirs > 0) {

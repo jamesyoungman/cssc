@@ -18,37 +18,17 @@
  * Program that determines if the target system can seek on its standard
  * input.
  */
+#include "config.h"
 
-
-
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
-#ifdef HAVE_STDARG_H
 #include <stdarg.h>
-#endif
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
-
-#ifdef HAVE_STDIO_H
 #include <stdio.h>
-#endif
-#ifdef HAVE_ERRNO_H
 #include <errno.h>
-#endif
 
-#if HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#if HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
-#ifndef HAVE_FSEEK
-#define HAVE_FSEEK
-#endif
 
 
 #define ERR_USAGE (1)
@@ -69,7 +49,6 @@ try_getpos(FILE *f)
 }
 #endif
 
-#ifdef HAVE_FSEEK
 static void
 try_fseek(FILE *f)
 {
@@ -81,7 +60,6 @@ try_fseek(FILE *f)
   rv = fseek(f, SEEK_SET, lrv);
   printf("fseek() returns %d\n", rv);
 }
-#endif
 
 static void
 try_lseek()
@@ -195,11 +173,7 @@ int main(int argc, char *argv[])
 #else
   printf("fgetpos() not supported.\n");
 #endif
-#ifdef HAVE_FSEEK
   try_fseek(stdin);
-#else
-  printf("fseek() not supported.\n");
-#endif
   try_lseek();
   return 0;
 }

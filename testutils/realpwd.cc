@@ -20,20 +20,12 @@
  * Program for getting the canonical form of the current directory.
  */
 
-#include "../config.h"
+#include "config.h"
 
-#ifdef STDC_HEADERS
 #include <stddef.h>
 #include <assert.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 
 
 static const char *

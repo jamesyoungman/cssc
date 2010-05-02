@@ -37,14 +37,11 @@
  * This program was written during October 1998 by Greg A. Woods,
  * VE3TCP, <gwoods@acm.org>, <woods@planix.com>, <woods@wierd.com>.
  */
+#include "config.h"
 
-#if HAVE_STDIO_H
 #include <stdio.h>
-#endif
-
-#if HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
+
 
 int
 main(argc, argv)

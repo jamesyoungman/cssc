@@ -389,6 +389,7 @@ dnl The "select" that autoscan found was a method. AC_CHECK_FUNCS(select)
 AC_CHECK_FUNCS(abort wait)
 
 dnl Check for symlink() and readlink(), which lndir uses.
+dnl Check for fsetpos, which testutils/seeker uses.
 AC_CHECK_FUNCS(symlink readlink unsetenv fsetpos fileno fstat sysconf memchr) 
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid pipe spawn geteuid getegid)
 AC_REPLACE_FUNCS(strerror remove rename strstr)
@@ -464,7 +465,7 @@ AC_CHECK_DECL_IN_HEADER(sys_nerr,stdio.h)
 fi
 
 dnl What about saved setuid?
-AC_CONFIG_SUBDIRS(testutils googletest)
+AC_CONFIG_SUBDIRS(googletest)
 dnl AC_CONFIG_FILES([shorter/Makefile])
 
 dnl *** NOTE:
@@ -473,5 +474,5 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_CONFIG_FILES([version.cc Makefile gl/Makefile gl/lib/Makefile gl/doc/Makefile gl/tests/Makefile sccsdiff.sh bsd/Makefile unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
+AC_CONFIG_FILES([version.cc Makefile gl/Makefile gl/lib/Makefile gl/doc/Makefile gl/tests/Makefile testutils/Makefile sccsdiff.sh bsd/Makefile unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
 AC_OUTPUT

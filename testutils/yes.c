@@ -19,12 +19,12 @@
  * 
  * clone of yes(1) -- some systems (e.g. Solaris) lack yes(1).
  */
+#include "config.h"
 
-#ifdef STDC_HEADERS
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#endif
+
 
 
 unsigned long
