@@ -1,0 +1,5 @@
+testutils/ekko\.c
+testutils/lndir\.c
+testutils/uu_decode\.c
+testutils/yammer\.c
+testutils/yes\.c
