@@ -1,5 +1,9 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Don't create a spurious directory.
+	* bootstrap.conf (local_gl_dir): Don't create {m4_base}.  Create
+	${m4_base} instead.
+
 	Remove obsolete file gnulib-tests/.gitignore.
 	* gnulib-tests/.gitignore: Remove.
 
