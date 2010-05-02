@@ -47,7 +47,7 @@
 //           Deduced
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-#if defined(HAVE_UNISTD_H) && defined(HAVE_GETEUID) && defined(HAVE_GETEGID)
+#if defined(HAVE_GETEUID) && defined(HAVE_GETEGID)
 #define CONFIG_UIDS
 #endif
 

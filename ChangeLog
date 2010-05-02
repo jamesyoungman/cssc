@@ -1,5 +1,17 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Remove redundant inclusion guards for unistd.h and string.h.
+	* configure.ac: When deciding whether or not _POSIX_SAVED_IDS is
+	defined, include unistd.h unconditionally, since if the inclusion
+	fails, the answer will still be no.
+	* cssc.h: Don't use ifdef HAVE_UNISTD_H.  Since we're using
+	gnulib's unistd.h module, we will be able to include <unistd.h>
+	unconditionally.
+	* rename.c: Likewise.
+	* remove.c: Likewise.
+	* strstr.c: Likewise for HAVE_STRING_H and <string.h>, since the
+	latter is provided by gnulib's string module.
+
 	Disable some spurious errors about failure to call set_program_name.
 	* .x-sc_program_name: Don't require the test tools to call
 	set_program_name, since they don't link with gnulib.

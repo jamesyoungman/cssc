@@ -15,13 +15,10 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#if HAVE_UNISTD_H
 #include <unistdh>
-#endif
 
 
 #ifndef HAVE_REMOVE
-
 int
 remove(const char *name) {
 	return unlink(name);

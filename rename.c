@@ -15,12 +15,9 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#if HAVE_UNISTD_H
 #include <unistdh>
-#endif
 
 #ifndef HAVE_RENAME
-
 int
 rename(const char *from, const char *to) {
 	if (link(from, to) == -1 || unlink(from) == -1) {
@@ -28,5 +25,4 @@ rename(const char *from, const char *to) {
 	}
 	return 0;
 }
-
 #endif /* HAVE_RENAME */

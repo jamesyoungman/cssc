@@ -358,9 +358,7 @@ AC_MSG_CHECKING([for _POSIX_SAVED_IDS])
 AC_CACHE_VAL(cssc_cv_sys_savedids_set,
 AC_EGREP_CPP(yes,
 [
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
 #ifdef _POSIX_SAVED_IDS
        yes
 #endif

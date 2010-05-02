@@ -28,9 +28,7 @@
 
 #include <config.h>
 
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 
 char *
 strstr(const char *s1, const char *s2) {
