@@ -155,7 +155,7 @@ Windows NT / Cygwin
 See also "Microsoft Services for Unix", below. 
 
 CSSC's history files and working files must be stored and used on a
-Cygwin filesystem mounted in 'binary mode' not 'text mode'.
+Cygwin file system mounted in 'binary mode' not 'text mode'.
 
 CSSC compiles under the CYGWIN environment for Windows NT.  CSSC
 support under the Cygwin environment is nearly up to the standard of

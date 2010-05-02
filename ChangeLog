@@ -1,5 +1,16 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Standardise on the use of "file system" rather than "filesystem".
+	* docs/cssc.texi (Filenames): Spell "filesystem" as "file system",
+	following the example of the POSIX standard.
+	* docs/Platforms: Likewise.
+	* file.cc (atomic_nfs_create): Likewise.
+	* tests/admin/hardlinks.sh: Likewise.
+	* tests/admin/.x-sc_file_system: Exempt the Google Unit Test code
+	from this requirement, since that will make later updates hard to
+	merge.
+	Also exempt ChangeLog files.
+
 	Ignore some maintainer-makefile lint complaints I don't plan to fix.
 	* .x-sc_error_message_period: Avoid syntax-check errors for error
 	messages ending in a full stop.  Some error messages contain more

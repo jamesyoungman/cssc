@@ -56,7 +56,7 @@ static int just_one_link(FILE *f)
       if (0 != fstat(fd, &st))
 	{
 	  /* We cannot stat the file descriptor.  Perhaps there is a 
-	   * filesystem functionality issue.   If that's the case then we
+	   * file system functionality issue.   If that's the case then we
 	   * will give it the benefit of the doubt on the link coutn front. 
 	   */
 	  return 1;  /* We're happy with the file */

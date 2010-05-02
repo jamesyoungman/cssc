@@ -2052,7 +2052,7 @@ The lock file used to arbitrate access to the history file.  The running
 @sc{cssc} (or @sc{sccs}) program puts its PID into this file.  Some
 versions of @sc{sccs} (but @emph{not} @sc{cssc}) will break the lock
 after 60 seconds if the specified PID is not running on the local
-machine.  In order to work more reliably over networked filesystems,
+machine.  In order to work more reliably over networked file systems,
 @sc{cssc} will not do this; stale lock files would have to be removed
 manually.  
 @item x.

@@ -471,12 +471,12 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
                 {
                   if (EPERM == link_errno)
                     {
-                      /* containing filesystem does not support hard links. */
+                      /* containing file system does not support hard links. */
                       close(fd);
                       unlink(lockstr);
 
-                      /* assume that the filesystem supports O_EXCL if it does
-                       * not supprort link(2).
+                      /* assume that the file system supports O_EXCL if it does
+                       * not support link(2).
                        */
                       return open(pstr, flags, perms);
                     }

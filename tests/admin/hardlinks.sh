@@ -35,7 +35,7 @@ then
     # docommand L6 "${val} ${s}"           1 IGNORE IGNORE
     # expect_fail=false
 else
-    echo "Your OS or your the filesystem do not support hard links - some tests skipped"
+    echo "Your OS or your the file system do not support hard links - some tests skipped"
 fi
 
 
