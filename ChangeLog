@@ -1,5 +1,10 @@
 2010-05-02  James Youngman  <jay@gnu.org>
 
+	Silence a spurious error about changing old NEWS entries.	
+	* cfg.mk (old_NEWS_hash): Set old_NEWS_hash to the md5sum of a
+	zero-length input in order to silence a spurious error about
+	changing old NEWS entries.
+
 	Standardise on the use of "file system" rather than "filesystem".
 	* docs/cssc.texi (Filenames): Spell "filesystem" as "file system",
 	following the example of the POSIX standard.
