@@ -1,5 +1,8 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Exempt programs that don't use error() from using error().
+	* .x-sc_unmarked_diagnostics: Exempt sccs.cgi and what.cc.
+
 	Skip sc_two_space_separator_in_usage for things that aren't code.
 	* .x-sc_two_space_separator_in_usage: Don't check docs/Platforms,
 	it's not a program.
