@@ -25,8 +25,7 @@
  */
 #include <errno.h>
 
-#if defined(__GNUC__) \
-&& !(defined(__APPLE__) && __GNUC__ == 3 && __GNUC_MINOR__ == 1)
+#if defined __GNUC__ && !(defined __APPLE__ && __GNUC__ == 3 && __GNUC_MINOR__ == 1)
 #pragma implementation "filelock.h"
 #endif
 
@@ -765,7 +764,7 @@ FILE *fopen_as_real_user(const char *s, const char *mode)
 
 #elif defined(CONFIG_PID_LOCKING) || defined(CONFIG_DUMB_LOCKING)
 
-#if defined(CONFIG_PID_LOCKING)
+#if defined CONFIG_PID_LOCKING
 
 static int
 put_pid(FILE *f)

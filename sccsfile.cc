@@ -41,7 +41,7 @@
 #include <sys/stat.h>           /* fstat(), struct stat */
 
 
-#if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
+#if defined HAVE_FILENO && defined HAVE_FSTAT
 /* If an SCCS file has a link count greater than one, then the normal 
  * process of updating the file will break the link.  We try to detect this 
  * even if the file is being opened to reading only, to give an early

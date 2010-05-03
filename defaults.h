@@ -62,7 +62,7 @@
 #endif /* CDECL */
 
 
-#if !defined(CONFIG_NO_LOCKING) && !defined(CONFIG_SHARE_LOCKING) && !defined(CONFIG_PID_LOCKING) && !defined(CONFIG_DUMB_LOCKING)
+#if !(defined CONFIG_NO_LOCKING || defined CONFIG_SHARE_LOCKING || defined CONFIG_PID_LOCKING || defined CONFIG_DUMB_LOCKING)
 #ifdef CONFIG_MSDOS_FILES
 #ifdef CONFIG_DJGPP
 #define CONFIG_DUMB_LOCKING
@@ -72,7 +72,7 @@
 #else /* CONFIG_MSDOS_FILES */
 #define CONFIG_PID_LOCKING
 #endif /* CONFIG_MSDOS_FILES */
-#endif /* !defined(CONFIG_NO_LOCKING) && ... */
+#endif
   
 
 #ifndef CONFIG_NULL_FILENAME

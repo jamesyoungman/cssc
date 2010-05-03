@@ -32,7 +32,7 @@
 #include "sysdep.h"
 #include "quit.h"
 
-#if !defined(HAVE_FORK) && !defined(HAVE_SPAWN)
+#if !defined HAVE_FORK && !defined HAVE_SPAWN
 #define NEED_CALL_SYSTEM
 #else
 #undef NEED_CALL_SYSTEM

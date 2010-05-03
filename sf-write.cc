@@ -519,7 +519,7 @@ sccs_file::end_update(FILE **pout)
    * The destructor sccs_file::~sccs_file() asserts that the file pointer
    * is not NULL, so we reopen the file in this case.
    */
-#if defined(__CYGWIN__)
+#if defined __CYGWIN__
   if (f)
     {
       /* Only in modes other than create, will f be non-NULL */
@@ -545,7 +545,7 @@ sccs_file::end_update(FILE **pout)
       retval = true;
     }
   
-#if defined(__CYGWIN__)
+#if defined __CYGWIN__
   int dummy_sum;
   
   mystring sfile_name = name.sfile();

@@ -50,7 +50,7 @@
 #endif
 
 #ifdef CONFIG_MSDOS_FILES
-#if defined(__BORLANDC__) && defined(__STDC__)
+#if defined __BORLANDC__ && defined __STDC__
 #define far __far
 #endif
 #include <dos.h> 

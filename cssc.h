@@ -47,7 +47,7 @@
 //           Deduced
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-#if defined(HAVE_GETEUID) && defined(HAVE_GETEGID)
+#if defined HAVE_GETEUID && defined HAVE_GETEGID
 #define CONFIG_UIDS
 #endif
 
@@ -59,7 +59,7 @@
  * It provides a very Unix-like environment under Windows NT;
  * so much so that the configure script is unable to tell the difference.
  */
-#if defined(__CYGWIN__)
+#if defined __CYGWIN__
 #define CONFIG_CAN_HARD_LINK_AN_OPEN_FILE 0
 #else
 #define CONFIG_CAN_HARD_LINK_AN_OPEN_FILE 1

@@ -47,7 +47,7 @@ Stop now!  Compilers should obey #error!  Stop I say, stop!  Run for it Harold!
 
 #ifndef HAVE_FORK
 
-#if !defined(HAVE_SPAWN) && !defined(CONFIG_DJGPP)
+#if !defined HAVE_SPAWN && !defined CONFIG_DJGPP
 
 #define STATUS(n) (0)
 #define STATUS_MSG(n) 

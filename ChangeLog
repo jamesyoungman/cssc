@@ -1,5 +1,23 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Avoid #if defined(FOO), use #if defined FOO instead.
+	* .x-sc_useless_cpp_parens: Exempt files in the Google C++ Testing
+	Framework.
+	Also exempt ekko.c, since it's better to preserve the similarity
+	with the code it was originally taken from.
+	* defaults.h: Avoid #if defined(FOO), use #if defined FOO
+	instead.
+	* cssc.h: Likewise.
+	* file.cc: Likewise.
+	* filelock.h: Likewise.
+	* quit.cc: Likewise.
+	* quit.h: Likewise.
+	* run.cc: Likewise.
+	* run.h: Likewise.
+	* sccsfile.cc: Likewise.
+	* sf-write.cc: Likewise.
+	* sysdep.h: Likewise.
+
 	Exempt programs that don't use error() from using error().
 	* .x-sc_unmarked_diagnostics: Exempt sccs.cgi and what.cc.
 
