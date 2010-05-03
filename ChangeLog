@@ -1,5 +1,9 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Skip sc_two_space_separator_in_usage for things that aren't code.
+	* .x-sc_two_space_separator_in_usage: Don't check docs/Platforms,
+	it's not a program.
+
 	Skip trailing-blank check, there are too many violations for now.
 	* .x-sc_trailing_blank: Skip this test.
 
