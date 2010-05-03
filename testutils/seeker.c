@@ -18,7 +18,7 @@
  * Program that determines if the target system can seek on its standard
  * input.
  */
-#include "config.h"
+#include <config.h>
 
 #include <stdlib.h>
 #include <stdarg.h>

@@ -1,5 +1,16 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	* testutils/yes.c: Include <config.h> instead of "config.h".
+	* testutils/ekko.c: Likewise.
+	* testutils/lndir.c: Likewise.
+	* testutils/seeker.c: Likewise.
+	* testutils/user.c: Likewise.
+	* testutils/uu_decode.c: Likewise.
+	* testutils/yammer.c: Likewise.
+	* testutils/last-time.c: Include <config.h>
+	* rename.c: Likewise.
+	* remove.c: Likewise.
+
 	Avoid non-portable [ x -a y ] test usage.
 	* scripts/rev-freq.sh (scale): Change [ x -a y ] to [ x ] && [ y ].
 	* tests/make-links (common_files): Likewise.

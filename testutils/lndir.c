@@ -53,7 +53,7 @@ in this Software without prior written authorization from the X Consortium.
         %  cd /usr/local/src/new-X
         %  lndir ../X
 */
-#include "config.h"
+#include <config.h>
 
 #ifndef HAVE_SYMLINK
 #error I need to be patched to support either hard links or copying.

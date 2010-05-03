@@ -19,7 +19,7 @@
  * 
  * Program for getting the user's login name.
  */
-#include "config.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <string.h>

@@ -19,7 +19,7 @@
  * 
  * clone of yes(1) -- some systems (e.g. Solaris) lack yes(1).
  */
-#include "config.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <string.h>

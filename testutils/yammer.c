@@ -37,7 +37,7 @@
  * This program was written during October 1998 by Greg A. Woods,
  * VE3TCP, <gwoods@acm.org>, <woods@planix.com>, <woods@wierd.com>.
  */
-#include "config.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>

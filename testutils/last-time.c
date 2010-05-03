@@ -23,8 +23,7 @@
  * No attempt has been made to make this program use the
  * Autoconf-generated configuration information.
  */
-
-
+#include <config.h>
 
 #include <stdio.h>
 #include <time.h>
