@@ -3,29 +3,29 @@ Porting People
 The following people have helped ensure that CSSC has worked on
 these platforms (at some stage):
 
-James Youngman  <jay@gnu.org>    		    Red Hat Linux (x86)
-						    4.1,4.2,5.0,5.1,5.2,5.9,
-						    6.0, 6.2, 7.0, 7.1, 7.1.93
+James Youngman  <jay@gnu.org>                       Red Hat Linux (x86)
+                                                    4.1,4.2,5.0,5.1,5.2,5.9,
+                                                    6.0, 6.2, 7.0, 7.1, 7.1.93
 James Youngman  <jay@gnu.org>                       Debian GNU/Linux versions
-						    2.2 (SPARC64, Alpha), 
-						    3.0 (x86), 3.1 (x86)
-James Youngman  <jay@gnu.org>    		    HPUX 9 (PA-RISC)
-James Youngman  <jay@gnu.org>    		    Solaris 2.6 (SPARC),
-						    Solaris 2.8 (SPARC)
+                                                    2.2 (SPARC64, Alpha), 
+                                                    3.0 (x86), 3.1 (x86)
+James Youngman  <jay@gnu.org>                       HPUX 9 (PA-RISC)
+James Youngman  <jay@gnu.org>                       Solaris 2.6 (SPARC),
+                                                    Solaris 2.8 (SPARC)
 Lars Hecking    <lhecking@nmrc.ucc.ie>              Solaris-2.5.1
 Malcolm Boff    <Malcolm_Boff@compuserve.com>       Solaris-2.5.1
 Lars Hecking    <lhecking@nmrc.ucc.ie>              IRIX 6.3 (GCC 2.7.x
-						    configured for IRIX 5.3)
+                                                    configured for IRIX 5.3)
 Lars Hecking    <lhecking@nmrc.ucc.ie>              IRIX 6.3 (GCC 2.8.0)
-Richard Polton  <rap@maths.soton.ac.uk>		    IRIX 5.3
-Dave Bodenstab  <imdave@mcs.net>		    FreeBSD-2.0.5-950622-SNAP
-Andy Sharp      <andy@accrue.com>		    FreeBSD-2.2.2-RELEASE
-James Youngman  <jay@gnu.org>    		    FreeBSD 4.3-RELEASE (x86)
-Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] SunOS 4
+Richard Polton  <rap@maths.soton.ac.uk>             IRIX 5.3
+Dave Bodenstab  <imdave@mcs.net>                    FreeBSD-2.0.5-950622-SNAP
+Andy Sharp      <andy@accrue.com>                   FreeBSD-2.2.2-RELEASE
+James Youngman  <jay@gnu.org>                       FreeBSD 4.3-RELEASE (x86)
+Lars Hecking    <lhecking@nmrc.ucc.ie>          [*] SunOS 4
 Mark Reynolds   <mark@aoainc.com>                   SunOS 4.1.3
-Lars Hecking	<lhecking@nmrc.ucc.ie>		[*] AmigaOS (ixemul)
-Andrew Bardsley <bardslea@cs.man.ac.uk>		[*] GNU Hurd
-James Youngman  <jay@gnu.org>    		    Dynix/ptx 4.2
+Lars Hecking    <lhecking@nmrc.ucc.ie>          [*] AmigaOS (ixemul)
+Andrew Bardsley <bardslea@cs.man.ac.uk>         [*] GNU Hurd
+James Youngman  <jay@gnu.org>                       Dynix/ptx 4.2
 
 Mark Reynolds   <mark@aoainc.com>                   Ultrix 4.2  [SEE BELOW!]
 Brad Crittenden <bac@spoetzl.net>                   Mac OS X [SEE BELOW]
@@ -62,7 +62,7 @@ other than GCC:-
 
 Sun CC 5.5                      Compiles, test suite unreported
 EPC C++                         Compiles, test suite passes
-IRIX CC				Fails to compile (see below)
+IRIX CC                         Fails to compile (see below)
 
 Older versions of CSSC have been built and tested with most of the
 versions of GCC between 2.7 and 3.4, including EGCS.  At the time, the
@@ -131,7 +131,7 @@ Makeinfo which comes with some versions of NetBSD.  To work around
 this problem, you could apply the following sed command to
 "cssc.texi":-
 
-	sed -e 's/@env{\([^]]*\)}/@code{\1}/'
+        sed -e 's/@env{\([^]]*\)}/@code{\1}/'
 
 FreeBSD
 -------
@@ -197,10 +197,10 @@ Microsoft Services for Unix / Interix 3.0
 -----------------------------------------
 
 The following arguments were used for "configure": 
-	./configure CFLAGS=-D_ALL_SOURCE CXXFLAGS=-D_ALL_SOURCE \
-		--build=i386 --host=i386-pc-interix --disable-nls \
-		--enable-binary --prefix=/usr/local \
-		--libexecdir=/usr/local/bin
+        ./configure CFLAGS=-D_ALL_SOURCE CXXFLAGS=-D_ALL_SOURCE \
+                --build=i386 --host=i386-pc-interix --disable-nls \
+                --enable-binary --prefix=/usr/local \
+                --libexecdir=/usr/local/bin
          gmake csscutildir=/usr/local/bin
 
 Clement T. Cole reports that the above works with GNU GCC 2.93.x, but

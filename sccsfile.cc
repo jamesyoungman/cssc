@@ -37,8 +37,8 @@
 #include "ioerr.h"
 
 #include <ctype.h>
-#include <unistd.h>		// SEEK_SET on SunOS.
-#include <sys/stat.h>		/* fstat(), struct stat */
+#include <unistd.h>             // SEEK_SET on SunOS.
+#include <sys/stat.h>           /* fstat(), struct stat */
 
 
 #if defined(HAVE_FILENO) && defined(HAVE_FSTAT)
@@ -54,17 +54,17 @@ static int just_one_link(FILE *f)
     {
       struct stat st;
       if (0 != fstat(fd, &st))
-	{
-	  /* We cannot stat the file descriptor.  Perhaps there is a 
-	   * file system functionality issue.   If that's the case then we
-	   * will give it the benefit of the doubt on the link coutn front. 
-	   */
-	  return 1;  /* We're happy with the file */
-	}
+        {
+          /* We cannot stat the file descriptor.  Perhaps there is a 
+           * file system functionality issue.   If that's the case then we
+           * will give it the benefit of the doubt on the link coutn front. 
+           */
+          return 1;  /* We're happy with the file */
+        }
       if (st.st_nlink > 1)
-	return 0;		/* We don't like it. */
+        return 0;               /* We don't like it. */
     }
-  return 1;			/* OK. */
+  return 1;                     /* OK. */
 }
 #else
 static int just_one_link(FILE *f)
@@ -79,9 +79,9 @@ static int just_one_link(FILE *f)
 #define f f_is_also_a_class_member_variable
 FILE *
 sccs_file::open_sccs_file(const char *name,
-			  enum _mode mode,
-			  int *sump,
-			  bool* isBKFile)
+                          enum _mode mode,
+                          int *sump,
+                          bool* isBKFile)
 {
   FILE *f_local;
 
@@ -106,10 +106,10 @@ sccs_file::open_sccs_file(const char *name,
     {
       // xx: issue error message here
       errormsg("%s had a hard link count which is greater than one.\n"
-	       "This means that the normal process of updating the file\n"
-	       "would break the hard link.  This error is therefore fatal,\n"
-	       "please fix the problem.\n",
-	       name);
+               "This means that the normal process of updating the file\n"
+               "would break the hard link.  This error is therefore fatal,\n"
+               "please fix the problem.\n",
+               name);
       (void)fclose(f_local);
       return NULL;
     }
@@ -123,36 +123,36 @@ sccs_file::open_sccs_file(const char *name,
     {
       char magicMarker = getc(f_local);
       if (magicMarker == 'H')
-	{
-	  if (READ == mode)
-	    {
-	      /* We support read-only access to BK files. */
-	      warning("%s is a BitKeeper file.", name);
-	    }
-	  else
-	    {
-	      errormsg("%s: This is a BitKeeper file, and only read-only "
-		       "access to BitKeeper files is supported at the moment, "
-		       "sorry.\n",
-		       name);
-	      (void)fclose(f_local);
-	      return NULL;
-	    }
-	  // Inform the caller that this is a BK file.
-	  // NB: this is the parameter, not member variable	  
-	  *isBKFile = true;	
-	}
+        {
+          if (READ == mode)
+            {
+              /* We support read-only access to BK files. */
+              warning("%s is a BitKeeper file.", name);
+            }
+          else
+            {
+              errormsg("%s: This is a BitKeeper file, and only read-only "
+                       "access to BitKeeper files is supported at the moment, "
+                       "sorry.\n",
+                       name);
+              (void)fclose(f_local);
+              return NULL;
+            }
+          // Inform the caller that this is a BK file.
+          // NB: this is the parameter, not member variable       
+          *isBKFile = true;     
+        }
       else if (magicMarker != 'h')
-	{
-	  badMagic = true;
-	}
+        {
+          badMagic = true;
+        }
     }
 
   if (badMagic)
     {
       (void)fclose(f_local);
       s_corrupt_quit("%s: No SCCS-file magic number.  "
-		     "Did you specify the right file?", name);
+                     "Did you specify the right file?", name);
       /*NOTEACHED*/
       return NULL;
     }
@@ -163,27 +163,27 @@ sccs_file::open_sccs_file(const char *name,
   while ( (c=getc(f_local)) != CONFIG_EOL_CHARACTER)
     {
       if (EOF == c)
-	{
-	  const int saved_errno = errno;
-	  (void)fclose(f_local);
-	  errno = saved_errno;
-	  if (errno)
-	    {
-	      perror(name);
-	    }
-	  else
-	    {
-	      s_corrupt_quit("%s: Unexpected EOF.", name);
-	      /*NOTEACHED*/
-	    }
-	  return NULL;
-	}
+        {
+          const int saved_errno = errno;
+          (void)fclose(f_local);
+          errno = saved_errno;
+          if (errno)
+            {
+              perror(name);
+            }
+          else
+            {
+              s_corrupt_quit("%s: Unexpected EOF.", name);
+              /*NOTEACHED*/
+            }
+          return NULL;
+        }
     }
   
   int sum = 0u;
   
   while ((c=getc(f_local)) != EOF)
-    sum += (char) c;	// Yes, I mean plain char, not signed, not unsigned.
+    sum += (char) c;    // Yes, I mean plain char, not signed, not unsigned.
   
   if (ferror(f_local))
     {
@@ -229,19 +229,19 @@ sccs_file::open_sccs_file(const char *name,
 
 int
 sccs_file::read_line() {
-	if (read_line_param(f)) {
-		if (ferror(f)) {
-			errormsg_with_errno("%s: Read error.", name.c_str());
-		}
-		return -1;
-	} 
+        if (read_line_param(f)) {
+                if (ferror(f)) {
+                        errormsg_with_errno("%s: Read error.", name.c_str());
+                }
+                return -1;
+        } 
 
-	lineno++;
-	if ( bufchar(0) == '\001')
-	  {
-	    return bufchar(1);
-	  }
-	return 0;
+        lineno++;
+        if ( bufchar(0) == '\001')
+          {
+            return bufchar(1);
+          }
+        return 0;
 }
 
 
@@ -257,16 +257,16 @@ sccs_file::corrupt(const char *fmt, ...) const {
   if (-1 == vsnprintf(buf, sizeof(buf), fmt, ap))
     {
       warning("%s: error message too long for buffer, so the "
-	      "next message will lack some relevant detail", 
-	      name.c_str());
-      p = fmt;			// best effort
+              "next message will lack some relevant detail", 
+              name.c_str());
+      p = fmt;                  // best effort
     }
   else
     {
       p = buf;
     }
   s_corrupt_quit("%s: line %d: Corrupted SCCS file. (%s)",
-		 name.c_str(), lineno, p);
+                 name.c_str(), lineno, p);
 }
 
 
@@ -274,9 +274,9 @@ sccs_file::corrupt(const char *fmt, ...) const {
 
 void
 sccs_file::check_arg() const {
-	if (bufchar(2) != ' ') {
-		corrupt("Missing arg");
-	}
+        if (bufchar(2) != ' ') {
+                corrupt("Missing arg");
+        }
 }
 
 
@@ -284,9 +284,9 @@ sccs_file::check_arg() const {
 
 void
 sccs_file::check_noarg() const {
-	if (bufchar(2) != '\0') {
-		corrupt("Unexpected arg");
-	}
+        if (bufchar(2) != '\0') {
+                corrupt("Unexpected arg");
+        }
 }
 
 
@@ -302,14 +302,14 @@ sccs_file::strict_atous(const char *s) const
   while ( 0 != (c=*s++) )
     {
       if (!isdigit((unsigned char)c))
-	{
-	  corrupt("Invalid number");
-	}
+        {
+          corrupt("Invalid number");
+        }
       n = n * 10 + (c - '0');
       if (n > 65535L)
-	{
-	  corrupt("Number too big");
-	}
+        {
+          corrupt("Number too big");
+        }
     }
   
   return (unsigned short) n;
@@ -341,11 +341,11 @@ sccs_file::strict_atoul_idu(const char *s) const
   if (found_ws)
     {
       warning("%s contains spaces in the line counts in its delta table.",
-	      name.c_str());
+              name.c_str());
       if ((UPDATE == mode) || (FIX_CHECKSUM == mode))
-	{
-	  warning("These leading spaces will be converted to leading zeroes.");
-	}
+        {
+          warning("These leading spaces will be converted to leading zeroes.");
+        }
     }
 
   if ('-' == *s)
@@ -357,15 +357,15 @@ sccs_file::strict_atoul_idu(const char *s) const
       char *end;
       n = strtoul (s, &end, 10);
       if (*end && (*end) != ' ')
-	{
-	  corrupt ("Unexpected suffix %s on line number count", end);
-	}
+        {
+          corrupt ("Unexpected suffix %s on line number count", end);
+        }
     }
 
   if (n > limit)
     {
       warning("%s: line %d: number field exceeds %lu.", 
-	      name.c_str(), lineno, limit);
+              name.c_str(), lineno, limit);
     }
   
   return n;
@@ -377,196 +377,196 @@ sccs_file::strict_atoul_idu(const char *s) const
 void
 sccs_file::read_delta() {
 
-	/* The current line should be an 's' control line */
+        /* The current line should be an 's' control line */
 
-	ASSERT(bufchar(1) == 's');
-	check_arg();
-	
-	char *args[7];		/* Stores the result of spliting a line */
+        ASSERT(bufchar(1) == 's');
+        check_arg();
+        
+        char *args[7];          /* Stores the result of spliting a line */
 
-	if (plinebuf->split(3, args, 3, '/') != 3)
-	  {
-	    corrupt("Two /'s expected");
-	  }
+        if (plinebuf->split(3, args, 3, '/') != 3)
+          {
+            corrupt("Two /'s expected");
+          }
 
-	// TODO: use constructor here?
-	delta tmp;	/* The new delta */
-	tmp.set_idu(strict_atoul_idu(args[0]),
-		    strict_atoul_idu(args[1]),
-		    strict_atoul_idu(args[2]));
+        // TODO: use constructor here?
+        delta tmp;      /* The new delta */
+        tmp.set_idu(strict_atoul_idu(args[0]),
+                    strict_atoul_idu(args[1]),
+                    strict_atoul_idu(args[2]));
 
-	if (read_line() != 'd') {
-		corrupt("Expected '@d'");
-	}
+        if (read_line() != 'd') {
+                corrupt("Expected '@d'");
+        }
 
-	check_arg();
+        check_arg();
 
-	plinebuf->split(3, args, 7, ' ');
+        plinebuf->split(3, args, 7, ' ');
 
-	if (delta::is_valid_delta_type(args[0][0])
-	    && (args[0][1] == 0))
-	  {
-	    tmp.set_type(args[0][0]);
-	  }
-	else
-	  {
-	    corrupt("Bad delta type");
-	  }
+        if (delta::is_valid_delta_type(args[0][0])
+            && (args[0][1] == 0))
+          {
+            tmp.set_type(args[0][0]);
+          }
+        else
+          {
+            corrupt("Bad delta type");
+          }
 
-	tmp.set_id(sid(args[1]));
-	tmp.set_date(sccs_date(args[2], args[3]));
-	tmp.set_user(args[4]);
-	tmp.set_seq(strict_atous(args[5]));
-	tmp.set_prev_seq(strict_atous(args[6]));
+        tmp.set_id(sid(args[1]));
+        tmp.set_date(sccs_date(args[2], args[3]));
+        tmp.set_user(args[4]);
+        tmp.set_seq(strict_atous(args[5]));
+        tmp.set_prev_seq(strict_atous(args[6]));
 
-	if (!tmp.id().valid()) {
-		corrupt("Bad SID");
-	}
-	if (!tmp.date().valid()) {
-		corrupt("Bad Date/Time");
-	}
+        if (!tmp.id().valid()) {
+                corrupt("Bad SID");
+        }
+        if (!tmp.date().valid()) {
+                corrupt("Bad Date/Time");
+        }
 
-	/* Read in any lists of included, excluded or ignored seq. no's. */
+        /* Read in any lists of included, excluded or ignored seq. no's. */
 
-	int c = read_line();
-	int i;
-	const char *start;
-	bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
-	for(i = 0; i < 3; i++) {
-		if (c == "ixg"[i]) {
+        int c = read_line();
+        int i;
+        const char *start;
+        bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
+        for(i = 0; i < 3; i++) {
+                if (c == "ixg"[i]) {
 
-		  switch (c)
-		    {
-		    case 'i':
-		      tmp.set_has_includes(true);
-		      break;
+                  switch (c)
+                    {
+                    case 'i':
+                      tmp.set_has_includes(true);
+                      break;
 
-		    case 'x':
-		      {
-			warning("feature not fully tested: "
-				"excluded delta in SID %s ",
-				tmp.id().as_string().c_str());
-			tmp.set_has_excludes(true);
-		      }
-		      break;
+                    case 'x':
+                      {
+                        warning("feature not fully tested: "
+                                "excluded delta in SID %s ",
+                                tmp.id().as_string().c_str());
+                        tmp.set_has_excludes(true);
+                      }
+                      break;
 
-		    case 'g':
-		      tmp.set_has_ignores(true);
-		      break;
-		    }
-		  
-		  if (bufchar(2) != ' ')
-		    {
-		      c = read_line(); // throw line away.
-		      continue;
-		    }
-		  	
-			check_arg();
+                    case 'g':
+                      tmp.set_has_ignores(true);
+                      break;
+                    }
+                  
+                  if (bufchar(2) != ' ')
+                    {
+                      c = read_line(); // throw line away.
+                      continue;
+                    }
+                        
+                        check_arg();
 
-			start = plinebuf->c_str() + 3;
-			do {
-				// In C++, strchr() is overloaded so that 
-				// it returns const char* if the first 
-				// argument is const char*, and char* only if 
-				// the first argument is char*.
-				const char *end = strchr(start, ' ');
-				if (end != NULL) {
-				  //*end++ = '\0';
-				  const char *p = plinebuf->c_str();
-				  plinebuf->set_char(end-p, 0);
-				  ASSERT(*end == 0);
-				  ++end;
-				}
-				seq_no seq = strict_atous(start);
-				switch (c) {
-				case 'i':
-				  if (bDebug)
-				    {
-				      fprintf(stderr, "Including seq %lu\n",
-					      (unsigned long)seq);
-				    }
+                        start = plinebuf->c_str() + 3;
+                        do {
+                                // In C++, strchr() is overloaded so that 
+                                // it returns const char* if the first 
+                                // argument is const char*, and char* only if 
+                                // the first argument is char*.
+                                const char *end = strchr(start, ' ');
+                                if (end != NULL) {
+                                  //*end++ = '\0';
+                                  const char *p = plinebuf->c_str();
+                                  plinebuf->set_char(end-p, 0);
+                                  ASSERT(*end == 0);
+                                  ++end;
+                                }
+                                seq_no seq = strict_atous(start);
+                                switch (c) {
+                                case 'i':
+                                  if (bDebug)
+                                    {
+                                      fprintf(stderr, "Including seq %lu\n",
+                                              (unsigned long)seq);
+                                    }
 
-					tmp.add_include(seq);
-					break;
+                                        tmp.add_include(seq);
+                                        break;
 
-				case 'x':
-				  if (bDebug)
-				    {
-				      fprintf(stderr, "Excluding seq %lu\n",
-					      (unsigned long)seq);
-				    }
-					tmp.add_exclude(seq);
-					break;
+                                case 'x':
+                                  if (bDebug)
+                                    {
+                                      fprintf(stderr, "Excluding seq %lu\n",
+                                              (unsigned long)seq);
+                                    }
+                                        tmp.add_exclude(seq);
+                                        break;
 
-				case 'g':
-					tmp.add_ignore(seq);
-					break;
-				}
-				start = end;
-			} while (start != NULL);
+                                case 'g':
+                                        tmp.add_ignore(seq);
+                                        break;
+                                }
+                                start = end;
+                        } while (start != NULL);
 
-			c = read_line();
-		}
-	}
+                        c = read_line();
+                }
+        }
 
-	// According to Hyman Rosen <hymie@jyacc.com>, it is possible
-	// to have a ^A m line which has no argument.  Therefore we don't
-	// use check_arg().  
+        // According to Hyman Rosen <hymie@jyacc.com>, it is possible
+        // to have a ^A m line which has no argument.  Therefore we don't
+        // use check_arg().  
 
-	// According to Hyman Rosen <hymie@jyacc.com>, it is sometimes
-	// possible to have ^Am lines after ^Ac lines, as well as the
-	// more usual before.  Hence we now cope with both.
+        // According to Hyman Rosen <hymie@jyacc.com>, it is sometimes
+        // possible to have ^Am lines after ^Ac lines, as well as the
+        // more usual before.  Hence we now cope with both.
 
-	while (c == 'm' || c == 'c')
-	  {
-	    if (c == 'm')
-	      {
-		if (bufchar(2) == ' ')
-		  {
-		    tmp.add_mr(plinebuf->c_str() + 3);
-		  }
-	      }
-	    else if (c == 'c') 
-	      {
-		/* Larry McVoy's extensions for BitKeeper and BitSCCS
-		 * add in extra stuff like "^AcSyadayada".  Real SCCS
-		 * doesn't mind about that, so at Larry's request, we
-		 * tolerate it too.   No idea what these lines mean though.
-		 * Ask <lm@bitmover.com> for more information.  Anyway, 
-		 * normal comment lines look like "^Ac yadayada" instead,
-		 * and check_arg() exists to check for the space.   Hence, 
-		 * to support Larry's extensions, we don't call check_arg()
-		 * here.
-		 */
-		if (is_bk_file)
-		  {
-		    check_bk_comment(c, bufchar(2));
-		  }
-		else
-		  {
-		    check_arg();
-		    if (bufchar(2) != ' ')
-		      {
-			saw_unknown_feature("Unknown special comment "
-					    "intro '%c%c'",
-					    c, bufchar(2));
-		      }
-		  }
-		tmp.add_comment(plinebuf->c_str() + 3);
-	      }
-	    
-	    c = read_line();
-	  }
-	
+        while (c == 'm' || c == 'c')
+          {
+            if (c == 'm')
+              {
+                if (bufchar(2) == ' ')
+                  {
+                    tmp.add_mr(plinebuf->c_str() + 3);
+                  }
+              }
+            else if (c == 'c') 
+              {
+                /* Larry McVoy's extensions for BitKeeper and BitSCCS
+                 * add in extra stuff like "^AcSyadayada".  Real SCCS
+                 * doesn't mind about that, so at Larry's request, we
+                 * tolerate it too.   No idea what these lines mean though.
+                 * Ask <lm@bitmover.com> for more information.  Anyway, 
+                 * normal comment lines look like "^Ac yadayada" instead,
+                 * and check_arg() exists to check for the space.   Hence, 
+                 * to support Larry's extensions, we don't call check_arg()
+                 * here.
+                 */
+                if (is_bk_file)
+                  {
+                    check_bk_comment(c, bufchar(2));
+                  }
+                else
+                  {
+                    check_arg();
+                    if (bufchar(2) != ' ')
+                      {
+                        saw_unknown_feature("Unknown special comment "
+                                            "intro '%c%c'",
+                                            c, bufchar(2));
+                      }
+                  }
+                tmp.add_comment(plinebuf->c_str() + 3);
+              }
+            
+            c = read_line();
+          }
+        
 
-	if (c != 'e') {
-		corrupt("Expected '@e'");
-	}
+        if (c != 'e') {
+                corrupt("Expected '@e'");
+        }
 
-	check_noarg();
+        check_noarg();
 
-	ASSERT(0 != delta_table);
-	delta_table->add(tmp);
+        ASSERT(0 != delta_table);
+        delta_table->add(tmp);
 }
 
 
@@ -593,9 +593,9 @@ sccs_file::edit_mode_ok(bool editing) const
   if (editing && is_bk_file)
     {
       errormsg("%s: This is a BitKeeper file.  Checking BitKeeper files out "
-	       "for editing (or otherwise modifying them) is not supported "
-	       "at the moment, sorry.\n",
-	       name.c_str());
+               "for editing (or otherwise modifying them) is not supported "
+               "at the moment, sorry.\n",
+               name.c_str());
       return false;
     }
   else
@@ -634,8 +634,8 @@ sccs_file::check_bk_comment(char ch, char arg) const
 
     default:
       saw_unknown_feature("Unknown special comment intro '%c%c' "
-			  "in BitKeeper file\n",
-			  ch, arg);
+                          "in BitKeeper file\n",
+                          ch, arg);
     }
 }
 
@@ -689,8 +689,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   if (!name.valid())
     {
       ctor_fail(-1,
-		"%s: Not an SCCS file.  Did you specify the right file?",
-		name.c_str());
+                "%s: Not an SCCS file.  Did you specify the right file?",
+                name.c_str());
     }
   
   flags.no_id_keywords_is_fatal = 0;
@@ -714,10 +714,10 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   if (mode != READ)
     {
       if (name.lock())
-	{
-	  ctor_fail(-1, "%s: SCCS file is locked.  Try again later.",
-	       name.c_str());
-	}
+        {
+          ctor_fail(-1, "%s: SCCS file is locked.  Try again later.",
+               name.c_str());
+        }
     }
   
   if (mode == CREATE)
@@ -735,11 +735,11 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   if (mode != READ)
     {
       if (!edit_mode_ok(true))
-	{
-	  ctor_fail(-1,
-		    "%s: Editing is not supported for BitKeeper files.\n",
-		    name.c_str());
-	}
+        {
+          ctor_fail(-1,
+                    "%s: Editing is not supported for BitKeeper files.\n",
+                    name.c_str());
+        }
     }
   
   /* open_sccs_file() returns normally if everything went OK, or if 
@@ -777,7 +777,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   if (1 != sscanf(plinebuf->c_str(), format, &given_sum))
     {
       errormsg("Expected checksum line, found line beginning '%.3s'\n",
-	       plinebuf->c_str());
+               plinebuf->c_str());
       checksum_valid = false;
     }
   else
@@ -786,19 +786,19 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       checksum_valid = (given_sum == sum);
       
       if (false == checksum_valid)
-	{
-	  if (FIX_CHECKSUM == mode)
-	    {
-	      // This supports the -z option of admin.
-	      checksum_valid = true;
-	    }
-	  else
-	    {
-	      warning("%s: bad checksum "
-		      "(expected=%d, calculated %d).\n",
-		      name.c_str(), given_sum, sum);
-	    }
-	}
+        {
+          if (FIX_CHECKSUM == mode)
+            {
+              // This supports the -z option of admin.
+              checksum_valid = true;
+            }
+          else
+            {
+              warning("%s: bad checksum "
+                      "(expected=%d, calculated %d).\n",
+                      name.c_str(), given_sum, sum);
+            }
+        }
     }
   if (!checksum_valid)
     {
@@ -823,9 +823,9 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   while (c != 'U')
     {
       if (c != 0)
-	{
-	  corrupt("User name expected.");
-	}
+        {
+          corrupt("User name expected.");
+        }
       users.add(plinebuf->c_str());
       c = read_line();
     }
@@ -843,10 +843,10 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       check_arg();
 
       if (bufchar(3) == '\0'
-	  || (bufchar(4) != '\0' && bufchar(4) != ' '))
-	{
-	  corrupt("Bad flag arg.");
-	}
+          || (bufchar(4) != '\0' && bufchar(4) != ' '))
+        {
+          corrupt("Bad flag arg.");
+        }
 
       // We have to be careful to not crash on input lines like 
       // "^Af v".  That is, bufchar[4] may well be zero!
@@ -855,119 +855,119 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       const char *arg = 0;
       bool got_arg = false;
       if (bufchar(4) == ' ')
-	{
-	  arg = plinebuf->c_str() + 5;
-	  got_arg = true;
-	}
+        {
+          arg = plinebuf->c_str() + 5;
+          got_arg = true;
+        }
       else
-	{
-	  arg = "";
-	}
+        {
+          arg = "";
+        }
       
       switch (bufchar(3)) {
       case 't':
-	set_type_flag(arg);
-	break;
-	
+        set_type_flag(arg);
+        break;
+        
       case 'v':
-	set_mr_checker_flag(arg);
-	break;
-	
+        set_mr_checker_flag(arg);
+        break;
+        
       case 'i':
-	flags.no_id_keywords_is_fatal = 1;
-	break;
-	
+        flags.no_id_keywords_is_fatal = 1;
+        break;
+        
       case 'b':
-	flags.branch = 1;
-	break;
-	
+        flags.branch = 1;
+        break;
+        
       case 'm':
-	set_module_flag(arg);
-	break;
-	
+        set_module_flag(arg);
+        break;
+        
       case 'f':
-	flags.floor = release(arg);
-	if (!flags.floor.valid())
-	  {
-	    corrupt("Bad 'f' flag");
-	  }
-	break;
-	
+        flags.floor = release(arg);
+        if (!flags.floor.valid())
+          {
+            corrupt("Bad 'f' flag");
+          }
+        break;
+        
       case 'c':
-	flags.ceiling = release(arg);
-	if (!flags.ceiling.valid())
-	  {
-	    corrupt("Bad 'c' flag");
-	  }
-	break;
+        flags.ceiling = release(arg);
+        if (!flags.ceiling.valid())
+          {
+            corrupt("Bad 'c' flag");
+          }
+        break;
 
       case 'd':
-	flags.default_sid = sid(arg);
-	if (!flags.default_sid.valid())
-	  {
-	    corrupt("Bad 'd' flag");
-	  }
-	break;
-	
+        flags.default_sid = sid(arg);
+        if (!flags.default_sid.valid())
+          {
+            corrupt("Bad 'd' flag");
+          }
+        break;
+        
       case 'n':
-	flags.null_deltas = 1;
-	break;
-	
+        flags.null_deltas = 1;
+        break;
+        
       case 'j':
-	flags.joint_edit = 1;
-	break;
-	
+        flags.joint_edit = 1;
+        break;
+        
       case 'l':
-	if (got_arg && strcmp(arg, "a") == 0)
-	  {
-	    flags.all_locked = 1;
-	  }
-	else
-	  {
-	    flags.locked = release_list(arg);
-	  }
-	break;
-	
+        if (got_arg && strcmp(arg, "a") == 0)
+          {
+            flags.all_locked = 1;
+          }
+        else
+          {
+            flags.locked = release_list(arg);
+          }
+        break;
+        
       case 'q':
-	set_user_flag(arg);
-	break;
-	
+        set_user_flag(arg);
+        break;
+        
       case 'z':
-	set_reserved_flag(arg);
-	break;
+        set_reserved_flag(arg);
+        break;
 
       case 'x':
-	// The 'x' flag is supported by SCO's version of SCCS.
-	// When this flag is set, the g-file is marked executable.
-	flags.executable = 1;
-	break;
-	
+        // The 'x' flag is supported by SCO's version of SCCS.
+        // When this flag is set, the g-file is marked executable.
+        flags.executable = 1;
+        break;
+        
       case 'y':
-	// The 'y' flag is supported by Solaris 8 and above.
-	// It controls the expansion of '%' keywords.  If the 
-	// y flag is set, its value is a list of keywords that will 
-	// be expanded.  Otherwise, all known keywords will be expanded.
-	set_expanded_keyword_flag(arg);
-	break;
-	
+        // The 'y' flag is supported by Solaris 8 and above.
+        // It controls the expansion of '%' keywords.  If the 
+        // y flag is set, its value is a list of keywords that will 
+        // be expanded.  Otherwise, all known keywords will be expanded.
+        set_expanded_keyword_flag(arg);
+        break;
+        
       case 'e':
-	if (got_arg && '1' == *arg)
-	  flags.encoded = 1;
-	else if (got_arg && '0' == *arg)
-	  flags.encoded = 0;
-	else
-	  corrupt("Bad value '%c' for 'e' flag.", arg[0]);
-	break;
-	
+        if (got_arg && '1' == *arg)
+          flags.encoded = 1;
+        else if (got_arg && '0' == *arg)
+          flags.encoded = 0;
+        else
+          corrupt("Bad value '%c' for 'e' flag.", arg[0]);
+        break;
+        
       default:
-	if (is_bk_file)
-	  {
-	    check_bk_flag(bufchar(3));
-	  }
-	else
-	  {
-	    corrupt("Unknown flag '%c'.", bufchar(3));
-	  }
+        if (is_bk_file)
+          {
+            check_bk_flag(bufchar(3));
+          }
+        else
+          {
+            corrupt("Unknown flag '%c'.", bufchar(3));
+          }
       }
       
       c = read_line();
@@ -1019,21 +1019,21 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
    
 sid
 sccs_file::find_most_recent_sid(sid id) const {
-	sccs_date newest;
-	sid found;
+        sccs_date newest;
+        sid found;
 
-	ASSERT(0 != delta_table);
-	const_delta_iterator iter(delta_table);
+        ASSERT(0 != delta_table);
+        const_delta_iterator iter(delta_table);
 
-	while (iter.next()) {
-	  if (id.trunk_match(iter->id())) {
-			if (found.is_null() || newest < iter->date()) {
-				newest = iter->date();
-				found = iter->id();
-			}
-		}
-	}
-	return found;
+        while (iter.next()) {
+          if (id.trunk_match(iter->id())) {
+                        if (found.is_null() || newest < iter->date()) {
+                                newest = iter->date();
+                                found = iter->id();
+                        }
+                }
+        }
+        return found;
 }
 
 bool
@@ -1049,11 +1049,11 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
   while (iter.next())
     {
       if (!found || iter->date() > d)
-	{
-	  d = iter->date();
-	  s = iter->id();
-	  found = true;
-	}
+        {
+          d = iter->date();
+          s = iter->id();
+          found = true;
+        }
     }
   return found;
 }
@@ -1115,9 +1115,9 @@ set_expanded_keyword_flag(const char *s)
   while (*s)
     {
       if (!isspace((unsigned char)*s))
-	{
-	  flags.substitued_flag_letters.add(*s);
-	}
+        {
+          flags.substitued_flag_letters.add(*s);
+        }
       ++s;
     }
 }
@@ -1191,7 +1191,7 @@ sccs_file::~sccs_file()
   
   if (mode != CREATE)
     {
-      ASSERT(0 != f);		// catch multiple destruction.
+      ASSERT(0 != f);           // catch multiple destruction.
       fclose(f);
       f = 0;
     }
@@ -1201,11 +1201,11 @@ sccs_file::~sccs_file()
       remove(name.xfile().c_str());
     }
   
-  ASSERT(0 != delta_table); 	// catch multiple destruction.
+  ASSERT(0 != delta_table);     // catch multiple destruction.
   delete delta_table;
   delta_table = 0;
   
-  ASSERT(0 != plinebuf); 	// catch multiple destruction.
+  ASSERT(0 != plinebuf);        // catch multiple destruction.
   delete plinebuf;
   plinebuf = 0;
 }
@@ -1266,15 +1266,15 @@ print_subsituted_flags_list(FILE *out, const char* separator) const
     {
       // print a space separator if one is required.
       if (i > 0)
-	{
-	  if (printf_failed(fprintf(out, "%s", separator)))
-	    return false;
-	}
+        {
+          if (printf_failed(fprintf(out, "%s", separator)))
+            return false;
+        }
 
-	  
+          
       // print the keyword letter.
       if (printf_failed(fprintf(out, "%c", members[i])))
-	return false;
+        return false;
     }
   return true;
 }

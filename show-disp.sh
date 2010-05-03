@@ -23,29 +23,29 @@
 
 cvs -z3 status "$@" 2>&1 </dev/null |
  sed \
-	-e 's/^File: no file/File:/'  | 
- sed -n -e 's/^File: \([^ 	]*\).*Status: \(.*\)$/\1:\2/p' \
-	-e '/^cvs/p' | awk '
+        -e 's/^File: no file/File:/'  | 
+ sed -n -e 's/^File: \([^       ]*\).*Status: \(.*\)$/\1:\2/p' \
+        -e '/^cvs/p' | awk '
 
 BEGIN { FS=":"; dir=""; }
 
 ## Take note when we change directory.
 #
 /^cvs (status|server): Examining/ { 
-	dir = $0;
-	gsub("cvs status: Examining ", "", dir);
-	gsub("cvs server: Examining ", "", dir);
+        dir = $0;
+        gsub("cvs status: Examining ", "", dir);
+        gsub("cvs server: Examining ", "", dir);
 
-	if (dir == ".") {
-		dir = "";
-	} else {
-		dir = dir "/"; 
-	}
+        if (dir == ".") {
+                dir = "";
+        } else {
+                dir = dir "/"; 
+        }
 
-	# We have now fully processed this line.
-	# Do not let any of the other rules process
-	# it.
-	next;
+        # We have now fully processed this line.
+        # Do not let any of the other rules process
+        # it.
+        next;
 }
 
 ## Print any status messages.
@@ -55,8 +55,8 @@ BEGIN { FS=":"; dir=""; }
 ## All other lines are Filename:Disposition
 #
 !/^cvs status:/ {
-	file_list[$2] = file_list[$2] " " dir $1; 
-	++count[$2]; 
+        file_list[$2] = file_list[$2] " " dir $1; 
+        ++count[$2]; 
 } 
 
 ## Output a string, without going over 80 columns.
@@ -69,9 +69,9 @@ function output(str, startcol)
     {
       len = length(names[i]);
       if (column + len > 78) {
-	# Begin printing at column startcol on the new line.
-	printf("\n%*s", startcol, "");
-	column = startcol;
+        # Begin printing at column startcol on the new line.
+        printf("\n%*s", startcol, "");
+        column = startcol;
       }
       printf("%s ", names[i]);
       column += ( len + 1);
@@ -85,18 +85,18 @@ function output(str, startcol)
 END {
   n_up2date = count["Up-to-date"];
   if (n_up2date > 0) { 
-  	printf("%d files Up-to-date.\n", n_up2date);
+        printf("%d files Up-to-date.\n", n_up2date);
   }
 
   for (disposition in file_list)
     {
       if (disposition != "Up-to-date")
-	{
-	  prefix = sprintf("%s: %d: ",
-			disposition,
-			count[disposition]);
-	  printf("%s", prefix);
-	  output(file_list[disposition], length(prefix));
-	}
+        {
+          prefix = sprintf("%s: %d: ",
+                        disposition,
+                        count[disposition]);
+          printf("%s", prefix);
+          output(file_list[disposition], length(prefix));
+        }
     }
 }'

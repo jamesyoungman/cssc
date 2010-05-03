@@ -30,7 +30,7 @@ class NoCopyConstructor
   int value_;
   
 public:
-  NoCopyConstructor(int val = 1) 		// default constructor
+  NoCopyConstructor(int val = 1)                // default constructor
     : value_(val)
   {
   }

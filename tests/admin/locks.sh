@@ -27,7 +27,7 @@ docommand k1 "${admin} -ifoo $s" 0 "" ""
 ## 
 ## Details: if you do:
 ## 
-## 	   admin -dla /usr/local/sccs/tmp/Xmt
+##         admin -dla /usr/local/sccs/tmp/Xmt
 ## 
 ## to unlock all versions, admin will crash.
 ## 
@@ -37,30 +37,30 @@ docommand k1 "${admin} -ifoo $s" 0 "" ""
 ## distingish "-da" from "-d#", and for the case of "-da", the code
 ## will do:
 ## 
-## 		 flags.all_locked = 0;
-## 		 flags.locked = NULL;
+##               flags.all_locked = 0;
+##               flags.locked = NULL;
 ## 
 ## Note that flags.locked is a release_list, so this will invoke
 ## 
-## 	   release_list::release_list(0)
+##         release_list::release_list(0)
 ## 
 ## The constructor in rel_list.cc reads:
 ## 
-## 	   release_list::release_list(const char *s)
-## 	   {
-## 	     ASSERT(NULL != s);
+##         release_list::release_list(const char *s)
+##         {
+##           ASSERT(NULL != s);
 ## 
 ## I believe that the null case should be treated as a
 ## 
-## 	   release_list::release_list()
+##         release_list::release_list()
 ## 
 ## so I made the following change:
 ## 
-## 	   release_list::release_list(const char *s)
-## 	   {
-## 	     if (NULL == s) {
-## 		return;
-## 	     }
+##         release_list::release_list(const char *s)
+##         {
+##           if (NULL == s) {
+##              return;
+##           }
 ## 
 ## which emulates a class creation with no arguments.
 ## 
@@ -85,7 +85,7 @@ docommand k8 "${get} -e $s" 0 IGNORE IGNORE
 
 # we may not have "prt".
 # docommand k8a "${prt} -f $s | 
-# 	sed -n -e 's/.*releases//p'" 0 "\t2\n" IGNORE
+#       sed -n -e 's/.*releases//p'" 0 "\t2\n" IGNORE
 docommand k8a "${prs} -d:LK: $s" 0 "2\n" IGNORE
 
 remove $p $g

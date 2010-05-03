@@ -33,104 +33,104 @@
 
 class sccs_pfile {
 public:
-	enum _mode { READ, APPEND, UPDATE };
-	enum find_status { FOUND, NOT_FOUND, AMBIGUOUS };
+        enum _mode { READ, APPEND, UPDATE };
+        enum find_status { FOUND, NOT_FOUND, AMBIGUOUS };
 
 private:
-	struct edit_lock {
-		sid got, delta;
-		mystring user;
-		sccs_date date;
-		sid_list include, exclude;
-		int deleted;
+        struct edit_lock {
+                sid got, delta;
+                mystring user;
+                sccs_date date;
+                sid_list include, exclude;
+                int deleted;
 
-		edit_lock(const char *g, const char *d, const char *u,
-			  const char *dd, const char *dt, const char *i,
-			  const char *x)
-			: got(g), delta(d), user(u), date(dd, dt),
-			  include(i), exclude(x), deleted(0) {}
-		edit_lock() {}
-	};
+                edit_lock(const char *g, const char *d, const char *u,
+                          const char *dd, const char *dt, const char *i,
+                          const char *x)
+                        : got(g), delta(d), user(u), date(dd, dt),
+                          include(i), exclude(x), deleted(0) {}
+                edit_lock() {}
+        };
 
-	sccs_name &name;
-	mystring pname;
-	enum _mode mode;
-	
+        sccs_name &name;
+        mystring pname;
+        enum _mode mode;
+        
         mylist<edit_lock> edit_locks;
 
-	int pos;
+        int pos;
 
-	NORETURN corrupt(int lineno, const char *msg) const  POSTDECL_NORETURN;
+        NORETURN corrupt(int lineno, const char *msg) const  POSTDECL_NORETURN;
 
-	static int
-	write_edit_lock(FILE *out, struct edit_lock const &it) {
-		if (it.got.print(out)
-		    || putc_failed(putc(' ', out))
-		    || it.delta.print(out)
-		    || putc_failed(putc(' ', out))
-		    || fputs_failed(fputs(it.user.c_str(), out))
-		    || putc_failed(putc(' ', out))
-		    || it.date.print(out))
-		  {
-		    return 1;
-		  }
+        static int
+        write_edit_lock(FILE *out, struct edit_lock const &it) {
+                if (it.got.print(out)
+                    || putc_failed(putc(' ', out))
+                    || it.delta.print(out)
+                    || putc_failed(putc(' ', out))
+                    || fputs_failed(fputs(it.user.c_str(), out))
+                    || putc_failed(putc(' ', out))
+                    || it.date.print(out))
+                  {
+                    return 1;
+                  }
 
-		if (!it.include.empty()
-		    && ((fputs(" -i", out) == EOF || it.include.print(out)))) {
-			return 1;
-		}
+                if (!it.include.empty()
+                    && ((fputs(" -i", out) == EOF || it.include.print(out)))) {
+                        return 1;
+                }
 
-		if (!it.exclude.empty()
-		    && ((fputs(" -x", out) == EOF || it.exclude.print(out)))) {
-			return 1;
-		}
+                if (!it.exclude.empty()
+                    && ((fputs(" -x", out) == EOF || it.exclude.print(out)))) {
+                        return 1;
+                }
 
-		if (putc('\n', out) == EOF) {
-			return 1;
-		}
-		return 0;
-	}
+                if (putc('\n', out) == EOF) {
+                        return 1;
+                }
+                return 0;
+        }
 
-	
+        
 public:
-	sccs_pfile(sccs_name &name, enum _mode mode);
+        sccs_pfile(sccs_name &name, enum _mode mode);
 
-	void rewind() { pos = -1; }
+        void rewind() { pos = -1; }
 
-	int
-	next() {
-		while (++pos < edit_locks.length()) {
-			if (!edit_locks[pos].deleted) {
-				return 1;
-			}
-		}
-		return 0;
-	}
-
-
-
-	struct edit_lock const *
-	operator ->() const {
-		return &edit_locks[pos];
-	}
+        int
+        next() {
+                while (++pos < edit_locks.length()) {
+                        if (!edit_locks[pos].deleted) {
+                                return 1;
+                        }
+                }
+                return 0;
+        }
 
 
-	int is_locked(sid id);
-	int is_to_be_created(sid id);
 
-	~sccs_pfile();
+        struct edit_lock const *
+        operator ->() const {
+                return &edit_locks[pos];
+        }
 
-	/* pf-add.c */
 
-	bool add_lock(sid got, sid delta,
-		      sid_list &included, sid_list &excluded);
+        int is_locked(sid id);
+        int is_to_be_created(sid id);
 
-	/* pf-del.c */
+        ~sccs_pfile();
 
-	enum find_status find_sid(sid id);
-	int  print_lock_sid(FILE *fp);  	
-	void delete_lock() { edit_locks.select(pos).deleted = 1; }
-	bool update( bool pfile_already_exists );
+        /* pf-add.c */
+
+        bool add_lock(sid got, sid delta,
+                      sid_list &included, sid_list &excluded);
+
+        /* pf-del.c */
+
+        enum find_status find_sid(sid id);
+        int  print_lock_sid(FILE *fp);          
+        void delete_lock() { edit_locks.select(pos).deleted = 1; }
+        bool update( bool pfile_already_exists );
 
 };
 

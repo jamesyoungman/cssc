@@ -15,7 +15,7 @@ cat > base <<EOF
 EOF
 for i in 1 2 3 4 5 6
 do 
-    cat base 			   > test/passwd.$i
+    cat base                       > test/passwd.$i
     echo "This is file number" $i >> test/passwd.$i
 done 
 remove base test/[xz].* passwd test/[spx].passwd
@@ -48,8 +48,8 @@ docommand M8 "${delta} -mmr.XYZZY -ycomment.XYZZY test/s.passwd" 0 \
 
 # Check that the MR for the delta we just did appears in the sccs-prs listing.
 docommand M9 "${prs} -r1.2 test/s.passwd |  \
-	    sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" 0 \
-	    "MRs:\nmr.XYZZY\nCOMMENTS:\n" ""
+            sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" 0 \
+            "MRs:\nmr.XYZZY\nCOMMENTS:\n" ""
 
 # Check the file out again.
 docommand M10 "${get} -e test/s.passwd" 0 "1.2\nnew delta 1.3\n2 lines\n" ""
@@ -84,7 +84,7 @@ docommand M19 "${prs} -d:MP: test/s.passwd" 0 "\n" ""
 
 # Hence MRs should be accepted without checking.
 docommand M20 "${delta} -mmr.M20 -ycomment.M20 test/s.passwd" 0 \
-	"1.4\n0 inserted\n0 deleted\n2 unchanged\n"  ""
+        "1.4\n0 inserted\n0 deleted\n2 unchanged\n"  ""
 
 # Check the file out again.
 docommand M21 "${get} -e test/s.passwd" 0 "1.4\nnew delta 1.5\n2 lines\n" ""

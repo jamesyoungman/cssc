@@ -1,5 +1,25 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Remove space-tab sequences.
+	* .x-sc_space_tab: Exempt NEWS, ChangeLog files and
+	tests/prt/all.expected.Z
+	* docs/Platforms: Avoid space-tab sequences.
+	* docs/TODO: Likewise.
+	* docs/tests-todo.txt: Likewise.
+	* pfile.h: Likewise.
+	* sccsfile.cc: Likewise.
+	* tests/Makefile.am: Likewise.
+	* tests/common/test-common: Likewise.
+	* tests/admin/flags.sh: Likewise.
+	* tests/binary/auto.sh: Likewise.
+	* tests/binary/binbasic.sh: Likewise.
+	* unit-tests/test_bigfile.cc: Likewise.
+	* unit-tests/test_myset.cc: Likewise.
+	* tests/admin/locks.sh: Likewise.
+	* tests/delta/nulldelta.sh: Likewise.
+	* tests/delta/basic.sh: Likewise.
+	* tests/delta/MRs.sh: Likewise.
+
 	Remove unused source files.
 	* rename.c: Remove unused file.
 	* remove.c: Remove unused file.

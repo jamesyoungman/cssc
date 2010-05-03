@@ -27,7 +27,7 @@ docommand n2 "${admin} -fn $s" 0 "" ""
 
 # Skip a release (2)
 docommand n3 "${get} -e -r4 $s" 0 "1.1\nnew delta 4.1\n1 lines\n" \
-   	    IGNORE
+            IGNORE
 echo "hello" >> $g
 docommand n4 "${vg_delta} -y $s" 0 "4.1\n1 inserted\n0 deleted\n1 unchanged\n" ""
 

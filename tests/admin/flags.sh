@@ -66,7 +66,7 @@ docommand b4 "${vg_admin} -fb $s" 0 "" ""
 
 # Create a branch.
 docommand b5 "${vg_get} -e -b -r1.1 $s" 0 "1.1\nnew delta 1.1.1.1\n1 lines\n" \
-	IGNORE
+        IGNORE
 docommand b6 "${unget} $s" 0 "1.1.1.1\n" ""
 
 remove $s $g $p
@@ -81,7 +81,7 @@ docommand b8 "${vg_admin} -fn $s" 0 "" ""
 
 # Skip a release (2)
 docommand b9 "${vg_get} -e -r3 $s" 0 "1.1\nnew delta 3.1\n1 lines\n" \
-   	    IGNORE
+            IGNORE
 echo "hello" >> $g
 docommand b10 "${vg_delta} -y $s" 0 "3.1\n1 inserted\n0 deleted\n1 unchanged\n" IGNORE
    

@@ -18,8 +18,8 @@
 ## and so on.  We end up with five variables:-
 #
 # echocmd       The name by which we invoke the "echo" command.
-# ac_e		Leading argument for enabling escape codes.
-# ac_n		Leading argument for echo to suppress newline.
+# ac_e          Leading argument for enabling escape codes.
+# ac_n          Leading argument for echo to suppress newline.
 # ac_c          Arg for suppressing newline (may need -e, we test for that.)
 # ac_t          (don't know -- I stole this code from Autoconf...)
 #
@@ -49,22 +49,22 @@ then
       # \c does not work even with -e.
       if ($echocmd -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null
       then
-  	  # -n option not known (and \c not known)
-  	  # I don't know what purpose setting ac_c to this value
-  	  # has, but Autoconf does it...
-  	  ac_n= ac_c='
-' ac_t='	'
+          # -n option not known (and \c not known)
+          # I don't know what purpose setting ac_c to this value
+          # has, but Autoconf does it...
+          ac_n= ac_c='
+' ac_t='        '
       else
-  	  # -n option works even though -e does not.
-  	  # This is unfortunate since the test scripts assume
-  	  # in places tha ability to expand escape codes.  
-  	  # Send message to STDERR because I want to investigate.
-  	  #
-  	  # According to Marty Leisner <leisner@sdsp.mc.xerox.com>,
-  	  # SunOS 4.1.4 is one such "unusual" system.
+          # -n option works even though -e does not.
+          # This is unfortunate since the test scripts assume
+          # in places tha ability to expand escape codes.  
+          # Send message to STDERR because I want to investigate.
+          #
+          # According to Marty Leisner <leisner@sdsp.mc.xerox.com>,
+          # SunOS 4.1.4 is one such "unusual" system.
 
-  	  # echo Unusual system\; PLEASE inform '<jay@gnu.org>'. >&2
-  	  ac_n=-n ac_c= ac_t=
+          # echo Unusual system\; PLEASE inform '<jay@gnu.org>'. >&2
+          ac_n=-n ac_c= ac_t=
       fi
     else
       # \c does work with -e.
@@ -122,10 +122,10 @@ fail () {
 name=`basename $0`
 if ${expect_fail:-false}
 then
-	echo XFAIL $name $* 
-	# but don't exit...
+        echo XFAIL $name $* 
+        # but don't exit...
 else
-	echo FAIL $name $* ; exit 2; 
+        echo FAIL $name $* ; exit 2; 
 fi ;
 }
 
@@ -143,9 +143,9 @@ echo "All Tests in `/bin/pwd`/$name are now completed on tools in '$dir'"
 
 if ${expect_fail:-false}
 then
-	echo XPASS $name: $* ; exit 0; 
+        echo XPASS $name: $* ; exit 0; 
 else
-	echo PASS $name:  $* ; exit 0; 
+        echo PASS $name:  $* ; exit 0; 
 fi ;
 }
 
@@ -159,10 +159,10 @@ exit 1 ;
 remove () { 
     if test -z "$*"
     then
-	# no files listed, nothing to do.
-	true 
+        # no files listed, nothing to do.
+        true 
     else
-	rm -rf "$@" || miscarry "Could not remove $@"
+        rm -rf "$@" || miscarry "Could not remove $@"
     fi
 }
 

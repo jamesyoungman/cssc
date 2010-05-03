@@ -50,9 +50,9 @@ emit_ixg(FILE *fp, char signifier, const mylist<sid>& items)
     {
       fprintf(fp, "%c%c ", control, signifier);
       for (int i=0; i<items.length(); ++i)
-	{
-	  fprintf(fp, "%s%s", (i ? "," : ""), items[i].as_string().c_str());
-	}
+        {
+          fprintf(fp, "%s%s", (i ? "," : ""), items[i].as_string().c_str());
+        }
       fprintf(fp, "\n");
     }
   return true;
@@ -60,8 +60,8 @@ emit_ixg(FILE *fp, char signifier, const mylist<sid>& items)
 
 static bool 
 emit_comments_or_mrs(FILE *fp,
-		     char signifier,
-		     const mylist<mystring> items)
+                     char signifier,
+                     const mylist<mystring> items)
 {
   if (items.length() == 0)
     {
@@ -70,36 +70,36 @@ emit_comments_or_mrs(FILE *fp,
   else
     {
       for (int i=0; i<items.length(); ++i)
-	{
-	  fprintf(fp, "%c%c %s\n", control, signifier, items[i].c_str());
-	}
+        {
+          fprintf(fp, "%c%c %s\n", control, signifier, items[i].c_str());
+        }
     }
 }
 
 static bool
 emit_delta(FILE *fp,
-	   unsigned long inserted,
-	   unsigned long deleted,
-	   unsigned long unchanged,
-	   char type, 
-	   sid id, 
-	   const sccs_date& stamp,
-	   const mystring& user,
-	   seq_no seq, 
-	   seq_no prev_seq,
-	   const mylist<sid>& included, 
-	   const mylist<sid>& excluded, 
-	   const mylist<sid>& ignored,
-	   const mylist<mystring>& comments,
-	   const mylist<mystring>& mrs)
+           unsigned long inserted,
+           unsigned long deleted,
+           unsigned long unchanged,
+           char type, 
+           sid id, 
+           const sccs_date& stamp,
+           const mystring& user,
+           seq_no seq, 
+           seq_no prev_seq,
+           const mylist<sid>& included, 
+           const mylist<sid>& excluded, 
+           const mylist<sid>& ignored,
+           const mylist<mystring>& comments,
+           const mylist<mystring>& mrs)
 {
   fprintf(fp,
-	  "%cs %05lu/%05lu/%05lu\n", control, inserted, deleted, unchanged);
+          "%cs %05lu/%05lu/%05lu\n", control, inserted, deleted, unchanged);
   fprintf(fp,
-	  "%cd %c %s %s %s %d %d\n",
-	  control,
-	  type, id.as_string().c_str(), stamp.as_string().c_str(),
-	  user.c_str(), seq, prev_seq);
+          "%cd %c %s %s %s %d %d\n",
+          control,
+          type, id.as_string().c_str(), stamp.as_string().c_str(),
+          user.c_str(), seq, prev_seq);
   emit_ixg(fp, 'i', included);
   emit_ixg(fp, 'x', excluded);
   emit_ixg(fp, 'g', ignored);
@@ -144,33 +144,33 @@ getpred (int *r, int *l, int *b, int *s)
   if ((*b)) 
     {
       if ((*s) > 1)
-	{
-	  --*s;
-	}
+        {
+          --*s;
+        }
       else
-	{
-	  *s = 0;
-	  *b = 0;
-	}
+        {
+          *s = 0;
+          *b = 0;
+        }
     }
   else 
     {
       if ((*l) > 1)
-	{
-	  --(*l);
-	}
+        {
+          --(*l);
+        }
       else
-	{
-	  if ((*r) > 1)
-	    {
-	      --(*r);
-	      (*l) = 1;
-	    }
-	  else
-	    {
-	      *r = *l = 0;
-	    }
-	}
+        {
+          if ((*r) > 1)
+            {
+              --(*r);
+              (*l) = 1;
+            }
+          else
+            {
+              *r = *l = 0;
+            }
+        }
     }
   if (!(*b) || !(s))
     {
@@ -181,13 +181,13 @@ getpred (int *r, int *l, int *b, int *s)
 
 
 static bool make_delta(FILE *fp,
-		       const sccs_date& current_time,
-		       const mystring& username,
-		       int release, int level, int branch, int revision,
-		       int releases,
-		       int levels_per_release,
-		       int branches_per_level,
-		       int revisions_per_branch)
+                       const sccs_date& current_time,
+                       const mystring& username,
+                       int release, int level, int branch, int revision,
+                       int releases,
+                       int levels_per_release,
+                       int branches_per_level,
+                       int revisions_per_branch)
 {
   int prev[4];
   prev[0] = release;
@@ -198,36 +198,36 @@ static bool make_delta(FILE *fp,
   getpred(&prev[0], &prev[1], &prev[2], &prev[3]);
 
   fprintf(stderr,
-  	  "sid: %d.%d.%d.%d => prev: %d.%d.%d.%d\n",
-  	  release, level, branch, revision,
-  	  prev[0], prev[1], prev[2], prev[3]);
+          "sid: %d.%d.%d.%d => prev: %d.%d.%d.%d\n",
+          release, level, branch, revision,
+          prev[0], prev[1], prev[2], prev[3]);
 
   const sid id(release, level, branch, revision);
   const int this_seq = getseq(release, level, branch, revision,
-			      releases, levels_per_release,
-			      branches_per_level, revisions_per_branch);
+                              releases, levels_per_release,
+                              branches_per_level, revisions_per_branch);
   int prev_seq;
   if (this_seq > 1)
     prev_seq = getseq(prev[0], prev[1], prev[2], prev[3],
-		      releases, levels_per_release,
-		      branches_per_level, revisions_per_branch);
+                      releases, levels_per_release,
+                      branches_per_level, revisions_per_branch);
   else
     prev_seq = 0;
   
   const mylist<mystring> empty_string_list;
   const mylist<sid> no_sids;
   emit_delta(fp, 0u, 0u, 0u, 'D', id, current_time, username,
-	     this_seq, prev_seq, no_sids, no_sids, no_sids,
-	     empty_string_list, empty_string_list);
+             this_seq, prev_seq, no_sids, no_sids, no_sids,
+             empty_string_list, empty_string_list);
 }
 
 static bool 
 create_sccs_file(FILE *fp,
-		 const mystring& username,
-		 int releases,
-		 int levels_per_release,
-		 int branches_per_level,
-		 int revisions_per_branch)
+                 const mystring& username,
+                 int releases,
+                 int levels_per_release,
+                 int branches_per_level,
+                 int revisions_per_branch)
 {
   int release, level, branch, revision;
   const sccs_date current_time(sccs_date::now());
@@ -243,31 +243,31 @@ create_sccs_file(FILE *fp,
   for (release=releases; release>0; --release)
     {
       for (level=levels_per_release; level>0; --level)
-	{
-	  for (branch=branches_per_level; branch>0; --branch)
-	    {
-	      for (revision=revisions_per_branch; revision>0; --revision)
-		{
-		  if (revision && branch)
-		    {
-		      make_delta(fp, current_time, username,
-				 release, level, branch, revision,
-				 releases, levels_per_release, branches_per_level, revisions_per_branch);
-		    }
-		}
-	    }
-	}
+        {
+          for (branch=branches_per_level; branch>0; --branch)
+            {
+              for (revision=revisions_per_branch; revision>0; --revision)
+                {
+                  if (revision && branch)
+                    {
+                      make_delta(fp, current_time, username,
+                                 release, level, branch, revision,
+                                 releases, levels_per_release, branches_per_level, revisions_per_branch);
+                    }
+                }
+            }
+        }
     }
   // make the trunk.
   revision = branch = 0;
   for (release=releases; release>0; --release)
     {
       for (level=levels_per_release; level>0; --level)
-	{
-	  make_delta(fp, current_time, username,
-		     release, level, 0, 0,
-		     releases, levels_per_release, branches_per_level, revisions_per_branch);
-	}
+        {
+          make_delta(fp, current_time, username,
+                     release, level, 0, 0,
+                     releases, levels_per_release, branches_per_level, revisions_per_branch);
+        }
     }
   
   fprintf(fp, "%cu\n", control);
@@ -293,16 +293,16 @@ main (int argc, char *argv[])
        c = opts.next()) 
     {
       switch (c) 
-	{
-	default:
-	  errormsg("Unsupported option: '%c'", c);
-	  return 2;
-	  
-	case 'V':
-	  version();
-	  if (2 == argc)
-	    return 0; // "admin -V" should succeed.
-	}
+        {
+        default:
+          errormsg("Unsupported option: '%c'", c);
+          return 2;
+          
+        case 'V':
+          version();
+          if (2 == argc)
+            return 0; // "admin -V" should succeed.
+        }
     }
   sccs_file_iterator iter(opts);
   while (iter.next())
@@ -311,24 +311,24 @@ main (int argc, char *argv[])
       
       int fd = open (name.sfile().c_str(), O_WRONLY|O_CREAT, 0400);
       if (fd >= 0)
-	{
-	  FILE *fp = fdopen(fd, "w");
-	  create_sccs_file(fp, 
-			   username,
-			   8,		// releases
-			   40,		// levels per release
-			   10,		// branches per level,
-			   10);		// revisions per branch
-	  fclose (fp);
+        {
+          FILE *fp = fdopen(fd, "w");
+          create_sccs_file(fp, 
+                           username,
+                           8,           // releases
+                           40,          // levels per release
+                           10,          // branches per level,
+                           10);         // revisions per branch
+          fclose (fp);
 
-	  // Fix the checksum.
-	  sccs_file file (name, sccs_file::FIX_CHECKSUM);
-	  if (!file.update_checksum())
-	    {
-	      fprintf (stderr, "Failed to update the checksum of file %s", argv[i]);
-	      rv = 1;
-	    }
-	}
+          // Fix the checksum.
+          sccs_file file (name, sccs_file::FIX_CHECKSUM);
+          if (!file.update_checksum())
+            {
+              fprintf (stderr, "Failed to update the checksum of file %s", argv[i]);
+              rv = 1;
+            }
+        }
     }
   return rv;
 }

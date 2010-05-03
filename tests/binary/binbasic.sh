@@ -61,7 +61,7 @@ This is a test file containing nothing interesting.
 EOF
 for i in 1 2 3 4 5 6
 do 
-    cat base 			   > test/$g.$i
+    cat base                       > test/$g.$i
     echo "This is file number" $i >> test/$g.$i
 done 
 remove base $g test/[xzps].passwd
