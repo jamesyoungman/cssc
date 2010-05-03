@@ -1,5 +1,11 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Remove obsolete replacements for missing library files.
+	* strerror.c: Remove obsolete file.
+	* strstr.c: Remove obsolete file.
+	* configure.ac: Don't refer to strerror or strstr via
+	AC_REPLACE_FUNCS.
+
 	Remove space-tab sequences.
 	* .x-sc_space_tab: Exempt NEWS, ChangeLog files and
 	tests/prt/all.expected.Z
