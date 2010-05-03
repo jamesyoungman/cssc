@@ -114,4 +114,3 @@ rm -rf test
 remove foo $s $g $p [zx].$g command.log
 
 success
-

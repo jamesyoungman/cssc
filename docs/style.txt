@@ -42,5 +42,3 @@ Notes on the coding style used in the maintenance of CSSC
 
 -- 
 James Youngman <jay@gnu.org>
-
-

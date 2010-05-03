@@ -289,4 +289,3 @@ main(int argc, char **argv)
 /* Local variables: */
 /* mode: c++ */
 /* End: */
-

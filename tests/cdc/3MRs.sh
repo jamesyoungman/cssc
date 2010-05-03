@@ -103,4 +103,3 @@ docommand M24 "${prs} -r1.1 -d:MR: $s" 0 "MR5\nMR2\nMR3\n\n" ""
 
 remove command.log passwd $s $p $g $z $x
 success
-

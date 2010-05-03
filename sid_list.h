@@ -389,5 +389,3 @@ range_list<TYPE>::print(FILE *out) const
 /* Local variables: */
 /* mode: c++ */
 /* End: */
-
-

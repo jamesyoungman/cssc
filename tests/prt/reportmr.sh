@@ -21,4 +21,3 @@ remove $g
 remove command.log passwd 
 
 success
-

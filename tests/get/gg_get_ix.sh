@@ -75,4 +75,3 @@ remove [zxsp].$g $g
 remove command.log
 
 success
-

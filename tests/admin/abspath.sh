@@ -14,4 +14,3 @@ docommand P1 "${vg_admin} -n ${s}" 0 "" IGNORE
 
 remove s.bar 
 success
-

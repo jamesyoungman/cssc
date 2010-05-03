@@ -18,4 +18,3 @@ echo_nonl "r1..."
 echo "passed "
 
 success
-

@@ -120,4 +120,3 @@ echo "No binary file support -- tests skipped"
 fi # binary support. 
 
 success 
-

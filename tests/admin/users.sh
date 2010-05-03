@@ -56,4 +56,3 @@ remove expected.stderr got.stderr expected.stdout got.stdout
 
 
 success
-

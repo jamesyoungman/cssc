@@ -30,4 +30,3 @@ version()
 /* Local variables: */
 /* mode: c++ */
 /* End: */
-

@@ -215,5 +215,3 @@ TEST(DeltaTable, HighestSeqno)
   ASSERT_GT(next, b.seq());
   ASSERT_GT(next, t.highest_seqno());
 }
-
-

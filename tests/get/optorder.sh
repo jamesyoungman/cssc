@@ -56,4 +56,3 @@ remove $gotten
 
 remove ${gotten} $g $s command.log
 success
-

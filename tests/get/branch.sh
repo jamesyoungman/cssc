@@ -63,4 +63,3 @@ docommand B13 "${vg_get} -e -b $s" 0 "1.1\nnew delta 1.1.4.1\n1 lines\n" ""
 remove [zxsp].$g $g
 remove command.log
 success
-

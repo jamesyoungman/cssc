@@ -239,4 +239,3 @@ typedef range_list<sid> sid_list;
 /* Local variables: */
 /* mode: c++ */
 /* End: */
-

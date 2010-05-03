@@ -70,4 +70,3 @@ docommand C10 "sed -n 5p <comment|egrep \
 
 remove command.log passwd $s $p $g $z $x
 success
-

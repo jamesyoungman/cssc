@@ -82,4 +82,3 @@ docommand o17 "test -r $p" 1 "" ""
 
 remove $files 
 success
-

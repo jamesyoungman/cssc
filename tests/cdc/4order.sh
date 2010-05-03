@@ -52,4 +52,3 @@ remove comment
 
 remove command.log passwd $s $p $g $z $x
 success
-

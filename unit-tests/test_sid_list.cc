@@ -205,4 +205,3 @@ TEST(SidListTest, Remove)
   x.remove("1.2.1.10");
   ASSERT_FALSE(x.member(sid("1.2.1.10")));
 }
-

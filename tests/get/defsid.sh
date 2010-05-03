@@ -73,4 +73,3 @@ docommand e8 "${delta} -y"NoComment" $s" 0 IGNORE IGNORE
 remove [zxsp].$g $g
 remove command.log
 success
-

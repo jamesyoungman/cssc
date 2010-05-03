@@ -4,4 +4,3 @@
 @item Maximum SCCS file line length
 @tab @max_line_length_description@
 @end multitable
-

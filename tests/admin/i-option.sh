@@ -83,4 +83,3 @@ docommand I17 "${prs}  -d:Li: $s" 0 "00002\n" IGNORE
 
 remove $x s.bar s.foo foo bar command.log 
 success
-

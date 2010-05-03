@@ -313,6 +313,3 @@ main (int ac, char *av[])
 
     return dodir (fn, &fs, &ts, 0);
 }
-
-
-

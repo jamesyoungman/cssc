@@ -36,7 +36,3 @@ docommand a6 "${get} -r1.2 -p $s" 1 "" IGNORE
 
 remove command.log log log.stdout log.stderr $g $s $z $x $p $d
 success
-
-
-
-

@@ -36,4 +36,3 @@ docommand T5 "${admin} -n -t s.bar" 1 "" IGNORE
 
 remove [sxzp].bar  x.bar.bak
 success
-

@@ -1,0 +1,6 @@
+COPYING
+bsd/COPYING.bsd
+ChangeLog
+tests/prs/s_foo_bd_output\.txt
+googletest/test/gtest_output_test_golden_lin.txt
+googletest/test/gtest_output_test_golden_win.txt

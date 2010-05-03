@@ -88,15 +88,7 @@ public:
   int print(FILE *out) const { return (fprintf(out, "%d", rel) < 0); }
 };
 
-
-
-
-
-
-
 /* Local variables: */
 /* mode: c++ */
 /* End: */
 #endif
-
-

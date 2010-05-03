@@ -335,5 +335,3 @@ main(int argc, char *argv[])
   usage(argv[0]);
   return 1;
 }
-
-

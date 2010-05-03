@@ -41,4 +41,3 @@ docommand G5 "${vg_cdc}" 1 "" IGNORE
 
 remove command.log passwd $s $p $g $z $x
 success
-

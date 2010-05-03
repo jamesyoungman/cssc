@@ -96,4 +96,3 @@ do_output L17 "${vg_get} -r1.3.1.1 -p test/s.passwd"  0 test/passwd.6 IGNORE
 rm -rf test
 remove passwd command.log
 success
-

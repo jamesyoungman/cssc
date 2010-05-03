@@ -103,4 +103,3 @@ rm -rf test
 remove foo $s new.txt command.log
 
 success
-

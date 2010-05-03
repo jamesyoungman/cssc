@@ -42,4 +42,3 @@ fi
 
 remove s.bar 
 success
-

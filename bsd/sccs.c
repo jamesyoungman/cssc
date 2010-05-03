@@ -2408,4 +2408,3 @@ gstrbotchn (int navail,
   fprintf(stderr, "Only %d characters available.\n", navail);
   exit(CSSC_EX_SOFTWARE);
 }
-

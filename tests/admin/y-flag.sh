@@ -193,4 +193,3 @@ docommand YA7 "${get} -p -r1.1 ${s}" 0 "\
 remove $s $g $z foo command.log last.command core 
 remove expected.stderr got.stderr expected.stdout got.stdout
 success
-

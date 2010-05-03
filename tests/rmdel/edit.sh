@@ -47,7 +47,3 @@ docommand a8 "${delta} -yNoComment $s" 0 \
 
 remove command.log log log.stdout log.stderr $g $s $z $x $p
 success
-
-
-
-

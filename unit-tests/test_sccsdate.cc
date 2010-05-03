@@ -161,4 +161,3 @@ int main(int argc, char **argv) {
   set_prg_name("test_sccsdate");
   return RUN_ALL_TESTS();
 }
-

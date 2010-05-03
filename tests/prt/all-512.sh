@@ -24,5 +24,3 @@ else
     diff -c all.expected got.stdout | head -30
     fail output differs
 fi
-
-

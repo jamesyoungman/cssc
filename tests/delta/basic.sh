@@ -142,4 +142,3 @@ docommand C19  "${vg_delta} -y -r1.2 $s" 0 IGNORE IGNORE
 rm -rf test
 remove passwd command.log $files
 success
-

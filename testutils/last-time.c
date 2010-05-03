@@ -106,4 +106,3 @@ int main()
 	 " break very easily; is this a 64-bit system (or more)?\n");
   exit(0);			/* this can happen too. */
 }
-

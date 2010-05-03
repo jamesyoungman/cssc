@@ -108,11 +108,8 @@ public:
   seq_no active_seq() const;
 };
 
-
-
 #endif
 
 /* Local variables: */
 /* mode: c++ */
 /* End: */
-

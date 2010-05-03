@@ -10,9 +10,3 @@ Most of these tests contain no checks of the contents of stderr.
 Output to stdout is checked, as are return values.   However, CSSC
 produces more warning messages than genuine SCCS and also these
 messages are in a different (more helpful?) format.
-
-
-
-
-
-

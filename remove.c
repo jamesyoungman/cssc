@@ -25,4 +25,3 @@ remove(const char *name) {
 }
 
 #endif /* HAVE_REMOVE */
-

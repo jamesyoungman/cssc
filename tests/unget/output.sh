@@ -98,4 +98,3 @@ docommand g8 "${vg_unget} -s $s1 $s2" 0 "" ""
 ###
 remove $all
 success
-

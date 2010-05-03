@@ -44,4 +44,3 @@ remove test/d1 test/d2 test
 echo passed
 
 success
-

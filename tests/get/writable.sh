@@ -70,4 +70,3 @@ echo passed
 remove $f s.$f $gfile
 remove command.log
 success
-

@@ -201,9 +201,3 @@ TEST(MylistDeathTest, SelectOnEmpty)
   mylist<int> a;
   EXPECT_EXIT(a.select(0), ::testing::KilledBySignal(SIGABRT), "index");
 }
-
-
-
-
-
-

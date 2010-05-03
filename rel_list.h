@@ -59,5 +59,3 @@ public:
 /* mode: c++ */
 /* End: */
 #endif
-
-

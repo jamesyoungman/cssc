@@ -50,4 +50,3 @@ TEST(EncodingTest, ShortInput)
   ASSERT_EQ('%', in[0]);
   ASSERT_EQ('A', in[1]);
 }
-

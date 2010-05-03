@@ -1,5 +1,88 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Remove trailing blank lines.
+	* tests/admin/Makefile.am: Remove trailing blank lines.
+	* tests/admin/abspath.sh: Likewise.
+	* tests/admin/flags.sh: Likewise.
+	* tests/admin/hardlinks.sh: Likewise.
+	* tests/admin/i-option.sh: Likewise.
+	* tests/admin/init-mr.sh: Likewise.
+	* tests/admin/locks.sh: Likewise.
+	* tests/admin/r-option.sh: Likewise.
+	* tests/admin/t-option.sh: Likewise.
+	* tests/admin/users.sh: Likewise.
+	* tests/admin/y-flag.sh: Likewise.
+	* tests/binary/auto.sh: Likewise.
+	* tests/binary/binbasic.sh: Likewise.
+	* tests/binary/diff.sh: Likewise.
+	* tests/bsd-sccs/driver-basic.sh: Likewise.
+	* tests/cdc/1general.sh: Likewise.
+	* tests/cdc/2comment.sh: Likewise.
+	* tests/cdc/3MRs.sh: Likewise.
+	* tests/cdc/4order.sh: Likewise.
+	* tests/common/not-root: Likewise.
+	* tests/delta/MRs.sh: Likewise.
+	* tests/delta/Makefile.am: Likewise.
+	* tests/delta/basic.sh: Likewise.
+	* tests/delta/errorcase.sh: Likewise.
+	* tests/delta/nulldelta.sh: Likewise.
+	* tests/delta/options.sh: Likewise.
+	* tests/get/branch.sh: Likewise.
+	* tests/get/create.sh: Likewise.
+	* tests/get/defsid.sh: Likewise.
+	* tests/get/errorcases.sh: Likewise.
+	* tests/get/gg_get_ix.sh: Likewise.
+	* tests/get/optorder.sh: Likewise.
+	* tests/get/writable.sh: Likewise.
+	* tests/initial/root.sh: Likewise.
+	* tests/large/admin.sh: Likewise.
+	* tests/make-links: Likewise.
+	* tests/prs/Makefile.am: Likewise.
+	* tests/prs/s_foo_bd_output.txt: Likewise.
+	* tests/prt/TODO: Likewise.
+	* tests/prt/all-512.sh: Likewise.
+	* tests/prt/reportmr.sh: Likewise.
+	* tests/rmdel/basic.sh: Likewise.
+	* tests/rmdel/edit.sh: Likewise.
+	* tests/sccsdiff/rap.sh: Likewise.
+	* tests/unget/Makefile.am: Likewise.
+	* tests/unget/exists.sh: Likewise.
+	* tests/unget/output.sh: Likewise.
+	* tests/val/Makefile.am: Likewise.
+	* tests/what/Makefile.am: Likewise.
+	* testutils/compare_gets.sh: Likewise.
+	* testutils/last-time.c: Likewise.
+	* testutils/lndir.c: Likewise.
+	* testutils/realpwd.cc: Likewise.
+	* testutils/user.c: Likewise.
+	* testutils/uu_decode.c: Likewise.
+	* testutils/yes.c: Likewise.
+	* unit-tests/test_delta-table.cc: Likewise.
+	* unit-tests/test_encoding2.cc: Likewise.
+	* unit-tests/test_mylist.cc: Likewise.
+	* unit-tests/test_sccsdate.cc: Likewise.
+	* unit-tests/test_sid_list.cc: Likewise.
+	* version.cc.in: Likewise.
+	* version.h: Likewise.
+	* AUTHORS: Likewise.
+	* sid_list.h: Likewise.
+	* tests/README: Likewise.
+	* sid.h: Likewise.
+	* seqstate.h: Likewise.
+	* sccsdiff.sh.in: Likewise.
+	* remove.c: Likewise.
+	* bsd/sccs.c: Likewise.
+	* bsd/Makefile.bsd: Likewise.
+	* delta.cc: Likewise.
+	* rel_list.h: Likewise.
+	* release.h: Likewise.
+	* docs/style.txt: Likewise.
+	* docs/config-info.texi.in: Likewise.
+	* docs/URLs: Likewise.
+	* docs/Platforms: Likewise.
+	* .x-sc_prohibit_empty_lines_at_EOF: Ignore trailing blank lines
+	at EOF for files in the Google C++ Testing Framework.
+
 	Add temporary exceptions for atoi checks.
 	* .x-sc_prohibit_atoi_atof: Temporary exemption for files where we
 	still use atoi() and so on.  Ignore atoi in ChangeLog.

@@ -34,4 +34,3 @@ docommand e4 "${vg_unget} -r1.2 $s1" 0 "IGNORE" "IGNORE"
 ###
 remove $all $m
 success
-

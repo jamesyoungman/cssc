@@ -63,4 +63,3 @@ docommand de17 "${vg_get} -r1.1.1.1 -x1.1.1.1.1 $s" ${ret_invalid_option} IGNORE
 
 remove ${files}
 success
-

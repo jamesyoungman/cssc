@@ -98,4 +98,3 @@ rm -rf test
 remove command.log passwd 
 
 success
-

@@ -69,4 +69,3 @@ fi
 
 remove $s $g
 success
-

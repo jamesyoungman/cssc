@@ -224,4 +224,3 @@ filelock.h:50: storage size of `_ZTI9file_lock' isn't known
 
 I don't know how to fix this error in any other way than to use GCC
 version 2.95 instead, as described above.
-

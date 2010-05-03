@@ -31,7 +31,3 @@ docommand A4 "${prs} -d:Li: $s" 0 "99999\n" ""
 
 remove command.log log log.stdout log.stderr $g $s $z $x $p
 success
-
-
-
-
