@@ -1,8 +1,15 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Enable many compiler warnings.
+	* bootstrap.conf (gnulib_modules): Add warnings and manywarnings.
+	* Makefile.am: Add WARN_CFLAGS to AM_CXXFLAGS.
+	* configure.ac: Enable all the warnings available from
+	gl_MANYWARN_ALL_GCC, except -Wundef -Wpadded -Wredundant-decls.
+
 	Assume the availability of strerror.
 	* configure.ac: Don't check header files for declarations of
 	sys_nerr or sys_errlist, since we no longer need those.
+
 	* quit.cc (print_err): Assume strerror is available.
 	Don't include sysnerr.h.
 	* Makefile.am (noinst_HEADERS): Remove sysnerr.h.

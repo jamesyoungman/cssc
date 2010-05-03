@@ -36,7 +36,7 @@ SUBDIRS = gl bsd docs testutils auxfiles sccs-cgi googletest unit-tests tests
 
 ACLOCAL_AMFLAGS = -I gl/m4
 AM_CPPFLAGS = -I gl/lib -I $(srcdir)/gl/lib
-
+AM_CXXFLAGS = $(WARN_CFLAGS) 
 noinst_LIBRARIES = libcssc.a
 
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
