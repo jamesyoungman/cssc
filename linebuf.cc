@@ -23,6 +23,7 @@
  * Members of the class cssc_linebuf.
  *
  */
+#include <cstdio>
 #include <cstring>
 
 #ifdef __GNUC__

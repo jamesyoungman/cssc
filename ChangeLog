@@ -1,5 +1,16 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Don't declare rename, remove.  Include <cstdio> where we use it.
+	* file.h: Avoid declaring rename and remove.
+	* version.h: Include <cstdio>
+	* prompt.cc: Likewise.
+	* environment.cc: Likewise.
+	* linebuf.cc: Likewise.
+	* quit.cc: Likewise.
+	* fileiter.cc: Likewise.
+	* run.cc: Likewise.
+	* showconfig.cc: Include <cstdio>.  Update copyright year.
+
 	Avoid #if defined(FOO), use #if defined FOO instead.
 	* .x-sc_useless_cpp_parens: Exempt files in the Google C++ Testing
 	Framework.

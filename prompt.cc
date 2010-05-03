@@ -24,6 +24,7 @@
  *
  */
 
+#include <cstdio>
 #include <cstring>
 
 #include "cssc.h"

@@ -73,14 +73,6 @@ int ffsync(FILE *f);
 void give_up_privileges();
 void restore_privileges();
 
-#ifndef HAVE_REMOVE
-int remove(const char *name);
-#endif
-
-#ifndef HAVE_RENAME
-int rename(const char *from, const char *to);
-#endif
-
 #ifdef CONFIG_USE_ARCHIVE_BIT
 void clear_archive_bit(const char *name);
 #endif

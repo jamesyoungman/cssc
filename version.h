@@ -15,6 +15,8 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <cstdio>
+
 extern const char cssc_version[];
 void show_config_info(void);
 void show_copyright(void);

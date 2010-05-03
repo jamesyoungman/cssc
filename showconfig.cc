@@ -25,14 +25,16 @@
  * which are possible.
  *
  */
-#include "cssc.h"
+#include <config.h>
 
+#include <cstdio>
 #include <unistd.h>
 #include <limits.h>
 
+#include "cssc.h"
 
 static const char * copyright_explanation = 
-"Copyright (C) 1997-2008 Free Software Foundation, Inc.\n"
+"Copyright (C) 1997-2010 Free Software Foundation, Inc.\n"
 "\n"
 "This program is free software: you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"

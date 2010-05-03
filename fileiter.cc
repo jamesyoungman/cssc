@@ -25,6 +25,7 @@
  */
 #include <config.h>
 
+#include <cstdio>
 #include <cstring>
 
 #ifdef __GNUC__
