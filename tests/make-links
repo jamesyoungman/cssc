@@ -13,7 +13,7 @@ common_files=`ls ${srcdir}/common`
 
 for d in * 
 do 
-	if test -d $d -a ! $d = common
+	if test -d "$d" && ! test "$d" = common
 	then 
 		for i in ${common_files}
 		do 

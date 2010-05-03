@@ -26,7 +26,7 @@ do
     shift
 done
 
-if [ $use_existing = "true" -a -f $status ]
+if [ $use_existing = "true" ] && [ -f $status ]
 then
     true
 else
