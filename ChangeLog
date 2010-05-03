@@ -1,5 +1,11 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Remove unused source files.
+	* rename.c: Remove unused file.
+	* remove.c: Remove unused file.
+	* configure.ac: Don't refer to these files with AC_REPLACE_FUNCS.
+
+	Fix lint errors caused by failure to include <config.h>.
 	* testutils/yes.c: Include <config.h> instead of "config.h".
 	* testutils/ekko.c: Likewise.
 	* testutils/lndir.c: Likewise.

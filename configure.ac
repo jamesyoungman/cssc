@@ -392,7 +392,7 @@ dnl Check for symlink() and readlink(), which lndir uses.
 dnl Check for fsetpos, which testutils/seeker uses.
 AC_CHECK_FUNCS(symlink readlink unsetenv fsetpos fileno fstat sysconf memchr) 
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid pipe spawn geteuid getegid)
-AC_REPLACE_FUNCS(strerror remove rename strstr)
+AC_REPLACE_FUNCS(strerror strstr)
 
 
 
