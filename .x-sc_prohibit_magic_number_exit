@@ -1,0 +1,7 @@
+googletest/
+environment.cc
+fatalsig.cc
+my-getopt.cc
+testutils/ekko.c
+testutils/last-time.c
+what.cc

@@ -1,5 +1,9 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Ignore existing instances of magic contstants in calls to exit.
+	* .x-sc_prohibit_magic_number_exit: Ignore existing instances of
+	magic contstants in calls to exit.
+
 	Remove trailing blank lines.
 	* tests/admin/Makefile.am: Remove trailing blank lines.
 	* tests/admin/abspath.sh: Likewise.
