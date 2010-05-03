@@ -24,7 +24,7 @@
  * Routines for running programmes.
  *
  */
-#include <stdio.h>
+#include <cstdio>
 #include <errno.h>
 
 #include "cssc.h"

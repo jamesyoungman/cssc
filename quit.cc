@@ -35,7 +35,6 @@
 #include "cssc.h"
 #include "sysdep.h"
 #include "quit.h"
-#include "sysnerr.h"
 #include "except.h"
 #include "cssc-assert.h"
 
@@ -98,14 +97,7 @@ void errormsg_with_errno(const char *fmt, ...)
 
 static void print_err(int err)
 {
-#ifndef HAVE_STRERROR
-  if (err <= sys_nerr)
-    fprintf(stderr, "%d - %s\n", err, sys_errlist[err]);
-  else
-    fprintf(stderr, "%d - Unknown error\n", err);
-#else
-  fprintf(stderr, "%d - %s\n", err, strerror(err));
-#endif
+  fprintf (stderr, "%d - %s\n", err, strerror (err));
 }
 
 static NORETURN

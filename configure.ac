@@ -447,22 +447,6 @@ done
 # JY: AC_CHECK_GLOBAL ends
 ])
 
-
-dnl Search for the global variables sys_nerr, sys_errlist.
-
-dnl Cope with not having a strerror() function
-if test "$ac_cv_func_strerror" != yes; then
-dnl AC_CHECK_GLOBAL(sys_nerr)
-dnl AC_CHECK_GLOBAL(sys_errlist)
-AC_CHECK_DECL_IN_HEADER(sys_errlist,errno.h)
-AC_CHECK_DECL_IN_HEADER(sys_errlist,stdlib.h)
-AC_CHECK_DECL_IN_HEADER(sys_errlist,stdio.h)
-
-AC_CHECK_DECL_IN_HEADER(sys_nerr,errno.h)
-AC_CHECK_DECL_IN_HEADER(sys_nerr,stdlib.h)
-AC_CHECK_DECL_IN_HEADER(sys_nerr,stdio.h)
-fi
-
 dnl What about saved setuid?
 AC_CONFIG_SUBDIRS(googletest)
 dnl AC_CONFIG_FILES([shorter/Makefile])

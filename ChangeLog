@@ -1,5 +1,13 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Assume the availability of strerror.
+	* configure.ac: Don't check header files for declarations of
+	sys_nerr or sys_errlist, since we no longer need those.
+	* quit.cc (print_err): Assume strerror is available.
+	Don't include sysnerr.h.
+	* Makefile.am (noinst_HEADERS): Remove sysnerr.h.
+	* sysnerr.h: Delete.
+
 	Don't declare rename, remove.  Include <cstdio> where we use it.
 	* file.h: Avoid declaring rename and remove.
 	* version.h: Include <cstdio>

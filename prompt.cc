@@ -26,6 +26,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <cstdio>
 
 #include "cssc.h"
 #include "file.h"
