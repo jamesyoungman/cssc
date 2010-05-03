@@ -1,5 +1,8 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Skip trailing-blank check, there are too many violations for now.
+	* .x-sc_trailing_blank: Skip this test.
+
 	Correct "the the" to "the".
 	* get.cc (main): correct "the the" to "the".
 	* sf-prs.cc: Likewise.
