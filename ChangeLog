@@ -1,5 +1,9 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Pacify the sc_makefile_TAB_only_indentation syntax check.
+	* tests/Makefile.am: Replaced sequences of 8 spaces with a single
+	TAB.
+
 	Remove obsolete replacements for missing library files.
 	* strerror.c: Remove obsolete file.
 	* strstr.c: Remove obsolete file.
