@@ -1,5 +1,9 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Exempt ourselves from SRTEQ for all C and C++ files.
+	* .x-sc_prohibit_strcmp: We don't want to use STREQ, so suppress
+	this warning for C and C++ files.
+
 	Ignore existing instances of magic contstants in calls to exit.
 	* .x-sc_prohibit_magic_number_exit: Ignore existing instances of
 	magic contstants in calls to exit.
