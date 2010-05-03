@@ -1,5 +1,9 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Add temporary exceptions for atoi checks.
+	* .x-sc_prohibit_atoi_atof: Temporary exemption for files where we
+	still use atoi() and so on.  Ignore atoi in ChangeLog.
+
 	Don't configure separately in testutils.
 	* testutils/ekko.c: Include "config.h", don't use include guards.
 	* testutils/lndir.c: Include "config.h", don't use include guards.
