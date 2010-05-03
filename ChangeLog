@@ -1,5 +1,14 @@
 2010-05-03  James Youngman  <jay@gnu.org>
 
+	Correct "the the" to "the".
+	* get.cc (main): correct "the the" to "the".
+	* sf-prs.cc: Likewise.
+	* docs/cssc.texi (@copying): Likewise.
+	(Top): Likewise.
+	(Delta Table): Likewise.
+	(PROJECTDIR): Likewise.
+	* .x-sc_the_the: Exempt googletest/src/gtest.cc.
+
 	Pacify the sc_makefile_TAB_only_indentation syntax check.
 	* tests/Makefile.am: Replaced sequences of 8 spaces with a single
 	TAB.

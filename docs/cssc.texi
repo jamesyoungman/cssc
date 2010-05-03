@@ -10,7 +10,7 @@
 
 @copying
 
-This file documents the the GNU @code{cssc} package for working with
+This file documents the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
 Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 
@@ -55,7 +55,7 @@ Free Documentation License''.
 @node Top, Overview, , (dir)
 @insertcopying
 
-This file documents the the GNU @code{CSSC} package, which is 
+This file documents the GNU @code{CSSC} package, which is 
 a work-alike for the traditional Unix SCCS suite.
 
 This is edition @value{EDITION}, for CSSC Version @value{VERSION}.
@@ -2252,7 +2252,7 @@ of the creation of this delta, one or more lines of the form
 may occur.  These lines constitute a list of Modification Request
 Numbers, one on each line.
 
-The next part of the delta table entry is the the delta commentary.
+The next part of the delta table entry is the delta commentary.
 This comment is intended to contain a description of the changes made in
 this delta, and is written and read by humans.  This may extend over one
 or many lines, each introduced with @samp{^Ac}, like this:-
@@ -3023,7 +3023,7 @@ This is only of use when debugging @sc{cssc}.
 @subsection PROJECTDIR
 
 The @env{PROJECTDIR} environment variable is used only by the
-@code{sccs} driver program.  This variable is ignored if the the
+@code{sccs} driver program.  This variable is ignored if the
 @code{sccs} program is installed with the set-user-ID bit set.  See
 @ref{Known Problems}, for other remarks concerning setuid execution.
 

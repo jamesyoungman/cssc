@@ -341,7 +341,7 @@ main(int argc, char **argv)
             {
               if (org_rid.valid())
                 {
-                  warning("both the the -r and the -a "
+                  warning("both the -r and the -a "
                           "option have been specified; "
                           "the -r option has been ignored.");
                 }

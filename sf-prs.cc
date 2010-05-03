@@ -258,7 +258,7 @@ print_flag(FILE *out, const sid &it)
     fputs("none", out);
 }
 
-// /* Prints the the value of string flag. */
+// /* Prints the value of string flag. */
 // template <class TYPE>
 // void
 // print_flag(FILE *out, TYPE it)
