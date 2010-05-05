@@ -1,5 +1,8 @@
 2010-05-06  James Youngman  <jay@gnu.org>
 
+	Mention some recent changes.
+	* NEWS: Mention some recent changes.
+
 	Various updates in docs/*
 	* docs/patches.txt: Modernise the diff-preparation instructions
 	(to ask people to use git).

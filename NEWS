@@ -2,6 +2,29 @@ New in CSSC-1.2.1-git, YYYY-MM-DD
 
         * The CSSC manual is now published under version 1.3 of the
           GNU Free Documentation License.
+	  
+ 	* The code and build system have been modernised and some
+          redundant files have been removed.  This may make it harder
+          to build CSSC on very old systems.  However, it's now easier
+          to maintain.  If CSSC no longer builds on a system that's
+          important to you, please send mail to <bug-cssc@gnu.org>
+          explaining your problem.
+
+	* CSSC now uses the GNU portability library, gnulib.
+
+	* CSSC now requires a C++ compiler with working exceptions and
+          a working STL implementation.
+
+	* Adoption of some STL data structures has made some parts of
+          CSSC faster, notably "val".
+
+	* CSSC now includes unit tests.  We also run the y2k tests for
+          "make check".  If valgrind is installed, it will be used to
+          for verification during tests.  You can turn this off by
+          givig the --without-valgrind option to configure.
+
+	* The configure script now supports a new option
+          "--enable-warnings" which enables many GCC warning options.
 
 New in CSSC-1.2.0, 2009-04-11
 
