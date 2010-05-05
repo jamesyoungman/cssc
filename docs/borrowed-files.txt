@@ -4,12 +4,13 @@ track the originals).  Filenames are relative to the top level source
 directory.
 
 
-COPYING		   GPL version 2
+COPYING		   GPL version 3
 install-sh	   From the autoconf distribution
 missing		   From the automake distribution
 mkinstalldirs      From the automake distribution
 docs/texinfo.tex   From the automake distribution
 googletest/*	   See googletest/README.cssc
+bootstrap	   From the coreutils distribution
 
 The following files are either forked from their original
 counterparts, or I can't find/recall the original source or version:-
@@ -20,4 +21,4 @@ testutils/lndir.man   X11R6 (Accompanies lndir.c but is unmodified)
 bsd/*		      From one of the *BSD FTP sites (version??)
 docs/gpl.texi	      Texinfo version of GPL version 2 (source unknown!)
 ekko.c		      From GNU shellutils (local changes to use config.h)
-unused/move-if-change GCC version 2.7.2.1
+

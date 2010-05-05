@@ -1,18 +1,10 @@
-If you are kind enough to submit patches, first of all, thanks.
-Second, it makes life much easier for me if you submit unified diffs
-("diff -u") and if all diff'ed paths are relative to the top-level
-directory.  I also have a preference for diffs split by type (that is,
-diffs for the test suites, code diffs for foo, code diffs for bar, and
-so on).  This makes applying your patches a lot easier -- but as I
-said above, first and foremost thanks for contributing!
+If you are kind enough to submit patches, first of all, thanks.   If
+you do, please _please_ send git patches made against a recent version
+of the tree.  See <http://savannah.gnu.org/git/?group=cssc>.
 
 When submitting diffs, please indicate what they are for (that is,
 please indicate the nature of the bug they fix or the system and
 version which requires the change).
-
-One last thing; if your editor makes backup files as you work, please
-delete these backups before computing the diff, particularly if you
-use "diff -r".
 
 You can submit patches by email to bug-cssc@gnu.org.  However, if they
 are large, we may need you to assign copyright in those changes to the
