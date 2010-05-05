@@ -31,10 +31,10 @@ csscutildir = $(libexecdir)/cssc
 # messages to make that scroll off the screen).
 # 
 # We run the unit tests before the regression tests in order to make
-# it more ovbious where the bug is when there is a test failure.
+# it more obvious where the bug is when there is a test failure.
 SUBDIRS = gl bsd docs testutils auxfiles sccs-cgi googletest unit-tests tests 
 
-ACLOCAL_AMFLAGS = -I gl/m4
+ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I gl/lib -I $(srcdir)/gl/lib
 AM_CXXFLAGS = $(WARN_CFLAGS) 
 noinst_LIBRARIES = libcssc.a

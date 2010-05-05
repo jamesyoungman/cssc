@@ -38,8 +38,14 @@ class relvbr
   //  relvbr(short r, short l, short b, sid const *): rel(r,l,b) {}
 
 public:
-  relvbr(): rel(-1), level(-1), branch(-1) {}
-  relvbr(int r,int l,int b): rel(r), level(l), branch(b) {}
+  relvbr()
+  : rel(-1), level(-1), branch(-1) 
+  {
+  }
+  relvbr(short int r, short int l, short int b)
+  : rel(r), level(l), branch(b) 
+  {
+  }
   relvbr(const char *s);
   relvbr(const sid& s);
   

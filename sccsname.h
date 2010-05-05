@@ -78,7 +78,7 @@ public:
   sccs_name(): lock_ptr(0), lock_cnt(0)  {}
   sccs_name &operator =(const mystring& n); /* undefined */
 
-  int valid() const { return sname.length(); }
+  bool valid() const { return sname.length() > 0; }
   void make_valid();
 
   const char * c_str() const { return sname.c_str(); }

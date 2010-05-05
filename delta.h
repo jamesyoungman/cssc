@@ -84,9 +84,9 @@ public:
 	mylist<mystring> ms, mylist<mystring> cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
-      included_(incl), excluded_(excl),
       have_includes_(incl.length() > 0), have_excludes_(excl.length() > 0),
       have_ignores_(false),
+      included_(incl), excluded_(excl),
       mrs_(ms), comments_(cs),
       inserted_(0u),
       deleted_(0u),
@@ -96,7 +96,7 @@ public:
   }
 
   inline const sid& id() const { return id_; }
-  void set_id(const sid& id) { id_ = id; }
+  void set_id(const sid& newid) { id_ = newid; }
     
   inline const sccs_date& date() const { return date_; }
   void set_date(const sccs_date& d) { date_ = d; }
@@ -218,9 +218,9 @@ public:
     return mrs_; 
   }
 
-  void set_mrs(const mylist<mystring>& mrs)
+  void set_mrs(const mylist<mystring>& updated_mrs)
   {
-    mrs_ = mrs;
+    mrs_ = updated_mrs;
   }
   
   void add_mr(const mystring& s)
@@ -233,9 +233,9 @@ public:
     return comments_;
   }
 
-  void set_comments(const mylist<mystring>& comments) 
+  void set_comments(const mylist<mystring>& updated_comments) 
   {
-    comments_ = comments;
+    comments_ = updated_comments;
   }
 
   void add_comment(const mystring& s)

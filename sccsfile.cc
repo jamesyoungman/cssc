@@ -695,8 +695,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   
   flags.no_id_keywords_is_fatal = 0;
   flags.branch = 0;
-  flags.floor = 0;
-  flags.ceiling = 0;
+  flags.floor = (short)0;
+  flags.ceiling = (short)0;
   flags.default_sid = sid::null_sid();
   flags.null_deltas = 0;
   flags.joint_edit = 0;

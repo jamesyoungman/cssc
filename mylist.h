@@ -55,6 +55,7 @@ public:
   mylist &operator =(mylist const &l)
   {
     items_ = l.items_;
+    return *this;
   }
   
   bool operator ==(mylist const &l) const
@@ -74,7 +75,7 @@ public:
     items_.push_back(ent);
   }
 
-  int length() const
+  size_t length() const
     {
       return items_.size();
     }

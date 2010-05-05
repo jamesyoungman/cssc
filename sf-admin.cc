@@ -247,11 +247,11 @@ sccs_file::admin(const char *file_comment,
 	  break;
 	  
 	case 'c':
-	  flags.ceiling = 0;
+	  flags.ceiling = static_cast<short>(0);
 	  break;
 	  
 	case 'f':
-	  flags.floor = 0;
+	  flags.floor = static_cast<short>(0);
 	  break;
 	  
 	  

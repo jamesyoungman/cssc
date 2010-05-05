@@ -27,6 +27,7 @@ dnl at the correct directory.
 AC_INIT
 AC_CONFIG_SRCDIR([sccsfile.h])
 AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_MACRO_DIR([m4])
 
 # The package version should match the regexp
 # ([0-9]+)\.([0-9]+)([a-z])?
@@ -119,7 +120,6 @@ else
 fi
 
 AC_SUBST(max_line_length_description)dnl
-
 
 dnl Checks for programs.
 
@@ -452,17 +452,21 @@ AC_CONFIG_SUBDIRS(googletest)
 dnl AC_CONFIG_FILES([shorter/Makefile])
 
 
-dnl Enable some warnings.
-UNWANTED_WARNINGS="-Wundef -Wpadded -Wredundant-decls"
+dnl Enable some warnings, or not.
+want_warnings=no
+AC_ARG_ENABLE([warnings],
+		AS_HELP_STRING([--enable-warnings], [Turn on all potentially-useful compiler warnings]),
+		[want_warnings=$enableval],[want_warnings=no])
 gl_MANYWARN_ALL_GCC([ALL_GCC_WARNINGS])
-gl_MANYWARN_COMPLEMENT([GCC_WARNINGS], 
-                       [$ALL_GCC_WARNINGS], 
-                       [$UNWANTED_WARNINGS])
+UNWANTED_WARNINGS="-Wundef -Wpadded -Wredundant-decls -Waggregate-return -Winline"
+AS_IF([test "x$want_warnings" != xno],
+[
+gl_MANYWARN_COMPLEMENT([GCC_WARNINGS], [$ALL_GCC_WARNINGS], [$UNWANTED_WARNINGS])
 for warning_option in $GCC_WARNINGS
-do
-	gl_WARN_ADD([$warning_option])
+do 
+    gl_WARN_ADD([$warning_option])
 done
-
+],[])
 
 dnl *** NOTE:
 dnl There can be only ONE call to AC_OUTPUT in each configure.ac,

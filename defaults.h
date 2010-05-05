@@ -34,13 +34,7 @@
 #define LIDENT(ident) cssc_##ident
 #endif
 
-#ifndef NORETURN
-#ifdef __GNUC__
-#define NORETURN volatile void
-#else
 #define NORETURN void
-#endif
-#endif /* NORETURN */
 
 #ifndef POSTDECL_NORETURN
 #ifdef __GNUC__

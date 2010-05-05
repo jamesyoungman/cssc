@@ -1,3 +1,31 @@
+2010-05-05  James Youngman  <jay@gnu.org>
+
+	Use the correct type in calls to release::release().
+	* sccsfile.cc (sccs_file): release floor and ceiling should be
+	initialised from shorts not ints.
+	* sf-admin.cc (admin): Likewise.
+
+	Make "make"'s idea of the m4 macro directory consistent with "bootstrap"
+	* Makefile.am (ACLOCAL_AMFLAGS): m4 files are in ./m4.  This is
+	now consistent with what "bootstrap" thinks.
+	* configure.ac: Likewise.
+
+	Fix a number of compiler warnings.
+	* mylist.h (mylist): mylist::operator=() should return a reference
+	to *this, so change it so that it does.
+	(mylist): Make mylist::length() return a size_t rather than an int.
+	* delta.h (delta::delta): List the initalisers in the order they
+	are actually performed.
+	* defaults.h (NORETURN): Don't define "NORETURN" to "volatile void".
+	* configure.ac: Disable warnings about aggregate return types and
+	missed inlined opportunities.
+	* release.h (release::release(int)): Change parameter to a short
+	int instead to avoid an implicit conversion.
+	* relvbr.h (relvbr::relvbr): initialise from short ints, not
+	regular ints, to avoid implicit casts.
+	* sccsname.h (sccsname::valid): Avoid cast from size_t to int by
+	changing the return type from int to bool.
+
 2010-05-03  James Youngman  <jay@gnu.org>
 
 	Enable many compiler warnings.
