@@ -1275,7 +1275,7 @@
 	* val.cc: Likewise.
 	* what.cc: Likewise.
 	* writesubst.cc: Likewise.
-=======
+
 	Import gnulib modules for various standard headers.
 	* bodyio.cc: Remove HAVE_STDIO_H guards for various standard
 	headers which gnulib will provide/adjust.
