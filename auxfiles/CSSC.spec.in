@@ -47,7 +47,7 @@ fi
 %files
 %defattr(-,root,root)
 %doc README AUTHORS COPYING ChangeLog INSTALL NEWS 
-%doc docs/BUGS docs/CREDITS docs/FIXED docs/Platforms 
+%doc docs/BUGS docs/CREDITS docs/Platforms 
 %doc docs/TESTING docs/TODO docs/missing.txt 
 %doc docs/patches.txt docs/mailing-list.txt
 %doc docs/style.txt
@@ -71,6 +71,9 @@ fi
 %{_infodir}/*.info*
 
 %changelog
+
+* Thu May  6 2010 James Youngman <jay@gnu.org>
+Do not distribute docs/FIXED, it no longer exists.
 
 * Sat Jan  3 2009 Alain Williams <addw@phcomp.co.uk>
 Changed "Copyright" tag to "License".  

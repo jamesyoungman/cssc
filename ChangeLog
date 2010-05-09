@@ -11,6 +11,7 @@
 	CSSC is known to work with GCC 4.4.
 	* docs/FIXED: Remove.
 	* docs/Makefile.am (EXTRA_DIST): Don't distribute docs/FIXED.
+	* auxfiles/CSSC.spec.in (%files): Remove docs/FIXED.
 	* docs/borrowed-files.txt: Mention that bootstrap is taken from
 	coreutils.  Mention that the GPL version is now 3.  Don't mention
 	-unused/move-if-change, since we removed it.
