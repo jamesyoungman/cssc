@@ -153,7 +153,7 @@ private:
     int found_id;
     
     subst_parms(FILE *o, const char *w, struct delta const &d,
-                int l, sccs_date n)
+                unsigned int l, sccs_date n)
       : out(o), wstring(w), delta(d), out_lineno(l), now(n),
         found_id(0) {}
   };

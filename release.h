@@ -30,6 +30,7 @@
 #define INC_RELEASE_H
 
 #include <cstdio>
+#include "cssc-assert.h"
 
 class sid;
 
@@ -52,8 +53,16 @@ public:
   release &operator++() { rel++; return *this; }
   release &operator--() { rel--; return *this; }
 
-  operator unsigned long() const { return rel; }
-  operator short()         const { return rel; }
+  operator unsigned long() const 
+  {
+    ASSERT(valid());
+    return static_cast<unsigned long>(rel); 
+  }
+
+  operator short() const 
+  { 
+    return rel; 
+  }
   
   friend int operator <(release r1, release r2)
     {
