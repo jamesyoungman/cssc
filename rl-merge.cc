@@ -28,8 +28,8 @@
 // another horrendously inefficient implementation.
 void release_list::merge(const release_list& m)
 {
-  const int mlen = m.l.length();
-  for(int i=0; i<mlen; i++)
+  const mylist<release>::size_type mlen(m.l.length());
+  for(mylist<release>::size_type i=0; i<mlen; i++)
     {
       const release r = m.l[i];
       if (!member(r))
@@ -40,10 +40,10 @@ void release_list::merge(const release_list& m)
 // another horrendously inefficient implementation.
 void release_list::remove(const release_list& rm)
 {
-  const int len = l.length();
+  const mylist<release>::size_type len(l.length());
   mylist<release> newlist;
   
-  for(int i=0; i<len; i++)
+  for(mylist<release>::size_type i=0; i<len; i++)
     {
       const release r = l[i];
       if (!rm.member(r))

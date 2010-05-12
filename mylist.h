@@ -43,6 +43,8 @@ protected:
   impl_type items_;
   
 public:
+  typedef typename impl_type::size_type size_type;
+
   mylist()
   {
   }
@@ -75,20 +77,20 @@ public:
     items_.push_back(ent);
   }
 
-  size_t length() const
+  size_type length() const
     {
       return items_.size();
     }
 
   TYPE const &
-  operator [](int index) const
+  operator [](size_type index) const
     {
-      ASSERT(index >= 0 && index < items_.size());
+      ASSERT(index < items_.size());
       return items_[index];
     }
 
   TYPE &
-  select(int index)
+  select(size_type index)
     {
       ASSERT(index >= 0 && index < items_.size());
       return items_[index];

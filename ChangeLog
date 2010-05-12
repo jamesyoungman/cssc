@@ -1,5 +1,10 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Use mylist<T>::size_type instead of int.
+	* mylist.h (mylist): Introduce size_type, and use it in method
+	parameters.
+	* rl-merge.cc (merge): Use mylist<release>::size_type.
+
 	Avoid a 'local variable shadows class member' warning.
 	* delta-table.h (abstract_delta_list): Avoid having a local shadow
 	an instance variable, by renaming the local.
