@@ -1,5 +1,17 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Remove mylist_delta_list; use more appropriate types for
+	loop/length variables.
+	* delta-table.h (mylist_delta_list::build_seq_table): Use more
+	appropriate (i.e. matching) types for loop variables.
+	Get rid of mylist_delta_list and abstract_delta_list.
+	* delta-table.cc (delta_at_seq_exists): There is no need for a
+	const qualifier for a bool return type; remove it.
+	(next_seqno): Just increment the result rather than adding an
+	unsigned int, as this simplifies the type combination.
+	* sf-get.cc (prepare_seqstate_1): Use size_type types for indexes and
+	length variables.
+
 	Use mylist<T>::size_type instead of int.
 	* mylist.h (mylist): Introduce size_type, and use it in method
 	parameters.

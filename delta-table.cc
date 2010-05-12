@@ -25,7 +25,7 @@
 #include "delta-table.h"
 #include "delta-iterator.h"
 
-const bool
+bool
 cssc_delta_table::delta_at_seq_exists(seq_no seq)
 {
   const seq_no limit = l.get_high_seqno();
@@ -54,7 +54,9 @@ cssc_delta_table::~cssc_delta_table()
 seq_no cssc_delta_table::next_seqno() const
 {
   ASSERT(0 != this);
-  return highest_seqno() + 1u;
+  seq_no next = highest_seqno();
+  ++next;
+  return next;
 }
 
 
@@ -125,10 +127,4 @@ find(sid id)
 	}
     }
   return NULL;
-}
-
-
-abstract_delta_list::~abstract_delta_list()
-{
-  // nothing to do.
 }

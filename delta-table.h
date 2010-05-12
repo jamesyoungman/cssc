@@ -31,10 +31,12 @@
 
 #include "delta.h"
 
-class abstract_delta_list
+class stl_delta_list
 {
   seq_no high_seqno;
   sid high_release;
+  std::vector<struct delta> items;
+  std::map<seq_no, size_t> seq_table;
 
 protected:
   void update_highest(const delta& d)
@@ -56,149 +58,42 @@ protected:
       }
   }
   
+
 public:
-  abstract_delta_list()
+  typedef std::vector<struct delta>::size_type size_type;
+
+  stl_delta_list() 
     : high_seqno(0),
       high_release(sid::null_sid())
   {
   }
   
-  virtual seq_no get_high_seqno() const
+  seq_no get_high_seqno() const
   {
     return high_seqno;
   }
 
-  virtual const sid& get_high_release() const
+  const sid& get_high_release() const
   {
     return high_release;
   }
   
-  virtual int length() const = 0;
-  virtual const delta& select(int i) const = 0;
-  virtual delta& select(int i) = 0;
-  virtual ~abstract_delta_list();
-};
-
-class mylist_delta_list : public abstract_delta_list
-{
-  mylist<struct delta> l;
-  int *seq_table;
-
-  void
-  build_seq_table()
-  {
-    ASSERT(0 != this);
-    const seq_no highseq = get_high_seqno();
-
-    seq_table = new int[highseq + 1];
-
-    int i;
-    for(i = 0; i < highseq + 1; i++)
-      {
-	seq_table[i] = -1;
-      }
-    for (int i=0; i<l.length(); ++i)
-      {
-	const seq_no seq = l.select(i).seq();
-	if (seq_table[seq] != -1)
-	  {
-	    /* ignore duplicate sequence number: some old sccs files
-	     * contain removed deltas with the same sequence number as
-	     * existing delta
-	     */
-	    continue;
-	    s_corrupt_quit("Sequence number %u is duplicated"
-			   " in delta table [build].", seq);
-	  }
-	seq_table[seq] = i;
-      }
-  }
-
-public:
-  mylist_delta_list()
-    : seq_table(0)
-  {
-  }
-  
-  virtual int length() const
-  {
-    return l.length();
-  }
-
-  virtual const delta& select(int i) const
-  {
-    return l[i];
-  }
-  
-  virtual delta& select(int i)
-  {
-    return l.select(i);
-  }
-  
-  virtual void add(const delta& d)
-  {
-    l.add(d);
-    update_highest(d);
-  }
-
-  virtual abstract_delta_list& operator += (const abstract_delta_list& other)
-  {
-    for (int i=0; i<other.length(); ++i)
-      {
-	add(other.select(i));
-      }
-    return *this;
-  }
-  
-  virtual ~mylist_delta_list()
-  {
-    delete[] seq_table;
-  }
-  
-  virtual bool delta_at_seq_exists(seq_no seq)
-  {
-    if (seq_table == NULL)
-      {
-	build_seq_table();
-      }
-    return seq_table[seq] != -1;
-  }
-
-  virtual const delta& delta_at_seq(seq_no seq)
-  {
-    if (seq_table == NULL)
-      {
-	build_seq_table();
-      }
-    return select(seq_table[seq]);
-  }
-
-private:
-};
-
-
-class stl_delta_list : public abstract_delta_list
-{
-  std::vector<struct delta> items;
-  std::map<seq_no, size_t> seq_table;
-
-public:
-  virtual int length() const
+  size_type length() const
   {
     return items.size();
   }
 
-  virtual const delta& select(int i) const
+  const delta& select(size_type i) const
   {
     return items[i];
   }
   
-  virtual delta& select(int i)
+  delta& select(size_type i)
   {
     return items[i];
   }
   
-  virtual void add(const delta& d)
+  void add(const delta& d)
   {
     size_t pos = items.size();
     items.push_back(d);
@@ -206,22 +101,22 @@ public:
     update_highest(d);
   }
   
-  virtual abstract_delta_list& operator += (const abstract_delta_list& other)
+  stl_delta_list& operator += (const stl_delta_list& other)
   {
-    for (int i=0; i<other.length(); ++i)
+    for (size_type i=0; i<other.length(); ++i)
       {
 	add(other.select(i));
       }
     return *this;
   }
 
-  virtual bool delta_at_seq_exists(seq_no seq)
+  bool delta_at_seq_exists(seq_no seq)
   {
     std::map<seq_no, size_t>::const_iterator i = seq_table.find(seq);
     return i != seq_table.end();
   }
   
-  virtual const delta& delta_at_seq(seq_no seq)
+  const delta& delta_at_seq(seq_no seq)
   {
     std::map<seq_no, size_t>::const_iterator i = seq_table.find(seq);
     ASSERT (i != seq_table.end());
@@ -232,7 +127,6 @@ public:
 
 class cssc_delta_table
 {
-  //typedef mylist_delta_list delta_list;
   typedef stl_delta_list delta_list;
   delta_list l;
 
@@ -240,6 +134,8 @@ class cssc_delta_table
   cssc_delta_table(cssc_delta_table const &); /* undefined */
 
 public:
+  typedef stl_delta_list::size_type size_type;
+
   cssc_delta_table()
   {
   }
@@ -249,7 +145,7 @@ public:
 
   // These two methods should b const, but are not because they 
   // call build_seq_table().
-  const bool delta_at_seq_exists(seq_no seq);
+  bool delta_at_seq_exists(seq_no seq);
   const delta & delta_at_seq(seq_no seq);
 
   const delta *find(sid id) const; 
@@ -260,10 +156,10 @@ public:
   seq_no next_seqno()    const;
   sid highest_release() const { return l.get_high_release(); }
 
-  int length() const { return l.length(); }
+  size_type length() const { return l.length(); }
 
-  const delta& select(int pos) const { return l.select(pos); }
-  delta& select(int pos) { return l.select(pos); }
+  const delta& select(size_type pos) const { return l.select(pos); }
+  delta& select(size_type pos) { return l.select(pos); }
   
   ~cssc_delta_table();
 };

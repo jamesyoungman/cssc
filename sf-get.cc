@@ -52,7 +52,6 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
   /* new code */
 #if 1
   seq_no y;
-  int i, len;
 
   // deltas descended from the version we want are wanted (unless excluded)
   y = seq;
@@ -73,7 +72,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	{
 	  const delta &d = delta_table->delta_at_seq(y);
 
-	  len = d.get_included_seqnos().length();
+	  const mylist<seq_no>::size_type len = d.get_included_seqnos().length();
 	  if (bDebug)
 	    {
 	      fprintf(stderr,
@@ -81,7 +80,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 		      y, len);
 	    }
 	  
-	  for(i = 0; i < len; i++)
+	  for (mylist<seq_no>::size_type i = 0; i < len; i++)
 	    {
 	      const seq_no s = d.get_included_seqnos()[i];
 	      if (s == y)
@@ -103,7 +102,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
       {
 	const delta &d = delta_table->delta_at_seq(y);
 	
-	len = d.get_excluded_seqnos().length();
+	const mylist<seq_no>::size_type len = d.get_excluded_seqnos().length();
 	if (bDebug)
 	  {
 	    fprintf(stderr,
@@ -111,7 +110,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 		    y, len);
 	  }
 	
-	for(i = 0; i < len; i++)
+	for (mylist<seq_no>::size_type i = 0; i < len; i++)
 	  {
 	    const seq_no s = d.get_excluded_seqnos()[i];
 	    if (s == y)
@@ -136,7 +135,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
       if (state.is_included(y))
 	{
 	  const delta &d = delta_table->delta_at_seq(y);
-	  len = d.get_ignored_seqnos().length();
+	  const mylist<seq_no>::size_type len = d.get_ignored_seqnos().length();
 	  if (bDebug)
 	    {
 	      fprintf(stderr,
@@ -145,7 +144,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	    }
 	
 	  
-	  for(i = 0; i < len; i++)
+	  for (mylist<seq_no>::size_type i = 0; i < len; i++)
 	    {
 	      const seq_no s = d.get_ignored_seqnos()[i];
 	      if (s == y)
