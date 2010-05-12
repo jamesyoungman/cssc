@@ -94,10 +94,7 @@ rmdel_LDADD = libcssc.a $(LIBOBJS)
 prt_LDADD = libcssc.a $(LIBOBJS)
 val_LDADD = libcssc.a $(LIBOBJS)
 
-# $(testcode) is test code that isn't normally used.
-testcode = list.cc 
-
-EXTRA_DIST = ChangeLog ChangeLog.1 $(testcode) show-disp.sh
+EXTRA_DIST = ChangeLog ChangeLog.1 show-disp.sh
 
 
 sccsdiff: sccsdiff.sh

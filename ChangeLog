@@ -1,5 +1,9 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Remove unused file list.cc.
+	* Makefile.am (EXTRA_DIST): Remove list.cc, since it is unused.
+	* list.cc: Delete.
+
 	Prune obsolete items in docs/TODO.
 	* docs/TODO: Tests for sact and val exist.  Remove that TODO item.
 
