@@ -75,11 +75,12 @@ main(int argc, char **argv)
 	{
 	  sccs_name &name = iter.get_name();
 	  sccs_pfile pfile(name, sccs_pfile::READ);
-	  
-	  pfile.rewind();
+
 	  
 	  bool first = true;
-	  while (pfile.next())
+	  for (sccs_pfile::const_iterator it = pfile.begin();
+	       it != pfile.end();
+	       ++it)
 	    {
 	      if (first) // first lock on this file...
 		{
@@ -97,13 +98,13 @@ main(int argc, char **argv)
 		  first = false;
 		}
 	      
-	      pfile->got.print(stdout);
+	      it->got.print(stdout);
 	      putchar(' ');
-	      pfile->delta.print(stdout);
+	      it->delta.print(stdout);
 	      putchar(' ');
-	      fputs(pfile->user.c_str(), stdout);
+	      fputs(it->user.c_str(), stdout);
 	      putchar(' ');
-	      pfile->date.print(stdout);
+	      it->date.print(stdout);
 	      putchar('\n');
 	    }
 	}

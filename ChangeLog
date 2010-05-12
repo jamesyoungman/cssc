@@ -1,3 +1,41 @@
+2010-05-12  James Youngman  <jay@gnu.org>
+
+	Remove the built-in sccs_pfile iterator.  Use an STL iterator.
+	* pfile.h (sccs_pfile::edit_locks): change type from
+	mylist<edit_lock> to std::list<edit_lock> and remove the built-in
+	iterator.
+	(sccs_pfile::find_sid): Since there is no built-in iterator,
+	return the position of the lock we found as the second half of a
+	pair.
+	* pf-del.cc (find_sid): Make the corresponding change to the
+	implementation.
+	(update): Use the STL iterator rather than sccs_pfile::pos.
+	* delta.cc (delta_main): Update to the new signature of
+	sccs_pfile::find_sid.
+	* pfile.cc (sccs_pfile::sccs_pfile): Remove pos.
+	(sccs_pfile): Use list::push_back() instead of mylist::add().
+	(find_to_be_created): Rename from is_to_be_created.  Use the STL
+	iterator.
+	(find_locked): Rename from is_locked.  Use the STL iterator.
+	(print_lock_sid): Since there is no built-in position, take a
+	const_iterator as an argument.
+	* pf-add.cc (add_lock): Use list::empty() instead of
+	checking mylist::length() for zero-ness.
+	(add_lock): Use list::push_back() instead of mylist::add().
+	* rmdel.cc (is_locked): Use the STL iterator over sccs_pfile.
+	* sact.cc (main): Likewise.
+	* sccsfile.h (s): Now that iterating over the locks is not a
+	mutating operation on sccs_pfile, sccsfile::test_locks can take a
+	const reference to the sccs_pfile.
+	(add_delta): Since there is no built-in iteration position in
+	sccs_pfile, we also need to pass in an iterator.
+	Also #include pfile.h for sccs_pfile::iterator.
+	* sf-delta.cc (add_delta): Make the correspondingn change to the
+	implementation of sccs_file::add_delta.
+	* sf-get2.cc (sid_in_use): Use an STL iterator.
+	* unget.cc (main): Adapt to the new signature of
+	sccs_pfile::find_sid.
+
 2010-05-11  James Youngman  <jay@gnu.org>
 
 	Fix some compilation warnings for val.o.

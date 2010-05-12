@@ -164,8 +164,9 @@ delta_main(int argc, char **argv)
 	      comment_list = split_comments(comments);
 	      first = 0;
 	    }
-		
-	  switch (pfile.find_sid(rid)) {
+
+	  const std::pair<sccs_pfile::find_status, sccs_pfile::iterator> found(pfile.find_sid(rid));
+	  switch (found.first) {
 	  case sccs_pfile::FOUND:
 	    break;
 		  
@@ -219,7 +220,7 @@ delta_main(int argc, char **argv)
 		    {
 		      /* In this case, _real_ SCCS prints the ID anyway.
 		       */
-		      pfile->delta.print(stdout);
+		      found.second->delta.print(stdout);
 		      putchar('\n');
 		      errormsg("%s: Invalid MR number(s).",
 			       name.c_str());
@@ -230,7 +231,7 @@ delta_main(int argc, char **argv)
 	      else if (mr_list.length())
 		{
 		  // MRs were specified and the MR flag is turned off.
-		  pfile->delta.print(stdout);
+		  found.second->delta.print(stdout);
 		  putchar('\n');
 		  errormsg("%s: MR verification ('v') flag not set, MRs"
 			   " are not allowed.\n",
@@ -241,7 +242,8 @@ delta_main(int argc, char **argv)
 		    
 	      mystring gname = name.gfile();
 		    
-	      if (!file.add_delta(gname, pfile, mr_list, comment_list,
+	      if (!file.add_delta(gname, pfile, found.second, 
+				  mr_list, comment_list,
 				  display_diff_output))
 		{
 		  retval = 1;

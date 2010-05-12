@@ -36,7 +36,7 @@ sccs_pfile::corrupt(int lineno, const char *msg) const {
 }
 
 sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
-                : name(n), mode(m), pos(-1) {
+                : name(n), mode(m) {
 
         if (!name.valid()) {
                 ctor_fail(-1, "%s: Not a SCCS file.", name.c_str());
@@ -109,7 +109,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
                         if (!tmp.include.valid() || !tmp.exclude.valid()) {
                                 corrupt(lineno, "Invalid SID list");
                         }
-                        edit_locks.add(tmp);
+                        edit_locks.push_back(tmp);
                 }
 
                 if (ferror(pf))
@@ -122,40 +122,32 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
         }
 }
 
-int
-sccs_pfile::is_locked(sid id) {
-        rewind();
-
-        sccs_pfile &it = *this;
-        while (next()) {
-                if (it->got == id) {
-                        return 1;
-                }
-        }
-
-        return 0;
+sccs_pfile::const_iterator
+sccs_pfile::find_locked(sid id) const
+{
+  for (const_iterator it = begin(); it != end(); ++it)
+    {
+      if (it->got == id) 
+	return it;
+    }
+  return end();
 }
 
-int
-sccs_pfile::is_to_be_created(sid id) {
-        rewind();
-
-        sccs_pfile &it = *this;
-        while (next()) {
-                if (it->delta == id) {
-                        return 1;
-                }
-        }
-
-        return 0;
+sccs_pfile::const_iterator
+sccs_pfile::find_to_be_created(sid id) const
+{
+  for (const_iterator it = begin(); it != end(); ++it)
+    {
+      if (it->delta == id) 
+	return it;
+    }
+  return end();
 }
 
 int 
-sccs_pfile::print_lock_sid(FILE *fp)
+sccs_pfile::print_lock_sid(FILE *fp, const_iterator pos)
 {
-  const edit_lock& l = edit_locks.select(pos);
-  const sid& s       = l.delta;
-  return s.print(fp);
+  return pos->delta.print(fp);
 }
 
 

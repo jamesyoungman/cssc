@@ -162,10 +162,12 @@ bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
   if (find_delta(id))
     return true;
 
-  if (pfile.is_to_be_created(id))
+  sccs_pfile::const_iterator i = pfile.find_to_be_created(id);
+  if (i == pfile.end())
+    return false;
+  else
     return true;
 
-  return false;
 }
 
 
@@ -331,30 +333,35 @@ sccs_file::find_next_sid(sid requested, sid got,
    the joint edit flag isn't set. */
 
 bool
-sccs_file::test_locks(sid got, sccs_pfile &pfile) const {
+sccs_file::test_locks(sid got, const sccs_pfile& pf) const 
+{
+  if (!authorised())
+    return false;
+  
+  if (flags.all_locked 
+      || (flags.floor.valid() && flags.floor > got)
+      || (flags.ceiling.valid() && flags.ceiling < got)
+      || flags.locked.member(got)) 
+    {
+      errormsg("%s: Requested release is locked.",
+	       name.c_str());
+      return false;
+    }
 
-        if (!authorised())
-          return false;
-
-        if (flags.all_locked 
-            || (flags.floor.valid() && flags.floor > got)
-            || (flags.ceiling.valid() && flags.ceiling < got)
-            || flags.locked.member(got)) {
-                errormsg("%s: Requested release is locked.",
-                         name.c_str());
-                return false;
-        }
-        
-        if (pfile.is_locked(got) && !flags.joint_edit)
-          {
-            mystring when(pfile->date.as_string());
-            errormsg("%s: Requested SID locked by '%s' at %s.\n",
-                     name.c_str(),
-                     pfile->user.c_str(),
-                     when.c_str());
-                return false;
-        }
-        return true;
+  sccs_pfile::const_iterator it = pf.find_locked(got);
+  if (it != pf.end())
+    {
+      if (!flags.joint_edit)
+	{
+	  mystring when(it->date.as_string());
+	  errormsg("%s: Requested SID locked by '%s' at %s.\n",
+		   name.c_str(),
+		   it->user.c_str(),
+		   when.c_str());
+	  return false;
+	}
+    }
+  return true;
 }
 
 

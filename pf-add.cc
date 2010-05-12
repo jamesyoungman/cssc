@@ -37,7 +37,7 @@ sccs_pfile::add_lock(sid got, sid delta,
 	bool pfile_already_exists;
 	
 
-	if (edit_locks.length() == 0)
+	if (edit_locks.empty())
 	  pfile_already_exists = false;
 	else
 	  pfile_already_exists = true;
@@ -48,9 +48,8 @@ sccs_pfile::add_lock(sid got, sid delta,
 	new_lock.date = sccs_date::now();
 	new_lock.include = included;
 	new_lock.exclude = excluded;
-	new_lock.deleted = 0;
 
-	edit_locks.add(new_lock);
+	edit_locks.push_back(new_lock);
 
 	return update( pfile_already_exists );
 }

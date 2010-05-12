@@ -44,18 +44,18 @@ usage() {
 }
 
 
-static int
+static bool
 is_locked(sccs_name& name, sid rid)
 {
   sccs_pfile pfile(name, sccs_pfile::READ);
-  
-  pfile.rewind();
-  while (pfile.next())
+  for (sccs_pfile::const_iterator it = pfile.begin();
+       it != pfile.end();
+       ++it)
     {
-      if (pfile->got == rid)
-	return 1;
+      if (it->got == rid)
+	return true;
     }
-  return 0;
+  return false;
 }
 
 

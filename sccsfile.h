@@ -31,11 +31,10 @@
 #include "sccsdate.h"
 #include "mylist.h"
 #include "myset.h"
-// #include "linebuf.h"
 #include "rel_list.h"
 #include "delta.h"
+#include "pfile.h"
 
-class sccs_pfile;       /* pfile.h */
 class seq_state;        /* seqstate.h */
 class cssc_linebuf;
 class FilePosSaver;             // filepos.h
@@ -194,7 +193,7 @@ public:
   bool find_requested_seqno(seq_no n, sid &found) const ;
   sid find_next_sid(sid requested, sid got, int branch,
                     sccs_pfile &pfile, int *failed) const;
-  bool test_locks(sid got, sccs_pfile &pfile) const;
+  bool test_locks(sid got, const sccs_pfile&) const; 
   
   struct get_status get(FILE *out, mystring name, 
 			FILE *summary_file,
@@ -253,7 +252,9 @@ public:
 
   int check_mrs(mylist<mystring> mrs);
 
-  bool add_delta(mystring gname, sccs_pfile &pfile,
+  bool add_delta(mystring gname,
+		 sccs_pfile &pfile,
+		 sccs_pfile::iterator it,
                  mylist<mystring> mrs, mylist<mystring> comments,
                  bool display_diff_output);
 

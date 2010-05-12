@@ -24,6 +24,7 @@
  * a p-file.
  *
  */
+#include <utility>
 
 #include "cssc.h"
 #include "pfile.h"
@@ -31,32 +32,30 @@
 #include "file.h"
 
 
-/* enum */ sccs_pfile::find_status
-sccs_pfile::find_sid(sid id) {
+std::pair<sccs_pfile::find_status, sccs_pfile::iterator>
+sccs_pfile::find_sid(const sid& id)
+{
+  const char *username = get_user_name();
+  iterator found = end();
 
-	rewind();
-
-	const char *username = get_user_name();
-	sccs_pfile &it = *this;
-	int found = -1;
-
-	while (next()) {
-		if (strcmp(username, it->user.c_str()) == 0
-		    && (id.is_null() || id == it->got || id == it->delta)) {
-			if (found != -1) {
-				return AMBIGUOUS;
-			}
-			found = pos;
-		}
+  for (iterator it = begin(); it != end(); ++it)
+    {
+      if (strcmp(username, it->user.c_str()) == 0
+	  && (id.is_null() || id == it->got || id == it->delta)) 
+	{
+	  if (found != end()) 
+	    {
+	      return make_pair(AMBIGUOUS, end());
+	    }
+	  found = it;
 	}
-
-	if (found == -1) {
-		return NOT_FOUND;
-	}
-
-	pos = found;
-
-	return FOUND;
+    }
+  
+  if (found == end()) 
+    {
+      return make_pair(NOT_FOUND, end());
+    }
+  return make_pair(FOUND, found);
 }
 
 bool
@@ -76,10 +75,9 @@ sccs_pfile::update(bool pfile_already_exists)
 
   try
     {
-      rewind();
-      while (next())
+      for (const_iterator it = begin(); it != end(); ++it) 
 	{
-	  if (write_edit_lock(pf, edit_locks[pos]))
+	  if (write_edit_lock(pf, *it))
 	    {
 	      errormsg_with_errno("%s: Write error.", qname);
 	      remove(qname);

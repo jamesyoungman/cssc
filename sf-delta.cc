@@ -422,7 +422,9 @@ static void line_too_long(long int max_len, size_t actual_len)
    performed before the object is destroyed. */
 
 bool
-sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
+sccs_file::add_delta(mystring gname,
+		     sccs_pfile& pfile,
+		     sccs_pfile::iterator it,
                      mylist<mystring> mrs, mylist<mystring> comments,
                      bool display_diff_output)
 {
@@ -479,8 +481,8 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 
   seq_state sstate(highest_delta_seqno());
-  const mystring sid_name = pfile->got.as_string();
-  const delta *got_delta = find_delta(pfile->got);
+  const mystring sid_name = it->got.as_string();
+  const delta *got_delta = find_delta(it->got);
   if (got_delta == NULL)
     {
         errormsg("Locked delta %s doesn't exist!", sid_name.c_str());
@@ -493,7 +495,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 
 
   if (!prepare_seqstate(sstate, predecessor_seq,
-                        pfile->include, pfile->exclude,
+                        it->include, it->exclude,
                         sccs_date()))
   {
       return false;
@@ -596,7 +598,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
       mylist<mystring> auto_comment;
       auto_comment.add(mystring("AUTO NULL DELTA"));
             
-      release last_auto_rel = release(pfile->delta);
+      release last_auto_rel = release(it->delta);
       // --last_auto_rel;
             
       sid id(got_delta->id());
@@ -642,25 +644,25 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   /* 2002-03-21: James Youngman: we already did this, above */
 
   // copy the list of excluded and included deltas from the p-file
-  // into the delta.  pfile->include is a range_list<sid>,
+  // into the delta.  it->include is a range_list<sid>,
   // but what we actually want to create is a list of seq_no.
-  if (!pfile->include.empty())
+  if (!it->include.empty())
     {
       const_delta_iterator iter(delta_table);
       while (iter.next())
         {
-          if (pfile->include.member(iter->id()))
+          if (it->include.member(iter->id()))
             {
               included.add(iter->seq());
             }
         }
     }
-  if (!pfile->exclude.empty())
+  if (!it->exclude.empty())
     {
       const_delta_iterator iter(delta_table);
       while (iter.next())
         {
-          if (pfile->exclude.member(iter->id()))
+          if (it->exclude.member(iter->id()))
             {
               excluded.add(iter->seq());
             }
@@ -669,7 +671,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
 #endif
   
   // Construct the delta information for the new delta.
-  delta new_delta('D', pfile->delta, sccs_date::now(),
+  delta new_delta('D', it->delta, sccs_date::now(),
                   get_user_name(), new_seq, predecessor_seq,
                   included.list(), excluded.list(), mrs, comments);
 
@@ -923,7 +925,7 @@ sccs_file::add_delta(mystring gname, sccs_pfile &pfile,
   // diff's return value indicates if there was a difference 
   // or not.
 
-  pfile.delete_lock();
+  pfile.delete_lock(it);
   
   if (!end_update(&out, new_delta))
     return false;

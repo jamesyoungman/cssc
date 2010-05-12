@@ -114,17 +114,18 @@ main(int argc, char **argv)
 	  sccs_name &name = iter.get_name();
 	  sccs_pfile pfile(name, sccs_pfile::UPDATE);
 	  
-	  switch (pfile.find_sid(rid))
+	  const std::pair<sccs_pfile::find_status, sccs_pfile::iterator> found(pfile.find_sid(rid));
+	  switch (found.first)
 	    {
 	      // normal case...
 	    case sccs_pfile::FOUND:
 	      if (!iter.unique())
 		printf("\n%s:\n", name.c_str());
 	      
-	      pfile.print_lock_sid(stdout);
+	      pfile.print_lock_sid(stdout, found.second);
 	      fputc('\n', stdout);
 	      
-	      pfile.delete_lock();
+	      pfile.delete_lock(found.second);
 	      if (!pfile.update(true))
 		retval = 1;
 	      
