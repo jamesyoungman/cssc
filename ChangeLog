@@ -1,5 +1,8 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Remove rundundant call to AC_PROG_RANLIB.
+	* configure.ac: Don't call AC_PROG_RANLIB since we're using libtool.
+
 	Make more uses of sccs_pfile const (now that iterating won't
 	mutate it).
 	* pfile.h (sccs_pfile::find_locked): Make const.

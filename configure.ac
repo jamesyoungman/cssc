@@ -142,7 +142,6 @@ AC_SUBST(GXX)dnl
 AC_PROG_CPP
 AC_PROG_CXXCPP
 dnl AC_PROG_INSTALL([])
-AC_PROG_RANLIB
 
 
 dnl The next test must be done in C++.
