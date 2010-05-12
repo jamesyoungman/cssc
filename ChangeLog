@@ -1,5 +1,13 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Some TODO housekeeping.
+	* sf-prs.cc (print_delta): Explain more clearly what get do for
+	:BD: in prs if we fail to seek to the body.
+	* sccsfile.h (s): Add TODO comment suggesting we use something
+	more efficient than mylist<string> for authoried users.
+	(sccs_file::admin): Likewise for set_flags and unset_flags
+	parameters to this method.
+
 	Remove mylist_delta_list; use more appropriate types for
 	loop/length variables.
 	* delta-table.h (mylist_delta_list::build_seq_table): Use more

@@ -63,7 +63,7 @@ private:
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
   
-  mylist<mystring> users;
+  mylist<mystring> users;	// FIXME: consider something more efficient.
   struct sccs_file_flags
   {
     mystring *type;
@@ -277,7 +277,7 @@ public:
   /* sf-admin.c */
   bool admin(const char *file_comment,
              bool force_binary,
-             mylist<mystring> set_flags, mylist<mystring> unset_flags,
+             mylist<mystring> set_flags, mylist<mystring> unset_flags, // FIXME: consider something more efficient
              mylist<mystring> add_users, mylist<mystring> erase_users);
   bool create(const sid &initial_sid,
               const char *iname,

@@ -584,7 +584,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           else
             {
               // TODO: what should we do if the seek fails?
-              // do nothing.
+              // for now, do nothing (that is, don't produce output for :BD:).
             }
           break;
 
