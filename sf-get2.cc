@@ -157,7 +157,7 @@ sccs_file::find_requested_seqno(seq_no requested, sid &found) const
 }
 
 
-bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
+bool sccs_file::sid_in_use(sid id, const sccs_pfile &pfile) const
 {
   if (find_delta(id))
     return true;
@@ -175,7 +175,7 @@ bool sccs_file::sid_in_use(sid id, sccs_pfile &pfile) const
 sid
 sccs_file::find_next_sid(sid requested, sid got,
                          int want_branch,
-                         sccs_pfile &pfile,
+                         const sccs_pfile &pfile,
                          int *pfailed) const
 {
   if (!flags.branch)

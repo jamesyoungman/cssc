@@ -192,7 +192,7 @@ public:
                           bool include_branches=false) const ;
   bool find_requested_seqno(seq_no n, sid &found) const ;
   sid find_next_sid(sid requested, sid got, int branch,
-                    sccs_pfile &pfile, int *failed) const;
+                    const sccs_pfile &pfile, int *failed) const;
   bool test_locks(sid got, const sccs_pfile&) const; 
   
   struct get_status get(FILE *out, mystring name, 
@@ -341,10 +341,7 @@ public:
   // implementation some of the implementation is private where
   // it might better be protected.
 protected:
-
-  // sid_in_use() should take a const sccs_pfile&, but iteration over
-  // a sccs_pfile requires that it is not const (FIXME!).
-  bool sid_in_use(sid id, sccs_pfile& p) const;
+  bool sid_in_use(sid id, const sccs_pfile& p) const;
 
 private:
   // Because we now have a pointer member, don't use the compiler's

@@ -1,5 +1,15 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Make some references to sccs_pfile const now that iterating
+	doesn't mutate.
+	* sccsfile.h (sccs_file::find_next_sid): take a const reference to
+	sccs_pfile, since iterating over a sccs_pfile no longer needs to
+	mutate the container.
+	(sccs_file::sid_in_use): Likewise.
+	* sf-get2.cc (sid_in_use): Make the corresponding change in the
+	implementation.
+	(find_next_sid): Likewise.
+
 	Remove the built-in sccs_pfile iterator.  Use an STL iterator.
 	* pfile.h (sccs_pfile::edit_locks): change type from
 	mylist<edit_lock> to std::list<edit_lock> and remove the built-in
@@ -30,6 +40,7 @@
 	(add_delta): Since there is no built-in iteration position in
 	sccs_pfile, we also need to pass in an iterator.
 	Also #include pfile.h for sccs_pfile::iterator.
+
 	* sf-delta.cc (add_delta): Make the correspondingn change to the
 	implementation of sccs_file::add_delta.
 	* sf-get2.cc (sid_in_use): Use an STL iterator.
