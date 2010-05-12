@@ -1,5 +1,8 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Prune obsolete items in docs/TODO.
+	* docs/TODO: Tests for sact and val exist.  Remove that TODO item.
+
 	Some TODO housekeeping.
 	* sf-prs.cc (print_delta): Explain more clearly what get do for
 	:BD: in prs if we fail to seek to the body.

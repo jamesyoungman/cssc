@@ -89,10 +89,6 @@ Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
         good plan ]
         (This is SourceForge task id 34500)
 
-Mon May 26 14:56:52 1997  James Youngman  <jay@gnu.ai.mit.edu>
-
-        * Write tests for sact and val. (SourceForge task ID 34488).
-
 Sun May 25 16:27:05 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
         * Complete the test cases in admin/flags.sh.
