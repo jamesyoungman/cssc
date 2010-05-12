@@ -1,5 +1,9 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Avoid a 'local variable shadows class member' warning.
+	* delta-table.h (abstract_delta_list): Avoid having a local shadow
+	an instance variable, by renaming the local.
+
 	Weed out some warning options that make sense for C but not C++.
 	* configure.ac (UNWANTED_WARNINGS): remove a bunch of warning
 	options that don't make sense for C++.

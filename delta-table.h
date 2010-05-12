@@ -88,12 +88,12 @@ class mylist_delta_list : public abstract_delta_list
   build_seq_table()
   {
     ASSERT(0 != this);
-    const seq_no high_seqno = get_high_seqno();
+    const seq_no highseq = get_high_seqno();
 
-    seq_table = new int[high_seqno + 1];
+    seq_table = new int[highseq + 1];
 
     int i;
-    for(i = 0; i < high_seqno + 1; i++)
+    for(i = 0; i < highseq + 1; i++)
       {
 	seq_table[i] = -1;
       }
