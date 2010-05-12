@@ -59,7 +59,7 @@ sccs_pfile::find_sid(const sid& id)
 }
 
 bool
-sccs_pfile::update(bool pfile_already_exists)
+sccs_pfile::update(bool pfile_already_exists) const
 {
   const mystring q_name(name.qfile());
   const char* qname = q_name.c_str();

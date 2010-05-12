@@ -123,7 +123,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 }
 
 sccs_pfile::const_iterator
-sccs_pfile::find_locked(sid id) const
+sccs_pfile::find_locked(const sid& id) const
 {
   for (const_iterator it = begin(); it != end(); ++it)
     {
@@ -134,7 +134,7 @@ sccs_pfile::find_locked(sid id) const
 }
 
 sccs_pfile::const_iterator
-sccs_pfile::find_to_be_created(sid id) const
+sccs_pfile::find_to_be_created(const sid& id) const
 {
   for (const_iterator it = begin(); it != end(); ++it)
     {
@@ -145,7 +145,7 @@ sccs_pfile::find_to_be_created(sid id) const
 }
 
 int 
-sccs_pfile::print_lock_sid(FILE *fp, const_iterator pos)
+sccs_pfile::print_lock_sid(FILE *fp, const_iterator pos) const
 {
   return pos->delta.print(fp);
 }

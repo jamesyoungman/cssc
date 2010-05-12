@@ -1,5 +1,18 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Make more uses of sccs_pfile const (now that iterating won't
+	mutate it).
+	* pfile.h (sccs_pfile::find_locked): Make const.
+	(sccs_pfile::is_locked): Make const.
+	(sccs_pfile::find_to_be_created): Make const.
+	(sccs_pfile::is_to_be_created): Make const.
+	(sccs_pfile::print_lock_sid): Make const.
+	(sccs_pfile::update): Make const.
+	* pfile.cc (sccs_pfile::find_locked): Make const.
+	(find_to_be_created): Make const.
+	(print_lock_sid): Make const.
+	* pf-del.cc (sccs_pfile::update): Make const.
+
 	Make some references to sccs_pfile const now that iterating
 	doesn't mutate.
 	* sccsfile.h (sccs_file::find_next_sid): take a const reference to

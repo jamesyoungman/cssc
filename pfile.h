@@ -108,7 +108,7 @@ private:
   NORETURN corrupt(int lineno, const char *msg) const  POSTDECL_NORETURN;
 
   static int
-  write_edit_lock(FILE *out, struct edit_lock const &it) 
+  write_edit_lock(FILE *out, struct edit_lock const &it)
   {
     if (it.got.print(out)
 	|| putc_failed(putc(' ', out))
@@ -154,33 +154,28 @@ public:
   
   size_type length() const { return edit_locks.size(); }
   
-  const_iterator find_locked(sid id) const;
-  bool is_locked(sid id) const
+  const_iterator find_locked(const sid& id) const;
+  bool is_locked(const sid& id) const
   {
     const_iterator it = find_locked(id);
     return it != end();
   }
   
-  const_iterator find_to_be_created(sid id) const;
-  bool is_to_be_created(sid id) const
+  const_iterator find_to_be_created(const sid& id) const;
+  bool is_to_be_created(const sid& id) const
   {
     const_iterator it = find_to_be_created(id);
     return it != end();
   }
 
-  ~sccs_pfile();
-
-  /* pf-add.c */
-
   bool add_lock(sid got, sid delta,
 		sid_list &included, sid_list &excluded);
-
-  /* pf-del.c */
-
   std::pair<find_status, iterator> find_sid(const sid& id);
-  int  print_lock_sid(FILE *fp, const_iterator pos);
+  int  print_lock_sid(FILE *fp, const_iterator pos) const;
   void delete_lock(iterator i) { edit_locks.erase(i); }
-  bool update( bool pfile_already_exists );
+  bool update(bool pfile_already_exists) const;
+
+  ~sccs_pfile();
 };
 
 #endif /* __PFILE_H__ */
