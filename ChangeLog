@@ -1,5 +1,9 @@
 2010-05-12  James Youngman  <jay@gnu.org>
 
+	Weed out some warning options that make sense for C but not C++.
+	* configure.ac (UNWANTED_WARNINGS): remove a bunch of warning
+	options that don't make sense for C++.
+
 	Remove rundundant call to AC_PROG_RANLIB.
 	* configure.ac: Don't call AC_PROG_RANLIB since we're using libtool.
 

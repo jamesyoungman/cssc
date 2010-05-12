@@ -457,7 +457,7 @@ AC_ARG_ENABLE([warnings],
 		AS_HELP_STRING([--enable-warnings], [Turn on all potentially-useful compiler warnings]),
 		[want_warnings=$enableval],[want_warnings=no])
 gl_MANYWARN_ALL_GCC([ALL_GCC_WARNINGS])
-UNWANTED_WARNINGS="-Wundef -Wpadded -Wredundant-decls -Waggregate-return -Winline -Wnested-externs"
+UNWANTED_WARNINGS="-Wundef -Wpadded -Wredundant-decls -Waggregate-return -Winline -Wnested-externs -Wtraditional -Wtraditional-conversion -Wdeclaration-after-statement -Wbad-function-cast -Wc++-compat -Wstrict-prototypes -Wold-style-definition -Wmissing-prototypes"
 AS_IF([test "x$want_warnings" != xno],
 [
 gl_MANYWARN_COMPLEMENT([GCC_WARNINGS], [$ALL_GCC_WARNINGS], [$UNWANTED_WARNINGS])
