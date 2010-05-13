@@ -32,29 +32,29 @@
 
 
 void sccs_file::
-no_id_keywords(const char name[]) const 
+no_id_keywords(const char filename[]) const 
 {
   if (flags.no_id_keywords_is_fatal)
     {
       // TODO: Just what does "fatal" mean for no_id_keywords_is_fatal ?
-      warning("%s: No id keywords.", name);
+      warning("%s: No id keywords.", filename);
       throw CsscNoKeywordsException();
     }
   else
     {
-      warning("%s: No id keywords.", name);
+      warning("%s: No id keywords.", filename);
     }
 }
 
 /* Warns or quits if the new delta doesn't include any id keywords */
 
 bool
-sccs_file::check_keywords_in_file(const char *name)
+sccs_file::check_keywords_in_file(const char *filename)
 {
-  FILE *f = fopen_as_real_user(name, "r");
-  if (NULL == f)
+  FILE *fp = fopen_as_real_user(filename, "r");
+  if (NULL == fp)
     {
-      errormsg_with_errno("%s: Can't open file for reading", name);
+      errormsg_with_errno("%s: Can't open file for reading", filename);
       return false;
     }
   else
@@ -62,26 +62,26 @@ sccs_file::check_keywords_in_file(const char *name)
       int ch, last;
       
       last = '\n';
-      while ( EOF != (ch=getc(f)) )
+      while ( EOF != (ch=getc(fp)) )
 	{
 	  if ('%' == last && is_id_keyword_letter(ch))
 	    {
-	      const int peek = getc(f);
+	      const int peek = getc(fp);
 	      if ('%' == peek)
 		{
-		  fclose(f);
+		  fclose(fp);
 		  return true;
 		}
 	      else if (EOF == peek)
 		{
 		  break;
 		}
-	      ungetc(peek, f);
+	      ungetc(peek, fp);
 	    }
 	  last = ch;
 	}
-      no_id_keywords(name);
+      no_id_keywords(filename);
     }
-  fclose(f);
+  fclose(fp);
   return true;
 }

@@ -26,6 +26,7 @@
 #include "cssc.h"
 #include "sccsfile.h"
 #include "linebuf.h"
+#include "bodyio.h"
 
 #include <string.h>
 
@@ -61,7 +62,6 @@ check_id_keywords(const char *s, size_t len)
   if (len < 3)		
     return false;		// anything shorter cannot contain an ID.
 
-#ifdef HAVE_MEMCHR      
   const void *pv = memchr(s, '%', len);
   if (0 == pv)
     {
@@ -77,14 +77,13 @@ check_id_keywords(const char *s, size_t len)
       if (len < 3)		
 	return false;
     }
-#endif
       
   len -= 2u;
   
   while (len-- > 0)
     {
       // test the % characters first to avoid some unneccesary function calls.
-      if ('%' == s[0] && '%' == s[2] && is_id_keyword_letter(s[1]))
+      if ('%' == s[0] && s[1] && '%' == s[2] && is_id_keyword_letter(s[1]))
 	return true;
       ++s;
     }

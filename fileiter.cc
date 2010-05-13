@@ -64,7 +64,7 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 		DIR *dir = opendir(first);
 		if (dir != NULL) {
 			const char *slash = NULL;
-			int len = strlen(first);
+			const size_t len = strlen(first);
 
 #ifdef CONFIG_MSDOS_FILES
 			if (first[len - 1] != '/' && first[len - 1] != '\\') {

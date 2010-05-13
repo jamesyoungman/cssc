@@ -26,6 +26,7 @@
 
 #include "cssc.h"
 #include "mylist.h"
+#include "sccsfile.h"		// declares these functions.
 
 #include <string.h>
 

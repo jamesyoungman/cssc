@@ -57,8 +57,8 @@ release_list::release_list(const char *s)
 // linear search for possible member.
 bool release_list::member(release r) const
 {
-  const int len = l.length();
-  for(int i=0; i<len; i++)
+  const release_list::size_type len = l.length();
+  for(release_list::size_type i=0; i<len; i++)
     {
       if (l[i] == r)
 	return true;
@@ -82,8 +82,8 @@ release_list::~release_list()
 
 bool release_list::print(FILE * out) const
 {
-  const int len = l.length();
-  for(int i=0; i<len; i++)
+  const release_list::size_type len = l.length();
+  for(release_list::size_type i=0; i<len; i++)
     {
       if (i > 0)
 	{

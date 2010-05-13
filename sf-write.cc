@@ -108,14 +108,13 @@ sccs_file::start_update() {
 
 static int
 print_seqs(FILE *out, char control, mylist<seq_no> const &seqs) {
-        int i;
-        int len = seqs.length();
+        const mylist<seq_no>::size_type len = seqs.length();
 
         if (len != 0) {
                 if (printf_failed(fprintf(out, "\001%c", control))) {
                         return 1;
                 }
-                for(i = 0; i < len; i++) {
+                for (mylist<seq_no>::size_type i = 0; i < len; i++) {
                         if (printf_failed(fprintf(out, " %u", seqs[i]))) {
                                 return 1;
                         }
@@ -133,8 +132,7 @@ print_seqs(FILE *out, char control, mylist<seq_no> const &seqs) {
 int
 sccs_file::write_delta(FILE *out, struct delta const &d) const
 {
-  int len;
-  int i;
+  mylist<mystring>::size_type len, i;
 
   if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
                             cap5(d.inserted()),
@@ -188,8 +186,7 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
 int
 sccs_file::write(FILE *out) const
 {
-  int len;
-  int i;
+  mylist<mystring>::size_type len, i;
   const char *s;
 
   delta_iterator iter(delta_table);
@@ -401,7 +398,7 @@ sccs_file::write(FILE *out) const
 
 
 int
-sccs_file::rehack_encoded_flag(FILE *f, int *sum) const
+sccs_file::rehack_encoded_flag(FILE *fp, int *sum) const
 {
   // Find the encoded flag.  Maybe change it.
   // "f" must be opened for update.
@@ -411,7 +408,7 @@ sccs_file::rehack_encoded_flag(FILE *f, int *sum) const
   const int nmatch = strlen(match);
   int n;
   
-  while ( EOF != (ch=getc(f)) )
+  while ( EOF != (ch=getc(fp)) )
     {
       if ('\n' == last)
         {
@@ -421,12 +418,12 @@ sccs_file::rehack_encoded_flag(FILE *f, int *sum) const
               if (nmatch-1 == n)
                 {
                   // success; now we might change the flag.
-                  FilePosSaver *pos = new FilePosSaver(f);
-                  ch = getc(f);
+                  FilePosSaver *pos = new FilePosSaver(fp);
+                  ch = getc(fp);
                   if ('0' == ch)
                     {
                       delete pos; // rewind file 1 char.
-                      putc('1', f);
+                      putc('1', fp);
                       const int d =  ('1' - '0'); // change to checksum.
                       *sum = (*sum + d) & 0xFFFF; // adjust checksum.
                       return 0;
@@ -439,7 +436,7 @@ sccs_file::rehack_encoded_flag(FILE *f, int *sum) const
                     }
                 }
               ++n;              // advance match.
-              ch = getc(f);
+              ch = getc(fp);
             }
           // match failed.
         }

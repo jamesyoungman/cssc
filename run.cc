@@ -98,7 +98,7 @@ static bool call_system(const char *s)
 int
 run(const char *prg, mylist<const char *> const &args) {
         int i;
-        int len = args.length();
+        const size_t len = args.length();
 
 #ifdef NEED_CALL_SYSTEM
 
@@ -186,9 +186,8 @@ run(const char *prg, mylist<const char *> const &args) {
 inline mylist<const char*> &
 operator +=(mylist<const char*> &l1, mylist<mystring> const &l2)
 {
-  int len = l2.length();
-  int i;
-  for(i = 0; i < len; i++)
+  const mylist<mystring>::size_type len = l2.length();
+  for (mylist<mystring>::size_type i = 0; i < len; i++)
     {
       // This add operation would be push_back() under STL.
       // When everybody supports STL, we'll switch.
@@ -211,8 +210,8 @@ run_mr_checker(const char *prg, const char *arg1, mylist<mystring> mrs)
 
       args.add(arg1);
 
-      int len = mrs.length();
-      for(int i = 0; i < len; i++)
+      const mylist<const char*>::size_type len = mrs.length();
+      for (mylist<const char*>::size_type i = 0; i < len; i++)
         args.add(mrs[i].c_str()); // STL's push_back
 
       return run(prg, args);

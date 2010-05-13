@@ -1,5 +1,32 @@
 2010-05-13  James Youngman  <jay@gnu.org>
 
+	* bodyio.cc (body_insert_binary): Explicitly qualify
+	::check_id_keywords as being in the global namespace.
+	* run.cc (operator+=): Change type of index variables to size_type
+	to fix a compiler warning.
+	(run_mr_checker): Likewise.
+	* sf-write.cc (print_seqs): Likewise.
+	(write_delta): Likewise.
+	(rehack_encoded_flag): Avoid shadowing the name of a class member.
+	* sccsfile.cc: Remove unused macro 'f'.
+	(strict_atoul_idu): Remove unused variable 'c'.
+	(read_line_param): Avoid shadowing the name of a class member.
+	* rel_list.h (class release_list): Define typedef size_type.
+	* rel_list.cc (member): Use size_type for index variables to avoid
+	(justified) compiler warnings.
+	(print): Likewise.
+	* fileiter.cc (sccs_file_iterator): Use size_t to represent the
+	result of strlen, not int.
+	* file.cc (is_writable): Make static, it's not used elsewhere.
+	(old_is_writable): Unused; remove.
+	* sf-chkid.cc (check_id_keywords): Assume we have memchr.  Avoid
+	possible access beyond the end of the string.
+	* sf-kw.cc (no_id_keywords): Avoid shadowing the name of a class
+	member.
+	(check_keywords_in_file): Likewise.
+	* l-split.cc: #include "sccsfile.h" to get declarations of the
+	functions in this file.
+
 	Fix or minimise some compiler warnings.
 	* sid_list.h (range_list): Avoid long-to-size_t compiler warning.
 	* encoding.cc (encode): Move the function definition here from

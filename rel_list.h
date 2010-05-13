@@ -36,6 +36,8 @@ class release_list
   mylist<release> l;
 
 public:
+  typedef mylist<release>::size_type size_type;
+
   // Constructors / destructors
   release_list();
   release_list(const release_list& create_from);

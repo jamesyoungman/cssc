@@ -163,8 +163,13 @@ is_readable(const char *name) {
  * purposes -- we in fact only care about this for 
  * the safeguards in "get -e" and "get".  This avoids
  * overwriting a file which we might be editing.
+ *
+ * The previous implementation used to actually use 
+ * access/eaccess, but those return 0 for root for 
+ * files that we choose to not actually count as 
+ * writeable.
  */
-int
+static int
 is_writable(const char *filename, int /* as_real_user = 1 */ )
 {
   struct stat st;
@@ -180,17 +185,6 @@ is_writable(const char *filename, int /* as_real_user = 1 */ )
         return 0;               // no write bits set.
     }
   
-}
-
-/* Returns true if the file exists and is writable. */
-
-inline int
-old_is_writable(const char *name, int as_real_user = 1) {
-        if (as_real_user) {
-                return access(name,  (mode_t) 02) != -1;
-        } else {
-                return eaccess(name, (mode_t) 02) != -1;
-        }
 }
 
 

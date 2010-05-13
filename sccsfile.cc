@@ -76,7 +76,6 @@ static int just_one_link(FILE *f)
 
 
 /* Static member for opening a SCCS file and then calculating its checksum. */
-#define f f_is_also_a_class_member_variable
 FILE *
 sccs_file::open_sccs_file(const char *name,
                           enum _mode mode,
@@ -219,7 +218,7 @@ sccs_file::open_sccs_file(const char *name,
 #endif
   return f_local;
 }
-#undef f
+
 
 
 /*
@@ -330,7 +329,6 @@ sccs_file::strict_atoul_idu(const char *s) const
   unsigned long n = 0;
   bool found_ws = false;
   const unsigned long limit = 99999uL;
-  char c;
 
   /* Unix System III pads to the left with spaces in the 
    * numbers, while more modern versions of SCCS pad to 
@@ -1137,9 +1135,9 @@ set_expanded_keyword_flag(const char *s)
 }
 
 int
-sccs_file::read_line_param(FILE *f)
+sccs_file::read_line_param(FILE *fp)
 {
-  if (plinebuf->read_line(f))
+  if (plinebuf->read_line(fp))
     {
       return 1;
     }
@@ -1276,7 +1274,8 @@ bool sccs_file::
 print_subsituted_flags_list(FILE *out, const char* separator) const
 {
   const mylist<char> members = flags.substitued_flag_letters.list();
-  for (int i=0; i<members.length(); ++i)
+
+  for (mylist<char>::size_type i=0; i<members.length(); ++i)
     {
       // print a space separator if one is required.
       if (i > 0)
