@@ -1,5 +1,8 @@
 2010-05-13  James Youngman  <jay@gnu.org>
 
+	Avoid issuing warnings for things in system headers.
+	* configure.ac: Disable warnigns for system headers.
+
 	Fix some commpiler warnings.
 	* bodyio.h (decode_line): return size_t, not int, for a length.
 	(encode_line): take a size_t parameter, not int, for a length.

@@ -457,10 +457,17 @@ AC_ARG_ENABLE([warnings],
 		AS_HELP_STRING([--enable-warnings], [Turn on all potentially-useful compiler warnings]),
 		[want_warnings=$enableval],[want_warnings=no])
 gl_MANYWARN_ALL_GCC([ALL_GCC_WARNINGS])
-UNWANTED_WARNINGS="-Wundef -Wpadded -Wredundant-decls -Waggregate-return -Winline -Wnested-externs -Wtraditional -Wtraditional-conversion -Wdeclaration-after-statement -Wbad-function-cast -Wc++-compat -Wstrict-prototypes -Wold-style-definition -Wmissing-prototypes"
+# Warnings not suitable for C++.
+WARNINGS_NOT_CXX="-Waggregate-return -Winline -Wnested-externs -Wtraditional -Wtraditional-conversion -Wdeclaration-after-statement -Wbad-function-cast -Wc++-compat -Wstrict-prototypes -Wold-style-definition -Wmissing-prototypes"
+# Warnings which give too many false positives from system headers.
+WARNINGS_SYS_HEADER_FALSE_POSITIVE="-Wsystem-headers -Wunreachable-code"
+# Warnings for things that are actually normal
+WARNINGS_NORMAL="-Wundef -Wpadded -Wredundant-decls"
+# All unwanted warnings
+UNWANTED_CXX_WARNINGS="$WARNINGS_NOT_CXX $WARNINGS_SYS_HEADER_FALSE_POSITIVE $WARNINGS_NORMAL"
 AS_IF([test "x$want_warnings" != xno],
 [
-gl_MANYWARN_COMPLEMENT([GCC_WARNINGS], [$ALL_GCC_WARNINGS], [$UNWANTED_WARNINGS])
+gl_MANYWARN_COMPLEMENT([GCC_WARNINGS], [$ALL_GCC_WARNINGS], [$UNWANTED_CXX_WARNINGS])
 for warning_option in $GCC_WARNINGS
 do 
     gl_WARN_ADD([$warning_option])
