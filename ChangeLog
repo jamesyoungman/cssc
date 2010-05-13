@@ -1,3 +1,115 @@
+2010-05-14  James Youngman  <jay@gnu.org>
+
+	Move CSSC source code to src/ subdirectory.
+	* configure.ac: move CSSC source to subdirectory src/.
+	* Makefile.am: rename to src/Makefile.am.  The remaining makefile
+	just sets SUBDIRS and EXTRA_DIST.
+	* admin.cc: moved to src/admin.cc
+	* bodyio.cc: moved to src/bodyio.cc
+	* bodyio.h: moved to src/bodyio.h
+	* canonify.cc: moved to src/canonify.cc
+	* cap.cc: moved to src/cap.cc
+	* cdc.cc: moved to src/cdc.cc
+	* cleanup.h: moved to src/cleanup.h
+	* cssc-assert.h: moved to src/cssc-assert.h
+	* cssc.h: moved to src/cssc.h
+	* defaults.h: moved to src/defaults.h
+	* delta-iterator.cc: moved to src/delta-iterator.cc
+	* delta-iterator.h: moved to src/delta-iterator.h
+	* delta-table.cc: moved to src/delta-table.cc
+	* delta-table.h: moved to src/delta-table.h
+	* delta.cc: moved to src/delta.cc
+	* delta.h: moved to src/delta.h
+	* dtbl-prepend.cc: moved to src/dtbl-prepend.cc
+	* encoding.cc: moved to src/encoding.cc
+	* environment.cc: moved to src/environment.cc
+	* except.h: moved to src/except.h
+	* fatalsig.cc: moved to src/fatalsig.cc
+	* fdclosed.cc: moved to src/fdclosed.cc
+	* file.cc: moved to src/file.cc
+	* file.h: moved to src/file.h
+	* filediff.cc: moved to src/filediff.cc
+	* filediff.h: moved to src/filediff.h
+	* fileiter.cc: moved to src/fileiter.cc
+	* fileiter.h: moved to src/fileiter.h
+	* filelock.h: moved to src/filelock.h
+	* filepos.h: moved to src/filepos.h
+	* fnsplit.cc: moved to src/fnsplit.cc
+	* get.cc: moved to src/get.cc
+	* ioerr.h: moved to src/ioerr.h
+	* l-split.cc: moved to src/l-split.cc
+	* linebuf.cc: moved to src/linebuf.cc
+	* linebuf.h: moved to src/linebuf.h
+	* my-getopt.cc: moved to src/my-getopt.cc
+	* my-getopt.h: moved to src/my-getopt.h
+	* mylist.h: moved to src/mylist.h
+	* myset.h: moved to src/myset.h
+	* mystring.h: moved to src/mystring.h
+	* pf-add.cc: moved to src/pf-add.cc
+	* pf-del.cc: moved to src/pf-del.cc
+	* pfile.cc: moved to src/pfile.cc
+	* pfile.h: moved to src/pfile.h
+	* prompt.cc: moved to src/prompt.cc
+	* prs.cc: moved to src/prs.cc
+	* prt.cc: moved to src/prt.cc
+	* quit.cc: moved to src/quit.cc
+	* quit.h: moved to src/quit.h
+	* rel_list.cc: moved to src/rel_list.cc
+	* rel_list.h: moved to src/rel_list.h
+	* release.h: moved to src/release.h
+	* relvbr.h: moved to src/relvbr.h
+	* rl-merge.cc: moved to src/rl-merge.cc
+	* rmdel.cc: moved to src/rmdel.cc
+	* run.cc: moved to src/run.cc
+	* run.h: moved to src/run.h
+	* sact.cc: moved to src/sact.cc
+	* sccs-delta.cc: moved to src/sccs-delta.cc
+	* sccsdate.cc: moved to src/sccsdate.cc
+	* sccsdate.h: moved to src/sccsdate.h
+	* sccsdiff.sh.in: moved to src/sccsdiff.sh.in
+	* sccsfile.cc: moved to src/sccsfile.cc
+	* sccsfile.h: moved to src/sccsfile.h
+	* sccsname.cc: moved to src/sccsname.cc
+	* sccsname.h: moved to src/sccsname.h
+	* seqstate.cc: moved to src/seqstate.cc
+	* seqstate.h: moved to src/seqstate.h
+	* sf-add.cc: moved to src/sf-add.cc
+	* sf-admin.cc: moved to src/sf-admin.cc
+	* sf-cdc.cc: moved to src/sf-cdc.cc
+	* sf-chkid.cc: moved to src/sf-chkid.cc
+	* sf-chkmr.h: moved to src/sf-chkmr.h
+	* sf-delta.cc: moved to src/sf-delta.cc
+	* sf-get.cc: moved to src/sf-get.cc
+	* sf-get2.cc: moved to src/sf-get2.cc
+	* sf-get3.cc: moved to src/sf-get3.cc
+	* sf-kw.cc: moved to src/sf-kw.cc
+	* sf-prs.cc: moved to src/sf-prs.cc
+	* sf-prt.cc: moved to src/sf-prt.cc
+	* sf-rmdel.cc: moved to src/sf-rmdel.cc
+	* sf-val.cc: moved to src/sf-val.cc
+	* sf-write.cc: moved to src/sf-write.cc
+	* showconfig.cc: moved to src/showconfig.cc
+	* sid.cc: moved to src/sid.cc
+	* sid.h: moved to src/sid.h
+	* sid_list.h: moved to src/sid_list.h
+	* sl-merge.h: moved to src/sl-merge.h
+	* stack.h: moved to src/stack.h
+	* sysdep.h: moved to src/sysdep.h
+	* unget.cc: moved to src/unget.cc
+	* val.cc: moved to src/val.cc
+	* valcodes.h: moved to src/valcodes.h
+	* version.cc.in: moved to src/version.cc.in
+	* version.h: moved to src/version.h
+	* what.cc: moved to src/what.cc
+	* writesubst.cc: moved to src/writesubst.cc
+	* unit-tests/Makefile.am (LDADD): Fix relative path
+	of libcssc.a.
+	(test_bigfile_LDADD): Likewise.
+	(AM_CPPFLAGS): Fix relative path to the include files.
+	* tests/common/command-names (dir): Update relative path to the binaries.
+	(sccsprog): Set a variable for the path to the sccs binary.
+	(sccs): Correct the sccs command (use ${sccsprog}).
+
 2010-05-13  James Youngman  <jay@gnu.org>
 
 	Fix some compiler warnigns about shadowing names or integer conversions.

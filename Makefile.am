@@ -23,7 +23,6 @@
 ## into Makefile.in, and become the first line.
 # Running ./configure will generate a Makefile from this file.
 
-csscutildir = $(libexecdir)/cssc
 
 # We keep "tests" as the last named subdirectory in SUBDIRS,
 # so that when we do "make check", the "Tests passed" message
@@ -32,74 +31,6 @@ csscutildir = $(libexecdir)/cssc
 # 
 # We run the unit tests before the regression tests in order to make
 # it more obvious where the bug is when there is a test failure.
-SUBDIRS = gl bsd docs testutils auxfiles sccs-cgi googletest unit-tests tests 
+SUBDIRS = gl bsd docs testutils auxfiles src sccs-cgi googletest unit-tests tests 
 
-ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -I gl/lib -I $(srcdir)/gl/lib
-AM_CXXFLAGS = $(WARN_CFLAGS) 
-noinst_LIBRARIES = libcssc.a
-
-csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
-csscutil_SCRIPTS = sccsdiff 
-
-BUILT_SOURCES = version.cc
-CLEANFILES = sccsdiff
-
-noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
-	filepos.h my-getopt.h linebuf.h mylist.h mystring.h pfile.h \
-	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
-	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h stack.h sysdep.h \
-	version.h ioerr.h delta-table.h delta.h \
-	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
-	relvbr.h myset.h cssc-assert.h cleanup.h
-
-libcssc_a_SOURCES = \
-	rl-merge.cc \
-	bodyio.cc sf-get.cc sf-get3.cc \
-	seqstate.cc canonify.cc writesubst.cc \
-	pfile.cc encoding.cc \
-	sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc \
-	l-split.cc prompt.cc run.cc filediff.cc \
-	cap.cc sf-write.cc \
-	sccsfile.cc rel_list.cc \
-	sccs-delta.cc delta-table.cc delta-iterator.cc \
-	fileiter.cc file.cc linebuf.cc \
-	sccsname.cc sid.cc sccsdate.cc fnsplit.cc \
-	quit.cc fatalsig.cc \
-	my-getopt.cc version.cc fdclosed.cc \
-	showconfig.cc  environment.cc
-
-# The source lists for the actual executables....
-what_SOURCES = what.cc
-sact_SOURCES = sact.cc
-unget_SOURCES = unget.cc pf-del.cc
-prt_SOURCES = prt.cc sf-prt.cc
-prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc
-get_SOURCES = get.cc pf-add.cc sf-chkid.cc sf-kw.cc sf-get2.cc pf-del.cc
-rmdel_SOURCES = rmdel.cc sf-rmdel.cc
-cdc_SOURCES = cdc.cc sf-cdc.cc
-admin_SOURCES = admin.cc sf-admin.cc sf-val.cc
-delta_SOURCES = delta.cc sf-delta.cc pf-del.cc
-val_SOURCES = val.cc sf-val.cc
-
-get_LDADD = libcssc.a $(LIBOBJS) 
-delta_LDADD = libcssc.a $(LIBOBJS)
-admin_LDADD = libcssc.a $(LIBOBJS)
-prs_LDADD = libcssc.a $(LIBOBJS)
-what_LDADD = libcssc.a $(LIBOBJS)
-unget_LDADD = libcssc.a $(LIBOBJS)
-sact_LDADD = libcssc.a $(LIBOBJS)
-cdc_LDADD = libcssc.a $(LIBOBJS)
-rmdel_LDADD = libcssc.a $(LIBOBJS)
-prt_LDADD = libcssc.a $(LIBOBJS)
-val_LDADD = libcssc.a $(LIBOBJS)
-
-EXTRA_DIST = ChangeLog ChangeLog.1 show-disp.sh
-
-
-sccsdiff: sccsdiff.sh
-	sed -e 's:__csscutildir__:$(csscutildir):g' < sccsdiff.sh > $@ && chmod a+x $@ || { rm -f $@; false; }
-
-testsplit$(EXEEXT): fnsplit.cc mystring.$(OBJEXT) quit.$(OBJEXT)
-	$(CXXCOMPILE) -DTEST_FNSPLIT -o testsplit$(EXEEXT) \
-		$(srcdir)/fnsplit.cc mystring.$(OBJEXT) quit.$(OBJEXT)
+EXTRA_DIST = ChangeLog ChangeLog.1

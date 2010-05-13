@@ -1,5 +1,4 @@
-dir=${dir:-../..}
-
+dir=${dir:-../../src}
 # Get the canonical directory name
 case "$dir" in 
 	/*)   
@@ -8,7 +7,9 @@ case "$dir" in
 		dir=`cd "$dir" && pwd || echo "$dir"`
 		;;
 esac
-# echo "Directory under test is $dir"
+echo "Directory under test is $dir"
+sccs_dir=${dir}/../bsd
+
 
 # Make a variable for each CSSC command.  These are the commands we run 
 # in order to set up each test.  Because they are variables, we can set
@@ -20,6 +21,7 @@ prs=${prs:-${dir}/prs}
 prt=${prt:-${dir}/prt}
 delta=${delta:-${dir}/delta}
 sact=${sact:-${dir}/sact}
+sccsprog=${sccsprog:-${sccs_dir}/sccs}
 sccsdiff=${sccsdiff:-${dir}/sccsdiff}
 unget=${unget:-${dir}/unget}
 what=${what:-${dir}/what}
@@ -41,29 +43,32 @@ do
 	esac
 done
 
-# Find the sccs driver program.   Note that we use ${sccs} here;
-# ${sccs} was set, above.
+# Find the sccs driver program.   Note that we use ${sccsprog} here;
+# ${sccsprog} was set, above.
 
 # We need to run the candidate 
 # to find out if it accepts the --prefix option.
 
 if test x"${sccs}" = x
 then
-    if test -f "${dir}/sccs"
+    if test x"${sccsprog}" = x
     then
-	sccsprog="${dir}/sccs"
-    elif test -f "${dir}/bsd/sccs"
-    then
-	sccsprog="${dir}/bsd/sccs"
-    else
-	case "${dir}" in 
-	    /*)    sccsprog="${dir}/bsd/sccs"
-		    ;;
-	    ../..) sccsprog="${dir}/bsd/sccs"
-		    ;;
-	    *) sccsprog="sccs"
-		    ;;
-	esac
+        if test -f "${dir}/sccs"
+        then
+    	sccsprog="${dir}/sccs"
+        elif test -f "${dir}/bsd/sccs"
+        then
+    	sccsprog="${dir}/bsd/sccs"
+        else
+    	case "${dir}" in 
+    	    /*)    sccsprog="${dir}/bsd/sccs"
+    		    ;;
+    	    ../..) sccsprog="${dir}/bsd/sccs"
+    		    ;;
+    	    *) sccsprog="sccs"
+    		    ;;
+    	esac
+        fi
     fi
 
     # Find out if it takes the --prefix option.  If so,

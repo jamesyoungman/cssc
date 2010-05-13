@@ -25,7 +25,7 @@ m4_include(googletest/m4/acx_pthread.m4)
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
 AC_INIT
-AC_CONFIG_SRCDIR([sccsfile.h])
+AC_CONFIG_SRCDIR([src/sccsfile.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -37,7 +37,6 @@ AC_CONFIG_MACRO_DIR([m4])
 #   the code got it from git.
 AM_INIT_AUTOMAKE(CSSC,1.2.1-git)
 
-dnl AC_CONFIG_HEADER(config.h.)
 AM_CONFIG_HEADER(config.h)
 
 dnl Feature and package checks
@@ -480,5 +479,5 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_CONFIG_FILES([version.cc Makefile gl/Makefile gl/lib/Makefile gl/doc/Makefile gl/tests/Makefile testutils/Makefile sccsdiff.sh bsd/Makefile unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
+AC_CONFIG_FILES([src/version.cc Makefile gl/Makefile gl/lib/Makefile gl/doc/Makefile gl/tests/Makefile testutils/Makefile src/Makefile src/sccsdiff.sh bsd/Makefile unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
 AC_OUTPUT

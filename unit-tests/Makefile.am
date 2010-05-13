@@ -1,6 +1,6 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
-AM_CPPFLAGS = -I$(srcdir)/../googletest -I$(srcdir)/../googletest/include -I$(srcdir)/..
+AM_CPPFLAGS = -I$(srcdir)/../googletest -I$(srcdir)/../googletest/include -I$(srcdir)/../src
 
 # Modifies compiler and linker flags for pthreads compatibility.
 if HAVE_PTHREADS
@@ -15,7 +15,7 @@ EXTRA_DIST = TODO.txt
 # Build rules for libraries.
 LDADD = ../googletest/lib/libgtest.la \
 	../googletest/lib/libgtest_main.la \
-	../libcssc.a
+	../src/libcssc.a
 
 TESTS_ENVIRONMENT = sh testwrapper.sh
 TESTS = $(unit_tests)
@@ -41,7 +41,7 @@ test_delta_table_SOURCES = test_delta-table.cc
 test_encoding_SOURCES = test_encoding.cc
 test_encoding2_SOURCES = test_encoding2.cc
 test_bigfile_SOURCES = test_bigfile.cc
-test_bigfile_LDADD = ../libcssc.a
+test_bigfile_LDADD = ../src/libcssc.a
 
 
 # The death tests may leave a core file behind.  Some systems also use
