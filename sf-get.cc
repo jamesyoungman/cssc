@@ -76,8 +76,8 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	  if (bDebug)
 	    {
 	      fprintf(stderr,
-		      "seq %d includes %d other deltas...\n",
-		      y, len);
+		      "seq %d includes %lu other deltas...\n",
+		      y, static_cast<unsigned long>(len));
 	    }
 	  
 	  for (mylist<seq_no>::size_type i = 0; i < len; i++)
@@ -106,8 +106,8 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	if (bDebug)
 	  {
 	    fprintf(stderr,
-		    "seq %d excludes %d other deltas...\n",
-		    y, len);
+		    "seq %d excludes %lu other deltas...\n",
+		    y, static_cast<unsigned long>(len));
 	  }
 	
 	for (mylist<seq_no>::size_type i = 0; i < len; i++)
@@ -139,8 +139,8 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	  if (bDebug)
 	    {
 	      fprintf(stderr,
-		      "seq %d ignores %d other deltas...\n",
-		      y, len);
+		      "seq %d ignores %lu other deltas...\n",
+		      y, static_cast<unsigned long>(len));
 	    }
 	
 	  

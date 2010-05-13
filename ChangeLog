@@ -1,3 +1,14 @@
+2010-05-13  James Youngman  <jay@gnu.org>
+
+	Fix some commpiler warnings.
+	* bodyio.h (decode_line): return size_t, not int, for a length.
+	(encode_line): take a size_t parameter, not int, for a length.
+	* encoding.cc (decode_line): Use a size_t value for offsets in the
+	buffer.
+	* bodyio.cc (body_insert_text): Add casts where we know
+	conversions are safe to avoid compiler warnings.
+	(copy_data): Mark as a static function.
+
 2010-05-12  James Youngman  <jay@gnu.org>
 
 	Remove unused file list.cc.

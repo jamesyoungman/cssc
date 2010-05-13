@@ -158,7 +158,7 @@ body_insert_text(const char iname[], const char oname[],
 
       if (!found_id)		// Check for ID keywords.
 	{
-	  if ('%' == last && is_id_keyword_letter(ch))
+	  if ('%' == last && is_id_keyword_letter(static_cast<char>(ch)))
 	    {
 	      const int peek = getc(in);
 	      if ('%' == peek)
@@ -263,7 +263,7 @@ body_insert_binary(const char iname[], const char oname[],
 }
 
 
-bool
+static bool
 copy_data(FILE *in, FILE *out)
 {
   char buf[BUFSIZ];

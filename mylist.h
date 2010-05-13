@@ -45,12 +45,12 @@ protected:
 public:
   typedef typename impl_type::size_type size_type;
 
-  mylist()
-  {
-  }
-  
   mylist(mylist const &l)
     : items_(l.items_)
+  {
+  }
+
+  mylist()
   {
   }
   

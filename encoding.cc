@@ -39,7 +39,7 @@
 
 
 // decode a line, returning the number of characters in it.
-int
+size_t
 decode_line(const char in[], char out[])
 {
   int len = UUDEC(in[0]);
@@ -48,8 +48,7 @@ decode_line(const char in[], char out[])
 
   ++in;				// step over byte count.
   
-  int n;
-  for (n=0; n<len; n+=3)
+  for (size_t n=0; n<len; n+=3)
     {
       decode(in, out);
       in += 4;
@@ -61,7 +60,7 @@ decode_line(const char in[], char out[])
 
 // encode a line
 void
-encode_line(const char in[], char out[], int len)
+encode_line(const char in[], char out[], size_t len)
 {
   *out++ = UUENC(len);
   
