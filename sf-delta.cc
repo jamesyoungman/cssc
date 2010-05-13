@@ -701,14 +701,16 @@ sccs_file::add_delta(mystring gname,
   // returns -1.
   while (1)
     {
-      int c = read_line(); // read line from old body.
+      char c;
+      // read line from the old body.
+      const bool got_line = read_line(&c);
 
 #ifdef JAY_DEBUG          
       fprintf(stderr, "input: %s\n", plinebuf->c_str());
 #endif
-      if (c != 0 && c != -1)
+      if (got_line && c != 0)
         {
-                                // it's a control line.
+	  // it's a control line.
           seq_no seq = strict_atous(plinebuf->c_str() + 3);
           
 #ifdef JAY_DEBUG          
@@ -869,7 +871,7 @@ sccs_file::add_delta(mystring gname,
 #endif    
         }
 
-      if (c == -1)
+      if (!got_line)
         {
           // If we've exhausted the input we may still have a block to
           // insert at the end.

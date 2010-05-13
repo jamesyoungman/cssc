@@ -120,11 +120,11 @@ sccs_file::rmdel(sid id)
     }
 
   update_state state = COPY;
-  int c;
+  char c;
 
   bool retval = true;
   
-  while ( (c=read_line()) != -1)
+  while (read_line(&c))
     {
       if (0 != c)
 	{

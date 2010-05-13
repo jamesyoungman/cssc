@@ -1,5 +1,15 @@
 2010-05-13  James Youngman  <jay@gnu.org>
 
+	* sccsfile.h (sccs_file::read_line): Change prototype to separate
+	EOF detection from detection of what type of line we just read.
+	* sccsfile.cc (read_line): Update the implementation to match.
+	(read_delta): Update caller.
+	(sccs_file): Update caller.
+	* sf-delta.cc (add_delta): Update caller.
+	* sf-get.cc (get): Update caller.
+	* sf-prs.cc (print_delta): Update caller.
+	* sf-rmdel.cc (rmdel): Update caller.
+
 	Avoid issuing warnings for things in system headers.
 	* configure.ac: Disable warnigns for system headers.
 

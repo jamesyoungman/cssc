@@ -98,7 +98,7 @@ private:
   
   int read_line_param(FILE *f);
 
-  int read_line();
+  bool read_line(char* line_type);
   void read_delta();
   bool seek_to_body();
 

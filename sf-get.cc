@@ -335,7 +335,8 @@ sccs_file::get(mystring gname, class seq_state &state,
   /* The following statement is not correct. */
   /* "@I 1" should start the body of the SCCS file */
 
-  if (read_line() != 'I')
+  char line_type;
+  if (!read_line(&line_type) || line_type != 'I')
     {
       corrupt("Expected '@I'");
       return false;
@@ -353,14 +354,12 @@ sccs_file::get(mystring gname, class seq_state &state,
   FILE *out = parms.out;
 
   while (1) {
-    int c = read_line();
+    if (!read_line(&line_type)) 
+      {
+	break;  /* EOF */
+      }
 
-    if (c == -1) { 
-      /* EOF */
-      break;
-    }
-
-    if (c == 0) {
+    if (line_type == 0) {
       /* A non-control line */
 
       if (debug) {
@@ -448,14 +447,14 @@ sccs_file::get(mystring gname, class seq_state &state,
 
     const char *msg = NULL;
 
-    switch (c) {
+    switch (line_type) {
     case 'E':
       msg = state.end(seq);
       break;
 
     case 'D':
     case 'I':
-      msg = state.start(seq, c);
+      msg = state.start(seq, line_type);
       break;
       
     default:

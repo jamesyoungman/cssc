@@ -575,7 +575,8 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY2('B','D'):
           if (seek_to_body())
             {
-              while (read_line() != -1)
+	      char c;
+              while (read_line(&c))
                 {
                   fputs(plinebuf->c_str(), out);
                   putc('\n', out);

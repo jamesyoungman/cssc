@@ -588,11 +588,12 @@ sccs_file::update()
     }
 
   // assume that since the earlier seek_to_body() worked,
-  // this one will top.
+  // this one will too.
   if (!seek_to_body())
     return false;
-  
-  while (read_line() != -1)
+
+  char line_type;
+  while (read_line(&line_type))
     {
       if (fputs_failed(fputs(plinebuf->c_str(), out))
           || putc_failed(putc('\n', out)))

@@ -222,26 +222,31 @@ sccs_file::open_sccs_file(const char *name,
 #undef f
 
 
-/* Reads a line from the SCCS file and increments the current line number.
-   If the end of file is reached it returns -1.  If it's a control line
-   (it starts with ^A) then the control character (the second character)
-   is returned.  Otherwise 0 is returned. */
-
-int
-sccs_file::read_line() {
-        if (read_line_param(f)) {
-                if (ferror(f)) {
-                        errormsg_with_errno("%s: Read error.", name.c_str());
-                }
-                return -1;
-        } 
-
-        lineno++;
-        if ( bufchar(0) == '\001')
-          {
-            return bufchar(1);
-          }
-        return 0;
+/*
+ * Reads a line from the SCCS file.
+ * Result:
+ *   true if we read a line.   false for EOF or failure.
+ * Output params:
+ *   control_char: 0 if this is not a control (^A) line, otherwise the line type.
+ */
+bool
+sccs_file::read_line(char* line_type) 
+{
+  if (read_line_param(f)) 
+    {
+      if (ferror(f)) 
+	{
+	  errormsg_with_errno("%s: Read error.", name.c_str());
+	}
+      return false;
+    } 
+  
+  lineno++;
+  if ( bufchar(0) == '\001')
+    *line_type = bufchar(1);
+  else
+    *line_type = char(0);
+  return true;
 }
 
 
@@ -395,9 +400,11 @@ sccs_file::read_delta() {
                     strict_atoul_idu(args[1]),
                     strict_atoul_idu(args[2]));
 
-        if (read_line() != 'd') {
-                corrupt("Expected '@d'");
-        }
+	char line_type;
+        if (!read_line(&line_type) || (line_type != 'd')) 
+	  {
+	    corrupt("Expected '@d'");
+	  }
 
         check_arg();
 
@@ -428,7 +435,12 @@ sccs_file::read_delta() {
 
         /* Read in any lists of included, excluded or ignored seq. no's. */
 
-        int c = read_line();
+        char c;
+	if (!read_line(&c))
+	  {
+	    corrupt("Unexpected end-of-file");
+	  }
+	
         int i;
         const char *start;
         bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
@@ -457,7 +469,8 @@ sccs_file::read_delta() {
                   
                   if (bufchar(2) != ' ')
                     {
-                      c = read_line(); // throw line away.
+		      // throw line away.
+                      read_line(&c);  // FIXME: missing EOF check here.
                       continue;
                     }
                         
@@ -505,7 +518,7 @@ sccs_file::read_delta() {
                                 start = end;
                         } while (start != NULL);
 
-                        c = read_line();
+                        read_line(&c); // FIXME: unchecked EOF.
                 }
         }
 
@@ -555,7 +568,7 @@ sccs_file::read_delta() {
                 tmp.add_comment(plinebuf->c_str() + 3);
               }
             
-            c = read_line();
+            read_line(&c);	// FIXME: check for EOF
           }
         
 
@@ -751,7 +764,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       ctor_fail(-1, "%s: Cannot open SCCS file.\n", name.c_str());
     }
   
-  int c = read_line();
+  char c;
+  read_line(&c);		// FIXME: check for EOF
   
   // open_sccs_file() should have already checked that the first line
   // is ^Ah or ^Ah, so this assertion is really just checking that
@@ -805,11 +819,11 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       // Todo: throw exception here?
     }
   
-  c = read_line();
+  read_line(&c);		// FIXME: detect eof
   while (c == 's')
     {
       read_delta();
-      c = read_line();
+      read_line(&c);		// FIXME: detect eof
     }
   
   if (c != 'u')
@@ -819,7 +833,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   
   check_noarg();
   
-  c = read_line();
+  read_line(&c);		// FIXME: detect eof
   while (c != 'U')
     {
       if (c != 0)
@@ -827,7 +841,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
           corrupt("User name expected.");
         }
       users.add(plinebuf->c_str());
-      c = read_line();
+      read_line(&c);		// FIXME: detect eof
     }
 
   /* Sun's Code Manager sometimes emits lines of the form "^AU 0" and
@@ -837,7 +851,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
    */
   /* check_noarg(); */
   
-  c = read_line();
+  read_line(&c);		// FIXME: detect eof
   while (c == 'f')
     {
       check_arg();
@@ -970,7 +984,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
           }
       }
       
-      c = read_line();
+      read_line(&c);		// FIXME: eof detection
     }
   
   if (c != 't')
@@ -985,11 +999,11 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
    */
   /*check_noarg();*/
   
-  c = read_line();
+  read_line(&c);		// FIXME: eof detection
   while (c == 0)
     {
       comments.add(plinebuf->c_str());
-      c = read_line();
+      read_line(&c);		// FIXME: eof detection
     }
   
   if (c != 'T')
