@@ -1,5 +1,13 @@
 2010-05-13  James Youngman  <jay@gnu.org>
 
+	Fix warnings in file.cc.
+	* file.cc (maybe_wait_a_bit): Fix type of first parameter to avoid
+	a compiler warning.  Also type of argument to sleep.
+	(eaccess): Remove unused function.
+	(unlink_file_if_present): Remove unused function.
+	(create): Make this function static.
+
+	Fix some more compiler warnings.
 	* bodyio.cc (body_insert_binary): Explicitly qualify
 	::check_id_keywords as being in the global namespace.
 	* run.cc (operator+=): Change type of index variables to size_type
@@ -19,6 +27,7 @@
 	result of strlen, not int.
 	* file.cc (is_writable): Make static, it's not used elsewhere.
 	(old_is_writable): Unused; remove.
+
 	* sf-chkid.cc (check_id_keywords): Assume we have memchr.  Avoid
 	possible access beyond the end of the string.
 	* sf-kw.cc (no_id_keywords): Avoid shadowing the name of a class

@@ -42,49 +42,7 @@
 #include <stdio.h>
 #include "dirent-safer.h"
 
-#ifdef CONFIG_UIDS
-
-/* Tests the accessability of file, but unlike access() uses the
-   effective uid and gid, not the real uid and gid. */
-
-static int
-eaccess(const char *name, mode_t perm) {
-        struct stat st;
-
-        if (stat(name, &st) == -1) {
-                return -1;
-        }
-
-        perm &= 7;
-        if (perm == 0) {
-                return 0;
-        }
-
-        if (geteuid() == st.st_uid) {
-                st.st_mode >>= 6;
-        } else if (getegid() == st.st_gid) {
-                st.st_mode >>= 3;
-        }
-
-        if ((st.st_mode & perm) == perm) {
-                return 0;
-        }
-
-        return -1;
-}
-
-#else /* CONFIG_UIDS */
-
-inline int
-eaccess(const char *name, int perm) {
-        return access(name, perm);
-}
-
-#endif /* CONFIG_UIDS */
-
-
 /* Redirects stdout to a "null" file (eg. /dev/null). */
-                
 bool
 stdout_to_null()
 {
@@ -385,9 +343,10 @@ static long get_nlinks(const char *name)
     }
 }
 
-static void maybe_wait_a_bit(int attempt, const char *lockfile)
+static void 
+maybe_wait_a_bit(long attempt, const char *lockfile)
 {
-    int waitfor = 0;
+    unsigned int waitfor = 0u;
     
     if (attempt > 4)
     {
@@ -407,9 +366,9 @@ static void maybe_wait_a_bit(int attempt, const char *lockfile)
              * file that's filled the disk.
              */
             if (attempt < 10)
-                waitfor = 1;
+                waitfor = 1u;
             else
-                waitfor = 10;
+                waitfor = 10u;
         }
     }
 
@@ -421,7 +380,7 @@ static void maybe_wait_a_bit(int attempt, const char *lockfile)
                  ( (waitfor == 1) ? "" : "s"),
                  lockfile,
                  (long int) getpid() );
-        sleep(waitfor);
+        sleep (waitfor);
     }
 }
 
@@ -529,7 +488,7 @@ bool set_file_mode(const mystring &gname, bool writable, bool executable)
     {
       if (0 == fstat(fd, &statbuf))
 	{
-	  int mode = statbuf.st_mode & 0666;
+	  mode_t mode = statbuf.st_mode & 0666;
 	  if (writable)
 	    mode |= 0200;
 	  else
@@ -604,27 +563,6 @@ bool unlink_gfile_if_present(const char *gfile_name)
   return rv;
 }
 
-bool unlink_file_if_present(const char *gfile_name)
-{
-  /* We must also do the existence test as the real user so was 
-   * can't delegate the job to unlink_file_as_real_user().
-   */
-  give_up_privileges();
-  bool rv = true;
-  
-  if (file_exists(gfile_name))
-    {
-      if (remove(gfile_name) < 0)
-        {
-	  // The remove() funtion will already have issued an error message.
-          rv = false;
-        }
-    }
-  restore_privileges();
-  
-  return rv;
-}
-
 /* unlink_file_as_real_user
  *
  * Unlinks the specified file as the real user.
@@ -647,7 +585,7 @@ bool unlink_file_as_real_user(const char *gfile_name)
 
 /* returns a file descriptor open to a newly created file. */
 
-int
+static int
 create(mystring name, int mode) {
         int flags = O_CREAT;
 
