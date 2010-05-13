@@ -92,19 +92,19 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 
 			struct dirent *dent = readdir(dir);
 			while (dent != NULL) {
-				mystring name = mystring(dirname) + mystring(dent->d_name);
+				mystring directory_entry = mystring(dirname) + mystring(dent->d_name);
 				
-				if (sccs_name::valid_filename(name.c_str())
-				    && is_readable(name.c_str()))
+				if (sccs_name::valid_filename(directory_entry.c_str())
+				    && is_readable(directory_entry.c_str()))
 				  {
-				    if (is_directory(name.c_str()))
+				    if (is_directory(directory_entry.c_str()))
 				      {
 					warning("Ignoring subdirectory %s",
-						name.c_str());
+						directory_entry.c_str());
 				      }
 				    else
 				      {
-					files.add(name);
+					files.add(directory_entry);
 				      }
 				  }
 				dent = readdir(dir);

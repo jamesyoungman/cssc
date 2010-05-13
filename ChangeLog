@@ -1,5 +1,26 @@
 2010-05-13  James Youngman  <jay@gnu.org>
 
+	Fix some compiler warnigns about shadowing names or integer conversions.
+	* sf-delta.cc (add_delta): Rename some variables to avoid
+	shadowing class members or other local variables.n
+	* sf-prs.cc (get): Likewise.
+	(print_delta): Likewise.
+	(prs): Likewise.
+	* sf-cdc.cc (cdc): Rename parameters to avoid shadowing the names
+	of class members.
+	* sf-admin.cc (admin): Remove unused variable which was causing
+	shadowing warnings.
+	* sccsdate.cc (sccs_date): Avoid warning about implicit cast from
+	int to char, by using an explicit cast.
+	* linebuf.cc (read_line): Avoid a compiler warning: explicitly
+	cast the length parameter passed to fgets from size_t to int.
+	* fileiter.h (s): Correct the type of pos (it's in index into
+	mylist<mystring>, so use mylist<mystring>::size_type).
+	* cdc.cc (plural): Fix warning about type conversion in call to plural().
+	* fileiter.cc (sccs_file_iterator): Avoid shadowoing a class member.
+	* what.cc (xread): return ssize_t rather than int.
+	(main): store the result of xread in a ssize_t variable, not an int.
+
 	Fix more compiler warnings.
 	* sf-val.cc (validate_seq_lists): Use size_type for indexes into mylist,
 	not int.

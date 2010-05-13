@@ -35,7 +35,7 @@
 #include "linebuf.h"
 
 inline bool
-sccs_file::get(FILE *out, mystring name, seq_no seq, bool for_edit)
+sccs_file::get(FILE *out, mystring gname, seq_no seq, bool for_edit)
 {
   sid_list no_includes, no_excludes;
   sccs_date no_cutoff;
@@ -51,7 +51,7 @@ sccs_file::get(FILE *out, mystring name, seq_no seq, bool for_edit)
   if (prepare_seqstate(state, seq,
                        no_includes, no_excludes, no_cutoff))
   {
-      return get(name, state, parms, true);
+      return get(gname, state, parms, true);
   }
   else 
   {
@@ -577,8 +577,8 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY2('B','D'):
           if (seek_to_body())
             {
-	      char c;
-              while (read_line(&c))
+	      char ch;
+              while (read_line(&ch))
                 {
                   fputs(plinebuf->c_str(), out);
                   putc('\n', out);
@@ -624,14 +624,14 @@ sccs_file::print_delta(FILE *out, const char *format,
 
 bool
 sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
-               enum when when, int all_deltas)
+               enum when cutoff_type, int all_deltas)
 {
   if (!rid.valid())
     {
       rid = find_most_recent_sid(rid);
     }
 
-  if (when != SIDONLY && !cutoff_date.valid())
+  if (cutoff_type != SIDONLY && !cutoff_date.valid())
     {
       const delta *pd = find_delta(rid);
       if (0 == pd)
@@ -645,7 +645,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
   const_delta_iterator iter(delta_table);
   while (iter.next(all_deltas))
     {
-      switch (when)
+      switch (cutoff_type)
         {
         case EARLIER:
           if (iter->date() > cutoff_date)

@@ -42,8 +42,8 @@ usage()
 	  prg_name);
 }
 
-static const char *
-plural(int n)
+template<typename T> static const char *
+plural(const T& n)
 {
   if (1 == n)
     return "";

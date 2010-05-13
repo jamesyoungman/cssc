@@ -60,7 +60,7 @@ xclose(XFILE f) {
 	return fclose_failed(fclose(f));
 }
 
-inline int
+inline ssize_t
 xread(XFILE f, char *buf, int len) {
 	int ret = fread(buf, len, 1, f);
 	if (ret != len && ferror(f)) {
@@ -98,9 +98,10 @@ xclose(XFILE f) {
 	return close(f);
 }
 
-inline int
-xread(XFILE f, char *buf, int len) {
-	return read(f, buf, len);
+inline ssize_t
+xread(XFILE f, char *buf, size_t len) 
+{
+  return read(f, buf, len);
 }
 
 static inline void
@@ -235,12 +236,12 @@ main(int argc, char **argv)
       static char buf[CONFIG_WHAT_BUFFER_SIZE + 3];
       buf[0] = buf[1] = buf[2] = '\0';
       
-      int read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
+      ssize_t read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
       while (read_len > 0)
 	{
+	  char *at = (char *) memchr(buf, '@', static_cast<size_t>(read_len));
 	  int done = 0;
 	  char *end = buf + read_len;
-	  char *at = (char *) memchr(buf, '@', read_len);
 	  while (at)
 	    {
 	    if (at[1] == '(' && at[2] == '#' && at[3] == ')')

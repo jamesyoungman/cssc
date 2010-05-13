@@ -25,6 +25,7 @@
  */
 #include <cstdio>
 #include <cstring>
+#include <climits>
 
 #ifdef __GNUC__
 //#pragma implementation "linebuf.h"
@@ -51,7 +52,8 @@ cssc_linebuf::read_line(FILE *f)
 {
   buf[buflen - 2u] = '\0';
 
-  char *s = fgets(buf, buflen, f);
+  ASSERT(buflen < INT_MAX);
+  char *s = fgets(buf, static_cast<int>(buflen), f);
   while (s != NULL)
     {
       char c = buf[buflen - 2u];

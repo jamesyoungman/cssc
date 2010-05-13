@@ -81,7 +81,7 @@ process_mrs(const mylist<mystring>& old_mrs,
 
 
 bool
-sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
+sccs_file::cdc(sid id, mylist<mystring> mr_updates, mylist<mystring> comment_updates)
 {
   if (!edit_mode_ok(true))
     return false;
@@ -99,14 +99,14 @@ sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
   mylist<mystring> not_mrs;
   mylist<mystring> deletion_comment;
   bool mrs_deleted = false;
-  const mylist<mystring>::size_type len = mrs.length();
+  const mylist<mystring>::size_type len = mr_updates.length();
   if (0 != len)
     {
       mylist<mystring> yes_mrs;
 
       for (mylist<mystring>::size_type i = 0; i < len; i++)
 	{
-	  const char *s = mrs[i].c_str();
+	  const char *s = mr_updates[i].c_str();
 	  if (s[0] == '!')
 	    not_mrs.add(s + 1);
 	  else
@@ -118,13 +118,13 @@ sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
       d.set_mrs(new_mrs);
     }
   
-  if (mrs_deleted || comments.length())	// Prepend the new comments.
+  if (mrs_deleted || comment_updates.length())	// Prepend the new comments.
     {
       mylist<mystring> newcomments;
       
       // If there are comments to be added, add them.
-      if (comments.length())
-	newcomments += comments;
+      if (comment_updates.length())
+	newcomments += comment_updates;
 
       // If we had deleted any MRs, indicate that.
       if (mrs_deleted)
@@ -133,7 +133,7 @@ sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
       // If we had changed the revision commentary,
       // add a footer indicating when (if we only changed the
       // MRs, this doesn't happen)
-      if (comments.length())
+      if (comment_updates.length())
 	{
 	  mystring changeline
 	    = mystring("*** CHANGED *** ")

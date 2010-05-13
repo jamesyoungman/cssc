@@ -274,7 +274,7 @@ sccs_date::sccs_date(const char *date, const char *time)
 	      "has probably been used on this file.\n",
 	      buf[0]);
       
-      buf[0] -= 10;
+      buf[0] = static_cast<char>(buf[0] - 10);
     }
   
   // The "1" in the if() is just there to make Emacs align the columns.

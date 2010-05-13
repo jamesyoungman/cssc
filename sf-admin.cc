@@ -88,7 +88,7 @@ sccs_file::admin(const char *file_comment,
 	}
     }
 
-  mylist<mystring>::size_type len, i;
+  mylist<mystring>::size_type len;
   len = set_flags.length();
   for (mylist<mystring>::size_type i = 0; i < len; i++)
     {
@@ -353,22 +353,23 @@ sccs_file::admin(const char *file_comment,
 bool
 sccs_file::create(const sid &id,
 		  const char *iname,
-		  mylist<mystring> mrs, mylist<mystring> comments,
+		  mylist<mystring> mrs, 
+		  mylist<mystring> starting_comments,
 		  int suppress_comments, bool force_binary)
 {
 
   sccs_date now = sccs_date::now();
-  if (!suppress_comments && comments.length() == 0)
+  if (!suppress_comments && starting_comments.length() == 0)
     {
-      comments.add(mystring("date and time created ")
-		   + now.as_string()
-		   + mystring(" by ")
-		   + get_user_name());
+      starting_comments.add(mystring("date and time created ")
+			    + now.as_string()
+			    + mystring(" by ")
+			    + get_user_name());
     }
 
 
   delta new_delta('D', id, now, get_user_name(), 1, 0,
-		  mrs, comments);
+		  mrs, starting_comments);
   ASSERT (new_delta.inserted() == 0);
   ASSERT (new_delta.deleted() == 0);
   ASSERT (new_delta.unchanged() == 0);

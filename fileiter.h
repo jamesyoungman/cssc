@@ -53,7 +53,7 @@ private:
   int is_unique;
   
   mylist<mystring> files;
-  int pos;
+  mylist<mystring>::size_type pos;
   sccs_name name;
 
 public:

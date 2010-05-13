@@ -425,7 +425,8 @@ bool
 sccs_file::add_delta(mystring gname,
 		     sccs_pfile& pfile,
 		     sccs_pfile::iterator it,
-                     mylist<mystring> mrs, mylist<mystring> comments,
+                     mylist<mystring> new_mrs, 
+		     mylist<mystring> new_comments,
                      bool display_diff_output)
 {
   const char *pline;
@@ -570,19 +571,17 @@ sccs_file::add_delta(mystring gname,
   // The new delta header includes info about what deltas
   // are included, excluded, ignored.   Compute that now.
   myset<seq_no> included, excluded;
-  seq_no seq;
-  
-  for (seq = 1; seq < highest_delta_seqno(); seq++)
+  for (seq_no iseq = 1; iseq < highest_delta_seqno(); iseq++)
     {
-    if (sstate.is_explicitly_tagged(seq))
+    if (sstate.is_explicitly_tagged(iseq))
       {
-      if (sstate.is_included(seq))
+      if (sstate.is_included(iseq))
         {
-        included.add(seq);
+        included.add(iseq);
         }
-      else if (sstate.is_excluded(seq))
+      else if (sstate.is_excluded(iseq))
         {
-          excluded.add(seq);
+          excluded.add(iseq);
         }
       }
     }
@@ -622,7 +621,7 @@ sccs_file::add_delta(mystring gname,
                 
           delta null_delta('D', id, sccs_date::now(),
                            get_user_name(), new_seq, predecessor_seq,
-                           mrs, auto_comment);
+                           new_mrs, auto_comment);
 	  ASSERT (null_delta.inserted() == 0);
 	  ASSERT (null_delta.deleted() == 0);
 	  ASSERT (null_delta.unchanged() == 0);
@@ -673,7 +672,8 @@ sccs_file::add_delta(mystring gname,
   // Construct the delta information for the new delta.
   delta new_delta('D', it->delta, sccs_date::now(),
                   get_user_name(), new_seq, predecessor_seq,
-                  included.list(), excluded.list(), mrs, comments);
+                  included.list(), excluded.list(), 
+		  new_mrs, new_comments);
 
   // We don't know how many lines will be added/changed yet.
   // end_update() fixes that.
