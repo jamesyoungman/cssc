@@ -1,5 +1,23 @@
 2010-05-13  James Youngman  <jay@gnu.org>
 
+	Fix or minimise some compiler warnings.
+	* sid_list.h (range_list): Avoid long-to-size_t compiler warning.
+	* encoding.cc (encode): Move the function definition here from
+	bodyio.h since it's only used in this file.
+	(decode): Likewise.
+	(decode_line): Be more explicit about casts between char and
+	size_t in order to avoid compiler warnings.
+	(encode_line): Likewise.
+	* bodyio.h: Remove bodies of encode() and decode().  Declare
+	encode and decode so that unit-tests/test_encoding can execute
+	them.
+	* sf-get3.cc (authorised): Change the types of 'len' and 'i' from
+	int to size_type, because they are offsets into a list.  Add FIXME
+	comment for use of atoi.
+	* bodyio.cc (body_insert_binary): Change the type of 'len' from
+	int to size_t, because it is a length.
+
+	Separate EOF detection from SCCS-line-type detection.
 	* sccsfile.h (sccs_file::read_line): Change prototype to separate
 	EOF detection from detection of what type of line we just read.
 	* sccsfile.cc (read_line): Update the implementation to match.

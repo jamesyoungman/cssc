@@ -216,7 +216,7 @@ body_insert_binary(const char iname[], const char oname[],
   const int max_chunk = 45;
   char inbuf[max_chunk], outbuf[80];
   unsigned long int nl;
-  int len;
+  size_t len;
   bool kw;
   *idkw = kw = false;
 

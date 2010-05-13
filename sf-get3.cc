@@ -92,8 +92,7 @@ bool sccs_file::prepare_seqstate(seq_state &state, seq_no seq,
 
 bool
 sccs_file::authorised() const {
-  int i;
-  int len;
+  mylist<mystring>::size_type len, i;
   
   const char *user = get_user_name();
   
@@ -109,6 +108,7 @@ sccs_file::authorised() const {
 
 	if (isdigit(c))
 	  {
+	    // FIXME: don't use atoi, it doesn't do error detection well.
 	    if (user_is_group_member(atoi(s)))
 	      {
 		found = 1;

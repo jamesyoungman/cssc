@@ -93,16 +93,20 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
   
   do
     {
+      size_t len;
       const char *comma = strchr(s, ',');
-      
       if (comma == NULL)
         {
-          comma = s + strlen(s);
+	  len = strlen(s);
+          comma = s + len;
         }
+      else
+	{
+	  len = static_cast<size_t>(comma - s);
+	}
       
       char buf[64];
-      size_t len = comma - s;
-      if (len > sizeof(buf) - 1)
+      if ((len+1u) > sizeof(buf))
         {
           ctor_fail(-1, "Range in list too long: '%s'", list);
         }
