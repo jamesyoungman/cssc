@@ -43,13 +43,11 @@
 static void
 print_id_list(const char *s, mylist<sid> const &list)
 {
-  int i, len;
-        
-  len = list.length();
+  const mylist<sid>::size_type len = list.length();
   if (len > 0)
     {
       printf("%s:\n", s);
-      for(i = 0; i < len; i++)
+      for (mylist<sid>::size_type i = 0; i < len; i++)
         {
           list[i].print(stdout);
           putchar('\n');

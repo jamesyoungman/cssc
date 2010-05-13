@@ -34,14 +34,15 @@
 
 static int
 is_seqlist_member(seq_no seq, mylist<seq_no> const &seq_list) {
-	int i;
-	int len = seq_list.length();
-	for(i = 0; i < len; i++) {
-		if (seq == seq_list[i]) {
-			return 1;
-		}
+  const mylist<seq_no>::size_type len = seq_list.length();
+  for (mylist<seq_no>::size_type i = 0; i < len; i++) 
+    {
+      if (seq == seq_list[i]) 
+	{
+	  return 1;
 	}
-	return 0;
+    }
+  return 0;
 }
 
 

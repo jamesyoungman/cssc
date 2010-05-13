@@ -43,26 +43,26 @@ mystring sid::as_string() const
 }
 
 
-static int
+static short int
 get_comp(const char *&s) {
 	int n = 0;
 	char c = *s;
 	while (c != '\0') {
 		if (c == '.') {
 			if (n == 0) {
-				return -1;
+			  return short(-1);
 			}
 			s++;
-			return n;
+			return static_cast<short int>(n);
 		}	
 		if (isdigit(c)) {
 			n = n * 10 + (c - '0');
 		} else {
-			return -1;
+		  return short(-1);
 		}
 		c = *++s;
 	}
-	return n;
+	return static_cast<short int>(n);
 }
 
 relvbr::relvbr(const char *s) {
@@ -211,9 +211,13 @@ sid::successor() const {
 	if (is_null()) {
 		return sid(1, 1, 0, 0);
 	} else if (branch != 0) {
-		return sid(rel, level, branch, sequence + 1);
+	        short next_seq = sequence;
+		++next_seq;
+		return sid(rel, level, branch, next_seq);
 	} else {
-		return sid(rel, level + 1, 0, 0);
+	        short next_lev = level;
+		++next_lev;
+		return sid(rel, next_lev, 0, 0);
 	}
 }
 
@@ -241,23 +245,35 @@ bool sid::on_trunk() const
 
 bool sid::matches(const sid &m, int nfields) const
 {
-  if (0 == nfields--)
+  if (0 == nfields)
     return true;
+  else
+    --nfields;
+
   if (rel != m.rel)
     return false;
   
-  if (0 == nfields--)
+  if (0 == nfields)
     return true;
+  else
+    --nfields;
+
   if (level != m.level)
     return false;
   
-  if (0 == nfields--)
+  if (0 == nfields)
     return true;
+  else
+    --nfields;
+
   if (branch != m.branch)
     return false;
   
-  if (0 == nfields--)
+  if (0 == nfields)
     return true;
+  else
+    --nfields;
+
   if (sequence != m.sequence)
     return false;
   

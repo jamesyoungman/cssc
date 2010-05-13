@@ -143,7 +143,7 @@ count_digits(const char *s)
   
   for(count=0; *s; s++)
     {
-      if (is_digit((unsigned char)*s))
+      if (is_digit(*s))
         count++;
     }
   return count;

@@ -1,5 +1,30 @@
 2010-05-13  James Youngman  <jay@gnu.org>
 
+	Fix more compiler warnings.
+	* sf-val.cc (validate_seq_lists): Use size_type for indexes into mylist,
+	not int.
+	(validate): Likewise.
+	* sf-prs.cc (print_seq_list): Likewise.
+	(print_string_list): Likewise.
+	* sf-cdc.cc (inlist): Likewise.
+	(process_mrs): Likewise.
+	(sccs_file::cdc): Likewise.
+	* sf-rmdel.cc (is_seqlist_member): Likewise.
+	* sf-prt.cc (print_string_list): Likewise.
+	(print_seq_list): Likewise.
+	* delta.cc (delta_main): Make static.
+	* sf-get2.cc (test_locks): Avoid shadowing a class member.
+	* get.cc (print_id_list): Use size_type for indexes into mylist,
+	not int.
+	* showconfig.cc: Include version.h for the declarations of
+	functions in this module.
+	* quit.cc (v_errormsg_with_errno): Make static; nobody else uses it.
+	* fnsplit.cc: Include file.h for declaration of split_filename,
+	since we define it in this file.
+	* sccsdate.cc (count_digits): Avoid casting argument of is_digit
+	to unsigned char, since is_digit takes a char.
+	* sid.cc (matches): Be more explicit about avoidingn signed overflow.
+
 	Fix warnings in file.cc.
 	* file.cc (maybe_wait_a_bit): Fix type of first parameter to avoid
 	a compiler warning.  Also type of argument to sleep.

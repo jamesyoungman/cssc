@@ -37,8 +37,8 @@
 static bool
 inlist(mylist<mystring> l, const mystring& find)
 {
-  int len = l.length();
-  for (int i=0; i<len; ++i)
+  const mylist<mystring>::size_type len = l.length();
+  for (mylist<mystring>::size_type i=0; i<len; ++i)
     {
       if (find == l[i])
 	return true;
@@ -57,10 +57,10 @@ process_mrs(const mylist<mystring>& old_mrs,
 {
   mylist<mystring> current(to_add);
 
-  const int len = old_mrs.length();
+  const mylist<mystring>::size_type len = old_mrs.length();
   deleted = false;
   
-  for (int i=0; i<len; ++i)
+  for (mylist<mystring>::size_type i=0; i<len; ++i)
     {
       mystring const& mr(old_mrs[i]);
       
@@ -99,12 +99,12 @@ sccs_file::cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments)
   mylist<mystring> not_mrs;
   mylist<mystring> deletion_comment;
   bool mrs_deleted = false;
-  int len = mrs.length();
+  const mylist<mystring>::size_type len = mrs.length();
   if (0 != len)
     {
       mylist<mystring> yes_mrs;
 
-      for (int i = 0; i < len; i++)
+      for (mylist<mystring>::size_type i = 0; i < len; i++)
 	{
 	  const char *s = mrs[i].c_str();
 	  if (s[0] == '!')

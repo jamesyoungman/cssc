@@ -77,7 +77,8 @@ void warning (const char *fmt, ...)
   putc('\n', stderr);
 }
 
-void v_errormsg_with_errno(const char *fmt, va_list ap)
+static void 
+v_errormsg_with_errno(const char *fmt, va_list ap)
 {
   int saved_errno = errno;
   

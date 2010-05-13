@@ -42,7 +42,7 @@ print_string_list(FILE *out,
 		  const char* post,
 		  const char* dflt)
 {
-  const int len = l.length();
+  const mylist<mystring>::size_type len = l.length();
   
   if (0 == len)
     {
@@ -50,7 +50,7 @@ print_string_list(FILE *out,
     }
   else
     {
-      for(int i = 0; i < len; i++)
+      for (mylist<mystring>::size_type i = 0; i < len; i++)
 	{
 	  fprintf(out, "%s%s", pre, l[i].c_str());
 	  if (i < len-1)
@@ -292,12 +292,12 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 static void
 print_seq_list(FILE *out, mylist<seq_no> const &list)
 {
-  const int len = list.length();
+  const mylist<seq_no>::size_type len = list.length();
 
   if (len > 0)
     {
       fprintf(out, "%u", list[0]);
-      for(int i = 1; i < len; i++)
+      for (mylist<seq_no>::size_type i = 1; i < len; i++)
 	{
 	  fprintf(out, " %u", list[i]);
 	}

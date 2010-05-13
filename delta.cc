@@ -49,7 +49,7 @@ usage() {
 
 #define EXITVAL_INVALID_OPTION (1)
 
-int
+static int
 delta_main(int argc, char **argv)
 {
   Cleaner arbitrary_name;

@@ -353,11 +353,11 @@ sccs_file::test_locks(sid got, const sccs_pfile& pf) const
     {
       if (!flags.joint_edit)
 	{
-	  mystring when(it->date.as_string());
+	  mystring datestring(it->date.as_string());
 	  errormsg("%s: Requested SID locked by '%s' at %s.\n",
 		   name.c_str(),
 		   it->user.c_str(),
-		   when.c_str());
+		   datestring.c_str());
 	  return false;
 	}
     }

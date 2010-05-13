@@ -88,11 +88,9 @@ sccs_file::admin(const char *file_comment,
 	}
     }
 
-  int i;
-
-  int len;
+  mylist<mystring>::size_type len, i;
   len = set_flags.length();
-  for(i = 0; i < len; i++)
+  for (mylist<mystring>::size_type i = 0; i < len; i++)
     {
       const char *s = set_flags[i].c_str();
       
@@ -236,7 +234,7 @@ sccs_file::admin(const char *file_comment,
 	      
 	
   len = unset_flags.length();
-  for(i = 0; i < len; i++)
+  for (mylist<mystring>::size_type i = 0; i < len; i++)
     {
       const char *s = unset_flags[i].c_str();
 

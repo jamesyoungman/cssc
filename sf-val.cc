@@ -106,7 +106,7 @@ bool
 sccs_file::validate_seq_lists(const delta_iterator& d) const
 {
   const char *sz_sid = d->id().as_string().c_str();
-  int i;
+  mylist<seq_no>::size_type i;
   seq_no s;
   const seq_no highest_seq = delta_table->highest_seqno();
   
@@ -163,7 +163,6 @@ validate_substituted_flags_list(const mylist<char> entries)
 bool 
 sccs_file::validate() const
 {
-  int i;
   bool retval = true;
 
   if (!checksum_ok())
@@ -179,7 +178,7 @@ sccs_file::validate() const
   std::vector<bool> loopfree(highest_seq+1, false);
 
   
-  for (i=0; i<highest_seq; ++i)
+  for (seq_no i=0; i<highest_seq; ++i)
     {
       seen_ever[i] = 0;
     }
@@ -292,9 +291,9 @@ sccs_file::validate() const
     }
   
   // Check username list for invalid entries.
-  for (i=0; i<users.length(); ++i)
+  for (mylist<mystring>::size_type j=0; j<users.length(); ++j)
     {
-      const mystring& username(users[i]);
+      const mystring& username(users[j]);
       
       if (   (username.find_last_of(':')  != mystring::npos) 
 	  || (username.find_last_of(' ')  != mystring::npos)
@@ -311,9 +310,9 @@ sccs_file::validate() const
 
   // Check that the 'y' flag specifies only known keywords.
   const mylist<char> entries = flags.substitued_flag_letters.list();
-  for (int i=0; i<entries.length(); ++i)
+  for (mylist<char>::size_type k=0; k<entries.length(); ++k)
     {
-      char flag = entries[i];
+      char flag = entries[k];
       if (!is_known_keyword_char(flag))
 	{
 	  warning("The 'y' flag specifies a keyword letter '%c', "

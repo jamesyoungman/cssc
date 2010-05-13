@@ -63,30 +63,32 @@ sccs_file::get(FILE *out, mystring name, seq_no seq, bool for_edit)
 
 static void
 print_seq_list(FILE *out, mylist<seq_no> const &list) {
-        int i;
-        int len = list.length();
+  const mylist<seq_no>::size_type len = list.length();
 
-        /* prs does actually print the sequences in reverse order! */
-        if (len > 0) {
-            for(i = len-1; i >= 0; --i) {
-                fprintf(out, "%u", list[i]);
-                if (i > 0)
-                    fprintf(out, " ");
-            }
-        }
+  /* prs does actually print the sequences in reverse order! */
+  if (len > 0) 
+    {
+      mylist<seq_no>::size_type i = len-1;
+      do
+	{
+	  fprintf(out, "%u", list[i]);
+	  if (i > 0)
+	    fprintf(out, " ");
+	} while (i--);
+    }
 }
 
 
 /* Prints a list of strings, one per line. */
-
 static void
-print_string_list(FILE *out, mylist<mystring> const &list) {
-        int i;
-        int len = list.length();
-
-        for(i = 0; i < len; i++) {
-                fprintf(out, "%s\n", list[i].c_str());
-        }
+print_string_list(FILE *out, mylist<mystring> const &list) 
+{
+  const mylist<mystring>::size_type len = list.length();
+  
+  for (mylist<mystring>::size_type i = 0; i < len; i++) 
+    {
+      fprintf(out, "%s\n", list[i].c_str());
+    }
 }
 
 

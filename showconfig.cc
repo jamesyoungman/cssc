@@ -32,6 +32,7 @@
 #include <limits.h>
 
 #include "cssc.h"
+#include "version.h"
 
 static const char * copyright_explanation = 
 "Copyright (C) 1997-2010 Free Software Foundation, Inc.\n"
