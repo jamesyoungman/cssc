@@ -20,7 +20,7 @@ dnl    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 dnl 
 dnl $Id: configure.ac,v 1.18 2009/04/11 17:59:18 jay Exp $
 
-m4_include(googletest/m4/acx_pthread.m4)
+m4_include(unit-tests/googletest/m4/acx_pthread.m4)
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -446,7 +446,7 @@ done
 ])
 
 dnl What about saved setuid?
-AC_CONFIG_SUBDIRS(googletest)
+AC_CONFIG_SUBDIRS(unit-tests/googletest)
 dnl AC_CONFIG_FILES([shorter/Makefile])
 
 

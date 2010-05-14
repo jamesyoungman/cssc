@@ -1,6 +1,8 @@
+SUBDIRS = googletest
+
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
-AM_CPPFLAGS = -I$(srcdir)/../googletest -I$(srcdir)/../googletest/include -I$(srcdir)/../src
+AM_CPPFLAGS = -I$(srcdir)/googletest -I$(srcdir)/googletest/include -I$(srcdir)/../src
 
 # Modifies compiler and linker flags for pthreads compatibility.
 if HAVE_PTHREADS
@@ -13,8 +15,8 @@ endif
 EXTRA_DIST = TODO.txt
 
 # Build rules for libraries.
-LDADD = ../googletest/lib/libgtest.la \
-	../googletest/lib/libgtest_main.la \
+LDADD = googletest/lib/libgtest.la \
+	googletest/lib/libgtest_main.la \
 	../src/libcssc.a
 
 TESTS_ENVIRONMENT = sh testwrapper.sh

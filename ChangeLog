@@ -1,5 +1,13 @@
 2010-05-14  James Youngman  <jay@gnu.org>
 
+	Move googletest to unit-tests/googletest.
+	* unit-tests/Makefile.am (SUBDIRS): Recurse into googletest.
+	Update paths to liibgtest.la.
+	* bootstrap.conf (bootstrap_epilogue): bootstrap in uni-tests/googletest.
+	* configure.ac: Configure in unit-tests/googletest.
+	* Makefile.am (SUBDIRS): Remove googletest (since we moved it).
+	* googletest/*: move to unit-tests/googletest/.
+
 	Remove some redundant scripts and .cvsignore files.
 	* scripts/rev-freq.sh: Remove unused file.
 	* show-disp.sh: Remove unused file.
