@@ -1,5 +1,9 @@
 2010-05-14  James Youngman  <jay@gnu.org>
 
+	Don't configure in unit-tests/googletest, it's gone.
+	* configure.ac: remove call to
+	AC_CONFIG_SUBDIRS(unit-tests/googletest).
+
 	Disable pthread support (since we don't use pthreads).
 	* unit-tests/Makefile.am (AM_CPPFLAGS): Pass -DGTEST_HAS_PTHREAD=0.
 	* configure.ac: Don't include

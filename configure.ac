@@ -419,11 +419,6 @@ done
 # JY: AC_CHECK_GLOBAL ends
 ])
 
-dnl What about saved setuid?
-AC_CONFIG_SUBDIRS(unit-tests/googletest)
-dnl AC_CONFIG_FILES([shorter/Makefile])
-
-
 dnl Enable some warnings, or not.
 want_warnings=no
 AC_ARG_ENABLE([warnings],
