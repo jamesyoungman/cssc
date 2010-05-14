@@ -17,7 +17,7 @@ main() {
     if [ -d "$module" ] && [ -d "$module"/.svn ]; then
 	( cd "$module" && svn update -r "$1" ) || return 1
     else
-	svn checkout "$url"@"$1" "$module" || return 1
+	svn --non-interactive checkout "$url"@"$1" "$module" || return 1
     fi
 }
 

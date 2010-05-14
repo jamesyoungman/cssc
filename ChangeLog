@@ -1,5 +1,10 @@
 2010-05-14  James Youngman  <jay@gnu.org>
 
+	Update Google C++ Test Framework version at bootstrap time.
+	* bootstrap.conf (bootstrap_epilogue): call get-gtest.sh at
+	bootstrap time.
+	* unit-tests/get-gtest.sh: Use svn's --non-interactive option.
+
 	Configure and build googletest in our own configure/Makefile.
 	* unit-tests/Makefile.am: Build the Google C++ Testing Framework
 	code in this Makefile rather than forcing it to have its own
