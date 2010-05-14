@@ -1,5 +1,3 @@
-SUBDIRS = googletest
-
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
 AM_CPPFLAGS = -I$(srcdir)/googletest -I$(srcdir)/googletest/include -I$(srcdir)/../src
@@ -12,12 +10,55 @@ else
   AM_CXXFLAGS = -DGTEST_HAS_PTHREAD=0
 endif
 
-EXTRA_DIST = TODO.txt
+EXTRA_DIST = TODO.txt \
+	googletest/COPYING \
+	googletest/CONTRIBUTORS \
+	googletest/README \
+	googletest/CHANGES
 
 # Build rules for libraries.
-LDADD = googletest/lib/libgtest.la \
-	googletest/lib/libgtest_main.la \
-	../src/libcssc.a
+
+noinst_LIBRARIES = libgtest.a libgtest_main.a
+
+gtest_headers = \
+	googletest/include/gtest/gtest-death-test.h \
+	googletest/include/gtest/gtest-message.h \
+	googletest/include/gtest/gtest-param-test.h \
+	googletest/include/gtest/gtest-spi.h \
+	googletest/include/gtest/gtest-test-part.h \
+	googletest/include/gtest/gtest-typed-test.h \
+	googletest/include/gtest/gtest.h \
+	googletest/include/gtest/gtest_pred_impl.h \
+	googletest/include/gtest/gtest_prod.h \
+	googletest/include/gtest/internal/gtest-death-test-internal.h \
+	googletest/include/gtest/internal/gtest-filepath.h \
+	googletest/include/gtest/internal/gtest-internal.h \
+	googletest/include/gtest/internal/gtest-linked_ptr.h \
+	googletest/include/gtest/internal/gtest-param-util-generated.h \
+	googletest/include/gtest/internal/gtest-param-util.h \
+	googletest/include/gtest/internal/gtest-port.h \
+	googletest/include/gtest/internal/gtest-string.h \
+	googletest/include/gtest/internal/gtest-tuple.h \
+	googletest/include/gtest/internal/gtest-type-util.h \
+	googletest/src/gtest-internal-inl.h
+
+libgtest_a_SOURCES = $(gtest_headers) \
+	googletest/src/gtest.cc \
+	googletest/src/gtest-death-test.cc \
+	googletest/src/gtest-filepath.cc \
+	googletest/src/gtest-port.cc \
+	googletest/src/gtest-test-part.cc \
+	googletest/src/gtest-typed-test.cc
+
+libgtest_a_CXXFLAGS = -Igoogletest/include -Igoogletest
+
+libgtest_main_a_SOURCES = $(gtest_headers) \
+	googletest/src/gtest_main.cc 
+
+
+libgtest_main_a_CXXFLAGS = -I$(srcdir)/googletest/include -I$(srcdir)/googletest
+
+LDADD = libgtest.a libgtest_main.a ../src/libcssc.a
 
 TESTS_ENVIRONMENT = sh testwrapper.sh
 TESTS = $(unit_tests)

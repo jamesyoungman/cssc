@@ -1,5 +1,21 @@
 2010-05-14  James Youngman  <jay@gnu.org>
 
+	Configure and build googletest in our own configure/Makefile.
+	* unit-tests/Makefile.am: Build the Google C++ Testing Framework
+	code in this Makefile rather than forcing it to have its own
+	configure.
+	(EXTRA_DIST): Distribute the googletest copyright notice
+	etc. too.
+	(gtest_headers): List all the header files.
+	(libgtest_a_SOURCES): List the source files separately, and the
+	header files.
+	(libgtest_main_a_SOURCES): List the header files too.
+	* bootstrap.conf (bootstrap_epilogue): googletest now has no
+	separate configure step, so no need to bootstrap in that directory
+	either.
+	* unit-tests/get-gtest.sh: Script for checking out the google unit
+	test code.
+
 	Move googletest to unit-tests/googletest.
 	* unit-tests/Makefile.am (SUBDIRS): Recurse into googletest.
 	Update paths to liibgtest.la.
