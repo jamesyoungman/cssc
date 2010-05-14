@@ -1,5 +1,13 @@
 2010-05-14  James Youngman  <jay@gnu.org>
 
+	Remove some redundant scripts and .cvsignore files.
+	* scripts/rev-freq.sh: Remove unused file.
+	* show-disp.sh: Remove unused file.
+	* scripts/change-suffix: Remove unused file.
+	* .cvsignore, auxfiles/.cvsignore, bsd/.cvsignore,
+	docs/.cvsignore, sccs-cgi/.cvsignore, tests/.cvsignore,
+	testutils/.cvsignore, unused/.cvsignore: Remove unused files.
+
 	Move CSSC source code to src/ subdirectory.
 	* configure.ac: move CSSC source to subdirectory src/.
 	* Makefile.am: rename to src/Makefile.am.  The remaining makefile
