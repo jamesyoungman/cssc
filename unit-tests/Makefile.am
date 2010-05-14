@@ -1,14 +1,8 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
-AM_CPPFLAGS = -I$(srcdir)/googletest -I$(srcdir)/googletest/include -I$(srcdir)/../src
-
-# Modifies compiler and linker flags for pthreads compatibility.
-if HAVE_PTHREADS
-  AM_CXXFLAGS = $(PTHREAD_CFLAGS) -DGTEST_HAS_PTHREAD=1
-  AM_LIBS = $(PTHREAD_LIBS)
-else
-  AM_CXXFLAGS = -DGTEST_HAS_PTHREAD=0
-endif
+AM_CPPFLAGS = -I$(srcdir)/googletest -I$(srcdir)/googletest/include -I$(srcdir)/../src -DGTEST_HAS_PTHREAD=0
+AM_LIBS = 
+LDADD = libgtest.a libgtest_main.a ../src/libcssc.a
 
 EXTRA_DIST = TODO.txt \
 	googletest/COPYING \
@@ -58,7 +52,6 @@ libgtest_main_a_SOURCES = $(gtest_headers) \
 
 libgtest_main_a_CXXFLAGS = -I$(srcdir)/googletest/include -I$(srcdir)/googletest
 
-LDADD = libgtest.a libgtest_main.a ../src/libcssc.a
 
 TESTS_ENVIRONMENT = sh testwrapper.sh
 TESTS = $(unit_tests)

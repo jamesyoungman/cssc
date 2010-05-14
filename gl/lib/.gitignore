@@ -6,7 +6,6 @@ dirent-safer.h
 dirent.h
 dirent.in.h
 dirfd.c
-dummy.c
 dup-safer.c
 dup2.c
 errno.h
@@ -18,7 +17,6 @@ fd-safer.c
 fseek.c
 fseeko.c
 getdtablesize.c
-gnulib.mk
 lseek.c
 opendir-safer.c
 pipe-safer.c

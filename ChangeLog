@@ -1,8 +1,15 @@
 2010-05-14  James Youngman  <jay@gnu.org>
 
+	Disable pthread support (since we don't use pthreads).
+	* unit-tests/Makefile.am (AM_CPPFLAGS): Pass -DGTEST_HAS_PTHREAD=0.
+	* configure.ac: Don't include
+	unit-tests/googletest/m4/acx_pthread.m4. Remove --with-pthreads.
+	* gl/lib/.gitignore: Remove gnulib.mk, dummy.c.
+
 	Update Google C++ Test Framework version at bootstrap time.
 	* bootstrap.conf (bootstrap_epilogue): call get-gtest.sh at
 	bootstrap time.
+
 	* unit-tests/get-gtest.sh: Use svn's --non-interactive option.
 
 	Configure and build googletest in our own configure/Makefile.

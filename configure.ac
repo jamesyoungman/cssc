@@ -20,8 +20,6 @@ dnl    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 dnl 
 dnl $Id: configure.ac,v 1.18 2009/04/11 17:59:18 jay Exp $
 
-m4_include(unit-tests/googletest/m4/acx_pthread.m4)
-
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
 AC_INIT
@@ -271,30 +269,6 @@ else
    VALGRIND=""
    AC_SUBST(VALGRIND)
 fi
-
-#--- begin code taken from googletest/configure.ac
-# Configure pthreads.
-AC_ARG_WITH([pthreads],
-            [AS_HELP_STRING([--with-pthreads],
-               [use pthreads (default is yes)])],
-            [with_pthreads=$withval],
-            [with_pthreads=check])
-
-have_pthreads=no
-AS_IF([test "x$with_pthreads" != "xno"],
-      [ACX_PTHREAD(
-        [],
-        [AS_IF([test "x$with_pthreads" != "xcheck"],
-               [AC_MSG_FAILURE(
-                 [--with-pthreads was specified, but unable to be used])])])
-       have_pthreads="$acx_pthread_ok"])
-AM_CONDITIONAL([HAVE_PTHREADS],[test "x$have_pthreads" == "xyes"])
-AC_SUBST(PTHREAD_CFLAGS)
-AC_SUBST(PTHREAD_LIBS)
-#--- end code taken from googletest/configure.ac
-				
-
-dnl Checks for libraries.
 
 dnl Checks for header files.
 
