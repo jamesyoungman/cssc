@@ -1,7 +1,7 @@
 /* lndir.c; part of GNU CSSC.
  *
- *    Copyright (C) 1997, Free Software Foundation, Inc. 
- * 
+ *    Copyright (C) 1997, Free Software Foundation, Inc.
+ *
  * This file is derived from xc/config/util/lndir.c in the X11R6 distribution.
  * It's been changed to make use of GNU Autoconf rather than xmkmf (imake)
  * for portability.
@@ -13,7 +13,7 @@
 /* Create shadow link tree (after X11R4 script of the same name)
    Mark Reinhold (mbr@lcs.mit.edu)/3 January 1990 */
 
-/* 
+/*
 Copyright (c) 1990,  X Consortium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -189,7 +189,7 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
     else
         buf[0] = '\0';
     strcat (buf, fn);
-    
+
     if (!(df = opendir (buf))) {
         msg ("%s: Cannot opendir", buf);
         return 1;
@@ -224,7 +224,7 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
 
                 if (ignored(dp->d_name))
                     continue;
-                
+
                 ocurdir = rcurdir;
                 rcurdir = buf;
                 curdir = silent ? buf : (char *)0;
@@ -284,7 +284,7 @@ main (int ac, char *av[])
         else if (!strcmp(av[1], "-silent")) /* X11R4 compatibility. */
           silent = 1;
       }
-    
+
     if (ac < silent + 2 || ac > silent + 3)
         quit (1, "usage: %s [-silent] fromdir [todir]", av[0]);
 
@@ -300,7 +300,7 @@ main (int ac, char *av[])
 
     if (!is_dir(&ts))
         quit (2, "%s: Not a directory", tn);
-    
+
     if (chdir (tn) < 0)
         quiterr (1, tn);
 

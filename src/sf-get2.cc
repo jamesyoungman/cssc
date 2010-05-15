@@ -1,23 +1,23 @@
 /*
  * sf-get2.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2001,2002,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2002,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -39,11 +39,11 @@ bool sccs_file::sid_matches(const sid& requested,
 			    const sid& found,
 			    bool get_top_delta) const
 {
-  // Giving a SID of two components is a request for 
+  // Giving a SID of two components is a request for
   // an exact match on the trunk, unless get_top_delta
   // is specified, in which case it is a request for
   // the latest SID of the specified release and level.
-  
+
   int ncomponents = requested.components();
   if (2 == ncomponents && !get_top_delta)
     ncomponents = 4;            // want an exact match.
@@ -75,7 +75,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
 {
   if (requested.is_null())      // no sid specified?
     {                           // get the default.
-      requested = flags.default_sid; 
+      requested = flags.default_sid;
       if (requested.is_null())  // no default?
         {                       // get the latest.
           requested = (release)delta_table->highest_release();
@@ -87,7 +87,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
         }
     }
 
-  // Giving a SID of two components is a request for 
+  // Giving a SID of two components is a request for
   // an exact match on the trunk, unless get_top_delta
   // is specified, in which case it is a request for
   // the latest SID of the specified release and level.
@@ -101,18 +101,18 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
   // Remember the best so far.
   bool got_best = false;
   sid best;
-  
+
   // find highest SID of any level, which is less than or equal to
   // the requested one.
-  // 
+  //
   // If get_top_delta (which corresponds to the -t
   // option of "get"), this means that the user wants
   // to find the "top" * delta - this is the one most
   // recently added to the SCCS file, that is the one
   // closest to the beginning of the file.  It is not
   // possible to determine which SID this is by
-  // looking at the tree of SIDs alone.  
-  
+  // looking at the tree of SIDs alone.
+
   const_delta_iterator iter(delta_table);
   while (iter.next())
     {
@@ -122,7 +122,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
 	    {
 	      best = iter->id();
 	      got_best = true;
-	      
+
 	      if (get_top_delta
 		  && iter->id().matches(requested, ncomponents))
 		{
@@ -131,8 +131,8 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
 	    }
 	}
     }
-  
-  
+
+
   if (got_best)
     found = best;
   return got_best;
@@ -180,7 +180,7 @@ sccs_file::find_next_sid(sid requested, sid got,
 {
   if (!flags.branch)
     want_branch = false;        // branches not allowed!
-  
+
   if (flags.default_sid)
     {
       requested = flags.default_sid;
@@ -220,7 +220,7 @@ sccs_file::find_next_sid(sid requested, sid got,
       // We may be forced to create a branch anyway.
 
       // have we hit the release ceiling?
-      const bool too_high = requested.on_trunk() 
+      const bool too_high = requested.on_trunk()
         && flags.ceiling.valid() && release(requested) > flags.ceiling;
 
       // have we collided with an existing SID?
@@ -251,7 +251,7 @@ sccs_file::find_next_sid(sid requested, sid got,
         }
       else
         {
-          /* Whew, the SID is not already used in the SCCS file; 
+          /* Whew, the SID is not already used in the SCCS file;
            * check the p-file also though...
            */
           if (sid_in_use(next, pfile))
@@ -265,9 +265,9 @@ sccs_file::find_next_sid(sid requested, sid got,
                 }
               else
                 {
-                  /* If the requested SID is already being edited, 
+                  /* If the requested SID is already being edited,
                    * and the joint edit flag is not set, I think that
-                   * the attempt to edit the file shpuld already have been 
+                   * the attempt to edit the file shpuld already have been
                    * thrown out by sccs_file::test_locks().
                    */
                   warning("%s: requested SID is "
@@ -283,7 +283,7 @@ sccs_file::find_next_sid(sid requested, sid got,
             }
         }
 
-        
+
       // If we have the revision sequence 1.1 -> 1.2 -> 2.1, then we
       // get 1.2 for editing, we must create a branch (1.2.1.1),
       // because we can't create a 1.3 (as 2.1 already exists).  If
@@ -312,7 +312,7 @@ sccs_file::find_next_sid(sid requested, sid got,
           forced_branch = true;
         }
     }
-  
+
   // If we have created a branch, and that branch is not unique, keep
   // looking for an empty branch.
   if (want_branch || forced_branch)
@@ -333,15 +333,15 @@ sccs_file::find_next_sid(sid requested, sid got,
    the joint edit flag isn't set. */
 
 bool
-sccs_file::test_locks(sid got, const sccs_pfile& pf) const 
+sccs_file::test_locks(sid got, const sccs_pfile& pf) const
 {
   if (!authorised())
     return false;
-  
-  if (flags.all_locked 
+
+  if (flags.all_locked
       || (flags.floor.valid() && flags.floor > got)
       || (flags.ceiling.valid() && flags.ceiling < got)
-      || flags.locked.member(got)) 
+      || flags.locked.member(got))
     {
       errormsg("%s: Requested release is locked.",
 	       name.c_str());
@@ -366,10 +366,10 @@ sccs_file::test_locks(sid got, const sccs_pfile& pf) const
 
 
 /* Output the specified version to a file with possible modifications.
-   Most of the actual work is done with a seqstate object that 
+   Most of the actual work is done with a seqstate object that
    figures out whether or not given line of the SCCS file body
    should be included in the output file. */
-        
+
 /* struct */ sccs_file::get_status
 sccs_file::get(FILE *out, mystring gname,
 	       FILE *summary_file,
@@ -379,17 +379,17 @@ sccs_file::get(FILE *out, mystring gname,
                int show_sid, int show_module, int debug,
 	       bool for_edit)
 {
-  
+
   /* Set the return status. */
   struct get_status status;
   status.success = true;
-  
+
   ASSERT(0 != delta_table);
-  
+
   seq_state state(highest_delta_seqno());
   const delta *d = find_delta(id);
   ASSERT(d != NULL);
-  
+
   ASSERT(0 != delta_table);
 
   if (!edit_mode_ok(for_edit))	// "get -e" on BK files is not allowed
@@ -397,8 +397,8 @@ sccs_file::get(FILE *out, mystring gname,
       status.success = false;
       return status;
     }
-  
-  
+
+
   if (!prepare_seqstate(state, d->seq(),
                         include, exclude, cutoff_date))
     {
@@ -406,7 +406,7 @@ sccs_file::get(FILE *out, mystring gname,
       return status;
     }
 
-  // Fix by Mark Fortescue.  
+  // Fix by Mark Fortescue.
   // Fix Cutoff Date Problem
   const delta *dparm;
   bool set=false;
@@ -417,7 +417,7 @@ sccs_file::get(FILE *out, mystring gname,
 	{
 	  const struct delta & d = delta_table->delta_at_seq(s);
 	  const sid & id(d.id());
-	  
+
 	  if (!state.is_excluded(s) && !set)
 	    {
 	      dparm = find_delta(id);
@@ -449,7 +449,7 @@ sccs_file::get(FILE *out, mystring gname,
             {
               fprintf(stderr, "explicitly ");
             }
-          
+
           if (state.is_ignored(s))
             {
               fprintf(stderr, "ignored  by %4d\n",
@@ -475,14 +475,14 @@ sccs_file::get(FILE *out, mystring gname,
   if (summary_file)
     {
       bool first = true;
-      
+
       for (seq_no s = d->seq(); s>0; s--)
         {
           if (delta_table->delta_at_seq_exists(s)
 	      && state.is_included(s))
 	    {
 	      const struct delta & it = delta_table->delta_at_seq(s);
-	      
+
 	      fprintf (summary_file, "%s   ",
 		       first ? "" : "\n");
 	      first = false;
@@ -490,7 +490,7 @@ sccs_file::get(FILE *out, mystring gname,
 	      fprintf (summary_file, "\t");
 	      it.date().print(summary_file);
 	      fprintf (summary_file, " %s\n", it.user().c_str());
-	      
+
 	      if (it.comments().length())
 		{
 		  const int len = it.comments().length();
@@ -503,9 +503,9 @@ sccs_file::get(FILE *out, mystring gname,
 	    }
 	}
     }
-  
-  
-  
+
+
+
   // The subst_parms here may not be the Whole Truth since
   // the cutoff date may affect which version is actually
   // gotten.  That's taken care of; the correct delta is
@@ -514,8 +514,8 @@ sccs_file::get(FILE *out, mystring gname,
   // Changed to use dparm not d to deal with Cutoff Date (Mark Fortescue)
   struct subst_parms parms(out, wstring, *dparm,
                            0, sccs_date::now());
-  
-  
+
+
   status.success = get(gname, state, parms, keywords,
                        show_sid, show_module, debug);
 
@@ -530,10 +530,10 @@ sccs_file::get(FILE *out, mystring gname,
       no_id_keywords(name.c_str());
       // this function normally returns.
     }
-  
+
   status.lines = parms.out_lineno;
-  
-  seq_no seq;   
+
+  seq_no seq;
   for(seq = 1; seq <= highest_delta_seqno(); seq++)
     {
       if (state.is_explicitly_tagged(seq))
@@ -546,7 +546,7 @@ sccs_file::get(FILE *out, mystring gname,
             status.excluded.add(id);
         }
     }
-  
+
   return status;
 }
 

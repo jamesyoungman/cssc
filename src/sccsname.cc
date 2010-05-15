@@ -1,23 +1,23 @@
-/* 
+/*
  * sccsname.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -32,7 +32,7 @@
 
 #include <ctype.h>
 
-#ifdef CONFIG_MSDOS_FILES 
+#ifdef CONFIG_MSDOS_FILES
 #error The CONFIG_MSDOS_FILES option is no longer supported.  See sccsname.cc.
 // Please feel free to add the support yourself.  Don't forget
 // to send the patches to <jay@gnu.org>.
@@ -50,7 +50,7 @@ int
 sccs_name::valid_filename(const char *thename)
 {
   ASSERT(0 != thename);
-  
+
   if (thename && thename[0])
     {
       mystring base = base_part(mystring(thename));
@@ -77,8 +77,8 @@ sccs_name::create()
   if (basename.length() >= 2)
     {
       const char *s = basename.c_str();
-      
-      // name_rear does not contain the "s" 
+
+      // name_rear does not contain the "s"
       // of the "s." but does contain the dot itself.
       name_rear = mystring(s+1);
 
@@ -123,7 +123,7 @@ sub_file(char insertme) const
 mystring sccs_name::
 lfile() const
 {
-  // Can't use sub_file since, like for the g-file, 
+  // Can't use sub_file since, like for the g-file,
   // we need to omit the directory.
   return mystring("l") + name_rear;
 }
@@ -139,24 +139,24 @@ sccs_name::make_valid()
 
   mystring dirpart, basepart;
   split_filename(sname, dirpart, basepart);
-  
-  
+
+
   // try dir/s.foo
   const mystring s_dot_foo = mystring("s.") + basepart;
   sname = dirpart + s_dot_foo;
-  
+
   if (!is_readable(sname.c_str()))
     {
       // try dir/SCCS/s.foo
       const mystring tmp = dirpart + mystring("SCCS/") + s_dot_foo;
-      
+
       if (is_readable(tmp.c_str()))
 	sname = tmp;
     }
-  
+
   create();
 }
-	
+
 #endif /* CONFIG_FILE_NAME_GUESSING */
 
 /* Local variables: */

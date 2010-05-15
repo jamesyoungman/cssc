@@ -1,23 +1,23 @@
 /*
  * sccsfile.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2001,2003,2004,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2003,2004,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -42,8 +42,8 @@
 
 
 #if defined HAVE_FILENO && defined HAVE_FSTAT
-/* If an SCCS file has a link count greater than one, then the normal 
- * process of updating the file will break the link.  We try to detect this 
+/* If an SCCS file has a link count greater than one, then the normal
+ * process of updating the file will break the link.  We try to detect this
  * even if the file is being opened to reading only, to give an early
  * warning (and because SCCS does so).
  */
@@ -55,9 +55,9 @@ static int just_one_link(FILE *f)
       struct stat st;
       if (0 != fstat(fd, &st))
         {
-          /* We cannot stat the file descriptor.  Perhaps there is a 
+          /* We cannot stat the file descriptor.  Perhaps there is a
            * file system functionality issue.   If that's the case then we
-           * will give it the benefit of the doubt on the link coutn front. 
+           * will give it the benefit of the doubt on the link coutn front.
            */
           return 1;  /* We're happy with the file */
         }
@@ -138,8 +138,8 @@ sccs_file::open_sccs_file(const char *name,
               return NULL;
             }
           // Inform the caller that this is a BK file.
-          // NB: this is the parameter, not member variable       
-          *isBKFile = true;     
+          // NB: this is the parameter, not member variable
+          *isBKFile = true;
         }
       else if (magicMarker != 'h')
         {
@@ -155,8 +155,8 @@ sccs_file::open_sccs_file(const char *name,
       /*NOTEACHED*/
       return NULL;
     }
-  
-  
+
+
   int c;
   errno = 0;
   while ( (c=getc(f_local)) != CONFIG_EOL_CHARACTER)
@@ -178,35 +178,35 @@ sccs_file::open_sccs_file(const char *name,
           return NULL;
         }
     }
-  
+
   int sum = 0u;
-  
+
   while ((c=getc(f_local)) != EOF)
     sum += (char) c;    // Yes, I mean plain char, not signed, not unsigned.
-  
+
   if (ferror(f_local))
     {
       perror(name);
       (void)fclose(f_local);
       return NULL;
     }
-  
-  
+
+
   *sump = sum & 0xFFFFu;
-  
+
 #ifdef CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
   fclose(f_local);
   if (mode == UPDATE)
     f_local = fopen(name, "r+");
   else
     f_local = fopen(name, "r");
-  
+
   if (NULL == f_local)
     {
       perror(name);
       return NULL;
     }
-  
+
 #else
   rewind(f_local);
   if (ferror(f_local))
@@ -229,17 +229,17 @@ sccs_file::open_sccs_file(const char *name,
  *   control_char: 0 if this is not a control (^A) line, otherwise the line type.
  */
 bool
-sccs_file::read_line(char* line_type) 
+sccs_file::read_line(char* line_type)
 {
-  if (read_line_param(f)) 
+  if (read_line_param(f))
     {
-      if (ferror(f)) 
+      if (ferror(f))
 	{
 	  errormsg_with_errno("%s: Read error.", name.c_str());
 	}
       return false;
-    } 
-  
+    }
+
   lineno++;
   if ( bufchar(0) == '\001')
     *line_type = bufchar(1);
@@ -255,13 +255,13 @@ NORETURN
 sccs_file::corrupt(const char *fmt, ...) const {
   char buf[80];
   const char *p;
-  
+
   va_list ap;
   va_start(ap, fmt);
   if (-1 == vsnprintf(buf, sizeof(buf), fmt, ap))
     {
       warning("%s: error message too long for buffer, so the "
-              "next message will lack some relevant detail", 
+              "next message will lack some relevant detail",
               name.c_str());
       p = fmt;                  // best effort
     }
@@ -301,7 +301,7 @@ unsigned short
 sccs_file::strict_atous(const char *s) const
 {
   long n = 0;
-  
+
   char c;
   while ( 0 != (c=*s++) )
     {
@@ -315,12 +315,12 @@ sccs_file::strict_atous(const char *s) const
           corrupt("Number too big");
         }
     }
-  
+
   return (unsigned short) n;
 }
 
-// Convert a number field in an SCCS file to a 
-// number.  Fields representing numbers in 
+// Convert a number field in an SCCS file to a
+// number.  Fields representing numbers in
 // SCCS files should top out at 9999.
 
 unsigned long
@@ -330,9 +330,9 @@ sccs_file::strict_atoul_idu(const char *s) const
   bool found_ws = false;
   const unsigned long limit = 99999uL;
 
-  /* Unix System III pads to the left with spaces in the 
-   * numbers, while more modern versions of SCCS pad to 
-   * the left with zeroes.   We don't allow left-pad with 
+  /* Unix System III pads to the left with spaces in the
+   * numbers, while more modern versions of SCCS pad to
+   * the left with zeroes.   We don't allow left-pad with
    * whitespace characters other than an actual space.
    */
   while (' ' == *s)
@@ -367,10 +367,10 @@ sccs_file::strict_atoul_idu(const char *s) const
 
   if (n > limit)
     {
-      warning("%s: line %d: number field exceeds %lu.", 
+      warning("%s: line %d: number field exceeds %lu.",
               name.c_str(), lineno, limit);
     }
-  
+
   return n;
 }
 
@@ -384,7 +384,7 @@ sccs_file::read_delta() {
 
         ASSERT(bufchar(1) == 's');
         check_arg();
-        
+
         char *args[7];          /* Stores the result of spliting a line */
 
         if (plinebuf->split(3, args, 3, '/') != 3)
@@ -399,7 +399,7 @@ sccs_file::read_delta() {
                     strict_atoul_idu(args[2]));
 
 	char line_type;
-        if (!read_line(&line_type) || (line_type != 'd')) 
+        if (!read_line(&line_type) || (line_type != 'd'))
 	  {
 	    corrupt("Expected '@d'");
 	  }
@@ -438,7 +438,7 @@ sccs_file::read_delta() {
 	  {
 	    corrupt("Unexpected end-of-file");
 	  }
-	
+
         int i;
         const char *start;
         bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
@@ -464,21 +464,21 @@ sccs_file::read_delta() {
                       tmp.set_has_ignores(true);
                       break;
                     }
-                  
+
                   if (bufchar(2) != ' ')
                     {
 		      // throw line away.
                       read_line(&c);  // FIXME: missing EOF check here.
                       continue;
                     }
-                        
+
                         check_arg();
 
                         start = plinebuf->c_str() + 3;
                         do {
-                                // In C++, strchr() is overloaded so that 
-                                // it returns const char* if the first 
-                                // argument is const char*, and char* only if 
+                                // In C++, strchr() is overloaded so that
+                                // it returns const char* if the first
+                                // argument is const char*, and char* only if
                                 // the first argument is char*.
                                 const char *end = strchr(start, ' ');
                                 if (end != NULL) {
@@ -522,7 +522,7 @@ sccs_file::read_delta() {
 
         // According to Hyman Rosen <hymie@jyacc.com>, it is possible
         // to have a ^A m line which has no argument.  Therefore we don't
-        // use check_arg().  
+        // use check_arg().
 
         // According to Hyman Rosen <hymie@jyacc.com>, it is sometimes
         // possible to have ^Am lines after ^Ac lines, as well as the
@@ -537,15 +537,15 @@ sccs_file::read_delta() {
                     tmp.add_mr(plinebuf->c_str() + 3);
                   }
               }
-            else if (c == 'c') 
+            else if (c == 'c')
               {
                 /* Larry McVoy's extensions for BitKeeper and BitSCCS
                  * add in extra stuff like "^AcSyadayada".  Real SCCS
                  * doesn't mind about that, so at Larry's request, we
                  * tolerate it too.   No idea what these lines mean though.
-                 * Ask <lm@bitmover.com> for more information.  Anyway, 
+                 * Ask <lm@bitmover.com> for more information.  Anyway,
                  * normal comment lines look like "^Ac yadayada" instead,
-                 * and check_arg() exists to check for the space.   Hence, 
+                 * and check_arg() exists to check for the space.   Hence,
                  * to support Larry's extensions, we don't call check_arg()
                  * here.
                  */
@@ -565,10 +565,10 @@ sccs_file::read_delta() {
                   }
                 tmp.add_comment(plinebuf->c_str() + 3);
               }
-            
+
             read_line(&c);	// FIXME: check for EOF
           }
-        
+
 
         if (c != 'e') {
                 corrupt("Expected '@e'");
@@ -621,7 +621,7 @@ void
 sccs_file::check_bk_comment(char ch, char arg) const
 {
   ASSERT(is_bk_file);
-  
+
   switch (arg)
     {
     case 'B':
@@ -651,7 +651,7 @@ sccs_file::check_bk_comment(char ch, char arg) const
 }
 
 
-/* Seeks on the SCCS file to the start of the body.  This function 
+/* Seeks on the SCCS file to the start of the body.  This function
    may be rewritten as fseek() doesn't always work too well on
    text files. */
 // JAY: use fgetpos()/fsetpos() instead?
@@ -660,7 +660,7 @@ sccs_file::seek_to_body()
 {
   if (fseek(f, body_offset, SEEK_SET) != 0)
     {
-      // this quit should NOT be fatal; we should proceed 
+      // this quit should NOT be fatal; we should proceed
       // to the next file if we can.
       errormsg("%s: fseek() failed!", name.c_str());
       return false;
@@ -696,14 +696,14 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   delta_table = new cssc_delta_table;
   plinebuf     = new cssc_linebuf;
   ASSERT(0 != delta_table);
-  
+
   if (!name.valid())
     {
       ctor_fail(-1,
                 "%s: Not an SCCS file.  Did you specify the right file?",
                 name.c_str());
     }
-  
+
   flags.no_id_keywords_is_fatal = 0;
   flags.branch = 0;
   flags.floor = (short)0;
@@ -719,7 +719,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   flags.type = 0;
   flags.reserved = 0;
   flags.user_def = 0;
-  
+
   ASSERT(!flags.default_sid.valid());
 
   if (mode != READ)
@@ -730,7 +730,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
                name.c_str());
         }
     }
-  
+
   if (mode == CREATE)
     {
       /* f is NULL in this case. */
@@ -742,7 +742,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   // the s-file read-only.
   signed int sum = 0;
   f = open_sccs_file(name.c_str(), READ, &sum, &is_bk_file);
-  
+
   if (mode != READ)
     {
       if (!edit_mode_ok(true))
@@ -752,19 +752,19 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
                     name.c_str());
         }
     }
-  
-  /* open_sccs_file() returns normally if everything went OK, or if 
-   * there was an IO error on an apparently valid file.  If this is 
+
+  /* open_sccs_file() returns normally if everything went OK, or if
+   * there was an IO error on an apparently valid file.  If this is
    * the case, perror() will already have been called.
    */
   if (NULL == f)
     {
       ctor_fail(-1, "%s: Cannot open SCCS file.\n", name.c_str());
     }
-  
+
   char c;
   read_line(&c);		// FIXME: check for EOF
-  
+
   // open_sccs_file() should have already checked that the first line
   // is ^Ah or ^Ah, so this assertion is really just checking that
   // open_sccs_file() did the right thing.
@@ -785,7 +785,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     format = "%*cH%d";
   else
     format = "%*ch%d";
-  
+
   if (1 != sscanf(plinebuf->c_str(), format, &given_sum))
     {
       errormsg("Expected checksum line, found line beginning '%.3s'\n",
@@ -796,7 +796,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     {
       given_sum &= 0xFFFFu;
       checksum_valid = (given_sum == sum);
-      
+
       if (false == checksum_valid)
         {
           if (FIX_CHECKSUM == mode)
@@ -816,21 +816,21 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     {
       // Todo: throw exception here?
     }
-  
+
   read_line(&c);		// FIXME: detect eof
   while (c == 's')
     {
       read_delta();
       read_line(&c);		// FIXME: detect eof
     }
-  
+
   if (c != 'u')
     {
       corrupt("Expected '@u'");
     }
-  
+
   check_noarg();
-  
+
   read_line(&c);		// FIXME: detect eof
   while (c != 'U')
     {
@@ -848,7 +848,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
    * was provided by Marko Rauhamaa <marko@tekelec.com>.
    */
   /* check_noarg(); */
-  
+
   read_line(&c);		// FIXME: detect eof
   while (c == 'f')
     {
@@ -860,7 +860,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
           corrupt("Bad flag arg.");
         }
 
-      // We have to be careful to not crash on input lines like 
+      // We have to be careful to not crash on input lines like
       // "^Af v".  That is, bufchar[4] may well be zero!
       // Thanks to William W. Austin <bill@baustin.alph.att.com>
       // for this diagnosis.
@@ -875,28 +875,28 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
         {
           arg = "";
         }
-      
+
       switch (bufchar(3)) {
       case 't':
         set_type_flag(arg);
         break;
-        
+
       case 'v':
         set_mr_checker_flag(arg);
         break;
-        
+
       case 'i':
         flags.no_id_keywords_is_fatal = 1;
         break;
-        
+
       case 'b':
         flags.branch = 1;
         break;
-        
+
       case 'm':
         set_module_flag(arg);
         break;
-        
+
       case 'f':
         flags.floor = release(arg);
         if (!flags.floor.valid())
@@ -904,7 +904,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
             corrupt("Bad 'f' flag");
           }
         break;
-        
+
       case 'c':
         flags.ceiling = release(arg);
         if (!flags.ceiling.valid())
@@ -920,15 +920,15 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
             corrupt("Bad 'd' flag");
           }
         break;
-        
+
       case 'n':
         flags.null_deltas = 1;
         break;
-        
+
       case 'j':
         flags.joint_edit = 1;
         break;
-        
+
       case 'l':
         if (got_arg && strcmp(arg, "a") == 0)
           {
@@ -939,11 +939,11 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
             flags.locked = release_list(arg);
           }
         break;
-        
+
       case 'q':
         set_user_flag(arg);
         break;
-        
+
       case 'z':
         set_reserved_flag(arg);
         break;
@@ -953,15 +953,15 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
         // When this flag is set, the g-file is marked executable.
         flags.executable = 1;
         break;
-        
+
       case 'y':
         // The 'y' flag is supported by Solaris 8 and above.
-        // It controls the expansion of '%' keywords.  If the 
-        // y flag is set, its value is a list of keywords that will 
+        // It controls the expansion of '%' keywords.  If the
+        // y flag is set, its value is a list of keywords that will
         // be expanded.  Otherwise, all known keywords will be expanded.
         set_expanded_keyword_flag(arg);
         break;
-        
+
       case 'e':
         if (got_arg && '1' == *arg)
           flags.encoded = 1;
@@ -970,7 +970,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
         else
           corrupt("Bad value '%c' for 'e' flag.", arg[0]);
         break;
-        
+
       default:
         if (is_bk_file)
           {
@@ -981,54 +981,54 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
             corrupt("Unknown flag '%c'.", bufchar(3));
           }
       }
-      
+
       read_line(&c);		// FIXME: eof detection
     }
-  
+
   if (c != 't')
     {
       corrupt("Expected '@t'");
     }
-  
+
   /* Sun's Code Manager sometimes emits lines of the form "^At 0" and
    * so these lines fail the "no argument" check.  So we no longer do
    * that check for "^At" lines.  A file including lines of this type
    * was provided by Marko Rauhamaa <marko@tekelec.com>.
    */
   /*check_noarg();*/
-  
+
   read_line(&c);		// FIXME: eof detection
   while (c == 0)
     {
       comments.add(plinebuf->c_str());
       read_line(&c);		// FIXME: eof detection
     }
-  
+
   if (c != 'T')
     {
       corrupt("Expected '@T'");
     }
-  
+
   /* Sun's Code Manager sometimes emits lines of the form "^AT 0" and
    * so these lines fail the "no argument" check.  So we no longer do
    * that check for "^AT" lines.  A file including lines of this type
    * was provided by Marko Rauhamaa <marko@tekelec.com>.
    */
   /*check_noarg();*/
-  
+
   body_offset = ftell(f);
   if (body_offset == -1L)
     {
       ctor_fail(errno, "ftell() failed.");
     }
-  
+
   body_lineno = lineno;
 }
 
 
 /* Find the SID of the most recently created delta with the same release
    and level as the requested SID. */
-   
+
 sid
 sccs_file::find_most_recent_sid(sid id) const {
         sccs_date newest;
@@ -1054,7 +1054,7 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
   s = sid();
   d = sccs_date();
   bool found = false;
-  
+
   ASSERT(0 != delta_table);
 
   const_delta_iterator iter(delta_table);
@@ -1075,7 +1075,7 @@ set_mr_checker_flag(const char *s)
 {
   if (flags.mr_checker)
     delete flags.mr_checker;
-  
+
   flags.mr_checker = new mystring(s);
 }
 
@@ -1084,7 +1084,7 @@ set_module_flag(const char *s)
 {
   if (flags.module)
     delete flags.module;
-  
+
   flags.module = new mystring(s);
 }
 
@@ -1093,7 +1093,7 @@ set_user_flag(const char *s)
 {
   if (flags.user_def)
     delete flags.user_def;
-  
+
   flags.user_def = new mystring(s);
 }
 
@@ -1102,7 +1102,7 @@ set_type_flag(const char *s)
 {
   if (flags.type)
     delete flags.type;
-  
+
   flags.type = new mystring(s);
 }
 
@@ -1111,7 +1111,7 @@ set_reserved_flag(const char *s)
 {
   if (flags.reserved)
     delete flags.reserved;
-  
+
   flags.reserved = new mystring(s);
 }
 
@@ -1167,7 +1167,7 @@ const delta * sccs_file::find_any_delta(sid id) const
   return delta_table->find_any(id);
 }
 
-delta * sccs_file::find_delta(sid id) 
+delta * sccs_file::find_delta(sid id)
 {
   ASSERT(0 != delta_table);
   return delta_table->find(id);
@@ -1200,7 +1200,7 @@ sccs_file::~sccs_file()
     {
       name.unlock();
     }
-  
+
   if (mode != CREATE)
     {
       ASSERT(0 != f);           // catch multiple destruction.
@@ -1212,11 +1212,11 @@ sccs_file::~sccs_file()
     {
       remove(name.xfile().c_str());
     }
-  
+
   ASSERT(0 != delta_table);     // catch multiple destruction.
   delete delta_table;
   delta_table = 0;
-  
+
   ASSERT(0 != plinebuf);        // catch multiple destruction.
   delete plinebuf;
   plinebuf = 0;
@@ -1240,9 +1240,9 @@ bool sccs_file::executable_flag_set() const
 }
 
 
-/* There are some features that we don't properly understand. 
- * If we see them, we should abandon any attempt to modify the 
- * file.   We call saw_unknown_feature() when we see one.  It 
+/* There are some features that we don't properly understand.
+ * If we see them, we should abandon any attempt to modify the
+ * file.   We call saw_unknown_feature() when we see one.  It
  * checks what mode we're using the SCCS file in, and reacts
  * accordingly.
  */
@@ -1252,7 +1252,7 @@ void sccs_file::saw_unknown_feature(const char *fmt, ...) const
 
   va_start(ap, fmt);
 
-  /* If we are not modifying the file, just issue a warning.  Otherwise, 
+  /* If we are not modifying the file, just issue a warning.  Otherwise,
    * abandon the attempt to edit it.
    */
   switch (mode)
@@ -1261,7 +1261,7 @@ void sccs_file::saw_unknown_feature(const char *fmt, ...) const
     case FIX_CHECKSUM:
       v_unknown_feature_warning(fmt, ap);
       break;
-      
+
     case UPDATE:
     case CREATE:
       s_unrecognised_feature_quit(fmt, ap);
@@ -1284,7 +1284,7 @@ print_subsituted_flags_list(FILE *out, const char* separator) const
             return false;
         }
 
-          
+
       // print the keyword letter.
       if (printf_failed(fprintf(out, "%c", members[i])))
         return false;

@@ -1,22 +1,22 @@
 /*
  * pfile.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -63,7 +63,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 
                 int lineno = 0;
                 while (!linebuf.read_line(pf)) {
-                  // chomp the newline 
+                  // chomp the newline
                   // TODO: make me 8-bit clean!
                   linebuf[strlen(linebuf.c_str()) - 1] = '\0';
                         lineno++;
@@ -92,10 +92,10 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
                             || (argc == 7 && (excl == NULL || incl == NULL))) {
                                 corrupt(lineno, "Bad -i or -x option");
                         }
-                                      
-                                
+
+
                         struct edit_lock tmp(args[0], args[1], args[2],
-                                             args[3], args[4], 
+                                             args[3], args[4],
                                              incl, excl);
 
                         if (!tmp.got.valid() || !tmp.got.valid()) {
@@ -105,7 +105,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
                         if (!tmp.date.valid()) {
                                 corrupt(lineno, "Invalid date");
                         }
-                                        
+
                         if (!tmp.include.valid() || !tmp.exclude.valid()) {
                                 corrupt(lineno, "Invalid SID list");
                         }
@@ -127,7 +127,7 @@ sccs_pfile::find_locked(const sid& id) const
 {
   for (const_iterator it = begin(); it != end(); ++it)
     {
-      if (it->got == id) 
+      if (it->got == id)
 	return it;
     }
   return end();
@@ -138,13 +138,13 @@ sccs_pfile::find_to_be_created(const sid& id) const
 {
   for (const_iterator it = begin(); it != end(); ++it)
     {
-      if (it->delta == id) 
+      if (it->delta == id)
 	return it;
     }
   return end();
 }
 
-int 
+int
 sccs_pfile::print_lock_sid(FILE *fp, const_iterator pos) const
 {
   return pos->delta.print(fp);

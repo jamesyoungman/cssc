@@ -37,6 +37,55 @@
 
 2010-05-15  James Youngman  <jay@gnu.org>
 
+	Remove trailing blanks from most files.
+	* .x-sc_trailing_blank: Remove trailing-blank exceptions for most
+	files.
+	* Makefile.am, NEWS, README, auxfiles/CSSC.spec.in,
+	bsd/Makefile.bsd, bsd/sccs.1, bsd/sccs.c, configure.ac, docs/BUGS,
+	docs/CREDITS, docs/Makefile.am, docs/Platforms, docs/TODO,
+	docs/URLs, docs/cssc.texi, docs/mailing-list.txt, docs/style.txt,
+	docs/tests-todo.txt, gl/Makefile.am, sccs-cgi/sccs.cgi,
+	src/Makefile.am, src/admin.cc, src/bodyio.cc, src/bodyio.h,
+	src/canonify.cc, src/cap.cc, src/cdc.cc, src/cleanup.h,
+	src/cssc-assert.h, src/cssc.h, src/defaults.h,
+	src/delta-iterator.cc, src/delta-iterator.h, src/delta-table.cc,
+	src/delta-table.h, src/delta.cc, src/delta.h, src/dtbl-prepend.cc,
+	src/encoding.cc, src/environment.cc, src/except.h,
+	src/fatalsig.cc, src/fdclosed.cc, src/file.cc, src/file.h,
+	src/filediff.cc, src/filediff.h, src/fileiter.cc, src/fileiter.h,
+	src/filelock.h, src/filepos.h, src/fnsplit.cc, src/get.cc,
+	src/ioerr.h, src/l-split.cc, src/linebuf.cc, src/linebuf.h,
+	src/my-getopt.cc, src/my-getopt.h, src/mylist.h, src/myset.h,
+	src/mystring.h, src/pf-add.cc, src/pf-del.cc, src/pfile.cc,
+	src/pfile.h, src/prompt.cc, src/prs.cc, src/prt.cc, src/quit.cc,
+	src/quit.h, src/rel_list.cc, src/rel_list.h, src/release.h,
+	src/relvbr.h, src/rl-merge.cc, src/rmdel.cc, src/run.cc,
+	src/run.h, src/sact.cc, src/sccs-delta.cc, src/sccsdate.cc,
+	src/sccsdate.h, src/sccsdiff.sh.in, src/sccsfile.cc,
+	src/sccsfile.h, src/sccsname.cc, src/sccsname.h, src/seqstate.cc,
+	src/seqstate.h, src/sf-add.cc, src/sf-admin.cc, src/sf-cdc.cc,
+	src/sf-chkid.cc, src/sf-chkmr.h, src/sf-delta.cc, src/sf-get.cc,
+	src/sf-get2.cc, src/sf-get3.cc, src/sf-kw.cc, src/sf-prs.cc,
+	src/sf-prt.cc, src/sf-rmdel.cc, src/sf-val.cc, src/sf-write.cc,
+	src/showconfig.cc, src/sid.cc, src/sid.h, src/sid_list.h,
+	src/sl-merge.h, src/stack.h, src/sysdep.h, src/unget.cc,
+	src/val.cc, src/valcodes.h, src/version.h, src/what.cc,
+	src/writesubst.cc, testutils/compare_gets.sh,
+	testutils/condense-valgrind.pl, testutils/decompress_stdin.sh.in,
+	testutils/ekko.c, testutils/gcov-util.sh, testutils/last-time.c,
+	testutils/lndir.c, testutils/lndir.man, testutils/mogrify.awk,
+	testutils/realpwd.cc, testutils/seeker.c, testutils/user.c,
+	testutils/uu_decode.c, testutils/yammer.c, testutils/yes.c,
+	unit-tests/Makefile.am, unit-tests/get-gtest.sh,
+	unit-tests/test_bigfile.cc, unit-tests/test_delta-table.cc,
+	unit-tests/test_delta.cc, unit-tests/test_encoding.cc,
+	unit-tests/test_encoding2.cc, unit-tests/test_mylist.cc,
+	unit-tests/test_myset.cc, unit-tests/test_rel_list.cc,
+	unit-tests/test_release.cc, unit-tests/test_relvbr.cc,
+	unit-tests/test_sccsdate.cc, unit-tests/test_sid.cc,
+	unit-tests/test_sid_list.cc, unit-tests/test_stack.cc: Remove
+	trailing blanks.
+
 	Eliminate some syntax-check warnings.
 	* testutils/yes.c (main): Don't #define EXIT_FAILURE.
 	* docs/borrowed-files.txt: Remove trailing blanks.

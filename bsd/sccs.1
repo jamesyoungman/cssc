@@ -104,7 +104,7 @@ These are:
 .Bl -tag -width deledit
 .It Cm edit
 Equivalent
-to 
+to
 .Dq Li get \-e .
 .It Cm delget
 Perform a delta on the named files and
@@ -120,7 +120,7 @@ and
 .Fl y
 flags will be passed to
 .Nm delta ,
-and the 
+and the
 .Fl b,
 .Fl c ,
 .Fl e ,
@@ -206,7 +206,7 @@ If the
 .Fl b
 flag
 is given, branches (i.e.,
-.Li SID Ns \&\'s 
+.Li SID Ns \&\'s
 with two or fewer components)
 are ignored.  If the
 .Fl u
@@ -264,18 +264,18 @@ and
 .Fl b
 options are passed to
 .Nm diff .
-The 
-.Fl a , 
-.Fl B , 
-.Fl d , 
-.Fl H , 
-.Fl p , 
-.Fl q , 
+The
+.Fl a ,
+.Fl B ,
+.Fl d ,
+.Fl H ,
+.Fl p ,
+.Fl q ,
 .Fl s ,
 .Fl v ,
 and
-.Fl y 
-options are passed to 
+.Fl y
+options are passed to
 .Nm diff
 but these options are (usually) specific to GNU diff, and so may not
 be supported on systems other than GNU.
@@ -313,23 +313,23 @@ supported only by the GNU version of
 .Nm sccs .
 .It Fl -prefix=foo
 Uses
-.Ar foo 
+.Ar foo
 as the prefix for SCCS sub-commands.   The default prefix
-is compiled into the program and is usually 
-.Dq /usr/sccs .  
-You can discover the prefix setting with the 
-.Fl V 
+is compiled into the program and is usually
+.Dq /usr/sccs .
+You can discover the prefix setting with the
+.Fl V
 flag.  This prefix is used without a final slash being appended, so
 values like
 .Dq /usr/local/bin/cssc-
 can be used.  This option is disallowed if the program is installed
 setuid, and it is supported only by the GNU version of
 .Nm sccs .
-.Em "This option is not equivalent to the" 
+.Em "This option is not equivalent to the"
 .Fl p
 .Em flag .
 .It Fl -version
-Show version information; synonymous with the 
+Show version information; synonymous with the
 .Fl V
 flag.
 .It Fl r
@@ -348,7 +348,7 @@ The default is the current directory.
 If environment variable
 .Ev PROJECTDIR
 is set,
-it will be used to determine the 
+it will be used to determine the
 .Fl d
 flag.
 .It Fl p
@@ -377,16 +377,16 @@ The intent here is to create aliases such as
 which
 will be used as
 .Dq Li syssccs get cmd/who.c .
-.Em Please note that the 
+.Em Please note that the
 .Fl p
-.Em flag is (very) different in purpose from the 
-.Fl -prefix 
+.Em flag is (very) different in purpose from the
+.Fl -prefix
 .Em option.
 .It Fl T
 This flag causes the program to emit a debugging trace on stdout.
 This flag may be disabled at compile time.
 .It Fl V
-Shows the version information for the 
+Shows the version information for the
 .Nm sccs
 program, and the subcommand prefix being used.  This option is
 supported only by the GNU version of
@@ -431,7 +431,7 @@ file if it does not already exist:
 .Dl $(SRCS):
 .Dl \&\tsccs get $(REL) $@
 .Sh MAINTAINER
-This version of 
+This version of
 .Nm sccs
 is maintained by James Youngman, <jay@gnu.org>.
 .Sh ENVIRONMENT
@@ -456,31 +456,31 @@ Otherwise, it will be one of the following values:-
 .Bl -tag -width >128
 .It 0
 No error; everything proceeded according to plan.
-.It 64 
-Command line usage error 
-.\" 65 data format error 
-.\" 66 cannot open input 
-.\" 67 addressee unknown 
-.\" 68 host name unknown 
-.It 69 
+.It 64
+Command line usage error
+.\" 65 data format error
+.\" 66 cannot open input
+.\" 67 addressee unknown
+.\" 68 host name unknown
+.It 69
 Could not exec program
-.It 70 
+.It 70
 Internal software error.  This should not happen.
-.It 71 
-System error (e.g., can't fork) 
-.\" 72 critical OS file missing 
-.\" 73 can't create (user) output file 
-.\" 74 input/output error 
-.It 75 
+.It 71
+System error (e.g., can't fork)
+.\" 72 critical OS file missing
+.\" 73 can't create (user) output file
+.\" 74 input/output error
+.It 75
 Temporary failure; retry later.  This error is returned when the
 system runs out of memory.
-.\" 76 remote error in protocol 
-.It 77 
-Permission denied.  This error occurs when the program has been 
+.\" 76 remote error in protocol
+.It 77
+Permission denied.  This error occurs when the program has been
 installed setuid, but SCCSDIR was not configured in at compile time.
-This can also happen if something goes wrong when the program tries 
+This can also happen if something goes wrong when the program tries
 to drop its setuid or setgid privileges.
-.\" 78 configuration error 
+.\" 78 configuration error
 .\" >128
 When a program exits due to a fatal signal, the shell usually adds 128
 to the signal number and uses that as the return value.   Some systems
@@ -529,14 +529,14 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
 are met:
 .Bl -enum
-.It 
+.It
 Redistributions of source code must retain the above copyright
 notice, this list of conditions and the following disclaimer.
-.It 
+.It
 Redistributions in binary form must reproduce the above copyright
 notice, this list of conditions and the following disclaimer in the
 documentation and/or other materials provided with the distribution.
-.It 
+.It
 All advertising materials mentioning features or use of this software
 must display the following acknowledgement:
 .Pp
@@ -544,7 +544,7 @@ must display the following acknowledgement:
 This product includes software developed by the University of
 California, Berkeley and its contributors.
 .Re
-.It 
+.It
 Neither the name of the University nor the names of its contributors
 may be used to endorse or promote products derived from this software
 without specific prior written permission.
@@ -572,10 +572,10 @@ appeared in
 .Pp
 This version of
 .Nm sccs
-has been slightly modified to support 
+has been slightly modified to support
 .Nm "GNU Autoconf" ,
-and several new options (those beginning with two dashes and also 
-.Fl V ) 
+and several new options (those beginning with two dashes and also
+.Fl V )
 and to make
 it somewhat more portable.
 The program otherwise remains largely unchanged.
@@ -584,11 +584,11 @@ It should be able to take directory arguments on pseudo-commands
 like the
 .Li SCCS
 commands do.
-.Pp 
-Though this program is mostly derived from the original 
-.Bx 
+.Pp
+Though this program is mostly derived from the original
+.Bx
 code, the subprograms accompanying it in the CSSC suite (admin, get,
 delta and so on) are not the original AT&T code.  Please do not count
 on these programs being secure.
-.Pp 
+.Pp
 Other known bugs are listed in the file BUGS, which accompanies GNU CSSC.

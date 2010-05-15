@@ -69,7 +69,7 @@ do_summary () {
 	    exit 1
 	fi
     fi
-    
+
     do_all2 "$@" | sort -rn | $formatter
     # do_all2 "$@"
 }
@@ -96,7 +96,7 @@ fmt_text () {
 fmt_html () {
 NOW="$(date)"
 
-cat<<EOF    
+cat<<EOF
 <html>
 <head>
 <title>Test Suite Coverage Summary</title>
@@ -124,7 +124,7 @@ EOF
 
 
 do_f_option () {
-    case "$1" in 
+    case "$1" in
 	text) formatter=fmt_text ;;
         html) formatter=fmt_html ;;
 	*)    echo "Unknown formatting method $1" >&2; usage ;;

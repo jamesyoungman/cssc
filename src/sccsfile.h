@@ -1,28 +1,28 @@
 /*
  * sccsfile.h: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997-2003,2004,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997-2003,2004,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
  * Definition of the class sccs_file.
  */
- 
+
 #ifndef CSSC__SCCSFILE_H__
 #define CSSC__SCCSFILE_H__
 
@@ -47,9 +47,9 @@ class sccs_file
 {
 public:
   enum _mode { READ, UPDATE, CREATE, FIX_CHECKSUM };
-  
+
 private:
-  
+
   sccs_name& name;
   FILE *f;
   bool checksum_valid;
@@ -59,10 +59,10 @@ private:
   int body_lineno;
   bool xfile_created;
   bool is_bk_file;
-  
+
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
-  
+
   mylist<mystring> users;	// FIXME: consider something more efficient.
   struct sccs_file_flags
   {
@@ -80,7 +80,7 @@ private:
     int all_locked;
     mystring *user_def;
     mystring *reserved;
-    
+
     int encoded;
     int executable;
     myset<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
@@ -95,7 +95,7 @@ private:
   void check_noarg() const;
   unsigned short strict_atous(const char *s) const;
   unsigned long strict_atoul_idu(const char *s) const;
-  
+
   int read_line_param(FILE *f);
 
   bool read_line(char* line_type);
@@ -106,18 +106,18 @@ private:
   void check_bk_flag(char flagchar) const;
   void check_bk_comment(char ch, char arg) const;
   bool edit_mode_ok(bool editing) const;
-  
+
 public:
 
-  // sccs_file::sccs_file(sccs_name&, enum _mode) MUST 
-  // take a non-const reference to an sccs_name as an 
+  // sccs_file::sccs_file(sccs_name&, enum _mode) MUST
+  // take a non-const reference to an sccs_name as an
   // argument in order to get the semantics of lock
   // ownership correct; an sccs_name carries with it a
   // lock, so if we copy it, either the copy does not
   // have a lock or we have too many locks in total.
   sccs_file(sccs_name &name, enum _mode mode);
   bool checksum_ok() const;
-  
+
   sid find_most_recent_sid(sid id) const;
   bool find_most_recent_sid(sid& s, sccs_date& d) const;
 
@@ -126,18 +126,18 @@ public:
 
   /* Forwarding functions for the delta table.
    */
-  const delta *find_delta(sid id) const; 
-  const delta *find_any_delta(sid id) const; 
-  delta *find_delta(sid id); 
+  const delta *find_delta(sid id) const;
+  const delta *find_any_delta(sid id) const;
+  delta *find_delta(sid id);
   seq_no highest_delta_seqno() const;
   sid highest_delta_release() const;
   sid seq_to_sid(seq_no) const;
-  
+
 
   /* Forwarding functinos for the line buffer.
    */
   char bufchar(int pos) const;
-  
+
   ~sccs_file();
 
   /* sf-get.c */
@@ -150,7 +150,7 @@ private:
     unsigned out_lineno;
     sccs_date now;
     int found_id;
-    
+
     subst_parms(FILE *o, const char *w, struct delta const &d,
                 unsigned int l, sccs_date n)
       : out(o), wstring(w), delta(d), out_lineno(l), now(n),
@@ -169,7 +169,7 @@ private:
   enum { GET_NO_DECODE = true };
   bool print_subsituted_flags_list(FILE *out, const char* separator) const;
   static bool is_known_keyword_char(char c);
-  
+
   /* sf-get2.c */
   int write_subst(const char *start,
                   struct subst_parms *parms,
@@ -179,7 +179,7 @@ private:
   bool sid_matches(const sid& requested,
 		   const sid& found,
 		   bool get_top_delta) const;
-  
+
 public:
   struct get_status
   {
@@ -193,9 +193,9 @@ public:
   bool find_requested_seqno(seq_no n, sid &found) const ;
   sid find_next_sid(sid requested, sid got, int branch,
                     const sccs_pfile &pfile, int *failed) const;
-  bool test_locks(sid got, const sccs_pfile&) const; 
-  
-  struct get_status get(FILE *out, mystring name, 
+  bool test_locks(sid got, const sccs_pfile&) const;
+
+  struct get_status get(FILE *out, mystring name,
 			FILE *summary_file,
 			sid id,
                         sccs_date cutoff_date = sccs_date(),
@@ -206,9 +206,9 @@ public:
                         int debug = 0, bool for_edit = false);
 
 private:
-  
+
   void saw_unknown_feature(const char *fmt, ...) const;
-  
+
   /* sf-get3.c */
   bool prepare_seqstate(seq_state &state, seq_no seq,
                         sid_list include,
@@ -273,7 +273,7 @@ public:
 
   /* val.cc */
   const mystring  get_module_type_flag();
-  
+
   /* sf-admin.c */
   bool admin(const char *file_comment,
              bool force_binary,
@@ -295,7 +295,7 @@ private:
 
   /* sf-kw.cc */
   void no_id_keywords(const char name[]) const;
-  
+
 public:
   enum when { EARLIER, SIDONLY, LATER };
   struct cutoff
@@ -306,12 +306,12 @@ public:
     const struct delta *cutoff_delta;
     sccs_date first_accepted;
     sccs_date last_accepted;
-    
+
     cutoff();
     bool excludes_delta(sid, sccs_date, bool& stop_now) const;
     void print(FILE *out) const;
   };
-  
+
 
   bool prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
            enum when when, int all_deltas);
@@ -336,7 +336,7 @@ public:
   bool validate() const;
   bool validate_seq_lists(const delta_iterator& d) const;
   bool validate_isomorphism() const;
-  
+
   // Implementation is protected; in the existing [MySC]
   // implementation some of the implementation is private where
   // it might better be protected.

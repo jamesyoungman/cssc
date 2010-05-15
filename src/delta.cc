@@ -1,22 +1,22 @@
 /*
  * delta.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -80,7 +80,7 @@ delta_main(int argc, char **argv)
     default:
       errormsg("Unsupported option: '%c'", c);
       return EXITVAL_INVALID_OPTION;
-			
+
     case 'r':
       rid = sid(opts.getarg());
       if (!rid.valid()) {
@@ -147,7 +147,7 @@ delta_main(int argc, char **argv)
 	  sccs_name &name = iter.get_name();
 	  sccs_file file(name, sccs_file::UPDATE);
 	  sccs_pfile pfile(name, sccs_pfile::UPDATE);
-		
+
 	  if (first)
 	    {
 	      if (!suppress_mrs && !got_mrs && file.mr_required())
@@ -169,7 +169,7 @@ delta_main(int argc, char **argv)
 	  switch (found.first) {
 	  case sccs_pfile::FOUND:
 	    break;
-		  
+
 	  case sccs_pfile::NOT_FOUND:
 	    if (!rid.valid())
 	      {
@@ -185,7 +185,7 @@ delta_main(int argc, char **argv)
 	    failed = true;
 	    retval = EXITVAL_INVALID_OPTION;
 	    break;
-		  
+
 	  case sccs_pfile::AMBIGUOUS:
 	    if (rid.valid())
 	      {
@@ -200,11 +200,11 @@ delta_main(int argc, char **argv)
 	    failed = true;
 	    retval = EXITVAL_INVALID_OPTION;
 	    break;
-		  
+
 	  default:
 	    abort();
 	  }
-		
+
 	  if (!failed)
 	    {
 	      if (!suppress_mrs && file.mr_required())
@@ -239,10 +239,10 @@ delta_main(int argc, char **argv)
 		  retval = 1;
 		  continue;
 		}
-		    
+
 	      mystring gname = name.gfile();
-		    
-	      if (!file.add_delta(gname, pfile, found.second, 
+
+	      if (!file.add_delta(gname, pfile, found.second,
 				  mr_list, comment_list,
 				  display_diff_output))
 		{

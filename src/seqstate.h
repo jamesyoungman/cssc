@@ -1,27 +1,27 @@
 /*
  * seqstate.h: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
- * Defines the class seqstate.  
+ * Defines the class seqstate.
  */
 
 #ifndef CSSC__SEQSTATE_H__
@@ -41,17 +41,17 @@ class seq_state
 {
   // Make assignment and copy constructor private.
   const seq_state& operator=(const seq_state& s);
-  
+
   unsigned char * pIncluded;
   unsigned char * pExcluded;
   unsigned char * pIgnored;
   unsigned char * pNonrecursive;
   unsigned char * pExplicit;
   seq_no *        pDoneBy;
-  
+
   unsigned char * pActive;
   char          * pCommand;
-  
+
   seq_no          last;
   seq_no          active; // for use by "get -m" and so on.
 
@@ -59,7 +59,7 @@ class seq_state
   // We keep a record of the open ^AI or ^AD expressions
   // that are currently in effect, while reading the SCCS file.
   // This is kept in the pActive array.  If pActive[n] true,
-  // then pCommand[i] contains an 'I' or 'D' indicating that a 
+  // then pCommand[i] contains an 'I' or 'D' indicating that a
   // ^AI or ^AD had been encountered.
 
   bool            inserting;	// current state.
@@ -69,12 +69,12 @@ class seq_state
   void decide_disposition();
 
 public:
-  enum { BY_DEFAULT = -1, BY_COMMAND_LINE = -2 };  
+  enum { BY_DEFAULT = -1, BY_COMMAND_LINE = -2 };
 
   seq_state(seq_no l);
   seq_state(const seq_state& s);
   ~seq_state();
-  
+
   bool is_included(seq_no n) const;
   bool is_excluded(seq_no) const;
   bool is_ignored(seq_no) const;
@@ -88,9 +88,9 @@ public:
   void set_included(seq_no n, seq_no whodunit, bool bNonRecursive=false);
   void set_excluded(seq_no n, seq_no whodunit);
   void set_ignored (seq_no n, seq_no whodunit);
-  
+
   seq_no whodunit(seq_no n) const;
-  
+
   // stuff for use when reading the body of the s-file.
 
   // When we find ^AI or ^AD

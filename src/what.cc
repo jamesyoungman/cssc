@@ -1,23 +1,23 @@
-/* 
+/*
  * what.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -99,7 +99,7 @@ xclose(XFILE f) {
 }
 
 inline ssize_t
-xread(XFILE f, char *buf, size_t len) 
+xread(XFILE f, char *buf, size_t len)
 {
   return read(f, buf, len);
 }
@@ -125,12 +125,12 @@ xgetc(XFILE f)
     {
       return EOF;
     }
-  else 
+  else
     {
       return c;
     }
 }
-	
+
 #endif /* CONFIG_WHAT_USE_STDIO */
 
 static const char *what_prg_name = "what";
@@ -148,7 +148,7 @@ usage(void)
 inline char *
 print_what(char *s, char *end, XFILE f) {
 	putchar('\t');
-	
+
 	while (s < end) {
 		char c = *s;
 		switch (c) {
@@ -157,7 +157,7 @@ print_what(char *s, char *end, XFILE f) {
 		case '\n':
 #if CONFIG_EOL_CHARACTER != '\n'
 		case CONFIG_EOL_CHARACTER:
-#endif			
+#endif
 		case '\\':
 		case '\0':
 			return s;
@@ -174,10 +174,10 @@ print_what(char *s, char *end, XFILE f) {
 		case '\n':
 #if CONFIG_EOL_CHARACTER != '\n'
 		case CONFIG_EOL_CHARACTER:
-#endif			
+#endif
 		case '\\':
 		case '\0':
-		  /* Note that only one test case currently covers this line 
+		  /* Note that only one test case currently covers this line
 		   * of the code.   Test w22 of whatbasic.sh exercises this,
 		   * but nothing else does.
 		   */
@@ -199,12 +199,12 @@ main(int argc, char **argv)
 {
   int one_match = 0;
   int matchcount = 0;
-  
+
   if (argc > 0)
     what_prg_name = argv[0];
 
   check_env_vars();
-  
+
   int c;
   class CSSC_Options opts(argc, argv, "r!snV", 1);
   for (c = opts.next(); c != CSSC_Options::END_OF_ARGUMENTS; c = opts.next())
@@ -214,7 +214,7 @@ main(int argc, char **argv)
 	case 's':
 	  one_match = 1;
 	  break;
-	  
+
 	case 'V':
 	  version();
 	}
@@ -230,12 +230,12 @@ main(int argc, char **argv)
 		  argv[arg], strerror(errno));
 	  fail();
 	}
-      
+
       printf("%s:\n", argv[arg]);
-      
+
       static char buf[CONFIG_WHAT_BUFFER_SIZE + 3];
       buf[0] = buf[1] = buf[2] = '\0';
-      
+
       ssize_t read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
       while (read_len > 0)
 	{
@@ -248,7 +248,7 @@ main(int argc, char **argv)
 	      {
 		at = print_what(at+4, end + 3, f);
 		++matchcount;
-		
+
 		putchar('\n');
 		if (0 == at || one_match)
 		  {

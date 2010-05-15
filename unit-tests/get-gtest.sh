@@ -13,7 +13,7 @@ main() {
 	usage >&2
 	exit 1
     fi
-    
+
     if [ -d "$module" ] && [ -d "$module"/.svn ]; then
 	( cd "$module" && svn update -r "$1" ) || return 1
     else

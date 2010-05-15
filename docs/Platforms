@@ -7,7 +7,7 @@ James Youngman  <jay@gnu.org>                       Red Hat Linux (x86)
                                                     4.1,4.2,5.0,5.1,5.2,5.9,
                                                     6.0, 6.2, 7.0, 7.1, 7.1.93
 James Youngman  <jay@gnu.org>                       Debian GNU/Linux versions
-                                                    2.2 (SPARC64, Alpha), 
+                                                    2.2 (SPARC64, Alpha),
                                                     3.0 (x86), 3.1 (x86),
 						    5.0 (x86_64),
 						    squeeze (x86_64).
@@ -88,7 +88,7 @@ for a bug in a few versions of glibc.  See "GNU libc" below for more
 details.
 
 
-Solaris 
+Solaris
 -------
 
 You need to build CSSC using GNU make because of the way that the
@@ -99,7 +99,7 @@ HPUX
 ----
 To compile on HPUX 9 you have to use GNU make and /bin/posix/sh:
 $ SHELL=/bin/posix/sh $SHELL ./configure
-$ gmake SHELL=/bin/posix/sh 
+$ gmake SHELL=/bin/posix/sh
 
 
 IRIX
@@ -126,7 +126,7 @@ To run the tests on this platform, one must use Bash :-
 > Because this OS is so ancient, it is not possible to run "make
 > check" out of the box. Both "sh" and "sh5" (the Sys V version of sh)
 > give syntax errors loading the defs in common. However "make
-> SHELL=bash check" does run (I'm using bash 2.03).  
+> SHELL=bash check" does run (I'm using bash 2.03).
 
 
 NetBSD
@@ -142,7 +142,7 @@ this problem, you could apply the following sed command to
 FreeBSD
 -------
 
-You will need to build with GNU make. 
+You will need to build with GNU make.
 
 
 GNU libc
@@ -152,13 +152,13 @@ GNU libc 2.2.3 has a bug in it which means that if you use GCC 2.97 or
 later, classes cannot have member functions called "printf".  The
 configure script works around this problem (by turning off
 optimisation).  The glibc bug is fixed in glibc 2.2.4.  CSSC compiles
-successfully under GCC version 3.01, with this workaround in place. 
+successfully under GCC version 3.01, with this workaround in place.
 
 
 Windows NT / Cygwin
 -------------------
 
-See also "Microsoft Services for Unix", below. 
+See also "Microsoft Services for Unix", below.
 
 CSSC's history files and working files must be stored and used on a
 Cygwin file system mounted in 'binary mode' not 'text mode'.
@@ -170,22 +170,22 @@ it falls short :-
 
 1. Files are often created with the wrong mode, but for the most part
    the relevant program changes the mode of the output file to the
-   correct value immediately after closing the file. 
+   correct value immediately after closing the file.
 
-2. The "Atomic" NFS locking support is done on Unix with the use of 
-   link(2) and requires the ability to use link(2) on an open file; this 
+2. The "Atomic" NFS locking support is done on Unix with the use of
+   link(2) and requires the ability to use link(2) on an open file; this
    is a feature which is not supported under the Cygwin environment.
    For this reason, it is unsafe to use the Cygwin version of CSSC on
    SCCS files which are mounted via an NT NFS client.  If, on the other hand,
-   the files are mounted via Samba, this should be safe (but has not been 
+   the files are mounted via Samba, this should be safe (but has not been
    tested).
 
 3. Set-user-id execution will not work properly.  Because of the
-   insecure nature of the current code base, this mode of operation 
+   insecure nature of the current code base, this mode of operation
    is not currently supported anyway, but this is liable to be
    especially poor under Windows NT due to the significant differences in
    the security models of Unix and Windows NT.  The Cygwin environment
-   does provide tools for resolving this problem, but this has not been done. 
+   does provide tools for resolving this problem, but this has not been done.
 
 A small number of the test cases for the "sccs.exe" binary fail under
 CYGWIN; this is because, although they do the right thing, the output
@@ -202,7 +202,7 @@ test "h1" currently fails, and is skipped for CYGWIN.
 Microsoft Services for Unix / Interix 3.0
 -----------------------------------------
 
-The following arguments were used for "configure": 
+The following arguments were used for "configure":
         ./configure CFLAGS=-D_ALL_SOURCE CXXFLAGS=-D_ALL_SOURCE \
                 --build=i386 --host=i386-pc-interix --disable-nls \
                 --enable-binary --prefix=/usr/local \

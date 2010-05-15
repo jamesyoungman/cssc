@@ -1,4 +1,4 @@
-#! /usr/bin/perl 
+#! /usr/bin/perl
 
 
 my %ignore;
@@ -64,7 +64,7 @@ while (<>) {
 	--$ignore_count;
 	next;
     }
-    
+
     if ($ignore_until ne "") {
 	# print "Checking for ignore ($ignore_until)...\n";
 	if (m/$ignore_until/) {
@@ -77,7 +77,7 @@ while (<>) {
     } else {
 	# print "Not ignoring...\n";
     }
-    
+
     # printf("%4d [%s] -> %s", $line, $program, $_);
 
 
@@ -89,11 +89,11 @@ while (<>) {
 	# print "!> end of entry\n";
 	# next;
     } elsif ( ($program eq "") && (m/^Reading syms from (.*)$/)) {
-	
+
 	$program = $1;
 	# $program =~ s/.*\///;
 	# print "program = " . $program . "\n";
-	
+
 	if ($ignore{$1}) {
 	    # print "ignoring...\n";
 	    # print "Ignoring until next /$start_regexp/\n";
@@ -106,7 +106,7 @@ while (<>) {
 	printf("== %d == %s", $pid, $_);
     }
 
-    
+
 }
 if ($in_entry) {
     &end_entry;

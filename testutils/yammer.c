@@ -1,17 +1,17 @@
 /* yammer.c: Part of GNU CSSC.
- * 
- *    Copyright (C) 1998,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1998,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,7 +33,7 @@
  * No attempt has been made to make this program use the
  * Autoconf-generated configuration information.  I hope it won't need
  * it.
- * 
+ *
  * This program was written during October 1998 by Greg A. Woods,
  * VE3TCP, <gwoods@acm.org>, <woods@planix.com>, <woods@wierd.com>.
  */
@@ -49,7 +49,7 @@ main(argc, argv)
      char *argv[];
 {
   int i, j;
-  
+
   if (argc != 3)
     {
       fprintf(stderr, "usage: %s count string\n", argv[0]);
@@ -60,7 +60,7 @@ main(argc, argv)
       fprintf(stderr, "%s: invalid count '%s'\n", argv[0], argv[1]);
       return 2;
     }
-  else 
+  else
     {
       for (j = 1; i > 0; i--, j++)
         {

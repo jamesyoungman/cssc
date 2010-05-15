@@ -1,24 +1,24 @@
 /*
  * sf-prs.cc: Part of GNU CSSC.
- * 
- * 
+ *
+ *
  *    Copyright (C) 1997,1998,1999,2001,2002,2003,
- *                  2004,2007,2008 Free Software Foundation, Inc. 
- * 
+ *                  2004,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -42,18 +42,18 @@ sccs_file::get(FILE *out, mystring gname, seq_no seq, bool for_edit)
 
   if (!edit_mode_ok(for_edit))
     return false;
-  
+
   delta blankdelta;
   struct subst_parms parms(out, (const char*)0, blankdelta, 0,
                            sccs_date());
   class seq_state state(highest_delta_seqno());
-  
+
   if (prepare_seqstate(state, seq,
                        no_includes, no_excludes, no_cutoff))
   {
       return get(gname, state, parms, true);
   }
-  else 
+  else
   {
       return false;
   }
@@ -66,7 +66,7 @@ print_seq_list(FILE *out, mylist<seq_no> const &list) {
   const mylist<seq_no>::size_type len = list.length();
 
   /* prs does actually print the sequences in reverse order! */
-  if (len > 0) 
+  if (len > 0)
     {
       mylist<seq_no>::size_type i = len-1;
       do
@@ -81,18 +81,18 @@ print_seq_list(FILE *out, mylist<seq_no> const &list) {
 
 /* Prints a list of strings, one per line. */
 static void
-print_string_list(FILE *out, mylist<mystring> const &list) 
+print_string_list(FILE *out, mylist<mystring> const &list)
 {
   const mylist<mystring>::size_type len = list.length();
-  
-  for (mylist<mystring>::size_type i = 0; i < len; i++) 
+
+  for (mylist<mystring>::size_type i = 0; i < len; i++)
     {
       fprintf(out, "%s\n", list[i].c_str());
     }
 }
 
 
-/* Prints a boolean flag with its name.   Simply, if the 
+/* Prints a boolean flag with its name.   Simply, if the
  * flag is unset, its name is not printed.
  */
 static void
@@ -166,7 +166,7 @@ sccs_file::print_flags(FILE *out) const
     print_flag2(out, locked, "a");
   else
     print_flag2(out, locked, flags.locked);
-  
+
   print_flag2(out, (const char *) "module",
               (flags.module ? flags.module->c_str()
                : (const char*)0) );
@@ -179,7 +179,7 @@ sccs_file::print_flags(FILE *out) const
 
 #if 0
   // Testing on Solaris 9 reveals that no output is produced
-  // if the "y" flag is set.  Hence for compatibility we also 
+  // if the "y" flag is set.  Hence for compatibility we also
   // say nothing.
   if (flags.substitued_flag_letters.count() > 0)
     {
@@ -206,7 +206,7 @@ print_yesno(FILE *out, int flag) {
 inline static void
 print_flag(FILE *out, const mystring *s)
 {
-  if (s) 
+  if (s)
     fputs("none", out);
   else
     fputs(s->c_str(), out);
@@ -216,7 +216,7 @@ print_flag(FILE *out, const mystring *s)
 inline static void
 print_flag(FILE *out, mystring *s)
 {
-  if (s) 
+  if (s)
     fputs(s->c_str(), out);
   else
     fputs("none", out);
@@ -226,7 +226,7 @@ print_flag(FILE *out, mystring *s)
 inline static void
 print_flag(FILE *out, const mystring &s)
 {
-  if (s.empty()) 
+  if (s.empty())
     fputs("none", out);
   else
     fputs(s.c_str(), out);
@@ -236,7 +236,7 @@ print_flag(FILE *out, const mystring &s)
 inline static void
 print_flag(FILE *out, const release_list &it)
 {
-  if (it.valid()) 
+  if (it.valid())
     it.print(out);
   else
     fputs("none", out);
@@ -245,7 +245,7 @@ print_flag(FILE *out, const release_list &it)
 inline static void
 print_flag(FILE *out, const release &it)
 {
-  if (it.valid()) 
+  if (it.valid())
     it.print(out);
   else
     fputs("none", out);
@@ -254,7 +254,7 @@ print_flag(FILE *out, const release &it)
 inline static void
 print_flag(FILE *out, const sid &it)
 {
-  if (it.valid()) 
+  if (it.valid())
     it.print(out);
   else
     fputs("none", out);
@@ -265,14 +265,14 @@ print_flag(FILE *out, const sid &it)
 // void
 // print_flag(FILE *out, TYPE it)
 // {
-//   if (it.valid()) 
+//   if (it.valid())
 //     it.print(out);
 //   else
 //     fputs("none", out);
 // }
 
 /* These macros are used to convert the one or two characters a prs
-   data keyword in an unsigned value used in the switch statement 
+   data keyword in an unsigned value used in the switch statement
    in the function below. */
 
 #define KEY1(c)         ((unsigned char)(c))
@@ -286,7 +286,7 @@ sccs_file::print_delta(FILE *out, const char *format,
                        struct delta const &d)
 {
   const char *s = format;
-  
+
   while (1)
     {
       char c = *s++;
@@ -304,10 +304,10 @@ sccs_file::print_delta(FILE *out, const char *format,
               switch (*s)
                 {
                 case 'n':
-                  /* Turn a \n into a newline unless it is the last 
-                   * bit of the format string.  In the latter case we 
+                  /* Turn a \n into a newline unless it is the last
+                   * bit of the format string.  In the latter case we
                    * ignore it - see prs/format.sh test cases 4a and 4b.
-                   * Those partiicular test cases were checked against 
+                   * Those partiicular test cases were checked against
                    * Sun Solaris 2.6.
                    */
                   if (s[1])
@@ -333,7 +333,7 @@ sccs_file::print_delta(FILE *out, const char *format,
             {
               putc('\\', out); // trailing backslash at and of format.
             }
-          
+
           continue;
         }
       else if (c != ':' || s[0] == '\0')
@@ -341,10 +341,10 @@ sccs_file::print_delta(FILE *out, const char *format,
           putc(c, out);
           continue;
         }
-      
+
       const char *back_to = s;
       unsigned key = 0;
-      
+
       if (s[1] == ':')
         {
           key = KEY1(s[0]);
@@ -367,7 +367,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           s = back_to;
           putc(':', out);
           continue;
-                        
+
         case KEY2('D','t'):
           print_delta(out, ":DT: :I: :D: :T: :P: :DS: :DP:",
                       d);
@@ -376,7 +376,7 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY2('D','L'):
           print_delta(out, ":Li:/:Ld:/:Lu:", d);
           break;
-          
+
         case KEY2('L','i'):
           fprintf(out, "%05lu", d.inserted());
           break;
@@ -404,19 +404,19 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY1('L'):
           d.id().printf(out, 'L');
           break;
-          
+
         case KEY1('B'):
           d.id().printf(out, 'B');
           break;
-          
+
         case KEY1('S'):
           d.id().printf(out, 'S');
           break;
-          
+
         case KEY1('D'):
           d.date().printf(out, 'D');
           break;
-          
+
         case KEY2('D','y'):
           d.date().printf(out, 'y');
           break;
@@ -424,19 +424,19 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY2('D','m'):
           d.date().printf(out, 'o');
           break;
-          
+
         case KEY2('D','d'):
           d.date().printf(out, 'd');
           break;
-          
+
         case KEY1('T'):
           d.date().printf(out, 'T');
           break;
-          
+
         case KEY2('T','h'):
           d.date().printf(out, 'h');
           break;
-          
+
         case KEY2('T','m'):
           d.date().printf(out, 'm');
           break;
@@ -467,7 +467,7 @@ sccs_file::print_delta(FILE *out, const char *format,
               print_delta(out, ":Dn:/:Dx:", d);
               break;
             }
-                  
+
         case KEY2('D','n'):
           print_seq_list(out, d.get_included_seqnos());
           break;
@@ -498,19 +498,19 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY2('F', 'L'):
           print_flags(out);
           break;
-                        
+
         case KEY1('Y'):
           print_flag(out, flags.type);
           break;
-                        
+
         case KEY2('M','F'):
           print_yesno(out, flags.mr_checker != 0);
           break;
-          
+
         case KEY2('M','P'):
           print_flag(out, flags.mr_checker);
           break;
-                        
+
         case KEY2('K','F'):
           print_yesno(out, flags.no_id_keywords_is_fatal);
           break;
@@ -522,7 +522,7 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY1('J'):
           print_yesno(out, flags.joint_edit);
           break;
-                        
+
         case KEY2('L','K'):
           if (flags.all_locked)
             {
@@ -530,7 +530,7 @@ sccs_file::print_delta(FILE *out, const char *format,
             }
           else
             {
-              
+
               if (flags.locked.empty())
                 fprintf(out, "none");
               else
@@ -546,11 +546,11 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY1('M'):
           print_flag(out, get_module_name());
           break;
-                        
+
         case KEY2('F','B'):
           print_flag(out, flags.floor);
           break;
-                        
+
         case KEY2('C','B'):
           print_flag(out, flags.ceiling);
           break;
@@ -565,8 +565,8 @@ sccs_file::print_delta(FILE *out, const char *format,
 
         case KEY2('F','D'):
           // The genuine article prints '(none)' if there
-          // is no description.  
-          // JY Sun Nov 25 01:33:46 2001; Solaris 2.6 
+          // is no description.
+          // JY Sun Nov 25 01:33:46 2001; Solaris 2.6
           // prints "none" rather than "(none)".
           if (0 == comments.length())
             fputs("none\n", out);
@@ -672,7 +672,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
       print_delta(out, format.c_str(), *iter.operator->());
       putc('\n', out);
     }
-  
+
   if (ferror(out))
     {
       errormsg("%s: Ouput file error.", name.c_str());

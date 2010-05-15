@@ -1,22 +1,22 @@
 /*
  * environment.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  * Code for handling environment variables which affect CSSC.  See the
  * sections "Environment" and "Interoperability" in the CSSC manual.
@@ -37,9 +37,9 @@ bool binary_file_creation_allowed (void)
   static const char * const bin_var = "CSSC_BINARY_SUPPORT";
   static const char * const enabled = "enabled";
   static const char * const disabled = "disabled";
-  
+
   const char *p = getenv(bin_var);
-  
+
   if (p)
     {
       if (0 == strcmp(p, enabled))
@@ -59,7 +59,7 @@ bool binary_file_creation_allowed (void)
 	  fprintf(stderr,
 		  "Error: The %s environment variable, if set, must be set "
 		  "to either '%s' or '%s'.\n",
-		  bin_var, 
+		  bin_var,
 		  enabled,
 		  disabled);
 	  exit(1);
@@ -71,11 +71,11 @@ bool binary_file_creation_allowed (void)
       return false;
 #else
       return true;
-#endif      
+#endif
     }
 }
 
-  
+
 long max_sfile_line_len(void)
 {
   static const char * const max_var = "CSSC_MAX_LINE_LENGTH";
@@ -89,7 +89,7 @@ long max_sfile_line_len(void)
       char *endptr;
       errno = 0;
       len = strtol(p, &endptr, 10);
-      if ( (endptr == p) 
+      if ( (endptr == p)
 	   || ( (LONG_MIN == len) || (LONG_MAX == len) ) && (0 != errno)
 	   || len < 0)
 	{

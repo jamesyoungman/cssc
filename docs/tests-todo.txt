@@ -14,7 +14,7 @@ admin
         New SCCS file, with -fv, needs -m but didn't get it
         New SCCS file - revert to binary file mode due to line length
         Disk full during admin -i (both binary and text mode).
-        SCCS keywords present in the encoded form of the SCCS file 
+        SCCS keywords present in the encoded form of the SCCS file
         Write error when copying data in copy_data() (bodyio.cc)
         admin -i trying to go to binary mode when that mode is
         disabled
@@ -29,19 +29,19 @@ admin
         Setting "i" flag with arg (it should not have one)
         Setting m, n, q, e, t flags
         Unsetting b, c, f, d, i, j, m, n, q, e, t flags
-        
+
 
 cdc
 ===
         MR numbers provided but validation fails.
         MR numbers required but not provided
         cdc on a valid but nonexistent SID
-                
+
 get
 ===
         Duplicate sequence numbers in the SCCS file (one being R, the
         other D) (leading to lack of coverage in delta-table.cc.gcov).
-        Operation on directory names    
+        Operation on directory names
         Operation on directory names containing trailing slashes
         Unsupported option character
         Invalid SID used for -r
@@ -79,7 +79,7 @@ get
         Use of %W%
         Use of %W% with the w flag set
         Use of %_% where _ is not a valid flag char (just output it)
-        
+
 
 
 delta
@@ -92,21 +92,21 @@ delta
         Writing out a SCCS file with l flag which is set and not equal
         to "a"
         Can't remove old SCCS file
-        
+
 
 prs
 ===
         Unsupported option
-        Invalid SID for -r option       
+        Invalid SID for -r option
         Valid but nonexistent SID
         Use of -c option
         Use of -e, -l, -a options
         Use of -e or -l without -c
         No sccs files named on command line
         Failure of sccs_file::prs
-        Data keywords :Dy: :Dm: :Dd: :Th: :Tm: :Ts: 
+        Data keywords :Dy: :Dm: :Dd: :Th: :Tm: :Ts:
         Data keywords :ND: :W: :A: :F:
-        Data keyword :FB: when there is a floor 
+        Data keyword :FB: when there is a floor
         Using -e or -l with -r and not finding the specified SID.
         Using -e and finding SIDs in the file earlier than the cutoff date
         Using -l and finding SIDs in the file later than the cutoff date
@@ -124,12 +124,12 @@ prt
         Failure of sccs_file::prt
         Included/excluded seq list
         Printing the module flag (when set)
-        "earlier" cutoff 
-        "later" cutoff 
-        Removed delta in the file 
+        "earlier" cutoff
+        "later" cutoff
+        Removed delta in the file
         Removed delta in the file but -a option is in effect
         Lists of included and exclded deltas are not empty
-        Flags set: i, j 
+        Flags set: i, j
 
 rmdel
 =====
@@ -151,15 +151,15 @@ sact
 unget
 =====
         Unsupported option
-        Invalid SID for -r option       
+        Invalid SID for -r option
         Valid but nonexistent SID
         No sccs file specified
         No p-file present
         p-file present but your SID is not in it
         p-file present but your SID is ambiguous
-        
 
-                        
+
+
 
 Date processing
 ================
@@ -170,10 +170,10 @@ Date processing
         Single-digit fields in dates (try on command line)
         Non-numeric year fields on command line.
         More than 12 digits in date spec on command line.
-        Years after 2000 with 2-digit years spec.   
+        Years after 2000 with 2-digit years spec.
         Second digit o year is ':' - the auto-fix.
         sccs_date::format specifiers y,o,d,h,m,s - used?
-        date comparison in sccs_date::compare() where 
+        date comparison in sccs_date::compare() where
                 the year is different
                 the year is the same but the day is different
 
@@ -191,7 +191,7 @@ Generic
         Use of release_list::release_list with a range specified (invalid)
         Use of release_list::release_list with commas in the argument
         Use of release_list::print with a non-empty list
-        fork() fails 
+        fork() fails
         @i by itself on a line in an SCCS file (valid but is a no-op)
         BitKeeper style comment @cX
         Pass the name of a file other than an SCCS file on cmd line
@@ -219,7 +219,7 @@ Various kinds of corrupt SCCS file
         Delta has invalid SID
         Missing @e
         Fetching module name (prs/prt/keyword)
-        Second letter of file is not "h" for "get"              
+        Second letter of file is not "h" for "get"
         Missing @u
         Empty line between @u and @U.
         @f with no following letter
@@ -232,12 +232,12 @@ Various kinds of corrupt SCCS file
         @E N without preceding @I N.
         Invalid sequence number found while doing delta
         delta - control line in body other than I,E,D
-        
-                
+
+
 Too difficult for now
 =====================
         delta: %A as last characters in the g-file being checked in
-           - this is difficult because "diff" will often fail   
+           - this is difficult because "diff" will often fail
              on text files containing no terminating newline.
         delta: Fail to create x-file
            - the code specifically checks for this case and does a
@@ -253,10 +253,10 @@ Interactive tests required
         Issue SCCS command while the file is already locked
         delta prompting for MRs.
 
-CSSC only   
+CSSC only
 =========
         version (-V) option
-        Full range of config options    
+        Full range of config options
 
 
 Weird Stuff
@@ -264,7 +264,7 @@ Weird Stuff
         Corrupt diff ouptut
         Non-seekable s-file (!)
 
-        
+
 
 Obsolete features
 =================
@@ -303,7 +303,7 @@ Unused object methods
         sccs_file::validate()
         relvbr::relvbr(const char *s)
         release::release(NULL)
-        sid::comparable() when one SID is not valid.    
+        sid::comparable() when one SID is not valid.
         sid::comparable() when the branch numbers are the same but the
         release numbers are different
         sid::comparable() when the branch numbers are the same but the
@@ -311,7 +311,7 @@ Unused object methods
         sid::gte() when the level of the 2nd is higher than the first.
         sid::partial_match()
         sid::successor() when this-> branch is nonzero
-        sid::matches() with input value of nfields equal to zero 
+        sid::matches() with input value of nfields equal to zero
         sid::matches() with input value of nfields equal to 4
         sid::matches() with input value of nfields equal to 5
         sid::sid() (no args)
@@ -328,10 +328,10 @@ Unused object methods
         range_list::merge()
         range_list::remove()
         class stack
-        
-        
-        
-        
+
+
+
+
 
 
 Major feature areas not yet tested
@@ -366,15 +366,15 @@ from sf-delta.cc :-
 ------------------------------------------------------------------
 from sf-delta.cc :-
                                 case diff_state::END:
-                #ifdef JAY_DEBUG          
+                #ifdef JAY_DEBUG
                           fprintf(stderr, "diff_state::END\n");
-                #endif    
+                #endif
           43                      if (c == -1)
       ######                        {
       ######                          break;
       ######                        }
 ------------------------------------------------------------------
-                                    
+
 ------------------------------------------------------------------
 from sf-rmdel.cc :-
                 static int
@@ -388,5 +388,5 @@ from sf-rmdel.cc :-
       ######            }
           57            return 0;
                 }
-                
+
 ------------------------------------------------------------------

@@ -1,22 +1,22 @@
 /*
  * fileiter.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -70,15 +70,15 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 			   * name contains a trailing slash.  Solution
 			   * is to make sure that "slash" is not NULL.
 			   */
-			  slash = ""; 
+			  slash = "";
 			}
-			
+
 			mystring dirname(mystring(first) + mystring(slash));
 
 			struct dirent *dent = readdir(dir);
 			while (dent != NULL) {
 				mystring directory_entry = mystring(dirname) + mystring(dent->d_name);
-				
+
 				if (sccs_name::valid_filename(directory_entry.c_str())
 				    && is_readable(directory_entry.c_str()))
 				  {
@@ -129,7 +129,7 @@ sccs_file_iterator::next() {
 	    name = s.substr(0, s.length()-1u); // chop off the newline.
 	    return 1;
 	  }
-	
+
 	case DIRECTORY:
 		if (pos < files.length()) {
 			name = files[pos++];
@@ -158,7 +158,7 @@ sccs_file_iterator::next() {
 	return 0;
 }
 
-					
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */

@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <2004-10-16 17:50:06 james>
+Time-stamp: <2010-05-15 23:28:34 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -60,9 +60,9 @@ been corrupted by non-Y2K-compliant versions of SCCS.
 John Interrante <interran@crd.ge.com> added support in cssc.texi for
 "make install-info", and several improvements for auxfiles/CSSC.spec.
 
-Marko Rauhamaa <marko@tekelec.com> provided useful bug reports for 
-SCCS files produced by Sun's Code manager; it produces artifacts in 
-SCCS files not produced by "ordinary" SCCS.  Examples include lines 
+Marko Rauhamaa <marko@tekelec.com> provided useful bug reports for
+SCCS files produced by Sun's Code manager; it produces artifacts in
+SCCS files not produced by "ordinary" SCCS.  Examples include lines
 of the form "^AU 0" and "^At 0".  (Stop Press: these lines were
 produced by (a bug in) Sun's Code Manager).
 
@@ -107,7 +107,7 @@ Mark Fortescue provided patches bug-fixes relating to SID selection
 and cutoff dates.
 
 Jeff Sheinberg provided a patch to sccs.c, fixing an incorrect
-allocation size for a buffer. 
+allocation size for a buffer.
 
 Thomas Duffy has taken on the role of building RPM and SRPM packages
 for CSSC.

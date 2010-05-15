@@ -1,19 +1,19 @@
 /*
  * test_encoding.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,2007,2010 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,2007,2010 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -62,13 +62,13 @@ int test_all(void)
 	  double completed = (100.0 * i) / dmaxval;
 	  printf("%06lx %3.0f%%...\n", i, completed);
 	}
-      
-      
+
+
       in.ch[0] = (i & 0x0000ff) >>  0;
       in.ch[1] = (i & 0x00ff00) >>  8;
       in.ch[2] = (i & 0xff0000) >> 16;
       in.ch[3] = '\0';
-      
+
       encode(in.ch, out.ch);
       decode(out.ch, in.ch);
       const long l0 = ((unsigned char) in.ch[0]) & 0xff;
@@ -115,7 +115,7 @@ main(int argc, char *argv[])
 	if (0 == strcmp(options[i], argv[1]))
 	  return (actions[i])();
     }
-  else if (1 == argc) 
+  else if (1 == argc)
     {
       // No options specified; the default is to perform the sanity test.
       return test_all();

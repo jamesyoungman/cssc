@@ -1,22 +1,22 @@
 /*
  * quit.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -72,11 +72,11 @@ void warning (const char *fmt, ...)
   putc('\n', stderr);
 }
 
-static void 
+static void
 v_errormsg_with_errno(const char *fmt, va_list ap)
 {
   int saved_errno = errno;
-  
+
   v_errormsg(fmt, ap);
   errno = saved_errno;
   perror(" ");
@@ -105,14 +105,14 @@ v_quit(int err, const char *fmt, va_list ap) {
 
 	// We used to call usage() is err was -2, but
 	// nobody ever actually used that.
-	
+
 	putc('\n', stderr);
         if (fmt)
           {
             v_errormsg(fmt, ap);
             putc('\n', stderr);
           }
-        
+
         if (err >= 1) {
           print_err(err);
         }
@@ -164,7 +164,7 @@ ctor_fail(int err, const char *fmt, ...) {
 }
 
 
-NORETURN ctor_fail_nomsg(int err)  
+NORETURN ctor_fail_nomsg(int err)
 {
     throw CsscContstructorFailedException(err);
 }
@@ -193,7 +193,7 @@ s_missing_quit(const char *fmt, ...) {
         va_start(ap, fmt);
         v_errormsg_with_errno(fmt, ap);
         va_end(ap);
-        
+
         putc('\n', stderr);
         throw CsscSfileMissingException();
         /*NOTREACHED*/
@@ -201,7 +201,7 @@ s_missing_quit(const char *fmt, ...) {
 }
 
 
-/* s_unrecognised_feature_quit is usually called by 
+/* s_unrecognised_feature_quit is usually called by
  * sccs_file::saw_unknown_feature().
  */
 NORETURN
@@ -209,7 +209,7 @@ s_unrecognised_feature_quit(const char *fmt, va_list ap)
 {
   if (prg_name != NULL)
     fprintf(stderr, "%s: Warning: unknown feature: ", prg_name);
-  
+
   vfprintf(stderr, fmt, ap);
   putc('\n', stderr);
   throw CsscUnrecognisedFeatureException();
@@ -292,33 +292,33 @@ cleanup::~cleanup()
 {
   if (head == NULL)
     {
-      // SourceForge bug # 816679; cleanup::cleanup() 
-      // can be called before there are any entries on the 
+      // SourceForge bug # 816679; cleanup::cleanup()
+      // can be called before there are any entries on the
       // list.
       return; // nothing to do.
     }
   else
     {
       class cleanup *p = head;
-      
-      if (p == this) 
+
+      if (p == this)
 	{
 	  head = next;
 	  return;
         }
-      
-      while (p->next != this) 
+
+      while (p->next != this)
 	{
 	  p = p->next;
 	  ASSERT(p != NULL);
         }
-      
+
       if (p != NULL) // 'if' fixes SourceForge bug # 816679
 	{
 	  p->next = next;
 	}
     }
-}               
+}
 
 void
 cleanup::run_cleanups() {

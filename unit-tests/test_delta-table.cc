@@ -1,22 +1,22 @@
 /*
  * test_delta-table.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2010 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2010 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Unit tests for delta-table.h.
  *
  */
@@ -31,7 +31,7 @@ TEST(DeltaTable, Constructor)
   ASSERT_EQ(0, t.length());
   delta del;
   t.add(del);
-  
+
 }
 
 // add
@@ -76,7 +76,7 @@ TEST(DeltaTableDeathTest, SeqNoRangeChecks)
 {
   cssc_delta_table t;
   const mylist<mystring> no_comments, no_mrs;
-  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo", 
+  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
 		seq_no(1), seq_no(0), no_comments, no_mrs);
   t.add(a);
   ASSERT_TRUE(t.delta_at_seq_exists(seq_no(1)));
@@ -92,12 +92,12 @@ TEST(DeltaTable, DeltaAtSeqExists)
 {
   cssc_delta_table t;
   const mylist<mystring> no_comments, no_mrs;
-  
-  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo", 
+
+  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
 		seq_no(1), seq_no(0), no_comments, no_mrs);
-  const delta br('R', sid("1.2"), sccs_date("990619014208"), "waldo", 
+  const delta br('R', sid("1.2"), sccs_date("990619014208"), "waldo",
 		 seq_no(2), seq_no(1), no_comments, no_mrs);
-  const delta b('D', sid("1.1.1.1"), sccs_date("990620014208"), "wiggy", 
+  const delta b('D', sid("1.1.1.1"), sccs_date("990620014208"), "wiggy",
 		seq_no(2), seq_no(1), no_comments, no_mrs);
   t.add(a);
   t.add(br);
@@ -113,12 +113,12 @@ TEST(DeltaTable, DeltaAtSeqWithGap)
 {
   cssc_delta_table t;
   const mylist<mystring> no_comments, no_mrs;
-  
-  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo", 
+
+  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
 		seq_no(1), seq_no(0), no_comments, no_mrs);
-  const delta b('D', sid("1.2"), sccs_date("990619014208"), "waldo", 
+  const delta b('D', sid("1.2"), sccs_date("990619014208"), "waldo",
 		 seq_no(2), seq_no(1), no_comments, no_mrs);
-  const delta c('D', sid("1.3"), sccs_date("990620014208"), "wiggy", 
+  const delta c('D', sid("1.3"), sccs_date("990620014208"), "wiggy",
 		seq_no(4), seq_no(2), no_comments, no_mrs);
   t.add(a);
   t.add(b);
@@ -139,14 +139,14 @@ TEST(DeltaTable, RemovedDelta)
 {
   cssc_delta_table t;
   const mylist<mystring> no_comments, no_mrs;
-  
-  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo", 
+
+  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
 		seq_no(1), seq_no(0), no_comments, no_mrs);
-  const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo", 
+  const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo",
 		seq_no(2), seq_no(1), no_comments, no_mrs);
   t.add(a);
   t.add(r);
-  
+
   ASSERT_TRUE(t.delta_at_seq_exists(seq_no(1)));
   ASSERT_TRUE(t.delta_at_seq_exists(seq_no(2)));
 
@@ -160,10 +160,10 @@ TEST(DeltaTable, FindAny)
   cssc_delta_table t;
   const delta* p;
   const mylist<mystring> no_comments, no_mrs;
-  
-  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo", 
+
+  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
 		seq_no(1), seq_no(0), no_comments, no_mrs);
-  const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo", 
+  const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo",
 		seq_no(2), seq_no(1), no_comments, no_mrs);
   t.add(a);
   t.add(r);
@@ -189,10 +189,10 @@ TEST(DeltaTable, HighestSeqno)
   cssc_delta_table t;
   const delta* p;
   const mylist<mystring> no_comments, no_mrs;
-  
-  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo", 
+
+  const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
 		seq_no(1), seq_no(0), no_comments, no_mrs);
-  const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo", 
+  const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo",
 		seq_no(2), seq_no(1), no_comments, no_mrs);
   t.add(a);
   EXPECT_EQ(1, t.highest_seqno());
@@ -204,7 +204,7 @@ TEST(DeltaTable, HighestSeqno)
   EXPECT_EQ(3, t.next_seqno());
   EXPECT_EQ(1, t.highest_release());
 
-  const delta b('D', sid("2.1"), sccs_date("990819014208"), "dumbo", 
+  const delta b('D', sid("2.1"), sccs_date("990819014208"), "dumbo",
 		seq_no(8), seq_no(1), no_comments, no_mrs);
   t.add(b);
   EXPECT_EQ(8, t.highest_seqno());

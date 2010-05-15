@@ -1,22 +1,22 @@
 /*
  * writesubst.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2001,2004,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2001,2004,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  * sccsfile::write_subst()
  *
@@ -36,9 +36,9 @@
 #include <ctype.h>
 
 
-/* Return TRUE if the specified keyword letter should be 
- * expanded in the gotten file.  If the y flag is set, it controls the 
- * keyletters which are expanded.  If the y flag is not present, all 
+/* Return TRUE if the specified keyword letter should be
+ * expanded in the gotten file.  If the y flag is set, it controls the
+ * keyletters which are expanded.  If the y flag is not present, all
  * key letters are expanded.  The y flag is a Solaris 8 extension.
  */
 static bool expand_keyletter(char which, const myset<char> expanded)
@@ -86,7 +86,7 @@ sccs_file::write_subst(const char *start,
 	      err = fputc_failed(fputc('%', out))
 		||  fputc_failed(fputc(c,   out))
 		||  fputc_failed(fputc('%', out));
-	      
+
 	      if (err)
 		{
 		  return 1;
@@ -100,8 +100,8 @@ sccs_file::write_subst(const char *start,
 	    }
           percent += 3;
 
-	  
-	  
+
+
 	  // We need to expand the keyletter.
           switch (c)
             {
@@ -113,7 +113,7 @@ sccs_file::write_subst(const char *start,
                 err = fputs_failed(fputs(mod, out));
               }
             break;
-                        
+
             case 'I':
               err = d.id().print(out);
               break;
@@ -137,7 +137,7 @@ sccs_file::write_subst(const char *start,
             case 'D':
               err = parms->now.printf(out, 'D');
               break;
-                                
+
             case 'H':
               err = parms->now.printf(out, 'H');
               break;
@@ -212,35 +212,35 @@ sccs_file::write_subst(const char *start,
                    * However, a test on 4.1.4 shows otherwise.
                    *
                    * From: "Carl D. Speare" <carlds@attglobal.net>
-                   * Subject: RE: SunOS 4.1.4 
+                   * Subject: RE: SunOS 4.1.4
                    * To: 'James Youngman' <jay@gnu.org>,
                    *         "cssc-users@gnu.org" <cssc-users@gnu.org>
                    * Date: Wed, 11 Jul 2001 01:07:36 -0400
-                   * 
+                   *
                    * Ok, here's what I got:
-                   * 
+                   *
                    * %W% in a file called test.c expanded to:
-                   * 
+                   *
                    * @(#)test.c<TAB>1.1
-                   * 
+                   *
                    * Sorry, but my SunOS machine is lacking a network
                    * connection, so I can't bring it over into
                    * mail-land. But, there you are, for what it's
                    * worth.
-                   * 
+                   *
                    * --Carl
-                   * 
+                   *
                    */
                   s = "%Z" "%%M" "%\t%" "I%";
-                  /* NB: strange formatting of the string above is 
-                   * to preserve it unchanged even if this source code does 
+                  /* NB: strange formatting of the string above is
+                   * to preserve it unchanged even if this source code does
                    * itself get checked into SCCS or CSSC.
                    */
                 }
               else
                 {
                   /* protect against recursion */
-                  parms->wstring = 0; 
+                  parms->wstring = 0;
                 }
               err = write_subst(s, parms, d, true);
               if (0 == parms->wstring)

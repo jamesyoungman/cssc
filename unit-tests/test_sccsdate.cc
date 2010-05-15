@@ -1,22 +1,22 @@
 /*
  * test_sccsdate.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2010 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2010 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Unit tests for sccsdate.h.
  *
  */
@@ -31,7 +31,7 @@ TEST(SccsdateTest, NullConstructor)
   ASSERT_FALSE(d.valid());
 }
 
-TEST(SccsdateTest, StringConstructor) 
+TEST(SccsdateTest, StringConstructor)
 {
   sccs_date d12("990519014208");
   ASSERT_TRUE(d12.valid());
@@ -42,7 +42,7 @@ TEST(SccsdateTest, StringConstructor)
   EXPECT_EQ("99/05/19 01:42:08", d14.as_string());
 }
 
-TEST(SccsdateTest, StringDateTimeConstructor) 
+TEST(SccsdateTest, StringDateTimeConstructor)
 {
   sccs_date d12("99/05/19", "01:42:08");
   ASSERT_TRUE(d12.valid());
@@ -66,7 +66,7 @@ TEST(SccsdateDeathTest, BuckRogers)
   // We could support such years quite easily, except for the fact that
   // interoperation with other versions of SCCS would become harder.
   EXPECT_EXIT(sccs_date("2429/05/19", "01:42:08"),
-	      ::testing::KilledBySignal(SIGABRT), 
+	      ::testing::KilledBySignal(SIGABRT),
 	      "year < 2069");
 }
 
@@ -91,36 +91,36 @@ TEST(SccsdateTest, Now)
 
 TEST(SccsdateTest, Greater)
 {
-  EXPECT_TRUE(sccs_date("99/01/01 00:00:00") > 
+  EXPECT_TRUE(sccs_date("99/01/01 00:00:00") >
 	      sccs_date("98/01/01 00:00:00"));
   EXPECT_FALSE(sccs_date("98/01/01 00:00:00") >
 	       sccs_date("99/01/01 00:00:00"));
-	       
-  EXPECT_TRUE(sccs_date("98/02/01 00:00:00") > 
+
+  EXPECT_TRUE(sccs_date("98/02/01 00:00:00") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/10/01 00:00:00") > 
+  EXPECT_TRUE(sccs_date("98/10/01 00:00:00") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/01/02 00:00:00") > 
+  EXPECT_TRUE(sccs_date("98/01/02 00:00:00") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/01/10 00:00:00") > 
+  EXPECT_TRUE(sccs_date("98/01/10 00:00:00") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/01/01 01:00:00") > 
+  EXPECT_TRUE(sccs_date("98/01/01 01:00:00") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/01/01 10:00:00") > 
+  EXPECT_TRUE(sccs_date("98/01/01 10:00:00") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/01/01 00:01:00") > 
+  EXPECT_TRUE(sccs_date("98/01/01 00:01:00") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/01/01 00:10:00") > 
+  EXPECT_TRUE(sccs_date("98/01/01 00:10:00") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/01/01 00:00:01") > 
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:01") >
 	      sccs_date("98/01/01 00:00:00"));
-  EXPECT_TRUE(sccs_date("98/01/01 00:00:10") > 
+  EXPECT_TRUE(sccs_date("98/01/01 00:00:10") >
 	      sccs_date("98/01/01 00:00:00"));
 
   // Leap year.
-  EXPECT_TRUE(sccs_date("00/02/29 00:00:00") > 
+  EXPECT_TRUE(sccs_date("00/02/29 00:00:00") >
 	      sccs_date("00/02/28 00:00:00"));
-  EXPECT_TRUE(sccs_date("00/03/01 00:00:00") > 
+  EXPECT_TRUE(sccs_date("00/03/01 00:00:00") >
 	      sccs_date("00/02/29 00:00:00"));
 }
 

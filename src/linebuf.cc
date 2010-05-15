@@ -1,22 +1,22 @@
 /*
  * linebuf.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -59,19 +59,19 @@ cssc_linebuf::read_line(FILE *f)
 //
 // Add another chunk
 //
-      
+
       char *temp_buf = new char[CONFIG_LINEBUF_CHUNK_SIZE + buflen];
       memcpy( temp_buf, buf, buflen);
       delete [] buf;
       buf = temp_buf;
-      
+
       s = buf + buflen - 1u;
       buflen += CONFIG_LINEBUF_CHUNK_SIZE;
       buf[buflen - 2u] = '\0';
-		
+
       s = fgets(s, CONFIG_LINEBUF_CHUNK_SIZE + 1u, f); // fill the new chunk
     }
-  
+
   return 1;
 }
 

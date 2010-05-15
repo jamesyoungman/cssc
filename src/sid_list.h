@@ -1,23 +1,23 @@
 /*
  * sid_list.h: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -56,7 +56,7 @@ public:
   int valid() const;
   int empty() const;
   int member(TYPE id) const;
-  
+
   // manipulation.
   void invalidate();
   range_list &merge  (range_list const &list);
@@ -65,7 +65,7 @@ public:
   // output.
   int print(FILE *out) const;
 
-private:  
+private:
   // Data members.
   range<TYPE> *head;
   int valid_flag;
@@ -86,7 +86,7 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
     {
       return;
     }
-  
+
   do
     {
       size_t len;
@@ -100,7 +100,7 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
 	{
 	  len = static_cast<size_t>(comma - s);
 	}
-      
+
       char buf[64];
       if ((len+1u) > sizeof(buf))
         {
@@ -109,17 +109,17 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
       else if (len)
         {
           /* SourceForge bug number #438857:
-           * ranges like "1.1.1.2," cause an assertion 
+           * ranges like "1.1.1.2," cause an assertion
            * failure while SCCS just ignores the empty list item.
-           * Hence we introduce the conditional surrounding this 
+           * Hence we introduce the conditional surrounding this
            * block.
            */
           memcpy(buf, s, len);
           buf[len] = '\0';
-          
+
           char *dash = strchr(buf, '-');
           range<TYPE> *p = new range<TYPE>;
-          
+
           if (dash == NULL)
             {
               p->to = p->from = TYPE(buf);
@@ -130,13 +130,13 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
               p->from = TYPE(buf);
               p->to = TYPE(dash);
             }
-          
+
           p->next = head;
           head = p;
         }
       s = comma;
     } while(*s++ != '\0');
-  
+
   if (clean())                  // returns invalid flag.
     {
       destroy();
@@ -155,7 +155,7 @@ range_list<TYPE>::clean()
 {
   if (!valid())
     return 1;
-  
+
   range<TYPE> *sp = head;
   range<TYPE> *new_head = NULL;
   while (sp != NULL)
@@ -166,7 +166,7 @@ range_list<TYPE>::clean()
         {
           range<TYPE> *dp = new_head;
           range<TYPE> *pdp = NULL;
-          
+
           TYPE sp_to_1 = sp->to;
           TYPE sp_from_1 = sp->from;
           ++sp_to_1;
@@ -205,7 +205,7 @@ range_list<TYPE>::clean()
             }
           if (pdp == NULL)
             {
-              sp->next = new_head; 
+              sp->next = new_head;
               new_head = sp;
             }
           else
@@ -223,8 +223,8 @@ range_list<TYPE>::clean()
     }
   head = new_head;
   return !valid_flag;
-}               
-                                
+}
+
 template <class TYPE>
 int
 range_list<TYPE>::member(TYPE id) const
@@ -260,7 +260,7 @@ range_list<TYPE>::destroy()
   head = NULL;
 }
 
-template <class TYPE> 
+template <class TYPE>
 range<TYPE> *
 range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
 {
@@ -270,12 +270,12 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
     }
   range<TYPE> *copy_head = new range<TYPE>;
   range<TYPE> *np = copy_head;
-  
+
   while(1)
     {
       np->from = p->from;
       np->to = p->to;
-      
+
       p = p->next;
       if (p == NULL)
         {
@@ -287,7 +287,7 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
 
   np->next = NULL;
   return copy_head;
-}               
+}
 
 template <class TYPE>
 range_list<TYPE>::range_list(range_list const &list)
@@ -296,7 +296,7 @@ range_list<TYPE>::range_list(range_list const &list)
   ASSERT(list.valid());
   head = do_copy_list(list.head);
   ASSERT(valid());
-}       
+}
 
 template <class TYPE>
 range_list<TYPE> &
@@ -311,11 +311,11 @@ range_list<TYPE>::operator =(range_list<TYPE> const &list)
 
   ASSERT(valid());
   return *this;
-}       
+}
 
 
 template <class TYPE>
-range_list<TYPE>::range_list(): head(0), valid_flag(1) 
+range_list<TYPE>::range_list(): head(0), valid_flag(1)
 {
 }
 
@@ -385,7 +385,7 @@ range_list<TYPE>::print(FILE *out) const
 }
 
 #endif /* __SID_LIST_H__ */
-        
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */

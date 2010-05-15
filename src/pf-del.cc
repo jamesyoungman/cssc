@@ -1,22 +1,22 @@
 /*
  * pf-del.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -41,17 +41,17 @@ sccs_pfile::find_sid(const sid& id)
   for (iterator it = begin(); it != end(); ++it)
     {
       if (strcmp(username, it->user.c_str()) == 0
-	  && (id.is_null() || id == it->got || id == it->delta)) 
+	  && (id.is_null() || id == it->got || id == it->delta))
 	{
-	  if (found != end()) 
+	  if (found != end())
 	    {
 	      return make_pair(AMBIGUOUS, end());
 	    }
 	  found = it;
 	}
     }
-  
-  if (found == end()) 
+
+  if (found == end())
     {
       return make_pair(NOT_FOUND, end());
     }
@@ -70,12 +70,12 @@ sccs_pfile::update(bool pfile_already_exists) const
       errormsg_with_errno("%s: Can't create temporary file.", qname);
       return false;
     }
-  
+
   int count = 0;
 
   try
     {
-      for (const_iterator it = begin(); it != end(); ++it) 
+      for (const_iterator it = begin(); it != end(); ++it)
 	{
 	  if (write_edit_lock(pf, *it))
 	    {
@@ -85,7 +85,7 @@ sccs_pfile::update(bool pfile_already_exists) const
 	    }
 	  count++;
 	}
-      
+
       if (fclose_failed(fclose(pf)))
 	{
 	  errormsg_with_errno("%s: Write error.", qname);
@@ -108,7 +108,7 @@ sccs_pfile::update(bool pfile_already_exists) const
 	  return false;
 	}
     }
-  
+
   if (count == 0)		// no locks left -> no pfile rewuired.
     {
       if (remove(qname) != 0)

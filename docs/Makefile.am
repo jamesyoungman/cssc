@@ -1,6 +1,6 @@
 ## CSSC's docs/Makefile.am.
 
-info_TEXINFOS = cssc.texi 
+info_TEXINFOS = cssc.texi
 cssc_TEXINFOS = gpl-3.0.texi fdl.texi
 
 EXTRA_DIST = BUGS TODO CREDITS TESTING \

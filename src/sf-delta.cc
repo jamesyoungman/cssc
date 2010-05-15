@@ -1,24 +1,24 @@
 /*
  * sf-delta.cc: Part of GNU CSSC.
- * 
- * 
+ *
+ *
  *    Copyright (C) 1997,1998,1999,2001,
- *                  2002,2007,2008 Free Software Foundation, Inc. 
- * 
+ *                  2002,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -51,20 +51,20 @@ class diff_state
 {
 public:
   enum state { START, NOCHANGE, DELETE, INSERT, END };
-  
+
 private:
   enum state _state;
   int in_lineno, out_lineno;
   int lines_left;
   int change_left;
   bool echo_diff_output;
-  
+
   FILE *in;
   cssc_linebuf linebuf;
-  
+
   NORETURN diff_output_corrupt() POSTDECL_NORETURN;
   NORETURN diff_output_corrupt(const char *msg) POSTDECL_NORETURN;
-  
+
   void next_state();
   int read_line()
     {
@@ -80,19 +80,19 @@ private:
         }
       return read_ret;
     }
-  
+
 public:
   diff_state(FILE *f, bool echo)
-    : _state(START), 
+    : _state(START),
       in_lineno(0), out_lineno(0),
       lines_left(0), change_left(0),
       echo_diff_output(echo),
       in(f)
     {
     }
-  
+
   enum state process(FILE *out, seq_no seq);
-  
+
   const char *
   get_insert_line()
     {
@@ -100,7 +100,7 @@ public:
       ASSERT(linebuf[0] == '>' && linebuf[1] == ' ');
       return linebuf.c_str() + 2;
     }
-  
+
   int in_line() { return in_lineno; }
   int out_line() { return out_lineno; }
 };
@@ -143,7 +143,7 @@ diff_state::next_state()
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): read %s", linebuf.c_str());
 #endif
-      
+
       if (strcmp(linebuf.c_str(), "---\n") != 0)
         {
           diff_output_corrupt("expected ---");
@@ -194,7 +194,7 @@ diff_state::next_state()
 #endif
           return;
         }
-                        
+
     }
 
   char *s = NULL;
@@ -215,7 +215,7 @@ diff_state::next_state()
   c = *s;
 
   ASSERT(c != '\0');
-                
+
   if (c == 'a')
     {
       if (line1 >= in_lineno)
@@ -264,7 +264,7 @@ diff_state::next_state()
           diff_output_corrupt("right start line [case 2]");
         }
     }
-  
+
   line4 = line3;
   if (*s == ',')
     {
@@ -288,7 +288,7 @@ diff_state::next_state()
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): returning INSERT [6]\n");
 #endif
-      break;            
+      break;
 
     case 'd':
       _state = DELETE;
@@ -297,7 +297,7 @@ diff_state::next_state()
       fprintf(stderr, "next_state(): returning DELETE [7]\n");
 #endif
       break;
-      
+
     case 'c':
       _state = DELETE;
       lines_left = line2 - line1 + 1;
@@ -306,7 +306,7 @@ diff_state::next_state()
       fprintf(stderr, "next_state(): returning DELETE [8]\n");
 #endif
       break;
-      
+
     default:
       diff_output_corrupt("unknown operation");
     }
@@ -323,7 +323,7 @@ diff_state::process(FILE *out, seq_no seq)
     {
       in_lineno++;
     }
-  
+
   if (_state != END)
     {
       ASSERT(lines_left >= 0);
@@ -372,7 +372,7 @@ diff_state::process(FILE *out, seq_no seq)
         }
       out_lineno++;
     }
-  
+
   return _state;
 }
 
@@ -381,18 +381,18 @@ class FileDeleter
   mystring name;
   bool as_real_user;
   bool armed;
-  
+
 public:
   FileDeleter(const mystring& s, bool realuser)
     : name(s), as_real_user(realuser), armed(true) { }
-  
+
   ~FileDeleter()
     {
       if (armed)
         {
           const char *s = name.c_str();
           bool bOK;
-          
+
           if (as_real_user)
             bOK = unlink_file_as_real_user(s);
           else
@@ -425,7 +425,7 @@ bool
 sccs_file::add_delta(mystring gname,
 		     sccs_pfile& pfile,
 		     sccs_pfile::iterator it,
-                     mylist<mystring> new_mrs, 
+                     mylist<mystring> new_mrs,
 		     mylist<mystring> new_comments,
                      bool display_diff_output)
 {
@@ -439,15 +439,15 @@ sccs_file::add_delta(mystring gname,
 
   if (!authorised())
      return false;
-  
+
   /*
    * At this point, encode the contents of "gname", and pass
-   * the name of this encoded file to diff, instead of the 
+   * the name of this encoded file to diff, instead of the
    * name of the binary file itself.
    */
   mystring file_to_diff;
   bool bFileIsInWorkingDir;
-  
+
   if (flags.encoded)
     {
       mystring uname(name.sub_file('u'));
@@ -459,7 +459,7 @@ sccs_file::add_delta(mystring gname,
       bFileIsInWorkingDir = false;
       const char *s = file_to_diff.c_str();
 
-#ifdef CONFIG_UIDS      
+#ifdef CONFIG_UIDS
       if (!is_readable(s))
         {
           errormsg("File %s is not readable by user %d!",
@@ -490,7 +490,7 @@ sccs_file::add_delta(mystring gname,
         return false;
     }
 
-  // Remember seq number that will be the predecessor of the 
+  // Remember seq number that will be the predecessor of the
   // one for the delta.
   seq_no predecessor_seq = got_delta->seq();
 
@@ -501,12 +501,12 @@ sccs_file::add_delta(mystring gname,
   {
       return false;
   }
-  
+
   /* The d-file is created in the SCCS directory (XXX: correct?) */
   mystring dname(name.sub_file('d'));
 
-  /* We used to use fcreate here but as shown by the tests in 
-   * tests/delta/errorcase.sh, the prior existence of the 
+  /* We used to use fcreate here but as shown by the tests in
+   * tests/delta/errorcase.sh, the prior existence of the
    * d-file doesn't cause an error.
    *
    * XXX: slight departure from SCCS behaviour here.  The real thing
@@ -517,7 +517,7 @@ sccs_file::add_delta(mystring gname,
    * to create a file of their choice with contents of their choice,
    * as the user to which the wrapper program is set-user or set-group
    * ID.  I believe that using the flag O_EXCL as fcreate() does resolves
-   * that problem. 
+   * that problem.
    */
   FILE *get_out = fcreate(dname,
 			  CREATE_EXCLUSIVE |
@@ -525,7 +525,7 @@ sccs_file::add_delta(mystring gname,
   if (NULL == get_out)
     {
       remove(dname.c_str());
-      get_out = fcreate(dname, CREATE_EXCLUSIVE | 
+      get_out = fcreate(dname, CREATE_EXCLUSIVE |
 			(flags.executable ? CREATE_EXECUTABLE : 0) );
     }
 
@@ -537,7 +537,7 @@ sccs_file::add_delta(mystring gname,
   FileDeleter another_cleaner(dname, false);
 
   const struct delta blankdelta;
-  struct subst_parms parms(get_out, (const char*)NULL, blankdelta, 
+  struct subst_parms parms(get_out, (const char*)NULL, blankdelta,
                            0, sccs_date());
   seq_state gsstate(sstate);
 
@@ -548,26 +548,26 @@ sccs_file::add_delta(mystring gname,
       errormsg_with_errno("Failed to close temporary file");
       return false;
     }
-  
-        
+
+
   FileDiff differ(dname.c_str(), file_to_diff.c_str());
   FILE *diff_out = differ.start();
 
-  
+
   class diff_state dstate(diff_out, display_diff_output);
 
-  
+
   // The delta operation consists of:-
   // 1. Writing out the information for the new delta.
   // 2. Writing out any automatic null deltas.
   // 3. Copying the body of the s-file to the output file,
   //    modifying it as indicated by the output of the diff
   //    program.
-        
+
   if (false == seek_to_body())  // prepare to read the body for predecessor.
     return false;
 
-  
+
   // The new delta header includes info about what deltas
   // are included, excluded, ignored.   Compute that now.
   myset<seq_no> included, excluded;
@@ -585,7 +585,7 @@ sccs_file::add_delta(mystring gname,
         }
       }
     }
-  
+
   // Create any required null deltas if we need to.
   if (flags.null_deltas)
     {
@@ -596,16 +596,16 @@ sccs_file::add_delta(mystring gname,
       // use our own comment.
       mylist<mystring> auto_comment;
       auto_comment.add(mystring("AUTO NULL DELTA"));
-            
+
       release last_auto_rel = release(it->delta);
       // --last_auto_rel;
-            
+
       sid id(got_delta->id());
       release null_rel = release(id);
       ++null_rel;
-            
+
       ASSERT(id.valid());
-            
+
       int infinite_loop_escape = 10000;
 
       while (null_rel < last_auto_rel)
@@ -614,11 +614,11 @@ sccs_file::add_delta(mystring gname,
           // add a new automatic "null" release.  Use the same
           // MRs as for the actual delta (is that right?) but
           seq_no new_seq = delta_table->next_seqno();
-                
+
           // Set up for adding the next release.
           id = release(null_rel);
           id.next_level();
-                
+
           delta null_delta('D', id, sccs_date::now(),
                            get_user_name(), new_seq, predecessor_seq,
                            new_mrs, auto_comment);
@@ -627,7 +627,7 @@ sccs_file::add_delta(mystring gname,
 	  ASSERT (null_delta.unchanged() == 0);
 
           delta_table->prepend(null_delta);
-                
+
           predecessor_seq = new_seq;
 
           ++null_rel;
@@ -668,11 +668,11 @@ sccs_file::add_delta(mystring gname,
         }
     }
 #endif
-  
+
   // Construct the delta information for the new delta.
   delta new_delta('D', it->delta, sccs_date::now(),
                   get_user_name(), new_seq, predecessor_seq,
-                  included.list(), excluded.list(), 
+                  included.list(), excluded.list(),
 		  new_mrs, new_comments);
 
   // We don't know how many lines will be added/changed yet.
@@ -680,17 +680,17 @@ sccs_file::add_delta(mystring gname,
   ASSERT (new_delta.inserted() == 0);
   ASSERT (new_delta.deleted() == 0);
   ASSERT (new_delta.unchanged() == 0);
-        
+
   new_delta.id().print(stdout);
   printf("\n");
-  
+
   // Begin the update by writing out the new delta.
   // This also writes out the information for all the
   // earlier deltas.
   FILE *out = start_update(new_delta);
   if (NULL == out)
     return false;
-        
+
 #undef DEBUG_FILE
 #ifdef DEBUG_FILE
   FILE *df = fopen_as_real_user("delta.dbg", "w");
@@ -705,17 +705,17 @@ sccs_file::add_delta(mystring gname,
       // read line from the old body.
       const bool got_line = read_line(&c);
 
-#ifdef JAY_DEBUG          
+#ifdef JAY_DEBUG
       fprintf(stderr, "input: %s\n", plinebuf->c_str());
 #endif
       if (got_line && c != 0)
         {
 	  // it's a control line.
           seq_no seq = strict_atous(plinebuf->c_str() + 3);
-          
-#ifdef JAY_DEBUG          
+
+#ifdef JAY_DEBUG
           fprintf(stderr, "control line: %c %lu\n", c, (unsigned)seq);
-#endif    
+#endif
 
           if (seq < 1 || seq > highest_delta_seqno())
             {
@@ -747,18 +747,18 @@ sccs_file::add_delta(mystring gname,
         }
       else if (sstate.include_line())
         {
-#ifdef JAY_DEBUG          
+#ifdef JAY_DEBUG
           fprintf(stderr, "body line, inserting\n");
-#endif    
+#endif
 
-                  
+
           // We just read a body line and prev delta is in in insert
           // mode.  We need to decide if this line must also go into
           // this version.  If not, we need to emit delete commands.
           // On the other hand, we may need to insert data before it.
           // But if we just want to insert it into this version too,
           // we still need to count it as an unchanged line.
-                  
+
           /* enum */ diff_state::state action;
 
           do
@@ -783,12 +783,12 @@ sccs_file::add_delta(mystring gname,
                   // be there for previous deltas.  That's what
                   // history files are for.
 
-                  // Sanity check: if we're deleting a line, there 
+                  // Sanity check: if we're deleting a line, there
                   // must have been one on the input.
                   ASSERT(c != -1);
-#ifdef JAY_DEBUG          
+#ifdef JAY_DEBUG
                   fprintf(stderr, "diff_state::DELETE\n");
-#endif    
+#endif
 #ifdef DEBUG_FILE
                   fprintf(df, "%4d %4d - %s\n",
                           dstate.in_line(),
@@ -806,9 +806,9 @@ sccs_file::add_delta(mystring gname,
                   // or the NOCHANGE state (simple insertion).
                   // Until then, copy data from the diff output
                   // into our own output.
-#ifdef JAY_DEBUG          
+#ifdef JAY_DEBUG
           fprintf(stderr, "diff_state::INSERT\n");
-#endif    
+#endif
 #ifdef DEBUG_FILE
                   fprintf(df, "%4d %4d + %s",
                           dstate.in_line(),
@@ -817,12 +817,12 @@ sccs_file::add_delta(mystring gname,
                   fflush(df);
 #endif
                   new_delta.increment_inserted();
-                  
+
                   pline = dstate.get_insert_line();
                   len = strlen(pline);
                   if (len)
                     len -= 1u;  // newline char should not contribute.
-                  
+
                   if (0 == len_max || len < len_max)
                     {
                       if (fputs_failed(fputs(pline, out)))
@@ -839,9 +839,9 @@ sccs_file::add_delta(mystring gname,
                   break;
 
                 case diff_state::END:
-#ifdef JAY_DEBUG          
+#ifdef JAY_DEBUG
           fprintf(stderr, "diff_state::END\n");
-#endif    
+#endif
                   if (c == -1)
                     {
                       break;
@@ -850,7 +850,7 @@ sccs_file::add_delta(mystring gname,
                 case diff_state::NOCHANGE:
                   // line unchanged - so there must have been an input line,
                   // so we cannot be at the end of the data.
-                  ASSERT(c != -1); 
+                  ASSERT(c != -1);
 #ifdef DEBUG_FILE
                   fprintf(df, "%4d %4d   %s\n",
                           dstate.in_line(),
@@ -866,9 +866,9 @@ sccs_file::add_delta(mystring gname,
                 }
             } while (action == diff_state::INSERT);
 
-#ifdef JAY_DEBUG          
+#ifdef JAY_DEBUG
           fprintf(stderr, "while (action==diff_state::INSERT) loop ended.\n");
-#endif    
+#endif
         }
 
       if (!got_line)
@@ -878,12 +878,12 @@ sccs_file::add_delta(mystring gname,
           while (diff_state::INSERT == dstate.process(out, new_delta.seq()))
             {
               new_delta.increment_inserted();
-              
+
               pline = dstate.get_insert_line();
               len = strlen(pline);
               if (len)
                 len -= 1u;      // newline char should not contribute.
-              
+
               if (0 == len_max
                   || len < len_max
                   )
@@ -900,14 +900,14 @@ sccs_file::add_delta(mystring gname,
                   return false;
                 }
             }
-          
+
           break;
         }
-      
 
-#ifdef JAY_DEBUG          
+
+#ifdef JAY_DEBUG
       fprintf(stderr, "-> %s\n", plinebuf->c_str());
-#endif    
+#endif
       fputs(plinebuf->c_str(), out);
       putc('\n', out);
     }
@@ -922,16 +922,16 @@ sccs_file::add_delta(mystring gname,
   // everything worked.
   differ.finish(diff_out); // "give back" the FILE pointer.
   ASSERT(0 == diff_out);
-        
-  // It would be nice to know if the diff failed, but actually 
-  // diff's return value indicates if there was a difference 
+
+  // It would be nice to know if the diff failed, but actually
+  // diff's return value indicates if there was a difference
   // or not.
 
   pfile.delete_lock(it);
-  
+
   if (!end_update(&out, new_delta))
     return false;
-      
+
   printf("%lu inserted\n%lu deleted\n%lu unchanged\n",
          new_delta.inserted(), new_delta.deleted(), new_delta.unchanged());
 

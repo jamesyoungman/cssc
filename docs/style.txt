@@ -13,7 +13,7 @@ Notes on the coding style used in the maintenance of CSSC
 	indented in the GNU fashion.
 
 
-2. Design.  
+2. Design.
 
         Much of the design of CSSC is inherited from MySC.  MySC was
 	written when the C++ language was quite different to the way
@@ -32,13 +32,13 @@ Notes on the coding style used in the maintenance of CSSC
 
 
 4. Other aspects of the coding style.
-	 
+
 	 Most of the other aspects of the coding for this project
-	 follow the GNU guidelines.   The only exception is the 
-	 function call notation; while the GNU standard stipulates 
+	 follow the GNU guidelines.   The only exception is the
+	 function call notation; while the GNU standard stipulates
 	 "f ()", I strongly prefer "f()".  If there is actually a
 	 reason to eschew one in favour of the other, please let me
 	 know.
 
--- 
+--
 James Youngman <jay@gnu.org>

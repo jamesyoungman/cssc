@@ -1,22 +1,22 @@
 /*
  * delta-table.h: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1999,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1999,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  * Definition of the classes cssc_delta_table and delta_iterator.
  */
@@ -44,7 +44,7 @@ protected:
     if (d.seq() > high_seqno)
       high_seqno = d.seq();
 
-    if (!d.removed()) 
+    if (!d.removed())
       {
 	if (high_release.is_null())
 	  {
@@ -57,17 +57,17 @@ protected:
 	  }
       }
   }
-  
+
 
 public:
   typedef std::vector<struct delta>::size_type size_type;
 
-  stl_delta_list() 
+  stl_delta_list()
     : high_seqno(0),
       high_release(sid::null_sid())
   {
   }
-  
+
   seq_no get_high_seqno() const
   {
     return high_seqno;
@@ -77,7 +77,7 @@ public:
   {
     return high_release;
   }
-  
+
   size_type length() const
   {
     return items.size();
@@ -87,12 +87,12 @@ public:
   {
     return items[i];
   }
-  
+
   delta& select(size_type i)
   {
     return items[i];
   }
-  
+
   void add(const delta& d)
   {
     size_t pos = items.size();
@@ -100,7 +100,7 @@ public:
     seq_table[d.seq()] = pos;
     update_highest(d);
   }
-  
+
   stl_delta_list& operator += (const stl_delta_list& other)
   {
     for (size_type i=0; i<other.length(); ++i)
@@ -115,7 +115,7 @@ public:
     std::map<seq_no, size_t>::const_iterator i = seq_table.find(seq);
     return i != seq_table.end();
   }
-  
+
   const delta& delta_at_seq(seq_no seq)
   {
     std::map<seq_no, size_t>::const_iterator i = seq_table.find(seq);
@@ -140,17 +140,17 @@ public:
   {
   }
 
-  void add(const delta &d);		
+  void add(const delta &d);
   void prepend(const delta &); /* sf-add.c */
 
-  // These two methods should b const, but are not because they 
+  // These two methods should b const, but are not because they
   // call build_seq_table().
   bool delta_at_seq_exists(seq_no seq);
   const delta & delta_at_seq(seq_no seq);
 
-  const delta *find(sid id) const; 
+  const delta *find(sid id) const;
   const delta *find_any(sid id) const; // includes removed deltas.
-  delta *find(sid id); 
+  delta *find(sid id);
 
   seq_no highest_seqno() const { return l.get_high_seqno(); }
   seq_no next_seqno()    const;
@@ -160,7 +160,7 @@ public:
 
   const delta& select(size_type pos) const { return l.select(pos); }
   delta& select(size_type pos) { return l.select(pos); }
-  
+
   ~cssc_delta_table();
 };
 

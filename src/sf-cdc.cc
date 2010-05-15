@@ -1,28 +1,28 @@
 /*
  * sf-cdc.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
  * Members of the class sccs_file used for change the comments and
- * MRs of a delta. 
+ * MRs of a delta.
  *
  */
 
@@ -59,11 +59,11 @@ process_mrs(const mylist<mystring>& old_mrs,
 
   const mylist<mystring>::size_type len = old_mrs.length();
   deleted = false;
-  
+
   for (mylist<mystring>::size_type i=0; i<len; ++i)
     {
       mystring const& mr(old_mrs[i]);
-      
+
       if (inlist(to_delete, mr))
 	{
 	  if (!deleted)
@@ -85,17 +85,17 @@ sccs_file::cdc(sid id, mylist<mystring> mr_updates, mylist<mystring> comment_upd
 {
   if (!edit_mode_ok(true))
     return false;
-  
+
   delta *p = find_delta(id);
   if (!p)
     {
       errormsg("%s: Requested SID doesn't exist.", name.c_str());
       return false;
     }
-  
-  
+
+
   delta &d = *p;
-  
+
   mylist<mystring> not_mrs;
   mylist<mystring> deletion_comment;
   bool mrs_deleted = false;
@@ -117,11 +117,11 @@ sccs_file::cdc(sid id, mylist<mystring> mr_updates, mylist<mystring> comment_upd
       new_mrs = process_mrs(d.mrs(), yes_mrs, not_mrs, deletion_comment, mrs_deleted);
       d.set_mrs(new_mrs);
     }
-  
+
   if (mrs_deleted || comment_updates.length())	// Prepend the new comments.
     {
       mylist<mystring> newcomments;
-      
+
       // If there are comments to be added, add them.
       if (comment_updates.length())
 	newcomments += comment_updates;
@@ -143,7 +143,7 @@ sccs_file::cdc(sid id, mylist<mystring> mr_updates, mylist<mystring> comment_upd
 
 	  newcomments.add(changeline);
 	}
-      
+
       newcomments += d.comments();
       d.set_comments(newcomments);
     }

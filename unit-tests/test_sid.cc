@@ -1,22 +1,22 @@
 /*
  * test-sid.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2010 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2010 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Unit tests for sid.h.
  *
  */
@@ -26,14 +26,14 @@
 #include <gtest/gtest.h>
 
 
-TEST(SidTest, NullConstructor) 
+TEST(SidTest, NullConstructor)
 {
   const sid none;
   EXPECT_TRUE(none.is_null());
   EXPECT_FALSE(none.valid());
 }
 
-TEST(SidTest, StringConstructor) 
+TEST(SidTest, StringConstructor)
 {
   const sid s("1.2.3.4");
   EXPECT_FALSE(s.is_null());
@@ -42,7 +42,7 @@ TEST(SidTest, StringConstructor)
   EXPECT_FALSE(s.on_trunk());
 }
 
-TEST(SidTest, ConstructTrunkSid) 
+TEST(SidTest, ConstructTrunkSid)
 {
   const sid s("1.2");
   EXPECT_FALSE(s.is_null());
@@ -52,7 +52,7 @@ TEST(SidTest, ConstructTrunkSid)
   EXPECT_TRUE(s.on_trunk());
 }
 
-TEST(SidTest, ConstructFromRelease) 
+TEST(SidTest, ConstructFromRelease)
 {
   const release rel(4);
   const sid s(rel);
@@ -60,7 +60,7 @@ TEST(SidTest, ConstructFromRelease)
   EXPECT_EQ("4.0", s.as_string());
 }
 
-TEST(SidTest, PartialSid) 
+TEST(SidTest, PartialSid)
 {
   const sid one("1");
   EXPECT_FALSE(one.is_null());
@@ -77,7 +77,7 @@ TEST(SidTest, PartialSid)
   EXPECT_FALSE(three.on_trunk());
 }
 
-TEST(SidTest, StringConversion) 
+TEST(SidTest, StringConversion)
 {
   const sid one("1");
   const sid two("1.2");
@@ -151,7 +151,7 @@ TEST(SidTest, Equality)
   const sid b("1.2.3.4");
   EXPECT_EQ(a, b);
   EXPECT_EQ(b, a);
-  
+
   const sid c("1.2.3.5");
   EXPECT_NE(a, c);
   EXPECT_FALSE(a == c);
@@ -164,7 +164,7 @@ TEST(SidTest, Inequality)
   const sid b("1.2.3.5");
   EXPECT_NE(a, b);
   EXPECT_NE(b, a);
-  
+
   const sid c("1.2.3.4");
   EXPECT_EQ(a, c);
   EXPECT_FALSE(a != c);
@@ -253,7 +253,7 @@ TEST(SidTest, BranchGreaterThan)
   ASSERT_TRUE(b.branch_greater_than(a));
   ASSERT_FALSE(a.branch_greater_than(b));
   ASSERT_FALSE(a.branch_greater_than(a));
-  
+
   sid c("5.4");
   ASSERT_TRUE(a.branch_greater_than(c));
   ASSERT_TRUE(b.branch_greater_than(c));
@@ -261,7 +261,7 @@ TEST(SidTest, BranchGreaterThan)
   ASSERT_FALSE(c.branch_greater_than(b));
 }
 
-TEST(SidTest, PartialMatch) 
+TEST(SidTest, PartialMatch)
 {
   // Non-comparable SIDs cannot be a partial match.
   sid a("5.4");
@@ -284,7 +284,7 @@ TEST(SidTest, PartialMatch)
   ASSERT_FALSE(sid("1.2").partial_match(sid("5.6")));
 }
 
-TEST(SidTest, Matches) 
+TEST(SidTest, Matches)
 {
   sid a("1.2.3.4");
   sid b("1.2.3.5");
@@ -330,11 +330,11 @@ TEST(SidTest, Matches)
   ASSERT_FALSE(a.matches(b, 4));
 }
 
-TEST(SidTest, ReleaseOnly) 
+TEST(SidTest, ReleaseOnly)
 {
   const sid a("1.2.3.4");
   ASSERT_FALSE(a.release_only());
-  
+
   const sid b("1.2");
   ASSERT_FALSE(b.release_only());
 
@@ -347,7 +347,7 @@ TEST(SidTest, ReleaseOnly)
 
 
 // trunk_match
-TEST(SidTest, TrunkMatch) 
+TEST(SidTest, TrunkMatch)
 {
   ASSERT_TRUE(sid("1.2").trunk_match("1.2"));
   ASSERT_TRUE(sid("1.2").trunk_match("1.2.3.4"));

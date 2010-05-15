@@ -14,7 +14,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-root
 %description
 CSSC is a clone for the traditional Unix version control suite SCCS.
 It aims for near-total compatibility with SCCS.  CSSC stands for
-"Compatibly Stupid Source Control".  
+"Compatibly Stupid Source Control".
 
 %prep
 %setup
@@ -28,7 +28,7 @@ make
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 %makeinstall
 #ln -s libexec/cssc $RPM_BUILD_ROOT/usr/sccs
-cd $RPM_BUILD_ROOT/usr/bin 
+cd $RPM_BUILD_ROOT/usr/bin
 ln -s ../libexec/cssc/* .
 gzip $RPM_BUILD_ROOT/%{_infodir}/cssc* || true
 rm -f $RPM_BUILD_ROOT/%{_infodir}/dir
@@ -46,9 +46,9 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc README AUTHORS COPYING ChangeLog INSTALL NEWS 
-%doc docs/BUGS docs/CREDITS docs/Platforms 
-%doc docs/TESTING docs/TODO docs/missing.txt 
+%doc README AUTHORS COPYING ChangeLog INSTALL NEWS
+%doc docs/BUGS docs/CREDITS docs/Platforms
+%doc docs/TESTING docs/TODO docs/missing.txt
 %doc docs/patches.txt docs/mailing-list.txt
 %doc docs/style.txt
 %doc bsd/COPYING.bsd bsd/sccs.me
@@ -76,13 +76,13 @@ fi
 Do not distribute docs/FIXED, it no longer exists.
 
 * Sat Jan  3 2009 Alain Williams <addw@phcomp.co.uk>
-Changed "Copyright" tag to "License".  
-Do not make the /usr/sccs symbolic link.  
+Changed "Copyright" tag to "License".
+Do not make the /usr/sccs symbolic link.
 Add various binaries to %files.
 
 * Mon Dec 17 2007 James Youngman <jay@gnu.org>
-Updated URLs to reflect the fact that we migrated from 
-SourceForge to Savannah. 
+Updated URLs to reflect the fact that we migrated from
+SourceForge to Savannah.
 
 * Fri Oct  4 2002 James Youngman <jay@gnu.org>
 Change reference to sccs.1 to sccs.1* because RPM version 4
@@ -90,7 +90,7 @@ compresses all the manual pages.
 
 * Sat Jul 14 2001 James Youngman <jay@gnu.org>
 Pass the --enable-binary flag to enable binary file support.
-This was previously the default, but it is now mandatory to 
+This was previously the default, but it is now mandatory to
 supply the option (or --disable-binary).
 
 * Tue Jul 18 2000 James Youngman <jay@gnu.org>
@@ -107,7 +107,7 @@ Don't use --infodir since that breaks the BuildRoot.  "--infodir" is
 set by setting "--prefix" anyway.
 
 * Fri May  8 1998 interran@crd.GE.COM <John Interrante>
-Use a build-root.   Also use install-info.  Use install-strip 
+Use a build-root.   Also use install-info.  Use install-strip
 rather than just "strip *".
 
 * Sat Feb 21 1998 jay@gnu.org <James Youngman>

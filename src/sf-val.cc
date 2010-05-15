@@ -1,26 +1,26 @@
 /*
  * sf-val.cc: Part of GNU CSSC.
- * 
- * 
+ *
+ *
  *    Copyright (C) 1997,1998,2001,2002,
- *                  2004,2007,2008 Free Software Foundation, Inc. 
- * 
+ *                  2004,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  *
- * Members of class sccs_file used by "val". 
- * 
+ *
+ * Members of class sccs_file used by "val".
+ *
  */
 #include <vector>
 #include "cssc.h"
@@ -102,14 +102,14 @@ sccs_file::get_module_type_flag()
 }
 
 
-bool 
+bool
 sccs_file::validate_seq_lists(const delta_iterator& d) const
 {
   const char *sz_sid = d->id().as_string().c_str();
   mylist<seq_no>::size_type i;
   seq_no s;
   const seq_no highest_seq = delta_table->highest_seqno();
-  
+
   for (i=0; i<d->get_included_seqnos().length(); ++i)
     {
       s = d->get_included_seqnos()[i];
@@ -145,7 +145,7 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
    return true;
 }
 
-bool 
+bool
 sccs_file::validate_isomorphism() const
 {
   // TODO: write a bug-free version
@@ -160,7 +160,7 @@ validate_substituted_flags_list(const mylist<char> entries)
 }
 
 
-bool 
+bool
 sccs_file::validate() const
 {
   bool retval = true;
@@ -177,18 +177,18 @@ sccs_file::validate() const
   std::vector<bool> seen(highest_seq+1, false);
   std::vector<bool> loopfree(highest_seq+1, false);
 
-  
+
   for (seq_no i=0; i<highest_seq; ++i)
     {
       seen_ever[i] = 0;
     }
-  
+
   while ( retval && iter.next())
     {
       seq_no s = iter->seq();
 
       const char *sz_sid = iter->id().as_string().c_str();
-      
+
       // validate that the included/excluded/unchanged line counts are valid.
       if (iter->inserted() > 99999uL)
 	{
@@ -208,13 +208,13 @@ sccs_file::validate() const
 		   name.c_str(), sz_sid, iter->unchanged());
 	  retval = false;
 	}
-      
+
       if (!iter->date().valid())
 	{
 	  errormsg("%s: SID %s: invalid date", name.c_str(), sz_sid);
 	  retval = false;
 	}
-      
+
       // check that username contains no colon.
       if (iter->user().empty())
 	{
@@ -235,14 +235,14 @@ sccs_file::validate() const
 		   name.c_str(), sz_sid, (int)s);
 	  retval = false;
 	}
-      
+
       if (iter->prev_seq() > highest_seq)
 	{
 	  errormsg("%s: SID %s: invalid predecessor seqno %d",
 		   name.c_str(), sz_sid, (int)iter->prev_seq());
 	  retval = false;
 	}
-      
+
       if (seen_ever[s - 1] > 1)
 	{
 	  errormsg("%s: seqno %d appears more than once (%d times)",
@@ -252,14 +252,14 @@ sccs_file::validate() const
 
       ++seen_ever[s - 1];
 
-      if (!check_loop_free(name.c_str(), 
+      if (!check_loop_free(name.c_str(),
 			   delta_table, delta_table->delta_at_seq(s).seq(),
 			   loopfree, seen))
 	{
 	  // We already issued an error message.
 	  retval = false;
 	}
-      
+
       // check time doesn't go backward (warning only, because this is
       // possible if developers in different timezones are
       // collaborating on the same file).
@@ -276,26 +276,26 @@ sccs_file::validate() const
 		      iter->id().as_string().c_str());
 	    }
 	}
-      
+
       // check included/excluded/ignored deltas actually exist.
       validate_seq_lists(iter);
     }
   delete[] seen_ever;
-  
+
   if (false == retval)
     return retval;
-  
+
   if (!validate_isomorphism())	// check that SIDs follow seqno structure.
     {
       return false;
     }
-  
+
   // Check username list for invalid entries.
   for (mylist<mystring>::size_type j=0; j<users.length(); ++j)
     {
       const mystring& username(users[j]);
-      
-      if (   (username.find_last_of(':')  != mystring::npos) 
+
+      if (   (username.find_last_of(':')  != mystring::npos)
 	  || (username.find_last_of(' ')  != mystring::npos)
 	  || (username.find_last_of('\t') != mystring::npos))
 	{
@@ -304,8 +304,8 @@ sccs_file::validate() const
 	  retval = false;
 	}
     }
-  
-  
+
+
   // for the flags section:-
 
   // Check that the 'y' flag specifies only known keywords.
@@ -344,17 +344,17 @@ sccs_file::validate() const
       else
 	{
 	  warning("%s has a default SID of %s, but that SID is not present",
-		  name.c_str(), flags.default_sid.as_string().c_str());	      
+		  name.c_str(), flags.default_sid.as_string().c_str());
 	}
     }
-  
 
-  
+
+
   // TODO: check for unknown flags
   // TODO: check for boolean flags with non-numeric value.
 
   // TODO: check the body (unclosed deltas, etc.)
-  
+
   return retval;
 }
 

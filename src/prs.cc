@@ -1,22 +1,22 @@
 /*
  * prs.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -69,16 +69,16 @@ main(int argc, char **argv)
 	default:
 	  errormsg("Unsupported option: '%c'", c);
 	  return 2;
-	  
+
 	case 'd':
 	  format = opts.getarg();
 	  default_processing = 0;
 	  break;
-	  
+
 	case 'D':	// obsolete MySC-ism.
 	  default_processing = 0;
 	  break;
-	  
+
 	case 'r':
 	  if (strlen(opts.getarg()))
 	    {
@@ -105,35 +105,35 @@ main(int argc, char **argv)
 	      return 2;
 	    }
 	  break;
-	  
+
 	case 'e':
 	  selected = sccs_file::EARLIER;
 	  default_processing = 0;
 	  break;
-	  
+
 	case 'l':
 	  selected = sccs_file::LATER;
 	  default_processing = 0;
 	  break;
-	  
+
 	case 'a':
 	  all_deltas = 1;
 	  break;
-	  
+
 	case 'V':
 	  version();
 	  break;
 	}
-      
+
     }
-  
+
   if (selected == sccs_file::SIDONLY && cutoff_date.valid())
     {
       errormsg("Either the -e or -l switch must used with a"
 	       " cutoff date.");
       return 2;
     }
-  
+
   if (default_processing)
     {
       selected = sccs_file::EARLIER;
@@ -147,14 +147,14 @@ main(int argc, char **argv)
     }
 
   int retval = 0;
-  
+
   while (iter.next())
     {
-      try 
+      try
 	{
 	  sccs_name &name = iter.get_name();
 	  sccs_file file(name, sccs_file::READ);
-	  
+
 	  if (default_processing)
 	    {
 	      printf("%s:\n\n", name.c_str());

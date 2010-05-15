@@ -26,9 +26,9 @@ enhancement requests or bugs on SourceForge.
           output a SID but it looks like SCO's does not.
           (This is SourceForge task ID 34492).
 
-        * also, tests/prt/all-512.txt suffers from the fact that 
+        * also, tests/prt/all-512.txt suffers from the fact that
           SCO does not have "prt"!    No idea if it exists
-          but lives in a funny place, etc.  
+          but lives in a funny place, etc.
           (This is SourceForge task ID 34493).
 
 1998-02-08  James Youngman  <jay@gnu.org>
@@ -40,12 +40,12 @@ enhancement requests or bugs on SourceForge.
 
 1998-02-01  James Youngman  <jay@gnu.org>
 
-        * tests: Testing for binary files: 
-        OK, check that "prs -d:GB:", "prs -d:BD:" and "prt -b" work OK.  
+        * tests: Testing for binary files:
+        OK, check that "prs -d:GB:", "prs -d:BD:" and "prt -b" work OK.
         Also check zero-length files, keyword substitution, large
         binary files.
         (SourceForge task ID 34498).
-        
+
 
 1998-01-25  James Youngman  <jay@gnu.org>
 
@@ -76,7 +76,7 @@ Mon Aug  4 23:33:16 1997  James Youngman  <jay@gnu.ai.mit.edu>
         test suite under SunOS, as I suspect -- because all that was
         required was the ability to select a shell other than /bin/sh.
         (This is SourceForge task id 34499)
-        
+
 
 Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
 
@@ -85,7 +85,7 @@ Sat Jun 28 12:25:12 1997  James Youngman  <jay@gnu.ai.mit.edu>
         two version numbers, one for the library and one for each app.  I
         don't expect to need/want to support user code linking against the
         library, the intent is just to conserve disk space and perhaps
-        system memory too. [ 2000-12-03: JY: not certain if this is a 
+        system memory too. [ 2000-12-03: JY: not certain if this is a
         good plan ]
         (This is SourceForge task id 34500)
 

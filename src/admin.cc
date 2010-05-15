@@ -1,28 +1,28 @@
 /*
  * admin.cc: Part of GNU CSSC.
- * 
+ *
  *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc.
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
  * Administer and create SCCS files.
  *
- */ 
+ */
 #include <errno.h>
 
 #include "cssc.h"
@@ -41,7 +41,7 @@ static bool
 well_formed_sccsname(const sccs_name& n)
 {
   const char *s;
-  
+
   if ( NULL != (s = strrchr(n.c_str(), '/')) )
     {
       s++;
@@ -67,7 +67,7 @@ main(int argc, char **argv)
   int c;
   Cleaner arbitrary_name;
   sid first_sid("1.1");		                /* -r */
-  bool got_r_option = false;	
+  bool got_r_option = false;
   int new_sccs_file = 0;			/* -n */
   bool force_binary = false;			/* -b */
   const char *iname = NULL;			/* -i -I */
@@ -76,26 +76,26 @@ main(int argc, char **argv)
   mylist<mystring> add_users, erase_users;	/* -a, -e */
   mystring mrs, comments;			/* -m, -y */
   int check_checksum = 0;	                /* -h */
-  int validate       = 0;	                /* also -h */ 
+  int validate       = 0;	                /* also -h */
   int reset_checksum = 0;			/* -z */
   int suppress_mrs = 0;				/* -m (no arg) */
   int suppress_comments = 0;			/* -y (no arg) */
   int empty_t_option = 0;	                /* -t (no arg) */
   int retval;
-	
 
-  // If we use the "-i" option, we read the initial body from the 
+
+  // If we use the "-i" option, we read the initial body from the
   // named file, or stdin if no file is named.  In this case, we use
-  // fgetpos() or ftell() so that we can rewind the input in order to 
+  // fgetpos() or ftell() so that we can rewind the input in order to
   // try again with encoding, should we find the body to need it.
   // GNU glibc version 2.0.6 has a bug which results in ftell()/fgetpos()
-  // succeeding on stdin even if it is a pipe,fifo,tty or other 
-  // nonseekable object.  We get around this bug by setting stdin to 
-  // un-buffered, which avoids this bug.  
+  // succeeding on stdin even if it is a pipe,fifo,tty or other
+  // nonseekable object.  We get around this bug by setting stdin to
+  // un-buffered, which avoids this bug.
 #ifdef __GLIBC__
   setvbuf(stdin, (char*)0, _IONBF, 0u);
 #endif
-	
+
   if (argc > 0) {
     set_prg_name(argv[0]);
   } else {
@@ -103,7 +103,7 @@ main(int argc, char **argv)
   }
 
   retval = 0;
-	
+
   class CSSC_Options opts(argc, argv, "bni!r!t!f!d!a!e!m!y!hzV");
   for (c = opts.next();
        c != CSSC_Options::END_OF_ARGUMENTS;
@@ -140,7 +140,7 @@ main(int argc, char **argv)
     case 'r':
       {
 	got_r_option = true;
-	
+
 	const char *rel_str = opts.getarg();
 	release r(rel_str);
 	if (r.valid())
@@ -152,7 +152,7 @@ main(int argc, char **argv)
 	    // The user make have specified (e.g.) "1.1" or "1.2" or "1.1.1.1",
 	    // which the SCCS manpages don't state is supported, but in fact
 	    // some implementations do support this.
-	    
+
 	    warning("some SCCS implementations allow only "
 		     "a release number for the -r option.\n");
 
@@ -170,7 +170,7 @@ main(int argc, char **argv)
       file_comment = opts.getarg();
       empty_t_option = (0 == strlen(file_comment));
       break;
-		       
+
     case 'f':
       set_flags.add(opts.getarg());
       break;
@@ -222,7 +222,7 @@ main(int argc, char **argv)
 
   if (check_checksum)
       reset_checksum = false;
-  
+
   mylist<mystring> mr_list, comment_list;
   int was_first = 1;
   sccs_file_iterator iter(opts);
@@ -238,8 +238,8 @@ main(int argc, char **argv)
       errormsg("You must use the -i option if you use the -r option.");
       return 1;
     }
-  
-  
+
+
   while (iter.next())
     {
       try
@@ -248,7 +248,7 @@ main(int argc, char **argv)
 	  // use "continue".
 	  int me_first = was_first;
 	  was_first = 0;
-	  
+
 	  sccs_name &name = iter.get_name();
 
 
@@ -260,7 +260,7 @@ main(int argc, char **argv)
 	      retval = 1;
 	      continue;	// with next file
 	    }
-		
+
 	  sccs_file::_mode mode;
 
 	  if (check_checksum)
@@ -271,11 +271,11 @@ main(int argc, char **argv)
 	    mode = sccs_file::FIX_CHECKSUM;
 	  else
 	    mode = sccs_file::UPDATE;
-	  
+
 	  sccs_file file(name, mode);
 
-	  // The -h option (check_checksum and validate) overrides all the 
-	  // other options; if you specify the -h flag, no other action 
+	  // The -h option (check_checksum and validate) overrides all the
+	  // other options; if you specify the -h flag, no other action
 	  // will take place.
 	  if (check_checksum || validate)
 	    {
@@ -284,26 +284,26 @@ main(int argc, char **argv)
 		  if (!file.checksum_ok())
 		    retval = 1;
 		}
-	      
+
 	      if (validate)
 		{
 		  // Validate the file itself.   The original sccs suite
 		  // probably does this by running "val" from "admin", but
-		  // we prefer not to exec things (for security reasons, 
+		  // we prefer not to exec things (for security reasons,
 		  // among others).
 		  if (!file.validate())
 		    retval = 1; // Validation failed.
 		}
-	      
+
 	      continue;
 	    }
-		
-		
+
+
 	  if (reset_checksum)
 	    {
 	      if (!file.update_checksum())
 		retval = 1; // some kind of error.
-	      
+
 	      continue;
 	    }
 
@@ -315,7 +315,7 @@ main(int argc, char **argv)
 	      retval = 1;
 	      continue;
 	    }
-		
+
 
 	  if (new_sccs_file)
 	    {
@@ -337,7 +337,7 @@ main(int argc, char **argv)
 		      retval = 1;
 		      continue; // with next file
 		    }
-			    
+
 		  mr_list = split_mrs(mrs);
 		  comment_list = split_comments(comments);
 		}
@@ -350,7 +350,7 @@ main(int argc, char **argv)
 			       " supplied.", name.c_str());
 		      retval = 1;
 		      continue; // with next file
-		
+
 		    }
 		  if (file.check_mrs(mr_list))
 		    {
@@ -368,13 +368,13 @@ main(int argc, char **argv)
 		  retval = 1;
 		  continue;
 		}
-	
+
 	    }
 	  else
 	    {
 	      if (!file.update())
 		retval = 1;
-	    }		
+	    }
 	}
       catch (CsscExitvalException e)
 	{

@@ -1,23 +1,23 @@
 /*
  * sid.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1999,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1999,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -38,7 +38,7 @@ mystring sid::as_string() const
     sprintf(buf, "%d.%d.%d.%d", rel, level, branch, sequence);
   else
     sprintf(buf, "%d.%d", rel, level);
-  
+
   return mystring(buf);
 }
 
@@ -54,7 +54,7 @@ get_comp(const char *&s) {
 			}
 			s++;
 			return static_cast<short int>(n);
-		}	
+		}
 		if (isdigit(c)) {
 			n = n * 10 + (c - '0');
 		} else {
@@ -93,8 +93,8 @@ release::release(const char *s) {
 	}
 }
 
-sid 
-sid::null_sid() 
+sid
+sid::null_sid()
 {
   return sid(0, 0, 0, 0);
 }
@@ -252,7 +252,7 @@ bool sid::matches(const sid &m, int nfields) const
 
   if (rel != m.rel)
     return false;
-  
+
   if (0 == nfields)
     return true;
   else
@@ -260,7 +260,7 @@ bool sid::matches(const sid &m, int nfields) const
 
   if (level != m.level)
     return false;
-  
+
   if (0 == nfields)
     return true;
   else
@@ -268,7 +268,7 @@ bool sid::matches(const sid &m, int nfields) const
 
   if (branch != m.branch)
     return false;
-  
+
   if (0 == nfields)
     return true;
   else
@@ -276,7 +276,7 @@ bool sid::matches(const sid &m, int nfields) const
 
   if (sequence != m.sequence)
     return false;
-  
+
   return true;
 }
 
@@ -287,7 +287,7 @@ sid::print(FILE *out) const {
 	ASSERT(rel != 0);
 
 	if (printf_failed(fprintf(out, "%d", rel))
-	    || (level != 0 
+	    || (level != 0
 		&& (printf_failed(fprintf(out, ".%d", level))
 	            || (branch != 0
 			&& (printf_failed(fprintf(out, ".%d", branch))

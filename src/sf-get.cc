@@ -1,29 +1,29 @@
 /*
  * sf-get.cc: Part of GNU CSSC.
- * 
- * 
+ *
+ *
  *    Copyright (C) 1997,1998,1999,2001,2002,2003,
- *                  2004,2007,2008 Free Software Foundation, Inc. 
- * 
+ *                  2004,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
- * Members of class sccs_file used in getting deltas. 
- * 
+ * Members of class sccs_file used in getting deltas.
+ *
  */
 
 #include "cssc.h"
@@ -61,7 +61,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
     } while (y > 0);
   state.set_included(seq, (seq_no) seq_state::BY_DEFAULT, false);
 
-  // Apply any inclusions 
+  // Apply any inclusions
   for (y=seq; y>0; --y)
     {
       if (state.is_included(y))
@@ -75,29 +75,29 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 		      "seq %d includes %lu other deltas...\n",
 		      y, static_cast<unsigned long>(len));
 	    }
-	  
+
 	  for (mylist<seq_no>::size_type i = 0; i < len; i++)
 	    {
 	      const seq_no s = d.get_included_seqnos()[i];
 	      if (s == y)
 		continue;
-	      
-	      // A particular delta cannot have a LATER delta in 
+
+	      // A particular delta cannot have a LATER delta in
 	      // its include list.
 	      ASSERT(s <= y);
-	      state.set_included(s, y, true); 
+	      state.set_included(s, y, true);
 	      ASSERT(state.is_included(s));
 	    }
 	}
     }
-  
+
   // Apply any exclusions
   for (y=1; y<=seq; ++y)
     {
       if (state.is_included(y))
       {
 	const delta &d = delta_table->delta_at_seq(y);
-	
+
 	const mylist<seq_no>::size_type len = d.get_excluded_seqnos().length();
 	if (bDebug)
 	  {
@@ -105,14 +105,14 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 		    "seq %d excludes %lu other deltas...\n",
 		    y, static_cast<unsigned long>(len));
 	  }
-	
+
 	for (mylist<seq_no>::size_type i = 0; i < len; i++)
 	  {
 	    const seq_no s = d.get_excluded_seqnos()[i];
 	    if (s == y)
 	      continue;
-	    
-	    // A particular delta cannot have a LATER delta in 
+
+	    // A particular delta cannot have a LATER delta in
 	    // its exclude list.
 	    ASSERT(s <= y);
 	    state.set_excluded(s, y);
@@ -120,7 +120,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	  }
       }
     }
-    
+
 
   // Apply any ignores
   // These are not recursive, so for example if version 1.6 ignored
@@ -138,8 +138,8 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 		      "seq %d ignores %lu other deltas...\n",
 		      y, static_cast<unsigned long>(len));
 	    }
-	
-	  
+
+
 	  for (mylist<seq_no>::size_type i = 0; i < len; i++)
 	    {
 	      const seq_no s = d.get_ignored_seqnos()[i];
@@ -147,14 +147,14 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 		continue;
 	      ASSERT(s <= y);
 	      state.set_ignored(s, y);
-	      
+
 	      ASSERT(state.is_ignored(s));
 	      ASSERT(!state.is_included(s));
 	      ASSERT(!state.is_excluded(s));
 	    }
 	}
     }
-  
+
 
   if (bDebug)
     {
@@ -167,16 +167,16 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	    msg = "included";
 	  else
 	    msg = "excluded";
-	      
+
 	  fprintf(stderr, "seq_no %d: %s\n", y, msg);
 	}
     }
-  
+
 #else
 
   // We must include the version we are trying to get.
   state.set_included(seq, (seq_no) seq_state::BY_DEFAULT, false);
-  
+
   while (seq != 0)
     {
       int len;
@@ -207,7 +207,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
             }
         }
 
-      
+
       if (bVisible)
         {
           // OK, this delta is visible in the final result.  Apply its
@@ -215,9 +215,9 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
           // oldest deltas.  Hence deltas which are ALREADY excluded or
           // included are left alone.  Only deltas which have not yet been
           // either included or excluded are messed with.
-          
+
           const delta &d = delta_table->delta_at_seq(seq);
-          
+
           len = d.included.length();
           for(i = 0; i < len; i++)
             {
@@ -227,15 +227,15 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 			  "seq %d includes %d other deltas...\n",
 			  seq, len);
 		}
-		      
+
               const seq_no s = d.included[i];
               if (s == seq)
                 continue;
-              
-              // A particular delta cannot have a LATER delta in 
+
+              // A particular delta cannot have a LATER delta in
               // its include list.
               ASSERT(s <= seq);
-              
+
               if (!state.is_excluded(s))
                 {
                   if (bDebug)
@@ -244,10 +244,10 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
                               (unsigned long) seq,
                               (unsigned long) s);
                     }
-                  state.set_included(s, seq, true); 
+                  state.set_included(s, seq, true);
                   ASSERT(state.is_included(s));
                 }
-            }           
+            }
 
           len = d.excluded.length();
           for(i = 0; i < len; i++)
@@ -258,15 +258,15 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 			  "se %d excludes %d other deltas...\n",
 			  seq, len);
 		}
-		      
+
               const seq_no s = d.excluded[i];
               if (s == seq)
                 continue;
-              
-              // A particular delta cannot have a LATER delta in 
+
+              // A particular delta cannot have a LATER delta in
               // its exclude list.
               ASSERT(s <= seq);
-              
+
 	      if (bDebug)
 		{
 		  fprintf(stderr, "seq %lu excludes seq %lu\n",
@@ -277,7 +277,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	      ASSERT(state.is_excluded(s));
             }
 
-          // If this seq was explicitly included, don't recurse for it 
+          // If this seq was explicitly included, don't recurse for it
           // (this fixes SourceForge bug number 111140).
           if (state.is_recursive(seq))
             {
@@ -287,13 +287,13 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	      state.set_included(d.prev_seq, seq, false);
 	    }
 	}
-      
+
       --seq;
     }
 
 #endif
 
-  
+
   if (bDebug)
     {
       fprintf(stderr,
@@ -316,17 +316,17 @@ sccs_file::get(mystring gname, class seq_state &state,
 
   if (!edit_mode_ok(for_edit))	// "get -e" on BK files is not allowed
     return false;
-  
+
   int (*outputfn)(FILE*,const cssc_linebuf*);
   if (flags.encoded && false == no_decode)
     outputfn = output_body_line_binary;
   else
     outputfn = output_body_line_text;
-        
+
 
   if (!seek_to_body())
     return false;
-  
+
 
   /* The following statement is not correct. */
   /* "@I 1" should start the body of the SCCS file */
@@ -350,7 +350,7 @@ sccs_file::get(mystring gname, class seq_state &state,
   FILE *out = parms.out;
 
   while (1) {
-    if (!read_line(&line_type)) 
+    if (!read_line(&line_type))
       {
 	break;  /* EOF */
       }
@@ -404,15 +404,15 @@ sccs_file::get(mystring gname, class seq_state &state,
             {
                 // Mark Reynolds <mark@aoainc.com>: GCC 2.8.1 on VAX
                 // Ultrix 4.2 doesn't seem to get this call right.
-                // Since subst_fn is always write_subst anyway, we 
-                // work around it by using the function pointer just as a 
+                // Since subst_fn is always write_subst anyway, we
+                // work around it by using the function pointer just as a
                 // boolean variable.   Yeuch.
-                // 
+                //
                 // 2001-07-30: get rid of all the cruft by using a boolean
                 //             flag instead of a function pointer, for all
-                //             systems. 
+                //             systems.
                 err = write_subst(plinebuf->c_str(), &parms, parms.delta, false);
-              
+
               if (fputc_failed(fputc('\n', out)))
                 err = 1;
             }
@@ -422,14 +422,14 @@ sccs_file::get(mystring gname, class seq_state &state,
           if (!parms.found_id && plinebuf->check_id_keywords())
             parms.found_id = 1;
           err = outputfn(out, plinebuf);
-        } 
+        }
 
       if (err)
         {
           errormsg_with_errno("%s: Write error.", gname.c_str());
           return false;
         }
-      
+
       continue;
     }
 
@@ -452,7 +452,7 @@ sccs_file::get(mystring gname, class seq_state &state,
     case 'I':
       msg = state.start(seq, line_type);
       break;
-      
+
     default:
       corrupt("Unexpected control line");
       break;

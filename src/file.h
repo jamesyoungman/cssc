@@ -1,23 +1,23 @@
 /*
  * file.h: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,2001,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,2001,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -58,8 +58,8 @@ bool set_file_mode(const mystring &gname, bool writable, bool executable);
 bool set_gfile_writable(const mystring &gname, bool writable, bool executable);
 bool unlink_gfile_if_present(const char *gfile_name);
 bool unlink_file_as_real_user(const char *gfile_name);
-void split_filename(const mystring &fullname, 
-		    mystring& dirname, 
+void split_filename(const mystring &fullname,
+		    mystring& dirname,
 		    mystring& basename);
 
 

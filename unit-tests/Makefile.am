@@ -1,7 +1,7 @@
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
 AM_CPPFLAGS = -I$(srcdir)/googletest -I$(srcdir)/googletest/include -I$(srcdir)/../src -DGTEST_HAS_PTHREAD=0
-AM_LIBS = 
+AM_LIBS =
 LDADD = libgtest.a libgtest_main.a ../src/libcssc.a
 
 EXTRA_DIST = TODO.txt \
@@ -47,7 +47,7 @@ libgtest_a_SOURCES = $(gtest_headers) \
 libgtest_a_CXXFLAGS = -Igoogletest/include -Igoogletest
 
 libgtest_main_a_SOURCES = $(gtest_headers) \
-	googletest/src/gtest_main.cc 
+	googletest/src/gtest_main.cc
 
 
 libgtest_main_a_CXXFLAGS = -I$(srcdir)/googletest/include -I$(srcdir)/googletest

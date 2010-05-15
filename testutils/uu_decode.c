@@ -1,25 +1,25 @@
 /*
  * uu_decode: Part of GNU CSSC.
  *
- *    Copyright (C) 1997,1998,2001,2007 Free Software Foundation, Inc. 
- * 
+ *    Copyright (C) 1997,1998,2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * 
- * Some of the files in the test suite are provided uuencoded.  
+ *
+ *
+ * Some of the files in the test suite are provided uuencoded.
  * Not all systems have uudecode.  In particular, Cygwin lacks it.
- * Hence we provide our own. 
+ * Hence we provide our own.
  *
  * $Id: uu_decode.c,v 1.6 2007/12/19 00:21:14 jay Exp $
  */
@@ -59,7 +59,7 @@ encode(const char in[3], char out[4])
   out[3] = UUENC(((in[2]       & 077)));
 }
 
-static inline void 
+static inline void
 decode(const char in[4], char out[3])
 {
   /* Only the bottom six bits of t0,t1,t2,t3 are ever set,
@@ -87,8 +87,8 @@ decode(const char in[4], char out[3])
  *
  * M<F]O=#HZ,#HP.G)O;W0Z+W)O;W0Z+V)I;B]B87-H"F)I;CHJ.C$Z,3IB:6XZ
  *
- * The first character is an uppercase "M".  It's really a 
- * character count.  "M" represents the largest possible 
+ * The first character is an uppercase "M".  It's really a
+ * character count.  "M" represents the largest possible
  * count (total line length 60 [M + 60 chars + newline]).
  */
 
@@ -98,12 +98,12 @@ decode_line(const char in[], char out[])
 {
   int len = UUDEC(in[0]);
   int n;
-  
+
   if (len <= 0)
     return 0;
 
   ++in;                         /* step over byte count. */
-  
+
   for (n=0; n<len; n+=3)
     {
       decode(in, out);
@@ -119,7 +119,7 @@ void
 encode_line(const char in[], char out[], int len)
 {
   *out++ = UUENC(len);
-  
+
   while (len > 0)
     {
       encode(in, out);
@@ -136,7 +136,7 @@ encode_stream(FILE *fin, FILE *fout)
 {
   char inbuf[80], outbuf[80];
   int len;
-  
+
   do
     {
       len = fread(inbuf, 1, 45, fin);
@@ -144,7 +144,7 @@ encode_stream(FILE *fin, FILE *fout)
       fprintf(fout, "%s", outbuf);
     }
   while (len);
-  
+
   return ferror(fin) || ferror(fout);
 }
 
@@ -158,7 +158,7 @@ test_encode(const char *arg)
      * the test suite never uses this anyway.
      */
     int rv;
-    
+
     printf("begin 600 %s\n", arg);
     rv = encode_stream(stdin, stdout);
     printf("end\n");
@@ -227,7 +227,7 @@ test_decode(const char *arg)
             }
         }
     }
-  
+
   if (errno)
       perror("Error reading input file");
   else
@@ -257,13 +257,13 @@ int test_all(const char *arg)
           double completed = (100.0 * i) / dmaxval;
           printf("%06lx %3.0f%%...\n", i, completed);
         }
-      
-      
+
+
       in.ch[0] = (i & 0x0000ff) >>  0;
       in.ch[1] = (i & 0x00ff00) >>  8;
       in.ch[2] = (i & 0xff0000) >> 16;
       in.ch[3] = '\0';
-      
+
       encode(in.ch, out.ch);
       decode(out.ch, in.ch);
       l0 = ((unsigned char) in.ch[0]) & 0xff;
@@ -307,7 +307,7 @@ main(int argc, char *argv[])
 {
   size_t i;
   const char *argument;
-  
+
   if (argc == 3)
   {
       argument = argv[2];
@@ -316,12 +316,12 @@ main(int argc, char *argv[])
   {
       argument = NULL;
   }
-  else 
+  else
   {
       usage(argv[0]);
       return 1;
   }
-  
+
   for (i=0; i<NELEM(options); ++i)
   {
       if (0 == strcmp(options[i], argv[1]))
@@ -329,7 +329,7 @@ main(int argc, char *argv[])
           return (actions[i])(argument);
       }
   }
-  
+
 
   fprintf(stderr, "Unknown option %s\n", argv[1]);
   usage(argv[0]);

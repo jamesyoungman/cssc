@@ -3,4 +3,4 @@
 all: sccs
 
 sccs.o: sccs.c pathnames.h
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c sccs.c 
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c sccs.c

@@ -18,9 +18,9 @@ provided in the file "docs/Platforms".
  Options for "configure" that are specific to CSSC are detailed below.
 
 
---enable-binary		   
-  
-    This is the default setting (but the default setting may change 
+--enable-binary
+
+    This is the default setting (but the default setting may change
     in the future).
 
     Enables support for creating "binary" SCCS files (required for
@@ -29,7 +29,7 @@ provided in the file "docs/Platforms".
     disable this feature only if you need to interoperate with a
     version of SCCS which lacks binary file support.
 
-    The setting of this option can be overridden at runtime by setting 
+    The setting of this option can be overridden at runtime by setting
     the environment variable CSSC_BINARY_SUPPORT to "disable".
 
  --disable-binary
@@ -38,23 +38,23 @@ provided in the file "docs/Platforms".
     CSSC will still handle these as input, but will never create one,
     when this option is used.
 
-    The setting of this option can be overridden at runtime by setting 
+    The setting of this option can be overridden at runtime by setting
     the environment variable CSSC_BINARY_SUPPORT to "enable".
 
---enable-max-line-length=N 
+--enable-max-line-length=N
 
     The default setting corresponds with N=0.
 
     Sets the maximum line length allowed in SCCS files to N.  By
     default, CSSC has no limit.  Use this option only if you need to
     make CSSC interoperate with other versions of SCCS.  This limit
-    applies only to the actual body lines in the file, and are not 
-    checked for (e.g.) comments.  This means that by entering a 
-    very long comment, you can make CSSC produce an SCCS file which 
+    applies only to the actual body lines in the file, and are not
+    checked for (e.g.) comments.  This means that by entering a
+    very long comment, you can make CSSC produce an SCCS file which
     cannot be read by some other versions of SCCS.
 
-    The setting of this option can be overridden at runtime by setting 
-    the environment variable CSSC_MAX_LINE_LENGTH to a positive integer. 
+    The setting of this option can be overridden at runtime by setting
+    the environment variable CSSC_MAX_LINE_LENGTH to a positive integer.
     Setting CSSC_MAX_LINE_LENGTH to 0 removes the limit (and so CSSC will
     handle lines of any length).
 
@@ -72,19 +72,19 @@ provided in the file "docs/Platforms".
 
  You will probably need to compile the software with GNU make.
 
- The default installation directory for the binaries is 
+ The default installation directory for the binaries is
  /usr/local/libexec/cssc, except for the sccs comand, which gets
- installed in /usr/local/bin.  
+ installed in /usr/local/bin.
 
  If you want to change this, you will need to read the file INSTALL.
 
  If, for example, you want to install the files in /usr/libexec/cssc
- and so on rather than in /usr/local/..., you just need to pass the 
- argument "prefix=/usr" to make.    
+ and so on rather than in /usr/local/..., you just need to pass the
+ argument "prefix=/usr" to make.
 
  If, on the other hand, all you wanted to do was to install the binaries
  in a normal binary directory, you can do this with the argument
- "csscutildir=/usr/local/bin" to make. 
+ "csscutildir=/usr/local/bin" to make.
 
  The program "sccs" (from the subdirectory bsd) is sensitive to the
  setting of $(csscutildir) at compile time, because it compiles in the
@@ -96,7 +96,7 @@ provided in the file "docs/Platforms".
  ../configure
  make
 
-2.	Testing 
+2.	Testing
 
  Two types of tests are included with CSSC.  First, the unit tests in
  the subdirectory "unit-tests".  These mostly test individual classes
@@ -110,7 +110,7 @@ provided in the file "docs/Platforms".
  To run all the tests (unit tests and regresion tests), run "make
  check" in the top-level directory:
 
- if make check 2>&1 | tee make.log 
+ if make check 2>&1 | tee make.log
  then
 	echo SUCCESS
  else
@@ -157,7 +157,7 @@ provided in the file "docs/Platforms".
 SCCS commands implemented this package are: admin, cdc, delta, get,
 prs, prt, sccsdiff, rmdel, sact, sccs, unget, val and what.  Not all
 options and capabilities of the commands have been implemented yet,
-and the comb and help commands are not provided at all.  
+and the comb and help commands are not provided at all.
 
 You can use these tools to convert your SCCS repository to RCS or CVS
 - to do this, you will also need the SCCS-to-RCS conversion script by

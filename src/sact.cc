@@ -1,27 +1,27 @@
 /*
  * sact.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
- * Prints the current edit locks for an SCCS file. 
+ * Prints the current edit locks for an SCCS file.
  *
  */
 
@@ -68,7 +68,7 @@ main(int argc, char **argv)
       errormsg("No SCCS file specified.");
       return 1;
     }
-  
+
   while (iter.next())
     {
       try
@@ -76,7 +76,7 @@ main(int argc, char **argv)
 	  sccs_name &name = iter.get_name();
 	  sccs_pfile pfile(name, sccs_pfile::READ);
 
-	  
+
 	  bool first = true;
 	  for (sccs_pfile::const_iterator it = pfile.begin();
 	       it != pfile.end();
@@ -97,7 +97,7 @@ main(int argc, char **argv)
 		  }
 		  first = false;
 		}
-	      
+
 	      it->got.print(stdout);
 	      putchar(' ');
 	      it->delta.print(stdout);
@@ -114,7 +114,7 @@ main(int argc, char **argv)
 	    retval = e.exitval;
 	}
     }
-  
+
   return retval;
 }
 

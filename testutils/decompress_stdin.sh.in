@@ -1,12 +1,12 @@
 #! /bin/sh
-# 
+#
 # Decompress the compressed file which appears on stdin.
 # We do not have any command-line arguments.
 # $Id: decompress_stdin.sh.in,v 1.1 2001/08/29 17:47:34 james_youngman Exp $
-# 
+#
 # $Log: decompress_stdin.sh.in,v $
 # Revision 1.1  2001/08/29 17:47:34  james_youngman
 # Shell script which decompresses its input.
 #
-# 
+#
 exec @ZCAT_PROGRAM@

@@ -1,9 +1,9 @@
 #! /usr/bin/awk
 
-# This program sanitises an SCCS file to remove almost all the 
+# This program sanitises an SCCS file to remove almost all the
 # tell-tale detail.
 
-/^c/ { 
+/^c/ {
   printf("c \n");
   next;
 }
@@ -13,6 +13,6 @@
   next;
 }
 
-{ 
+{
   print;
 }

@@ -1,22 +1,22 @@
 /*
  * delta.h: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1999,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1999,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  * Definition of the class delta.
  */
@@ -49,7 +49,7 @@ class delta
   unsigned long inserted_, deleted_, unchanged_;
 
 public:
-  
+
   delta()
     : delta_type_('D'),
       id_(0),
@@ -64,7 +64,7 @@ public:
   {
     ASSERT(is_valid_delta_type(delta_type_));
   }
-  
+
   delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
 	mylist<mystring> ms, mylist<mystring> cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
@@ -78,7 +78,7 @@ public:
   {
     ASSERT(is_valid_delta_type(delta_type_));
   }
-  
+
   delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
 	mylist<seq_no> incl, mylist<seq_no> excl,
 	mylist<mystring> ms, mylist<mystring> cs)
@@ -97,7 +97,7 @@ public:
 
   inline const sid& id() const { return id_; }
   void set_id(const sid& newid) { id_ = newid; }
-    
+
   inline const sccs_date& date() const { return date_; }
   void set_date(const sccs_date& d) { date_ = d; }
 
@@ -123,7 +123,7 @@ public:
     unchanged_ = u;
   }
 
-  void increment_inserted() 
+  void increment_inserted()
   {
     ++inserted_;
   }
@@ -132,22 +132,22 @@ public:
   {
     ++deleted_;
   }
-  
+
   void increment_unchanged()
   {
     ++unchanged_;
   }
-  
+
   const mylist<seq_no>& get_included_seqnos() const
   {
     return included_;
   }
-  
+
   const mylist<seq_no>& get_excluded_seqnos() const
   {
     return excluded_;
   }
-  
+
   const mylist<seq_no>& get_ignored_seqnos() const
   {
     return ignored_;
@@ -192,12 +192,12 @@ public:
     excluded_.add(s);
     have_excludes_ = true;
   }
-  
+
   bool has_ignores() const
   {
     return have_ignores_;
   }
-  
+
   void set_has_ignores (bool val)
   {
     if (!val)
@@ -213,27 +213,27 @@ public:
     have_ignores_ = true;
   }
 
-  const mylist<mystring>& mrs() const 
-  { 
-    return mrs_; 
+  const mylist<mystring>& mrs() const
+  {
+    return mrs_;
   }
 
   void set_mrs(const mylist<mystring>& updated_mrs)
   {
     mrs_ = updated_mrs;
   }
-  
+
   void add_mr(const mystring& s)
   {
     mrs_.add(s);
   }
-  
+
   const mylist<mystring>& comments() const
   {
     return comments_;
   }
 
-  void set_comments(const mylist<mystring>& updated_comments) 
+  void set_comments(const mylist<mystring>& updated_comments)
   {
     comments_ = updated_comments;
   }
@@ -242,14 +242,14 @@ public:
   {
     comments_.add(s);
   }
-  
+
   delta &operator =(delta const &);
-  
+
   bool removed() const
   {
     return 'R' == delta_type_;
   }
-  
+
   char get_type() const
   {
     return delta_type_;
@@ -260,8 +260,8 @@ public:
     ASSERT(is_valid_delta_type(t));
     delta_type_ = t;
   }
-  
-  
+
+
   static bool is_valid_delta_type(char t)
   {
     switch (t)

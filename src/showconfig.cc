@@ -1,25 +1,25 @@
 /*
  * showconfig.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  * Code for showing the configuration of CSSC.
- * 
+ *
  * This is called from version() in version.h.  See the README and
  * INSTALL files for details of the specific configuration options
  * which are possible.
@@ -34,7 +34,7 @@
 #include "cssc.h"
 #include "version.h"
 
-static const char * copyright_explanation = 
+static const char * copyright_explanation =
 "Copyright (C) 1997-2010 Free Software Foundation, Inc.\n"
 "\n"
 "This program is free software: you can redistribute it and/or modify\n"
@@ -67,8 +67,8 @@ static void show_system_line_max(void)
 #endif
 #endif
 #ifdef LINE_MAX
-  /* LINE_MAX is a conservative value - _SC_LINE_MAX is likely 
-   * to be larger. 
+  /* LINE_MAX is a conservative value - _SC_LINE_MAX is likely
+   * to be larger.
    */
   if (0L == m)
     m = LINE_MAX;
@@ -93,7 +93,7 @@ static void show_system_line_max(void)
 	      "which has no upper limit on line lengths.\n",
 	      (CONFIG_DIFF_COMMAND));
 #endif
-      
+
     }
 }
 
@@ -104,7 +104,7 @@ void show_config_info(void)
   static const char * const disabled = "disabled";
   bool binary_ok = binary_file_creation_allowed();
   long int line_max = max_sfile_line_len();
-  
+
   fprintf(stderr,"CURRENT CONFIGURATION:\n");
   fprintf(stderr,
 	  "Binary file support (compiled-in default): %s\n",
@@ -118,17 +118,17 @@ void show_config_info(void)
 	  "Binary file support (as overridden by $CSSC_BINARY_SUPPORT): %s\n",
 	  binary_ok ? enabled : disabled );
 
-  fprintf(stderr, 
+  fprintf(stderr,
 	  "Maximum body line length (compiled-in default): %ld\n",
 	  (long int) CONFIG_MAX_BODY_LINE_LENGTH);
-  fprintf(stderr, 
+  fprintf(stderr,
 	  "Maximum body line length (as overridden by "
 	  "$CSSC_MAX_LINE_LENGTH): %ld\n",
 	  line_max);
   fprintf(stderr,"\n");
 
   fprintf(stderr, "Commentary:\n");
-  
+
   if (binary_ok)
     {
       fprintf(stderr, "%s",

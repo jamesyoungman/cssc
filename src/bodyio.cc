@@ -1,22 +1,22 @@
 /*
  * bodyio.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  * Code for performing I/O on the body of an SCCS file.
  * See also sf-admin.cc and encoding.cc.
@@ -35,7 +35,7 @@
 #include <cstdio>
 #include <cstring>
 
-/* Check if we have exceeded the maximum line length. 
+/* Check if we have exceeded the maximum line length.
  */
 static bool check_line_len(const char *iname,
 			   long int len_max,
@@ -51,7 +51,7 @@ static bool check_line_len(const char *iname,
   else
     {
       ungetc(ch, in);	// push back the character.
-      
+
       if (binary_file_creation_allowed())
 	{
 	  errormsg("%s: line length exceeds %ld characters, "
@@ -65,7 +65,7 @@ static bool check_line_len(const char *iname,
 		   "and binary file support is disabled.\n",
 		   iname, len_max );
 	}
-      return false;	
+      return false;
     }
 }
 
@@ -85,7 +85,7 @@ static bool check_line_len(const char *iname,
  *  1) otherwise the control-character (^A) immediately
  *     following will not be recognised; SCCS utils
  *     only look for them at the beginning of a line
- * 
+ *
  *  2) many diff(1) programs only cope with text files
  *     that end with a newline.
  */
@@ -102,7 +102,7 @@ body_insert_text(const char iname[], const char oname[],
   const long int len_max = max_sfile_line_len();
   bool found_id;
   int column;			// current column in ouutput file.
-  
+
   // If we fail, rewind these files to try binary encoding.
   FilePosSaver o_saver(out);
 
@@ -111,7 +111,7 @@ body_insert_text(const char iname[], const char oname[],
   last = '\n';
   *io_failure = false;
 
-  // Make sure we don't already think it is binary -- if so, this 
+  // Make sure we don't already think it is binary -- if so, this
   // function should never have been called.
   ASSERT(false == *binary);
 
@@ -125,7 +125,7 @@ body_insert_text(const char iname[], const char oname[],
       if ('\n' == last)
 	{
 	  column = 0;
-	  
+
 	  if ('\001' == ch)
 	    {
 	      errormsg("%s: control character at start of line, "
@@ -144,8 +144,8 @@ body_insert_text(const char iname[], const char oname[],
 	      return false; // output file pointer implicitly rewound
 	    }
 	}
-      
-      
+
+
       // FIXME TODO: if we get "disk full" while trying to write the
       // body of an SCCS file, we will retry with binary (which of
       // course uses even more space)
@@ -167,7 +167,7 @@ body_insert_text(const char iname[], const char oname[],
 		ungetc(peek, in);
 	    }
 	}
-      
+
       last = ch;
     }
 
@@ -194,13 +194,13 @@ body_insert_text(const char iname[], const char oname[],
   return true;
 }
 
-// Keywords: a file containing the octal characters 
+// Keywords: a file containing the octal characters
 // 0026 0021 0141 (hex 0x16 0x11 0x61) will produce
 // begin 0644 x
 // #%A%A
 // `
 // end
-// 
+//
 //
 // Stupidly imho, SCCS checks the ENCODED form of the file
 // in order to support the "no ID keywords" warning.  Still,
@@ -233,13 +233,13 @@ body_insert_binary(const char iname[], const char oname[],
 	  if (::check_id_keywords(outbuf, strlen(outbuf)))	// XXX used to check inbuf
 	    *idkw = kw = true;
 	}
-      
+
       if (fputs_failed(fputs(outbuf, out)))
 	{
 	  errormsg_with_errno("%s: Write error.", oname);
 	  return false;
 	}
-      
+
       ++nl;
     }
   // A space character indicates a count of zero bytes and hence
@@ -249,9 +249,9 @@ body_insert_binary(const char iname[], const char oname[],
       errormsg_with_errno("%s: Write error.", oname);
       return false;
     }
-  
+
   ++nl;
-  
+
   if (ferror(in))
     {
       errormsg_with_errno("%s: Read error.", iname);
@@ -319,13 +319,13 @@ body_insert(bool *binary,
 
 	  if (!binary_file_creation_allowed())
 	    {
-	      // We can't try again with a binary file, because that 
+	      // We can't try again with a binary file, because that
 	      // feature is disabled.
 	      return false;
 	    }
 
 	  // It wasn't text after all.  We may be reading from
-	  // stdin, so we can't seek on it.  But we have 
+	  // stdin, so we can't seek on it.  But we have
 	  // the first segment of the file written to the x-file
 	  // already, and the remainder is still waiting to be
 	  // read, so we can recover all the data.
@@ -334,19 +334,19 @@ body_insert(bool *binary,
 	  if (tmp)
 	    {
 	      bool ret = true;
-	      
-	      try 
+
+	      try
 		{
 		  // Recover the data already written to the output
 		  // file and then rewind it, so that we can overwrite
 		  // it with the encoded version.
 		  FilePosSaver *fp_out = new FilePosSaver(out);
-		  
+
 		  if (copy_data(out, tmp) && copy_data(in,  tmp))
 		    {
 		      delete fp_out;	// rewind the file OUT.
 		      rewind(tmp);
-		      
+
 		      ret = body_insert_binary("temporary file",
 					       oname, tmp, out, lines, idkw);
 		    }
@@ -385,24 +385,24 @@ int output_body_line_binary(FILE *fp, const cssc_linebuf* plb)
   // and contains no 8-bit or zero data.
   size_t n;
   char outbuf[80];
-  
+
   n = decode_line(plb->c_str(), outbuf); // see encoding.cc
   return fwrite_failed(fwrite(outbuf, sizeof(char), n, fp), n);
 }
 
 
-int 
+int
 encode_file(const char *nin, const char *nout)
 {
   int retval = 0;
-  
+
   FILE *fin = fopen_as_real_user(nin, "rb");	// binary
   if (0 == fin)
     {
       errormsg_with_errno("Failed to open \"%s\" for reading.\n", nin);
       return -1;
     }
-  
+
 //  FILE *fout = fopen(nout, "w"); // text
   FILE *fout = fcreate(nout, CREATE_EXCLUSIVE); // text
 
@@ -416,7 +416,7 @@ encode_file(const char *nin, const char *nout)
       try
 	{
 	  encode_stream(fin, fout);
-	  
+
 	  if (ferror(fin) || fclose_failed(fclose(fin)))
 	    {
 	      errormsg_with_errno("%s: Read error.\n", nin);

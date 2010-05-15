@@ -1,22 +1,22 @@
 /*
  * fnsplit.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Functions for canonifying filenames.
  */
 
@@ -30,10 +30,10 @@ split_filename(const mystring &fullname,
 	       mystring& dirname, mystring& basename)
 {
   ASSERT(fullname.length() > 0);
-  
+
   dirname = mystring("");	// empty string.
   basename = fullname;
-  
+
   /* Find the final slash.
    */
   mystring::size_type i = fullname.find_last_of('/');
@@ -47,7 +47,7 @@ split_filename(const mystring &fullname,
 
 #ifdef TEST_FNSPLIT
 
-void usage() 
+void usage()
 {
 }
 

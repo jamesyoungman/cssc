@@ -1,27 +1,27 @@
 /*
  * get.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2001,2002,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2002,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
  * Extract a requested delta from a SCCS file.
- * 
+ *
  */
 #include <errno.h>
 
@@ -101,7 +101,7 @@ main(int argc, char **argv)
   bool real_file;
   bool delta_summary = false;	        /* -L, -l */
   bool create_lfile = false;            /* -l */
-  
+
   if (argc > 0)
       set_prg_name(argv[0]);
   else
@@ -121,7 +121,7 @@ main(int argc, char **argv)
         default:
           errormsg("Unsupported option: '%c'", c);
           return EXITVAL_INVALID_OPTION;
-          
+
         case 'r':
           org_rid = sid(opts.getarg());
           if (!org_rid.valid())
@@ -130,7 +130,7 @@ main(int argc, char **argv)
               return EXITVAL_INVALID_OPTION;
             }
           break;
-          
+
         case 'c':
           cutoff_date = sccs_date(opts.getarg());
           if (!cutoff_date.valid())
@@ -140,7 +140,7 @@ main(int argc, char **argv)
               return EXITVAL_INVALID_OPTION;
             }
           break;
-          
+
         case 'i':
                 {
                     sid_list include_arg(opts.getarg());
@@ -153,7 +153,7 @@ main(int argc, char **argv)
                     include = include_arg;
                 }
           break;
-          
+
 	case 'x':
                 {
                     sid_list exclude_arg(opts.getarg());
@@ -165,9 +165,9 @@ main(int argc, char **argv)
                     }
                     exclude = exclude_arg;
                 }
-                
+
           break;
-          
+
         case 'e':
           for_edit = 1;
           suppress_keywords = 1;
@@ -211,7 +211,7 @@ main(int argc, char **argv)
 	  delta_summary = true;
 	  create_lfile = false;
 	  break;
-	  
+
         case 's':
           silent = 1;
           break;
@@ -244,7 +244,7 @@ main(int argc, char **argv)
             seq = (unsigned short) i;
           }
           break;
-          
+
         case 't':
           get_top_delta = 1;
           break;
@@ -254,11 +254,11 @@ main(int argc, char **argv)
           use_stdout = 0;
           gname = opts.getarg();
           break;
-                        
+
         case 'D':
           debug = 1;
           break;
-          
+
         case 'V':
           version();
           break;
@@ -271,13 +271,13 @@ main(int argc, char **argv)
               "-b option unless you want to check the file out for "
               "editing (using the -e option).\n");
     }
-        
+
 
   FILE *out = NULL;     /* The output file.  It's initialized
                            with NULL so if it's accidentally
                            used before being set it will
                            quickly cause an error. */
-  
+
   if (use_stdout)
     {
       gname = "-";
@@ -285,13 +285,13 @@ main(int argc, char **argv)
       if (NULL == out)
         return 1;       // fatal error.
     }
-  
+
   if (silent)
     {
       if (!stdout_to_null())
         return 1;       // fatal error.
     }
-  
+
   if (no_output)
     {
       if (use_stdout)
@@ -310,7 +310,7 @@ main(int argc, char **argv)
       errormsg("No SCCS file specified");
       return 1;
     }
-  
+
   while (iter.next())
     {
       try
@@ -323,14 +323,14 @@ main(int argc, char **argv)
             {
               fprintf(stdout, "\n%s:\n", name.c_str());
             }
-          
-          
+
+
           sccs_pfile *pfile = NULL;
           if (for_edit)
             {
               pfile = new sccs_pfile(name, sccs_pfile::APPEND);
             }
-          
+
           sccs_file file(name, sccs_file::READ);
           sid new_delta;
           sid retrieve;
@@ -343,7 +343,7 @@ main(int argc, char **argv)
                           "option have been specified; "
                           "the -r option has been ignored.");
                 }
-              
+
               if (!file.find_requested_seqno(seq, retrieve))
                 {
                   errormsg("%s: Requested sequence number %d not found.",
@@ -367,9 +367,9 @@ main(int argc, char **argv)
                   rid = retrieve;
                 }
             }
-          
-          
-          
+
+
+
           if (for_edit)
             {
               if (branch && !file.branches_allowed())
@@ -378,7 +378,7 @@ main(int argc, char **argv)
                           "option -b ignored.\n",
                           name.c_str());
                 }
-              
+
               if ( (NULL==pfile) || !file.test_locks(retrieve, *pfile))
                 {
                   retval = 1;
@@ -400,11 +400,11 @@ main(int argc, char **argv)
             }
 
           real_file = false;
-          
+
           if (!use_stdout && !no_output)
             {
               ASSERT(name.valid());
-              
+
               /* got_gname is specified if we had -G g-file
                * on the command line.   This only works for the
                * first file on the command line (or else we'd
@@ -413,7 +413,7 @@ main(int argc, char **argv)
               if (!got_gname)
                 gname = name.gfile();
               got_gname = 0;
-              
+
               int mode = CREATE_AS_REAL_USER | CREATE_FOR_GET;
               if (!suppress_keywords)
                 {
@@ -424,10 +424,10 @@ main(int argc, char **argv)
 		{
 		  mode |= CREATE_EXECUTABLE;
 		}
-	      
+
               out = fcreate(gname, mode);
               real_file = true;
-              
+
               if (NULL == out)
                 {
                   if (errno)
@@ -453,7 +453,7 @@ main(int argc, char **argv)
 
           const int keywords = !suppress_keywords;
           struct sccs_file::get_status status;
-          
+
           try
             {
           status = file.get(out, gname, summary_file, retrieve, cutoff_date,
@@ -470,7 +470,7 @@ main(int argc, char **argv)
                   throw;
                 }
             }
-          
+
           if (real_file)
             {
               fclose(out);
@@ -484,7 +484,7 @@ main(int argc, char **argv)
               else
               {
                 /* The g-file was created with the real uid,
-                 * and so if we want to change its mode, we 
+                 * and so if we want to change its mode, we
                  * will have to temporarily set EUID=RUID.
                  */
                 give_up_privileges();
@@ -496,7 +496,7 @@ main(int argc, char **argv)
             }
 
           // We delete this file if the "get" failed.
-          // However, this is not conditional on "retval" since 
+          // However, this is not conditional on "retval" since
           // if the previous attempt failed, we would like the others
           // to succeed.
 
@@ -510,18 +510,18 @@ main(int argc, char **argv)
 		}
               continue;
             }
-          
+
           print_id_list("Included", status.included);
           print_id_list("Excluded", status.excluded);
           retrieve.print(stdout);
           putchar('\n');
-          
+
           if (for_edit)
             {
               printf("new delta ");
               new_delta.print(stdout);
               putchar('\n');
-              
+
               if (!pfile->add_lock(retrieve, new_delta, include, exclude))
                 {
                   // Failed to add the lock to the p-file.
@@ -538,7 +538,7 @@ main(int argc, char **argv)
               delete pfile;
               pfile = NULL;
             }
-          
+
           if (!no_output)
             {
               printf("%d lines\n", status.lines);

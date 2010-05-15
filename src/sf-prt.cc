@@ -1,22 +1,22 @@
 /*
  * sf-prt.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2001,2004,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2004,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -43,7 +43,7 @@ print_string_list(FILE *out,
 		  const char* dflt)
 {
   const mylist<mystring>::size_type len = l.length();
-  
+
   if (0 == len)
     {
       fprintf(out, "%s%s", pre, dflt);
@@ -57,7 +57,7 @@ print_string_list(FILE *out,
 	    {
 	      fprintf(out, "%s", post);
 	    }
-	  
+
 	}
     }
 }
@@ -119,7 +119,7 @@ bool sccs_file::cutoff::excludes_delta(sid /* s */,
 				       bool& stop_now) const
 {
   stop_now = false;
-  
+
   if (!enabled)
     return false;
 
@@ -213,13 +213,13 @@ sccs_file::cutoff::cutoff()
   // all done above.
 }
 
-// Print the body of an SCCS file, transforming all "^A"s 
+// Print the body of an SCCS file, transforming all "^A"s
 // into "*** "s.
-static bool 
+static bool
 do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 {
   bool ret = true;
-  
+
   // When pos_saver goes out of scope the file position on "fp" is restored.
   FilePosSaver pos_saver(fp);
 
@@ -228,11 +228,11 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
       errormsg_with_errno("%s: fseek() failed!", name);
       return false;		// can't read body now, so just fail.
     }
-  
-  
+
+
   if (putc_failed(putc('\n', out)))
     ret = false;
-  
+
   int ch;
   while ( ret && (ch=getc(fp)) != EOF )
     {
@@ -247,7 +247,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
       else if ('\n' == ch)
 	{
 	  int peek = getc(fp);
-	  
+
 	  if ('\001' == peek)
 	    {
 	      ungetc(peek, fp);
@@ -260,7 +260,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 		ret = false;
 	      break;
 	    }
-	  else 
+	  else
 	    {
 	      ungetc(peek, fp);
 	      if (fputs_failed(fputs("\n\t", out)))
@@ -284,7 +284,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
       errormsg_with_errno("%s: read failed!", name);
       ret = false;
     }
-      
+
   // When pos_saver goes out of scope the file position is restored.
   return ret;
 }
@@ -320,7 +320,7 @@ sccs_file::prt(FILE *out,
 {
   const int suppress_newlines = exclude.enabled;
   const char* nl_sep = suppress_newlines ? " " : "\n";
-  
+
   if (print_delta_table)
     {
       if (exclude.enabled)
@@ -333,10 +333,10 @@ sccs_file::prt(FILE *out,
 	  if (exclude.cutoff_sid.valid())
 	    exclude.cutoff_delta = find_delta(exclude.cutoff_sid);
 	}
-      
+
       bool stop_now = false;
       const_delta_iterator iter(delta_table);
-  
+
       while (!stop_now && iter.next(all_deltas))
 	{
 	  if (exclude.excludes_delta(iter->id(), iter->date(), stop_now))
@@ -345,12 +345,12 @@ sccs_file::prt(FILE *out,
 	  // Unless -a was specified, don't print removed deltas.
 	  if (!all_deltas && iter->removed())
 	    continue;
-	  
+
 	  if (exclude.enabled)	// -y, -c, or -r option.
 	    fprintf(out, "%s:\t", name.c_str());
 	  else
 	    putc('\n', out);
-      
+
 	  // Print the stuff from the delta...
 	  fprintf(out, "%c ", iter->get_type());
 	  iter->id().print(out);
@@ -419,7 +419,7 @@ sccs_file::prt(FILE *out,
 	  putc('\n', out);
 	}
     }
-      
+
   // global stuff.
   if (print_users)
     {
@@ -427,10 +427,10 @@ sccs_file::prt(FILE *out,
       print_string_list(out, users, "\t", "\n", "everyone");
       putc('\n', out);
     }
-  
+
   if (print_flags)
     {
-      // PROBLEM: 
+      // PROBLEM:
       //
       // Those SCCS flags that have no "value" field, that is, those
       // which are either on or off, have a tab printed immediately
@@ -449,7 +449,7 @@ sccs_file::prt(FILE *out,
 	  fprintf(out, "\tbranch\t\n");
 	  ++flag_count;
 	}
-      
+
       print_flag(out, "\tceiling\t", flags.ceiling, flag_count);
       print_flag(out, "\tdefault SID\t", flags.default_sid, flag_count);
 
@@ -464,12 +464,12 @@ sccs_file::prt(FILE *out,
 #if 0
       // The 'x' flag is a SCO OpenServer extension.
       // SCO OpenServer 5.0.6 has no "prt" command, but
-      // SCO Unixware 8.0.0 does have it.  However, it 
-      // does not print anything if the x flag is set.  
+      // SCO Unixware 8.0.0 does have it.  However, it
+      // does not print anything if the x flag is set.
       // Hence for compatibility, we don't do that either.
       print_flag(out, "\texecutable\t\n", flags.executable, flag_count);
 #endif
-      
+
       print_flag(out, "\tfloor\t", flags.floor, flag_count);
       if (flags.no_id_keywords_is_fatal)
 	{
@@ -503,14 +503,14 @@ sccs_file::prt(FILE *out,
 	{
 	  ++flag_count;
 
-	  // Unusually, Solaris "prt" just launches into the list of 
+	  // Unusually, Solaris "prt" just launches into the list of
 	  // expanded keyletters, without a leading flag name.
 	  fprintf(out, "\t\t");
 	  (void) print_subsituted_flags_list(out, " ");
 	  fprintf(out, "\n");
 	}
-      
-      
+
+
       if (0 == flag_count)
 	fprintf(out, "\tnone\n");
     }
@@ -527,7 +527,7 @@ sccs_file::prt(FILE *out,
       // silly workaround.
       do_print_body(name.c_str(), f, body_offset, out);
     }
-  
+
   return true;
 }
 

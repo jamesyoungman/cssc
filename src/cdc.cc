@@ -1,22 +1,22 @@
 /*
  * cdc.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  * Changes the comments and MRs of a delta.
@@ -61,7 +61,7 @@ main(int argc, char *argv[])
   mystring comments;
   int got_comments = 0;
   int retval = 0;
-  
+
   if (argc > 0)
     set_prg_name(argv[0]);
   else
@@ -77,7 +77,7 @@ main(int argc, char *argv[])
 	default:
 	  errormsg("Unsupported option: '%c'", c);
 	  return 2;
-	  
+
 	case 'r':
 	  rid = sid(opts.getarg());
 	  if (!rid.valid())
@@ -86,35 +86,35 @@ main(int argc, char *argv[])
 	      return 2;
 	    }
 	  break;
-	  
+
 	case 'm':
 	  mrs = opts.getarg();
 	  break;
-	  
+
 	case 'y':
 	  comments = opts.getarg();
 	  got_comments = 1;
 	  break;
-	  
+
 	case 'V':
 	  version();
 	  break;
 	}
     }
-  
+
   if (!rid.valid())
     {
       errormsg("A SID must be specified on the command line.");
       return 1;
     }
-  
+
   sccs_file_iterator iter(opts);
   if (! iter.using_source())
     {
       errormsg("No SCCS file specified.");
       return 1;
     }
-  
+
   if (!got_comments)
     {
       if (!iter.using_stdin())
@@ -135,15 +135,15 @@ main(int argc, char *argv[])
 	  return 1;
 	}
     }
-  
+
   mylist<mystring> mr_list, comment_list;
   comment_list = split_comments(comments);
   mr_list = split_mrs(mrs);
-  
+
   int tossed_privileges = 0;
-  
+
   int first = 1;
-  
+
   while (iter.next())
     {
       try
@@ -176,7 +176,7 @@ main(int argc, char *argv[])
 		    }
 		}
 	    }
-  
+
 	  if (mr_list.length() != 0)
 	    {
 	      if (file.mr_required())
@@ -189,7 +189,7 @@ main(int argc, char *argv[])
 		      continue;	// with next file.
 		    }
 		}
-	      else 
+	      else
 		{
 		  /* No MRs required; it is in this case an error to provide them! */
 		  errormsg("%s: MRs are not allowed for this file "
@@ -207,16 +207,16 @@ main(int argc, char *argv[])
 		  retval = 1;
 		  continue;
 		}
-	  
+
 	    }
-      
-      
+
+
 	  if (!file.is_delta_creator(get_user_name(), rid))
 	    {
 	      give_up_privileges();
 	      tossed_privileges = 1;
 	    }
-      
+
 	  if (file.cdc(rid, mr_list, comment_list))
 	    {
 	      if (!file.update())

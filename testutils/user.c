@@ -1,22 +1,22 @@
 /*
  * user.c: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Program for getting the user's login name.
  */
 #include <config.h>
@@ -44,17 +44,17 @@ static int duplicate_group(gid_t g, const gid_t *vec, int len)
 
 /* do_groups
  *
- * Emits a list of groups associated with the current 
- * process.  The effectve group ID is also returned, 
- * and this may be a suplicate entry. 
+ * Emits a list of groups associated with the current
+ * process.  The effectve group ID is also returned,
+ * and this may be a suplicate entry.
  */
 static gid_t *get_group_list(int *ngroups)
 {
   int len;
   gid_t *grouplist;
-  
+
   len = getgroups(0, NULL);
-  
+
   if (len < 0)
     {
       perror("getgroups");
@@ -65,8 +65,8 @@ static gid_t *get_group_list(int *ngroups)
       grouplist = malloc((1+len) * sizeof(*grouplist));
       if (grouplist)
         {
-          /* We don't know if the effectve group ID is in 
-           * the list returned by grouplist, so find out 
+          /* We don't know if the effectve group ID is in
+           * the list returned by grouplist, so find out
            * and return a list with it included, but only once
            */
           gid_t egid = getegid();
@@ -103,7 +103,7 @@ static void do_groups()
 {
   int ngroups;
   const gid_t *list = get_group_list(&ngroups);
-  
+
   if (list)
     {
       int i;
@@ -125,7 +125,7 @@ static int compare_groups(const void *pv1, const void *pv2)
 {
   const gid_t *p1 = (const gid_t*) pv1;
   const gid_t *p2 = (const gid_t*) pv2;
-  
+
   if (*p1 < *p2)
     return -1;
   else if (*p1 > *p2)
@@ -135,21 +135,21 @@ static int compare_groups(const void *pv1, const void *pv2)
 }
 
 
-/* Find and print the Id of a group of which we are not a member. 
+/* Find and print the Id of a group of which we are not a member.
  * This group will (most likely) not have a name
  */
 static gid_t foreign_group(void)
 {
   int ngroups, i;
   gid_t *list = get_group_list(&ngroups);
-  
+
   qsort(list, ngroups, sizeof(*list), compare_groups);
 
   for (i=1; i<ngroups; ++i)
     {
       /* nextval is a gid_t value 1 greater than the last gid we saw */
       const gid_t nextval = 1+list[i-1];
-      
+
       if (nextval < list[i] )
         {
           /* we have a gap. */
@@ -163,9 +163,9 @@ static gid_t foreign_group(void)
   if (ngroups)
     {
       if (list[0] > 0)
-        return 0;                      
-      else 
-        return 1+list[ngroups-1]; 
+        return 0;
+      else
+        return 1+list[ngroups-1];
     }
   else /* not a member of any groups? */
     {
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
           p = getpwuid(getuid());
           if (p)
             pn = p->pw_name;
-          
+
           fprintf(stdout, "%s\n", pn);
           return 0;
         }

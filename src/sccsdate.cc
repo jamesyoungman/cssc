@@ -1,23 +1,23 @@
 /*
  * sccsdate.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -45,7 +45,7 @@ is_leapyear(int year)
     {
       return 0;                 // not a leapyear.
     }
-  else 
+  else
     {
       if (year % 100)
         {
@@ -74,13 +74,13 @@ days_in_month(int mon, int year)
     case 10:
     case 12:
       return 31;
-      
+
     case 4:
     case 6:
     case 9:
     case 11:
       return 30;
-      
+
     case 2:
       if (is_leapyear(year))
         return 29;
@@ -96,7 +96,7 @@ is_digit(char ch)
   return isdigit( (unsigned char) ch );
 }
 
-static inline int 
+static inline int
 get_digit(char ch)
 {
   ASSERT(isdigit( (unsigned char) ch ));
@@ -106,7 +106,7 @@ get_digit(char ch)
 static int
 get_two_digits(const char *s)
 {
-  return get_digit(s[0]) * 10 + get_digit(s[1]);  
+  return get_digit(s[0]) * 10 + get_digit(s[1]);
 }
 
 static int
@@ -132,11 +132,11 @@ get_part(const char *&s, int def)
   return def;
 }
 
-static int 
+static int
 count_digits(const char *s)
 {
   int count;
-  
+
   for(count=0; *s; s++)
     {
       if (is_digit(*s))
@@ -157,7 +157,7 @@ sccs_date::sccs_date(const char *s)
   // count before the first call to get_part(), since that
   // actually advances the pointer.
   const int n_digits = count_digits(s);
-  
+
   // Get and check the year part.
   if ( (year = get_part(s, -1)) == -1)
     return;
@@ -178,7 +178,7 @@ sccs_date::sccs_date(const char *s)
   // digits to be the century part if they were 19 or 20.  This
   // approach breaks down rather unexpectedly for the user in
   // the year 2019.
-  // 
+  //
   if (n_digits > 12)
     {
       // If we actually have a 4-digit year, the next two
@@ -211,13 +211,13 @@ sccs_date::sccs_date(const char *s)
         year += 1900;
     }
 #endif
-                        
+
   month     = get_part(s, 12);
   month_day = get_part(s, days_in_month(month, year));
   hour      = get_part(s, 23);
   minute    = get_part(s, 59);
   second    = get_part(s, 59);
-  
+
   update_yearday();
 }
 
@@ -226,9 +226,9 @@ sccs_date::sccs_date(const char *date, const char *time)
 {
   char buf[11];
   int century;
-  
+
   // Peter Kjellerstedt writes:-
-  // 
+  //
   // This is a gross hack to handle that some old implementation of SCCS
   // has a Y2K bug that results in that dates are written incorrectly as
   // :0/01/01 instead of 00/01/01 (the colon is of course the next
@@ -237,9 +237,9 @@ sccs_date::sccs_date(const char *date, const char *time)
   // used is not valid anyway).
   strncpy(buf, date, 11);
 
-  /* Check for the symtoms of SourceForge bug ID 513800, where 
+  /* Check for the symtoms of SourceForge bug ID 513800, where
    * the Data General version of Unix puts a four-digit year
-   * into the p-file. 
+   * into the p-file.
    */
   if (strlen(buf) > 4
       && is_digit(buf[0])
@@ -261,18 +261,18 @@ sccs_date::sccs_date(const char *date, const char *time)
       century = 0;              // decide by windowing.
       date = buf;
   }
-  
-  
+
+
   if (buf[0] >= ':' && buf[0] <= '@')
     {
       warning("date in SCCS file contains character '%c': "
 	      "a version of SCCS which is not Year 2000 compliant "
 	      "has probably been used on this file.\n",
 	      buf[0]);
-      
+
       buf[0] = static_cast<char>(buf[0] - 10);
     }
-  
+
   // The "1" in the if() is just there to make Emacs align the columns.
   if (1
       && is_digit(date[0]) && is_digit(date[1]) && date[2] == '/'
@@ -286,11 +286,11 @@ sccs_date::sccs_date(const char *date, const char *time)
       year      = get_two_digits(&date[0]);
       month     = get_two_digits(&date[3]);
       month_day = get_two_digits(&date[6]);
-      
+
       hour      = get_two_digits(&time[0]);
       minute    = get_two_digits(&time[3]);
       second    = get_two_digits(&time[6]);
-      
+
       // Year 2000 fix (mandated by X/Open white paper, see above
       // for more details).
       if (century)
@@ -301,13 +301,13 @@ sccs_date::sccs_date(const char *date, const char *time)
       }
       else
       {
-          
+
           if (year < 69)
               year += 2000;
           else
               year += 1900;
       }
-      
+
       update_yearday();
 
       ASSERT(year >= 1969);
@@ -319,7 +319,7 @@ int
 sccs_date::printf(FILE *f, char fmt) const
 {
   const int yy = year % 100;
-  
+
   switch(fmt)
     {
     case 'D':
@@ -344,7 +344,7 @@ sccs_date::printf(FILE *f, char fmt) const
     case 'o':
       value = month;
       break;
-                
+
     case 'd':
       value = month_day;
       break;
@@ -356,7 +356,7 @@ sccs_date::printf(FILE *f, char fmt) const
     case 'm':
       value = minute;
       break;
-      
+
     case 's':
       value = second;
       break;
@@ -383,11 +383,11 @@ sccs_date::as_string() const
 {
   char buf[18];
   const int yy = year % 100;
-  
+
   sprintf(buf, "%02d/%02d/%02d %02d:%02d:%02d",
           yy, month, month_day,
           hour, minute, second);
-  
+
   return mystring(buf);
 }
 
@@ -423,7 +423,7 @@ sccs_date::update_yearday()
   int m=1, d=1;
 
   yearday = 1;
-  
+
   while (m < month)
     yearday += days_in_month(m++, year);
 
@@ -437,7 +437,7 @@ sccs_date::update_yearday()
 int sccs_date::compare(const sccs_date& d) const
 {
   int diff;
-  
+
   if ( (diff = year - d.year) != 0 )
     return diff;
   else if ( (diff = yearday - d.yearday) != 0)
@@ -476,7 +476,7 @@ sccs_date::valid() const
     && hour >= 0 && hour < 24
     && minute >= 0 && minute < 60
     && second >= 0 && second <= 61;
-    
+
 }
 
 

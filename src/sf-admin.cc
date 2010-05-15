@@ -1,23 +1,23 @@
 /*
  * sf-admin.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2001,2004,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2004,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -36,10 +36,10 @@
 
 
 /* #define ADMIN_MERGE_LOCKED_RELEASES if you want
- * admin -fl1 s.foo ;  admin -fl2 s.foo 
- * to result in both releases 1 and 2 being locked; 
- * if you do not deifne this, the -fl option will 
- * implicitly clear any previous list of locked releases. 
+ * admin -fl1 s.foo ;  admin -fl2 s.foo
+ * to result in both releases 1 and 2 being locked;
+ * if you do not deifne this, the -fl option will
+ * implicitly clear any previous list of locked releases.
  */
 #undef ADMIN_MERGE_LOCKED_RELEASES
 
@@ -54,7 +54,7 @@ sccs_file::admin(const char *file_comment,
 		 mylist<mystring> set_flags, mylist<mystring> unset_flags,
 		 mylist<mystring> add_users, mylist<mystring> erase_users)
 {
-	
+
   if (force_binary)
     flags.encoded = 1;
 
@@ -93,13 +93,13 @@ sccs_file::admin(const char *file_comment,
   for (mylist<mystring>::size_type i = 0; i < len; i++)
     {
       const char *s = set_flags[i].c_str();
-      
+
       switch (*s++)
 	{
 	case 'b':
 	  flags.branch = 1;
 	  break;
-	  
+
 	case 'c':
 	  flags.ceiling = release(s);
 	  if (!flags.ceiling.valid())
@@ -156,7 +156,7 @@ sccs_file::admin(const char *file_comment,
 #ifdef ADMIN_MERGE_LOCKED_RELEASES
 	      flags.locked.merge(release_list(s));
 #else
-	      /* "admin -fl" clears any previously locked releases. 
+	      /* "admin -fl" clears any previously locked releases.
 	       */
 	      flags.locked = release_list(); // empty list
 	      flags.locked.merge(release_list(s));
@@ -167,7 +167,7 @@ sccs_file::admin(const char *file_comment,
 	case 'm':
 	  set_module_flag(s);
 	  break;
-	  
+
 	case 'n':
 	  flags.null_deltas = 1;
 	  break;
@@ -176,7 +176,7 @@ sccs_file::admin(const char *file_comment,
 	case 'q':
 	  set_user_flag(s);
 	  break;
-	  
+
 	case 'e':
 	  errormsg("The encoding flag must be set with the -b option");
 	  return false;
@@ -194,7 +194,7 @@ sccs_file::admin(const char *file_comment,
 	  warning("The 'x' (executable) flag is a SCO extension and is not supported by other versions of SCCS.");
 	  flags.executable = 1;
 	  break;
-	  
+
 	case 'y':
 	  // Argument is a comma-separated list of keyword letters to expand.
 	  warning("The 'y' (expanded keywords) flag is a Sun extension present only in Solaris 8 and later, and is not supported by other versions of SCCS.");
@@ -212,7 +212,7 @@ sccs_file::admin(const char *file_comment,
 				  "but remembering that we want to expand it "
 				  "anyway, for the future.", c);
 			}
-	  
+
 		      flags.substitued_flag_letters.add(c);
 		    }
 		  else
@@ -223,7 +223,7 @@ sccs_file::admin(const char *file_comment,
 		}
 	    }
 	  break;
-	  
+
 	default:
 	  // TODO: this will fail for every file, so should probably
 	  // be a "hard" error.
@@ -231,8 +231,8 @@ sccs_file::admin(const char *file_comment,
 	  return false;
 	}
     }
-	      
-	
+
+
   len = unset_flags.length();
   for (mylist<mystring>::size_type i = 0; i < len; i++)
     {
@@ -243,29 +243,29 @@ sccs_file::admin(const char *file_comment,
 	case 'b':
 	  flags.branch = 0;
 	  break;
-	  
+
 	case 'c':
 	  flags.ceiling = static_cast<short>(0);
 	  break;
-	  
+
 	case 'f':
 	  flags.floor = static_cast<short>(0);
 	  break;
-	  
-	  
+
+
 	case 'd':
 	  flags.default_sid = sid::null_sid();
 	  ASSERT(!flags.default_sid.valid());
 	  break;
-	  
+
 	case 'i':
 	  flags.no_id_keywords_is_fatal = 0;
 	  break;
-	  
+
 	case 'j':
 	  flags.joint_edit = 0;
 	  break;
-	  
+
 	case 'l':
 	  if (strcmp(s, "a") == 0)
 	    {
@@ -288,46 +288,46 @@ sccs_file::admin(const char *file_comment,
 		}
 	    }
 	  break;
-	  
+
 	case 'm':
 	  delete flags.module;
 	  flags.module = 0;
 	  break;
-	  
+
 	case 'n':
 	  flags.null_deltas = 0;
 	  break;
-	  
-	  
+
+
 	case 'q':
 	  delete flags.user_def;
 	  flags.user_def = 0;
 	  break;
-	  
+
 	case 'e':
 	  errormsg("Deletion of the binary-encoding flag is not supported.");
 	  return false;
-			
+
 	case 't':
 	  delete flags.type;
 	  flags.type = 0;
 	  break;
-	  
+
 	case 'v':
 	  delete flags.mr_checker;
 	  flags.mr_checker = 0;
 	  break;
-	  
+
 	case 'x':
 	  flags.executable = 0;
 	  break;
-	  
+
 	case 'y':
-	  // Set the expanded-keyword flag to the empty string, which 
+	  // Set the expanded-keyword flag to the empty string, which
 	  // means 'all' rather than none.
 	  set_expanded_keyword_flag("");
 	  break;
-	  
+
 	default:
 	  // TODO: this will fail for every file, so should probably
 	  // be a "hard" error.
@@ -338,7 +338,7 @@ sccs_file::admin(const char *file_comment,
 
   // Erase any required users from the list.
   users -= erase_users;
-	
+
   // Add the specified users to the beginning of the user list.
   mylist<mystring> newusers = add_users;
   newusers += users;
@@ -353,7 +353,7 @@ sccs_file::admin(const char *file_comment,
 bool
 sccs_file::create(const sid &id,
 		  const char *iname,
-		  mylist<mystring> mrs, 
+		  mylist<mystring> mrs,
 		  mylist<mystring> starting_comments,
 		  int suppress_comments, bool force_binary)
 {
@@ -377,7 +377,7 @@ sccs_file::create(const sid &id,
   FILE *out = start_update(new_delta);
   if (NULL == out)
     return false;
-  
+
   if (fprintf_failed(fprintf(out, "\001I 1\n")))
     return false;
 
@@ -413,7 +413,7 @@ sccs_file::create(const sid &id,
 		     &lines, &found_id))
       {
 	new_delta.set_inserted(lines);
-	
+
 	if (force_binary)
 	  flags.encoded = true;	// fixup file in sccs_file::end_update()
       }
@@ -421,7 +421,7 @@ sccs_file::create(const sid &id,
       {
 	ret = false;
       }
-    
+
     if (in != stdin)
       fclose(in);
 
@@ -429,10 +429,10 @@ sccs_file::create(const sid &id,
     // If so, do we continue with the next?
     if (!found_id)
       {
-	no_id_keywords(name.c_str()); // this function normally returns. 
+	no_id_keywords(name.c_str()); // this function normally returns.
       }
   }
-	
+
   if (fprintf_failed(fprintf(out, "\001E 1\n")))
     return false;
 

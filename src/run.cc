@@ -1,23 +1,23 @@
 /*
  * run.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2001,2002,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2002,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -52,12 +52,12 @@
 // the use of the WEXITSTATUS macro.  The diagnosed return value is -1
 // or 127 for two kinds of failure not involving the called program,
 // and otherwise the return value of the program.  Success is
-// indicated by a zero return value.   However, Unix also has fork() and 
-// so we wouldn't be using this function on Unix.  Nevertheless it's a 
-// valid choice to manually undefine HAVE_FORK, and so we support this 
+// indicated by a zero return value.   However, Unix also has fork() and
+// so we wouldn't be using this function on Unix.  Nevertheless it's a
+// valid choice to manually undefine HAVE_FORK, and so we support this
 // by the use of WEXITSTATUS.
 //
-// XXX: this code probably won't work on many systems because we don't 
+// XXX: this code probably won't work on many systems because we don't
 // know how to interpret the result of system().
 
 #ifdef NEED_CALL_SYSTEM
@@ -69,7 +69,7 @@ static bool call_system(const char *s)
   errno = 0;
   ret = system(s);
 
-#ifdef WEXITSTATUS 
+#ifdef WEXITSTATUS
   failed = (WEXITSTATUS(ret) != 0);
 #else
 #ifdef SYSTEM_FAILS_RETURNING_MINUS_ONE
@@ -78,13 +78,13 @@ static bool call_system(const char *s)
   failed = (ret != 0);
 #endif
 #endif
-  
+
   if (errno)
     {
       errormsg_with_errno("call_system(\"%s\") failed (returned %d).", s, ret);
       return false;
     }
-  
+
   if (failed)
       return false;
   else
@@ -103,7 +103,7 @@ run(const char *prg, mylist<const char *> const &args) {
 #ifdef NEED_CALL_SYSTEM
 
         int cmdlen = strlen(prg) + 1;
-        
+
         for(i = 0; i < len; i++) {
                 cmdlen += strlen(args[i]) + 1;
         }
@@ -111,7 +111,7 @@ run(const char *prg, mylist<const char *> const &args) {
         char *s = new char[cmdlen+1];
 
         strcpy(s, prg);
-        
+
         for(i = 0; i < len; i++) {
                 strcat(s, " ");
                 strcat(s, args[i]);
@@ -127,13 +127,13 @@ run(const char *prg, mylist<const char *> const &args) {
 #else /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 
         const char *  *argv = new const char*[len+2];
-        
+
         argv[0] = prg;
 
         for(i = 0; i < len; i++) {
                 argv[i + 1] = args[i];
         }
-        
+
         argv[i + 1] = NULL;
 
 #ifndef HAVE_FORK
@@ -148,13 +148,13 @@ run(const char *prg, mylist<const char *> const &args) {
         // We _do_ have fork().
 
         // SunOS 4.1.3 appears not to like fflush(NULL).
-#if 0   
+#if 0
         fflush(NULL);
 #else
         fflush(stdout);
         fflush(stderr);
-#endif  
-        pid_t pid = fork(); 
+#endif
+        pid_t pid = fork();
         if (pid < 0) {
                 fatal_quit(errno, "fork() failed.");
         }
@@ -179,7 +179,7 @@ run(const char *prg, mylist<const char *> const &args) {
 
         delete [] argv;
         return ret;
-        
+
 #endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 }
 

@@ -1,23 +1,23 @@
 /*
  * sf-rmdel.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1999,2001,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1999,2001,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -35,9 +35,9 @@
 static int
 is_seqlist_member(seq_no seq, mylist<seq_no> const &seq_list) {
   const mylist<seq_no>::size_type len = seq_list.length();
-  for (mylist<seq_no>::size_type i = 0; i < len; i++) 
+  for (mylist<seq_no>::size_type i = 0; i < len; i++)
     {
-      if (seq == seq_list[i]) 
+      if (seq == seq_list[i])
 	{
 	  return 1;
 	}
@@ -81,7 +81,7 @@ sccs_file::rmdel(sid id)
 {
   if (!edit_mode_ok(true))
     return false;
-  
+
   delta *d = find_delta(id);
   if (0 == d)
     {
@@ -109,11 +109,11 @@ sccs_file::rmdel(sid id)
     }
 
   d->set_type('R');
-	
+
   FILE *out = start_update();
   if (NULL == out)
     return false;
-  
+
   if (write(out))
     {
       xfile_error("Write error.");
@@ -124,7 +124,7 @@ sccs_file::rmdel(sid id)
   char c;
 
   bool retval = true;
-  
+
   while (read_line(&c))
     {
       if (0 != c)
@@ -157,7 +157,7 @@ sccs_file::rmdel(sid id)
 	  putc('\n', out);
 	}
     }
-  
+
   // We should end the file after an 'E', that is,
   // in the 'COPY' state.
   if (state != COPY)
@@ -171,8 +171,8 @@ sccs_file::rmdel(sid id)
       retval = end_update(&out);
     }
   return retval;
-}		      
-	
+}
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */

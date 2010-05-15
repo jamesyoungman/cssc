@@ -1,25 +1,25 @@
 /*
  * my-getopt.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
- * 
+ *
  * Members of the class CSSC_Options.
  *
  */
@@ -86,7 +86,7 @@ CSSC_Options::next()
 
   // Look for the argument character in the option list.
   const char *match = strchr(opts, c);
-	
+
   if (0 == c || 0 == match)
     {
       if (opterr)		// set opterr for verbose error returns.
@@ -123,7 +123,7 @@ CSSC_Options::next()
 	      "Programmer error: option list contains a colon.\n"
 	      "This is illegal for SCCS. Please see "
 	      __FILE__
-	      ", line number %d in the source code\n", 
+	      ", line number %d in the source code\n",
 	      __LINE__);
       exit(3);
     }
@@ -134,14 +134,14 @@ CSSC_Options::next()
       takes_arg = 1;
       arg_catenated = 1;
     }
-  
+
 
   if (takes_arg)
     {
       if (*cindex == '\0' && (!arg_catenated) )
 	{
 	  // Option is of the form "-X", the argument is next
-	  // in the list. 
+	  // in the list.
 	  if (index >= argc)
 	    {
 	      if (opterr)
@@ -159,13 +159,13 @@ CSSC_Options::next()
 	{
 	  // Option is of the form "-Xmumble", the argument
 	  // is "mumble".  Here, *cindex could be '\0', meaning
-	  // that the option is a "catenated arg" option like 
+	  // that the option is a "catenated arg" option like
 	  // sccs-get's -y option, and there is no actual argument.
 	  arg = cindex;
 	}
       cindex = 0;
     }
-  else				
+  else
     {
       arg = 0;			// no argument taken by this option.
     }
@@ -194,7 +194,7 @@ void CSSC_Options::reorder(void)
   char **files, **options;
   files   = new char*[argc];
   options = new char*[argc];
-  
+
   // separate the options from the files.
   // we lease argv[0] alone...
   for (i=1; i<argc; ++i)
@@ -244,12 +244,12 @@ void CSSC_Options::reorder(void)
     {
       argv[i] = 0;
     }
-  
+
   argc = n;			// we might have removed some...
 
   delete[] files;
   delete[] options;
-  
+
 }
 
 CSSC_Options::CSSC_Options(int ac, char **av, const char *s, int err)

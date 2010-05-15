@@ -1,22 +1,22 @@
 /*
  * seqstate.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,1999,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Defines the non-inline members of the class seq_state.
  *
  */
@@ -39,7 +39,7 @@ seq_state::seq_state(seq_no l) :
   pNonrecursive = new unsigned char[l + 1];
   pActive   = new unsigned char[l + 1];
   pCommand  = new          char[l + 1];
-  
+
   for(int i=0; i <= last; i++)
     {
       pIncluded[i] = 0;
@@ -51,15 +51,15 @@ seq_state::seq_state(seq_no l) :
       pActive[i]   = 0;
       pCommand[i]  = 0;
     }
-  
+
   decide_disposition();
 }
 
 
-seq_state::seq_state(const seq_state& s) : 
+seq_state::seq_state(const seq_state& s) :
   last(s.last),
   active(s.active)
-  
+
 {
   pIncluded = new unsigned char[last + 1];
   pIgnored  = new unsigned char[last + 1];
@@ -69,7 +69,7 @@ seq_state::seq_state(const seq_state& s) :
   pNonrecursive = new unsigned char[last + 1];
   pActive   = new unsigned char[last + 1];
   pCommand  = new          char[last + 1];
-  
+
   for( int i=0; i <= last; i++)
     {
       pIncluded[i] = s.pIncluded[i];
@@ -180,7 +180,7 @@ seq_state::~seq_state()
   delete[] pNonrecursive;
   delete[] pActive;
   delete[] pCommand;
-  
+
   pIncluded = pExcluded = pIgnored = pExplicit = pNonrecursive = pActive = 0;
   pDoneBy = 0;
   pCommand = 0;
@@ -194,26 +194,26 @@ seq_state::~seq_state()
 //
 // We have a series of deltas, each identified by sequence numbers.
 // larger sequence numbers were added to the file after smaller
-// ones.  Therefore, instructions imposed by larger sequence numbers 
+// ones.  Therefore, instructions imposed by larger sequence numbers
 // supercede those imposed by older ones, except when the larger
 // sequence number is not included in the delta we are trying to get.
 //
 // Changes that are inserted by a sequence number later than the one we're
 // fetching are considered to be ignored.
 void
-seq_state::decide_disposition() 
+seq_state::decide_disposition()
 {
   seq_no our_highest_insert         = 0u;
   seq_no our_highest_delete         = 0u;
   seq_no owner_of_current_insertion = 0u;
-  
+
   for (seq_no s=0; s <= last; ++s)
     {
       if (!pActive[s])
 	{
 	  continue;
 	}
-      
+
       if ('I' == pCommand[s])
 	{
 	  if (is_included(s))
@@ -244,7 +244,7 @@ seq_state::decide_disposition()
   //
   // If the owner of the current insertion is a delta "later" than us,
   // this means that we effectively can't see the insert instruction.
-  
+
   if (our_highest_delete > our_highest_insert)
     {
       // Our deletion supercedes insertion
@@ -253,7 +253,7 @@ seq_state::decide_disposition()
   else if (our_highest_insert > owner_of_current_insertion)
     {
       bool ignored = false;
-      
+
       active = our_highest_insert;
       inserting = true;
       if (is_ignored(active))
@@ -304,10 +304,10 @@ seq_state::start(seq_no seq, char command_letter)
     }
   // end diagnostic-only code.
 
-       
+
   pActive[seq] = 1;
   pCommand[seq] = command_letter;
-  
+
   decide_disposition();
 
 #ifdef DEBUG_COMMANDS
@@ -316,7 +316,7 @@ seq_state::start(seq_no seq, char command_letter)
 	  command_letter,
 	  (unsigned) seq,
 	  inserting ? 'Y' : 'N');
-#endif  
+#endif
   return NULL;
 }
 
@@ -339,8 +339,8 @@ seq_state::end(seq_no seq)
 		  'E',
 		  (unsigned) seq,
 		  inserting ? 'Y' : 'N');
-#endif	  
-	  return NULL;	      
+#endif
+	  return NULL;
     }
   else
     {

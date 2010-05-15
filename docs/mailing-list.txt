@@ -1,10 +1,10 @@
 There is a mailing list for users of GNU CSSC; it's principally
 devoted to the development of the program.   If you have a bug report
 to make or a question about GNU CSSC, it may be better to send it to
-the CSSC maintainer (see the CSSC manual).   
+the CSSC maintainer (see the CSSC manual).
 
 If you wish to join this mailing list, please visit its web site at
-http://mail.gnu.org/mailman/listinfo/cssc-users.  
+http://mail.gnu.org/mailman/listinfo/cssc-users.
 
 If you don't want to subscribe via the web interface, you could send
 an email to <cssc-users-request@gnu.org>.  The body of this message

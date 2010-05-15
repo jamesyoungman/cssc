@@ -1,23 +1,23 @@
 /*
  * prt.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1999,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1999,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -39,12 +39,12 @@ void
 usage()
 {
   fprintf(stderr,
-	  "usage: %s %s", prg_name, 
+	  "usage: %s %s", prg_name,
 	  "[-abdefistu] [-cDATE-TIME] [-rDATE-TIME] [-ySID] s.file ...\n");
 }
 
 
-/* 
+/*
  * The effects of the options on sccs-prt are quite complex; for
  * example, -y affects the output mode as well.
  */
@@ -63,7 +63,7 @@ main(int argc, char **argv)
   sccs_file::cutoff exclude;
   int last_cutoff_type = 0;
   int do_default = 1;
-  
+
   if (argc > 0)
     set_prg_name(argv[0]);
   else
@@ -136,7 +136,7 @@ main(int argc, char **argv)
 	      exclude.most_recent_sid_only = true;
 	    }
 	  break;
-	  
+
 	case 'c':		// -c and -r
 	case 'r':		// are exclusive.
 	  exclude.enabled = true;
@@ -145,17 +145,17 @@ main(int argc, char **argv)
 	      errormsg("Options -c and -r are exclusive.\n");
 	      return 2;
 	    }
-	  
+
 	  last_cutoff_type = (int)c;
-	  
+
 	  sccs_date date = sccs_date(opts.getarg());
 	  if (!date.valid())
 	    {
 	      errormsg("Invalid cutoff date: '%s'", opts.getarg());
 	      return 2;
 	    }
-	  
-	  
+
+
 	  if (c == 'r')
 	    exclude.last_accepted = date;
 	  else
@@ -170,26 +170,26 @@ main(int argc, char **argv)
   sccs_file_iterator iter(opts);
 
   int retval = 0;
-  
+
   if (sccs_file_iterator::NONE == iter.using_source())
     {
       errormsg("No SCCS file specified");
       return 1;
     }
-  
+
   while (iter.next())
     {
       try
 	{
 	  sccs_name &name = iter.get_name();
-	  
+
 	  if (!exclude.enabled)
 	    fprintf(stdout, "\n%s:", name.c_str());
-	  
+
 	  fprintf(stdout, "\n");
-	  
+
 	  sccs_file file(name, sccs_file::READ);
-	  
+
 	  if (!file.prt(stdout,
 			exclude,		  // -y, -c, -r
 			all_deltas,		  // -a

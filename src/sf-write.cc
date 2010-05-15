@@ -1,31 +1,31 @@
 /*
  * sf-write.cc: Part of GNU CSSC.
- * 
- * 
+ *
+ *
  *    Copyright (C) 1997,1998,1999,2001,2003,
- *                  2004,2007 Free Software Foundation, Inc. 
- * 
+ *                  2004,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
  * Members of the class sccs_file used update the SCCS file.
  *
  */
- 
+
 #include "cssc.h"
 #include "sccsfile.h"
 #include "delta.h"
@@ -55,7 +55,7 @@ sccs_file::start_update() {
             errormsg("%s: SCCS file already exists.", name.c_str());
             return NULL;
           }
-                     
+
         mystring xname = name.xfile();
 
         // real SCCS silently destroys any existing file named
@@ -63,7 +63,7 @@ sccs_file::start_update() {
         // that this isn't very friendly.  However, I don't want to
         // abort if x.foo exists, since "real" SCCS doesn't.  So we'll
         // produce a warning and rename the old file.  If x.foo.bak exists,
-        // we fail to rename, and lose the original x.foo file, as does 
+        // we fail to rename, and lose the original x.foo file, as does
         // the genuine article.
         if (file_exists(xname.c_str()))
           {
@@ -79,7 +79,7 @@ sccs_file::start_update() {
                 warning("%s over-written!\n", xns);
               }
           }
-        
+
 
 	// The 'x' flag is a SCO extension.
 	const int x = (flags.executable ? CREATE_EXECUTABLE : 0);
@@ -94,7 +94,7 @@ sccs_file::start_update() {
         else
           {
             xfile_created = true;
-            
+
             if (fputs_failed(fputs("\001h-----\n", out)))
               {
                 xfile_error("write error");
@@ -155,7 +155,7 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
     {
       return 1;
     }
-  
+
   len = d.mrs().length();
   for(i = 0; i < len; i++)
     {
@@ -219,7 +219,7 @@ sccs_file::write(FILE *out) const
   if (flags.branch && fputs_failed(fputs("\001f b\n", out))) {
     return 1;
   }
-                
+
   // c ceiling
   if (flags.ceiling.valid())
     {
@@ -230,7 +230,7 @@ sccs_file::write(FILE *out) const
           return 1;
         }
     }
-        
+
   // d default SID
   if (flags.default_sid.valid())
     {
@@ -241,7 +241,7 @@ sccs_file::write(FILE *out) const
           return 1;
         }
     }
-        
+
   // f floor
   if (flags.floor.valid())
     {
@@ -252,7 +252,7 @@ sccs_file::write(FILE *out) const
           return 1;
         }
     }
-        
+
   // i no id kw is error
   if (flags.no_id_keywords_is_fatal) {
     if (fputs_failed(fputs("\001f i\n", out))) {
@@ -274,15 +274,15 @@ sccs_file::write(FILE *out) const
         {
           return 1;
         }
-    } 
+    }
   else if ( !flags.locked.empty() )
     {
       if (fputs_failed(fputs("\001f l ", out)))
         return 1;               // failed
-      
+
       if (!flags.locked.print(out))
         return 1;               // failed
-      
+
       if (putc_failed(putc('\n', out)))
         return 1;               // failed
     }
@@ -296,7 +296,7 @@ sccs_file::write(FILE *out) const
           return 1;
         }
     }
-        
+
   // n Create empty deltas
   if (flags.null_deltas)
     {
@@ -313,7 +313,7 @@ sccs_file::write(FILE *out) const
           return 1;
         }
     }
-        
+
   // t %Y% subst value
   if (flags.type)
     {
@@ -323,7 +323,7 @@ sccs_file::write(FILE *out) const
           return 1;
         }
     }
-        
+
   // v MR-validation program.
   if (flags.mr_checker)
     {
@@ -333,14 +333,14 @@ sccs_file::write(FILE *out) const
     }
 
   // Write the correct valuie for the "encoded" flag.
-  // We have to write it even if the flag is unset, 
-  // because "admin -i" goes back and updates that byte if the file 
+  // We have to write it even if the flag is unset,
+  // because "admin -i" goes back and updates that byte if the file
   // turns out to have been binary.
   if (printf_failed(fprintf(out, "\001f e %c\n",
                             (flags.encoded ? '1' : '0'))))
     return 1;
 
-        
+
   // x - executable flag (a SCO extension)
   if (flags.executable)
     {
@@ -349,7 +349,7 @@ sccs_file::write(FILE *out) const
           return 1;
         }
     }
-        
+
   // y - substituted keywords (a Sun Solaris 8+ extension)
   if (flags.substitued_flag_letters.count() > 0)
     {
@@ -358,11 +358,11 @@ sccs_file::write(FILE *out) const
 
       if (!print_subsituted_flags_list(out, " "))
 	return 1;
-      
+
       if (printf_failed(fprintf(out, "\n")))
 	return 1;
     }
-        
+
   if (flags.reserved)
     {
       if (printf_failed(fprintf(out, "\001f z %s\n",
@@ -370,7 +370,7 @@ sccs_file::write(FILE *out) const
         return 1;
       }
     }
-        
+
   // end of flags.
 
   if (fputs_failed(fputs("\001t\n", out)))
@@ -407,7 +407,7 @@ sccs_file::rehack_encoded_flag(FILE *fp, int *sum) const
   const char match[] = "\001f e ";
   const int nmatch = strlen(match);
   int n;
-  
+
   while ( EOF != (ch=getc(fp)) )
     {
       if ('\n' == last)
@@ -474,13 +474,13 @@ sccs_file::end_update(FILE **pout)
 
   int sum;
   mystring xname = name.xfile();
-  
+
   // Open the file (obtaining the checksum) and immediately close it.
   bool dummy_bk_flag;
   if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ,
 					  &sum, &dummy_bk_flag))))
     xfile_error("Error closing file.");
-  
+
   // For "admin -i", we may need to change the "encoded" flag
   // from 0 to 1, if we found out that the input file was
   // binary, but the "-b" command line option had not been
@@ -493,8 +493,8 @@ sccs_file::end_update(FILE **pout)
           xfile_error("Write error.");
         }
     }
-  
-  
+
+
   rewind(*pout);
   if (printf_failed(fprintf(*pout, "\001h%05d", sum)))
     {
@@ -508,9 +508,9 @@ sccs_file::end_update(FILE **pout)
       xfile_error("Write error.");
     }
 
-  /* JY, 2001-08-27: Under Windows we cannot rename or delete an open 
+  /* JY, 2001-08-27: Under Windows we cannot rename or delete an open
    * file, so we close both the x-file and the s-file here in end_update().
-   * I think closing the file here is harmless for all platforms, but 
+   * I think closing the file here is harmless for all platforms, but
    * for the moment I will make it conditional.
    *
    * The destructor sccs_file::~sccs_file() asserts that the file pointer
@@ -525,7 +525,7 @@ sccs_file::end_update(FILE **pout)
 #endif
 
   bool retval = false;
-  
+
   if (mode != CREATE && remove(name.c_str()) == -1)
     {
       errormsg_with_errno("%s: Can't remove old SCCS file.", name.c_str());
@@ -541,10 +541,10 @@ sccs_file::end_update(FILE **pout)
       xfile_created = false;    // What was the x-file is now the new s-file.
       retval = true;
     }
-  
+
 #if defined __CYGWIN__
   int dummy_sum;
-  
+
   mystring sfile_name = name.sfile();
   f = open_sccs_file(sfile_name.c_str(), READ, &dummy_sum, &dummy_bk_flag);
   if (0 == f)
@@ -571,14 +571,14 @@ bool
 sccs_file::update()
 {
   ASSERT(mode != CREATE);
-  
+
   if (!seek_to_body())
     return false;
-  
+
   FILE *out = start_update();
   if (NULL == out)
     return false;               // don't start writing the x-file.
-  
+
   if (write(out))
     {
       xfile_error("Write error.");
@@ -598,7 +598,7 @@ sccs_file::update()
           xfile_error("Write error.");
         }
     }
-  
+
   return end_update(&out);
 }
 

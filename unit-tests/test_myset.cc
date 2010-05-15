@@ -1,22 +1,22 @@
 /*
  * test-myset.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2010 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2010 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Unit tests for template myset.
  *
  */
@@ -28,14 +28,14 @@
 class NoCopyConstructor
 {
   int value_;
-  
+
 public:
   NoCopyConstructor(int val = 1)                // default constructor
     : value_(val)
   {
   }
 
-  
+
   NoCopyConstructor &operator =(NoCopyConstructor const &other)
   {
     value_ = other.value_;
@@ -53,7 +53,7 @@ private:
 TEST(MysetTest, Empty) {
   myset<int> empty;
   const myset<int>::my_size_type len = empty.count();
-  
+
   EXPECT_EQ(0u, len);
 }
 
@@ -72,7 +72,7 @@ TEST(MysetTest, List) {
   a.add(42);
   a.add(41);
   items = a.list();
-  
+
   if (items[0] == 42)
     {
       EXPECT_EQ(42, items[0]);

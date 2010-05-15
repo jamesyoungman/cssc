@@ -1,22 +1,22 @@
 /*
  * file.cc: Part of GNU CSSC.
- * 
- *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc. 
- * 
+ *
+ *    Copyright (C) 1997,1998,1999,2001,2007,2008 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
@@ -114,13 +114,13 @@ is_readable(const char *name) {
 /* Determine if a given file is "writable".  If we
  * are root, we can write to a mode 000 file, but
  * we deem files of that sort not writable for these
- * purposes -- we in fact only care about this for 
+ * purposes -- we in fact only care about this for
  * the safeguards in "get -e" and "get".  This avoids
  * overwriting a file which we might be editing.
  *
- * The previous implementation used to actually use 
- * access/eaccess, but those return 0 for root for 
- * files that we choose to not actually count as 
+ * The previous implementation used to actually use
+ * access/eaccess, but those return 0 for root for
+ * files that we choose to not actually count as
  * writeable.
  */
 static int
@@ -138,7 +138,7 @@ is_writable(const char *filename, int /* as_real_user = 1 */ )
       else
         return 0;               // no write bits set.
     }
-  
+
 }
 
 
@@ -150,7 +150,7 @@ file_exists(const char *name) {
 }
 
 
-                
+
 
 #ifdef CONFIG_UIDS
 
@@ -179,7 +179,7 @@ give_up_privileges() {
 void
 restore_privileges() {
         if (--unprivileged == 0) {
-                if (setuid(old_euid) == -1) { 
+                if (setuid(old_euid) == -1) {
                         fatal_quit(errno, "setuid(%d) failed", old_euid);
                 }
                 ASSERT(geteuid() == old_euid);
@@ -212,7 +212,7 @@ void
 restore_privileges() {
         if (--unprivileged == 0) {
                 if (setreuid(old_ruid, old_euid) == -1) {
-                        fatal_quit(errno, "setreuid(%d, %d) failed.", 
+                        fatal_quit(errno, "setreuid(%d, %d) failed.",
                                    old_ruid, old_euid);
                 }
                 ASSERT(geteuid() == old_euid);
@@ -268,8 +268,8 @@ user_is_group_member(gid_t gid)
 
 #else /* CONFIG_UIDS */
 
-/* This function is documented in the subsection "USER" in the 
- * CSSC manual. 
+/* This function is documented in the subsection "USER" in the
+ * CSSC manual.
  */
 const char *
 get_user_name()
@@ -339,26 +339,26 @@ static long get_nlinks(const char *name)
     }
 }
 
-static void 
+static void
 maybe_wait_a_bit(long attempt, const char *lockfile)
 {
     unsigned int waitfor = 0u;
-    
+
     if (attempt > 4)
     {
         /* Make sure that it's unlikely for two instances to be in sync. */
         if ((attempt & 1) == (getpid() & 1) )
         {
-            /* Once we have been waiting for a while, make each wait 
+            /* Once we have been waiting for a while, make each wait
              * longer in order to reduce the load on the system.  In
-             * this case it is unlikely that we will ever get the lock - 
-             * perhaps the other process got killed with SIGKILL or 
-             * something like that - but we can't just go ahead since 
-             * that's too dangerous.   
-             * 
-             * Therefore we hang around until someone investigates and 
-             * either kills us or deletes the lock file.  Meanwhile we 
-             * hope that our output messages are not being logged to a 
+             * this case it is unlikely that we will ever get the lock -
+             * perhaps the other process got killed with SIGKILL or
+             * something like that - but we can't just go ahead since
+             * that's too dangerous.
+             *
+             * Therefore we hang around until someone investigates and
+             * either kills us or deletes the lock file.  Meanwhile we
+             * hope that our output messages are not being logged to a
              * file that's filled the disk.
              */
             if (attempt < 10)
@@ -386,7 +386,7 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
   mystring dirname, basename;
   char buf[32];
   const char *pstr = path.c_str();
-  
+
   split_filename(path, dirname, basename);
 
   /* Rely (slightly) on only 11 characters of filename. */
@@ -409,10 +409,10 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
                 link_errno = errno;
 
               /* ignore other responses */
-              
+
               if (2 == get_nlinks(lockstr))
                 {
-                  unlink(lockstr); 
+                  unlink(lockstr);
                   return fd;    /* success! */
                 }
               else              /* link(2) failed. */
@@ -436,15 +436,15 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
                 }
             }
           close(fd);
-          unlink(lockstr); 
+          unlink(lockstr);
         }
       else                      /* open() failed. */
         {
           switch (errno)
             {
-            case EEXIST: 
+            case EEXIST:
               /* someone else got that lock first; they may in fact not
-               * be trying to lock the same s-file (but instead another 
+               * be trying to lock the same s-file (but instead another
                * s-file in the same directory)
                *
                * Try again.  Sleep first if we're not doing well,
@@ -452,7 +452,7 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
                */
               maybe_wait_a_bit(attempt, pstr);
               break;
-              
+
             default:            /* hard failure. */
               /* fall back on the less-safe method, which will
                * probably still fail
@@ -466,21 +466,21 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 
 
 /* CYGWIN seems to be unable to create a file for writing, with mode
- * 0444, so this code resets the mode after we have closed the g-file. 
+ * 0444, so this code resets the mode after we have closed the g-file.
  */
 bool set_file_mode(const mystring &gname, bool writable, bool executable)
 {
   const char *name = gname.c_str();
   struct stat statbuf;
   int fd = open(name, O_RDONLY);
-  
+
   if (fd < 0)
     {
       errormsg_with_errno("%s: cannot open file in order to change its mode",
 			  name);
       return false;
     }
-  else 
+  else
     {
       if (0 == fstat(fd, &statbuf))
 	{
@@ -489,13 +489,13 @@ bool set_file_mode(const mystring &gname, bool writable, bool executable)
 	    mode |= 0200;
 	  else
 	    mode &= (~0200);
-	  
+
 	  if (executable)
 	    {
 	      // A SCO extension.
 	      mode |= 0111;
 	    }
-	  
+
 	  if (0 == fchmod(fd, mode))
 	    {
 	      close(fd);
@@ -517,10 +517,10 @@ bool set_file_mode(const mystring &gname, bool writable, bool executable)
     }
 }
 
-/* Set the mode of the g-file.  We need to give up provs to do this, 
+/* Set the mode of the g-file.  We need to give up provs to do this,
  * since the user as whom we are running setuid does not necessarily
  * have search privs on the current directory, or privs to chmod
- * the real user's files.  However, we need to do this (for example, 
+ * the real user's files.  However, we need to do this (for example,
  * for get -k).  This is SourceForge bug 451519.
  */
 bool set_gfile_writable(const mystring& gname, bool writable, bool executable)
@@ -532,12 +532,12 @@ bool set_gfile_writable(const mystring& gname, bool writable, bool executable)
 }
 
 
-/* When doing "get -e" we need to remove any existing read-only g-file. 
- * To do so we have to restore real user privileges, because the current 
+/* When doing "get -e" we need to remove any existing read-only g-file.
+ * To do so we have to restore real user privileges, because the current
  * directory may not be accessible to the setuid user.  Equally, we
- * should prevent the caller from deleting arbitrary read-only files 
- * that they would not ordinarily be able to delete.  Note though that 
- * CSSC is not intended for setuid or setgid operation. 
+ * should prevent the caller from deleting arbitrary read-only files
+ * that they would not ordinarily be able to delete.  Note though that
+ * CSSC is not intended for setuid or setgid operation.
  * This is SourceForge bug number 481707.
  */
 
@@ -545,7 +545,7 @@ bool unlink_gfile_if_present(const char *gfile_name)
 {
   give_up_privileges();
   bool rv = true;
-  
+
   if (file_exists(gfile_name))
     {
       if (unlink(gfile_name) < 0)
@@ -555,7 +555,7 @@ bool unlink_gfile_if_present(const char *gfile_name)
         }
     }
   restore_privileges();
-  
+
   return rv;
 }
 
@@ -574,7 +574,7 @@ bool unlink_file_as_real_user(const char *gfile_name)
       rv = false;
     }
   restore_privileges();
-  
+
   return rv;
 }
 
@@ -621,7 +621,7 @@ create(mystring name, int mode) {
 	    // A SCO extension.
 	    perms |= 0111;
 	  }
-	  
+
         int fd;
 
         if (mode & CREATE_AS_REAL_USER)
@@ -637,7 +637,7 @@ create(mystring name, int mode) {
         if (mode & CREATE_AS_REAL_USER)
           {
             restore_privileges();
-          } 
+          }
         return fd;
 }
 
@@ -660,7 +660,7 @@ fcreate(mystring name, int mode) {
 FILE *fopen_as_real_user(const char *s, const char *mode)
 {
   FILE *fp = NULL;
-  
+
   give_up_privileges();
   fp = fopen(s, mode);
   restore_privileges();
@@ -704,11 +704,11 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
       errormsg_with_errno("%s: Write error", zname.c_str());
       ctor_fail_nomsg(1);
     }
-  
+
   locked = 1;
   return;
 }
-  
+
   file_lock::~file_lock() {
         if (locked) {
                 locked = 0;
@@ -718,8 +718,8 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
 
 
 
-int 
-is_directory(const char *name) 
+int
+is_directory(const char *name)
 {
   bool retval = false;
   DIR *p = opendir(name);

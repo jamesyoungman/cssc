@@ -1,22 +1,22 @@
 /*
  * test_bigfile.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2010 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2010 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Unit tests which creates a large SCCS file.
  *
  */
@@ -38,7 +38,7 @@
 const char control = '\001';
 
 void
-usage () 
+usage ()
 {
   fprintf(stderr, "usage: %s [-V] file ...\n", prg_name);
 }
@@ -58,7 +58,7 @@ emit_ixg(FILE *fp, char signifier, const mylist<sid>& items)
   return true;
 }
 
-static bool 
+static bool
 emit_comments_or_mrs(FILE *fp,
                      char signifier,
                      const mylist<mystring> items)
@@ -81,14 +81,14 @@ emit_delta(FILE *fp,
            unsigned long inserted,
            unsigned long deleted,
            unsigned long unchanged,
-           char type, 
-           sid id, 
+           char type,
+           sid id,
            const sccs_date& stamp,
            const mystring& user,
-           seq_no seq, 
+           seq_no seq,
            seq_no prev_seq,
-           const mylist<sid>& included, 
-           const mylist<sid>& excluded, 
+           const mylist<sid>& included,
+           const mylist<sid>& excluded,
            const mylist<sid>& ignored,
            const mylist<mystring>& comments,
            const mylist<mystring>& mrs)
@@ -112,7 +112,7 @@ emit_delta(FILE *fp,
 }
 
 
-static int 
+static int
 getseq(int release, int level, int branch, int revision,
        int releases,
        int levels_per_release,
@@ -123,7 +123,7 @@ getseq(int release, int level, int branch, int revision,
   int ir, il, ib, is;
   int revisions_per_level = 1 + revisions_per_branch * branches_per_level;
   int revisions_per_release = revisions_per_level * levels_per_release;
-  
+
   fprintf(stderr, "getseq: input: %d.%d.%d.%d\n", release, level, branch, revision);
 
   result += revisions_per_release * (release-1);
@@ -141,7 +141,7 @@ getseq(int release, int level, int branch, int revision,
 static void
 getpred (int *r, int *l, int *b, int *s)
 {
-  if ((*b)) 
+  if ((*b))
     {
       if ((*s) > 1)
         {
@@ -153,7 +153,7 @@ getpred (int *r, int *l, int *b, int *s)
           *b = 0;
         }
     }
-  else 
+  else
     {
       if ((*l) > 1)
         {
@@ -194,7 +194,7 @@ static bool make_delta(FILE *fp,
   prev[1] = level;
   prev[2] = branch;
   prev[3] = revision;
-  
+
   getpred(&prev[0], &prev[1], &prev[2], &prev[3]);
 
   fprintf(stderr,
@@ -213,7 +213,7 @@ static bool make_delta(FILE *fp,
                       branches_per_level, revisions_per_branch);
   else
     prev_seq = 0;
-  
+
   const mylist<mystring> empty_string_list;
   const mylist<sid> no_sids;
   emit_delta(fp, 0u, 0u, 0u, 'D', id, current_time, username,
@@ -221,7 +221,7 @@ static bool make_delta(FILE *fp,
              empty_string_list, empty_string_list);
 }
 
-static bool 
+static bool
 create_sccs_file(FILE *fp,
                  const mystring& username,
                  int releases,
@@ -231,7 +231,7 @@ create_sccs_file(FILE *fp,
 {
   int release, level, branch, revision;
   const sccs_date current_time(sccs_date::now());
-  
+
   fprintf(fp, "%ch00000\n", control);
 
   if (revisions_per_branch)
@@ -269,7 +269,7 @@ create_sccs_file(FILE *fp,
                      releases, levels_per_release, branches_per_level, revisions_per_branch);
         }
     }
-  
+
   fprintf(fp, "%cu\n", control);
   fprintf(fp, "%cU\n", control);
   fprintf(fp, "%ct\n", control);
@@ -279,8 +279,8 @@ create_sccs_file(FILE *fp,
   fprintf(fp, "%cE 1\n", control);
 }
 
-int 
-main (int argc, char *argv[]) 
+int
+main (int argc, char *argv[])
 {
   const mystring username("fred");
   int i, rv, c;
@@ -290,14 +290,14 @@ main (int argc, char *argv[])
   class CSSC_Options opts(argc, argv, "V");
   for (c = opts.next();
        c != CSSC_Options::END_OF_ARGUMENTS;
-       c = opts.next()) 
+       c = opts.next())
     {
-      switch (c) 
+      switch (c)
         {
         default:
           errormsg("Unsupported option: '%c'", c);
           return 2;
-          
+
         case 'V':
           version();
           if (2 == argc)
@@ -308,12 +308,12 @@ main (int argc, char *argv[])
   while (iter.next())
     {
       sccs_name &name = iter.get_name();
-      
+
       int fd = open (name.sfile().c_str(), O_WRONLY|O_CREAT, 0400);
       if (fd >= 0)
         {
           FILE *fp = fdopen(fd, "w");
-          create_sccs_file(fp, 
+          create_sccs_file(fp,
                            username,
                            8,           // releases
                            40,          // levels per release

@@ -3,17 +3,17 @@
 #
 # compare_gets
 #
-# This script compares the results of getting each SID from a list of 
-# SCCS files with each of two implementations of sccs-get.  
+# This script compares the results of getting each SID from a list of
+# SCCS files with each of two implementations of sccs-get.
 #
 # usage:
 #   compare_gets.sh dir1 dir2 file [ file ... ]
-# 
+#
 # example:
 #   compare_gets.sh /usr/ccs/bin /usr/local/libexec/cssc s.foo.c s.bar.c
-# 
+#
 # If you have a source tree to compare, you could use it like this:-
-#   find /usr/src -name s.\* -print | 
+#   find /usr/src -name s.\* -print |
 #        xargs compare_gets.sh /usr/ccs/bin /usr/local/libexec/cssc
 
 tfile1="/tmp/scmp_tfile1.$$"
@@ -21,27 +21,27 @@ tfile2="/tmp/scmp_tfile2.$$"
 rv=0
 
 # get_sid_list
-# 
+#
 # arg1: The name of the SCCS file.
-# 
-get_sid_list () { 
+#
+get_sid_list () {
     # Lists the SIDs in the named file, on stdout.
     "$dir1/prs" -l -r1.1 -d:I: "$1" | nl -ba | sort -rn | awk '{print $2;}'
 }
 
-# compare_sid_getting 
+# compare_sid_getting
 #
 # arg1: The name of the SCCS file.
-# 
+#
 compare_sid_getting () {
     sfile="$1"
     echo "$sfile:"
-    rm -f $tfile1 $tfile2 
+    rm -f $tfile1 $tfile2
     for sid in `get_sid_list "$sfile"`
     do
 	echo "Comparing $sfile at SID $sid..."
 
-	"$get1" -s -p -r$sid "$sfile" > "$tfile1" 2>/dev/null 
+	"$get1" -s -p -r$sid "$sfile" > "$tfile1" 2>/dev/null
 	s1=$?
 	if test $s1 -gt 1
 	then
@@ -50,8 +50,8 @@ compare_sid_getting () {
 	    exit $s1
 	fi
 
-	
-	"$get2" -s -p -r$sid "$sfile" > "$tfile2" 2>/dev/null 
+
+	"$get2" -s -p -r$sid "$sfile" > "$tfile2" 2>/dev/null
 	s2=$?
 	if test $s2 -gt 1
 	then
@@ -68,7 +68,7 @@ compare_sid_getting () {
 	    echo "Fatal error in diff." >&2
 	    exit $s3
 	fi
-	
+
 	if test $s3 -ne 0
 	then
 	    echo "File $sfile differs between $get1 and $get2 at SID $sid" >&2

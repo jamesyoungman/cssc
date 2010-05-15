@@ -105,7 +105,7 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
 /*
  * Exit values; the <sysexits.h> file normally defines
  * EX_*, but on Solaris machines this seems to result
- * in redefinition of the values (at least in one reported 
+ * in redefinition of the values (at least in one reported
  * case, with GCC as the compiler).  To avoid this we define them
  * here, but with a name change to avoid clashes.
  */
@@ -181,7 +181,7 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
    **           --prefix=foo     Prepend ``foo'' to the names of the
    **                            sccs programs before running them.
    **                            If --prefix is not used, there is a
-   **                            default, usually "/usr/sccs".  Use the 
+   **                            default, usually "/usr/sccs".  Use the
    **                            --version flag to discover the default
    **                            prefix.
    **           -V               Synonymous with --version.
@@ -230,7 +230,7 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
    **
    **           UIDUSER -- removed since we cannot trust $USER
    **                      or getlogin in setuid programs.
-   **           
+   **
    **           PREFIX  -- Sets the default prefix which allows us to
    **                      find the SCCS subcommands.  Unless you overrride
    **                      this on the compiler command line or by editing
@@ -238,9 +238,9 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
    **                      the --version flag will tell you what the setting
    **                      is.   This macro is available only in the GNU
    **                      version of this program.
-   **                      
-   **                      
-   **                      
+   **
+   **
+   **
    **   Compilation Instructions:
    **           cc -O -n -s sccs.c
    **           The flags listed above can be -D defined to simplify
@@ -429,7 +429,7 @@ static void oom(void)
 /* set_prefix()
  *
  * The user has specified the --prefix option which indicates
- * where to look for the subcommands.   This is primarily 
+ * where to look for the subcommands.   This is primarily
  * used by the test suite so that it can be run before
  * the programs have been installed.
  *
@@ -476,7 +476,7 @@ set_prefix(const char *pfx)
 static void
 setuid_warn(void)
 {
-  const char *str = 
+  const char *str =
     "If you want to install this program set-user-id or set-group-id, you\n"
     "must compile it with the SCCSDIR macro defined, in order to\n"
     "prevent abuse.  Even so, abuse is probably not impossible.  This\n"
@@ -507,8 +507,8 @@ check_data_integrity()
 }
 
 /* cleanup_environment
- * 
- * This function unsets the CSSC configuration variables, so that the values 
+ *
+ * This function unsets the CSSC configuration variables, so that the values
  * specified to "configure" at compilation time are enforced.  This prevents
  * the invoking user overriding the policy decision made by the person who
  * installed the set-user-id or set-group-id copy of the "sccs" driver.
@@ -525,15 +525,15 @@ static void cleanup_environment(void)
 #else
 
   /* XXX: not ideal.  We'd like just to turn them off, but
-   * if we have no unsetenv(), we simply have to fail. 
+   * if we have no unsetenv(), we simply have to fail.
    */
   pfail = getenv(binary_support);
   if (NULL == pfail)
     pfail = getenv(max_line_len);
-  
+
   if (pfail)
     {
-      fprintf(stderr, 
+      fprintf(stderr,
               "You should not set the %s environment variable when "
               "the sccs driver is running set-user-id or set-group-id.\n",
               pfail);
@@ -542,7 +542,7 @@ static void cleanup_environment(void)
 #endif
 }
 
-static void 
+static void
 usage(void)
 {
   fprintf (stderr, "Usage: %s [flags] command [flags]\n", program_name);
@@ -563,13 +563,13 @@ char * my_index(const char *p, int ch)
 
 #define PFILELG 120
 
-int 
+int
 main (int argc, char **argv)
 {
   register char *p;
   register int i;
   int hadver = 0;
-  
+
   (void) &copyright;            /* prevent warning about unused variable. */
 
   set_program_name (argv[0]);
@@ -582,7 +582,7 @@ main (int argc, char **argv)
               PREFIX);
       exit(CSSC_EX_CONFIG);
     }
-  
+
   if ( (getuid() != geteuid()) || (getgid() != getegid()))
     {
       TrustEnvironment = 0;     /* running setuid, ignore $PATH etc. */
@@ -600,7 +600,7 @@ main (int argc, char **argv)
   if (TrustEnvironment)
     {
 #ifndef __ultrix
-      /* Mark Reynolds <mark@aoainc.com>: If $LANG is not 
+      /* Mark Reynolds <mark@aoainc.com>: If $LANG is not
        * set, setlocale() fails on VAX Ultrix 4.2.
        */
       if (NULL == setlocale(LC_ALL, ""))
@@ -611,17 +611,17 @@ main (int argc, char **argv)
            */
           perror("Error setting locale");
         }
-#endif      
+#endif
     }
 
   check_data_integrity();
-  
+
 #ifndef SCCSDIR
 
   /* Setuid execution is only allowed if SCCSDIR is defined,
    * so we can "trust" the PROJECTDIR environment variable.
    */
-  
+
   /* pull "SccsDir" out of the environment (possibly) */
   p = getenv("PROJECTDIR");
   if (p != NULL && p[0] != '\0')
@@ -629,7 +629,7 @@ main (int argc, char **argv)
       register struct passwd *pw;
       extern struct passwd *getpwnam();
       char buf[FBUFSIZ];
-      
+
       if (p[0] == '/')
         SccsDir = p;
       else
@@ -657,7 +657,7 @@ main (int argc, char **argv)
     }
 #endif
 
-  
+
   /*
      **  Detect and decode flags intended for this program.
    */
@@ -710,7 +710,7 @@ main (int argc, char **argv)
                   exit (CSSC_EX_USAGE);
                 }
               break;
-              
+
             case 'V':
               if (!hadver)
                 show_version();
@@ -718,7 +718,7 @@ main (int argc, char **argv)
               if (2 == argc)    /* If -V was the only arg, return success. */
                 return 0;
               break;            /* Otherwise, process the remaining options. */
-              
+
             case 'r':           /* run as real user */
               drop_privs();
               break;
@@ -762,7 +762,7 @@ main (int argc, char **argv)
       if (SccsPath[0] == '\0')
         SccsPath = ".";
     }
-  
+
   if (NULL == argv[0])
     {
       /* No remaining args!
@@ -791,12 +791,12 @@ char ** do_enter(char *argv[], char **np, char **ap,
 {
   char buf2[FBUFSIZ];
   char *argv_tmp;
-  
+
   /* skip over flag arguments */
   for (np = &ap[1]; *np != NULL && **np == '-'; np++)
     continue;
   argv = np;
-  
+
   /* do an admin for each file */
   argv_tmp = argv[1];
   while (np[0] != NULL)
@@ -874,11 +874,11 @@ try_to_exec(const char *prog, char * const argv[])
       if (TrustEnvironment || RealUser)
         execvp(prog, argv);             /* execvp() uses $PATH */
     }
-  
+
   /* absolute_pathname() does not call a library function, so no need
    * to save/restore errno.
    */
-  if (absolute_pathname(prog))  
+  if (absolute_pathname(prog))
     {
       execv(prog, argv);
       perror(prog);
@@ -901,7 +901,7 @@ try_to_exec(const char *prog, char * const argv[])
       sprintf(newprog, "%s%s", prefix, prog);
       prog = newprog;
 
-      
+
 #ifdef DEBUG
       if (Debug)
         printf ("try_to_exec: %s\n", prog);
@@ -910,7 +910,7 @@ try_to_exec(const char *prog, char * const argv[])
       execv(prog, argv);
       perror(prog);
     }
-  
+
   if (Debug)
     {
       fprintf(stderr, "try_to_exec: exec failed.\n");
@@ -940,7 +940,7 @@ try_to_exec(const char *prog, char * const argv[])
    **           none.
  */
 /* Warning in command () */
-int 
+int
 command (char *argv[], bool forkflag, const char *arg0)
 {
   const struct sccsprog *cmd;
@@ -959,7 +959,7 @@ command (char *argv[], bool forkflag, const char *arg0)
         printf ("\t\"%s\"\n", argv[i]);
     }
 #endif
-  
+
   /*
      **  Copy arguments.
      ** Copy from arg0 & if necessary at most one arg
@@ -970,13 +970,13 @@ command (char *argv[], bool forkflag, const char *arg0)
   if (1)                        /* introduce scope for editchs. */
     {
       char *editchs;
-      
+
       editchs = NULL;
       if (1)                    /* introduce scope */
         {
           char *q;
           const char *p;
-      
+
           for (p = arg0, q = buf; *p != '\0' && *p != '/';)
             {
               *np++ = q;
@@ -994,7 +994,7 @@ command (char *argv[], bool forkflag, const char *arg0)
                 }
             }
         }
-  
+
       *np = NULL;
       if (*ap == NULL)
         *np++ = *argv++;
@@ -1018,7 +1018,7 @@ command (char *argv[], bool forkflag, const char *arg0)
               fprintf(stderr,
                       "Warning: the \"%s\" command is not yet implemented.\n",
                       *ap);
-              /* continue anyway just in case we did implement it, or 
+              /* continue anyway just in case we did implement it, or
                * (perhaps) there is a real SCCS around somewhere.
                */
             }
@@ -1032,7 +1032,7 @@ command (char *argv[], bool forkflag, const char *arg0)
                       *ap);
             }
         }
-      
+
 
       /*
       **  Copy remaining arguments doing editing as appropriate.
@@ -1058,14 +1058,14 @@ command (char *argv[], bool forkflag, const char *arg0)
         }
       *np = NULL;
     }
-  
+
   /*
      **  Interpret operation associated with this command.
    */
 
   switch (cmd->sccsoper)
     {
-#if 0      
+#if 0
     case SHELL:         /* call a shell file */
       {
         ap[0]  = cmd->sccspath; /* Warning: discards const */
@@ -1084,7 +1084,7 @@ command (char *argv[], bool forkflag, const char *arg0)
     case CMACRO:                /* command macro */
       {
         const char *s;
-        
+
         /* step through & execute each part of the macro */
         for (s = cmd->sccspath; *s != '\0'; s++)
           {
@@ -1149,14 +1149,14 @@ command (char *argv[], bool forkflag, const char *arg0)
 
         /* get all the files that we unedited successfully */
         if (np > &ap[1])
-          rval = command (&ap[1], TRUE, "get"); 
+          rval = command (&ap[1], TRUE, "get");
       }
       break;
 
     case DIFFS:         /* diff between s-file & edit file */
       {
         char *s;
-        
+
         /* find the end of the flag arguments */
         for (np = &ap[1]; *np != NULL && **np == '-'; np++)
           continue;
@@ -1250,12 +1250,12 @@ lookup (const char *name)
   return NULL;
 }
 
-/* 
+/*
  * childwait()
  *
  * Wait for a child process, perhaps with SIGINT ignored.
  */
-static void 
+static void
 childwait(int pid, int *status_ptr, int ignoreintr)
 {
   struct sigaction sa, osa;
@@ -1293,7 +1293,7 @@ get_sig_name(unsigned int sig,
              char sigmsgbuf[11])
 {
 #ifdef SYS_SIGLIST_DECLARED
-#ifdef NSIG  
+#ifdef NSIG
   if (sig < NSIG)
     return sys_siglist[sig];
 #endif
@@ -1342,7 +1342,7 @@ do_fork(void)
    **           Can exit if forkflag == FALSE.
  */
 
-int 
+int
 callprog (const char *progpath,
           short flags,
           char *const argv[],
@@ -1381,7 +1381,7 @@ callprog (const char *progpath,
       else if (i > 0)           /* parent */
         {
           int st;
-          
+
           childwait(i, &st, 0); /* don't block SIGINT. */
 
           if (WIFEXITED(st))    /* normal exit. */
@@ -1403,7 +1403,7 @@ callprog (const char *progpath,
                 }
               st = CSSC_EX_SOFTWARE;
             }
-          
+
           if (OutFile >= 0)
             {
               close (OutFile);
@@ -1418,7 +1418,7 @@ callprog (const char *progpath,
       exit (CSSC_EX_SOFTWARE);
     }
 
-  /* 
+  /*
    * in child (or didn't fork at all).
    */
 
@@ -1513,7 +1513,7 @@ makefile (const char *name)
   char buf[3 * FBUFSIZ];
   register char *q;
   size_t left;
-  
+
   p = my_rindex (name, '/');
   if (p == NULL)
     p = name;
@@ -1550,7 +1550,7 @@ makefile (const char *name)
   gstrncat (buf, name, p - name, sizeof (buf)); /* will always be terminated */
   q = &buf[strlen (buf)];
   left = sizeof(buf) - strlen(buf);
-  
+
   /* now copy the final part of the name, in case useful */
   gstrcpy (q, p, left);
 
@@ -1588,7 +1588,7 @@ bool
 isdir (const char *name)
 {
   struct stat stbuf;
-  
+
 #ifdef S_ISDIR
   return (stat (name, &stbuf) >= 0) && S_ISDIR(stbuf.st_mode);
 #else
@@ -1632,13 +1632,13 @@ safepath (register const char *p)
   printf ("You may not use full pathnames or \"..\" but you specifed '%s'\n", arg);
   return FALSE;
 }
-  
+
 static void
 form_gname(char *buf, size_t bufsize, struct dirent *dir)
 {
   size_t len = strlen (dir->d_name);
   size_t gname_len = len-2u;
-  
+
   if (gname_len >= bufsize)
     {
       gstrbotchn(bufsize, dir->d_name, len, (char*)0, 0);
@@ -1649,7 +1649,7 @@ form_gname(char *buf, size_t bufsize, struct dirent *dir)
       buf[gname_len] = 0; /* terminate the string. */
     }
 }
-  
+
 
 /*
    **  CLEAN -- clean out recreatable files
@@ -1670,7 +1670,7 @@ form_gname(char *buf, size_t bufsize, struct dirent *dir)
    **           Prints information regarding files being edited.
    **           Exits if a "check" command.
  */
-int 
+int
 do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
 {
   struct dirent *dir;
@@ -1753,7 +1753,7 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
   gotedit = FALSE;
   while (NULL != (dir = readdir (dirp)))
     {
-      if ('s' != dir->d_name[0] || 
+      if ('s' != dir->d_name[0] ||
 	  '.' != dir->d_name[1] ||
 	  0 == dir->d_name[2])
         continue;
@@ -1820,7 +1820,7 @@ do_clean (int mode, char *const *argv, char buf[FBUFSIZ])
   return (CSSC_EX_OK);
 }
 
-int 
+int
 clean (int mode, char *const *argv)
 {
   int retval = CSSC_EX_OK;
@@ -1851,7 +1851,7 @@ clean (int mode, char *const *argv)
    **           none.
  */
 
-int 
+int
 isbranch (const char *sid)
 {
   register const char *p;
@@ -2014,11 +2014,11 @@ unedit (const char *fn)
   fclose (pfp);
 
   /* actually remove the g-file */
-  
+
   /* TODO: %12s in the printfs below is inappropriate for modern Unix
    * where filenames can be longer than 11 characters...
    */
-  
+
   if (delete)
     {
       /*
@@ -2052,7 +2052,7 @@ unedit (const char *fn)
    **   Side Effects:
    **           none.
  */
-int 
+int
 dodiff (char * getv[], const char *gfile)
 {
   int pipev[2];
@@ -2219,7 +2219,7 @@ nextfield (register char *p)
    **           pf is written onto file f.
  */
 
-void 
+void
 putpfent (register const struct pfile *pf, register FILE * f)
 {
   fprintf (f, "%s %s %s %s %s", pf->p_osid, pf->p_nsid,
@@ -2365,7 +2365,7 @@ gstrcpy (char *to, const char *from, size_t length)
   return strcpy (to, from);
 }
 
-static void 
+static void
 gstrbotch (const char *str1, const char *str2)
 {
   usrerr ("Filename(s) too long: %s %s",
@@ -2374,7 +2374,7 @@ gstrbotch (const char *str1, const char *str2)
   exit(CSSC_EX_SOFTWARE);
 }
 
-static void 
+static void
 gstrbotchn (int navail,
             const char *str1, int len1, const char *str2, int len2)
 {

@@ -7,19 +7,19 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# 
+#
 #
 ## Process this file with automake to generate "Makefile.in"
 ##
-## Since it doesn't start with "##", the following line will be copied 
+## Since it doesn't start with "##", the following line will be copied
 ## into Makefile.in, and become the first line.
 # Running ./configure will generate a Makefile from this file.
 
@@ -27,11 +27,11 @@ csscutildir = $(libexecdir)/cssc
 
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I ../gl/lib -I $(srcdir)/../gl/lib
-AM_CXXFLAGS = $(WARN_CFLAGS) 
+AM_CXXFLAGS = $(WARN_CFLAGS)
 noinst_LIBRARIES = libcssc.a
 
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
-csscutil_SCRIPTS = sccsdiff 
+csscutil_SCRIPTS = sccsdiff
 
 BUILT_SOURCES = version.cc
 CLEANFILES = sccsdiff
@@ -73,7 +73,7 @@ admin_SOURCES = admin.cc sf-admin.cc sf-val.cc
 delta_SOURCES = delta.cc sf-delta.cc pf-del.cc
 val_SOURCES = val.cc sf-val.cc
 
-get_LDADD = libcssc.a $(LIBOBJS) 
+get_LDADD = libcssc.a $(LIBOBJS)
 delta_LDADD = libcssc.a $(LIBOBJS)
 admin_LDADD = libcssc.a $(LIBOBJS)
 prs_LDADD = libcssc.a $(LIBOBJS)

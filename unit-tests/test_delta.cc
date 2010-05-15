@@ -1,22 +1,22 @@
 /*
  * test_delta.cc: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 2010 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 2010 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Unit tests for sid.h.
  *
  */
@@ -27,7 +27,7 @@
 #include <gtest/gtest.h>
 
 
-TEST(DeltaTest, NullConstructor) 
+TEST(DeltaTest, NullConstructor)
 {
   delta del;
   EXPECT_FALSE(del.has_includes());
@@ -54,7 +54,7 @@ TEST(DeltaTest, Constructor)
 
   incl.add(seq_no(1));
   excl.add(seq_no(6));
-  
+
   delta d('R', s, then, user, seq, pred, incl, excl, mrlist, comments);
   EXPECT_EQ(d.get_type(), 'R');
   EXPECT_EQ(d.id(), s);
@@ -96,7 +96,7 @@ TEST(DeltaTest, Assignment)
 
   mrlist.add(mystring("123"));
   comments.add(mystring("yada"));
-  
+
   const delta e('D', sid("1.9"),
 		sccs_date("990519014208"),
 		mystring("fred"), seq_no(6), seq_no(3),
@@ -129,7 +129,7 @@ TEST(DeltaDeathTest, InvalidType)
   const mylist<mystring> comments;
   EXPECT_EXIT(delta e('X', sid("1.9"), sccs_date("990519014208"),
 		      mystring("fred"), seq_no(6), seq_no(3), mrlist, comments),
-	      ::testing::KilledBySignal(SIGABRT), 
+	      ::testing::KilledBySignal(SIGABRT),
 	      "valid");
 }
 
@@ -149,7 +149,7 @@ TEST(DeltaTest, Mutators)
 
   d.set_seq(seq_no(4));
   EXPECT_EQ(4, d.seq());
-  
+
   d.set_prev_seq(seq_no(2));
   EXPECT_EQ(2, d.prev_seq());
 
@@ -196,7 +196,7 @@ TEST(DeltaTest, Mutators)
   EXPECT_EQ("Hello?", d.comments()[0]);
   EXPECT_EQ("Is there anybody there?\nI can hear you.", d.comments()[1]);
   EXPECT_EQ(2, d.comments().length());
-  
+
   const mystring comment("Please remember to put the cat out.");
   mylist<mystring> comments;
   comments.add(comment);
@@ -221,10 +221,10 @@ TEST(DeltaTest, Mutators)
 
   d.increment_inserted();
   EXPECT_EQ(6, d.inserted());
-  
+
   d.increment_deleted();
   EXPECT_EQ(7, d.deleted());
-  
+
   d.increment_unchanged();
   EXPECT_EQ(8, d.unchanged());
 }

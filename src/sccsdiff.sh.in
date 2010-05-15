@@ -7,12 +7,12 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -72,7 +72,7 @@
 pr=@PR@			   # The location of the   pr(1) command
 diff=@CONFIG_DIFF_COMMAND@ # The location of the diff(1) command
 
-# Find the "get" command.  The last value tested is "get", and 
+# Find the "get" command.  The last value tested is "get", and
 # that's what we use if we can't find get in any other location.
 if test x$get = x
 then
@@ -101,7 +101,7 @@ sccs_files=
 
 while test $# -gt 0
 do
-	case "$1" in 
+	case "$1" in
 	    --help)
 		usage
 		exit 0
@@ -110,7 +110,7 @@ do
 		echo "$version"
 		exit 0
 		;;
-	    -p) use_pr=true 
+	    -p) use_pr=true
 		shift
 		;;
 	    -r*)
@@ -145,8 +145,8 @@ do
 		diff_options="${diff_options} $1"
 		shift
 		;;
-	    *)  
-		# That is an SCCS file, leave it and everything 
+	    *)
+		# That is an SCCS file, leave it and everything
 		# following it in $*.
 		break
 		;;
@@ -185,7 +185,7 @@ while test $# -gt 0
 do
     rm -f "$g1" "$g2" "$dfile"
     sccsfile="$1"
-    shift 
+    shift
 
     header="$sccsfile: $first_sid vs. $second_sid"
 
@@ -206,13 +206,13 @@ do
     # Ignore return value of diff since it just tells us
     # if the two files are different.
     "$diff" $diff_options "$g1" "$g2" > "$dfile"
-    if test -f "$dfile" 
+    if test -f "$dfile"
     then				  # Output file exists.
-        if test -s "$dfile" 
+        if test -s "$dfile"
         then				  # Output file is not empty.
 	    if $use_pr
 	    then
-		$pr -h "$header"        < $dfile  
+		$pr -h "$header"        < $dfile
 	    else
 		echo $header
 		cat "$dfile"

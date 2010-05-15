@@ -1,30 +1,30 @@
 /*
  * mylist.h: Part of GNU CSSC.
- * 
- * 
- *    Copyright (C) 1997,1998,2007 Free Software Foundation, Inc. 
- * 
+ *
+ *
+ *    Copyright (C) 1997,1998,2007 Free Software Foundation, Inc.
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
- *    
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
- *    
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * CSSC was originally Based on MySC, by Ross Ridge, which was 
+ *
+ * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
  *
  *
  * Defines the template mylist.
  *
  */
- 
+
 #ifndef CSSC__LIST_H__
 #define CSSC__LIST_H__
 
@@ -41,7 +41,7 @@ class mylist
 protected:
   typedef typename std::vector<TYPE> impl_type;
   impl_type items_;
-  
+
 public:
   typedef typename impl_type::size_type size_type;
 
@@ -53,18 +53,18 @@ public:
   mylist()
   {
   }
-  
+
   mylist &operator =(mylist const &l)
   {
     items_ = l.items_;
     return *this;
   }
-  
+
   bool operator ==(mylist const &l) const
   {
     return items_ == l.items_;
   }
-  
+
   void
   operator =(void *p)
     {
@@ -104,14 +104,14 @@ public:
 	items_.push_back(*ci);
       }
   }
-  
+
   const mylist<TYPE>& operator-=(const mylist& other)
   {
     if (other.items_.size())
       {
 	impl_type remaining;
 	std::set<TYPE> unwanted(other.items_.begin(), other.items_.end());
-	
+
 	typename impl_type::const_iterator ci;
 	for (ci=items_.begin(); ci!=items_.end(); ++ci)
 	  {
@@ -123,7 +123,7 @@ public:
 	items_.swap(remaining);
       }
   }
-  
+
 
   ~mylist()
   {
@@ -135,21 +135,21 @@ template <class TYPE>
 class old_mylist
 {
   enum { CONFIG_LIST_CHUNK_SIZE = 16 };
-  
+
 protected:
   TYPE *array;
   int len;
   int left;
-  
+
   void destroy();
   void copy(mylist const &l);
-  
+
 public:
   mylist(): len(0), left(0) {}
   mylist(mylist const &l) { copy(l); }
-  
+
   mylist &operator =(mylist const &l);
-  
+
   void
   operator =(void *p)
     {
@@ -165,7 +165,7 @@ public:
     {
       return len;
     }
-  
+
 
   TYPE const &
   operator [](int index) const
@@ -186,7 +186,7 @@ public:
 
 /* Appends the contents of one mylist to another. */
 
-template<class T1> 
+template<class T1>
 mylist<T1> &
 operator +=(mylist<T1> &l1, mylist<T1> const &l2)
 {
@@ -264,13 +264,13 @@ mylist<TYPE>::add(TYPE const &ent) {
 
 /* Deletes the contents of one my mylist from another. */
 
-template<class T1, class T2> 
+template<class T1, class T2>
 mylist<T1> &
 operator -=(mylist<T1> &l1, mylist<T2> const &l2) {
 	int i, j;
 	int len1 = l1.length();
 	int len2 = l2.length();
-	
+
 	if (len2 > 0) {
 		mylist<T1> nl;
 
@@ -294,7 +294,7 @@ operator -=(mylist<T1> &l1, mylist<T2> const &l2) {
 
 
 template <class T1, class T2>
-bool 
+bool
 operator==(const mylist<T1>& left, const mylist<T2>& right)
 {
   const int len = left.length();
