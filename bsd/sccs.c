@@ -52,22 +52,6 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
-/* Cope with systems that have no (compatible) sys/wait.h.
- */
-#ifndef WEXITSTATUS
-#define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
-#endif
-#ifndef WIFEXITED
-#define WIFEXITED(stat_val) (((stat_val) & 0377) == 0)
-#endif
-#ifndef WTERMSIG
-#define WTERMSIG(stat_val) ( (stat_val) & 0177 )
-#endif
-#ifndef WCOREDUMP
-#define WCOREDUMP(stat_val) ( (stat_val) & 0200 )
-#endif
-
 #include <sys/param.h>          /* TODO: this does what? */
 #include <sys/stat.h>
 #include <signal.h>             /* TODO: consider using sigaction(). */

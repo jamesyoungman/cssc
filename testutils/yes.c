@@ -48,10 +48,6 @@ concat(char *buf, int argc, char * argv[])
 
 
 
-#ifndef EXIT_FAILURE
-#define EXIT_FAILURE (1)
-#endif
-
 int
 main(int argc, char *argv[])
 {
@@ -68,7 +64,7 @@ main(int argc, char *argv[])
       if (NULL == msg)
         {
           fprintf(stderr, "Ran out of memory.\n");
-          return EXIT_FAILURE;
+          return 1;
         }
       concat(msg, argc, argv);
       

@@ -55,19 +55,19 @@ then
     then
         if test -f "${dir}/sccs"
         then
-    	sccsprog="${dir}/sccs"
+        sccsprog="${dir}/sccs"
         elif test -f "${dir}/bsd/sccs"
         then
-    	sccsprog="${dir}/bsd/sccs"
+        sccsprog="${dir}/bsd/sccs"
         else
-    	case "${dir}" in 
-    	    /*)    sccsprog="${dir}/bsd/sccs"
-    		    ;;
-    	    ../..) sccsprog="${dir}/bsd/sccs"
-    		    ;;
-    	    *) sccsprog="sccs"
-    		    ;;
-    	esac
+        case "${dir}" in 
+            /*)    sccsprog="${dir}/bsd/sccs"
+                    ;;
+            ../..) sccsprog="${dir}/bsd/sccs"
+                    ;;
+            *) sccsprog="sccs"
+                    ;;
+        esac
         fi
     fi
 
@@ -75,9 +75,9 @@ then
     # use it.
     if ${sccsprog} --cssc >/dev/null 2>&1
     then
-	sccsargs="--prefix=${dir}/"
+        sccsargs="--prefix=${dir}/"
     else
-	sccsargs=""
+        sccsargs=""
     fi
 
     sccs="${sccsprog} ${sccsargs}"

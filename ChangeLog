@@ -35,6 +35,15 @@
 	* unit-tests/test_stack.cc: Remove.
 	* src/Makefile.am (noinst_HEADERS): Remove stack.h.
 
+2010-05-15  James Youngman  <jay@gnu.org>
+
+	Eliminate some syntax-check warnings.
+	* testutils/yes.c (main): Don't #define EXIT_FAILURE.
+	* docs/borrowed-files.txt: Remove trailing blanks.
+	* bsd/sccs.c: Don't define WEXITSTATUS, sys/wait.h does that.
+	* tests/common/command-names: Convert TABs to spaces to avoid
+	syntax-check warnings.
+
 2010-05-14  James Youngman  <jay@gnu.org>
 
 	Don't configure in unit-tests/googletest, it's gone.

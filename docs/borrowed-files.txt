@@ -21,4 +21,3 @@ testutils/lndir.man   X11R6 (Accompanies lndir.c but is unmodified)
 bsd/*		      From one of the *BSD FTP sites (version??)
 docs/gpl.texi	      Texinfo version of GPL version 2 (source unknown!)
 ekko.c		      From GNU shellutils (local changes to use config.h)
-
