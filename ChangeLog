@@ -1,5 +1,8 @@
 2010-05-16  James Youngman  <jay@gnu.org>
 
+	Remove some trailing blanks.
+	* src/file.cc (create): Remove trailing blanks.
+
 	Distribute ChangeLog.2.
 	* Makefile.am (ACLOCAL_AMFLAGS): Set to -I m4 to avoid a warning.
 	(EXTRA_DIST): Add ChangeLog.2, which previously wasn't

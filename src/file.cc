@@ -627,8 +627,8 @@ create(mystring name, int mode) {
         if (mode & CREATE_AS_REAL_USER)
           {
             give_up_privileges();
-          } 
-        
+          }
+
         if (CONFIG_CAN_HARD_LINK_AN_OPEN_FILE && (mode & CREATE_NFS_ATOMIC) )
           fd = atomic_nfs_create(name.c_str(), flags, perms);
         else
