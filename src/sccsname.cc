@@ -25,10 +25,6 @@
  *
  */
 
-#ifdef __GNUC__
-#pragma implementation "sccsname.h"
-#endif
-
 #include "cssc.h"
 #include "sccsname.h"
 #include "cssc-assert.h"

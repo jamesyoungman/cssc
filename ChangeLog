@@ -1,5 +1,14 @@
 2010-05-16  James Youngman  <jay@gnu.org>
 
+	Don't use #pragma interface/implementation, they're not useful
+	with GCC 2.7.2+.
+	* src/quit.h, src/sccsdate.h, src/sccsname.h, src/sid_list.h,
+	src/filediff.h, src/fileiter.h, src/filelock.h: Don't use #pragma
+	interface.
+	* src/file.cc, src/fileiter.cc, src/linebuf.cc, src/my-getopt.cc,
+	src/my-getopt.h, src/quit.cc, src/sccsdate.cc, src/sccsname.cc,
+	src/sf-get.cc, src/sf-kw.cc: Don't use #pragma implementation.
+
 	Remove support for CONFIG_MSDOS_FILES and lock methods other than
 	CONFIG_PID_LOCKING.
 	* src/fileiter.cc (sccs_file_iterator): Remove support for

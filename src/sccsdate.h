@@ -36,12 +36,6 @@
 #include "ioerr.h"
 #include "quit.h"
 
-#ifdef __GNUC__
-#pragma interface
-#endif
-
-
-
 class sccs_date
 {
   int year;

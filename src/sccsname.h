@@ -33,10 +33,6 @@
 #include "mystring.h"
 #include "filelock.h"
 
-#ifdef __GNUC__
-#pragma interface
-#endif
-
 mystring base_part(const mystring &name);
 mystring canonify_filename(const char* fname);
 

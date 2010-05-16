@@ -31,10 +31,6 @@
 #include "mylist.h"
 #include "sccsname.h"
 
-#ifdef __GNUC__
-#pragma interface
-#endif
-
 class CSSC_Options;
 
 

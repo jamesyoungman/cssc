@@ -25,10 +25,6 @@
  */
 #include <errno.h>
 
-#if defined __GNUC__ && !(defined __APPLE__ && __GNUC__ == 3 && __GNUC_MINOR__ == 1)
-#pragma implementation "filelock.h"
-#endif
-
 #include "cssc.h"
 #include "cssc-assert.h"
 #include "sysdep.h"

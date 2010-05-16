@@ -27,10 +27,6 @@
 #include <cstring>
 #include <climits>
 
-#ifdef __GNUC__
-//#pragma implementation "linebuf.h"
-#endif
-
 #include "cssc.h"
 #include "linebuf.h"
 #include "cssc-assert.h"

@@ -33,10 +33,6 @@
 #include "quit.h"
 
 
-#ifdef __GNUC__
-// #pragma this does not work with templates interface
-#endif
-
 template <class TYPE>
 struct range
 {

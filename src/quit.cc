@@ -27,11 +27,6 @@
 #include <cstring>
 #include <cerrno>
 
-#if defined __GNUC__ \
-&& !(defined(__APPLE__) && __GNUC__ == 3 && __GNUC_MINOR__ == 1)
-#pragma implementation "quit.h"
-#endif
-
 #include "cssc.h"
 #include "sysdep.h"
 #include "quit.h"

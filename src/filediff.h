@@ -29,11 +29,6 @@
 
 #include <stdio.h>
 
-#ifdef __GNUC__
-#pragma interface
-#endif
-
-
 class FileDiff
 {
  public:

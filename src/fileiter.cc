@@ -28,10 +28,6 @@
 #include <cstdio>
 #include <cstring>
 
-#ifdef __GNUC__
-#pragma implementation "fileiter.h"
-#endif
-
 #include "cssc.h"
 #include "sccsname.h"
 #include "fileiter.h"

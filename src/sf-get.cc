@@ -26,10 +26,6 @@
  * 
  */
 
-#ifdef __GNUC__
-#pragma implementation "seqstate.h"
-#endif
-
 #include "cssc.h"
 #include "sccsfile.h"
 #include "pfile.h"

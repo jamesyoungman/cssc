@@ -28,10 +28,6 @@
 #ifndef CSSC__MY_GETOPT_H__
 #define CSSC__MY_GETOPT_H__
 
-#ifdef __GNUC__
-#pragma interface
-#endif
-
 class CSSC_Options
 {
 public:

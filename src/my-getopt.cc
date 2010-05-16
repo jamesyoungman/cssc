@@ -45,10 +45,6 @@
  * think that this presents a real incompatibility problem.
  */
 
-#ifdef __GNUC__
-#pragma implementation "my-getopt.h"
-#endif
-
 #include <config.h>
 
 #include <stdio.h>

@@ -21,10 +21,6 @@
  * sccs_file::no_id_keywords()
  */
 
-#ifdef __GNUC__
-#pragma implementation "seqstate.h"
-#endif
-
 #include "cssc.h"
 #include "sccsfile.h"
 #include "except.h"
