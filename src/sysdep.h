@@ -44,26 +44,14 @@
 #endif
 
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 #ifdef HAVE_PROCESS_H
 #include <process.h>
 #endif
 
-#ifdef CONFIG_MSDOS_FILES
-#if defined __BORLANDC__ && defined __STDC__
-#define far __far
-#endif
-#include <dos.h> 
-#else
-#include <sys/stat.h>
-#endif
-
 #ifdef CONFIG_UIDS
 #include <pwd.h>
-#endif
-
-#ifdef CONFIG_SHARE_LOCKING
-#include <share.h>
 #endif
 
 #endif /* __SYSDEP_H__ */

@@ -55,26 +55,8 @@
 #endif
 #endif /* CDECL */
 
-
-#if !(defined CONFIG_NO_LOCKING || defined CONFIG_SHARE_LOCKING || defined CONFIG_PID_LOCKING || defined CONFIG_DUMB_LOCKING)
-#ifdef CONFIG_MSDOS_FILES
-#ifdef CONFIG_DJGPP
-#define CONFIG_DUMB_LOCKING
-#else
-#define CONFIG_SHARE_LOCKING
-#endif
-#else /* CONFIG_MSDOS_FILES */
-#define CONFIG_PID_LOCKING
-#endif /* CONFIG_MSDOS_FILES */
-#endif
-  
-
 #ifndef CONFIG_NULL_FILENAME
-#ifdef CONFIG_MSDOS_FILES
-#define CONFIG_NULL_FILENAME "NUL"
-#else
 #define CONFIG_NULL_FILENAME "/dev/null"
-#endif
 #endif /* CONFIG_NULL_FILENAME */
 
 

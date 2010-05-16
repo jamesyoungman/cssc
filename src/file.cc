@@ -615,14 +615,10 @@ create(mystring name, int mode) {
                 return -1;
         }
 
-#ifdef CONFIG_MSDOS_FILES
-        int perms = 0666;
-#else
         int perms = 0644;
         if (mode & CREATE_READ_ONLY) {
                 perms = 0444;
         }
-#endif 
 
 	if (mode & CREATE_EXECUTABLE)
 	  {
@@ -637,24 +633,11 @@ create(mystring name, int mode) {
             give_up_privileges();
           } 
         
-#ifdef CONFIG_SHARE_LOCKING
-        if (mode & CREATE_WRITE_LOCK)
-          {
-            fd = sopen(name.c_str(), flags, SH_DENYWR, perms);
-          }
-        else
-          {
-            /* These systems don't support link(2)... */
-            fd = open(name.c_str(), flags, perms);
-          }
-#else     
         if (CONFIG_CAN_HARD_LINK_AN_OPEN_FILE && (mode & CREATE_NFS_ATOMIC) )
           fd = atomic_nfs_create(name.c_str(), flags, perms);
         else
           fd = open(name.c_str(), flags, perms);
-#endif
 
-        
         if (mode & CREATE_AS_REAL_USER)
           {
             restore_privileges();
@@ -690,36 +673,19 @@ FILE *fopen_as_real_user(const char *s, const char *mode)
 
 
 
-#ifdef CONFIG_SHARE_LOCKING
-
-// this code now in dosfile.cc.
-
-#elif defined(CONFIG_PID_LOCKING) || defined(CONFIG_DUMB_LOCKING)
-
-#if defined CONFIG_PID_LOCKING
-
 static int
 put_pid(FILE *f)
 {
   return fprintf(f, "%lu", (unsigned long int)getpid());
 }
 
-#endif
 
-
-#ifdef CONFIG_DUMB_LOCKING
-static int
-do_lock(FILE *f)                // dumb version
-{
-  return fprintf_failed(fprintf(f, "%s\n", get_user_name()))
-}
-#else
 static int
 do_lock(FILE *f)                // process-aware version
 {
   return put_pid(f) < 0;
 }
-#endif
+
 
 file_lock::file_lock(mystring zname): locked(0), name(zname)
 {
@@ -754,7 +720,7 @@ file_lock::file_lock(mystring zname): locked(0), name(zname)
         }
 }
 
-#endif /* defined(CONFIG_PID_LOCKING) */
+
 
 int 
 is_directory(const char *name) 

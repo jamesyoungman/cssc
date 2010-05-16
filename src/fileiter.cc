@@ -66,15 +66,6 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 			const char *slash = NULL;
 			const size_t len = strlen(first);
 
-#ifdef CONFIG_MSDOS_FILES
-			if (first[len - 1] != '/' && first[len - 1] != '\\') {
-				if (strchr(first, '/') == NULL) {
-					slash = "\\";
-				} else {
-					slash = "/";
-				}
-			}
-#else
 			if (first[len - 1] != '/') {
 			  slash = "/";
 			} else {
@@ -85,8 +76,6 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 			   */
 			  slash = ""; 
 			}
-			
-#endif
 			
 			mystring dirname(mystring(first) + mystring(slash));
 

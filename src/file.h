@@ -38,11 +38,8 @@ enum create_mode {
 	CREATE_AS_REAL_USER  =  004,
 	CREATE_FOR_UPDATE    =  010,
 	CREATE_FOR_GET       =  020,
-#ifdef CONFIG_SHARE_LOCKING
-	CREATE_WRITE_LOCK    =  040,
-#else	
+	OBSOLETE1            =  040, // was used by obsolete CONFIG_SHARE_LOCKING.
 	CREATE_NFS_ATOMIC    = 0100,
-#endif
 	CREATE_EXECUTABLE    = 0200   // A SCO extension.
 };
 

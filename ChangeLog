@@ -1,5 +1,18 @@
 2010-05-16  James Youngman  <jay@gnu.org>
 
+	Remove support for CONFIG_MSDOS_FILES and lock methods other than
+	CONFIG_PID_LOCKING.
+	* src/fileiter.cc (sccs_file_iterator): Remove support for
+	CONFIG_MSDOS_FILES.
+	* src/sysdep.h: Remove support for CONFIG_MSDOS_FILES.
+	* src/filelock.h (cleanup): Remove support for CONFIG_NO_LOCKING.
+	* src/file.cc (create): Remove support for CONFIG_MSDOS_FILES.
+	(create): Remove support for CONFIG_SHARE_LOCKING.
+	(do_lock): Remove support for CONFIG_SHARE_LOCKING.
+	* src/defaults.h: Remove support for types of locking other than
+	CONFIG_PID_LOCKING.  Remove support for CONFIG_MSDOS_FILES.
+	* src/file.h (enum create_mode): Likewise.
+
 	Generate config.h.in by running bootstrap.
 	* configure.ac: Call AC_CONFIG_HEADERS instead of the obsolete
 	AM_CONFIG_HEADERS.  This causes bootstrap to call autoheader,

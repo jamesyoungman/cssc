@@ -34,23 +34,9 @@
 #pragma interface
 #endif
 
-#ifdef CONFIG_NO_LOCKING
-
-class file_lock {
-public:
-	file_lock(mystring) {}
-	int failed() { return 0; }
-	~file_lock() {}
-};
-
-#else /* CONFIG_NO_LOCKING */
-
 class file_lock : private cleanup {
 	int locked;
 	mystring name;
-#ifdef CONFIG_SHARE_LOCKING
-	FILE *f;
-#endif
 
 	void do_cleanup() { this->~file_lock(); }
 
@@ -59,8 +45,6 @@ public:
 	int failed() { return !locked; }
 	~file_lock();
 };
-
-#endif /* CONFIG_NO_LOCKING */
 
 #endif /* __FILELOCK_H__ */
 
