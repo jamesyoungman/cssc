@@ -58,7 +58,7 @@ TESTS = $(unit_tests)
 check_SCRIPTS = testwrapper.sh
 unit_tests = test_mylist test_myset test_sid test_relvbr \
 	test_release test_sid_list test_rel_list test_sccsdate \
-	test_delta test_stack test_delta-table test_encoding \
+	test_delta test_delta-table test_encoding \
 	test_encoding2
 
 check_PROGRAMS = $(unit_tests) test_bigfile
@@ -72,7 +72,6 @@ test_sid_list_SOURCES = test_sid_list.cc
 test_rel_list_SOURCES = test_rel_list.cc
 test_sccsdate_SOURCES = test_sccsdate.cc
 test_delta_SOURCES = test_delta.cc
-test_stack_SOURCES = test_stack.cc
 test_delta_table_SOURCES = test_delta-table.cc
 test_encoding_SOURCES = test_encoding.cc
 test_encoding2_SOURCES = test_encoding2.cc

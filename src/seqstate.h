@@ -27,7 +27,6 @@
 #ifndef CSSC__SEQSTATE_H__
 #define CSSC__SEQSTATE_H__
 
-#include "stack.h"
 #include "delta.h"
 
 class cssc_delta_table;

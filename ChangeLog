@@ -1,3 +1,13 @@
+2010-05-16  James Youngman  <jay@gnu.org>
+
+	Eliminate stack.h and the stack<T> template, since it is not used.
+	* unit-tests/Makefile.am (unit_tests): Remove test_stack.  Also
+	eliminate test_stack_SOURCES.
+	* src/seqstate.h: Don't include stack.h.
+	* src/stack.h: Remove.
+	* unit-tests/test_stack.cc: Remove.
+	* src/Makefile.am (noinst_HEADERS): Remove stack.h.
+
 2010-05-14  James Youngman  <jay@gnu.org>
 
 	Don't configure in unit-tests/googletest, it's gone.
