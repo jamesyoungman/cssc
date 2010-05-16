@@ -1,5 +1,15 @@
 2010-05-16  James Youngman  <jay@gnu.org>
 
+	Remove exceptions for now-deleted googletest/ files.
+	* .x-sc_prohibit_empty_lines_at_EOF: Remove exceptions for
+	nonexistent files.
+	* .x-sc_prohibit_magic_number_exit: Likewise.
+	* .x-sc_useless_cpp_parens: Likewise.
+	* .x-sc_the_the: Likewise.
+	* .x-sc_file_system: Likewise.
+	* .x-sc_m4_quote_check: Delete this file, since the only entry in
+	it has also been deleted.
+
 	Remove some trailing blanks.
 	* src/file.cc (create): Remove trailing blanks.
 
