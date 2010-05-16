@@ -1,5 +1,10 @@
 2010-05-16  James Youngman  <jay@gnu.org>
 
+	Distribute ChangeLog.2.
+	* Makefile.am (ACLOCAL_AMFLAGS): Set to -I m4 to avoid a warning.
+	(EXTRA_DIST): Add ChangeLog.2, which previously wasn't
+	distributed.
+
 	Don't use #pragma interface/implementation, they're not useful
 	with GCC 2.7.2+.
 	* src/quit.h, src/sccsdate.h, src/sccsname.h, src/sid_list.h,
