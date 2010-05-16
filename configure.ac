@@ -35,7 +35,7 @@ AC_CONFIG_MACRO_DIR([m4])
 #   the code got it from git.
 AM_INIT_AUTOMAKE(CSSC,1.2.1-git)
 
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 
 dnl Feature and package checks
 binary_defaulted=no

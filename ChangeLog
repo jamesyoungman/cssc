@@ -1,5 +1,10 @@
 2010-05-16  James Youngman  <jay@gnu.org>
 
+	Generate config.h.in by running bootstrap.
+	* configure.ac: Call AC_CONFIG_HEADERS instead of the obsolete
+	AM_CONFIG_HEADERS.  This causes bootstrap to call autoheader,
+	which needs to happen for config.h.in to be generated.
+
 	Eliminate stack.h and the stack<T> template, since it is not used.
 	* unit-tests/Makefile.am (unit_tests): Remove test_stack.  Also
 	eliminate test_stack_SOURCES.
