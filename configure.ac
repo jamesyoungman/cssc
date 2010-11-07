@@ -18,7 +18,6 @@ dnl
 dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 dnl
-dnl $Id: configure.ac,v 1.18 2009/04/11 17:59:18 jay Exp $
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
@@ -33,7 +32,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # in the Automake manual.
 #   usually use -git to indicate that the person who compiled
 #   the code got it from git.
-AM_INIT_AUTOMAKE(CSSC,1.3.0rc1)
+AM_INIT_AUTOMAKE(CSSC,1.3.0)
 
 AC_CONFIG_HEADERS(config.h)
 
