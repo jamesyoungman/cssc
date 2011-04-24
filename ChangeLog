@@ -1,3 +1,16 @@
+2011-04-24  James Youngman  <jay@gnu.org>
+
+	Fix SF bug #1300722 (prs succeeds even if the SID is not found).
+	* tests/prs/wrongsid.sh: New file; tests for "prs -r" when the
+	specified SID does not exist.
+	* tests/prs/default.sh: New file; tests the default behaviour of
+	prs, both with -d and with no options at all.
+	* tests/prs/cutoff.sh: New file; tests for "prs -e" and "prs -l".
+	* src/prs.cc (main): Add a comment pointing out that specifying -d
+	changes the default behaviour around which deltas are selected.
+	* src/sf-prs.cc (prs): return a failure status if a SID was
+	specified but not matched.
+
 2011-04-22  Yann Dirson  <dirson@debian.org>  (tiny change)
 
 	Fix SourceForge bug #1317916.

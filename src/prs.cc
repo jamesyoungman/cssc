@@ -72,6 +72,7 @@ main(int argc, char **argv)
 
 	case 'd':
 	  format = opts.getarg();
+	  /* specifying -d means, stop after the first match. */
 	  default_processing = 0;
 	  break;
 
