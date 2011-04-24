@@ -32,7 +32,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # in the Automake manual.
 #   usually use -git to indicate that the person who compiled
 #   the code got it from git.
-AM_INIT_AUTOMAKE(CSSC,1.3.0)
+AM_INIT_AUTOMAKE(CSSC,1.3.1-git)
 
 AC_CONFIG_HEADERS(config.h)
 
