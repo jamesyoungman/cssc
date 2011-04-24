@@ -32,8 +32,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # in the Automake manual.
 #   usually use -git to indicate that the person who compiled
 #   the code got it from git.
-AM_INIT_AUTOMAKE
-dnl no gnits option yet.
+AM_INIT_AUTOMAKE([gnits 1.11.1])
 AC_CONFIG_HEADERS(config.h)
 
 dnl Feature and package checks

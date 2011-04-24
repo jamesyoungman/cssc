@@ -1,5 +1,10 @@
 2011-04-24  James Youngman  <jay@gnu.org>
 
+	Adopt Automake's "gnits" rules.
+	* configure.ac: Use the "gnits" rules.
+	* docs/CREDITS: Rename to THANKS to comply with the gnits rules.
+	* docs/CREDITS.short.txt: Add missing final newline.
+
 	Modernise configure.ac initialisation.
 	* configure.ac: Use the new-style Autoconf/Automake initialisation
 	which passes the version number to AC_INIT rather than to

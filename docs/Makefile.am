@@ -3,7 +3,7 @@
 info_TEXINFOS = cssc.texi
 cssc_TEXINFOS = gpl-3.0.texi fdl.texi
 
-EXTRA_DIST = BUGS TODO CREDITS TESTING \
+EXTRA_DIST = BUGS TODO TESTING \
 	missing.txt patches.txt \
 	Platforms mailing-list.txt style.txt \
 	.ispell_english
