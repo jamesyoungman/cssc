@@ -1,5 +1,8 @@
 2011-04-24  James Youngman  <jay@gnu.org>
 
+	Tell the user to run "bootstrap" instead of "autogen.sh".
+	* README: "autogen.sh" has been replaced by "bootstrap".
+
 	Adopt Automake's "gnits" rules.
 	* configure.ac: Use the "gnits" rules.
 	* docs/CREDITS: Rename to THANKS to comply with the gnits rules.

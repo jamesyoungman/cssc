@@ -190,12 +190,8 @@ either the GNU "info" program, or Emacs.
 To regenerate all the machine-generated files from their ultimate
 sources (for example, after checking the controlled sources out of a
 CVS repository), use
-	sh autogen.sh
+	./bootstrap
 followed by the usual invocation of "configure" and "make".
-Alternatively, if you have a sufficiently new version of Autoconf
-installed, you could just run "autoreconf".  However, if you do this,
-some benign warnings will be generated for "testutils/configure.in".
-
 
 The most helpful thing you could possibly do for this project would be
 to contribute a new test case.  It isn't hard; the test scripts are
