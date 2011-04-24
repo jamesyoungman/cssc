@@ -10,6 +10,7 @@
 	changes the default behaviour around which deltas are selected.
 	* src/sf-prs.cc (prs): return a failure status if a SID was
 	specified but not matched.
+	* NEWS: mention this bugfix.
 
 2011-04-22  Yann Dirson  <dirson@debian.org>  (tiny change)
 
