@@ -1,5 +1,11 @@
 2011-04-24  James Youngman  <jay@gnu.org>
 
+	Update the version number.
+	* configure.ac: Update version number to make a distinction
+	between the tar file which results form "make dist" and the
+	released 1.3.0 tar file.
+	* NEWS: Similarly update the version number.
+
 	Fix SF bug #1300722 (prs succeeds even if the SID is not found).
 	* tests/prs/wrongsid.sh: New file; tests for "prs -r" when the
 	specified SID does not exist.

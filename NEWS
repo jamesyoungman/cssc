@@ -1,4 +1,4 @@
-New in CSSC-1.3.1, YYYY-MM-DD
+New in CSSC-1.3.1-git, YYYY-MM-DD
 
         * If the SID identified by "prs -r" is not found, prs now
           exits with status 1, not 0.  This fixes SourceForge bug
