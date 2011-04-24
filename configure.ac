@@ -3,7 +3,7 @@ dnl
 dnl configure.ac: Part of GNU CSSC.
 dnl
 dnl    Copyright (C) 1997,1998,1999,2000,2001,2002,2003,
-dnl                  2004,2007,2008 Free Software Foundation, Inc.
+dnl                  2004,2007,2008,2010,2011 Free Software Foundation, Inc.
 dnl
 dnl    This program is free software: you can redistribute it and/or modify
 dnl    it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ dnl
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
-AC_INIT
+AC_INIT([GNU CSSC], [1.3.1-git], [bug-CSSC@gnu.org], [CSSC])
 AC_CONFIG_SRCDIR([src/sccsfile.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -32,8 +32,8 @@ AC_CONFIG_MACRO_DIR([m4])
 # in the Automake manual.
 #   usually use -git to indicate that the person who compiled
 #   the code got it from git.
-AM_INIT_AUTOMAKE(CSSC,1.3.1-git)
-
+AM_INIT_AUTOMAKE
+dnl no gnits option yet.
 AC_CONFIG_HEADERS(config.h)
 
 dnl Feature and package checks

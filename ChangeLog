@@ -1,5 +1,10 @@
 2011-04-24  James Youngman  <jay@gnu.org>
 
+	Modernise configure.ac initialisation.
+	* configure.ac: Use the new-style Autoconf/Automake initialisation
+	which passes the version number to AC_INIT rather than to
+	AM_INIT_AUTOMAKE.
+
 	Update the version number.
 	* configure.ac: Update version number to make a distinction
 	between the tar file which results form "make dist" and the
