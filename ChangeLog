@@ -1,5 +1,12 @@
 2011-04-25  James Youngman  <jay@gnu.org>
 
+	Call ${admin} in test preparations, not "admin".
+	* tests/admin/y-flag.sh: when trying to deduce the properties of
+	the admin command we're testing, invoke ${admin} (i.e. the thing
+	we are testing) as opposed to "admin" (i.e. the system's
+	already-installed version).  Add extra checks to verify that the
+	right thing happened.
+
 	Avoid assuming Unix semantics for st_nlinks in lndir.
 	* testutils/lndir.c (quit): Accept errno argument; include the
 	error string in the error message if it is nonzero.  Call vmsg

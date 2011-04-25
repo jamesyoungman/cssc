@@ -15,10 +15,12 @@ z=z.${g}
 remove $s $g $z foo command.log last.command core 
 remove expected.stderr got.stderr expected.stdout got.stdout
 
-# Figure out if we ahous expect the thing to work.
-if admin -n -i/dev/null -fyM ${s} >/dev/null 2>&1 || $TESTING_CSSC
+# Figure out if we should expect the thing to work.
+if ${admin} -n -i/dev/null -fyM "${s}" >/dev/null 2>&1 || $TESTING_CSSC
 then
+    test -e "${s}" || miscarry "admin program '${admin}' silently did nothing"
     echo "We are testing an SCCS implementation that supports the y flag.  Good."
+    remove "${s}"
 else
     echo "WARNING: some test have been skipped since I think that ${admin} does not support the 'y' flag."
     remove $s $g $z foo command.log last.command core 
@@ -44,6 +46,7 @@ cat > foo <<EOF
 12 W %W%
 EOF
 test -r foo || miscarry cannot create file foo.
+test -e "${s}" && miscarry initial conditions were incorrectly set up
 
 docommand Y1 "${admin} -ifoo ${s}" 0 "" IGNORE
 remove foo
