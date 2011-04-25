@@ -483,7 +483,7 @@ sccs_file::get(FILE *out, mystring gname,
 	    {
 	      const struct delta & it = delta_table->delta_at_seq(s);
 
-	      fprintf (summary_file, "%s   ",
+	      fprintf (summary_file, "%s    ",
 		       first ? "" : "\n");
 	      first = false;
 	      it.id().print(summary_file);
@@ -502,6 +502,7 @@ sccs_file::get(FILE *out, mystring gname,
 		}
 	    }
 	}
+      fputc ('\n', summary_file);
     }
 
 

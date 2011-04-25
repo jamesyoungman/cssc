@@ -89,6 +89,37 @@
 	* Makefile.am (SUBDIRS): Remove bsd from SUBDIRS.
 	* README: sccs no longer lives in bsd/sccs.
 
+	Remove tests that check CSSC can detect a nonexistent argument.
+	* tests/admin/init-mr.sh: Don't expect "admin -m" to interpret
+	a plain "-m" as meaning an empty MR list.  Distinguishing the
+	absence of an argument to -m requires a traditional SCCS argument
+	processor, and this behaviour is incompatible with modern
+	implementations of SCCS (for example OpenSolaris).
+	* tests/admin/flags.sh: Likewise.
+
+	Remove duplicate space in "MR number(s) must be  supplied."
+	* src/admin.cc (main): elminiate doubled space in error message.
+
+	Fix delta summary; when it goes to stdout, send other to stderr.
+	* tests/get/delta-summary.sh: OpenSolaris get emits the delta
+	summary (produced by get -L) to stdout and the SID of the gotten
+	delta and the number of body lines to stderr.  Expect this
+	behaviour.
+	* tests/get/delta-summary.sh (L2e): Check that the "new delta"
+	message also goes to stderr when we are using "get -e -L" (since
+	the delta summary goes to stdout).
+	* src/get.cc (print_id_list): New parameter, fp: the file handle
+	to print the IDs to.
+	(main): rename use_stdout to send_body_to_stdout (being a more
+	accurate description).
+	(main): add variable commentary, the file descriptor on which we
+	announce which delta we're getting and so forth.   This is usually
+	stdout, but if stdout needs to be used for something else (for
+	example the delta summary), commentary can be set to stderr.
+	* src/sf-get2.cc (get): Correct the spacing before the items in
+	the delta summary.  Add a trailing newline.
+	* NEWS: Mention this change.
+
 	Produce better test diagnostics when a command unexpectedly fails.
 	* tests/common/test-common (docommand): when the return value is
 	zero, print any error message that had been issued on stderr.

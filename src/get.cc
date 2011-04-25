@@ -41,16 +41,16 @@
 /* Prints a list of included or excluded SIDs. */
 
 static void
-print_id_list(const char *s, mylist<sid> const &list)
+print_id_list(FILE *fp, const char *s, mylist<sid> const &list)
 {
   const mylist<sid>::size_type len = list.length();
   if (len > 0)
     {
-      printf("%s:\n", s);
+      fprintf(fp, "%s:\n", s);
       for (mylist<sid>::size_type i = 0; i < len; i++)
         {
-          list[i].print(stdout);
-          putchar('\n');
+          list[i].print(fp);
+          fputc('\n', fp);
         }
     }
 }
@@ -85,7 +85,7 @@ main(int argc, char **argv)
   int for_edit = 0;                     /* -e */
   int branch = 0;                       /* -b */
   int suppress_keywords = 0;            /* -k */
-  int use_stdout = 0;                   /* -p */
+  int send_body_to_stdout = 0;		/* -p */
   int silent = 0;                       /* -s */
   int no_output = 0;                    /* -g */
   const char *wstring = NULL;           /* -w */
@@ -101,6 +101,7 @@ main(int argc, char **argv)
   bool real_file;
   bool delta_summary = false;	        /* -L, -l */
   bool create_lfile = false;            /* -l */
+  FILE *commentary = stdout;
 
   if (argc > 0)
       set_prg_name(argv[0]);
@@ -182,7 +183,8 @@ main(int argc, char **argv)
           break;
 
         case 'p':
-          use_stdout = 1;
+          send_body_to_stdout = 1;
+	  commentary = stderr;
           got_gname = 0;
           break;
 
@@ -194,6 +196,7 @@ main(int argc, char **argv)
 		{
 		  /* -lp is a traditional synonym for -L */
 		  create_lfile = false;
+		  commentary = stderr;
 		}
 	      else
 		{
@@ -210,6 +213,7 @@ main(int argc, char **argv)
 	case 'L':
 	  delta_summary = true;
 	  create_lfile = false;
+	  commentary = stderr;
 	  break;
 
         case 's':
@@ -251,7 +255,7 @@ main(int argc, char **argv)
 
         case 'G':
           got_gname = 1;
-          use_stdout = 0;
+          send_body_to_stdout = 0;
           gname = opts.getarg();
           break;
 
@@ -278,31 +282,26 @@ main(int argc, char **argv)
                            used before being set it will
                            quickly cause an error. */
 
-  if (use_stdout)
-    {
-      gname = "-";
-      out = stdout_to_stderr();
-      if (NULL == out)
-        return 1;       // fatal error.
-    }
-
   if (silent)
     {
-      if (!stdout_to_null())
+      commentary = open_null();
+      if (NULL == commentary)
         return 1;       // fatal error.
     }
 
   if (no_output)
     {
-      if (use_stdout)
-        {
-          fclose(out);
-        }
       got_gname = 0;
       gname = "null";
       if (NULL == (out = open_null()))
         return 1;
     }
+  else if (send_body_to_stdout)
+    {
+      gname = "-";
+      out = stdout;
+    }
+
 
   sccs_file_iterator iter(opts);
   if (sccs_file_iterator::NONE == iter.using_source())
@@ -321,7 +320,7 @@ main(int argc, char **argv)
           // was specified.
           if (!iter.unique())
             {
-              fprintf(stdout, "\n%s:\n", name.c_str());
+              fprintf(commentary, "\n%s:\n", name.c_str());
             }
 
 
@@ -401,7 +400,7 @@ main(int argc, char **argv)
 
           real_file = false;
 
-          if (!use_stdout && !no_output)
+          if (!send_body_to_stdout && !no_output)
             {
               ASSERT(name.valid());
 
@@ -456,9 +455,9 @@ main(int argc, char **argv)
 
           try
             {
-          status = file.get(out, gname, summary_file, retrieve, cutoff_date,
-                            include, exclude, keywords, wstring,
-                            show_sid, show_module, debug, for_edit);
+	      status = file.get(out, gname, summary_file, retrieve, cutoff_date,
+				include, exclude, keywords, wstring,
+				show_sid, show_module, debug, for_edit);
             }
           catch (CsscException)
             {
@@ -470,7 +469,11 @@ main(int argc, char **argv)
                   throw;
                 }
             }
-
+	  if (create_lfile) 
+	    {
+              fclose (summary_file);
+	    }
+	  
           if (real_file)
             {
               fclose(out);
@@ -511,16 +514,16 @@ main(int argc, char **argv)
               continue;
             }
 
-          print_id_list("Included", status.included);
-          print_id_list("Excluded", status.excluded);
-          retrieve.print(stdout);
-          putchar('\n');
+          print_id_list(commentary, "Included", status.included);
+          print_id_list(commentary, "Excluded", status.excluded);
+          retrieve.print(commentary);
+          fputc('\n', commentary);
 
           if (for_edit)
             {
-              printf("new delta ");
-              new_delta.print(stdout);
-              putchar('\n');
+              fprintf(commentary, "new delta ");
+              new_delta.print(commentary);
+	      fputc('\n', commentary);
 
               if (!pfile->add_lock(retrieve, new_delta, include, exclude))
                 {
@@ -541,7 +544,7 @@ main(int argc, char **argv)
 
           if (!no_output)
             {
-              printf("%d lines\n", status.lines);
+              fprintf(commentary, "%d lines\n", status.lines);
             }
         }
       catch (CsscExitvalException e)
