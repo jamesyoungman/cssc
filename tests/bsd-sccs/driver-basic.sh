@@ -173,7 +173,7 @@ case `uname -s 2>/dev/null` in
 	;;
 	*)
 	docommand h1 "${vg_sccs} unedit foo" 0 \
-		"1.1\n1 lines\n         foo: removed\n" ""
+		"         foo: removed\n1.1\n1 lines\n" ""
 		# That's 9 spaces.
 	;;
 esac

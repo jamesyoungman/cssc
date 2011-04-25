@@ -52,6 +52,13 @@
 	* src/sf-prs.cc (prs): Likewise.
 	* testutils/lndir.c: Likewise.
 
+	Change output order in "sccs unedit" to match OpenSolaris.
+	* tests/bsd-sccs/driver-basic.sh (h1): Modify the ordering of the
+	expected ouput to match OpenSolaris 2009.06.
+	* src/sccs.c (command): For the UNEDIT case, flush stdout before
+	invoking 'get' in order to pass the changed test.
+	* NEWS: Mention this change.
+
 2011-04-25  James Youngman  <jay@gnu.org>
 
 	Allow non-CSSC implementations to XFAIL for tricky dates.

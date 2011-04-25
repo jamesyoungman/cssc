@@ -1134,6 +1134,7 @@ command (char *argv[], bool forkflag, const char *arg0)
             if (unedit (*argv))
               *np++ = *argv;
           }
+	fflush (stdout);
         *np = NULL;
 
         /* Test difference: unedit() says " foo: removed" and this
