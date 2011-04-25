@@ -186,8 +186,10 @@ do
     rm -f "$g1" "$g2" "$dfile"
     sccsfile="$1"
     shift
-
-    header="$sccsfile: $first_sid vs. $second_sid"
+    base="`basename $sccsfile | sed -e 's/^s\.//'`"
+    pr_header="$sccsfile: $first_sid vs. $second_sid"
+    no_pr_header="
+------- ${base} -------"
 
     ${get:-get} -r$first_sid -s -k "-G${g1}" "${sccsfile}" || {
 	exec >&2
@@ -212,9 +214,9 @@ do
         then				  # Output file is not empty.
 	    if $use_pr
 	    then
-		$pr -h "$header"        < $dfile
+		$pr -h "$pr_header"        < $dfile
 	    else
-		echo $header
+		echo "$no_pr_header"
 		cat "$dfile"
 	    fi
         else				  # Output file is empty.
