@@ -1,3 +1,4 @@
+
 /* lndir.c; part of GNU CSSC.
  *
  *    Copyright (C) 1997, Free Software Foundation, Inc.
@@ -103,30 +104,39 @@ quiterr (int code, const char *s)
     exit (code);
 }
 
+
+void 
+vmsg (const char *fmt, int errnum, va_list ap)
+{
+  if (curdir) {
+    fprintf (stderr, "%s:\n", curdir);
+    curdir = 0;
+  }
+  vfprintf (stderr, fmt, ap);
+  if (errnum)
+    {
+      fprintf (stderr, ": %s", strerror (errnum));
+    }
+  putc ('\n', stderr);
+}
+
 void
-msg (char * fmt, ...)
+msg (const char * fmt, ...)
 {
     va_list args;
-    if (curdir) {
-        fprintf (stderr, "%s:\n", curdir);
-        curdir = 0;
-    }
-    va_start(args, fmt);
-    vfprintf (stderr, fmt, args);
-    va_end(args);
-    putc ('\n', stderr);
+    va_start (args, fmt);
+    vmsg (fmt, 0, args);
+    va_end (args);
 }
 
 void
-mperror (const char *s)
+mperror (const char *fmt, ...)
 {
-    if (curdir) {
-        fprintf (stderr, "%s:\n", curdir);
-        curdir = 0;
-    }
-    perror (s);
+  va_list args;
+  va_start(args, fmt);
+  vmsg (fmt, errno, args);
+  va_end(args);
 }
-
 
 int equivalent(char *lname, const char *rname)
 {
@@ -155,6 +165,19 @@ static int ignored(const char *n)
       if (0 == strcmp(*p, n))
         return 1;
     }
+  return 0;
+}
+
+static int 
+is_dot_or_dotdot (const char *p) 
+{
+  if (p[0] == '.') {
+    if (p[1] == 0) {
+      return 1;			/* . */
+    } else if (p[1] == '.' && p[2] == 0) {
+      return 1;			/* .. */
+    }
+  }
   return 0;
 }
 
@@ -204,11 +227,16 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
 	  if (dp->d_name[namlen - 1] == '~')
             continue;
 	}
+	if (is_dot_or_dotdot (dp->d_name)) {
+	  continue;		/* ignore. */
+	}
+	
+	    
         strcpy (p, dp->d_name);
 
         if (n_dirs > 0) {
             if (stat (buf, &sb) < 0) {
-                mperror (buf);
+	        mperror ("failed to stat %s", buf);
                 continue;
             }
 
@@ -233,7 +261,7 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
                 if ((stat (dp->d_name, &sc) < 0) && (errno == ENOENT)) {
                     if (mkdir (dp->d_name, 0777) < 0 ||
                         stat (dp->d_name, &sc) < 0) {
-                        mperror (dp->d_name);
+		        mperror ("failed to stat %s", dp->d_name);
                         curdir = rcurdir = ocurdir;
                         continue;
                     }
@@ -244,7 +272,7 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
                     continue;
                 }
                 if (chdir (dp->d_name) < 0) {
-                    mperror (dp->d_name);
+                    mperror ("failed to change directory into %s", dp->d_name);
                     curdir = rcurdir = ocurdir;
                     continue;
                 }
@@ -263,7 +291,8 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
             if (!equivalent (symbuf, buf))
                 msg ("%s: %s", dp->d_name, symbuf);
         } else if (symlink (buf, dp->d_name) < 0)
-            mperror (dp->d_name);
+            mperror ("failed to create a symbolic link %s pointing to %s",
+		     dp->d_name, buf);
     }
 
     closedir (df);

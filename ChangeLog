@@ -1,3 +1,9 @@
+2011-04-25  James Youngman  <jay@gnu.org>
+
+	Bugfix for lndir on OpenSolaris: ignore . and ..
+	* testutils/lndir.c (dodir): Ignore . and .. (on systems where
+	readdir returns them).
+
 2011-04-24  James Youngman  <jay@gnu.org>
 
 	Tell the user to run "bootstrap" instead of "autogen.sh".
