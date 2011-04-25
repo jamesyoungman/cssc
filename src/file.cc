@@ -417,7 +417,10 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
                 }
               else              /* link(2) failed. */
                 {
-                  if (EPERM == link_errno)
+		  /* A VirtualBox shared folder (Solaris guest, Linux host, 
+		     ext3 as the underlying filesystem) returns ENOSYS when
+		     we attempt to use link(2). */
+                  if (EPERM == link_errno || ENOSYS == link_errno)
                     {
                       /* containing file system does not support hard links. */
                       close(fd);
