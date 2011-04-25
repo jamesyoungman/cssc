@@ -66,6 +66,7 @@ in this Software without prior written authorization from the X Consortium.
 
 
 #include <stdlib.h>
+#include <assert.h>
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
@@ -86,28 +87,22 @@ int silent;
 char *rcurdir;
 char *curdir;
 
+static void vmsg (const char *, int, va_list);
+
 void
-quit (int code, char * fmt, ...)
+quit (int code, int err_num, char * fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    vfprintf (stderr, fmt, args);
+    vmsg (fmt, err_num, args);
     va_end(args);
-    putc ('\n', stderr);
     exit (code);
 }
 
-void
-quiterr (int code, const char *s)
-{
-    perror (s);
-    exit (code);
-}
-
-
-void 
+static void 
 vmsg (const char *fmt, int errnum, va_list ap)
 {
+  assert (fmt && fmt[0]);
   if (curdir) {
     fprintf (stderr, "%s:\n", curdir);
     curdir = 0;
@@ -121,20 +116,11 @@ vmsg (const char *fmt, int errnum, va_list ap)
 }
 
 void
-msg (const char * fmt, ...)
-{
-    va_list args;
-    va_start (args, fmt);
-    vmsg (fmt, 0, args);
-    va_end (args);
-}
-
-void
-mperror (const char *fmt, ...)
+mperror (int err_num, const char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
-  vmsg (fmt, errno, args);
+  vmsg (fmt, err_num, args);
   va_end(args);
 }
 
@@ -196,14 +182,14 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
     char buf[MAXPATHLEN + 1], *p;
     char symbuf[MAXPATHLEN + 1];
     struct stat sb, sc;
-    int n_dirs;
     int symlen;
     char *ocurdir;
 
     if ((fs->st_dev == ts->st_dev) && (fs->st_ino == ts->st_ino))
       {
-        msg("%s: From and to directories are identical, hence no work to do!",
-            fn);
+        mperror (errno,
+		 "%s: From and to directories are identical, "
+		 "hence no work to do!", fn);
         return 0;               /* nothing to do! */
       }
 
@@ -214,13 +200,13 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
     strcat (buf, fn);
 
     if (!(df = opendir (buf))) {
-        msg ("%s: Cannot opendir", buf);
+        mperror (errno, "%s: Cannot opendir", buf);
         return 1;
     }
 
     p = buf + strlen (buf);
     *p++ = '/';
-    n_dirs = fs->st_nlink;
+
     while ( (struct dirent*)0 != (dp = readdir (df)) ) {
         const size_t namlen = strlen(dp->d_name);
 	if (namlen) {
@@ -234,9 +220,9 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
 	    
         strcpy (p, dp->d_name);
 
-        if (n_dirs > 0) {
+        if (1) {
             if (stat (buf, &sb) < 0) {
-	        mperror ("failed to stat %s", buf);
+	        mperror (errno, "failed to stat %s", buf);
                 continue;
             }
 
@@ -244,41 +230,37 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
             if (is_dir(&sb))
             {
                 /* directory */
-                n_dirs--;
-                if (dp->d_name[0] == '.' &&
-                    (dp->d_name[1] == '\0' || (dp->d_name[1] == '.' &&
-                                               dp->d_name[2] == '\0')))
-                    continue;
-
-                if (ignored(dp->d_name))
+                if (is_dot_or_dotdot (dp->d_name) || ignored (dp->d_name))
                     continue;
 
                 ocurdir = rcurdir;
                 rcurdir = buf;
                 curdir = silent ? buf : (char *)0;
                 if (!silent)
-                    printf ("%s:\n", buf);
+                    printf ("making links in %s:\n", buf);
                 if ((stat (dp->d_name, &sc) < 0) && (errno == ENOENT)) {
                     if (mkdir (dp->d_name, 0777) < 0 ||
                         stat (dp->d_name, &sc) < 0) {
-		        mperror ("failed to stat %s", dp->d_name);
+		        mperror (errno, "failed to stat %s", dp->d_name);
                         curdir = rcurdir = ocurdir;
                         continue;
                     }
                 }
                 if (readlink (dp->d_name, symbuf, sizeof(symbuf) - 1) >= 0) {
-                    msg ("%s: is a link instead of a directory", dp->d_name);
+		    mperror (0, "%s: is a link instead of a directory",
+			     dp->d_name);
                     curdir = rcurdir = ocurdir;
                     continue;
                 }
                 if (chdir (dp->d_name) < 0) {
-                    mperror ("failed to change directory into %s", dp->d_name);
+		    mperror (errno,
+			     "failed to change directory into %s", dp->d_name);
                     curdir = rcurdir = ocurdir;
                     continue;
                 }
                 dodir (buf, &sb, &sc, (buf[0] != '/'));
                 if (chdir ("..") < 0)
-                    quiterr (1, "..");
+		  quit (1, errno, "..");
                 curdir = rcurdir = ocurdir;
                 continue;
             }
@@ -289,9 +271,10 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
         if (symlen >= 0) {
             symbuf[symlen] = '\0';
             if (!equivalent (symbuf, buf))
-                msg ("%s: %s", dp->d_name, symbuf);
+                mperror (0, "%s: %s", dp->d_name, symbuf);
         } else if (symlink (buf, dp->d_name) < 0)
-            mperror ("failed to create a symbolic link %s pointing to %s",
+            mperror (errno,
+		     "failed to create a symbolic link %s pointing to %s",
 		     dp->d_name, buf);
     }
 
@@ -315,7 +298,7 @@ main (int ac, char *av[])
       }
 
     if (ac < silent + 2 || ac > silent + 3)
-        quit (1, "usage: %s [-silent] fromdir [todir]", av[0]);
+        quit (1, 0, "usage: %s [-silent] fromdir [todir]", av[0]);
 
     fn = av[silent + 1];
     if (ac == silent + 3)
@@ -325,20 +308,20 @@ main (int ac, char *av[])
 
     /* to directory */
     if (stat (tn, &ts) < 0)
-        quiterr (1, tn);
+        quit (1, errno, "%s", tn);
 
     if (!is_dir(&ts))
-        quit (2, "%s: Not a directory", tn);
+        quit (2, 0, "%s: Not a directory", tn);
 
     if (chdir (tn) < 0)
-        quiterr (1, tn);
+        quit (1, errno, "%s", tn);
 
     /* from directory */
     if (stat (fn, &fs) < 0)
-        quiterr (1, fn);
+        quit (1, errno, "%s", fn);
 
     if (!is_dir(&fs))
-        quit (2, "%s: Not a directory", fn);
+        quit (2, 0, "%s: Not a directory", fn);
 
     return dodir (fn, &fs, &ts, 0);
 }

@@ -1,5 +1,17 @@
 2011-04-25  James Youngman  <jay@gnu.org>
 
+	Avoid assuming Unix semantics for st_nlinks in lndir.
+	* testutils/lndir.c (quit): Accept errno argument; include the
+	error string in the error message if it is nonzero.  Call vmsg
+	instead of calling vfprintf directly.
+	(mperror): Accept the errno value as a function argument.
+	(vmsg): make a static function.
+	(dodir): Eliminate n_dirs subdirectory counter; this is unreliable
+	on filesystems which don't have Unix-like semantics for the
+	directory link count (for example, ISO9660 on Solaris, VirtualBox
+	shared folders on Solaris).  Also word error messages more
+	explicitly.
+
 	Avoid retrying link(2) when errno is set to ENOSYS.
 	* src/file.cc (atomic_nfs_create): If link(2) fails with ENOSYS,
 	there is no point in retrying.
