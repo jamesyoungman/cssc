@@ -29,6 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+/* See also the file COPYING.bsd. */
 
 #define _BSD_SOURCE
 #define DEBUG (1)

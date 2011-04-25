@@ -26,12 +26,35 @@
 csscutildir = $(libexecdir)/cssc
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -I ../gl/lib -I $(srcdir)/../gl/lib
+generic_CPPFLAGS = -I ../gl/lib -I $(srcdir)/../gl/lib
+AM_CPPFLAGS = $(generic_CPPFLAGS)
+AM_CFLAGS = "-DPREFIX=\"$(csscutildir)/\"" $(generic_CPPFLAGS)
+
+AM_LDFLAGS = -L../gl/lib
+LDADD = -lgnulib
+
 AM_CXXFLAGS = $(WARN_CFLAGS)
 noinst_LIBRARIES = libcssc.a
 
+bin_PROGRAMS = sccs
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
 csscutil_SCRIPTS = sccsdiff
+# ../configure.ac specifies gnits rules, but we don't actually implement the 
+# --version and --help options.
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT = \
+	admin$(EXE)  \
+	cdc$(EXE)    \
+	delta$(EXE)  \
+	get$(EXE)    \
+	prs$(EXE)    \
+	prt$(EXE)    \
+	rmdel$(EXE)  \
+	sact$(EXE)   \
+	sccs$(EXE)   \
+	sccsdiff     \
+	unget$(EXE)  \
+	val$(EXE)    \
+	what$(EXE)
 
 BUILT_SOURCES = version.cc
 CLEANFILES = sccsdiff
@@ -84,6 +107,7 @@ cdc_LDADD = libcssc.a $(LIBOBJS)
 rmdel_LDADD = libcssc.a $(LIBOBJS)
 prt_LDADD = libcssc.a $(LIBOBJS)
 val_LDADD = libcssc.a $(LIBOBJS)
+sccs_LDADD = libcssc.a $(LIBOBJS) -lgnulib
 
 sccsdiff: sccsdiff.sh
 	sed -e 's:__csscutildir__:$(csscutildir):g' < sccsdiff.sh > $@ && chmod a+x $@ || { rm -f $@; false; }

@@ -86,10 +86,9 @@ provided in the file "docs/Platforms".
  in a normal binary directory, you can do this with the argument
  "csscutildir=/usr/local/bin" to make.
 
- The program "sccs" (from the subdirectory bsd) is sensitive to the
- setting of $(csscutildir) at compile time, because it compiles in the
- value of that option as the default place to find the various
- subprograms.
+ The program "sccs" is sensitive to the setting of $(csscutildir) at
+ compile time, because it compiles in the value of that option as the
+ default place to find the various subprograms.
 
  mkdir work
  cd work

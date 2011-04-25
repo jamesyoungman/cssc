@@ -8,8 +8,6 @@ case "$dir" in
 		;;
 esac
 echo "Directory under test is $dir"
-sccs_dir=${dir}/../bsd
-
 
 # Make a variable for each CSSC command.  These are the commands we run 
 # in order to set up each test.  Because they are variables, we can set
@@ -21,7 +19,7 @@ prs=${prs:-${dir}/prs}
 prt=${prt:-${dir}/prt}
 delta=${delta:-${dir}/delta}
 sact=${sact:-${dir}/sact}
-sccsprog=${sccsprog:-${sccs_dir}/sccs}
+sccsprog=${sccsprog:-${dir}/sccs}
 sccsdiff=${sccsdiff:-${dir}/sccsdiff}
 unget=${unget:-${dir}/unget}
 what=${what:-${dir}/what}
@@ -55,19 +53,9 @@ then
     then
         if test -f "${dir}/sccs"
         then
-        sccsprog="${dir}/sccs"
-        elif test -f "${dir}/bsd/sccs"
-        then
-        sccsprog="${dir}/bsd/sccs"
+	        sccsprog="${dir}/sccs"
         else
-        case "${dir}" in 
-            /*)    sccsprog="${dir}/bsd/sccs"
-                    ;;
-            ../..) sccsprog="${dir}/bsd/sccs"
-                    ;;
-            *) sccsprog="sccs"
-                    ;;
-        esac
+                sccsprog="sccs"
         fi
     fi
 

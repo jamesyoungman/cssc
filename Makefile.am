@@ -32,6 +32,6 @@
 # We run the unit tests before the regression tests in order to make
 # it more obvious where the bug is when there is a test failure.
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = gl bsd docs testutils auxfiles src sccs-cgi unit-tests tests
+SUBDIRS = gl docs testutils auxfiles src sccs-cgi unit-tests tests
 
 EXTRA_DIST = ChangeLog ChangeLog.1 ChangeLog.2

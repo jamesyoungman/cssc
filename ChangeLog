@@ -1,5 +1,29 @@
 2011-04-25  James Youngman  <jay@gnu.org>
 
+	Move source and documentation out of bsd/ into src/ and docs/.
+	* COPYING.bsd: Move from bsd/COPYING.bsd.
+	* bsd/sccs.1: move to docs/sccs.1
+	* bsd/sccs.c: move to src/sccs.c
+	* tests/common/command-names: Locate the sccs binary in its new
+	location.
+	* src/Makefile.am (generic_CPPFLAGS): Put preprocessor flags here
+	so that AM_CPPFLAGS and AM_CFLAGS can both refer to it, now that
+	we have both C and C++ sources in this directory.
+	(LDADD): Link against gnulib.
+	(AM_CFLAGS): #define PREFIX for the benefit of sccs.c.
+	(AM_INSTALLCHECK_STD_OPTIONS_EXEMPT): Exempt the binaries from the
+	gnits install check which requires them to support --version and
+	--help.
+	* AUTHORS: Mention the new location of the COPYING.bsd file.
+	* THANKS: Point to COPYING.bsd in its new location.
+	* docs/.ispell_english: Incorporate contents of bsd/.ispell_english.
+	* docs/Makefile.am: Add sccs.1 and sccs.me.
+	* bsd/.ispell_english, bad/Makefile.am, bsd/Makefile.bsd: Delete.
+	* bsd/sccs.me: move to docs/sccs.me
+	* configure.ac: refer to src/sccs.c instead of bsd/sccs.c
+	* Makefile.am (SUBDIRS): Remove bsd from SUBDIRS.
+	* README: sccs no longer lives in bsd/sccs.
+
 	Call ${admin} in test preparations, not "admin".
 	* tests/admin/y-flag.sh: when trying to deduce the properties of
 	the admin command we're testing, invoke ${admin} (i.e. the thing

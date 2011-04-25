@@ -346,7 +346,7 @@ fi
 
 dnl Look for declarations in headers.
 
-dnl bsd/sccs.c uses sys_siglist[], if available.
+dnl src/sccs.c uses sys_siglist[], if available.
 AC_DECL_SYS_SIGLIST
 
 dnl fatalsig.cc uses signal handlers
@@ -446,5 +446,5 @@ dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_CONFIG_FILES([src/version.cc Makefile gl/Makefile gl/lib/Makefile gl/doc/Makefile gl/tests/Makefile testutils/Makefile src/Makefile src/sccsdiff.sh bsd/Makefile unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
+AC_CONFIG_FILES([src/version.cc Makefile gl/Makefile gl/lib/Makefile gl/doc/Makefile gl/tests/Makefile testutils/Makefile src/Makefile src/sccsdiff.sh unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
 AC_OUTPUT

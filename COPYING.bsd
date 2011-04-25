@@ -1,8 +1,11 @@
-The contents of the "bsd" source directory is covered by this
-copyright license.  If you are using a binary distribution of GNU
-CSSC, this refers to the executable "sccs", its manual page "sccs.1",
-the file "sccs.me", and no other part.  All other parts of GNU CSSC
-are covered by the GNU general public license (see the file COPYING).
+This document describes the license only for the following files:
+
+ docs/sccs.1
+ docs/sccs.me
+ src/sccs.c
+
+All other parts of GNU CSSC are covered by the GNU general public
+license (see the file COPYING).
 
 Since I (James Youngman) have made a copyright assignment to the FSF
 for my past and future work on CSSC, all my modifiactions to this code
@@ -12,8 +15,8 @@ majority of the value of this code is provided by the original BSD
 code; my modifications are needed to make it work with CSSC and to
 make it portable to various systems etc.  While the FSF, being the
 copyright holders, can license my modifications as they choose, I'd
-prefer them to retain the BSD license for the contents of this
-directory.
+prefer them to retain the BSD license for the contents of these files.
+
 
 Please note that this copyright notice is not the same as the
 "original" BSD copyright notice.  Specifically, the provision number 3
