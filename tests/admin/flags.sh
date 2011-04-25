@@ -28,7 +28,7 @@ docommand v3 "${vg_prs} -d:MP: $s" 0 "none\n" ""
 
 # Create with no MR
 remove $s
-docommand v4 "${vg_admin} -fv -m -r2 -ifoo $s" 0 "" ""
+docommand v4 "${vg_admin} -fv -m' ' -r2 -ifoo $s" 0 "" ""
 remove $s
 
 # Set MR flag -- should work.

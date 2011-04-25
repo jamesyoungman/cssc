@@ -89,16 +89,20 @@
 	* Makefile.am (SUBDIRS): Remove bsd from SUBDIRS.
 	* README: sccs no longer lives in bsd/sccs.
 
-	Remove tests that check CSSC can detect a nonexistent argument.
+	Allow an empty MR list to be passed to admin.
 	* tests/admin/init-mr.sh: Don't expect "admin -m" to interpret
 	a plain "-m" as meaning an empty MR list.  Distinguishing the
 	absence of an argument to -m requires a traditional SCCS argument
 	processor, and this behaviour is incompatible with modern
 	implementations of SCCS (for example OpenSolaris).
 	* tests/admin/flags.sh: Likewise.
-
-	Remove duplicate space in "MR number(s) must be  supplied."
-	* src/admin.cc (main): elminiate doubled space in error message.
+	* src/admin.cc (main): Allow an empty list of MRs to be specified
+	to admin, for example "admin -fv -m' '".  OpenSolaris allows
+	this, and we can no longer use the previous method which was to
+	omit the optional argument.  Elminiate doubled space in error
+	message.
+	* docs/cssc.texi (admin): document this clearly.
+	* NEWS: mention this change.
 
 	Fix delta summary; when it goes to stdout, send other to stderr.
 	* tests/get/delta-summary.sh: OpenSolaris get emits the delta

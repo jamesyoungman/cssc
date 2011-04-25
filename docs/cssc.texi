@@ -253,12 +253,19 @@ If no argument is given, read from standard input.  This implies the
 @item -m@var{MR-list}
 When initialising a file, add the specified list of @sc{mr} numbers
 (@pxref{Modification Request Numbers}) to the delta commentary for the
-initial version.  This list can be empty.  The specified @sc{mr}s are
-validated according to the setting of the @var{v} flag, which should be
-set (@pxref{Flags}).  If the @var{v} flag is set but has no value
-(i.e. is set to the empty string), validation silently succeeds.  If the
-@var{v} flag is not set, the @option{-m} option causes @code{delta} to
-fail.
+initial version.  The @sc{mr} list is space-separated.  It can also be
+empty (that is, just spaces).  The specified @sc{mr}s are validated
+according to the setting of the @var{v} flag, which should be set
+(@pxref{Flags}).  If the @var{v} flag is set but has no value (i.e. is
+set to the empty string), validation silently succeeds.  If the
+@var{v} flag is not set, the @option{-m} option causes @code{admin} to
+fail.  If you want to set the @var{v} flag when creating a history
+file but there are no appropriate @sc{mr} numbers, you can specify an
+@sc{mr} list containing just white space@footnote{Versions of CSSC up
+to and including 1.3.0 used to allow the argument of @samp{-m} to be
+ommitted, and required the @sc{mr} list to be non-empty if specified
+at all.  However, this was incompatible with other versions of
+@sc{sccs}, so CSSC was changed to be more compatible.}.
 
 @item -n
 Create a new @sc{sccs} file.  Unless @option{-i} is also used, the new

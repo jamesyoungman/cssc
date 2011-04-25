@@ -78,7 +78,7 @@ main(int argc, char **argv)
   int check_checksum = 0;	                /* -h */
   int validate       = 0;	                /* also -h */
   int reset_checksum = 0;			/* -z */
-  int suppress_mrs = 0;				/* -m (no arg) */
+  int suppress_mrs = 0;				/* -m " " (i.e. no actual MRs) */
   int suppress_comments = 0;			/* -y (no arg) */
   int empty_t_option = 0;	                /* -t (no arg) */
   int retval;
@@ -189,7 +189,7 @@ main(int argc, char **argv)
 
     case 'm':
       mrs = opts.getarg();
-      suppress_mrs = (mrs == "");
+      suppress_mrs = true;
       break;
 
     case 'y':
@@ -339,6 +339,10 @@ main(int argc, char **argv)
 		    }
 
 		  mr_list = split_mrs(mrs);
+		  if (mr_list.length()) 
+		    {
+		      suppress_mrs = false;
+		    }
 		  comment_list = split_comments(comments);
 		}
 
@@ -346,8 +350,7 @@ main(int argc, char **argv)
 		{
 		  if (!suppress_mrs && mr_list.length() == 0)
 		    {
-		      errormsg("%s: MR number(s) must be "
-			       " supplied.", name.c_str());
+		      errormsg("%s: MR number(s) must be supplied.", name.c_str());
 		      retval = 1;
 		      continue; // with next file
 

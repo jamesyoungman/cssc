@@ -57,13 +57,18 @@ remove $s
 # NB: -m on its own will not specify a lack of MR number 
 # any more (e.g. with Solaris 2.6).
 # Currently CSSC will distinguish between -m"" and -m "".
-# Hence this test cannot work with both CSSC and Solaris SCCS
-# unless CSSC migrates to a (later) traditional getopt option
-# parsing scheme instead of one where this distinction is made. 
-docommand I9 "${vg_admin} -fv -m'' -r2 -ifoo $s" 0 "" ""
+# 
+# Hence a test for an entirely empty MR cannot work with both CSSC and
+# Solaris SCCS unless CSSC migrates to a (later) traditional getopt
+# option parsing scheme instead of one where this distinction is made.
+#
+# As a workaround, since the argument to -m is a space-separated list, we 
+# just use a single space as the argument.  Solaris interprets this as 
+# satisfying the criteria for MRs being specified.
+docommand I9 "${vg_admin} -fv -m' ' -r2 -ifoo $s" 0 "" ""
 # Check for absence of MRs
-#docommand I10 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
-#    0  "MRs:\nCOMMENTS:\n" ""
+docommand I10 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
+    0  "MRs:\nCOMMENTS:\n" ""
 
 # One MR -- v flag unset, should fail.
 remove $s
