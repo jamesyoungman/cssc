@@ -122,10 +122,10 @@ fail () {
 name=`basename $0`
 if ${expect_fail:-false}
 then
-        echo XFAIL $name $* 
+        echo XFAIL $name "$@"
         # but don't exit...
 else
-        echo FAIL $name $* ; exit 2; 
+        echo FAIL $name "$@" ; exit 2; 
 fi ;
 }
 
@@ -197,7 +197,22 @@ rv=$?
 
 if test "$2" != "IGNORE"
 then
-    test $rv -eq $2 || fail "$label: $1: Expected return value $2, got return value $rv"
+    if test $rv -eq $2
+    then
+	true
+    else
+	# If the expected return value (which we didn't get) was zero,
+        # stderr may contain an error message.
+	errmsg="`cat got.stderr`"
+	if test -z "$errmsg"
+	then
+	    tail="No error message was printed on stderr"
+	else
+	    tail="error message: $errmsg"
+	fi
+	fail "$label: $1: Expected return value $2, got return value $rv
+$tail"
+    fi
 fi
 
 if test "$3" != "IGNORE"

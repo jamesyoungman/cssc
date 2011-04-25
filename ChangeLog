@@ -24,6 +24,18 @@
 	* Makefile.am (SUBDIRS): Remove bsd from SUBDIRS.
 	* README: sccs no longer lives in bsd/sccs.
 
+	Produce better test diagnostics when a command unexpectedly fails.
+	* tests/common/test-common (docommand): when the return value is
+	zero, print any error message that had been issued on stderr.
+
+	Update sccsdiff to work like sccsdiff on OpenSolaris.
+	* tests/sccsdiff/rap.sh: Update the tests to match the results we
+	actually get from sccsdiff on OpenSolaris.
+	* src/sccsdiff.sh.in: Update to pass the modified tests.
+	Specifically, use a different header for the case where -p is
+	specified and when it's not.
+	* NEWS: Mention this change.
+
 	Call ${admin} in test preparations, not "admin".
 	* tests/admin/y-flag.sh: when trying to deduce the properties of
 	the admin command we're testing, invoke ${admin} (i.e. the thing
