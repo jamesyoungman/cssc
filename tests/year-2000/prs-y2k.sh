@@ -6,6 +6,7 @@
 
 # Import common functions & definitions.
 . ../common/test-common
+. ../common/real-thing
 
 
 s=s.y2k.txt
@@ -20,8 +21,24 @@ r1_1="1.1 69/01/01 00:00:00\n" # 1969: the earliest year we have
 
 allrevs="${r1_5}${r1_4}${r1_3}${r1_2}${r1_1}"
 
+# First some easy tests that any y2k-compliant version should pass.
+docommand ez2 "${vg_prs} ${brief} -r1.2  $s" 0 "${r1_2}" ""
+docommand ez3 "${vg_prs} ${brief} -r1.3  $s" 0 "${r1_3}" ""
+docommand ez4 "${vg_prs} ${brief} -r1.4  $s" 0 "${r1_4}" ""
 
-## And now the tests.
+
+if "$TESTING_CSSC"
+then
+    expect_fail=false
+else
+    # Many versions of SCCS are y2k-safe, but don't work right out to
+    # the boundary dates specified by the POSIX windowing scheme.
+    # For example OpenSolaris 2009.06 renders "68/12/31 23:59:59"
+    # as "32/11/25 17:31:43".
+    expect_fail=true
+fi
+
+## And now the harder tests.
 
 ## If we just specify -e without -c we should get all the revisions.
 ## Check that the dates are printed correctly.

@@ -10,6 +10,7 @@
 
 # Import common functions & definitions.
 . ../common/test-common
+. ../common/real-thing
 
 
 s=s.y2k.txt
@@ -25,7 +26,7 @@ r1_1="1.1 69/01/01 00:00:00\n" # 1969: the earliest year we have
 allrevs="${r1_5}${r1_4}${r1_3}${r1_2}${r1_1}"
 
 
-if [ $dir = "../.." ]
+if "$TESTING_CSSC"
 then
     ## Tests for the century field.
 

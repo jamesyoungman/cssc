@@ -1,5 +1,16 @@
 2011-04-25  James Youngman  <jay@gnu.org>
 
+	Allow non-CSSC implementations to XFAIL for tricky dates.
+	* tests/year-2000/prs-y2k.sh: Divide tests into "easy" (which any
+	y2k-compliant version of SCCS must pass) and "harder" (which
+	require correct implementation of the windowing scheme and correct
+	conversion of dates at the limits of a 32-bit time_t).  Require
+	CSSC to pass all tests, but allow other implementations to XFAIL
+	on the hader tests.
+	* tests/year-2000/ext.sh: Correct the mechanism by which we figure
+	out if we are testing CSSC itself.
+	* tests/common/test-common (fail): return false on XFAIL.
+
 	Move source and documentation out of bsd/ into src/ and docs/.
 	* COPYING.bsd: Move from bsd/COPYING.bsd.
 	* bsd/sccs.1: move to docs/sccs.1
