@@ -53,5 +53,3 @@ fi
 
 remove command.log
 success
-
- 

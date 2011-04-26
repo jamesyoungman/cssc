@@ -30,8 +30,8 @@ You can get a copy of the source repository like this:
 
 You also need to get a copy of gnulib:
 
-    	$ git submodule init
-	$ git submodule update
+        $ git submodule init
+        $ git submodule update
 
 The next step is to get and check other files needed to build,
 which are extracted from other source packages:

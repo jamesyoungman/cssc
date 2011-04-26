@@ -752,7 +752,7 @@ sccs_file::add_delta(mystring gname,
 #endif
 
 
-          // We just read a body line and prev delta is in in insert
+          // We just read a body line and prev delta is in insert
           // mode.  We need to decide if this line must also go into
           // this version.  If not, we need to emit delete commands.
           // On the other hand, we may need to insert data before it.

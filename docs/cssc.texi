@@ -3039,7 +3039,7 @@ in the subdirectory ``src'' or ``source'' beneath their home directory.
 Normally, the @code{sccs} driver program locates the other tools by
 searching the directories specified in @env{PATH}, but if it is
 running set-user-id or set-group-id, a compiled-in value is used
-instead.  By default, this value is is @file{/usr/sccs}.
+instead.  By default, this value is @file{/usr/sccs}.
 
 If @sc{sccs} is not privileged, it will fall back on the compiled-in
 value in order to find the other tools if they are not found in any of
@@ -3386,7 +3386,7 @@ probably been fixed by the vendor, and that even if your vendor's
 @sc{sccs} implementation cannot be updated for some reason, @sc{cssc} is
 Year-2000 compliant and to an extent Year-2038 compliant, I'd like you
 to remember the conversion effort that this has saved you.  I'd also
-like to urge to to actually use that effort to convert your existing
+like to urge to actually use that effort to convert your existing
 projects from @sc{sccs} to a more modern version control system, for
 example GNU CVS.  There are other considerations besides Year-2000
 compliance, after all.  @sc{cssc} is not called ``Compatibly Stupid

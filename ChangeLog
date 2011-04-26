@@ -1,5 +1,20 @@
 2011-04-26  James Youngman  <jay@gnu.org>
 
+	Fix some minor issues identified by 'make syntax-check'.
+	* testutils/uu_decode.c: avoid including unnecessary header
+	<stddef.h>.
+	* src/sf-delta.cc (add_delta): Remove doubled word in a comment.
+	* docs/cssc.texi (Other Variables): Remove doubled word.
+	(Year 2000 Summary): Likewise.
+	* cfg.mk: Modify spelling of a comment in order not to have a
+	false positive from the sc_makefile_at_at_check syntax check.
+	* tests/year-2000/ext.sh: Remove blank line at the end of the
+	file.
+	* tests/year-2000/prs-y2k.sh: Likewise.
+	* .x-sc_unmarked_diagnostics: Likewise.
+	* unit-tests/testwrapper.sh.in: Add final newline.
+	* README-hacking: Remove space-tab combinations.
+
 	Update hacking instructions to explain the git submodule.
 	* README-hacking: Update instructions detailing how to collect
 	gnulib (since we now use it as a submodule).

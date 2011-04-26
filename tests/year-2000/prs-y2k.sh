@@ -100,5 +100,3 @@ docommand d5 "${vg_prs} ${brief} -l -c68  $s" 0 \
 
 remove command.log
 success
-
- 
