@@ -28,11 +28,10 @@ You can get a copy of the source repository like this:
         $ git clone git://git.savannah.gnu.org/cssc.git
         $ cd cssc
 
-As an optional step, if you already have a copy of the gnulib git
-repository on your hard drive, then you can use it as a reference to
-reduce download time and disk space requirements:
+You also need to get a copy of gnulib:
 
-        $ export GNULIB_SRCDIR=/path/to/gnulib
+    	$ git submodule init
+	$ git submodule update
 
 The next step is to get and check other files needed to build,
 which are extracted from other source packages:
@@ -62,7 +61,7 @@ reporting address of this package, and not to that of gnulib, even
 if the problem seems to originate in a gnulib-provided file.
 -----
 
-Copyright (C) 2002-2010 Free Software Foundation, Inc.
+Copyright (C) 2002-2011 Free Software Foundation, Inc.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

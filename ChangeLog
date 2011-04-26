@@ -1,5 +1,9 @@
 2011-04-26  James Youngman  <jay@gnu.org>
 
+	Update hacking instructions to explain the git submodule.
+	* README-hacking: Update instructions detailing how to collect
+	gnulib (since we now use it as a submodule).
+
 	Update gnulib.
 	* gnulib: update to current HEAD.
 
