@@ -39,7 +39,7 @@ noinst_LIBRARIES = libcssc.a
 bin_PROGRAMS = sccs
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
 csscutil_SCRIPTS = sccsdiff
-# ../configure.ac specifies gnits rules, but we don't actually implement the 
+# ../configure.ac specifies gnits rules, but we don't actually implement the
 # --version and --help options.
 AM_INSTALLCHECK_STD_OPTIONS_EXEMPT = \
 	admin$(EXE)  \

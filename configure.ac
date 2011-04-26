@@ -62,7 +62,7 @@ enable_binary=yes
 if test "$enable_binary" = yes; then
 	AC_MSG_RESULT(no)
 else
-	AC_DEFINE(CONFIG_DISABLE_BINARY_SUPPORT, 1, [Define if support for "binary" (encoded) files is to be disabled])
+	AC_DEFINE([CONFIG_DISABLE_BINARY_SUPPORT], [1], [Define if support for "binary" (encoded) files is to be disabled])
 	AC_MSG_RESULT(yes)
 fi
 if test "$binary_defaulted" = "yes"; then
@@ -103,7 +103,7 @@ max_line_length_description=$enable_max_line_length
 AC_MSG_RESULT(no limit)
 enable_max_line_length=0
 )
-AC_DEFINE_UNQUOTED(CONFIG_MAX_BODY_LINE_LENGTH,$enable_max_line_length,
+AC_DEFINE_UNQUOTED([CONFIG_MAX_BODY_LINE_LENGTH],$enable_max_line_length,
 [Maximum length of line which CSSC will create in an SCCS file])
 
 
@@ -203,7 +203,7 @@ dnl It would be a good idea to default the path for diff
 dnl to install_dir/diff-program so the installer can
 dnl add a symlink later.   TODO.
 AC_PATH_PROG(CONFIG_DIFF_COMMAND,diff,/usr/bin/diff)
-AC_DEFINE_UNQUOTED(CONFIG_DIFF_COMMAND,"$ac_cv_path_CONFIG_DIFF_COMMAND",
+AC_DEFINE_UNQUOTED([CONFIG_DIFF_COMMAND],"$ac_cv_path_CONFIG_DIFF_COMMAND",
 [Path to the diff command])
 
 
@@ -211,7 +211,7 @@ AC_MSG_CHECKING([for GNU diff])
 if $ac_cv_path_CONFIG_DIFF_COMMAND --version 2>/dev/null | grep "GNU diff" >/dev/null
 then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE_UNQUOTED(HAVE_GNU_DIFF,1,[Define if we are using GNU diff])
+	AC_DEFINE_UNQUOTED([HAVE_GNU_DIFF],1,[Define if we are using GNU diff])
 else
 	AC_MSG_RESULT(no)
 fi
@@ -338,7 +338,7 @@ cssc_cv_sys_savedids_set=no
 ))
 if test "$cssc_cv_sys_savedids_set" = "yes"; then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(SAVED_IDS_OK,1,[Define if _POSIX_SAVED_IDS is provided])
+	AC_DEFINE([SAVED_IDS_OK],1,[Define if _POSIX_SAVED_IDS is provided])
 else
 	AC_MSG_RESULT(no)
 fi

@@ -1,3 +1,12 @@
+2011-04-26  James Youngman  <jay@gnu.org>
+
+	Various minor fixes suggested by 'make syntax-check'.
+	* docs/.ispell_english: Remove blank line from end of document.
+	* src/Makefile.am: Remove blank space from end of line.
+	* src/file.cc (atomic_nfs_create): Likewise.
+	* src/sf-prs.cc (prs): Likewise.
+	* testutils/lndir.c: Likewise.
+
 2011-04-25  James Youngman  <jay@gnu.org>
 
 	Allow non-CSSC implementations to XFAIL for tricky dates.

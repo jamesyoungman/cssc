@@ -99,7 +99,7 @@ quit (int code, int err_num, char * fmt, ...)
     exit (code);
 }
 
-static void 
+static void
 vmsg (const char *fmt, int errnum, va_list ap)
 {
   assert (fmt && fmt[0]);
@@ -154,8 +154,8 @@ static int ignored(const char *n)
   return 0;
 }
 
-static int 
-is_dot_or_dotdot (const char *p) 
+static int
+is_dot_or_dotdot (const char *p)
 {
   if (p[0] == '.') {
     if (p[1] == 0) {
@@ -216,8 +216,8 @@ dodir (const char *fn, /* name of "from" directory, either absolute or relative 
 	if (is_dot_or_dotdot (dp->d_name)) {
 	  continue;		/* ignore. */
 	}
-	
-	    
+
+
         strcpy (p, dp->d_name);
 
         if (1) {

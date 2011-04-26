@@ -656,7 +656,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
         case LATER:   wanted = (cutoff_date <= iter->date()); break;
         case SIDONLY: wanted = (rid == iter->id()); break;
         }
-      if (wanted) 
+      if (wanted)
 	{
 	  matched = true;
 	  print_delta(out, format.c_str(), *iter.operator->());
@@ -664,7 +664,7 @@ sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
 	  if (cutoff_type == SIDONLY)
 	    break;
 	}
-      else 
+      else
 	{
 	  if (matched && (cutoff_type == LATER))
 	    break;
