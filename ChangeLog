@@ -1,5 +1,8 @@
 2011-04-26  James Youngman  <jay@gnu.org>
 
+	Update gnulib.
+	* gnulib: update to current HEAD.
+
 	Various minor fixes suggested by 'make syntax-check'.
 	* docs/.ispell_english: Remove blank line from end of document.
 	* src/Makefile.am: Remove blank space from end of line.
