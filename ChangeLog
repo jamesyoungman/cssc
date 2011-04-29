@@ -1,3 +1,8 @@
+2011-04-29  James Youngman  <jay@gnu.org>
+
+	* testutils/mogrify.awk: Preserve comment lines which have no
+	space (that is, \001Ac\n).
+
 2011-04-26  James Youngman  <jay@gnu.org>
 
 	Fix some minor issues identified by 'make syntax-check'.
