@@ -16,6 +16,12 @@
 
 2011-04-30  James Youngman  <jay@gnu.org>
 
+	Accept entirely empty comment lines (lacking the initial space).
+	* src/sccsfile.cc (read_delta): Accept comment lines containing
+	nothing at all (not even a space after the 'c').  Some historis
+	versions of SCCS seem to have produced these, and later versions
+	tolerate it.
+
 	Fix Savannah bug bug #33153: "prs" includes "AUTO NULL DELTA"s.
 	* src/prs.cc (main): Change type of all_deltas from int to bool.
 	(main): Move detection of errors writing to stdout to here,

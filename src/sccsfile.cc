@@ -555,8 +555,13 @@ sccs_file::read_delta() {
                   }
                 else
                   {
-                    check_arg();
-                    if (bufchar(2) != ' ')
+		    if (bufchar(2) == '\0')
+		      {
+			/* Some historic versions of SCCS emit totally empty
+			 * comment lines.  We accept those.
+			 */
+		      }
+                    else if (bufchar(2) != ' ')
                       {
                         saw_unknown_feature("Unknown special comment "
                                             "intro '%c%c'",
