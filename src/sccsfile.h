@@ -314,7 +314,7 @@ public:
 
 
   bool prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
-           enum when when, int all_deltas);
+           enum when when, bool all_deltas, bool *matched);
 
   bool prt(FILE *out, struct cutoff exclude, int all_deltas,
            //

@@ -1,3 +1,21 @@
+2011-04-30  James Youngman  <jay@gnu.org>
+
+	Fix Savannah bug bug #33153: "prs" includes "AUTO NULL DELTA"s.
+	* src/prs.cc (main): Change type of all_deltas from int to bool.
+	(main): Move detection of errors writing to stdout to here,
+	instead of sccs_file::prs().  Likewise diagnosis of the fact that
+	no deltas were matched.
+	* src/sf-prs.cc (prs): Add an output parameter, "matched", which
+	is set if any delta was matched (and printed).
+	(prs): Rewrite this method to evaluate the earlier/later cutoff in
+	terms of SIDs where this is necessary.  That is, avoid the
+	assumption that different SIDs have different timestamps.
+	* src/sccsfile.h (sccs_file::prs): Modify the declaration
+	of sccs_file::prs() to add the output parameter, "matched".
+	* tests/prs/sv33153.sh: New test.
+	* tests/prs/s.sv33153: New test input file.
+	* NEWS: Mention this bugfix.
+
 2011-04-29  James Youngman  <jay@gnu.org>
 
 	* testutils/mogrify.awk: Preserve comment lines which have no

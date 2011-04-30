@@ -48,7 +48,7 @@ main(int argc, char **argv)
   mystring format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
   sid rid(sid::null_sid());
   /* enum */ sccs_file::when selected = sccs_file::SIDONLY;
-  int all_deltas = 0;
+  bool all_deltas = false;
   sccs_date cutoff_date;
   int default_processing = 1;
 
@@ -118,7 +118,7 @@ main(int argc, char **argv)
 	  break;
 
 	case 'a':
-	  all_deltas = 1;
+	  all_deltas = true;
 	  break;
 
 	case 'V':
@@ -160,10 +160,24 @@ main(int argc, char **argv)
 	    {
 	      printf("%s:\n\n", name.c_str());
 	    }
+	  bool matched = false;
 	  if (!file.prs(stdout, format, rid, cutoff_date, selected,
-			all_deltas))
+			all_deltas, &matched))
 	    {
 	      retval = 1;
+	    }
+	  if (ferror(stdout))
+	    {
+	      errormsg("%s: Ouput file error.", name.c_str());
+	      retval = 1;
+	    }
+	  if (!matched)
+	    {
+	      if (rid.valid()) 
+		{
+		  errormsg("%s: Requested SID doesn't exist.", name.c_str());
+		  retval = 1;
+		}
 	    }
 	} // end of try block.
       catch (CsscExitvalException e)

@@ -33,6 +33,7 @@
 #include "delta.h"
 #include "delta-iterator.h"
 #include "linebuf.h"
+#include "cssc-assert.h"
 
 inline bool
 sccs_file::get(FILE *out, mystring gname, seq_no seq, bool for_edit)
@@ -620,68 +621,58 @@ sccs_file::print_delta(FILE *out, const char *format,
 }
 
 
-/* Prints out parts of the SCCS file.  */
 
+
+/* Prints out parts of the SCCS file.  */
 bool
 sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
-               enum when cutoff_type, int all_deltas)
+               enum when cutoff_type, bool all_deltas, bool *matched)
 {
-  const bool fail_if_no_match = rid.valid();
-
-  /* If no SID is specified, the most recently-created SID is used. */
-  if (!rid.valid())
-    {
-      rid = find_most_recent_sid(rid);
-    }
-
-  if (cutoff_type != SIDONLY && !cutoff_date.valid())
-    {
-      const delta *pd = find_delta(rid);
-      if (0 == pd)
-        {
-          errormsg("%s: Requested SID doesn't exist.", name.c_str());
-          return false;
-        }
-      cutoff_date = pd->date();
-    }
-
-  bool matched = false;
   const_delta_iterator iter(delta_table);
-  while (iter.next(all_deltas))
-    {
-      bool wanted;
-      switch (cutoff_type)
-        {
-        case EARLIER: wanted = (iter->date() <= cutoff_date); break;
-        case LATER:   wanted = (cutoff_date <= iter->date()); break;
-        case SIDONLY: wanted = (rid == iter->id()); break;
-        }
-      if (wanted)
-	{
-	  matched = true;
-	  print_delta(out, format.c_str(), *iter.operator->());
-	  putc('\n', out);
-	  if (cutoff_type == SIDONLY)
-	    break;
-	}
-      else
-	{
-	  if (matched && (cutoff_type == LATER))
-	    break;
-	}
-    }
+  const char *fmt = format.c_str();
 
-  if (ferror(out))
+  if (cutoff_type == SIDONLY)
     {
-      errormsg("%s: Ouput file error.", name.c_str());
-      return false;
+      ASSERT (!cutoff_date.valid());
+      while (iter.next(all_deltas))
+	{
+	  if (!rid.valid() || (rid == iter->id()))
+	    {
+	      *matched = true;
+	      print_delta(out, fmt, *iter.operator->());
+	      putc('\n', out);
+	      break;
+	    }
+	}
     }
-  /* If the user specified a cutoff date, getting no match is OK.
-     If they specified a SID, we return an error. */
-  if (fail_if_no_match && !matched)
+  else if (cutoff_type == LATER)
     {
-      errormsg("%s: Requested SID doesn't exist.", name.c_str());
-      return false;
+      while (iter.next(all_deltas))
+	{
+	  if (cutoff_date.valid() && iter->date() < cutoff_date)
+	    break;
+	  *matched = true;
+	  print_delta(out, fmt, *iter.operator->());
+	  putc('\n', out);
+	  if (rid.valid() && (rid == iter->id()))
+	    break;
+	}
+    }
+  else 				// EARLIER
+    {
+      while (iter.next(all_deltas))
+	{
+	  if (!*matched)
+	    {
+	      if (rid.valid() && (rid != iter->id()))
+		continue;
+	    }
+	  if (cutoff_date.valid() && (cutoff_date < iter->date()))
+	    continue;
+	  *matched = true;
+	  print_delta(out, fmt, *iter.operator->());
+	  putc('\n', out);
+	}
     }
   return true;
 }

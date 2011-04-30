@@ -1,5 +1,10 @@
 New in CSSC-1.3.1-git, YYYY-MM-DD
 
+        * Fix Savannah bug bug #33153: "prs" includes "AUTO NULL
+          DELTA"s.  "prs -r" will no longer print any additional
+          deltas that happen to share the same timestamp with the last
+          matching delta.
+
         * If the SID identified by "prs -r" is not found, prs now
           exits with status 1, not 0.  This fixes SourceForge bug
           #1300722.
