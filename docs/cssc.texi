@@ -1273,8 +1273,19 @@ Day-of-month on which the delta was checked in (two digits).
 Sequence numbers of ignored deltas (separated by white space).
 
 @item :DI:
-Expands to @samp{:Dn:/:Dx:/:Dg:} (sequence numbers
-included/excluded/ignored).
+Expands to the list of included, excluded and ignored sequence
+numbers.  The sequence numbers of the included deltas are printed.  If
+there are excluded deltas, @samp{/} is printed as a separator and then
+the excluded sequence numbers are printed.  If there are ignored
+deltas, @samp{/} is printed as a separator and then the ignored
+sequence numbers are printed.  This means it's difficult to tell from
+the result of @samp{:DI:} whether the sequence numbers after the last
+@samp{/} were excluded or ignored.  @xref{SCCS Version Differences}
+for a brief description of how @samp{:DI:} expands to different things
+on different @sc{sccs} implmentations.  If you need reliable
+information, then you will need to use something like
+@samp{:Dn:/:Dx:/:Dg:} explicitly.
+
 
 @item :DL:
 Expands to @samp{:Li:/:Ld:/:Lu:} (lines inserted/deleted/unchanged).
@@ -2802,6 +2813,13 @@ non-trunk @sc{sid} (that is, a @sc{sid} with more than two
 components), this is allowed but some of the other tools in the
 @sc{cssc} suite will not work correctly on the resulting file.
 @end table
+
+@subsection prs
+The Solaris 2.6 version of @code{prs} doesn't include ignored deltas.
+So, if a delta has included, excluded and ignored deltas, @samp{:DI:}
+expands to the same thing as @samp{:Dn:/:Dx:} as opposed to
+@samp{:Dn:/:Dx:/:Dg:}. Solaris 11 uses @samp{:Dn:/:Dx:/:Dg:} for this
+case.
 
 @subsection prt
 If the ``encoded'' flag is set, some versions of @code{prt} (but not

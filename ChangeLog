@@ -14,6 +14,20 @@
 	* tests/admin/Makefile.am, tests/unget/Makefile.am: Likewise.
 	* tests/val/Makefile.am, tests/what/Makefile.am: Likewise.
 
+2011-05-03  James Youngman  <jay@gnu.org>
+
+	Modify "prs -d :DI:" to print ignored deltas.
+	* tests/prs/delta_ixg.sh: New test script for "prs -d :DI:".
+	* tests/prs/s.delta_ixg: New test input file for delta_ixg.sh.
+	* src/sf-prs.cc (print_delta): For :DI:, also print ignored
+	deltas.  Follow the conventions of OpenSolaris 2009.06 on the
+	question of how many slashes to produce.
+	* docs/cssc.texi (Data Keywords): Describe in more detail just how
+	the keyword :DI: is expanded.
+	(SCCS Version Differences): Explain how the expansion of :DI:
+	varies across implementations.
+	* NEWS: Mention this change.
+
 2011-04-30  James Youngman  <jay@gnu.org>
 
 	Accept entirely empty comment lines (lacking the initial space).

@@ -459,15 +459,15 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY2('D', 'I'):
-          if (d.get_included_seqnos().length() > 0 ||
-              d.get_excluded_seqnos().length() > 0 ||
-              d.get_ignored_seqnos().length()  > 0   )
-            {
-              /* Testing with the Solaris version only shows one slash! */
-              /* print_delta(out, ":Dn:/:Dx:/:Dg:", d); */
-              print_delta(out, ":Dn:/:Dx:", d);
-              break;
-            }
+	  /* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:), 
+	     but OpenSolaris 2009.06 (SunOS 5.11) shows two. */
+	  if (d.get_included_seqnos().length() > 0)
+	    print_delta(out, ":Dn:", d);
+	  if (d.get_excluded_seqnos().length() > 0)
+	    print_delta(out, "/:Dx:", d);
+	  if (d.get_ignored_seqnos().length() > 0)
+	    print_delta(out, "/:Dg:", d);
+	  break;
 
         case KEY2('D','n'):
           print_seq_list(out, d.get_included_seqnos());
