@@ -21,7 +21,7 @@ dnl
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
-AC_INIT([GNU CSSC], [1.3.1-git], [bug-CSSC@gnu.org], [CSSC])
+AC_INIT([GNU CSSC], [1.3.1], [bug-CSSC@gnu.org], [CSSC])
 AC_CONFIG_SRCDIR([src/sccsfile.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
