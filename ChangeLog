@@ -1,3 +1,19 @@
+2011-05-10  James Youngman  <jay@gnu.org>
+
+	Check we distributed all the tests.  Remove redundant Makefile.am files.
+	* auxfiles/check-testfiles.sh: New script (copied from GNU
+	findutils e66802375963941b3b54a0e038d18eccde449e14 with some
+	adaptations for CSSC) for checking that we installed all the test
+	scripts in "make dist".
+	* tests/Makefile.am (dist-hook): Invoke the
+	auxfiles/check-testfiles.sh script.
+	* tests/common/Makefile.am: remove unreferenced file;
+	tests/Makefile.am does not recurse.
+	* tests/delta/Makefile.am, tests/prs/Makefile.am: Likewise.
+	* tests/prt/Makefile.am, tests/sact/Makefile.am: Likewise.
+	* tests/admin/Makefile.am, tests/unget/Makefile.am: Likewise.
+	* tests/val/Makefile.am, tests/what/Makefile.am: Likewise.
+
 2011-04-30  James Youngman  <jay@gnu.org>
 
 	Fix Savannah bug bug #33153: "prs" includes "AUTO NULL DELTA"s.

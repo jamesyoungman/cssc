@@ -1,5 +1,6 @@
 TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel \
                 bsd-sccs year-2000 initial what val
+TESTFILE_SUFFIXES = .sh
 MKDIR = mkdir
 
 links: $(TESTDIRS)
@@ -161,3 +162,7 @@ dist-hook:
 		$$( find . \( -type d -name CVS -prune \) -o \
 		-type f -print ) ) | \
 	( cd $(distdir) && tar xfv - ) ; true
+	$(srcdir)/../auxfiles/check-testfiles.sh \
+		"$$(cd $(distdir) && pwd)" \
+		"$$(cd $(srcdir) && pwd)" \
+		$(TESTFILE_SUFFIXES)
