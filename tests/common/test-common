@@ -169,6 +169,8 @@ remove () {
 
 rename () { mv "$1" "$2" || miscarry "Could not rename $1 to $2" ; }
 
+test_script=
+
 ##############
 docommand () {
 # $1 is the label.  
@@ -180,11 +182,19 @@ docommand () {
 # If --silent is specified before the label, no output is notmally made.
 #
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
-label="$1"
 case $1 in
---silent) silent=true ; shift ; label="$1" ;;
+--silent) silent=true ; shift ;;
        *) silent=false  ;;
 esac
+if test -z "${test_script}"; then
+    script_dir=`dirname $0`
+    case "${script_dir}" in
+	.) script_dir=`pwd`;;
+    esac
+    script_base=`basename ${script_dir}`
+    test_script="${script_base}"/`basename $0`
+fi
+label="${test_script}:$1"
 eval "$silent" || echo_nonl "${label}"...
 
 shift

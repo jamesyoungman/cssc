@@ -25,6 +25,13 @@ remove $g $s $x $z $p
 # a trunk delta includes a delta that was on a trunk) we 
 # should get the same body as recorded in the file sf111140.wtd.
 # 
+test_base=`basename $0`
+test_dir=`dirname $0`
+case "${test_dir}" in
+    .)
+	test_dir=`pwd`
+esac
+label_prefix="`basename ${test_dir}`"/"${test_base}"
 
 do_pair() {
     seq="$1"
@@ -33,7 +40,7 @@ do_pair() {
     if awk "\$1 == $seq {print}" <  sf111140_full.txt | 
 	sed 's/^[0-9]* //'> wanted.tmp
     then
-	do_output f${seq} "${vg_get} -r${sid} -p $s" 0 wanted.tmp IGNORE
+	do_output "${label_prefix}:f${seq}" "${vg_get} -r${sid} -p $s" 0 wanted.tmp IGNORE
     else
 	miscarry "awk failed"
     fi

@@ -1,14 +1,12 @@
 2011-05-21  James Youngman  <jay@gnu.org>
 
-	Print qualified labels.
-	* tests/get/sf111140.sh (label_prefix): Print qualified labels (as
-	for docommand).
-
 	Print clearer test labels.
 	* tests/common/test-common (docommand): Print the test directory
 	and the test script as part of the label of each test, for
 	additional clarity and because many of them are actually not
 	unique.
+	* tests/get/sf111140.sh (label_prefix): Print qualified labels (as
+	for docommand).
 
 	Source the command-names script only once per test script.
 	* tests/common/real-thing: Instead of sourcing the command-names
