@@ -1,5 +1,8 @@
 2011-05-21  James Youngman  <jay@gnu.org>
 
+	* tests/Makefile.am (test-*): Indicate the full path of each test
+	script.
+
 	Set TZ=GMT in the y2k tests.
 	* tests/year-2000/ext.sh: Set $TZ to GMT in order to make it
 	possible for implementations which convert SCCS file dates to

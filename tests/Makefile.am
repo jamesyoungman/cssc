@@ -13,7 +13,7 @@ test-initial: links
 	@echo "Valgrind is: $(VALGRIND)"
 	$(SHELL) -ec 'cd initial && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
@@ -21,7 +21,7 @@ test-initial: links
 test-admin: links
 	$(SHELL) -ec 'cd admin && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
@@ -29,105 +29,105 @@ test-admin: links
 test-delta: links
 	$(SHELL) -ec 'cd delta && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-get: links
 	$(SHELL) -ec 'cd get && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
-		$(SHELL) $$i || exit 1; \
+		echo Running test `pwd`/$$i; \
+		$(SHELL) ./$$i || exit 1; \
 	done'
 
 test-prs: links
 	$(SHELL) -ec 'cd prs && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-prt: links
 	$(SHELL) -ec 'cd prt && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-unget: links
 	$(SHELL) -ec 'cd unget && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-sact: links
 	$(SHELL) -ec 'cd sact && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-large: links
 	$(SHELL) -ec 'cd large && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-sccsdiff: links
 	$(SHELL) -ec 'cd sccsdiff && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-cdc: links
 	$(SHELL) -ec 'cd cdc && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-binary: links
 	$(SHELL) -ec 'cd binary && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-rmdel: links
 	$(SHELL) -ec 'cd rmdel && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-what: links
 	$(SHELL) -ec 'cd what && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-val: links
 	$(SHELL) -ec 'cd val && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-year-2000: links
 	$(SHELL) -ec 'cd year-2000 && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
 test-bsd-sccs: links
 	$(SHELL) -ec 'cd bsd-sccs && for i in *.sh ; \
 	do \
-		echo Running test $$i; \
+		echo Running test `pwd`/$$i; \
 		$(SHELL) $$i || exit 1; \
 	done'
 
