@@ -11,6 +11,16 @@
 
 s=s.y2k.txt
 
+# All the commands in this file print timestamps.  Some
+# implementations of SCCS convert the timestamp data to a time_t value
+# as an intermediate representation.  Our test input file contains
+# values at the extreme ends of the range.  Hence we set TZ to GMT to
+# prevent overflows.  CSSC isn't subject to these overflows even on a
+# 32-bit system, since it doesn't use a scalar intermediate value.
+TZ=GMT
+export TZ
+
+
 brief='"-d:I: :D: :T:"'
 
 r1_5="1.5 68/12/31 23:59:59\n" # 2068: the last year we have
