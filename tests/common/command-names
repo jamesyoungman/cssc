@@ -13,7 +13,7 @@ echo "Directory under test is $dir"
 # in order to set up each test.  Because they are variables, we can set
 # them (and $dir) to test any set of binaries we want.
 get=${get:-${dir}/get}
-3admin=${admin:-${dir}/admin}
+admin=${admin:-${dir}/admin}
 cdc=${cdc:-${dir}/cdc}
 prs=${prs:-${dir}/prs}
 prt=${prt:-${dir}/prt}
