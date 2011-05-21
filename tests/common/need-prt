@@ -1,7 +1,9 @@
 #! /bin/sh
 
-# Common function definitions.
-. ../common/command-names
+if test -z "${prt}"; then
+    echo '${prt} is not set, please source common/test-common before common/need-prt' >&2
+    exit 1
+fi
 
 # Find out if we have a "prt" executable. 
 
@@ -25,6 +27,6 @@ $HAVE_PRT || {
     echo "The tests in $0 will not be carried out on this system because ${prt} is missing."
 
     # Exit successfully because we want the test suite to pass when run against
-    # SCCS implementations that lack SCCS.
+    # SCCS implementations that lack prt.
     exit 0
 }

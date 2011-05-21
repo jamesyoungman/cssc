@@ -1,5 +1,25 @@
 2011-05-21  James Youngman  <jay@gnu.org>
 
+	Print qualified labels.
+	* tests/get/sf111140.sh (label_prefix): Print qualified labels (as
+	for docommand).
+
+	Print clearer test labels.
+	* tests/common/test-common (docommand): Print the test directory
+	and the test script as part of the label of each test, for
+	additional clarity and because many of them are actually not
+	unique.
+
+	Source the command-names script only once per test script.
+	* tests/common/real-thing: Instead of sourcing the command-names
+	script unconditionally, just complain if it was not already
+	sourced.
+	* tests/common/command-names: Error out if the command-names
+	script is sourced twice.
+	* tests/common/config-data: Don't source the command-names script
+	more than once.
+	* tests/common/need-prt: Likewise.
+
 	* tests/Makefile.am (test-*): Indicate the full path of each test
 	script.
 

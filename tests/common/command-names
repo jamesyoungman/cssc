@@ -1,3 +1,9 @@
+if test -n "${sourced_command_names}"; then
+   echo "Error: sourced common/command-names script twice" >&2
+   exit 1
+else
+	sourced_command_names=1
+fi
 dir=${dir:-../../src}
 # Get the canonical directory name
 case "$dir" in 

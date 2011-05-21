@@ -6,8 +6,12 @@
 # it's not configured.
 
 # Common function definitions.
-. ../common/command-names
 . ../common/real-thing
+
+if test -z "${admin}"; then
+    echo '${admin} is not set, please source common/test-common before common/config-data' >&2
+    exit 1
+fi
 
 if $TESTING_CSSC
 then
