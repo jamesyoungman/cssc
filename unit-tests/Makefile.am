@@ -59,7 +59,7 @@ check_SCRIPTS = testwrapper.sh
 unit_tests = test_mylist test_myset test_sid test_relvbr \
 	test_release test_sid_list test_rel_list test_sccsdate \
 	test_delta test_delta-table test_encoding \
-	test_encoding2
+	test_encoding2 test_linebuf
 
 check_PROGRAMS = $(unit_tests) test_bigfile
 
@@ -75,6 +75,7 @@ test_delta_SOURCES = test_delta.cc
 test_delta_table_SOURCES = test_delta-table.cc
 test_encoding_SOURCES = test_encoding.cc
 test_encoding2_SOURCES = test_encoding2.cc
+test_linebuf_SOURCES = test_linebuf.cc
 test_bigfile_SOURCES = test_bigfile.cc
 test_bigfile_LDADD = ../src/libcssc.a
 

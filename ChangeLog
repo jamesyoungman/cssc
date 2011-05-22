@@ -1,3 +1,10 @@
+2011-05-22  James Youngman  <jay@gnu.org>
+
+	Add unit test for cssc_linebuf.
+	* unit-tests/Makefile.am (unit_tests): Add test_linebuf.
+	(test_linebuf_SOURCES): Build test_linebuf.
+	* unit-tests/test_linebuf.cc: New unit test file.
+
 2011-05-21  James Youngman  <jay@gnu.org>
 
 	Print clearer test labels.
