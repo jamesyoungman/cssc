@@ -32,6 +32,7 @@
 #include "seqstate.h"
 #include "delta.h"
 #include "delta-iterator.h"
+#include "delta-table.h"
 #include "linebuf.h"
 #include "cssc-assert.h"
 
@@ -44,9 +45,8 @@ sccs_file::get(FILE *out, mystring gname, seq_no seq, bool for_edit)
   if (!edit_mode_ok(for_edit))
     return false;
 
-  delta blankdelta;
-  struct subst_parms parms(out, (const char*)0, blankdelta, 0,
-                           sccs_date());
+  struct subst_parms parms(out, (const char*)0, delta_table->delta_at_seq(seq),
+			   0, sccs_date());
   class seq_state state(highest_delta_seqno());
 
   if (prepare_seqstate(state, seq,

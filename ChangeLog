@@ -1,3 +1,13 @@
+2011-11-19  James Youngman  <jay@gnu.org>
+
+	Fix Savannah bug #33633 (coredump in prs -d:GB:)
+	* src/sf-prs.cc (sccs_file::get): pass in the correct delta
+	information for keyword expansion instead of a blank (that is,
+	invalid) delta.  This fixes Savannah bug #33633.
+	* tests/prs/sv33633.sh: New file, test for this bug.
+	* tests/prs/s.sv33633.txt: Test input for the new test.
+	* NEWS: Mention this bug fix.
+
 2011-05-22  James Youngman  <jay@gnu.org>
 
 	Add unit test for cssc_linebuf.
