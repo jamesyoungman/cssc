@@ -1,3 +1,8 @@
+2013-04-20  James Youngman  <jay@gnu.org>
+
+	Typo fix.
+	* COPYING.bsd: Fix typo 'modifiactions'.
+
 2011-11-19  James Youngman  <jay@gnu.org>
 
 	Fix Savannah bug #33633 (coredump in prs -d:GB:)
