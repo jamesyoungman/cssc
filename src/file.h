@@ -30,6 +30,8 @@
 #ifndef CSSC__FILE_H__
 #define CSSC__FILE_H__
 
+#include <sys/types.h>
+
 #include "filelock.h"
 
 enum create_mode {
