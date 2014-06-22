@@ -19,6 +19,7 @@
  *
  * Functions for canonifying filenames.
  */
+#include <config.h>
 
 #include "sccsname.h"
 #include "file.h"

@@ -1,5 +1,14 @@
 2014-06-22  James Youngman  <jay@gnu.org>
 
+	Update gnulib.
+	* bootstrap: Update from current gnulib.
+	* bootstrap.conf: Remove second (and wrong) --tests-base
+	argument.  Don't munge include paths in gl/tests/Makefile.am
+	(since now, doing that breaks the build and whatever made it
+	necessary before no longer does).
+	* src/canonify.cc: Include <config.h> before (gnulib's replacement
+	of) <unistd.h>.
+
 	* src/file.h: Include <sys/types.h> for gid_t.
 
 2013-04-20  James Youngman  <jay@gnu.org>
