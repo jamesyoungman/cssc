@@ -21,18 +21,21 @@ dnl
 
 dnl Initialise.   Look for sccsfile.h to double-check that we are looking
 dnl at the correct directory.
+dnl The package version should match the regexp
+dnl ([0-9]+)\.([0-9]+)([a-z])?
+dnl ...at least according to the "Gnits" rules outlined
+dnl in the Automake manual.
+dnl   usually use -git to indicate that the person who compiled
+dnl   the code got it from git.
 AC_INIT([GNU CSSC], [1.3.2-git], [bug-CSSC@gnu.org], [CSSC])
 AC_CONFIG_SRCDIR([src/sccsfile.h])
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_MACRO_DIR([m4])
 
-# The package version should match the regexp
-# ([0-9]+)\.([0-9]+)([a-z])?
-# ...at least according to the "Gnits" rules outlined
-# in the Automake manual.
-#   usually use -git to indicate that the person who compiled
-#   the code got it from git.
-AM_INIT_AUTOMAKE([gnits 1.11.1])
+# Changes to AC_CONFIG_MACRO_DIR shoulld be reflected in ACLOCAL_AMFLAGS in Makefile.am.
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_MACRO_DIR([unit-tests/googletest/m4])
+
+AM_INIT_AUTOMAKE([gnits readme-alpha check-news tar-ustar 1.11.6])
 AC_CONFIG_HEADERS(config.h)
 
 dnl Feature and package checks
@@ -439,6 +442,44 @@ do
     gl_WARN_ADD([$warning_option])
 done
 ],[])
+
+
+## ==============================================================================
+## Googletest tests begin
+## ==============================================================================
+# TODO(chandlerc@google.com): Currently we aren't running the Python tests
+# against the interpreter detected by AM_PATH_PYTHON, and so we condition
+# HAVE_PYTHON by requiring "python" to be in the PATH, and that interpreter's
+# version to be >= 2.3. This will allow the scripts to use a "/usr/bin/env"
+# hashbang.
+PYTHON=  # We *do not* allow the user to specify a python interpreter
+AC_PATH_PROG([PYTHON],[python],[:])
+AS_IF([test "$PYTHON" != ":"],
+      [AM_PYTHON_CHECK_VERSION([$PYTHON],[2.3],[:],[PYTHON=":"])])
+AM_CONDITIONAL([HAVE_PYTHON],[test "$PYTHON" != ":"])
+
+# Configure pthreads.
+AC_ARG_WITH([pthreads],
+            [AS_HELP_STRING([--with-pthreads],
+               [use pthreads (default is yes)])],
+            [with_pthreads=$withval],
+            [with_pthreads=check])
+
+have_pthreads=no
+AS_IF([test "x$with_pthreads" != "xno"],
+      [ACX_PTHREAD(
+        [],
+        [AS_IF([test "x$with_pthreads" != "xcheck"],
+               [AC_MSG_FAILURE(
+                 [--with-pthreads was specified, but unable to be used])])])
+       have_pthreads="$acx_pthread_ok"])
+AM_CONDITIONAL([HAVE_PTHREADS],[test "x$have_pthreads" = "xyes"])
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(PTHREAD_LIBS)
+## ==============================================================================
+## Googletest tests end
+## ==============================================================================
+
 
 dnl *** NOTE:
 dnl There can be only ONE call to AC_OUTPUT in each configure.ac,

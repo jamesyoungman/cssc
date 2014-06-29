@@ -31,7 +31,14 @@
 #
 # We run the unit tests before the regression tests in order to make
 # it more obvious where the bug is when there is a test failure.
-ACLOCAL_AMFLAGS = -I m4
+
+# ACLOCAL_AMFLAGS should mirror AC_CONFIG_MACRO_DIR in configure.ac
+ACLOCAL_AMFLAGS = -I m4 -I unit-tests/googletest/m4
+
 SUBDIRS = gl docs testutils auxfiles src sccs-cgi unit-tests tests
 
 EXTRA_DIST = ChangeLog ChangeLog.1 ChangeLog.2
+
+
+distcheck-hook: 
+	"$(srcdir)/build-aux/check-googletest-files.sh" "$(srcdir)" "$(DIST_ARCHIVES)" 

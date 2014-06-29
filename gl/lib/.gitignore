@@ -71,3 +71,6 @@ unistd.h
 unistd.in.h
 wchar.h
 wchar.in.h
+/pthread.c
+/pthread.in.h
+/sched.in.h
