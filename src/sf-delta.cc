@@ -519,14 +519,12 @@ sccs_file::add_delta(mystring gname,
    * ID.  I believe that using the flag O_EXCL as fcreate() does resolves
    * that problem.
    */
-  FILE *get_out = fcreate(dname,
-			  CREATE_EXCLUSIVE |
-			  (flags.executable ? CREATE_EXECUTABLE : 0));
+  const int xmode = gfile_should_be_executable() ? CREATE_EXECUTABLE : 0;
+  FILE *get_out = fcreate(dname, CREATE_EXCLUSIVE | xmode);
   if (NULL == get_out)
     {
       remove(dname.c_str());
-      get_out = fcreate(dname, CREATE_EXCLUSIVE |
-			(flags.executable ? CREATE_EXECUTABLE : 0) );
+      get_out = fcreate(dname, CREATE_EXCLUSIVE | xmode);
     }
 
   if (NULL == get_out)

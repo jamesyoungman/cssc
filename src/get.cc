@@ -419,7 +419,7 @@ main(int argc, char **argv)
                   mode |= CREATE_READ_ONLY;
                 }
 
-	      if (file.executable_flag_set())
+	      if (file.gfile_should_be_executable())
 		{
 		  mode |= CREATE_EXECUTABLE;
 		}
@@ -480,7 +480,7 @@ main(int argc, char **argv)
               if (suppress_keywords)
               {
                   if (!set_gfile_writable(gname, true,
-					  file.executable_flag_set()))
+					  file.gfile_should_be_executable()))
                       retval = 1;
 		  maybe_clear_archive_bit(gname);
               }
@@ -492,7 +492,7 @@ main(int argc, char **argv)
                  */
                 give_up_privileges();
                 if (!set_gfile_writable(gname, false,
-					file.executable_flag_set()))
+					file.gfile_should_be_executable()))
                     status.success = false;
                 restore_privileges();
               }

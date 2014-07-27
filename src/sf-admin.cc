@@ -374,64 +374,73 @@ sccs_file::create(const sid &id,
   ASSERT (new_delta.deleted() == 0);
   ASSERT (new_delta.unchanged() == 0);
 
+  bool ret = true;
+
+  FILE *in = NULL;
+  if (iname != NULL)
+    {
+      if (strcmp(iname, "-") == 0)
+	{
+	  in = stdin;
+	}
+      else
+	{
+	  in = fopen(iname, "r");
+	  if (NULL == in)
+	    {
+	      errormsg_with_errno("%s: Can't open file for reading", iname);
+	      return false;
+	    }
+	}
+
+      bool file_is_executable = false;
+      if (get_open_file_xbits(in, &file_is_executable)) 
+	set_sfile_executable(file_is_executable);
+    }
+  
   FILE *out = start_update(new_delta);
   if (NULL == out)
-    return false;
-
+    {
+      fclose(in);
+      return false;
+    }
+  
   if (fprintf_failed(fprintf(out, "\001I 1\n")))
     return false;
 
-  bool ret = true;
-  if (iname != NULL)
+
+  if (NULL != in)
     {
-    FILE *in;
+      bool found_id = false;
+      unsigned long int lines = 0uL;
 
-    if (strcmp(iname, "-") == 0)
-      {
-	in = stdin;
-      }
-    else
-      {
-      in = fopen(iname, "r");
-      if (NULL == in)
+      // Insert the body...
+      if (body_insert(&force_binary,
+		      iname,		// input file name
+		      name.xfile().c_str(), // output file name
+		      in, out,
+		      &lines, &found_id))
 	{
-	  errormsg_with_errno("%s: Can't open file for reading", iname);
-	  // TODO: delete output file?
-	  fclose(out);
-	  return false;
+	  new_delta.set_inserted(lines);
+
+	  if (force_binary)
+	    flags.encoded = true;	// fixup file in sccs_file::end_update()
 	}
-      }
+      else
+	{
+	  ret = false;
+	}
 
-    bool found_id = false;
-    unsigned long int lines = 0uL;
+      if (in != stdin)
+	fclose(in);
 
-    // Insert the body...
-    if (body_insert(&force_binary,
-		     iname,		// input file name
-		     name.xfile().c_str(), // output file name
-		     in, out,
-		     &lines, &found_id))
-      {
-	new_delta.set_inserted(lines);
-
-	if (force_binary)
-	  flags.encoded = true;	// fixup file in sccs_file::end_update()
-      }
-    else
-      {
-	ret = false;
-      }
-
-    if (in != stdin)
-      fclose(in);
-
-    // TODO: what if no id keywords is fatal?  Delete current s-file?
-    // If so, do we continue with the next?
-    if (!found_id)
-      {
-	no_id_keywords(name.c_str()); // this function normally returns.
-      }
-  }
+      // TODO: what if no id keywords is fatal?  Delete current s-file?
+      // If so, do we continue with the next?
+      if (!found_id)
+	{
+	  no_id_keywords(name.c_str()); // this function normally returns.
+	}
+    }
 
   if (fprintf_failed(fprintf(out, "\001E 1\n")))
     return false;

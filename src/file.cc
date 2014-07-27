@@ -33,8 +33,9 @@
 #include "ioerr.h"
 #include "defaults.h"
 
-#include <unistd.h>
+#include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <stdio.h>
 #include "dirent-safer.h"
 
@@ -111,6 +112,35 @@ is_readable(const char *name) {
         return access(name, 04) != -1;
 }
 
+static bool
+get_mode_bits(const char *filename, mode_t mask, mode_t *result) 
+{
+  struct stat st;
+  if (0 != stat(filename, &st))
+    return false;
+
+  *result = (st.st_mode & mask);
+  return true;
+}
+
+bool
+get_open_file_xbits (FILE *f, bool *is_executable)
+{
+  const int fd = fileno(f);
+  if (fd < 0) 
+    return false;
+
+  struct stat st;
+  if (0 != fstat(fd, &st))
+    return false;
+
+  *is_executable = st.st_mode & 0111;
+  return true;
+}
+
+
+
+
 /* Determine if a given file is "writable".  If we
  * are root, we can write to a mode 000 file, but
  * we deem files of that sort not writable for these
@@ -126,21 +156,11 @@ is_readable(const char *name) {
 static int
 is_writable(const char *filename, int /* as_real_user = 1 */ )
 {
-  struct stat st;
-  if (0 != stat(filename, &st))
-    {
-      return 0;                 // can't stat it so can't read it, probably.
-    }
-  else
-    {
-      if (st.st_mode & 0222)
-        return 1;               // at least one of the write bits is set.
-      else
-        return 0;               // no write bits set.
-    }
-
+  mode_t bits;
+  if (!get_mode_bits(filename, 0222, &bits)) 
+    return 0;			// cannot tell
+  return bits ? 1 : 0;
 }
-
 
 /* Returns true if the file exists. */
 
@@ -621,7 +641,6 @@ create(mystring name, int mode) {
 
 	if (mode & CREATE_EXECUTABLE)
 	  {
-	    // A SCO extension.
 	    perms |= 0111;
 	  }
 

@@ -1,11 +1,73 @@
 2014-07-28  James Youngman  <jay@gnu.org>
 
+	Support executable history files (=> g-files executable on get).
+	* src/sf-admin.cc (create): Open any file specified with the -i
+	command-line option before calling start_update, and using the
+	open file pointer, call set_sfile_executable if the history file
+	should be created with execute bits set.
+	* src/sf-write.cc (start_update): Use sfile_should_be_executable
+	rather than flags.executable in order to decide whether the
+	updated history file should be executable.
+	* NEWS: Mention that the 'x' flag no longer determines the mode of
+	the updated history file.
+	* src/sccsfile.h (sfile_executable): new boolean member variable.
+	If true, the history file, when we create it, should be
+	executable.
+	(set_sfile_executable): setter for sfile_executable.
+	(sfile_should_be_executable): getter for sfile_executable.
+	(gfile_should_be_executable): new method; when true, the gotten
+	file should be executable.
+	* src/sccsfile.cc (sccs_file): Point out that setting the 'x' flag
+	is not the most portable way to make gotten files executable.
+	(set_sfile_executable): Implement (sets the sfile_executable
+	member variable).
+	(gfile_should_be_executable): Implement (when this method returns
+	true, the gotten file should be executable).
+	(sfile_should_be_executable): Implement (when this method returns
+	true, the (updated) history file should be executable).
+	(sccs_file): If the history file is executable, remember this so
+	that the gotten file is created with the relevant execute bits
+	set.
+	* src/get.cc (main): The gotten file should be executable if
+	sccs_file::gfile_should_be_executable() returns true (that is, if
+	either the 'x' flag is set or the history file is executable).
+	* src/sf-delta.cc (add_delta): When greating gotten files (for
+	diffing) use gfile_should_be_executable rather than
+	flags.executable.
+	* docs/cssc.texi (Executable File Support): Document the fact that
+	the execute bits of the history file's mode are now copied to the
+	gotten file's mode (subject to umask) and in the reverse direction
+	in the case of admin -i.
+	(admin): Document the same behaviour.
+	(Flags): Mention the mode of the history file as an alternative to
+	setting the 'x' flag.
+	(SCCS Version Differences): Mention this behaviour (which follows
+	Solaris) for admin and get.
+	(Data Keywords): Add missing comma after @xref.
+	* tests/admin/executable.sh: New test file; verifies that the
+	execute bits of the file offered via admin -i are copied to the
+	history file.  Verify that setting the 'x' flag cuases the g-file
+	to be created executable, and that not setting it does not (when
+	the history file is not executable).  Verify that the history file
+	can still be set as executable when the initial body is presented
+	on stdin.
+	* tests/common/test-common (docommand): pass through the exit
+	status of the child command.  Log the return value, stdout and
+	stderr in command.log.
+	* src/file.cc (get_mode_bits): New function; Factors stat call out
+	of is_writable.
+	(get_open_file_xbits): New function; populate an output flag as
+	true IFF the FILE* argument is open on a file which has an execute
+	bit set.
+	* src/file.h: Declare get_open_file_xbits.
+	* tests/get/executable.sh: New test file; verify that the
+	executable bit is copied from the history file to the gotten
+	file.
+
 	Process test files in a consistent order for a case where this matters.
 	* tests/get/middle-fail.sh (e3): List the history files explicitly
 	so that we know that SCCS/s.b is definitely the second file of
 	three processed.
-
-2014-07-27  James Youngman  <jay@gnu.org>
 
 	Show the label of the test command in the command.log file.
 	* tests/common/test-common (docommand): Show the label for the

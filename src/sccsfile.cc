@@ -35,6 +35,7 @@
 #include "quit.h"
 #include "mylist.h"
 #include "ioerr.h"
+#include "file.h"
 
 #include <ctype.h>
 #include <unistd.h>             // SEEK_SET on SunOS.
@@ -767,6 +768,13 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       ctor_fail(-1, "%s: Cannot open SCCS file.\n", name.c_str());
     }
 
+  // If the history file is executable, remember this fact.
+  bool is_executable;
+  if (get_open_file_xbits(f, &is_executable))
+    {
+      set_sfile_executable (is_executable);
+    }
+
   char c;
   read_line(&c);		// FIXME: check for EOF
 
@@ -956,6 +964,8 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       case 'x':
         // The 'x' flag is supported by SCO's version of SCCS.
         // When this flag is set, the g-file is marked executable.
+        // The g-file is also executable when the s-file is executable
+        // (to follow the example of Solaris).
         flags.executable = 1;
         break;
 
@@ -1239,12 +1249,6 @@ bool sccs_file::branches_allowed() const
   return 0 != flags.branch;
 }
 
-bool sccs_file::executable_flag_set() const
-{
-  return 0 != flags.executable;
-}
-
-
 /* There are some features that we don't properly understand.
  * If we see them, we should abandon any attempt to modify the
  * file.   We call saw_unknown_feature() when we see one.  It
@@ -1302,6 +1306,27 @@ is_known_keyword_char(char c)
 {
   return strchr("MIRLBSDHTEGUYFPQCZWA", c) != NULL;
 }
+
+void sccs_file::
+set_sfile_executable(bool state) 
+{
+  sfile_executable = state;
+}
+
+bool sccs_file::
+gfile_should_be_executable() const
+{
+  return sfile_executable || flags.executable;
+}
+
+
+bool sccs_file::
+sfile_should_be_executable() const
+{
+  return sfile_executable;
+}
+
+
 
 /* Local variables: */
 /* mode: c++ */

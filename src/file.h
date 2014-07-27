@@ -52,6 +52,7 @@ FILE *open_null();
 int is_readable(const char *name);
 int is_directory(const char *name);
 int file_exists(const char *name);
+bool get_open_file_xbits (FILE *f, bool *is_executable);
 const char *get_user_name();
 int user_is_group_member(gid_t gid);
 FILE *fcreate(mystring name, int mode);

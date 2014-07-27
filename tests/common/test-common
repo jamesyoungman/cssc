@@ -207,6 +207,9 @@ echo "# ${label}"  >> command.log
 echo $1 >> command.log
 eval "$1" >got.stdout 2>got.stderr
 rv=$?
+echo '# $? was' "$rv;  $(env LC_ALL=C wc -c < got.stdout) bytes on stdout; $(env LC_ALL=C wc -c < got.stderr) bytes on stderr" >> command.log
+sed -e 's/^/# stdout: /' >> command.log < got.stdout
+sed -e 's/^/# stderr: /' >> command.log < got.stderr
 
 if test "$2" != "IGNORE"
 then
@@ -248,7 +251,7 @@ fi
 
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
 eval "$silent" || echo "passed "
-true ;
+( exit $rv; )
 }
 
 #######################
@@ -271,6 +274,9 @@ echo "# ${label}"  >> command.log
 echo $1 >> command.log
 $1 >got.stdout 2>got.stderr
 rv=$?
+echo '# $? was' "$rv;  $(env LC_ALL=C wc -c < got.stdout) bytes on stdout; $(env LC_ALL=C wc -c < got.stderr) bytes on stderr" >> command.log
+sed -e 's/^/# stdout: /' >> command.log < got.stdout
+sed -e 's/^/# stderr: /' >> command.log < got.stderr
 
 if test "$2" != "IGNORE"
 then
@@ -293,5 +299,5 @@ fi
 
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
 echo "passed "
-true ;
+( exit ${rv}; )
 }

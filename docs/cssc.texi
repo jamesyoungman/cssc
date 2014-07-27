@@ -185,6 +185,13 @@ This creates the archive file @file{s.foo.c} and initialises it
 with the current contents of your source file, @file{foo.c}.  If you use
 Emacs as your editor, you can just use @kbd{C-x v i} instead.
 
+@cindex umask
+@cindex Solaris
+When the input file @file{foo.c} is executable, the resulting history
+file @file{s.foo.c} is also executable, subject to the current umask
+setting.  This behaviour follows that of Solaris; other @sc{sccs}
+implementations may not do this.
+
 Another frequently-used option is @samp{-b}, which indicates that the
 file is to be treated as a binary file rather than as text.  You might
 want to do this because the file actually contains binary data, or just
@@ -360,7 +367,9 @@ Sets the executable bit on the g-file.  This flag is a SCO OpenServer
 extension and is not supported by other versions of @sc{sccs}.
 Setting this flag with @code{admin -fx} generates a warning to this
 effect.  If @sc{cssc} is simply processing a file which already has
-this flag set, no message will be generated.  See
+this flag set, no message will be generated.   A more portable way to
+achieve the same effect is to change the file mode of the history file
+to make it executable.  See
 @ref{Interoperability} for more information on compatibility between
 @sc{cssc} and other implementations of @sc{sccs}.
 @end table
@@ -1280,7 +1289,7 @@ the excluded sequence numbers are printed.  If there are ignored
 deltas, @samp{/} is printed as a separator and then the ignored
 sequence numbers are printed.  This means it's difficult to tell from
 the result of @samp{:DI:} whether the sequence numbers after the last
-@samp{/} were excluded or ignored.  @xref{SCCS Version Differences}
+@samp{/} were excluded or ignored.  @xref{SCCS Version Differences},
 for a brief description of how @samp{:DI:} expands to different things
 on different @sc{sccs} implmentations.  If you need reliable
 information, then you will need to use something like
@@ -2501,7 +2510,7 @@ but do not need to be turned off.
 
 @menu
 * Binary File Support::      Enabling or disabling support for binary files.
-* Executable File Support::  Support for a SCO extension.
+* Executable File Support::  Control over the excutable bits in file modes.
 * BitKeeper::                Limited support for Bitkeeper files exists.
 * Maximum Line Length::      Limiting the length of lines in the SCCS file.
 * Limitations of diff::      Diff has limits too, on many non-GNU systems.
@@ -2550,6 +2559,25 @@ execute bits are set.  This feature exists for compatibility with SCO
 OpenServer's @sc{sccs}.  Do not use this feature if you wish to
 interoperate with other implementations of @sc{sccs}.  Setting this
 flag with @code{admin -fx} generates a warning about this.
+
+@cindex umask
+@cindex Solaris
+A more portable alternative is for the history file itself to be
+executable.  When this is the case, the mode of the gotten file is
+also executable (subject to the current umask value).  When a history
+file is created with @code{admin -i}, the history file is created with
+execute bits set (subject to the current umask value) if the input
+file is executable.  This usage of @code{admin -i} does not set the
+@code{x} flag in the history file.  
+
+When no argument is specified to the @samp{-i} option of @code{admin},
+the initial file body is taken from stdin.  If stdin is redirected
+from an file with an execute permission bit set in its mode, the
+history file will also be executable (subject to the umask setting).
+
+This behaviour (of setting and using the execute permissions on the
+history file) follows that of Solaris; other @sc{sccs} implementations
+may not do this.
 
 @node BitKeeper, Maximum Line Length, Executable File Support, Interoperability
 @section BitKeeper
@@ -2803,6 +2831,16 @@ feature.  While @sc{csssc} provides this feature also, its use is not
 recommended.  The @code{prt -f} command does not indicate the value of
 the @code{x} flag.
 
+@cindex Solaris
+The Solaris implementation of @sc{sccs} copies the execute bits from
+the mode of the history file to the mode of the gotten file.  It also
+does a similar thing for @code{admin -i}.  This feature is also
+implemented in @sc{cssc}, though other implementations of @sc{sccs}
+may not do this.  The mode of the gotten file (and the history file
+for @code{admin -i} is still controlled by the vurrent umask setting.
+
+@ref{Executable File Support}.
+
 @item Initial delta
 The @option{-r} option is used to specify the release of the initial
 delta.  Some implementations of @sc{sccs} allow this to be used to
@@ -2832,6 +2870,10 @@ Sun Solaris 8 features a @code{y} flag.  If the @code{y} flag is set
 in the @sc{sccs} file, only the specified @sc{sccs} keywords will be
 expanded in the gotten file (assuming that the @option{-k} and
 @option{-e} options are not used).
+
+Solaris and @sc{cssc} set the execute bits of the gotten file if the
+history file is executable.  Other versions of @sc{sccs} may or may
+not do this.
 
 @cindex SCO
 The @code{get} command on SCO OpenServer honours the setting of the

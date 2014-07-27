@@ -1,5 +1,10 @@
 New in CSSC-1.4.1-rc1, 2014-MM-DD
 
+         * When the history file is updated (with admin or delta for
+           example) the history file is not made executable simply
+           because the 'x' flag is set.  Instead, preserve the
+           executable-ness from the history file we are replacing.
+
 New in CSSC-1.4.0, 2014-07-11
 
          * New stable release, almost identical to the test release

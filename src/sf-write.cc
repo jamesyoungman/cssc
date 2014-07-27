@@ -82,8 +82,7 @@ sccs_file::start_update() {
 
 
 	// The 'x' flag is a SCO extension.
-	const int x = (flags.executable ? CREATE_EXECUTABLE : 0);
-
+	const int x = sfile_should_be_executable() ? CREATE_EXECUTABLE : 0;
         FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE | x);
 
         if (out == NULL)
@@ -342,6 +341,8 @@ sccs_file::write(FILE *out) const
 
 
   // x - executable flag (a SCO extension)
+  // Setting execute perms on the history file is a more portable way to
+  // achieve what the user probably wants.
   if (flags.executable)
     {
       if (printf_failed(fprintf(out, "\001f x\n")))

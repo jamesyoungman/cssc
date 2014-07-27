@@ -59,6 +59,7 @@ private:
   int body_lineno;
   bool xfile_created;
   bool is_bk_file;
+  bool sfile_executable;
 
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
@@ -107,6 +108,9 @@ private:
   void check_bk_comment(char ch, char arg) const;
   bool edit_mode_ok(bool editing) const;
 
+  void set_sfile_executable(bool state);
+  bool sfile_should_be_executable() const;
+  
 public:
 
   // sccs_file::sccs_file(sccs_name&, enum _mode) MUST
@@ -265,11 +269,11 @@ public:
   void set_reserved_flag(const char *s);
   void set_expanded_keyword_flag(const char *s);
   void set_type_flag(const char *s);
+  bool gfile_should_be_executable() const;
 
 
   /* Used by get.cc (implemented in sccsfile.cc) */
   bool branches_allowed() const;
-  bool executable_flag_set() const;
 
   /* val.cc */
   const mystring  get_module_type_flag();
