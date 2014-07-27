@@ -7,6 +7,11 @@
 
 2014-07-27  James Youngman  <jay@gnu.org>
 
+	Show the label of the test command in the command.log file.
+	* tests/common/test-common (docommand): Show the label for the
+	current command in command.log.
+	(do_output): Likewise
+
 	Update version number.
 	* configure.ac: Move on from version 1.4.0.
 	* NEWS: Add a new section for changes in CSSC-1.4.1-rc1.

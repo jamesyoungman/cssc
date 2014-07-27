@@ -202,6 +202,8 @@ shift
 echo_nonl $4 > expected.stderr
 echo $1 > last.command
 
+echo  >> command.log
+echo "# ${label}"  >> command.log
 echo $1 >> command.log
 eval "$1" >got.stdout 2>got.stderr
 rv=$?
@@ -264,6 +266,8 @@ shift
 echo_nonl $4 > expected.stderr
 echo $1 > last.command
 
+echo  >> command.log
+echo "# ${label}"  >> command.log
 echo $1 >> command.log
 $1 >got.stdout 2>got.stderr
 rv=$?
