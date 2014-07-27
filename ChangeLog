@@ -1,3 +1,10 @@
+2014-07-28  James Youngman  <jay@gnu.org>
+
+	Process test files in a consistent order for a case where this matters.
+	* tests/get/middle-fail.sh (e3): List the history files explicitly
+	so that we know that SCCS/s.b is definitely the second file of
+	three processed.
+
 2014-07-27  James Youngman  <jay@gnu.org>
 
 	Update version number.

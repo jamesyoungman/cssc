@@ -37,7 +37,10 @@ done
 
 docommand e1 "${vg_get} -e SCCS/s.b" 0 IGNORE IGNORE
 docommand e2 "test -w b" 0 "" ""
-docommand e3 "${vg_get} SCCS" 1 IGNORE IGNORE
+# The point of this test is that we fail on b and still process c.
+# Hence we cannot rely on the order in which directory entries are
+# traversed and therefore we list the files explicitly.
+docommand e3 "${vg_get} SCCS/s.a SCCS/s.b SCCS/s.c" 1 IGNORE IGNORE
 
 # At this point, a read-only copy of a and c should exist.
 # b should still be writable. 
