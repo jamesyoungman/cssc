@@ -1,3 +1,9 @@
+2014-07-27  James Youngman  <jay@gnu.org>
+
+	Update version number.
+	* configure.ac: Move on from version 1.4.0.
+	* NEWS: Add a new section for changes in CSSC-1.4.1-rc1.
+
 2014-07-11  James Youngman  <jay@gnu.org>
 
 	Release CSSC-1.4.0.
