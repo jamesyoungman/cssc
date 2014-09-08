@@ -22,14 +22,15 @@
  * Handle fatal signals...
  *
  */
+#include "config.h"
+
 #include <cstdlib>
-
-#include "cssc.h"
-#include "version.h"
-#include "quit.h"
-
 #include <signal.h>             /* TODO: consider using sigaction(). */
+
 #include "cssc-assert.h"
+#include "cssc.h"
+#include "quit.h"
+#include "version.h"
 
 
 /* The expansion of RETSIGTYPE is automatically decided by the configure

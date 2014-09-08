@@ -21,6 +21,8 @@
  * sccs_file::no_id_keywords()
  */
 
+#include <config.h>
+
 #include "cssc.h"
 #include "sccsfile.h"
 #include "except.h"

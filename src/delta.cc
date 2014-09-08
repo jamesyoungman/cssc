@@ -24,6 +24,10 @@
  *
  */
 
+
+#include <config.h>
+
+#include "cssc.h"
 #include "delta.h"
 #include "cleanup.h"
 #include "my-getopt.h"

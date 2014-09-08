@@ -24,6 +24,8 @@
  *
  */
 
+#include <config.h>
+
 #include "cssc.h"
 #include "mylist.h"
 #include "sccsfile.h"		// declares these functions.

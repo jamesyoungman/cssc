@@ -31,13 +31,14 @@
  * the file pointer on our file too).
  */
 
-#include "cssc.h"
-#include "sysdep.h"
-#include "defaults.h"		// CONFIG_NULL_FILENAME
+#include <config.h>
 
 #include <unistd.h>
 #include <stdio.h>		/* perror() */
 
+#include "cssc.h"
+#include "sysdep.h"
+#include "defaults.h"		// CONFIG_NULL_FILENAME
 
 class SafeFdCheck
 {

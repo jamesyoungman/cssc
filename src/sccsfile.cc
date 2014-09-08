@@ -25,6 +25,7 @@
  * the members in this file are used to read from the SCCS file.
  *
  */
+#include <config.h>
 #include <errno.h>
 
 #include "cssc.h"

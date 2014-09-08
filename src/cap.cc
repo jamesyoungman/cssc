@@ -23,6 +23,8 @@
  * Utilities for limiting output to the constraints of the file format.
  */
 
+#include <config.h>
+
 #include "cssc.h"
 
 

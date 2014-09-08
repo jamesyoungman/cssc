@@ -23,6 +23,8 @@
  * Functions for cleaning up and quitting.
  *
  */
+#include "config.h"
+
 #include <cstdio>
 #include <cstring>
 #include <cerrno>

@@ -112,6 +112,20 @@ sccs_LDADD = libcssc.a $(LIBOBJS) -lgnulib
 sccsdiff: sccsdiff.sh
 	sed -e 's:__csscutildir__:$(csscutildir):g' < sccsdiff.sh > $@ && chmod a+x $@ || { rm -f $@; false; }
 
+check-include-order:
+	rv=0; \
+	for f in $(srcdir)/*.cc; \
+	do \
+		msg="`sed -n -f $(top_srcdir)/auxfiles/firstinclude.sed < $$f`"; \
+		if test -n "$${msg}"; \
+		then \
+			set -- $${msg} ; line=$${1} ; shift; errmsg="$${*}"; \
+			echo "$${f}:$${line}:$${errmsg}" >&2; \
+			rv=1; \
+		fi \
+	done; \
+	exit $${rv}
+
 testsplit$(EXEEXT): fnsplit.cc mystring.$(OBJEXT) quit.$(OBJEXT)
 	$(CXXCOMPILE) -DTEST_FNSPLIT -o testsplit$(EXEEXT) \
 		$(srcdir)/fnsplit.cc mystring.$(OBJEXT) quit.$(OBJEXT)

@@ -23,6 +23,8 @@
  * Extract a requested delta from a SCCS file.
  *
  */
+#include "config.h"
+
 #include <errno.h>
 
 #include "cssc.h"

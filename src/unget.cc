@@ -25,6 +25,8 @@
  *
  */
 
+#include <config.h>
+
 #include "cssc.h"
 #include "fileiter.h"
 #include "pfile.h"

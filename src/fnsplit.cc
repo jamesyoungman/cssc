@@ -20,6 +20,8 @@
  * Functions for canonifying filenames.
  */
 
+#include <config.h>
+
 #include "cssc.h"
 #include "mystring.h"
 #include "file.h"		// declaration of split_filename.

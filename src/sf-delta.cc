@@ -25,7 +25,10 @@
  * Members of sccs_file for adding a delta to the SCCS file.
  *
  */
+#include <config.h>
+
 #include <errno.h>
+#include <unistd.h>
 
 #include "cssc.h"
 #include "sccsfile.h"
@@ -42,9 +45,6 @@
 #include "file.h"
 
 #undef JAY_DEBUG
-
-#include <unistd.h>
-
 
 
 class diff_state

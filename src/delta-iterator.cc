@@ -25,6 +25,9 @@
  *
  */
 
+#include <config.h>
+
+#include "cssc.h"
 #include "delta-iterator.h"
 #include "delta-table.h"
 #include "cssc-assert.h"

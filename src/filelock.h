@@ -28,6 +28,7 @@
 #define CSSC__FILELOCK_H__
 
 #include "cleanup.h"
+#include "mystring.h"
 
 class file_lock : private cleanup {
 	int locked;

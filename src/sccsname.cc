@@ -25,6 +25,7 @@
  *
  */
 
+#include <config.h>
 #include "cssc.h"
 #include "sccsname.h"
 #include "cssc-assert.h"

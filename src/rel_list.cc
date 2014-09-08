@@ -20,6 +20,7 @@
  * placed in the Public Domain.
  *
  */
+#include "config.h"
 #include <cstdlib>
 
 #include "cssc.h"

@@ -23,6 +23,12 @@
  *
  */
 
+#include <config.h>
+
+#include <cstdio>
+#include <cstring>
+
+#include "cssc.h"
 #include "bodyio.h"
 #include "quit.h"
 #include "cssc-assert.h"
@@ -31,9 +37,6 @@
 #include "linebuf.h"
 #include "ioerr.h"
 #include "file.h"
-
-#include <cstdio>
-#include <cstring>
 
 /* Check if we have exceeded the maximum line length.
  */

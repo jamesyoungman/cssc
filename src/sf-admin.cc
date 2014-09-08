@@ -26,6 +26,7 @@
  *
  */
 
+#include <config.h>
 #include "cssc.h"
 #include "sccsfile.h"
 #include "sl-merge.h"

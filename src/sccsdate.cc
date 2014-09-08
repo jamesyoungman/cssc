@@ -24,6 +24,7 @@
  * Members of the class sccs_date.
  *
  */
+#include <config.h>
 #include <cstring>
 
 #include "cssc.h"

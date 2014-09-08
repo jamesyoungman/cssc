@@ -22,6 +22,7 @@
  *
  */
 
+#include <config.h>
 #include "cssc.h"
 #include "rel_list.h"
 

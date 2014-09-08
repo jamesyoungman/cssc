@@ -24,6 +24,8 @@
  * Routines for running programmes.
  *
  */
+#include "config.h"
+
 #include <cstdio>
 #include <errno.h>
 

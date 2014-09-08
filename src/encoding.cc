@@ -25,6 +25,9 @@
  * Compile on its own, defining TEST_CODE, to compile a test program.
  */
 
+#include <config.h>
+
+#include "cssc.h"
 #include "bodyio.h"
 #include "cssc-assert.h"
 

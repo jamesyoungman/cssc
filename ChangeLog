@@ -1,3 +1,68 @@
+2014-09-08  James Youngman  <jay@gnu.org>
+
+	Always include config.h first; eliminate some compiler warnings.
+	* auxfiles/firstinclude.sed: New.  Script which determines what
+	the first file #included in a C/C++ source file is.
+	* auxfiles/Makefile.am (EXTRA_DIST): Distribute firstinclude.sed.
+	* src/Makefile.am (check-include-order): Check that each source
+	file includes <config.h> before any other include file.
+	* src/admin.cc: Inlude <config.h> first.  Include system headers
+	before our own headers.
+	* src/bodyio.cc: Likewise.
+	* src/cap.cc: Likewise.
+	* src/cdc.cc: Likewise.
+	* src/delta-iterator.cc: Likewise.
+	* src/delta-table.cc: Likewise.
+	* src/delta.cc: Likewise.
+	* src/dtbl-prepend.cc: Likewise.
+	* src/encoding.cc: Likewise.
+	* src/environment.cc: Likewise.
+	* src/fatalsig.cc: Likewise.
+	* src/fdclosed.cc: Likewise.
+	* src/fnsplit.cc: Likewise.
+	* src/l-split.cc: Likewise.
+	* src/linebuf.cc: Likewise.
+	* src/get.cc: Likewise.
+	* src/pf-add.cc: Likewise.
+	* src/pfile.cc: Likewise.
+	* src/prompt.cc: Likewise.
+	* src/prs.cc: Likewise.
+	* src/prt.cc: Likewise.
+	* src/quit.cc: Likewise.
+	* src/rel_list.cc: Likewise.
+	* src/rmdel.cc: Likewise.
+	* src/run.cc: Likewise.
+	* src/sact.cc: Likewise.
+	* src/sccs-delta.cc: Likewise.
+	* src/rl-merge.cc: Likewise.
+	* src/sccsdate.cc: Likewise.
+	* src/sccsfile.cc: Likewise.
+	* src/sccsname.cc: Likewise.
+	* src/seqstate.cc: Likewise.
+	* src/sf-add.cc: Likewise.
+	* src/sf-admin.cc: Likewise.
+	* src/sf-cdc.cc: Likewise.
+	* src/sf-chkid.cc: Likewise.
+	* src/sf-delta.cc: Likewise.
+	* src/sf-get.cc: Likewise.
+	* src/sf-get2.cc: Likewise.
+	* src/sf-get3.cc: Likewise.
+	* src/sf-kw.cc: Likewise.
+	* src/sf-prs.cc: Likewise.
+	* src/sf-prt.cc: Likewise.
+	* src/sf-rmdel.cc: Likewise.
+	* src/sf-write.cc: Likewise.
+	* src/sid.cc: Likewise.
+	* src/sf-val.cc: Likewise.
+	* src/unget.cc: Likewise.
+	* src/val.cc: Likewise.
+	* src/writesubst.cc: Likewise.
+	* src/file.cc: Likewise.  Also move the definition of unprivileged
+	out of the #if in order to avoid a compiler warning.
+	* src/file.h: #include "mystring.h" since we use that class in
+	this header.
+	* src/filelock.h: Likewise.
+
 2014-07-28  James Youngman  <jay@gnu.org>
 
 	Support executable history files (=> g-files executable on get).

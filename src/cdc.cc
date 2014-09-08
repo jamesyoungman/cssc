@@ -23,6 +23,8 @@
  *
  */
 
+#include <config.h>
+
 #include "cssc.h"
 #include "my-getopt.h"
 #include "fileiter.h"

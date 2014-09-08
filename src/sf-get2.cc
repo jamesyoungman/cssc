@@ -25,6 +25,10 @@
  *
  */
 
+#include <config.h>
+
+#include <ctype.h>
+
 #include "cssc.h"
 #include "sccsfile.h"
 #include "pfile.h"
@@ -32,8 +36,6 @@
 #include "delta-iterator.h"
 #include "delta-table.h"
 
-
-#include <ctype.h>
 
 bool sccs_file::sid_matches(const sid& requested,
 			    const sid& found,

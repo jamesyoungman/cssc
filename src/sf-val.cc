@@ -22,7 +22,10 @@
  * Members of class sccs_file used by "val".
  *
  */
+#include <config.h>
+
 #include <vector>
+
 #include "cssc.h"
 #include "sccsfile.h"
 #include "delta.h"

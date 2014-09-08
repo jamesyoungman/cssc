@@ -22,15 +22,15 @@
  * sections "Environment" and "Interoperability" in the CSSC manual.
  *
  */
+#include "config.h"
+
+#include <cerrno>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cstdio>
-#include <cerrno>
-
-#include "cssc.h"
-
 #include <limits.h>
 
+#include "cssc.h"
 
 bool binary_file_creation_allowed (void)
 {

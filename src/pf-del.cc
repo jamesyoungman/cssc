@@ -24,6 +24,8 @@
  * a p-file.
  *
  */
+#include "config.h"
+
 #include <utility>
 
 #include "cssc.h"

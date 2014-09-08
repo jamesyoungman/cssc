@@ -25,11 +25,13 @@
  *
  */
 
+#include <config.h>
+
+#include <ctype.h>
+
 #include "cssc.h"
 #include "sid.h"
 #include "ioerr.h"
-
-#include <ctype.h>
 
 mystring sid::as_string() const
 {

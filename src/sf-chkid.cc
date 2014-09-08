@@ -23,12 +23,14 @@
  *
  */
 
+#include <config.h>
+
+#include <string.h>
+
 #include "cssc.h"
 #include "sccsfile.h"
 #include "linebuf.h"
 #include "bodyio.h"
-
-#include <string.h>
 
 bool
 is_id_keyword_letter(char ch)

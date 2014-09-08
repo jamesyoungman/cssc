@@ -33,6 +33,7 @@
 #include <sys/types.h>
 
 #include "filelock.h"
+#include "mystring.h"
 
 enum create_mode {
 	CREATE_EXCLUSIVE     =  001,

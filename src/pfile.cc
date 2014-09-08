@@ -23,6 +23,8 @@
  * Common members of the class sccs_pfile.
  *
  */
+#include "config.h"
+
 #include <errno.h>
 
 #include "cssc.h"

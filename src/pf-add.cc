@@ -23,6 +23,8 @@
  *
  */
 
+#include <config.h>
+
 #include "cssc.h"
 #include "pfile.h"
 #include "except.h"

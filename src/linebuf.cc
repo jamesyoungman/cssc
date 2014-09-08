@@ -23,6 +23,8 @@
  * Members of the class cssc_linebuf.
  *
  */
+#include "config.h"
+
 #include <cstdio>
 #include <cstring>
 #include <climits>

@@ -23,6 +23,8 @@
  * Administer and create SCCS files.
  *
  */
+#include <config.h>
+
 #include <errno.h>
 
 #include "cssc.h"

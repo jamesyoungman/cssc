@@ -23,20 +23,22 @@
  * System dependent routines for accessing files.
  *
  */
-#include <errno.h>
+#include "config.h"
 
-#include "cssc.h"
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "cssc.h"		/* for CONFIG_CAN_HARD_LINK_AN_OPEN_FILE */
 #include "cssc-assert.h"
 #include "sysdep.h"
 #include "file.h"
 #include "quit.h"
 #include "ioerr.h"
 #include "defaults.h"
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdio.h>
 #include "dirent-safer.h"
 
 /* Redirects stdout to a "null" file (eg. /dev/null). */
@@ -172,13 +174,13 @@ file_exists(const char *name) {
 
 
 
+static int unprivileged = 0;
+
 #ifdef CONFIG_UIDS
 
 /* A flag to indicate whether or not the programme is an privileged
    (effective UID != real UID) or unprivileged (effective UID == real
    UID). */
-
-static int unprivileged = 0;
 
 #ifdef SAVED_IDS_OK
 
