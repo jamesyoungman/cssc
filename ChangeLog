@@ -1,5 +1,8 @@
 2016-02-07  James Youngman  <jay@gnu.org>
 
+	* src/mylist.h (mylist): Remove the obsolete implementation of
+	mylist (which was disabled via the preprocessor anyway).
+
 	Mention that gnulib has been updated.
 	* NEWS: mention this.
 
