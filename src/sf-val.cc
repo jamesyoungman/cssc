@@ -312,10 +312,8 @@ sccs_file::validate() const
   // for the flags section:-
 
   // Check that the 'y' flag specifies only known keywords.
-  const mylist<char> entries = flags.substitued_flag_letters.list();
-  for (mylist<char>::size_type k=0; k<entries.length(); ++k)
+  for (auto flag : flags.substitued_flag_letters)
     {
-      char flag = entries[k];
       if (!is_known_keyword_char(flag))
 	{
 	  warning("The 'y' flag specifies a keyword letter '%c', "

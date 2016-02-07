@@ -26,11 +26,12 @@
 #ifndef CSSC__SCCSFILE_H__
 #define CSSC__SCCSFILE_H__
 
+#include <set>
+
 #include "sccsname.h"
 #include "sid.h"
 #include "sccsdate.h"
 #include "mylist.h"
-#include "myset.h"
 #include "rel_list.h"
 #include "delta.h"
 #include "pfile.h"
@@ -84,7 +85,7 @@ private:
 
     int encoded;
     int executable;
-    myset<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
+    std::set<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
   } flags;
 
   mylist<mystring> comments;

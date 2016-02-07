@@ -29,6 +29,7 @@
 #define CSSC__LIST_H__
 
 #include <cstdlib>
+#include <algorithm>
 #include <vector>
 #include <set>
 
@@ -47,6 +48,11 @@ public:
   mylist(mylist const &l)
     : items_(l.items_)
   {
+  }
+
+  explicit mylist(const std::set<TYPE>& from) 
+  {
+    std::copy(from.begin(), from.end(), std::back_inserter(items_));
   }
 
   mylist()

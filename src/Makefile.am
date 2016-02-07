@@ -65,7 +65,7 @@ noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h sysdep.h \
 	version.h ioerr.h delta-table.h delta.h \
 	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
-	relvbr.h myset.h cssc-assert.h cleanup.h
+	relvbr.h cssc-assert.h cleanup.h
 
 libcssc_a_SOURCES = \
 	rl-merge.cc \

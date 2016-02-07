@@ -1135,19 +1135,9 @@ set_reserved_flag(const char *s)
 void sccs_file::
 set_expanded_keyword_flag(const char *s)
 {
-  // Clear any existing contents.
-  flags.substitued_flag_letters = myset<char>();
-
-  // The list of keyword letters is space-separated, but all of the
-  // keywords are one character long.
-  while (*s)
-    {
-      if (!isspace((unsigned char)*s))
-        {
-          flags.substitued_flag_letters.add(*s);
-        }
-      ++s;
-    }
+  const size_t len = strlen(s);
+  std::set<char> tmp_letters(s, s + len);
+  std::swap(tmp_letters, flags.substitued_flag_letters);
 }
 
 int
@@ -1283,20 +1273,19 @@ void sccs_file::saw_unknown_feature(const char *fmt, ...) const
 bool sccs_file::
 print_subsituted_flags_list(FILE *out, const char* separator) const
 {
-  const mylist<char> members = flags.substitued_flag_letters.list();
-
-  for (mylist<char>::size_type i=0; i<members.length(); ++i)
+  bool first = true;
+  for (auto flagletter : flags.substitued_flag_letters) 
     {
-      // print a space separator if one is required.
-      if (i > 0)
+      if (!first)
         {
+	  // A space separator is required.
           if (printf_failed(fprintf(out, "%s", separator)))
             return false;
         }
-
+      first = false;
 
       // print the keyword letter.
-      if (printf_failed(fprintf(out, "%c", members[i])))
+      if (printf_failed(fprintf(out, "%c", flagletter)))
         return false;
     }
   return true;

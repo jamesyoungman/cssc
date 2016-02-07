@@ -354,7 +354,7 @@ sccs_file::write(FILE *out) const
     }
 
   // y - substituted keywords (a Sun Solaris 8+ extension)
-  if (flags.substitued_flag_letters.count() > 0)
+  if (!flags.substitued_flag_letters.empty())
     {
       if (printf_failed(fprintf(out, "\001f y ")))
 	return 1;

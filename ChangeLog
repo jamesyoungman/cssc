@@ -1,5 +1,34 @@
 2016-02-07  James Youngman  <jay@gnu.org>
 
+	Delete myset.h, and switch to using std::set instead.  Use C++11.
+	* src/sccsfile.h (substitued_flag_letters): change from
+	myset<char> to std::set<char>.
+	* src/sccsfile.cc (set_expanded_keyword_flag): update
+	implementation now that substitued_flag_letters is std::set<char>.
+	(print_subsituted_flags_list): Likewise.
+	* src/sf-write.cc (write): Likewise.
+	* src/writesubst.cc (expand_keyletter): Likewise.
+	* src/sf-admin.cc (admin): Likewise.
+	* src/sf-prt.cc (prt): Likewise.
+	* src/sf-val.cc (validate): Likewise, using a range-based for
+	loop.
+	* bootstrap.conf (gnulib_modules): Add std-gnu11 (to compile
+	C++11).
+	* src/mylist.h (mylist): Add constructor from const std::set<TYPE>&.
+	* unit-tests/Makefile.am (unit_tests): Remove test_myset.
+	(test_myset_SOURCES): Remove.
+	* src/Makefile.am (noinst_HEADERS): Remove myset.h.
+	* myset.h: delete this file.
+	* unit-tests/test_myselt.cc: delete this file.
+	* src/delta.h (delta): included and excluded deltas are now
+	std::set<seq_no> rather than myset<seq_no>.
+	* unit-tests/test_delta.cc (DeltaTest::Constructor): Update the
+	call to the constructor of delta, to pass in std::set<seqno> for
+	the included and excluded deltas.
+	* src/sf-delta.cc (add_delta): Switch from using myset<seq_no> to
+	using std::set<seq_no> for the included and excluded deltas.
+
+	Remove obsolete code from mylist.h.
 	* src/mylist.h (mylist): Remove the obsolete implementation of
 	mylist (which was disabled via the preprocessor anyway).
 

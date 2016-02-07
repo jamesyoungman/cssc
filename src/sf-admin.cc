@@ -214,7 +214,7 @@ sccs_file::admin(const char *file_comment,
 				  "anyway, for the future.", c);
 			}
 
-		      flags.substitued_flag_letters.add(c);
+		      flags.substitued_flag_letters.insert(c);
 		    }
 		  else
 		    {

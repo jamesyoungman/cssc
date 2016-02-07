@@ -25,6 +25,8 @@
 #ifndef CSSC_DELTA_H
 #define CSSC_DELTA_H 1
 
+#include <set>
+
 #include "sid.h"
 #include "sccsdate.h"
 #include "mystring.h"
@@ -80,11 +82,11 @@ public:
   }
 
   delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
-	mylist<seq_no> incl, mylist<seq_no> excl,
+	const std::set<seq_no>& incl, const std::set<seq_no>& excl,
 	mylist<mystring> ms, mylist<mystring> cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
-      have_includes_(incl.length() > 0), have_excludes_(excl.length() > 0),
+      have_includes_(!incl.empty()), have_excludes_(!excl.empty()),
       have_ignores_(false),
       included_(incl), excluded_(excl),
       mrs_(ms), comments_(cs),

@@ -42,7 +42,7 @@ TEST(DeltaTest, Constructor)
   const sccs_date then("990519014208");
   const mystring user("waldo");
   const seq_no seq(2), pred(1);
-  mylist<seq_no> incl, excl;
+  std::set<seq_no> incl, excl;
   mylist<mystring> mrlist;
   mylist<mystring> comments;
 
@@ -52,8 +52,8 @@ TEST(DeltaTest, Constructor)
   comments.add(mystring("I'm sure I left it around here somewhere..."));
   comments.add(mystring("...ah, here it is."));
 
-  incl.add(seq_no(1));
-  excl.add(seq_no(6));
+  incl.insert(seq_no(1));
+  excl.insert(seq_no(6));
 
   delta d('R', s, then, user, seq, pred, incl, excl, mrlist, comments);
   EXPECT_EQ(d.get_type(), 'R');

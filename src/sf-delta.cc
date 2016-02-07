@@ -41,7 +41,6 @@
 #include "delta-iterator.h"
 #include "bodyio.h"
 #include "filediff.h"
-#include "myset.h"
 #include "file.h"
 
 #undef JAY_DEBUG
@@ -568,18 +567,18 @@ sccs_file::add_delta(mystring gname,
 
   // The new delta header includes info about what deltas
   // are included, excluded, ignored.   Compute that now.
-  myset<seq_no> included, excluded;
+  std::set<seq_no> included, excluded;
   for (seq_no iseq = 1; iseq < highest_delta_seqno(); iseq++)
     {
     if (sstate.is_explicitly_tagged(iseq))
       {
       if (sstate.is_included(iseq))
         {
-        included.add(iseq);
+	  included.insert(iseq);
         }
       else if (sstate.is_excluded(iseq))
         {
-          excluded.add(iseq);
+          excluded.insert(iseq);
         }
       }
     }
@@ -650,7 +649,7 @@ sccs_file::add_delta(mystring gname,
         {
           if (it->include.member(iter->id()))
             {
-              included.add(iter->seq());
+              included.insert(iter->seq());
             }
         }
     }
@@ -661,7 +660,7 @@ sccs_file::add_delta(mystring gname,
         {
           if (it->exclude.member(iter->id()))
             {
-              excluded.add(iter->seq());
+              excluded.insert(iter->seq());
             }
         }
     }
@@ -670,8 +669,7 @@ sccs_file::add_delta(mystring gname,
   // Construct the delta information for the new delta.
   delta new_delta('D', it->delta, sccs_date::now(),
                   get_user_name(), new_seq, predecessor_seq,
-                  included.list(), excluded.list(),
-		  new_mrs, new_comments);
+                  included, excluded, new_mrs, new_comments);
 
   // We don't know how many lines will be added/changed yet.
   // end_update() fixes that.

@@ -43,16 +43,12 @@
  * keyletters which are expanded.  If the y flag is not present, all
  * key letters are expanded.  The y flag is a Solaris 8 extension.
  */
-static bool expand_keyletter(char which, const myset<char> expanded)
+static bool expand_keyletter(char which, const std::set<char>& expanded)
 {
-  if (expanded.count() == 0)
-    {
-      return true;
-    }
+  if (expanded.empty())
+    return true;
   else
-    {
-      return expanded.is_member(which);
-    }
+    return expanded.find(which) != expanded.end();
 }
 
 

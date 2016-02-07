@@ -501,7 +501,7 @@ sccs_file::prt(FILE *out,
       print_flag(out, "\ttype\t%s\n", flags.type, flag_count);
       print_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count);
 
-      if (flags.substitued_flag_letters.count() > 0)
+      if (!flags.substitued_flag_letters.empty())
 	{
 	  ++flag_count;
 
