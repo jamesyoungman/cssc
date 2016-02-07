@@ -26,7 +26,7 @@
  */
 
 #include <config.h>
-
+#include <string>
 #include "cssc.h"
 #include "fileiter.h"
 #include "pfile.h"
@@ -133,7 +133,7 @@ main(int argc, char **argv)
 
 	      if (!keep_gfile)
 		{
-		  mystring gname = name.gfile();
+		  std::string gname = name.gfile();
 		  remove(gname.c_str());
 		}
 	      break;

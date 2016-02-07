@@ -27,6 +27,7 @@
  */
 
 #include <config.h>
+#include <string>
 #include "cssc.h"
 #include "sccsfile.h"
 #include "delta.h"
@@ -36,12 +37,11 @@
 /* Adds new MRs and comments to the specified delta. */
 
 static bool
-inlist(mylist<mystring> l, const mystring& find)
+inlist(mylist<std::string> l, const std::string& find)
 {
-  const mylist<mystring>::size_type len = l.length();
-  for (mylist<mystring>::size_type i=0; i<len; ++i)
+  for (const auto& mr : l)
     {
-      if (find == l[i])
+      if (mr == find)
 	return true;
     }
   return false;
@@ -49,26 +49,28 @@ inlist(mylist<mystring> l, const mystring& find)
 
 // Do the MR addition and deletion; if any have been deleted,
 // set deleted to true.   Return the updated set of MRs.
-static mylist<mystring>
-process_mrs(const mylist<mystring>& old_mrs,
-	    mylist<mystring> to_add,
-	    mylist<mystring> to_delete,
-	    mylist<mystring>& comments,
+// TODO: consider using mroe efficient data structures.
+static mylist<std::string>
+process_mrs(const mylist<std::string>& old_mrs,
+	    mylist<std::string> to_add,
+	    mylist<std::string> to_delete,
+	    mylist<std::string>& comments,
 	    bool& deleted)
 {
-  mylist<mystring> current(to_add);
+  mylist<std::string> current(to_add);
 
-  const mylist<mystring>::size_type len = old_mrs.length();
+  const mylist<std::string>::size_type len = old_mrs.length();
   deleted = false;
 
-  for (mylist<mystring>::size_type i=0; i<len; ++i)
+  for (mylist<std::string>::size_type i=0; i<len; ++i)
     {
-      mystring const& mr(old_mrs[i]);
+      std::string const& mr(old_mrs[i]);
 
+      // TODO: consider efficiency: inlist is a nested loop
       if (inlist(to_delete, mr))
 	{
 	  if (!deleted)
-	    comments.add(mystring("*** LIST OF DELETED MRS ***"));
+	    comments.add(std::string("*** LIST OF DELETED MRS ***"));
 	  deleted = true;
 	  comments.add(mr);
 	}
@@ -82,7 +84,7 @@ process_mrs(const mylist<mystring>& old_mrs,
 
 
 bool
-sccs_file::cdc(sid id, mylist<mystring> mr_updates, mylist<mystring> comment_updates)
+sccs_file::cdc(sid id, const mylist<std::string>& mr_updates, const mylist<std::string>& comment_updates)
 {
   if (!edit_mode_ok(true))
     return false;
@@ -97,15 +99,15 @@ sccs_file::cdc(sid id, mylist<mystring> mr_updates, mylist<mystring> comment_upd
 
   delta &d = *p;
 
-  mylist<mystring> not_mrs;
-  mylist<mystring> deletion_comment;
+  mylist<std::string> not_mrs;
+  mylist<std::string> deletion_comment;
   bool mrs_deleted = false;
-  const mylist<mystring>::size_type len = mr_updates.length();
+  const mylist<std::string>::size_type len = mr_updates.length();
   if (0 != len)
     {
-      mylist<mystring> yes_mrs;
+      mylist<std::string> yes_mrs;
 
-      for (mylist<mystring>::size_type i = 0; i < len; i++)
+      for (mylist<std::string>::size_type i = 0; i < len; i++)
 	{
 	  const char *s = mr_updates[i].c_str();
 	  if (s[0] == '!')
@@ -114,14 +116,14 @@ sccs_file::cdc(sid id, mylist<mystring> mr_updates, mylist<mystring> comment_upd
 	    yes_mrs.add(s);
 	}
 
-      mylist<mystring> new_mrs;
+      mylist<std::string> new_mrs;
       new_mrs = process_mrs(d.mrs(), yes_mrs, not_mrs, deletion_comment, mrs_deleted);
       d.set_mrs(new_mrs);
     }
 
   if (mrs_deleted || comment_updates.length())	// Prepend the new comments.
     {
-      mylist<mystring> newcomments;
+      mylist<std::string> newcomments;
 
       // If there are comments to be added, add them.
       if (comment_updates.length())
@@ -136,11 +138,11 @@ sccs_file::cdc(sid id, mylist<mystring> mr_updates, mylist<mystring> comment_upd
       // MRs, this doesn't happen)
       if (comment_updates.length())
 	{
-	  mystring changeline
-	    = mystring("*** CHANGED *** ")
+	  std::string changeline
+	    = std::string("*** CHANGED *** ")
 	    + sccs_date::now().as_string()
-	    + mystring(" ")
-	    + mystring(get_user_name());
+	    + std::string(" ")
+	    + std::string(get_user_name());
 
 	  newcomments.add(changeline);
 	}

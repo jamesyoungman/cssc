@@ -29,7 +29,7 @@
 // Get the definitions deduced by "configure".
 #include <config.h>
 
-#include "mystring.h"
+#include <string>
 
 /* Define if you want to open SCCS files in binary instead of text mode.
  * If you do this, you will probably need to jump through hoops on
@@ -87,9 +87,7 @@
 #define CONFIG_DJGPP
 
 #ifndef NO_COMMON_HEADERS
-// Some declarations are only useful if we know what a "mystring" is.
-//
-mystring prompt_user(const char *prompt);
+std::string prompt_user(const char *prompt);
 #endif /* NO_COMMON_HEADERS */
 
 unsigned long cap5(unsigned long); // see cap.cc

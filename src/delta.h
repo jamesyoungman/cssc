@@ -26,11 +26,12 @@
 #define CSSC_DELTA_H 1
 
 #include <set>
-
+#include <string>
 #include "sid.h"
 #include "sccsdate.h"
-#include "mystring.h"
 #include "mylist.h"
+
+using std::string;
 
 typedef unsigned short seq_no;
 
@@ -39,15 +40,15 @@ class delta
   char delta_type_;
   sid id_;
   sccs_date date_;
-  mystring user_;
+  string user_;
   seq_no seq_, prev_seq_;
   // have_* are a hack to ensure that prt works the same way
   // as the Real Thing.  We have to output Excludes: lines
   // if the SCCS file contained even an EMPTY includes list.
   bool have_includes_, have_excludes_, have_ignores_;
   mylist<seq_no> included_, excluded_, ignored_;
-  mylist<mystring> mrs_;
-  mylist<mystring> comments_;
+  mylist<string> mrs_;
+  mylist<string> comments_;
   unsigned long inserted_, deleted_, unchanged_;
 
 public:
@@ -67,8 +68,8 @@ public:
     ASSERT(is_valid_delta_type(delta_type_));
   }
 
-  delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
-	mylist<mystring> ms, mylist<mystring> cs)
+  delta(char t, sid i, sccs_date d, const string& u, seq_no s, seq_no p,
+	const mylist<string>& ms, const mylist<string>& cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
       have_includes_(false), have_excludes_(false),
@@ -81,9 +82,9 @@ public:
     ASSERT(is_valid_delta_type(delta_type_));
   }
 
-  delta(char t, sid i, sccs_date d, mystring u, seq_no s, seq_no p,
+  delta(char t, sid i, sccs_date d, const string& u, seq_no s, seq_no p,
 	const std::set<seq_no>& incl, const std::set<seq_no>& excl,
-	mylist<mystring> ms, mylist<mystring> cs)
+	const mylist<string>& ms, const mylist<string>& cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
       have_includes_(!incl.empty()), have_excludes_(!excl.empty()),
@@ -103,8 +104,8 @@ public:
   inline const sccs_date& date() const { return date_; }
   void set_date(const sccs_date& d) { date_ = d; }
 
-  inline const mystring& user() const {return user_; }
-  void set_user(const mystring& u) { user_ = u; }
+  inline const string& user() const {return user_; }
+  void set_user(const string& u) { user_ = u; }
 
   inline seq_no seq() const { return seq_; }
   void set_seq(const seq_no& s) { seq_ = s; }
@@ -215,32 +216,32 @@ public:
     have_ignores_ = true;
   }
 
-  const mylist<mystring>& mrs() const
+  const mylist<string>& mrs() const
   {
     return mrs_;
   }
 
-  void set_mrs(const mylist<mystring>& updated_mrs)
+  void set_mrs(const mylist<string>& updated_mrs)
   {
     mrs_ = updated_mrs;
   }
 
-  void add_mr(const mystring& s)
+  void add_mr(const string& s)
   {
     mrs_.add(s);
   }
 
-  const mylist<mystring>& comments() const
+  const mylist<string>& comments() const
   {
     return comments_;
   }
 
-  void set_comments(const mylist<mystring>& updated_comments)
+  void set_comments(const mylist<string>& updated_comments)
   {
     comments_ = updated_comments;
   }
 
-  void add_comment(const mystring& s)
+  void add_comment(const string& s)
   {
     comments_.add(s);
   }

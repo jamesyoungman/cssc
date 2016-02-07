@@ -26,6 +26,7 @@
  */
 
 #include <config.h>
+#include <string>
 #include "cssc.h"
 #include "sccsname.h"
 #include "cssc-assert.h"
@@ -39,10 +40,10 @@
 // to send the patches to <jay@gnu.org>.
 #endif
 
-mystring
-base_part(const mystring &name)
+std::string
+base_part(const std::string& name)
 {
-  mystring dirname, basename;
+  std::string dirname, basename;
   split_filename(name, dirname, basename);
   return basename;
 }
@@ -54,7 +55,7 @@ sccs_name::valid_filename(const char *thename)
 
   if (thename && thename[0])
     {
-      mystring base = base_part(mystring(thename));
+      std::string base = base_part(std::string(thename));
       const int valid = (base.at(0) == 's' && base.at(1) == '.');
       return valid;
     }
@@ -70,7 +71,7 @@ sccs_name::create()
 {
   // derive all other names from "name",
   // when they're asked for.
-  mystring dirname, basename;
+  std::string dirname, basename;
   split_filename(sname, dirname, basename);
 
   name_front = dirname;
@@ -81,16 +82,16 @@ sccs_name::create()
 
       // name_rear does not contain the "s"
       // of the "s." but does contain the dot itself.
-      name_rear = mystring(s+1);
+      name_rear = std::string(s+1);
 
       // The gname does not include the directory part,
       // or the leading "s.".
-      gname = mystring(s+2);
+      gname = std::string(s+2);
     }
   else
     {
       name_rear = basename;
-      gname = mystring("");
+      gname = std::string("");
     }
 }
 
@@ -102,7 +103,7 @@ sccs_name::create()
 // }
 
 sccs_name &
-sccs_name::operator =(const mystring &newname)
+sccs_name::operator =(const std::string& newname)
 {
   ASSERT(newname.length() != 0);
   sname = newname;
@@ -111,22 +112,22 @@ sccs_name::operator =(const mystring &newname)
 }
 
 
-mystring sccs_name::
+std::string sccs_name::
 sub_file(char insertme) const
 {
   char prefix[2];
   prefix[0] = insertme;
   prefix[1] = 0;
-  mystring ret = name_front + mystring(prefix) + name_rear;
+  std::string ret = name_front + std::string(prefix) + name_rear;
   return ret;
 }
 
-mystring sccs_name::
+std::string sccs_name::
 lfile() const
 {
   // Can't use sub_file since, like for the g-file,
   // we need to omit the directory.
-  return mystring("l") + name_rear;
+  return std::string("l") + name_rear;
 }
 
 
@@ -138,18 +139,18 @@ sccs_name::make_valid()
   ASSERT(sname.length() != 0);
   ASSERT(!valid_filename(sname.c_str()));
 
-  mystring dirpart, basepart;
+  std::string dirpart, basepart;
   split_filename(sname, dirpart, basepart);
 
 
   // try dir/s.foo
-  const mystring s_dot_foo = mystring("s.") + basepart;
+  const std::string s_dot_foo = std::string("s.") + basepart;
   sname = dirpart + s_dot_foo;
 
   if (!is_readable(sname.c_str()))
     {
       // try dir/SCCS/s.foo
-      const mystring tmp = dirpart + mystring("SCCS/") + s_dot_foo;
+      const std::string tmp = dirpart + std::string("SCCS/") + s_dot_foo;
 
       if (is_readable(tmp.c_str()))
 	sname = tmp;

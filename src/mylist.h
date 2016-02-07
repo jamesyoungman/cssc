@@ -44,6 +44,8 @@ protected:
 
 public:
   typedef typename impl_type::size_type size_type;
+  typedef typename impl_type::iterator iterator;
+  typedef typename impl_type::const_iterator const_iterator;
 
   mylist(mylist const &l)
     : items_(l.items_)
@@ -129,6 +131,10 @@ public:
       }
   }
 
+  iterator begin() { return items_.begin(); }
+  const_iterator begin() const { return items_.begin(); }
+  iterator end() { return items_.end(); }
+  const_iterator end() const { return items_.end(); }
 
   ~mylist()
   {

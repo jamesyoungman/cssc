@@ -26,6 +26,7 @@
  *
  */
 #include <config.h>
+#include <string>
 
 #include <errno.h>
 #include <unistd.h>
@@ -377,12 +378,12 @@ diff_state::process(FILE *out, seq_no seq)
 
 class FileDeleter
 {
-  mystring name;
+  std::string name;
   bool as_real_user;
   bool armed;
 
 public:
-  FileDeleter(const mystring& s, bool realuser)
+  FileDeleter(const std::string& s, bool realuser)
     : name(s), as_real_user(realuser), armed(true) { }
 
   ~FileDeleter()
@@ -421,11 +422,11 @@ static void line_too_long(long int max_len, size_t actual_len)
    performed before the object is destroyed. */
 
 bool
-sccs_file::add_delta(mystring gname,
+sccs_file::add_delta(const std::string& gname,
 		     sccs_pfile& pfile,
 		     sccs_pfile::iterator it,
-                     mylist<mystring> new_mrs,
-		     mylist<mystring> new_comments,
+                     const mylist<std::string>& new_mrs,
+		     const mylist<std::string>& new_comments,
                      bool display_diff_output)
 {
   const char *pline;
@@ -444,12 +445,12 @@ sccs_file::add_delta(mystring gname,
    * the name of this encoded file to diff, instead of the
    * name of the binary file itself.
    */
-  mystring file_to_diff;
+  std::string file_to_diff;
   bool bFileIsInWorkingDir;
 
   if (flags.encoded)
     {
-      mystring uname(name.sub_file('u'));
+      std::string uname(name.sub_file('u'));
       if (0 != encode_file(gname.c_str(), uname.c_str()))
         {
           return false;
@@ -481,7 +482,7 @@ sccs_file::add_delta(mystring gname,
 
 
   seq_state sstate(highest_delta_seqno());
-  const mystring sid_name = it->got.as_string();
+  const std::string sid_name = it->got.as_string();
   const delta *got_delta = find_delta(it->got);
   if (got_delta == NULL)
     {
@@ -502,7 +503,7 @@ sccs_file::add_delta(mystring gname,
   }
 
   /* The d-file is created in the SCCS directory (XXX: correct?) */
-  mystring dname(name.sub_file('d'));
+  std::string dname(name.sub_file('d'));
 
   /* We used to use fcreate here but as shown by the tests in
    * tests/delta/errorcase.sh, the prior existence of the
@@ -591,8 +592,8 @@ sccs_file::add_delta(mystring gname,
       // belonging to the new delta.
 
       // use our own comment.
-      mylist<mystring> auto_comment;
-      auto_comment.add(mystring("AUTO NULL DELTA"));
+      mylist<std::string> auto_comment;
+      auto_comment.add(std::string("AUTO NULL DELTA"));
 
       release last_auto_rel = release(it->delta);
       // --last_auto_rel;

@@ -1,4 +1,112 @@
+2016-02-08  James Youngman  <jay@gnu.org>
+
+	* unit-tests/test_bigfile.cc: Use std::string instead of
+	mystring.
+
+	Store MRs as std::vector<std::string> (not mylist<std::string>).
+	* unit-tests/test_delta-table.cc: Update to take account of the
+	change in representation of MR lists from mylist<std::string> to
+	std::vector<std::string>.
+	* unit-tests/test_delta.cc: Likewise.
+	* src/sf-write.cc (write_delta): Change the way we loop over the
+	MRs and the comments to use a range-based for loop (hence
+	accomodating the change in type of the MR list.
+	* src/sf-prt.cc (print_string_list): Convert this function to a
+	template so that it can be used to print a
+	std::vector<std::string> or a mylist<std::string>.
+	* src/sf-prs.cc (print_string_list): Add an override of
+	print_string_list for printing an instance of const
+	std::vector<std::string>&.
+	* src/sf-delta.cc (sccs_file::add_delta): Update the type of the
+	mrs parameter to std::vector<std::string>.
+	* src/sf-cdc.cc (process_mrs): Update the parameter list to use
+	std::vector<std::string> instead of mylist<std::string>.  Change
+	the type of the to_delete parameter to const
+	std::unordered_set<std::string>& for greater efficiency.
+	* src/sf-admin.cc (sccs_file::create): Update type of mrs
+	parameter.
+	* src/sccsfile.h (sccs_file::check_mrs): Update the type of the
+	mrs parameter to std::vector<std::string>&.
+	(sccs_file::admin): update type of the mrs parameter.
+	(sccs_file::create): Likewise.
+	(::split_mrs): Likewise.
+	* src/sf-chkmr.h (check_mrs): Update the type of the mrs
+	parameter.
+	* src/run.cc (run): Update to take a vector<const char*> instead
+	of a mylist<const char*>.
+	(run_mr_checker): Change the type of the mrs parameter from
+	mylist<std::string> to std::vector<std::string>.
+	* src/run.h: Update declarations accordingly.
+	* src/mylist.h (mylist): Add method size() and empty() for
+	consistency with std::vector<T> so that we can define template
+	functions which will act on a mylist or a std::vector.
+	* src/l-split.cc (split_mrs): represent MRs as
+	std::vector<std::string>.
+	* src/delta.h (class delta): Change type of mrs_ member from
+	mylist<std::string> to std::vector<std::string>.
+	(delta::delta): change constructor parameters similarly.
+	(delta::mrs()): now returns std::vector<std::string>.
+	* src/admin.cc (main): Change type of mr_list from
+	mylist<std::string> to std::vector<std::string>.
+	* src/cdc.cc (main): Likewise.
+	* src/delta.cc (delta_main): Likewise.
+	(main): Simplify.
+
 2016-02-07  James Youngman  <jay@gnu.org>
+
+	Use std::string rather than mystring.
+	We also use range-based for loops to iterate over instances of
+	mylist<std::string>.
+	* src/mystring.h: Delete this file.
+	* src/Makefile.am (noinst_HEADERS): Remove mystring.h.
+	* src/admin.cc (main): Update to use string rather than mystring.
+	* src/cdc.cc: Likewise.
+	* src/canonify.cc (get_current_directory): Update to return string
+	* src/cssc.h: Likewise.
+	* src/delta.cc: Likewise.
+	* src/delta.h: Likewise.
+	* src/file.cc: Likewise.
+	* src/file.h: Likewise.
+	* src/file.h: Update function parameters and return types to be string rather than mystring.
+	* src/filediff.cc: Likewise.
+	* src/filediff.h: Likewise.
+	* src/fileiter.cc: Likewise.
+	* src/fileiter.h: Likewise.
+	* src/filelock.h: Likewise.
+	* src/fnsplit.cc: Likewise.
+	* src/get.cc: Likewise.
+	* src/l-split.cc: Likewise.
+	* src/pfile.h: Likewise.
+	* src/pf-del.cc: Likewise.
+	* src/prompt.cc: Likewise.
+	* src/prs.cc: Likewise.
+	* src/run.cc: Likewise.
+	* src/run.h: Likewise.
+	* src/sccsdate.h (sccs_date::as_string()): Likewise.
+	* src/sccsfile.cc: Likewise.
+	* src/sccsfile.h: Likewise.
+	* src/sccsname.cc: Likewise.
+	* src/sccsname.h (sccs_name): Likewise (and attributes).
+	* src/sf-admin.h: Likewise.
+	* src/sf-cdc.cc: Likewise.
+	* src/sf-chkmr.h (check_mrs): Likewise.
+	* src/sf-delta.cc: Likewise.
+	* src/sf-get.cc (get): Likewise.
+	* src/sf-get2.cc: Likewise.
+	* src/sf-get3.cc (authorised): Use string instead of mystring.
+	* src/sf-prs.cc: Likewise.
+	* src/sf-prt.cc: Likewise.
+	* src/sf-val.cc: Likewise.
+	* src/sf-write.cc: Likewise.
+	* src/sid.h (class sid): the as_string method now returns a string instead of a mystring.
+	* src/sid.cc: Use string instead of mystring.
+	* src/unget.cc: Likewise.
+	* src/writesubst.cc: Likewise.
+	* unit-tests/test_delta-table.cc: Likewise.
+	* unit-tests/test_delta.cc: Likewise.
+	* unit-tests/test_bigfile.cc: Use std::string instead of
+	mystring.
+	* src/mylist.h (mylist): Provide begin() and end() methods.
 
 	Delete myset.h, and switch to using std::set instead.  Use C++11.
 	* src/sccsfile.h (substitued_flag_letters): change from

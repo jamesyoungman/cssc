@@ -56,9 +56,9 @@ main(int argc, char **argv)
   Cleaner arbitrary_name;
   int retval = 0;
   bool silent = false;
-  mystring mstring;
+  std::string mstring;
   bool had_m_option = false;
-  mystring ystring;
+  std::string ystring;
   bool had_y_option = false;
   bool had_r_option = false;
   int c;
@@ -116,7 +116,7 @@ main(int argc, char **argv)
 	      problem(retval, Val_InvalidOption);
 	    }
 	  had_m_option = true;
-	  mstring = mystring(opts.getarg());
+	  mstring = std::string(opts.getarg());
 	  break;
 
 	case 'y':
@@ -126,7 +126,7 @@ main(int argc, char **argv)
 	      problem(retval, Val_InvalidOption);
 	    }
 	  had_y_option = true;
-	  ystring = mystring(opts.getarg());
+	  ystring = std::string(opts.getarg());
 	  break;
 
 	case 'V':
@@ -171,7 +171,7 @@ main(int argc, char **argv)
 
 	  if (had_m_option)
 	    {
-	      const mystring &module_flag = file.get_module_name();
+	      const std::string &module_flag = file.get_module_name();
 	      if (module_flag != mstring)
 		{
 		  if (!silent)
@@ -188,7 +188,7 @@ main(int argc, char **argv)
 
 	  if (had_y_option)
 	    {
-	      const mystring &type_flag = file.get_module_type_flag();
+	      const std::string &type_flag = file.get_module_type_flag();
 	      if (type_flag != ystring)
 		{
 		  if (!silent)

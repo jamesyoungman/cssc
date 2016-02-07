@@ -27,6 +27,7 @@
  */
 
 #include <config.h>
+#include <string>
 
 #include "cssc.h"
 #include "sccsfile.h"
@@ -58,7 +59,7 @@ sccs_file::start_update() {
             return NULL;
           }
 
-        mystring xname = name.xfile();
+        std::string xname = name.xfile();
 
         // real SCCS silently destroys any existing file named
         // x.[whatever].  Dave Bodenstab <imdave@mcs.net> pointed out
@@ -70,7 +71,7 @@ sccs_file::start_update() {
         if (file_exists(xname.c_str()))
           {
             const char *xns = xname.c_str();
-            mystring newname(xname + ".bak");
+            std::string newname(xname + ".bak");
             if (0 == rename(xns, newname.c_str()))
               {
                 warning("%s renamed to %s\n",
@@ -133,7 +134,7 @@ print_seqs(FILE *out, char control, mylist<seq_no> const &seqs) {
 int
 sccs_file::write_delta(FILE *out, struct delta const &d) const
 {
-  mylist<mystring>::size_type len, i;
+  mylist<std::string>::size_type len, i;
 
   if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
                             cap5(d.inserted()),
@@ -187,7 +188,7 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
 int
 sccs_file::write(FILE *out) const
 {
-  mylist<mystring>::size_type len, i;
+  mylist<std::string>::size_type len, i;
   const char *s;
 
   delta_iterator iter(delta_table);
@@ -476,7 +477,7 @@ sccs_file::end_update(FILE **pout)
     }
 
   int sum;
-  mystring xname = name.xfile();
+  std::string xname = name.xfile();
 
   // Open the file (obtaining the checksum) and immediately close it.
   bool dummy_bk_flag;
@@ -548,7 +549,7 @@ sccs_file::end_update(FILE **pout)
 #if defined __CYGWIN__
   int dummy_sum;
 
-  mystring sfile_name = name.sfile();
+  std::string sfile_name = name.sfile();
   f = open_sccs_file(sfile_name.c_str(), READ, &dummy_sum, &dummy_bk_flag);
   if (0 == f)
     {

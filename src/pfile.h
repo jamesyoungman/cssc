@@ -26,6 +26,7 @@
 #define CSSC__PFILE_H__
 
 #include <list>
+#include <string>
 #include <utility>
 #include <iterator>
 
@@ -83,7 +84,7 @@ private:
   struct edit_lock
   {
     sid got, delta;
-    mystring user;
+    string user;
     sccs_date date;
     sid_list include, exclude;
 
@@ -100,7 +101,7 @@ private:
   };
 
   sccs_name &name;
-  mystring pname;
+  string pname;
   enum _mode mode;
 
   std::list<edit_lock> edit_locks;

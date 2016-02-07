@@ -25,6 +25,7 @@
  */
 #include "config.h"
 
+#include <string>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -403,9 +404,9 @@ maybe_wait_a_bit(long attempt, const char *lockfile)
 }
 
 
-static int atomic_nfs_create(const mystring& path, int flags, int perms)
+static int atomic_nfs_create(const std::string& path, int flags, int perms)
 {
-  mystring dirname, basename;
+  std::string dirname, basename;
   char buf[32];
   const char *pstr = path.c_str();
 
@@ -416,7 +417,7 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
     {
       /* form the name of a lock file. */
       sprintf(buf, "nfslck%ld", attempt);
-      const mystring lockname = dirname + mystring(buf);
+      const std::string lockname = dirname + std::string(buf);
       const char *lockstr = lockname.c_str();
 
       errno = 0;
@@ -493,7 +494,7 @@ static int atomic_nfs_create(const mystring& path, int flags, int perms)
 /* CYGWIN seems to be unable to create a file for writing, with mode
  * 0444, so this code resets the mode after we have closed the g-file.
  */
-bool set_file_mode(const mystring &gname, bool writable, bool executable)
+bool set_file_mode(const std::string &gname, bool writable, bool executable)
 {
   const char *name = gname.c_str();
   struct stat statbuf;
@@ -548,7 +549,7 @@ bool set_file_mode(const mystring &gname, bool writable, bool executable)
  * the real user's files.  However, we need to do this (for example,
  * for get -k).  This is SourceForge bug 451519.
  */
-bool set_gfile_writable(const mystring& gname, bool writable, bool executable)
+bool set_gfile_writable(const std::string& gname, bool writable, bool executable)
 {
   give_up_privileges();
   bool rv = set_file_mode(gname, writable, executable);
@@ -607,7 +608,7 @@ bool unlink_file_as_real_user(const char *gfile_name)
 /* returns a file descriptor open to a newly created file. */
 
 static int
-create(mystring name, int mode) {
+create(const std::string& name, int mode) {
         int flags = O_CREAT;
 
         if (mode & CREATE_FOR_UPDATE) {
@@ -669,7 +670,7 @@ create(mystring name, int mode) {
 /* Returns a file stream open to a newly created file. */
 
 FILE *
-fcreate(mystring name, int mode) {
+fcreate(const std::string& name, int mode) {
         int fd = create(name.c_str(), mode);
         if (fd == -1) {
                 return NULL;
@@ -707,7 +708,7 @@ do_lock(FILE *f)                // process-aware version
 }
 
 
-file_lock::file_lock(mystring zname): locked(0), name(zname)
+file_lock::file_lock(const std::string& zname): locked(0), name(zname)
 {
   ASSERT(name == zname);
   FILE *f = fcreate(zname,

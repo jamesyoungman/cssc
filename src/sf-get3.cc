@@ -94,7 +94,7 @@ bool sccs_file::prepare_seqstate(seq_state &state, seq_no seq,
 
 bool
 sccs_file::authorised() const {
-  mylist<mystring>::size_type len, i;
+  mylist<string>::size_type len, i;
 
   const char *user = get_user_name();
 

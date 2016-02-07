@@ -95,13 +95,13 @@ namespace {
 
 
 
-const mystring
+const std::string
 sccs_file::get_module_type_flag()
 {
   if (flags.type)
     return *(flags.type);
   else
-    return mystring("");
+    return std::string("");
 }
 
 
@@ -224,7 +224,7 @@ sccs_file::validate() const
 	  errormsg("%s: SID %s: empty username", name.c_str(), sz_sid);
 	  retval = false;
 	}
-      else if (iter->user().find_last_of(':') != mystring::npos)
+      else if (iter->user().find_last_of(':') != std::string::npos)
 	{
 	  errormsg("%s: SID %s: invalid username '%s'",
 		   name.c_str(), sz_sid, iter->user().c_str());
@@ -294,13 +294,11 @@ sccs_file::validate() const
     }
 
   // Check username list for invalid entries.
-  for (mylist<mystring>::size_type j=0; j<users.length(); ++j)
+  for (const auto& username : users)
     {
-      const mystring& username(users[j]);
-
-      if (   (username.find_last_of(':')  != mystring::npos)
-	  || (username.find_last_of(' ')  != mystring::npos)
-	  || (username.find_last_of('\t') != mystring::npos))
+      if (   (username.find_last_of(':')  != std::string::npos)
+	  || (username.find_last_of(' ')  != std::string::npos)
+	  || (username.find_last_of('\t') != std::string::npos))
 	{
 	  errormsg("%s: invalid username '%s'",
 		   name.c_str(), username.c_str());

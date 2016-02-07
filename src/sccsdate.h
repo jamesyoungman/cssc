@@ -30,9 +30,11 @@
 #ifndef CSSC__SCCSDATE_H__
 #define CSSC__SCCSDATE_H__
 
+#include <string>
+using std::string;
+
 #include <cstdio>
 
-#include "mystring.h"
 #include "ioerr.h"
 #include "quit.h"
 
@@ -60,7 +62,7 @@ public:
   int valid() const;
 
   static sccs_date now();
-  mystring as_string() const;
+  string as_string() const;
 
   int printf(FILE *f, char fmt) const;
   int print(FILE *f) const;

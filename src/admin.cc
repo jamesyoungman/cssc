@@ -74,9 +74,9 @@ main(int argc, char **argv)
   bool force_binary = false;			/* -b */
   const char *iname = NULL;			/* -i -I */
   const char *file_comment = NULL;		/* -t */
-  mylist<mystring> set_flags, unset_flags;	/* -f, -d */
-  mylist<mystring> add_users, erase_users;	/* -a, -e */
-  mystring mrs, comments;			/* -m, -y */
+  mylist<string> set_flags, unset_flags;	/* -f, -d */
+  mylist<string> add_users, erase_users;	/* -a, -e */
+  string mrs, comments;				/* -m, -y */
   int check_checksum = 0;	                /* -h */
   int validate       = 0;	                /* also -h */
   int reset_checksum = 0;			/* -z */
@@ -225,7 +225,7 @@ main(int argc, char **argv)
   if (check_checksum)
       reset_checksum = false;
 
-  mylist<mystring> mr_list, comment_list;
+  mylist<string> mr_list, comment_list;
   int was_first = 1;
   sccs_file_iterator iter(opts);
   if (! iter.using_source())
@@ -367,7 +367,7 @@ main(int argc, char **argv)
 		}
 	      errno = 0;
 	      if (!file.create(first_sid, iname,
-			       mr_list, comment_list,
+			       mr_list, &comment_list,
 			       suppress_comments, force_binary))
 		{
 		  retval = 1;

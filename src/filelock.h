@@ -26,18 +26,19 @@
 
 #ifndef CSSC__FILELOCK_H__
 #define CSSC__FILELOCK_H__
-
+#include <string>
 #include "cleanup.h"
-#include "mystring.h"
+
+using std::string;
 
 class file_lock : private cleanup {
 	int locked;
-	mystring name;
+	string name;
 
 	void do_cleanup() { this->~file_lock(); }
 
 public:
-	file_lock(mystring zname);
+	file_lock(const string& zname);
 	int failed() { return !locked; }
 	~file_lock();
 };

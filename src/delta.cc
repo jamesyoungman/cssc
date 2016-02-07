@@ -26,6 +26,7 @@
 
 
 #include <config.h>
+#include <string>
 
 #include "cssc.h"
 #include "delta.h"
@@ -61,8 +62,8 @@ delta_main(int argc, char **argv)
   sid rid(sid::null_sid());
   int silent = 0;		/* -s */
   int keep_gfile = 0;		/* -n */
-  mystring mrs;			/* -m -M */
-  mystring comments;		/* -y -Y */
+  std::string mrs;		/* -m -M */
+  std::string comments;		/* -y -Y */
   int suppress_mrs = 0;		// if -m given with no arg.
   int got_mrs = 0;		// if no need to prompt for MRs.
   int suppress_comments = 0;	// if -y given with no arg.
@@ -138,7 +139,7 @@ delta_main(int argc, char **argv)
 	}
     }
 
-  mylist<mystring> mr_list, comment_list;
+  mylist<std::string> mr_list, comment_list;
   int first = 1;
 
   int retval = 0;
@@ -244,7 +245,7 @@ delta_main(int argc, char **argv)
 		  continue;
 		}
 
-	      mystring gname = name.gfile();
+	      std::string gname = name.gfile();
 
 	      if (!file.add_delta(gname, pfile, found.second,
 				  mr_list, comment_list,

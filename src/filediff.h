@@ -28,6 +28,7 @@
 #define CSSC__FILEDIFF_H
 
 #include <stdio.h>
+#include <string>
 
 class FileDiff
 {
@@ -40,8 +41,8 @@ class FileDiff
 
  private:
   FILE *fp_;
-  mystring name1;
-  mystring name2;
+  std::string name1;
+  std::string name2;
 };
 
 

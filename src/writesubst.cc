@@ -23,6 +23,7 @@
  */
 
 #include <config.h>
+#include <string>
 
 #include "cssc.h"
 #include "sccsfile.h"
@@ -37,6 +38,7 @@
 
 #include <ctype.h>
 
+using std::string;
 
 /* Return TRUE if the specified keyword letter should be
  * expanded in the gotten file.  If the y flag is set, it controls the
@@ -172,7 +174,7 @@ sccs_file::write_subst(const char *start,
             case 'P':
               if (1) // introduce new scope...
                 {
-                  mystring path(canonify_filename(name.c_str()));
+                  string path(canonify_filename(name.c_str()));
                   err = fputs_failed(fputs(path.c_str(), out));
                 }
               break;

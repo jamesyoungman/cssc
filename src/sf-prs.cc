@@ -39,7 +39,7 @@
 #include "cssc-assert.h"
 
 inline bool
-sccs_file::get(FILE *out, mystring gname, seq_no seq, bool for_edit)
+sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
 {
   sid_list no_includes, no_excludes;
   sccs_date no_cutoff;
@@ -84,13 +84,11 @@ print_seq_list(FILE *out, mylist<seq_no> const &list) {
 
 /* Prints a list of strings, one per line. */
 static void
-print_string_list(FILE *out, mylist<mystring> const &list)
+print_string_list(FILE *out, mylist<std::string> const &list)
 {
-  const mylist<mystring>::size_type len = list.length();
-
-  for (mylist<mystring>::size_type i = 0; i < len; i++)
+  for (const auto& item : list)
     {
-      fprintf(out, "%s\n", list[i].c_str());
+      fprintf(out, "%s\n", item.c_str());
     }
 }
 
@@ -106,11 +104,10 @@ print_flag2(FILE *out, const char *s, int it)
 }
 
 
-/* Prints a flag whose type has a print(FILE *) member with it's name. */
+/* Prints a flag whose type has a print(FILE *) member with its name. */
 
-template <class TYPE>
 void
-print_flag2(FILE *out, const char *s, TYPE it) {
+print_flag2(FILE *out, const char *s, const sid& it) {
         if (it.valid()) {
                 fprintf(out, "%s\t", s);
                 it.print(out);
@@ -118,18 +115,26 @@ print_flag2(FILE *out, const char *s, TYPE it) {
         }
 }
 
-// /* Prints a string flag with its name.
-//  */
-// static void
-// print_flag2(FILE *out, const char *s, mystring it)
-// {
-//   if (!it.empty())
-//     fprintf(out, "%s: %s\n", s, it.c_str());
-// }
+void
+print_flag2(FILE *out, const char *s, const release_list& it) {
+        if (it.valid()) {
+                fprintf(out, "%s\t", s);
+                it.print(out);
+                putc('\n', out);
+        }
+}
 
+void
+print_flag2(FILE *out, const char *s, const release& it) {
+        if (it.valid()) {
+                fprintf(out, "%s\t", s);
+                it.print(out);
+                putc('\n', out);
+        }
+}
 
 static inline void
-print_flag2(FILE *out, const char *name, mystring *s)
+print_flag2(FILE *out, const char *name, const std::string *s)
 {
   if (s)
     fprintf(out, "%s\t%s\n", name, s->c_str());
@@ -205,19 +210,9 @@ print_yesno(FILE *out, int flag) {
         }
 }
 
-/* Prints the value of a mystring flag. */
+/* Prints the value of a std::string flag. */
 inline static void
-print_flag(FILE *out, const mystring *s)
-{
-  if (s)
-    fputs("none", out);
-  else
-    fputs(s->c_str(), out);
-}
-
-/* Prints the value of a mystring flag. */
-inline static void
-print_flag(FILE *out, mystring *s)
+print_flag(FILE *out, const std::string *s)
 {
   if (s)
     fputs(s->c_str(), out);
@@ -225,9 +220,9 @@ print_flag(FILE *out, mystring *s)
     fputs("none", out);
 }
 
-/* Prints the value of a mystring flag. */
+/* Prints the value of a std::string flag. */
 inline static void
-print_flag(FILE *out, const mystring &s)
+print_flag(FILE *out, const std::string &s)
 {
   if (s.empty())
     fputs("none", out);
@@ -627,7 +622,7 @@ sccs_file::print_delta(FILE *out, const char *format,
 
 /* Prints out parts of the SCCS file.  */
 bool
-sccs_file::prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
+sccs_file::prs(FILE *out, const std::string& format, sid rid, sccs_date cutoff_date,
                enum when cutoff_type, bool all_deltas, bool *matched)
 {
   const_delta_iterator iter(delta_table);

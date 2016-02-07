@@ -21,28 +21,27 @@
  */
 
 #include <config.h>
-
+#include <string>
 #include "cssc.h"
-#include "mystring.h"
 #include "file.h"		// declaration of split_filename.
 #include "cssc-assert.h"
 
 void
-split_filename(const mystring &fullname,
-	       mystring& dirname, mystring& basename)
+split_filename(const std::string &fullname,
+	       std::string& dirname, std::string& basename)
 {
   ASSERT(fullname.length() > 0);
 
-  dirname = mystring("");	// empty string.
+  dirname = std::string("");	// empty string.
   basename = fullname;
 
   /* Find the final slash.
    */
-  mystring::size_type i = fullname.find_last_of('/');
-  if (i != mystring::npos)
+  std::string::size_type i = fullname.find_last_of('/');
+  if (i != std::string::npos)
     {
       dirname = fullname.substr(0, i+1); // initial i characters
-      basename = fullname.substr(i+1, mystring::npos);
+      basename = fullname.substr(i+1, std::string::npos);
       return;
     }
 }
@@ -58,7 +57,7 @@ int main(int argc, char *argv[])
   for (int i=0; i<argc; ++i)
     {
       printf("Splitting \"%s\"..\n", argv[i]);
-      mystring d, b;
+      std::string d, b;
       split_filename(argv[i], d, b);
       printf("Directory part=\"%s\"\nBase part=\"%s\"\n",
 	     d.c_str(), b.c_str());

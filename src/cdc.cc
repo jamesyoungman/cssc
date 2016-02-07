@@ -24,7 +24,7 @@
  */
 
 #include <config.h>
-
+#include <string>
 #include "cssc.h"
 #include "my-getopt.h"
 #include "fileiter.h"
@@ -59,8 +59,8 @@ main(int argc, char *argv[])
   Cleaner arbitrary_name;
   int c;
   sid rid(sid::null_sid());
-  mystring mrs;
-  mystring comments;
+  std::string mrs;
+  std::string comments;
   int got_comments = 0;
   int retval = 0;
 
@@ -138,7 +138,7 @@ main(int argc, char *argv[])
 	}
     }
 
-  mylist<mystring> mr_list, comment_list;
+  mylist<std::string> mr_list, comment_list;
   comment_list = split_comments(comments);
   mr_list = split_mrs(mrs);
 

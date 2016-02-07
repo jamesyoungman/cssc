@@ -27,6 +27,7 @@
  */
 
 #include <config.h>
+#include <string>
 #include "cssc.h"
 #include "sccsfile.h"
 #include "sl-merge.h"
@@ -52,8 +53,8 @@
 bool
 sccs_file::admin(const char *file_comment,
 		 bool force_binary,
-		 mylist<mystring> set_flags, mylist<mystring> unset_flags,
-		 mylist<mystring> add_users, mylist<mystring> erase_users)
+		 const mylist<std::string>& set_flags, const mylist<std::string>& unset_flags,
+		 const mylist<std::string>& add_users, const mylist<std::string>& erase_users)
 {
 
   if (force_binary)
@@ -89,9 +90,9 @@ sccs_file::admin(const char *file_comment,
 	}
     }
 
-  mylist<mystring>::size_type len;
+  mylist<std::string>::size_type len;
   len = set_flags.length();
-  for (mylist<mystring>::size_type i = 0; i < len; i++)
+  for (mylist<std::string>::size_type i = 0; i < len; i++)
     {
       const char *s = set_flags[i].c_str();
 
@@ -235,7 +236,7 @@ sccs_file::admin(const char *file_comment,
 
 
   len = unset_flags.length();
-  for (mylist<mystring>::size_type i = 0; i < len; i++)
+  for (mylist<std::string>::size_type i = 0; i < len; i++)
     {
       const char *s = unset_flags[i].c_str();
 
@@ -341,7 +342,7 @@ sccs_file::admin(const char *file_comment,
   users -= erase_users;
 
   // Add the specified users to the beginning of the user list.
-  mylist<mystring> newusers = add_users;
+  mylist<std::string> newusers = add_users;
   newusers += users;
   users = newusers;
 
@@ -354,23 +355,23 @@ sccs_file::admin(const char *file_comment,
 bool
 sccs_file::create(const sid &id,
 		  const char *iname,
-		  mylist<mystring> mrs,
-		  mylist<mystring> starting_comments,
+		  const mylist<std::string>& mrs,
+		  mylist<std::string>* starting_comments,
 		  int suppress_comments, bool force_binary)
 {
 
   sccs_date now = sccs_date::now();
-  if (!suppress_comments && starting_comments.length() == 0)
+  if (!suppress_comments && starting_comments->length() == 0)
     {
-      starting_comments.add(mystring("date and time created ")
-			    + now.as_string()
-			    + mystring(" by ")
-			    + get_user_name());
+      starting_comments->add(std::string("date and time created ")
+			     + now.as_string()
+			     + std::string(" by ")
+			     + get_user_name());
     }
 
 
   delta new_delta('D', id, now, get_user_name(), 1, 0,
-		  mrs, starting_comments);
+		  mrs, *starting_comments);
   ASSERT (new_delta.inserted() == 0);
   ASSERT (new_delta.deleted() == 0);
   ASSERT (new_delta.unchanged() == 0);

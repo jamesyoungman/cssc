@@ -25,6 +25,7 @@
  */
 #include "config.h"
 
+#include <string>
 #include <errno.h>
 
 #include "cssc.h"
@@ -66,7 +67,7 @@ usage() {
 }
 
 
-static void maybe_clear_archive_bit(const mystring &)
+static void maybe_clear_archive_bit(const std::string &)
 {
 #ifdef CONFIG_USE_ARCHIVE_BIT
   clear_archive_bit(gname);
@@ -96,7 +97,7 @@ main(int argc, char **argv)
   int show_sid = 0;                     /* -m */
   int show_module = 0;                  /* -n */
   int debug = 0;                        /* -D */
-  mystring gname;                       /* -G */
+  std::string gname;                       /* -G */
   int got_gname = 0;                    /* -G */
   seq_no seq = 0;                       /* -a */
   int get_top_delta = 0;                /* -t */
@@ -443,7 +444,7 @@ main(int argc, char **argv)
 	    {
 	      if (create_lfile)
 		{
-		  mystring lname = name.lfile();
+		  std::string lname = name.lfile();
 		  summary_file = fcreate(lname, CREATE_READ_ONLY);
 		}
 	      else

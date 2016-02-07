@@ -28,6 +28,9 @@
 
 #include <config.h>
 
+#include <string>
+using std::string;
+
 #include "cssc.h"
 #include "sccsfile.h"
 #include "pfile.h"
@@ -306,7 +309,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 }
 
 bool
-sccs_file::get(mystring gname, class seq_state &state,
+sccs_file::get(const string& gname, class seq_state &state,
                struct subst_parms &parms,
                bool do_kw_subst,
                int show_sid, int show_module, int debug,

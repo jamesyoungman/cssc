@@ -20,17 +20,20 @@
  * Functions for canonifying filenames.
  */
 #include <config.h>
+#include <string>
 
 #include "sccsname.h"
 #include "file.h"
-#include "mystring.h"
+
 
 #include <cstring>
 
 #include <unistd.h>		// chdir()
 #include <stddef.h>
 
-static mystring
+using std::string;
+
+static string
 get_current_directory()
 {
   size_t len = 1;
@@ -43,7 +46,7 @@ get_current_directory()
 	  const char *q;
 	  if ( NULL != (q=getcwd(p, len)) )	// success!
 	    {
-	      mystring ret(q, strlen(q));
+	      string ret(q);
 	      delete[] p;
 	      return ret;
 	    }
@@ -55,24 +58,24 @@ get_current_directory()
 	}
       else			// allocation failed.
 	{
-	  return mystring(".");	// this is a cop-out really.
+	  return ".";		// this is a cop-out really.
 	}
     }
 }
 
 
-mystring
+string
 canonify_filename(const char* fname)
 {
-  mystring dirname, basename;
+  string dirname, basename;
   split_filename(fname, dirname, basename);
 
-  mystring old_dir(get_current_directory());
+  string old_dir(get_current_directory());
   chdir(dirname.c_str());
-  mystring canonical_dir(get_current_directory());
+  string canonical_dir(get_current_directory());
   chdir(old_dir.c_str());
 
-  return mystring(canonical_dir + mystring("/") + basename);
+  return string(canonical_dir + string("/") + basename);
 }
 
 

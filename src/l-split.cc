@@ -31,12 +31,13 @@
 #include "sccsfile.h"		// declares these functions.
 
 #include <string.h>
+#include <string>
 
 
-mylist<mystring>
-split_mrs(mystring mrs)
+mylist<std::string>
+split_mrs(const std::string& mrs)
 {
-  mylist<mystring> mr_list;
+  mylist<std::string> mr_list;
   const char *delims = " \t\n";
 
   if (!mrs.empty())
@@ -56,9 +57,9 @@ split_mrs(mystring mrs)
   return mr_list;
 }
 
-mylist<mystring>
-split_comments(mystring comments) {
-	mylist<mystring> comment_list;
+mylist<std::string>
+split_comments(const std::string& comments) {
+  mylist<std::string> comment_list;
 
 	if (!comments.empty()) {
 	  char *s = new char[strlen(comments.c_str()) + 1];

@@ -31,13 +31,16 @@
 #ifndef CSSC__SID_H__
 #define CSSC__SID_H__
 
+#include <string>
+using std::string;
+
 #include "cssc-assert.h"
 #include "sid_list.h"
 
 #include "release.h"
 
 #include "relvbr.h"
-#include "mystring.h"
+
 
 class sccs_file;
 
@@ -203,7 +206,7 @@ public:
 			  rel, level, branch, sequence);
   }
 
-  mystring as_string() const;
+  string as_string() const;
 
   friend release::release(const sid &s);
   friend relvbr::relvbr(const sid &s);

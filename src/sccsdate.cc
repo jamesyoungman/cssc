@@ -26,6 +26,7 @@
  */
 #include <config.h>
 #include <cstring>
+#include <string>
 
 #include "cssc.h"
 #include "sccsdate.h"
@@ -379,7 +380,7 @@ sccs_date::print(FILE *f) const
 }
 
 
-mystring
+std::string
 sccs_date::as_string() const
 {
   char buf[18];
@@ -389,7 +390,7 @@ sccs_date::as_string() const
           yy, month, month_day,
           hour, minute, second);
 
-  return mystring(buf);
+  return std::string(buf);
 }
 
 sccs_date::sccs_date(int yr, int mth, int day,

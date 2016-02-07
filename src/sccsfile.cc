@@ -27,6 +27,7 @@
  */
 #include <config.h>
 #include <errno.h>
+#include <string>
 
 #include "cssc.h"
 #include "sccsfile.h"
@@ -684,7 +685,7 @@ bool sccs_file::checksum_ok() const
 
 /* Returns the module name of the SCCS file. */
 
-mystring
+std::string
 sccs_file::get_module_name() const
 {
   if (flags.module)
@@ -1092,7 +1093,7 @@ set_mr_checker_flag(const char *s)
   if (flags.mr_checker)
     delete flags.mr_checker;
 
-  flags.mr_checker = new mystring(s);
+  flags.mr_checker = new std::string(s);
 }
 
 void sccs_file::
@@ -1101,7 +1102,7 @@ set_module_flag(const char *s)
   if (flags.module)
     delete flags.module;
 
-  flags.module = new mystring(s);
+  flags.module = new std::string(s);
 }
 
 void  sccs_file::
@@ -1110,7 +1111,7 @@ set_user_flag(const char *s)
   if (flags.user_def)
     delete flags.user_def;
 
-  flags.user_def = new mystring(s);
+  flags.user_def = new std::string(s);
 }
 
 void sccs_file::
@@ -1119,7 +1120,7 @@ set_type_flag(const char *s)
   if (flags.type)
     delete flags.type;
 
-  flags.type = new mystring(s);
+  flags.type = new std::string(s);
 }
 
 void sccs_file::
@@ -1128,7 +1129,7 @@ set_reserved_flag(const char *s)
   if (flags.reserved)
     delete flags.reserved;
 
-  flags.reserved = new mystring(s);
+  flags.reserved = new std::string(s);
 }
 
 

@@ -27,6 +27,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <string>
 
 #include "cssc.h"
 #include "sccsname.h"
@@ -65,19 +66,18 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 			if (first[len - 1] != '/') {
 			  slash = "/";
 			} else {
-			  /* SourceForge bug 121605: Unix coredump in
-			   * mystring::mystring() if the directory
-			   * name contains a trailing slash.  Solution
-			   * is to make sure that "slash" is not NULL.
-			   */
-			  slash = "";
+			  /* Ensure that we don't try to create a
+			     string from NULL (SourceForge bug
+			     121605).
+			  */
+			     slash = "";
 			}
 
-			mystring dirname(mystring(first) + mystring(slash));
+			std::string dirname(std::string(first) + std::string(slash));
 
 			struct dirent *dent = readdir(dir);
 			while (dent != NULL) {
-				mystring directory_entry = mystring(dirname) + mystring(dent->d_name);
+				std::string directory_entry = std::string(dirname) + std::string(dent->d_name);
 
 				if (sccs_name::valid_filename(directory_entry.c_str())
 				    && is_readable(directory_entry.c_str()))
@@ -125,7 +125,7 @@ sccs_file_iterator::next() {
 	    if (linebuf.read_line(stdin)) {
 	      return 0;
 	    }
-	    mystring s (linebuf.c_str());
+	    std::string s (linebuf.c_str());
 	    name = s.substr(0, s.length()-1u); // chop off the newline.
 	    return 1;
 	  }

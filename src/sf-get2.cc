@@ -27,6 +27,7 @@
 
 #include <config.h>
 
+#include <string>
 #include <ctype.h>
 
 #include "cssc.h"
@@ -355,7 +356,7 @@ sccs_file::test_locks(sid got, const sccs_pfile& pf) const
     {
       if (!flags.joint_edit)
 	{
-	  mystring datestring(it->date.as_string());
+	  std::string datestring(it->date.as_string());
 	  errormsg("%s: Requested SID locked by '%s' at %s.\n",
 		   name.c_str(),
 		   it->user.c_str(),
@@ -373,7 +374,7 @@ sccs_file::test_locks(sid got, const sccs_pfile& pf) const
    should be included in the output file. */
 
 /* struct */ sccs_file::get_status
-sccs_file::get(FILE *out, mystring gname,
+sccs_file::get(FILE *out, const std::string& gname,
 	       FILE *summary_file,
 	       sid id, sccs_date cutoff_date,
                sid_list include, sid_list exclude,

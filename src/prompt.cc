@@ -29,9 +29,12 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdio>
+#include <string>
 
 #include "cssc.h"
 #include "file.h"
+
+using std::string;
 
 static char *
 re_new(char *p, int oldlen, int newlen)
@@ -49,7 +52,7 @@ re_new(char *p, int oldlen, int newlen)
 
 /* Prompts the user for input. */
 
-mystring
+string
 prompt_user(const char *prompt)
 {
   const int chunk_size = 16;
@@ -86,7 +89,7 @@ prompt_user(const char *prompt)
     }
 
   linebuf[i] = '\0';
-  mystring ret(linebuf);
+  string ret(linebuf);
   delete[] linebuf;
 
   return ret;

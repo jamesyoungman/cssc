@@ -186,10 +186,10 @@ run(const char *prg, mylist<const char *> const &args) {
 }
 
 inline mylist<const char*> &
-operator +=(mylist<const char*> &l1, mylist<mystring> const &l2)
+operator +=(mylist<const char*> &l1, mylist<std::string> const &l2)
 {
-  const mylist<mystring>::size_type len = l2.length();
-  for (mylist<mystring>::size_type i = 0; i < len; i++)
+  const mylist<std::string>::size_type len = l2.length();
+  for (mylist<std::string>::size_type i = 0; i < len; i++)
     {
       // This add operation would be push_back() under STL.
       // When everybody supports STL, we'll switch.
@@ -201,7 +201,7 @@ operator +=(mylist<const char*> &l1, mylist<mystring> const &l2)
 /* Runs a program to check MRs. */
 
 int
-run_mr_checker(const char *prg, const char *arg1, mylist<mystring> mrs)
+run_mr_checker(const char *prg, const char *arg1, const mylist<std::string>& mrs)
 {
   // If the validation flag is set but has no value, PRG will be an
   // empty string and the validation should succeed silently.  This is

@@ -30,16 +30,18 @@
 #ifndef CSSC__SCCSNAME_H__
 #define CSSC__SCCSNAME_H__
 
-#include "mystring.h"
+#include <string>
+using std::string;
+
 #include "filelock.h"
 
-mystring base_part(const mystring &name);
-mystring canonify_filename(const char* fname);
+string base_part(const string &name);
+string canonify_filename(const char* fname);
 
 class sccs_name
 {
-  mystring sname;		// name of the s. file.
-  mystring gname;
+  string sname;		// name of the s. file.
+  string gname;
 
   // We hold separate strings for the part before
   // and the part after the character that changes:
@@ -49,7 +51,7 @@ class sccs_name
   //  dir/l.foo.c
   // In these cases, name_front is "dir/" and name_rear is ".foo.c".
 
-  mystring name_front, name_rear;
+  string name_front, name_rear;
 
   file_lock *lock_ptr;
   int lock_cnt;
@@ -72,29 +74,29 @@ public:
    * to follow the declaration order.
    */
   sccs_name(): lock_ptr(0), lock_cnt(0)  {}
-  sccs_name &operator =(const mystring& n); /* undefined */
+  sccs_name &operator =(const string& n); /* undefined */
 
   bool valid() const { return sname.length() > 0; }
   void make_valid();
 
   const char * c_str() const { return sname.c_str(); }
 
-  mystring sub_file(char insertme) const;
-  mystring sfile() const { return sname; }
-  mystring gfile() const { return gname; }
-  mystring lfile() const;
+  string sub_file(char insertme) const;
+  string sfile() const { return sname; }
+  string gfile() const { return gname; }
+  string lfile() const;
 
-  mystring pfile() const { return sub_file('p'); }
-  mystring qfile() const { return sub_file('q'); }
-  mystring xfile() const { return sub_file('x'); }
-  mystring zfile() const { return sub_file('z'); }
+  string pfile() const { return sub_file('p'); }
+  string qfile() const { return sub_file('q'); }
+  string xfile() const { return sub_file('x'); }
+  string zfile() const { return sub_file('z'); }
 
   int
   lock()
   {
     if (lock_cnt++ == 0)
       {
-	mystring zf = zfile();
+	string zf = zfile();
 	lock_ptr = new file_lock(zf);
 	return lock_ptr->failed();
       }

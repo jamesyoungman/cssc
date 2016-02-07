@@ -40,17 +40,17 @@ TEST(DeltaTest, Constructor)
 {
   const sid s("1.9");
   const sccs_date then("990519014208");
-  const mystring user("waldo");
+  const std::string user("waldo");
   const seq_no seq(2), pred(1);
   std::set<seq_no> incl, excl;
-  mylist<mystring> mrlist;
-  mylist<mystring> comments;
+  mylist<std::string> mrlist;
+  mylist<std::string> comments;
 
-  mrlist.add(mystring("432"));
-  mrlist.add(mystring("438"));
+  mrlist.add(std::string("432"));
+  mrlist.add(std::string("438"));
 
-  comments.add(mystring("I'm sure I left it around here somewhere..."));
-  comments.add(mystring("...ah, here it is."));
+  comments.add(std::string("I'm sure I left it around here somewhere..."));
+  comments.add(std::string("...ah, here it is."));
 
   incl.insert(seq_no(1));
   excl.insert(seq_no(6));
@@ -91,19 +91,19 @@ TEST(DeltaTest, Constructor)
 
 TEST(DeltaTest, Assignment)
 {
-  mylist<mystring> mrlist;
-  mylist<mystring> comments;
+  mylist<std::string> mrlist;
+  mylist<std::string> comments;
 
-  mrlist.add(mystring("123"));
-  comments.add(mystring("yada"));
+  mrlist.add(std::string("123"));
+  comments.add(std::string("yada"));
 
   const delta e('D', sid("1.9"),
 		sccs_date("990519014208"),
-		mystring("fred"), seq_no(6), seq_no(3),
+		std::string("fred"), seq_no(6), seq_no(3),
 		mrlist, comments);
   ASSERT_EQ('D', e.get_type());
   ASSERT_EQ(1, e.comments().length());
-  ASSERT_EQ(mystring("yada"), e.comments()[0]);
+  ASSERT_EQ(std::string("yada"), e.comments()[0]);
 
   delta d;
   ASSERT_EQ(0, d.comments().length());
@@ -111,24 +111,24 @@ TEST(DeltaTest, Assignment)
   d = e;
   ASSERT_EQ('D', d.get_type());
   ASSERT_EQ(1, d.comments().length());
-  ASSERT_EQ(mystring("yada"), d.comments()[0]);
+  ASSERT_EQ(std::string("yada"), d.comments()[0]);
 }
 
 TEST(DeltaTest, Removed)
 {
-  const mylist<mystring> mrlist;
-  const mylist<mystring> comments;
+  const mylist<std::string> mrlist;
+  const mylist<std::string> comments;
   const delta e('R', sid("1.9"), sccs_date("990519014208"),
-		mystring("fred"), seq_no(6), seq_no(3), mrlist, comments);
+		std::string("fred"), seq_no(6), seq_no(3), mrlist, comments);
   EXPECT_TRUE(e.removed());
 }
 
 TEST(DeltaDeathTest, InvalidType)
 {
-  const mylist<mystring> mrlist;
-  const mylist<mystring> comments;
+  const mylist<std::string> mrlist;
+  const mylist<std::string> comments;
   EXPECT_EXIT(delta e('X', sid("1.9"), sccs_date("990519014208"),
-		      mystring("fred"), seq_no(6), seq_no(3), mrlist, comments),
+		      std::string("fred"), seq_no(6), seq_no(3), mrlist, comments),
 	      ::testing::KilledBySignal(SIGABRT),
 	      "valid");
 }
@@ -184,7 +184,7 @@ TEST(DeltaTest, Mutators)
   EXPECT_EQ("583", d.mrs()[0]);
   EXPECT_EQ("2", d.mrs()[1]);
   EXPECT_EQ(2, d.mrs().length());
-  mylist<mystring> mrs;
+  mylist<std::string> mrs;
   mrs.add("4");
   d.set_mrs(mrs);
   EXPECT_EQ(1, d.mrs().length());
@@ -197,8 +197,8 @@ TEST(DeltaTest, Mutators)
   EXPECT_EQ("Is there anybody there?\nI can hear you.", d.comments()[1]);
   EXPECT_EQ(2, d.comments().length());
 
-  const mystring comment("Please remember to put the cat out.");
-  mylist<mystring> comments;
+  const std::string comment("Please remember to put the cat out.");
+  mylist<std::string> comments;
   comments.add(comment);
   d.set_comments(comments);
   EXPECT_EQ(1, d.comments().length());

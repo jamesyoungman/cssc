@@ -25,6 +25,7 @@
  */
 
 #include <config.h>
+#include <string>
 #include "cssc.h"
 #include "fileiter.h"
 #include "sccsfile.h"
@@ -46,7 +47,7 @@ main(int argc, char **argv)
 {
   Cleaner arbitrary_name;
   int c;
-  mystring format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
+  std::string format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
   sid rid(sid::null_sid());
   /* enum */ sccs_file::when selected = sccs_file::SIDONLY;
   bool all_deltas = false;

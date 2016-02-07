@@ -27,6 +27,7 @@
 #define CSSC__SCCSFILE_H__
 
 #include <set>
+#include <string>
 
 #include "sccsname.h"
 #include "sid.h"
@@ -65,14 +66,15 @@ private:
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
 
-  mylist<mystring> users;	// FIXME: consider something more efficient.
+  mylist<std::string> users;	// FIXME: consider something more efficient.
   struct sccs_file_flags
   {
-    mystring *type;
-    mystring *mr_checker;
+    // TODO: consider std::unique_ptr<std::string> instead of std::string*.
+    std::string *type;
+    std::string *mr_checker;
     int no_id_keywords_is_fatal;
     int branch;
-    mystring *module;
+    std::string *module;
     release floor;
     release ceiling;
     sid default_sid;
@@ -80,15 +82,15 @@ private:
     int joint_edit;
     release_list locked;
     int all_locked;
-    mystring *user_def;
-    mystring *reserved;
+    std::string *user_def;
+    std::string *reserved;
 
     int encoded;
     int executable;
     std::set<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
   } flags;
 
-  mylist<mystring> comments;
+  mylist<std::string> comments;
 
   static FILE *open_sccs_file(const char *name, enum _mode mode,
                               int *sump, bool *is_bk_file);
@@ -166,7 +168,7 @@ private:
                                        struct subst_parms *,
                                        struct delta const&) const;
 
-  bool get(mystring name, class seq_state &state,
+  bool get(const std::string& name, class seq_state &state,
            struct subst_parms &parms,
            bool do_kw_subst,
            int show_sid = 0, int show_module = 0, int debug = 0,
@@ -200,7 +202,7 @@ public:
                     const sccs_pfile &pfile, int *failed) const;
   bool test_locks(sid got, const sccs_pfile&) const;
 
-  struct get_status get(FILE *out, mystring name,
+  struct get_status get(FILE *out, const std::string& name,
 			FILE *summary_file,
 			sid id,
                         sccs_date cutoff_date = sccs_date(),
@@ -255,12 +257,12 @@ public:
       return 0;
   }
 
-  int check_mrs(mylist<mystring> mrs);
+  int check_mrs(const mylist<std::string>& mrs);
 
-  bool add_delta(mystring gname,
+  bool add_delta(const std::string& gname,
 		 sccs_pfile &pfile,
 		 sccs_pfile::iterator it,
-                 mylist<mystring> mrs, mylist<mystring> comments,
+                 const mylist<std::string>& mrs, const mylist<std::string>& comments,
                  bool display_diff_output);
 
   /* sccsfile.cc */
@@ -277,23 +279,23 @@ public:
   bool branches_allowed() const;
 
   /* val.cc */
-  const mystring  get_module_type_flag();
+  const std::string  get_module_type_flag();
 
   /* sf-admin.c */
   bool admin(const char *file_comment,
              bool force_binary,
-             mylist<mystring> set_flags, mylist<mystring> unset_flags, // FIXME: consider something more efficient
-             mylist<mystring> add_users, mylist<mystring> erase_users);
+             const mylist<std::string>& set_flags, const mylist<std::string>& unset_flags, // FIXME: consider something more efficient
+             const mylist<std::string>& add_users, const mylist<std::string>& erase_users);
   bool create(const sid &initial_sid,
               const char *iname,
-              mylist<mystring> mrs,
-              mylist<mystring> comments,
+              const mylist<std::string>& mrs,
+              mylist<std::string>* comments,
               int suppress_comments,
               bool force_binary);
 
   /* sf-prs.c */
 private:
-  bool get(FILE *out, mystring name, seq_no seq, bool for_edit);
+  bool get(FILE *out, const std::string& name, seq_no seq, bool for_edit);
   void print_flags(FILE *out) const;
   void print_delta(FILE *out, const char *format,
                    struct delta const &delta);
@@ -318,7 +320,7 @@ public:
   };
 
 
-  bool prs(FILE *out, mystring format, sid rid, sccs_date cutoff_date,
+  bool prs(FILE *out, const std::string& format, sid rid, sccs_date cutoff_date,
            enum when when, bool all_deltas, bool *matched);
 
   bool prt(FILE *out, struct cutoff exclude, int all_deltas,
@@ -327,11 +329,11 @@ public:
            int incl_excl_ignore, int first_line_only, int print_desc,
            int print_users) const;
 
-  mystring get_module_name() const;
+  std::string get_module_name() const;
 
   /* sf-cdc.c */
 
-  bool cdc(sid id, mylist<mystring> mrs, mylist<mystring> comments);
+  bool cdc(sid id, const mylist<std::string>& mrs, const mylist<std::string>& comments);
 
   /* sf-rmdel.c */
 
@@ -357,8 +359,8 @@ private:
 
 /* l-split.c */
 
-mylist<mystring> split_mrs(mystring mrs);
-mylist<mystring> split_comments(mystring comments);
+mylist<std::string> split_mrs(const std::string& mrs);
+mylist<std::string> split_comments(const std::string& comments);
 
 #endif /* __SCCSFILE_H__ */
 

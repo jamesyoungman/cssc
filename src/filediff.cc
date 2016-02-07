@@ -24,7 +24,7 @@
  *
  */
 #include <config.h>
-
+#include <string>
 #include "cssc.h"
 #include "cssc-assert.h"
 #include "filediff.h"
@@ -55,9 +55,9 @@ FileDiff::finish(FILE * &fp)
 FILE*
 FileDiff::start()
 {
-  const mystring space(" ");
-  const mystring quote("'");
-  mystring cmd(mystring(CONFIG_DIFF_COMMAND) +
+  const std::string space(" ");
+  const std::string quote("'");
+  std::string cmd(std::string(CONFIG_DIFF_COMMAND) +
                space + quote + name1 + quote +
                space + quote + name2 + quote);
 

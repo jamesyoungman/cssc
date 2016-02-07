@@ -39,12 +39,12 @@
 
 static void
 print_string_list(FILE *out,
-		  mylist<mystring> const &l,
+		  mylist<std::string> const &l,
 		  const char* pre,
 		  const char* post,
 		  const char* dflt)
 {
-  const mylist<mystring>::size_type len = l.length();
+  const mylist<std::string>::size_type len = l.length();
 
   if (0 == len)
     {
@@ -52,7 +52,7 @@ print_string_list(FILE *out,
     }
   else
     {
-      for (mylist<mystring>::size_type i = 0; i < len; i++)
+      for (mylist<std::string>::size_type i = 0; i < len; i++)
 	{
 	  fprintf(out, "%s%s", pre, l[i].c_str());
 	  if (i < len-1)
@@ -64,7 +64,7 @@ print_string_list(FILE *out,
     }
 }
 
-void print_flag(FILE *out, const char *fmt, mystring flag, int& count)
+void print_flag(FILE *out, const char *fmt, std::string flag, int& count)
 {
   if (!flag.empty())
     {
@@ -73,7 +73,7 @@ void print_flag(FILE *out, const char *fmt, mystring flag, int& count)
     }
 }
 
-void print_flag(FILE *out, const char *fmt, const mystring* pflag, int& count)
+void print_flag(FILE *out, const char *fmt, const std::string* pflag, int& count)
 {
   // We consider a flag which is set to an empty string still to be set.
   // An example is the v flag; lines of the form "^Af v" should still set

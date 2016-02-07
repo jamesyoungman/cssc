@@ -26,7 +26,6 @@
 #include <assert.h>
 
 #include "mylist.h"
-#include "mystring.h"
 #include "sid.h"
 #include "sccsdate.h"
 #include "delta.h"
@@ -61,7 +60,7 @@ emit_ixg(FILE *fp, char signifier, const mylist<sid>& items)
 static bool
 emit_comments_or_mrs(FILE *fp,
                      char signifier,
-                     const mylist<mystring> items)
+                     const mylist<std::string> items)
 {
   if (items.length() == 0)
     {
@@ -84,14 +83,14 @@ emit_delta(FILE *fp,
            char type,
            sid id,
            const sccs_date& stamp,
-           const mystring& user,
+           const std::string& user,
            seq_no seq,
            seq_no prev_seq,
            const mylist<sid>& included,
            const mylist<sid>& excluded,
            const mylist<sid>& ignored,
-           const mylist<mystring>& comments,
-           const mylist<mystring>& mrs)
+           const mylist<std::string>& comments,
+           const mylist<std::string>& mrs)
 {
   fprintf(fp,
           "%cs %05lu/%05lu/%05lu\n", control, inserted, deleted, unchanged);
@@ -182,7 +181,7 @@ getpred (int *r, int *l, int *b, int *s)
 
 static bool make_delta(FILE *fp,
                        const sccs_date& current_time,
-                       const mystring& username,
+                       const std::string& username,
                        int release, int level, int branch, int revision,
                        int releases,
                        int levels_per_release,
@@ -214,7 +213,7 @@ static bool make_delta(FILE *fp,
   else
     prev_seq = 0;
 
-  const mylist<mystring> empty_string_list;
+  const mylist<std::string> empty_string_list;
   const mylist<sid> no_sids;
   emit_delta(fp, 0u, 0u, 0u, 'D', id, current_time, username,
              this_seq, prev_seq, no_sids, no_sids, no_sids,
@@ -223,7 +222,7 @@ static bool make_delta(FILE *fp,
 
 static bool
 create_sccs_file(FILE *fp,
-                 const mystring& username,
+                 const std::string& username,
                  int releases,
                  int levels_per_release,
                  int branches_per_level,
@@ -282,7 +281,7 @@ create_sccs_file(FILE *fp,
 int
 main (int argc, char *argv[])
 {
-  const mystring username("fred");
+  const std::string username("fred");
   int i, rv, c;
 
   set_prg_name (argv[0]);

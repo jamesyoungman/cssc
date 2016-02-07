@@ -26,6 +26,7 @@
  */
 
 #include <config.h>
+#include <string>
 
 #include <ctype.h>
 
@@ -33,7 +34,7 @@
 #include "sid.h"
 #include "ioerr.h"
 
-mystring sid::as_string() const
+std::string sid::as_string() const
 {
   char buf[32];
   if (branch || sequence)
@@ -41,7 +42,7 @@ mystring sid::as_string() const
   else
     sprintf(buf, "%d.%d", rel, level);
 
-  return mystring(buf);
+  return std::string(buf);
 }
 
 
