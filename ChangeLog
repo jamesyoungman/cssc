@@ -1,3 +1,8 @@
+2016-02-07  James Youngman  <jay@gnu.org>
+
+	Mention that gnulib has been updated.
+	* NEWS: mention this.
+
 2014-09-08  James Youngman  <jay@gnu.org>
 
 	Always include config.h first; eliminate some compiler warnings.

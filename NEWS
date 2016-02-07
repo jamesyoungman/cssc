@@ -5,6 +5,8 @@ New in CSSC-1.4.1-rc1, 2014-MM-DD
            because the 'x' flag is set.  Instead, preserve the
            executable-ness from the history file we are replacing.
 
+         * This release is based on an updated version of gnulib.
+
 New in CSSC-1.4.0, 2014-07-11
 
          * New stable release, almost identical to the test release
