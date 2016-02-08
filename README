@@ -13,6 +13,9 @@ provided in the file "docs/Platforms".
 ------------------------------------------------------------------------------
 0.      Configuring the package
 
+ You will need a C++ compiler that can compile C++11.  Most C++
+ compilers these days will do that.
+
  To configure CSSC before compiling it, run the "configure" script.
  See the file INSTALL for the generic options you can use with "configure".
  Options for "configure" that are specific to CSSC are detailed below.

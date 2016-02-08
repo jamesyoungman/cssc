@@ -1,5 +1,9 @@
 New in CSSC-1.4.1-rc1, 2014-MM-DD
 
+         * This release - and future releases - of CSSC must be
+           compiled with a C++ compiler that supports the 2011
+           C++ standard.
+
          * When the history file is updated (with admin or delta for
            example) the history file is not made executable simply
            because the 'x' flag is set.  Instead, preserve the

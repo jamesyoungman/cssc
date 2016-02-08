@@ -1,5 +1,9 @@
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	State that a C++11 compiler is needed.
+	* README: Mention the need for a C++11 capable compiler.
+	* NEWS: Likewise.
+
 	Store MRs as std::vector<std::string> (not mylist<std::string>).
 	* unit-tests/test_bigfile.cc: (emit_comments_or_mrs): Convert to a
 	template so that we can use it to print a std::vector<std::string>
