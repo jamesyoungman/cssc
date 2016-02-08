@@ -104,7 +104,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 
 	if (bDebug)
 	  {
-	    const mylist<seq_no>::size_type len = d.get_excluded_seqnos().length();
+	    const mylist<seq_no>::size_type len = d.get_excluded_seqnos().size();
 	    fprintf(stderr,
 		    "seq %d excludes %lu other deltas...\n",
 		    y, static_cast<unsigned long>(len));
@@ -136,7 +136,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	  const delta &d = delta_table->delta_at_seq(y);
 	  if (bDebug)
 	    {
-	      const mylist<seq_no>::size_type len = d.get_ignored_seqnos().length();
+	      const mylist<seq_no>::size_type len = d.get_ignored_seqnos().size();
 	      fprintf(stderr,
 		      "seq %d ignores %lu other deltas...\n",
 		      y, static_cast<unsigned long>(len));

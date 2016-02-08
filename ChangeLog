@@ -20,6 +20,11 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	Use mylist<T>::size() in preference to .length().
+	* src/sf-get.cc (prepare_seqstate_1): Use the size() method of
+	mylist, instead of length(), for better std::vector
+	compatibility.
+
 	Use range-based for loops in print_seqs and sccs_file::write.
 	* src/sf-write.cc (print_seqs): Iterate over sequence numbers with
 	a range-based for loop.
