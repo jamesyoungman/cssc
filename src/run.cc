@@ -26,12 +26,13 @@
  */
 #include "config.h"
 
+#include <string>
+#include <vector>
 #include <cstdio>
 #include <errno.h>
 
 #include "cssc.h"
 #include "run.h"
-#include "mylist.h"
 #include "sysdep.h"
 #include "quit.h"
 
@@ -98,9 +99,9 @@ static bool call_system(const char *s)
 /* Runs a programme and returns its exit status. */
 
 int
-run(const char *prg, mylist<const char *> const &args) {
+run(const char *prg, std::vector<const char *> const &args) {
         int i;
-        const size_t len = args.length();
+        const size_t len = args.size();
 
 #ifdef NEED_CALL_SYSTEM
 
@@ -185,36 +186,24 @@ run(const char *prg, mylist<const char *> const &args) {
 #endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 }
 
-inline mylist<const char*> &
-operator +=(mylist<const char*> &l1, mylist<std::string> const &l2)
-{
-  const mylist<std::string>::size_type len = l2.length();
-  for (mylist<std::string>::size_type i = 0; i < len; i++)
-    {
-      // This add operation would be push_back() under STL.
-      // When everybody supports STL, we'll switch.
-      l1.add(l2[i].c_str());
-    }
-  return l1;
-}
-
 /* Runs a program to check MRs. */
 
 int
-run_mr_checker(const char *prg, const char *arg1, const mylist<std::string>& mrs)
+run_mr_checker(const char *prg, const char *arg1, const std::vector<std::string>& mrs)
 {
   // If the validation flag is set but has no value, PRG will be an
   // empty string and the validation should succeed silently.  This is
   // for compatibility with "real" SCCS.
   if (prg[0])
     {
-      mylist<const char *> args;
+      std::vector<const char *> args;
 
-      args.add(arg1);
+      args.push_back(arg1);
 
-      const mylist<const char*>::size_type len = mrs.length();
-      for (mylist<const char*>::size_type i = 0; i < len; i++)
-        args.add(mrs[i].c_str()); // STL's push_back
+      for (const auto& mr : mrs) 
+	{
+	  args.push_back(mr.c_str());
+	}
 
       return run(prg, args);
     }

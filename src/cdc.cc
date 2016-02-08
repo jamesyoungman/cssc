@@ -138,7 +138,8 @@ main(int argc, char *argv[])
 	}
     }
 
-  mylist<std::string> mr_list, comment_list;
+  mylist<std::string> comment_list;
+  std::vector<std::string> mr_list;
   comment_list = split_comments(comments);
   mr_list = split_mrs(mrs);
 
@@ -157,7 +158,7 @@ main(int argc, char *argv[])
 	  if (first)
 	    {
 	      first = 0;
-	      if (file.mr_required() && (0 == mr_list.length()) )
+	      if (file.mr_required() && mr_list.empty())
 		{
 		  if (iter.using_stdin())
 		    {
@@ -179,14 +180,14 @@ main(int argc, char *argv[])
 		}
 	    }
 
-	  if (mr_list.length() != 0)
+	  if (!mr_list.empty())
 	    {
 	      if (file.mr_required())
 		{
 		  if (file.check_mrs(mr_list))
 		    {
 		      errormsg("%s: Invalid MR number%s -- validation failed..",
-			       plural(mr_list.length()), name.c_str());
+			       plural(mr_list.size()), name.c_str());
 		      retval = 1;
 		      continue;	// with next file.
 		    }

@@ -26,7 +26,7 @@
 #define CSSC__RUN_H__
 
 #include <string>
-#include "mylist.h"
+#include <vector>
 
 /* fork(); problem.
  *
@@ -67,9 +67,9 @@ Stop now!  Compilers should obey #error!  Stop I say, stop!  Run for it Harold!
 
 #endif /* HAVE_FORK */
 
-int run(const char *prg, mylist<const char *> const &args);
+int run(const char *prg, std::vector<const char *> const &args);
 int run_mr_checker(const char *prg, const char *arg1,
-		   const mylist<std::string>& mrs);
+		   const std::vector<std::string>& mrs);
 
 #endif /* CSSC__RUN_H__ */
 

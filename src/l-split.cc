@@ -34,10 +34,10 @@
 #include <string>
 
 
-mylist<std::string>
+std::vector<std::string>
 split_mrs(const std::string& mrs)
 {
-  mylist<std::string> mr_list;
+  std::vector<std::string> mr_list;
   const char *delims = " \t\n";
 
   if (!mrs.empty())
@@ -48,7 +48,7 @@ split_mrs(const std::string& mrs)
 
       while (p)
 	{
-	  mr_list.add(p);
+	  mr_list.push_back(std::string(p));
 	  p = strtok(NULL, delims);
 	}
       delete[] s;

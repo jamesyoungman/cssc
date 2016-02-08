@@ -20,6 +20,8 @@
  * Unit tests for delta-table.h.
  *
  */
+#include <string>
+#include <vector>
 #include "delta-table.h"
 #include "delta.h"
 #include <gtest/gtest.h>
@@ -75,9 +77,10 @@ TEST(DeltaTable, SelectConst)
 TEST(DeltaTableDeathTest, SeqNoRangeChecks)
 {
   cssc_delta_table t;
-  const mylist<std::string> no_comments, no_mrs;
+  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_mrs;
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
-		seq_no(1), seq_no(0), no_comments, no_mrs);
+		seq_no(1), seq_no(0), no_mrs, no_comments);
   t.add(a);
   ASSERT_TRUE(t.delta_at_seq_exists(seq_no(1)));
   EXPECT_EXIT(t.delta_at_seq_exists(seq_no(0)),
@@ -91,14 +94,15 @@ TEST(DeltaTableDeathTest, SeqNoRangeChecks)
 TEST(DeltaTable, DeltaAtSeqExists)
 {
   cssc_delta_table t;
-  const mylist<std::string> no_comments, no_mrs;
+  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
-		seq_no(1), seq_no(0), no_comments, no_mrs);
+		seq_no(1), seq_no(0), no_mrs, no_comments);
   const delta br('R', sid("1.2"), sccs_date("990619014208"), "waldo",
-		 seq_no(2), seq_no(1), no_comments, no_mrs);
+		 seq_no(2), seq_no(1), no_mrs, no_comments);
   const delta b('D', sid("1.1.1.1"), sccs_date("990620014208"), "wiggy",
-		seq_no(2), seq_no(1), no_comments, no_mrs);
+		seq_no(2), seq_no(1), no_mrs, no_comments);
   t.add(a);
   t.add(br);
   t.add(b);
@@ -112,14 +116,15 @@ TEST(DeltaTable, DeltaAtSeqExists)
 TEST(DeltaTable, DeltaAtSeqWithGap)
 {
   cssc_delta_table t;
-  const mylist<std::string> no_comments, no_mrs;
+  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
-		seq_no(1), seq_no(0), no_comments, no_mrs);
+		seq_no(1), seq_no(0), no_mrs, no_comments);
   const delta b('D', sid("1.2"), sccs_date("990619014208"), "waldo",
-		 seq_no(2), seq_no(1), no_comments, no_mrs);
+		 seq_no(2), seq_no(1), no_mrs, no_comments);
   const delta c('D', sid("1.3"), sccs_date("990620014208"), "wiggy",
-		seq_no(4), seq_no(2), no_comments, no_mrs);
+		seq_no(4), seq_no(2), no_mrs, no_comments);
   t.add(a);
   t.add(b);
   t.add(c);
@@ -138,12 +143,13 @@ TEST(DeltaTable, DeltaAtSeqWithGap)
 TEST(DeltaTable, RemovedDelta)
 {
   cssc_delta_table t;
-  const mylist<std::string> no_comments, no_mrs;
+  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
-		seq_no(1), seq_no(0), no_comments, no_mrs);
+		seq_no(1), seq_no(0), no_mrs, no_comments);
   const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo",
-		seq_no(2), seq_no(1), no_comments, no_mrs);
+		seq_no(2), seq_no(1), no_mrs, no_comments);
   t.add(a);
   t.add(r);
 
@@ -159,12 +165,13 @@ TEST(DeltaTable, FindAny)
 {
   cssc_delta_table t;
   const delta* p;
-  const mylist<std::string> no_comments, no_mrs;
+  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
-		seq_no(1), seq_no(0), no_comments, no_mrs);
+		seq_no(1), seq_no(0), no_mrs, no_comments);
   const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo",
-		seq_no(2), seq_no(1), no_comments, no_mrs);
+		seq_no(2), seq_no(1), no_mrs, no_comments);
   t.add(a);
   t.add(r);
   const cssc_delta_table& ct(t);
@@ -188,12 +195,13 @@ TEST(DeltaTable, HighestSeqno)
 {
   cssc_delta_table t;
   const delta* p;
-  const mylist<std::string> no_comments, no_mrs;
+  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
-		seq_no(1), seq_no(0), no_comments, no_mrs);
+		seq_no(1), seq_no(0), no_mrs, no_comments);
   const delta r('R', sid("1.2"), sccs_date("990619014208"), "waldo",
-		seq_no(2), seq_no(1), no_comments, no_mrs);
+		seq_no(2), seq_no(1), no_mrs, no_comments);
   t.add(a);
   EXPECT_EQ(1, t.highest_seqno());
   EXPECT_EQ(2, t.next_seqno());
@@ -205,7 +213,7 @@ TEST(DeltaTable, HighestSeqno)
   EXPECT_EQ(1, t.highest_release());
 
   const delta b('D', sid("2.1"), sccs_date("990819014208"), "dumbo",
-		seq_no(8), seq_no(1), no_comments, no_mrs);
+		seq_no(8), seq_no(1), no_mrs, no_comments);
   t.add(b);
   EXPECT_EQ(8, t.highest_seqno());
   EXPECT_EQ(2, t.highest_release());

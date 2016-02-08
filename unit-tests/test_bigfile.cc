@@ -57,20 +57,21 @@ emit_ixg(FILE *fp, char signifier, const mylist<sid>& items)
   return true;
 }
 
+template <typename Container>
 static bool
 emit_comments_or_mrs(FILE *fp,
                      char signifier,
-                     const mylist<std::string> items)
+                     const Container& items)
 {
-  if (items.length() == 0)
+  if (items.empty())
     {
       fprintf(fp, "%c%c \n", control, signifier);
     }
   else
     {
-      for (int i=0; i<items.length(); ++i)
+      for (const auto& item : items)
         {
-          fprintf(fp, "%c%c %s\n", control, signifier, items[i].c_str());
+          fprintf(fp, "%c%c %s\n", control, signifier, item.c_str());
         }
     }
 }
@@ -90,7 +91,7 @@ emit_delta(FILE *fp,
            const mylist<sid>& excluded,
            const mylist<sid>& ignored,
            const mylist<std::string>& comments,
-           const mylist<std::string>& mrs)
+           const std::vector<std::string>& mrs)
 {
   fprintf(fp,
           "%cs %05lu/%05lu/%05lu\n", control, inserted, deleted, unchanged);
@@ -103,7 +104,7 @@ emit_delta(FILE *fp,
   emit_ixg(fp, 'x', excluded);
   emit_ixg(fp, 'g', ignored);
   emit_comments_or_mrs(fp, 'c', comments);
-  if (mrs.length())
+  if (!mrs.empty())
     {
       emit_comments_or_mrs(fp, 'm', mrs);
     }
@@ -213,11 +214,12 @@ static bool make_delta(FILE *fp,
   else
     prev_seq = 0;
 
-  const mylist<std::string> empty_string_list;
+  const std::vector<std::string> no_mrs;
+  const mylist<std::string> no_comments;
   const mylist<sid> no_sids;
   emit_delta(fp, 0u, 0u, 0u, 'D', id, current_time, username,
              this_seq, prev_seq, no_sids, no_sids, no_sids,
-             empty_string_list, empty_string_list);
+             no_comments, no_mrs);
 }
 
 static bool

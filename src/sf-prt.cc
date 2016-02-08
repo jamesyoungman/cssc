@@ -37,14 +37,15 @@
 #include <unistd.h>		// SEEK_SET on SunOS.
 
 
+template<class Container>
 static void
 print_string_list(FILE *out,
-		  mylist<std::string> const &l,
+		  const Container& l,
 		  const char* pre,
 		  const char* post,
 		  const char* dflt)
 {
-  const mylist<std::string>::size_type len = l.length();
+  const mylist<std::string>::size_type len = l.size();
 
   if (0 == len)
     {
@@ -407,7 +408,7 @@ sccs_file::prt(FILE *out,
 		    }
 		}
 	      // Print any MRs and then the comments.
-	      if (iter->mrs().length())
+	      if (!iter->mrs().empty())
 		{
 		  fputs(nl_sep, out);	// either newline or space.
 		  print_string_list(out, iter->mrs(), "MRs:\t", nl_sep, "");

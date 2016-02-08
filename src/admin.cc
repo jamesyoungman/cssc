@@ -225,7 +225,8 @@ main(int argc, char **argv)
   if (check_checksum)
       reset_checksum = false;
 
-  mylist<string> mr_list, comment_list;
+  mylist<string> comment_list;
+  std::vector<string> mr_list;
   int was_first = 1;
   sccs_file_iterator iter(opts);
   if (! iter.using_source())
@@ -341,7 +342,7 @@ main(int argc, char **argv)
 		    }
 
 		  mr_list = split_mrs(mrs);
-		  if (mr_list.length()) 
+		  if (!mr_list.empty())
 		    {
 		      suppress_mrs = false;
 		    }
@@ -350,7 +351,7 @@ main(int argc, char **argv)
 
 	      if (file.mr_required())
 		{
-		  if (!suppress_mrs && mr_list.length() == 0)
+		  if (!suppress_mrs && mr_list.empty())
 		    {
 		      errormsg("%s: MR number(s) must be supplied.", name.c_str());
 		      retval = 1;

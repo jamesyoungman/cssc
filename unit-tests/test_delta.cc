@@ -20,6 +20,8 @@
  * Unit tests for sid.h.
  *
  */
+#include <string>
+#include <vector>
 #include "delta.h"
 #include "mylist.h"
 #include "sccsdate.h"
@@ -43,11 +45,11 @@ TEST(DeltaTest, Constructor)
   const std::string user("waldo");
   const seq_no seq(2), pred(1);
   std::set<seq_no> incl, excl;
-  mylist<std::string> mrlist;
+  std::vector<std::string> mrlist;
   mylist<std::string> comments;
 
-  mrlist.add(std::string("432"));
-  mrlist.add(std::string("438"));
+  mrlist.push_back(std::string("432"));
+  mrlist.push_back(std::string("438"));
 
   comments.add(std::string("I'm sure I left it around here somewhere..."));
   comments.add(std::string("...ah, here it is."));
@@ -91,10 +93,10 @@ TEST(DeltaTest, Constructor)
 
 TEST(DeltaTest, Assignment)
 {
-  mylist<std::string> mrlist;
+  std::vector<std::string> mrlist;
   mylist<std::string> comments;
 
-  mrlist.add(std::string("123"));
+  mrlist.push_back(std::string("123"));
   comments.add(std::string("yada"));
 
   const delta e('D', sid("1.9"),
@@ -116,7 +118,7 @@ TEST(DeltaTest, Assignment)
 
 TEST(DeltaTest, Removed)
 {
-  const mylist<std::string> mrlist;
+  const std::vector<std::string> mrlist;
   const mylist<std::string> comments;
   const delta e('R', sid("1.9"), sccs_date("990519014208"),
 		std::string("fred"), seq_no(6), seq_no(3), mrlist, comments);
@@ -125,7 +127,7 @@ TEST(DeltaTest, Removed)
 
 TEST(DeltaDeathTest, InvalidType)
 {
-  const mylist<std::string> mrlist;
+  const std::vector<std::string> mrlist;
   const mylist<std::string> comments;
   EXPECT_EXIT(delta e('X', sid("1.9"), sccs_date("990519014208"),
 		      std::string("fred"), seq_no(6), seq_no(3), mrlist, comments),
@@ -178,16 +180,16 @@ TEST(DeltaTest, Mutators)
   EXPECT_EQ(seq_no(5), d.get_ignored_seqnos()[1]);
 
 
-  ASSERT_EQ(0, d.mrs().length());
+  ASSERT_TRUE(d.mrs().empty());
   d.add_mr("583");
   d.add_mr("2");
   EXPECT_EQ("583", d.mrs()[0]);
   EXPECT_EQ("2", d.mrs()[1]);
-  EXPECT_EQ(2, d.mrs().length());
-  mylist<std::string> mrs;
-  mrs.add("4");
+  EXPECT_EQ(2, d.mrs().size());
+  std::vector<std::string> mrs;
+  mrs.push_back("4");
   d.set_mrs(mrs);
-  EXPECT_EQ(1, d.mrs().length());
+  EXPECT_EQ(1, d.mrs().size());
   EXPECT_EQ("4", d.mrs()[0]);
 
   ASSERT_EQ(0, d.comments().length());

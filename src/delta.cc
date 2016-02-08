@@ -139,7 +139,8 @@ delta_main(int argc, char **argv)
 	}
     }
 
-  mylist<std::string> mr_list, comment_list;
+  mylist<std::string> comment_list;
+  std::vector<std::string> mr_list;
   int first = 1;
 
   int retval = 0;
@@ -214,7 +215,7 @@ delta_main(int argc, char **argv)
 	    {
 	      if (!suppress_mrs && file.mr_required())
 		{
-		  if (mr_list.length() == 0)
+		  if (mr_list.empty())
 		    {
 		      errormsg("%s: MR number(s) must be supplied.",
 			       name.c_str());
@@ -233,7 +234,7 @@ delta_main(int argc, char **argv)
 		      continue;
 		    }
 		}
-	      else if (mr_list.length())
+	      else if (!mr_list.empty())
 		{
 		  // MRs were specified and the MR flag is turned off.
 		  found.second->delta.print(stdout);
@@ -288,9 +289,7 @@ delta_main(int argc, char **argv)
 int
 main(int argc, char **argv)
 {
-  int ret;
-  ret = delta_main(argc, argv);
-  return ret;
+  return delta_main(argc, argv);
 }
 
 /* Local variables: */

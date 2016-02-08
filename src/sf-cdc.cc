@@ -28,6 +28,7 @@
 
 #include <config.h>
 #include <string>
+#include <unordered_set>
 #include "cssc.h"
 #include "sccsfile.h"
 #include "delta.h"
@@ -49,25 +50,18 @@ inlist(mylist<std::string> l, const std::string& find)
 
 // Do the MR addition and deletion; if any have been deleted,
 // set deleted to true.   Return the updated set of MRs.
-// TODO: consider using mroe efficient data structures.
-static mylist<std::string>
-process_mrs(const mylist<std::string>& old_mrs,
-	    mylist<std::string> to_add,
-	    mylist<std::string> to_delete,
+static std::vector<std::string>
+process_mrs(const std::vector<std::string>& old_mrs,
+	    const std::vector<std::string>& to_add,
+	    const std::unordered_set<std::string>& to_delete,
 	    mylist<std::string>& comments,
 	    bool& deleted)
 {
-  mylist<std::string> current(to_add);
-
-  const mylist<std::string>::size_type len = old_mrs.length();
+  std::vector<std::string> current(to_add);
   deleted = false;
-
-  for (mylist<std::string>::size_type i=0; i<len; ++i)
+  for (const auto& mr : old_mrs)
     {
-      std::string const& mr(old_mrs[i]);
-
-      // TODO: consider efficiency: inlist is a nested loop
-      if (inlist(to_delete, mr))
+      if (to_delete.find(mr) != to_delete.end())
 	{
 	  if (!deleted)
 	    comments.add(std::string("*** LIST OF DELETED MRS ***"));
@@ -76,7 +70,7 @@ process_mrs(const mylist<std::string>& old_mrs,
 	}
       else
 	{
-	  current.add(mr);
+	  current.push_back(mr);
 	}
     }
   return current;
@@ -84,7 +78,8 @@ process_mrs(const mylist<std::string>& old_mrs,
 
 
 bool
-sccs_file::cdc(sid id, const mylist<std::string>& mr_updates, const mylist<std::string>& comment_updates)
+sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
+	       const mylist<std::string>& comment_updates)
 {
   if (!edit_mode_ok(true))
     return false;
@@ -99,26 +94,23 @@ sccs_file::cdc(sid id, const mylist<std::string>& mr_updates, const mylist<std::
 
   delta &d = *p;
 
-  mylist<std::string> not_mrs;
   mylist<std::string> deletion_comment;
   bool mrs_deleted = false;
-  const mylist<std::string>::size_type len = mr_updates.length();
-  if (0 != len)
+  if (!mr_updates.empty())
     {
-      mylist<std::string> yes_mrs;
+      std::vector<std::string> yes_mrs;
+      std::unordered_set<std::string> not_mrs;
 
-      for (mylist<std::string>::size_type i = 0; i < len; i++)
+      for (const auto& mr_spec : mr_updates)
 	{
-	  const char *s = mr_updates[i].c_str();
-	  if (s[0] == '!')
-	    not_mrs.add(s + 1);
+	  if (mr_spec[0] == '!')
+	    not_mrs.insert(std::string(mr_spec, 1));
 	  else
-	    yes_mrs.add(s);
+	    yes_mrs.push_back(mr_spec);
 	}
 
-      mylist<std::string> new_mrs;
-      new_mrs = process_mrs(d.mrs(), yes_mrs, not_mrs, deletion_comment, mrs_deleted);
-      d.set_mrs(new_mrs);
+      d.set_mrs(process_mrs(d.mrs(), yes_mrs, not_mrs, deletion_comment,
+			    mrs_deleted));
     }
 
   if (mrs_deleted || comment_updates.length())	// Prepend the new comments.

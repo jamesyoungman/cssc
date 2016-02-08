@@ -84,10 +84,9 @@ public:
     items_.push_back(ent);
   }
 
-  size_type length() const
-    {
-      return items_.size();
-    }
+  size_type size() const { return items_.size(); }
+  size_type length() const { return size(); }
+  bool empty() const { return items_.empty(); }
 
   TYPE const &
   operator [](size_type index) const

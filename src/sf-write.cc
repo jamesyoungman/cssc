@@ -158,24 +158,16 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
       return 1;
     }
 
-  len = d.mrs().length();
-  for(i = 0; i < len; i++)
+  for (const auto& mr : d.mrs())
     {
-      if (printf_failed(fprintf(out, "\001m %s\n",
-                                d.mrs()[i].c_str())))
-        {
-          return 1;
-        }
+      if (printf_failed(fprintf(out, "\001m %s\n", mr.c_str())))
+	return 1;
     }
 
-  len = d.comments().length();
-  for(i = 0; i < len; i++)
+  for (const auto& comment : d.comments())
     {
-      if (printf_failed(fprintf(out, "\001c %s\n",
-                                d.comments()[i].c_str())))
-        {
-          return 1;
-        }
+      if (printf_failed(fprintf(out, "\001c %s\n", comment.c_str())))
+	return 1;
     }
 
   return fputs_failed(fputs("\001e\n", out));

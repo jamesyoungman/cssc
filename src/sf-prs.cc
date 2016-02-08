@@ -92,6 +92,16 @@ print_string_list(FILE *out, mylist<std::string> const &list)
     }
 }
 
+/* Prints a list of strings, one per line. */
+static void
+print_string_list(FILE *out, std::vector<std::string> const &list)
+{
+  for (const auto& item : list)
+    {
+      fprintf(out, "%s\n", item.c_str());
+    }
+}
+
 
 /* Prints a boolean flag with its name.   Simply, if the
  * flag is unset, its name is not printed.

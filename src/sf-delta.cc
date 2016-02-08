@@ -425,7 +425,7 @@ bool
 sccs_file::add_delta(const std::string& gname,
 		     sccs_pfile& pfile,
 		     sccs_pfile::iterator it,
-                     const mylist<std::string>& new_mrs,
+                     const std::vector<std::string>& new_mrs,
 		     const mylist<std::string>& new_comments,
                      bool display_diff_output)
 {

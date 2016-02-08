@@ -1,9 +1,11 @@
 2016-02-08  James Youngman  <jay@gnu.org>
 
-	* unit-tests/test_bigfile.cc: Use std::string instead of
-	mystring.
-
 	Store MRs as std::vector<std::string> (not mylist<std::string>).
+	* unit-tests/test_bigfile.cc: (emit_comments_or_mrs): Convert to a
+	template so that we can use it to print a std::vector<std::string>
+	or a mylist<std::string>.
+	(emit_delta): Pass MRs as a vector not a mylist.
+	(make_delta): Likewise.
 	* unit-tests/test_delta-table.cc: Update to take account of the
 	change in representation of MR lists from mylist<std::string> to
 	std::vector<std::string>.

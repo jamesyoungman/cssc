@@ -37,7 +37,7 @@
    have the run_mr_checker function defined. */
 
 inline int
-sccs_file::check_mrs(const mylist<string>& mrs)
+sccs_file::check_mrs(const std::vector<string>& mrs)
 {
   ASSERT(0 != flags.mr_checker);
   return 0 != run_mr_checker(flags.mr_checker->c_str(),

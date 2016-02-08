@@ -28,6 +28,7 @@
 
 #include <config.h>
 #include <string>
+#include <vector>
 #include "cssc.h"
 #include "sccsfile.h"
 #include "sl-merge.h"
@@ -355,7 +356,7 @@ sccs_file::admin(const char *file_comment,
 bool
 sccs_file::create(const sid &id,
 		  const char *iname,
-		  const mylist<std::string>& mrs,
+		  const std::vector<std::string>& mrs,
 		  mylist<std::string>* starting_comments,
 		  int suppress_comments, bool force_binary)
 {
@@ -396,17 +397,17 @@ sccs_file::create(const sid &id,
 	}
 
       bool file_is_executable = false;
-      if (get_open_file_xbits(in, &file_is_executable)) 
+      if (get_open_file_xbits(in, &file_is_executable))
 	set_sfile_executable(file_is_executable);
     }
-  
+
   FILE *out = start_update(new_delta);
   if (NULL == out)
     {
       fclose(in);
       return false;
     }
-  
+
   if (fprintf_failed(fprintf(out, "\001I 1\n")))
     return false;
 

@@ -28,6 +28,7 @@
 
 #include <set>
 #include <string>
+#include <vector>
 
 #include "sccsname.h"
 #include "sid.h"
@@ -257,12 +258,12 @@ public:
       return 0;
   }
 
-  int check_mrs(const mylist<std::string>& mrs);
+  int check_mrs(const std::vector<std::string>& mrs);
 
   bool add_delta(const std::string& gname,
 		 sccs_pfile &pfile,
 		 sccs_pfile::iterator it,
-                 const mylist<std::string>& mrs, const mylist<std::string>& comments,
+                 const std::vector<std::string>& mrs, const mylist<std::string>& comments,
                  bool display_diff_output);
 
   /* sccsfile.cc */
@@ -288,7 +289,7 @@ public:
              const mylist<std::string>& add_users, const mylist<std::string>& erase_users);
   bool create(const sid &initial_sid,
               const char *iname,
-              const mylist<std::string>& mrs,
+              const std::vector<std::string>& mrs,
               mylist<std::string>* comments,
               int suppress_comments,
               bool force_binary);
@@ -333,7 +334,7 @@ public:
 
   /* sf-cdc.c */
 
-  bool cdc(sid id, const mylist<std::string>& mrs, const mylist<std::string>& comments);
+  bool cdc(sid id, const std::vector<std::string>& mrs, const mylist<std::string>& comments);
 
   /* sf-rmdel.c */
 
@@ -359,7 +360,7 @@ private:
 
 /* l-split.c */
 
-mylist<std::string> split_mrs(const std::string& mrs);
+std::vector<std::string> split_mrs(const std::string& mrs);
 mylist<std::string> split_comments(const std::string& comments);
 
 #endif /* __SCCSFILE_H__ */

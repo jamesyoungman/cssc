@@ -27,6 +27,7 @@
 
 #include <set>
 #include <string>
+#include <vector>
 #include "sid.h"
 #include "sccsdate.h"
 #include "mylist.h"
@@ -47,7 +48,7 @@ class delta
   // if the SCCS file contained even an EMPTY includes list.
   bool have_includes_, have_excludes_, have_ignores_;
   mylist<seq_no> included_, excluded_, ignored_;
-  mylist<string> mrs_;
+  std::vector<string> mrs_;
   mylist<string> comments_;
   unsigned long inserted_, deleted_, unchanged_;
 
@@ -69,12 +70,12 @@ public:
   }
 
   delta(char t, sid i, sccs_date d, const string& u, seq_no s, seq_no p,
-	const mylist<string>& ms, const mylist<string>& cs)
+	const std::vector<string>& mrs, const mylist<string>& cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
       have_includes_(false), have_excludes_(false),
       have_ignores_(false),
-      mrs_(ms), comments_(cs),
+      mrs_(mrs), comments_(cs),
       inserted_(0u),
       deleted_(0u),
       unchanged_(0u)
@@ -84,13 +85,13 @@ public:
 
   delta(char t, sid i, sccs_date d, const string& u, seq_no s, seq_no p,
 	const std::set<seq_no>& incl, const std::set<seq_no>& excl,
-	const mylist<string>& ms, const mylist<string>& cs)
+	const std::vector<string>& mrs, const mylist<string>& cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
       have_includes_(!incl.empty()), have_excludes_(!excl.empty()),
       have_ignores_(false),
       included_(incl), excluded_(excl),
-      mrs_(ms), comments_(cs),
+      mrs_(mrs), comments_(cs),
       inserted_(0u),
       deleted_(0u),
       unchanged_(0u)
@@ -216,19 +217,19 @@ public:
     have_ignores_ = true;
   }
 
-  const mylist<string>& mrs() const
+  const std::vector<string>& mrs() const
   {
     return mrs_;
   }
 
-  void set_mrs(const mylist<string>& updated_mrs)
+  void set_mrs(const std::vector<string>& updated_mrs)
   {
     mrs_ = updated_mrs;
   }
 
   void add_mr(const string& s)
   {
-    mrs_.add(s);
+    mrs_.push_back(s);
   }
 
   const mylist<string>& comments() const
