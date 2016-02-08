@@ -110,22 +110,24 @@ sccs_file::start_update() {
 
 static int
 print_seqs(FILE *out, char control, mylist<seq_no> const &seqs) {
-        const mylist<seq_no>::size_type len = seqs.length();
-
-        if (len != 0) {
-                if (printf_failed(fprintf(out, "\001%c", control))) {
-                        return 1;
-                }
-                for (mylist<seq_no>::size_type i = 0; i < len; i++) {
-                        if (printf_failed(fprintf(out, " %u", seqs[i]))) {
-                                return 1;
-                        }
-                }
-                if (putc_failed(putc('\n', out))) {
-                        return 1;
-                }
-        }
-        return 0;
+  if (!seqs.empty())
+    {
+      if (printf_failed(fprintf(out, "\001%c", control)))
+	{
+	  return 1;
+	}
+      for (const auto& seq : seqs)
+	{
+	  if (printf_failed(fprintf(out, " %u", seq))) {
+	    return 1;
+	  }
+	}
+      if (putc_failed(putc('\n', out)))
+	{
+	  return 1;
+	}
+    }
+  return 0;
 }
 
 /* Outputs an entry to the delta table of a new SCCS file.
@@ -194,14 +196,12 @@ sccs_file::write(FILE *out) const
     return 1;
   }
 
-  len = users.length();
-  for(i = 0; i < len; i++) {
-    s = users[i].c_str();
-    ASSERT(s[0] != '\001');
-    if (printf_failed(fprintf(out, "%s\n", s))) {
-      return 1;
+  for (const auto& user : users)
+    {
+      ASSERT(user[0] != '\001');
+      if (printf_failed(fprintf(out, "%s\n", user.c_str())))
+	return 1;
     }
-  }
 
   if (fputs_failed(fputs("\001U\n", out))) {
     return 1;
@@ -374,14 +374,12 @@ sccs_file::write(FILE *out) const
       return 1;
     }
 
-  len = comments.length();
-  for(i = 0; i < len; i++) {
-    s = comments[i].c_str();
-    ASSERT(s[0] != '\001');
-    if (printf_failed(fprintf(out, "%s\n", s))) {
-      return 1;
+  for (const auto& comment : comments)
+    {
+      ASSERT(comment[0] != '\001');
+      if (printf_failed(fprintf(out, "%s\n", comment.c_str())))
+	return 1;
     }
-  }
 
   if (fputs_failed(fputs("\001T\n", out)))
     {

@@ -20,6 +20,13 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	Use range-based for loops in print_seqs and sccs_file::write.
+	* src/sf-write.cc (print_seqs): Iterate over sequence numbers with
+	a range-based for loop.
+	(sccs_file::write): Iterate over users with a range-based for loop.
+	(sccs_file::write): Iterate over comments with a range-based for
+	loop.
+
 	Support and used range-based for for release_list instances.
 	* src/rl-merge.cc (merge): Use a range-based for loop to iterate
 	over release_list instances.
