@@ -20,6 +20,10 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	Implement mylist<T>::push_back.
+	* src/mylist.h (mylist): Implement a push_back method and add TODO
+	comments for methods which aren't shared by std::vector.
+
 	State that a C++11 compiler is needed.
 	* README: Mention the need for a C++11 capable compiler.
 	* NEWS: Likewise.

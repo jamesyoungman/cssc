@@ -84,8 +84,13 @@ public:
     items_.push_back(ent);
   }
 
+  void push_back(TYPE const &ent)
+  {
+    items_.push_back(ent);
+  }
+
   size_type size() const { return items_.size(); }
-  size_type length() const { return size(); }
+  size_type length() const { return size(); } // TODO: remove this method.
   bool empty() const { return items_.empty(); }
 
   TYPE const &
@@ -111,6 +116,7 @@ public:
       }
   }
 
+  // TODO: remove this method
   const mylist<TYPE>& operator-=(const mylist& other)
   {
     if (other.items_.size())
