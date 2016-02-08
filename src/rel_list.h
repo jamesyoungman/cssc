@@ -36,7 +36,8 @@ class release_list
   mylist<release> l;
 
 public:
-  typedef mylist<release>::size_type size_type;
+  typedef typename mylist<release>::size_type size_type;
+  typedef typename mylist<release>::const_iterator const_iterator;
 
   // Constructors / destructors
   release_list();
@@ -52,9 +53,12 @@ public:
   bool print(FILE *) const;
 
   // Accessors
-  bool empty() const { return 0 == l.length(); }
+  bool empty() const { return l.empty(); }
   bool valid() const { return !empty(); }
   bool member(release r) const;
+
+  const_iterator begin() const { return l.begin(); }
+  const_iterator end() const { return l.end(); }
 };
 
 /* Local variables: */

@@ -20,6 +20,13 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	Support and used range-based for for release_list instances.
+	* src/rl-merge.cc (merge): Use a range-based for loop to iterate
+	over release_list instances.
+	(remove): Likewise.
+	* src/rel_list.h (release_list): Implement begin() and end() and
+	empty().
+
 	Use a range-based for loop for iterating over deltas.
 	* src/sf-get.cc (prepare_seqstate_1): Use a range-based for loop
 	for iterating over included/excluded/ignored deltas.
