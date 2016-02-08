@@ -20,6 +20,9 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	sccs_delta: Use empty() to find out if a mylist is empty.
+	* src/delta.h: use mylist<T>.empty() instead of .length() == 0.
+
 	Implement mylist<T>::push_back.
 	* src/mylist.h (mylist): Implement a push_back method and add TODO
 	comments for methods which aren't shared by std::vector.

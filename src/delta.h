@@ -166,7 +166,7 @@ public:
   {
     if (!val)
       {
-	ASSERT(included_.length() == 0);
+	ASSERT(included_.empty());
       }
     have_includes_ = val;
   }
@@ -186,7 +186,7 @@ public:
   {
     if (!val)
       {
-	ASSERT(excluded_.length() == 0);
+	ASSERT(excluded_.empty());
       }
     have_excludes_ = val;
   }
@@ -206,7 +206,7 @@ public:
   {
     if (!val)
       {
-	ASSERT(ignored_.length() == 0);
+	ASSERT(ignored_.empty());
       }
     have_ignores_ = val;
   }
