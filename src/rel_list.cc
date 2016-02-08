@@ -21,6 +21,7 @@
  *
  */
 #include "config.h"
+#include <algorithm>
 #include <cstdlib>
 
 #include "cssc.h"
@@ -58,13 +59,7 @@ release_list::release_list(const char *s)
 // linear search for possible member.
 bool release_list::member(release r) const
 {
-  const release_list::size_type len = l.length();
-  for(release_list::size_type i=0; i<len; i++)
-    {
-      if (l[i] == r)
-	return true;
-    }
-  return false;
+  return std::find(l.begin(), l.end(), r) != l.end();
 }
 
 
@@ -83,16 +78,16 @@ release_list::~release_list()
 
 bool release_list::print(FILE * out) const
 {
-  const release_list::size_type len = l.length();
-  for(release_list::size_type i=0; i<len; i++)
+  bool first = true;
+  for (const auto& release : l)
     {
-      if (i > 0)
+      if (!first)
 	{
 	  if (putc_failed(fputc(' ', out)))
 	    return false;
 	}
-
-      if (l[i].print(out))
+      first = false;
+      if (release.print(out))
 	return false;
     }
   return true;

@@ -20,6 +20,11 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	Use range-based for loops in the release_list implementation.
+	* src/rel_list.cc (member): Search with std::find, rather
+	than coding it manually.
+	(print): Use a range-based for loop.
+
 	Use mylist<T>::size() in preference to .length().
 	* src/sf-get.cc (prepare_seqstate_1): Use the size() method of
 	mylist, instead of length(), for better std::vector
