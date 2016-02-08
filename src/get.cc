@@ -46,13 +46,12 @@
 static void
 print_id_list(FILE *fp, const char *s, mylist<sid> const &list)
 {
-  const mylist<sid>::size_type len = list.length();
-  if (len > 0)
+  if (!list.empty())
     {
       fprintf(fp, "%s:\n", s);
-      for (mylist<sid>::size_type i = 0; i < len; i++)
+      for (const auto& sid : list)
         {
-          list[i].print(fp);
+          sid.print(fp);
           fputc('\n', fp);
         }
     }

@@ -20,6 +20,10 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	Use range-based for in get.cc.
+	* src/get.cc (print_id_list): Use a range-based for loop to print
+	a sid list.
+
 	Use range-based for loops in the release_list implementation.
 	* src/rel_list.cc (member): Search with std::find, rather
 	than coding it manually.
