@@ -20,6 +20,10 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	Use a range-based for loop for iterating over deltas.
+	* src/sf-get.cc (prepare_seqstate_1): Use a range-based for loop
+	for iterating over included/excluded/ignored deltas.
+
 	sccs_delta: Use empty() to find out if a mylist is empty.
 	* src/delta.h: use mylist<T>.empty() instead of .length() == 0.
 

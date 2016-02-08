@@ -73,17 +73,16 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	{
 	  const delta &d = delta_table->delta_at_seq(y);
 
-	  const mylist<seq_no>::size_type len = d.get_included_seqnos().length();
 	  if (bDebug)
 	    {
+	      const mylist<seq_no>::size_type len = d.get_included_seqnos().size();
 	      fprintf(stderr,
 		      "seq %d includes %lu other deltas...\n",
 		      y, static_cast<unsigned long>(len));
 	    }
 
-	  for (mylist<seq_no>::size_type i = 0; i < len; i++)
+	  for (auto s : d.get_included_seqnos())
 	    {
-	      const seq_no s = d.get_included_seqnos()[i];
 	      if (s == y)
 		continue;
 
@@ -103,17 +102,16 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
       {
 	const delta &d = delta_table->delta_at_seq(y);
 
-	const mylist<seq_no>::size_type len = d.get_excluded_seqnos().length();
 	if (bDebug)
 	  {
+	    const mylist<seq_no>::size_type len = d.get_excluded_seqnos().length();
 	    fprintf(stderr,
 		    "seq %d excludes %lu other deltas...\n",
 		    y, static_cast<unsigned long>(len));
 	  }
 
-	for (mylist<seq_no>::size_type i = 0; i < len; i++)
+	for (auto s : d.get_excluded_seqnos())
 	  {
-	    const seq_no s = d.get_excluded_seqnos()[i];
 	    if (s == y)
 	      continue;
 
@@ -136,20 +134,19 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
       if (state.is_included(y))
 	{
 	  const delta &d = delta_table->delta_at_seq(y);
-	  const mylist<seq_no>::size_type len = d.get_ignored_seqnos().length();
 	  if (bDebug)
 	    {
+	      const mylist<seq_no>::size_type len = d.get_ignored_seqnos().length();
 	      fprintf(stderr,
 		      "seq %d ignores %lu other deltas...\n",
 		      y, static_cast<unsigned long>(len));
 	    }
 
-
-	  for (mylist<seq_no>::size_type i = 0; i < len; i++)
+	  for (auto s : d.get_ignored_seqnos())
 	    {
-	      const seq_no s = d.get_ignored_seqnos()[i];
 	      if (s == y)
 		continue;
+
 	      ASSERT(s <= y);
 	      state.set_ignored(s, y);
 
