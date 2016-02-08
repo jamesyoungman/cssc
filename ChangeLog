@@ -20,6 +20,10 @@
 
 2016-02-08  James Youngman  <jay@gnu.org>
 
+	Don't gratuitously count elements of mylist<T>.
+	* src/sf-admin.cc (create): Prefer !mylist<T>::empty() over
+	mylist<T>::length() != 0.
+
 	Use range-based for in get.cc.
 	* src/get.cc (print_id_list): Use a range-based for loop to print
 	a sid list.

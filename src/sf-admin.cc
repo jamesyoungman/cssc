@@ -362,7 +362,7 @@ sccs_file::create(const sid &id,
 {
 
   sccs_date now = sccs_date::now();
-  if (!suppress_comments && starting_comments->length() == 0)
+  if (!suppress_comments && starting_comments->empty())
     {
       starting_comments->add(std::string("date and time created ")
 			     + now.as_string()
