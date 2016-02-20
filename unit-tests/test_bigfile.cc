@@ -45,12 +45,14 @@ usage ()
 static bool
 emit_ixg(FILE *fp, char signifier, const mylist<sid>& items)
 {
-  if (items.length())
+  if (!items.empty())
     {
       fprintf(fp, "%c%c ", control, signifier);
-      for (int i=0; i<items.length(); ++i)
+      bool first = true;
+      for (const auto& item : items)
         {
-          fprintf(fp, "%s%s", (i ? "," : ""), items[i].as_string().c_str());
+          fprintf(fp, "%s%s", (first ? "" : ","), item.as_string().c_str());
+	  first = false;
         }
       fprintf(fp, "\n");
     }

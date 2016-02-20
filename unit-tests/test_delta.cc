@@ -67,11 +67,11 @@ TEST(DeltaTest, Constructor)
   EXPECT_TRUE(d.mrs() == mrlist);
   EXPECT_TRUE(d.comments() == comments);
 
-  EXPECT_EQ(1, d.get_included_seqnos().length());
+  EXPECT_EQ(1, d.get_included_seqnos().size());
   EXPECT_EQ(seq_no(1), d.get_included_seqnos()[0]);
   EXPECT_TRUE(d.has_includes());
 
-  EXPECT_EQ(1, d.get_excluded_seqnos().length());
+  EXPECT_EQ(1, d.get_excluded_seqnos().size());
   EXPECT_EQ(seq_no(6), d.get_excluded_seqnos()[0]);
   EXPECT_TRUE(d.has_excludes());
 
@@ -85,9 +85,9 @@ TEST(DeltaTest, Constructor)
   EXPECT_TRUE(e.mrs() == mrlist);
   EXPECT_TRUE(e.comments() == comments);
 
-  EXPECT_EQ(0, e.get_included_seqnos().length());
+  EXPECT_EQ(0, e.get_included_seqnos().size());
   EXPECT_FALSE(e.has_includes());
-  EXPECT_EQ(0, e.get_excluded_seqnos().length());
+  EXPECT_EQ(0, e.get_excluded_seqnos().size());
   EXPECT_FALSE(e.has_excludes());
 }
 
@@ -104,15 +104,15 @@ TEST(DeltaTest, Assignment)
 		std::string("fred"), seq_no(6), seq_no(3),
 		mrlist, comments);
   ASSERT_EQ('D', e.get_type());
-  ASSERT_EQ(1, e.comments().length());
+  ASSERT_EQ(1, e.comments().size());
   ASSERT_EQ(std::string("yada"), e.comments()[0]);
 
   delta d;
-  ASSERT_EQ(0, d.comments().length());
+  ASSERT_EQ(0, d.comments().size());
 
   d = e;
   ASSERT_EQ('D', d.get_type());
-  ASSERT_EQ(1, d.comments().length());
+  ASSERT_EQ(1, d.comments().size());
   ASSERT_EQ(std::string("yada"), d.comments()[0]);
 }
 
@@ -160,7 +160,7 @@ TEST(DeltaTest, Mutators)
   ASSERT_FALSE(d.has_excludes());
   ASSERT_FALSE(d.has_ignores());
   d.add_include(seq_no(2));
-  EXPECT_EQ(2, d.get_included_seqnos().length());
+  EXPECT_EQ(2, d.get_included_seqnos().size());
   EXPECT_EQ(seq_no(2), d.get_included_seqnos()[1]);
 
   d.add_exclude(seq_no(6));
@@ -168,7 +168,7 @@ TEST(DeltaTest, Mutators)
   ASSERT_TRUE(d.has_excludes());
   ASSERT_FALSE(d.has_ignores());
   d.add_exclude(seq_no(7));
-  EXPECT_EQ(2, d.get_excluded_seqnos().length());
+  EXPECT_EQ(2, d.get_excluded_seqnos().size());
   EXPECT_EQ(seq_no(7), d.get_excluded_seqnos()[1]);
 
   d.add_ignore(seq_no(3));
@@ -176,7 +176,7 @@ TEST(DeltaTest, Mutators)
   ASSERT_TRUE(d.has_excludes());
   ASSERT_TRUE(d.has_ignores());
   d.add_ignore(seq_no(5));
-  EXPECT_EQ(2, d.get_ignored_seqnos().length());
+  EXPECT_EQ(2, d.get_ignored_seqnos().size());
   EXPECT_EQ(seq_no(5), d.get_ignored_seqnos()[1]);
 
 
@@ -192,18 +192,18 @@ TEST(DeltaTest, Mutators)
   EXPECT_EQ(1, d.mrs().size());
   EXPECT_EQ("4", d.mrs()[0]);
 
-  ASSERT_EQ(0, d.comments().length());
+  ASSERT_EQ(0, d.comments().size());
   d.add_comment("Hello?");
   d.add_comment("Is there anybody there?\nI can hear you.");
   EXPECT_EQ("Hello?", d.comments()[0]);
   EXPECT_EQ("Is there anybody there?\nI can hear you.", d.comments()[1]);
-  EXPECT_EQ(2, d.comments().length());
+  EXPECT_EQ(2, d.comments().size());
 
   const std::string comment("Please remember to put the cat out.");
   mylist<std::string> comments;
   comments.add(comment);
   d.set_comments(comments);
-  EXPECT_EQ(1, d.comments().length());
+  EXPECT_EQ(1, d.comments().size());
   EXPECT_EQ(comment, d.comments()[0]);
 
   // Make sure we didn't confuse mrs and comments.

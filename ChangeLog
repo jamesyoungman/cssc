@@ -1,6 +1,11 @@
 2016-02-20  James Youngman  <jay@gnu.org>
 
 	Prefer mylist::size() to mylist::length().
+	* unit-tests/test_delta.cc: Don't use mylist::length().
+	* unit-tests/test_bigfile.cc (emit_comments_or_mrs): Don't use
+	mylist::length().
+
+	Prefer mylist::size() to mylist::length().
 	* unit-tests/test_mylist.cc: Use the size() method instead of the
 	length() method, for better compatibility with (and so simpler
 	transition to) std::vector.
