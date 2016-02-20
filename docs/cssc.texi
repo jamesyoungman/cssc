@@ -14,7 +14,8 @@ This file documents the GNU @code{cssc} package for working with
 @sc{sccs} files.
 
 Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002,
-              2003, 2004, 2005, 2007, 2008 Free Software Foundation, Inc.
+              2003, 2004, 2005, 2007, 2008, 2009,
+              2010, 2014 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3
@@ -47,7 +48,7 @@ Free Documentation License''.
 
 @page
 @vskip 0pt plus 1filll
-@insertcopying{}
+@insertcopying
 @end titlepage
 
 
@@ -177,6 +178,15 @@ Ordered by the frequency with which I use them, they are:-
 @cindex creating @sc{sccs} files
 @cindex initialising SCCS history files
 
+@menu
+* Admin Usage::                         Frequently-used @code{admin} commands
+* Admin Options::                       Full list of @code{admin} options.
+* Flags::                               @sc{sccs} file flags
+* Modification Request Numbers::        Referring to the reasons for changes.
+@end menu
+
+@node Admin Usage
+@subsection @code{admin} usage
 To create an @sc{sccs} archive of a source file @file{foo.c}, do
 @example
 admin -ifoo.c s.foo.c
@@ -198,6 +208,8 @@ want to do this because the file actually contains binary data, or just
 characters that have other meanings within an @sc{sccs} file, for
 example @samp{^A}, the character whose code is 1.
 
+@node Admin Options
+@subsection @code{admin} options
 @table @option
 @cindex Restricting access to history files
 @cindex Authorisation
