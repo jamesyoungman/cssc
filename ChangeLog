@@ -1,8 +1,22 @@
 2016-02-20  James Youngman  <jay@gnu.org>
 
+	Avoid bash-specific [[...]].
+	* build-aux/check-googletest-files.sh (findproblems): Avoid
+	[[...]] since that is a Bash feature, and this is a /bin/sh
+	script.
+
 	Add a menu for "admin", correcting a Texinfo build failure.
 	* docs/cssc.texi: Updated copyright years.
 	(admin): Added a menu for the sections relating to "admin".
+
+2016-02-09  James Youngman  <jay@gnu.org>
+
+	* src/sf-prs.cc (print_seq_list): Use a range-based for loop for
+	iterating over sequence numbers.
+	* src/sf-val.cc (validate_seq_lists): Factor out the repeated
+	logic into a local function, validate_seq_numbers.
+	* src/sf-get2.cc (get): Use a range-based for loop for iterating
+	over the comments.
 
 2016-02-08  James Youngman  <jay@gnu.org>
 

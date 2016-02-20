@@ -17,7 +17,7 @@ findproblems() {
 
 	comm -13 "${released}" "${ondisk}" >| "${problems}"
        
-	if [[ -s "${problems}" ]] ; then
+	if [ -s "${problems}" ] ; then
 	    exec >&2
 	    echo "Problem: some files in googletest were not included in the release."
 	    cat "${problems}"
