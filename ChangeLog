@@ -1,5 +1,10 @@
 2016-02-20  James Youngman  <jay@gnu.org>
 
+	Prefer mylist::size() to mylist::length().
+	* unit-tests/test_mylist.cc: Use the size() method instead of the
+	length() method, for better compatibility with (and so simpler
+	transition to) std::vector.
+
 	Avoid bash-specific [[...]].
 	* build-aux/check-googletest-files.sh (findproblems): Avoid
 	[[...]] since that is a Bash feature, and this is a /bin/sh

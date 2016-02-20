@@ -26,7 +26,7 @@
 
 TEST(MylistTest, Empty) {
   mylist<int> empty;
-  const int len = empty.length();
+  const int len = empty.size();
 
   EXPECT_EQ(0, len);
 }
@@ -35,7 +35,7 @@ TEST(MylistTest, Add) {
   mylist<int> a;
 
   a.add(42);
-  EXPECT_EQ(1, a.length());
+  EXPECT_EQ(1, a.size());
   EXPECT_EQ(42, a[0]);
 }
 
@@ -45,7 +45,7 @@ TEST(MylistTest, Assignment) {
 
   a.add(42);
   b = a;
-  EXPECT_EQ(1, b.length());
+  EXPECT_EQ(1, b.size());
   EXPECT_EQ(42, b[0]);
   // Make sure a was not destroyed.
   EXPECT_EQ(42, a[0]);
@@ -55,7 +55,7 @@ TEST(MylistTest, Select) {
   mylist<int> a;
 
   a.add(42);
-  EXPECT_EQ(1, a.length());
+  EXPECT_EQ(1, a.size());
   EXPECT_EQ(42, a[0]);
   a.select(0) = 52;
   EXPECT_EQ(52, a[0]);
@@ -68,11 +68,11 @@ TEST(MylistTest, Catenate) {
   b.add(53);
   b.add(54);
   a += b;
-  EXPECT_EQ(3, a.length());
+  EXPECT_EQ(3, a.size());
   EXPECT_EQ(42, a[0]);
   EXPECT_EQ(53, a[1]);
   EXPECT_EQ(54, a[2]);
-  EXPECT_EQ(2, b.length());
+  EXPECT_EQ(2, b.size());
 }
 
 TEST(MylistTest, MinusEmpty) {
@@ -80,12 +80,12 @@ TEST(MylistTest, MinusEmpty) {
 
   a.add(42);
   a -= empty;
-  EXPECT_EQ(1, a.length());
+  EXPECT_EQ(1, a.size());
   EXPECT_EQ(42, a[0]);
 
   empty -=a ;
-  EXPECT_EQ(0, empty.length());
-  EXPECT_EQ(1, a.length());
+  EXPECT_EQ(0, empty.size());
+  EXPECT_EQ(1, a.size());
 
 }
 
@@ -96,11 +96,11 @@ TEST(MylistTest, Minus) {
   b.add(53);
   b.add(54);
   a -= b;
-  EXPECT_EQ(1, a.length());
+  EXPECT_EQ(1, a.size());
   b.add(42);
   a.add(96);
   a -= b;
-  EXPECT_EQ(1, a.length());
+  EXPECT_EQ(1, a.size());
   EXPECT_EQ(96, a[0]);
 }
 
@@ -111,13 +111,13 @@ TEST(MylistTest, ValidPointerAssignment)
 
   a.add(42);
   a = p;
-  EXPECT_EQ(0, a.length());
+  EXPECT_EQ(0, a.size());
 }
 
 TEST(MylistTest, EqualityEmpty)
 {
   mylist<int> a, b, c;
-  EXPECT_TRUE(a.length() == b.length());
+  EXPECT_TRUE(a.size() == b.size());
   EXPECT_TRUE(a == b);
 
   c.add(4);
