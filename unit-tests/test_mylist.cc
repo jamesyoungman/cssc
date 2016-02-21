@@ -104,16 +104,6 @@ TEST(MylistTest, Minus) {
   EXPECT_EQ(96, a[0]);
 }
 
-TEST(MylistTest, ValidPointerAssignment)
-{
-  void *p = 0;
-  mylist<int> a;
-
-  a.add(42);
-  a = p;
-  EXPECT_EQ(0, a.size());
-}
-
 TEST(MylistTest, EqualityEmpty)
 {
   mylist<int> a, b, c;
@@ -152,13 +142,6 @@ TEST(MylistTest, Different)
   b.add(2);
   b.add(1);
   EXPECT_FALSE(a == b);
-}
-
-TEST(MylistDeathTest, InvalidPointerAssignment)
-{
-  mylist<int> a;
-  void *p = &a;
-  EXPECT_EXIT(a = p, ::testing::KilledBySignal(SIGABRT), "NULL");
 }
 
 TEST(MylistDeathTest, IndexTooLow)

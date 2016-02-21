@@ -72,13 +72,6 @@ public:
     return items_ == l.items_;
   }
 
-  void
-  operator =(void *p)
-    {
-      ASSERT(p == NULL);
-      items_.clear();
-    }
-
   void add(TYPE const &ent)
   {
     items_.push_back(ent);
@@ -134,7 +127,7 @@ public:
 	items_.swap(remaining);
       }
   }
-
+  void clear() { items_.clear(); }
   iterator begin() { return items_.begin(); }
   const_iterator begin() const { return items_.begin(); }
   iterator end() { return items_.end(); }

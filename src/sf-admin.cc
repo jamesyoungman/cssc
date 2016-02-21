@@ -63,7 +63,7 @@ sccs_file::admin(const char *file_comment,
 
   if (file_comment != NULL)
     {
-      comments = NULL;
+      comments.clear();
       if (file_comment[0] != '\0')
 	{
 	  FILE *fc = fopen(file_comment, "r");
