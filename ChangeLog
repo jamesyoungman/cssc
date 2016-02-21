@@ -1,8 +1,13 @@
 2016-02-21  James Youngman  <jay@gnu.org>
 
+	Avoid unnecessary for loop in mylist::operator+=(const mylist&).
+	* src/mylist.h (mylist): Implement operator+= with a range insert
+	on the underlying vector.
+
 	Remove mylist<T>::operator-=(const mylist<T>&).
 	* src/mylist.h (mylist): remove mylist<T>::operator-=(const
 	mylist<T>&).
+
 	* unit-tests/test_mylist.cc: Remove tests of
 	mylist<T>::operator-=(const mylist<T>&).
 	* src/sccsfile.h (sccs_file::admin): change the type of

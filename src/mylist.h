@@ -83,15 +83,12 @@ public:
       ASSERT(index < items_.size());
       return items_[index];
     }
-
+#if 1
   const mylist<TYPE>& operator+=(const mylist& other)
   {
-    typename impl_type::const_iterator ci;
-    for (ci=other.items_.begin(); ci!=other.items_.end(); ++ci)
-      {
-	items_.push_back(*ci);
-      }
+    items_.insert(items_.end(), other.begin(), other.end());
   }
+#endif
 
   void clear() { items_.clear(); }
   iterator begin() { return items_.begin(); }
