@@ -540,9 +540,9 @@ sccs_file::get(FILE *out, const std::string& gname,
           const sid id = seq_to_sid(seq);
 
           if (state.is_included(seq))
-            status.included.add(id);
+            status.included.push_back(id);
           else if (state.is_excluded(seq))
-            status.excluded.add(id);
+            status.excluded.push_back(id);
         }
     }
 

@@ -89,7 +89,7 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 				      }
 				    else
 				      {
-					files.add(directory_entry);
+					files.push_back(directory_entry);
 				      }
 				  }
 				dent = readdir(dir);

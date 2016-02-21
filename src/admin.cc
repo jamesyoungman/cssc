@@ -174,19 +174,19 @@ main(int argc, char **argv)
       break;
 
     case 'f':
-      set_flags.add(opts.getarg());
+      set_flags.push_back(opts.getarg());
       break;
 
     case 'd':
-      unset_flags.add(opts.getarg());
+      unset_flags.push_back(opts.getarg());
       break;
 
     case 'a':
-      add_users.add(opts.getarg());
+      add_users.push_back(opts.getarg());
       break;
 
     case 'e':
-      erase_users.add(opts.getarg());
+      erase_users.push_back(opts.getarg());
       break;
 
     case 'm':

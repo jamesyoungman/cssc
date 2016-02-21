@@ -173,7 +173,7 @@ public:
 
   void add_include(const seq_no &s)
   {
-    included_.add(s);
+    included_.push_back(s);
     have_includes_ = true;
   }
 
@@ -193,7 +193,7 @@ public:
 
   void add_exclude(const seq_no &s)
   {
-    excluded_.add(s);
+    excluded_.push_back(s);
     have_excludes_ = true;
   }
 
@@ -213,7 +213,7 @@ public:
 
   void add_ignore(const seq_no &s)
   {
-    ignored_.add(s);
+    ignored_.push_back(s);
     have_ignores_ = true;
   }
 
@@ -244,7 +244,7 @@ public:
 
   void add_comment(const string& s)
   {
-    comments_.add(s);
+    comments_.push_back(s);
   }
 
   delta &operator =(delta const &);

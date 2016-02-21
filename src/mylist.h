@@ -72,15 +72,7 @@ public:
     return items_ == l.items_;
   }
 
-  void add(TYPE const &ent)
-  {
-    items_.push_back(ent);
-  }
-
-  void push_back(TYPE const &ent)
-  {
-    items_.push_back(ent);
-  }
+  void push_back(TYPE const &ent) { items_.push_back(ent); }
 
   size_type size() const { return items_.size(); }
   bool empty() const { return items_.empty(); }

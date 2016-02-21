@@ -1,5 +1,30 @@
 2016-02-21  James Youngman  <jay@gnu.org>
 
+	Delete mylist<T>::add(), preferring push_back() instead.
+	* src/mylist.h (mylist): Delete mylist<T>::add() since we prefer
+	push_back().
+	* unit-tests/test_mylist.cc: Don't use or test .add(), but use or
+	test .push_back() there was previously .add().
+	* unit-tests/test_delta.cc: Don't use mylist<T>::add(), use
+	mylist<T>::push_back() instead.
+	* src/rl-merge.cc (merge): Use mylist<T>::push_back() instead of
+	mylist<T>::add().
+	* src/delta.h (delta::add_include): Likewise.
+	(delta::add_exclude): Likewise.
+	(delta::add_ignore): Likewise.
+	(delta::add_comment): Likewise.
+	* src/l-split.cc (split_comments): Likewise.
+	* src/rel_list.cc (release_list): Likewise.
+	* src/fileiter.cc (sccs_file_iterator): Likewise.
+	* src/sccsfile.cc (sccs_file::sccs_file): Likewise.
+	* src/sf-get2.cc (sccs_file::get): Likewise.
+	* src/sf-delta.cc (sccs_file::add_delta): Likewise.
+	* src/sf-admin.cc (sccs_file::admin): Likewise.
+	(sccs_file::create): Likewise.
+	* src/sf-cdc.cc (process_mrs): Likewise.
+	(sccs_file::cdc): Likewise.
+	* src/admin.cc (main): Likewise.
+
 	Remove mylist<T>::select(size_type).
 	* src/mylist.h (mylist): remove mylist<T>::select().
 	* unit-tests/test_mylist.cc: remove tests for mylist<T>::select().

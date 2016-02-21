@@ -48,7 +48,7 @@ release_list::release_list(const char *s)
       // add the entry if not already a member.
       const release r(n);
       if (!member(r))
-	l.add(r);
+	l.push_back(r);
 
       s = p;
       if (',' == *s)

@@ -853,7 +853,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
         {
           corrupt("User name expected.");
         }
-      users.add(plinebuf->c_str());
+      users.push_back(plinebuf->c_str());
       read_line(&c);		// FIXME: detect eof
     }
 
@@ -1017,7 +1017,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   read_line(&c);		// FIXME: eof detection
   while (c == 0)
     {
-      comments.add(plinebuf->c_str());
+      comments.push_back(plinebuf->c_str());
       read_line(&c);		// FIXME: eof detection
     }
 

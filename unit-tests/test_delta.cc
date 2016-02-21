@@ -51,8 +51,8 @@ TEST(DeltaTest, Constructor)
   mrlist.push_back(std::string("432"));
   mrlist.push_back(std::string("438"));
 
-  comments.add(std::string("I'm sure I left it around here somewhere..."));
-  comments.add(std::string("...ah, here it is."));
+  comments.push_back(std::string("I'm sure I left it around here somewhere..."));
+  comments.push_back(std::string("...ah, here it is."));
 
   incl.insert(seq_no(1));
   excl.insert(seq_no(6));
@@ -97,7 +97,7 @@ TEST(DeltaTest, Assignment)
   mylist<std::string> comments;
 
   mrlist.push_back(std::string("123"));
-  comments.add(std::string("yada"));
+  comments.push_back(std::string("yada"));
 
   const delta e('D', sid("1.9"),
 		sccs_date("990519014208"),
@@ -201,7 +201,7 @@ TEST(DeltaTest, Mutators)
 
   const std::string comment("Please remember to put the cat out.");
   mylist<std::string> comments;
-  comments.add(comment);
+  comments.push_back(comment);
   d.set_comments(comments);
   EXPECT_EQ(1, d.comments().size());
   EXPECT_EQ(comment, d.comments()[0]);

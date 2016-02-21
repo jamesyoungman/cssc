@@ -26,17 +26,17 @@
 #include "cssc.h"
 #include "rel_list.h"
 
-// another horrendously inefficient implementation.
+// TODO: this is another horrendously inefficient implementation, fix it
 void release_list::merge(const release_list& m)
 {
   for (const auto& r : m)
     {
       if (!member(r))
-	l.add(r);
+	l.push_back(r);
     }
 }
 
-// another horrendously inefficient implementation.
+// TODO: fix this horrendously inefficient implementation.
 void release_list::remove(const release_list& rm)
 {
   mylist<release> newlist;
@@ -44,7 +44,7 @@ void release_list::remove(const release_list& rm)
   for (const auto& r : l)
     {
       if (!rm.member(r))
-	newlist.add(r);
+	newlist.push_back(r);
     }
   l = newlist;
 }

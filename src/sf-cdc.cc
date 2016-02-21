@@ -64,9 +64,9 @@ process_mrs(const std::vector<std::string>& old_mrs,
       if (to_delete.find(mr) != to_delete.end())
 	{
 	  if (!deleted)
-	    comments.add(std::string("*** LIST OF DELETED MRS ***"));
+	    comments.push_back(std::string("*** LIST OF DELETED MRS ***"));
 	  deleted = true;
-	  comments.add(mr);
+	  comments.push_back(mr);
 	}
       else
 	{
@@ -136,7 +136,7 @@ sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
 	    + std::string(" ")
 	    + std::string(get_user_name());
 
-	  newcomments.add(changeline);
+	  newcomments.push_back(changeline);
 	}
 
       newcomments += d.comments();

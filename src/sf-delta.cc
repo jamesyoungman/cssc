@@ -593,7 +593,7 @@ sccs_file::add_delta(const std::string& gname,
 
       // use our own comment.
       mylist<std::string> auto_comment;
-      auto_comment.add(std::string("AUTO NULL DELTA"));
+      auto_comment.push_back(std::string("AUTO NULL DELTA"));
 
       release last_auto_rel = release(it->delta);
       // --last_auto_rel;

@@ -31,10 +31,10 @@ TEST(MylistTest, Empty) {
   EXPECT_EQ(0, len);
 }
 
-TEST(MylistTest, Add) {
+TEST(MylistTest, PushBack) {
   mylist<int> a;
 
-  a.add(42);
+  a.push_back(42);
   EXPECT_EQ(1, a.size());
   EXPECT_EQ(42, a[0]);
 }
@@ -43,7 +43,7 @@ TEST(MylistTest, Assignment) {
   mylist<int> a;
   mylist<int> b;
 
-  a.add(42);
+  a.push_back(42);
   b = a;
   EXPECT_EQ(1, b.size());
   EXPECT_EQ(42, b[0]);
@@ -54,9 +54,9 @@ TEST(MylistTest, Assignment) {
 TEST(MylistTest, Catenate) {
   mylist<int> a, b;
 
-  a.add(42);
-  b.add(53);
-  b.add(54);
+  a.push_back(42);
+  b.push_back(53);
+  b.push_back(54);
   a += b;
   EXPECT_EQ(3, a.size());
   EXPECT_EQ(42, a[0]);
@@ -68,7 +68,7 @@ TEST(MylistTest, Catenate) {
 TEST(MylistTest, MinusEmpty) {
   mylist<int> a, empty;
 
-  a.add(42);
+  a.push_back(42);
   a -= empty;
   EXPECT_EQ(1, a.size());
   EXPECT_EQ(42, a[0]);
@@ -82,13 +82,13 @@ TEST(MylistTest, MinusEmpty) {
 TEST(MylistTest, Minus) {
   mylist<int> a, b;
 
-  a.add(42);
-  b.add(53);
-  b.add(54);
+  a.push_back(42);
+  b.push_back(53);
+  b.push_back(54);
   a -= b;
   EXPECT_EQ(1, a.size());
-  b.add(42);
-  a.add(96);
+  b.push_back(42);
+  a.push_back(96);
   a -= b;
   EXPECT_EQ(1, a.size());
   EXPECT_EQ(96, a[0]);
@@ -100,7 +100,7 @@ TEST(MylistTest, EqualityEmpty)
   EXPECT_TRUE(a.size() == b.size());
   EXPECT_TRUE(a == b);
 
-  c.add(4);
+  c.push_back(4);
   EXPECT_FALSE(a == c);
   EXPECT_FALSE(c == a);
 }
@@ -108,43 +108,43 @@ TEST(MylistTest, EqualityEmpty)
 TEST(MylistTest, EqualityNonEmpty)
 {
   mylist<int> a, b;
-  a.add(1);
-  a.add(2);
-  b.add(1);
-  b.add(2);
+  a.push_back(1);
+  a.push_back(2);
+  b.push_back(1);
+  b.push_back(2);
   EXPECT_TRUE(a == b);
 }
 
 TEST(MylistTest, EqualityLengthDifferent)
 {
   mylist<int> a, b;
-  a.add(1);
-  a.add(2);
-  b.add(1);
+  a.push_back(1);
+  a.push_back(2);
+  b.push_back(1);
   EXPECT_FALSE(a == b);
 }
 
 TEST(MylistTest, Different)
 {
   mylist<int> a, b;
-  a.add(1);
-  a.add(2);
-  b.add(2);
-  b.add(1);
+  a.push_back(1);
+  a.push_back(2);
+  b.push_back(2);
+  b.push_back(1);
   EXPECT_FALSE(a == b);
 }
 
 TEST(MylistDeathTest, IndexTooLow)
 {
   mylist<int> a;
-  a.add(2);
+  a.push_back(2);
   EXPECT_EXIT(a[-1], ::testing::KilledBySignal(SIGABRT), "index");
 }
 
 TEST(MylistDeathTest, IndexTooHigh)
 {
   mylist<int> a;
-  a.add(2);
+  a.push_back(2);
   EXPECT_EXIT(a[1], ::testing::KilledBySignal(SIGABRT), "index");
 }
 

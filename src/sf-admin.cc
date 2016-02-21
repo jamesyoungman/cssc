@@ -57,7 +57,6 @@ sccs_file::admin(const char *file_comment,
 		 const mylist<std::string>& set_flags, const mylist<std::string>& unset_flags,
 		 const mylist<std::string>& add_users, const mylist<std::string>& erase_users)
 {
-
   if (force_binary)
     flags.encoded = 1;
 
@@ -75,7 +74,7 @@ sccs_file::admin(const char *file_comment,
 
 	  while (!read_line_param(fc))
 	    {
-	      comments.add(plinebuf->c_str());
+	      comments.push_back(plinebuf->c_str());
 	    }
 
 	  if (ferror(fc))
@@ -362,10 +361,10 @@ sccs_file::create(const sid &id,
   sccs_date now = sccs_date::now();
   if (!suppress_comments && starting_comments->empty())
     {
-      starting_comments->add(std::string("date and time created ")
-			     + now.as_string()
-			     + std::string(" by ")
-			     + get_user_name());
+      starting_comments->push_back(std::string("date and time created ")
+				   + now.as_string()
+				   + std::string(" by ")
+				   + get_user_name());
     }
 
 
