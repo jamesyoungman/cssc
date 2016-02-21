@@ -1,5 +1,9 @@
 2016-02-21  James Youngman  <jay@gnu.org>
 
+	Remove mylist<T>::length().
+	* src/mylist.h (mylist::length): delete this method (size() should
+	be used instead).
+
 	Avoid using mylist<T>::length().
 	* src/sf-get2.cc (get): Use a range-based for loop instead of
 	indexing up to mylist<T>::length().
