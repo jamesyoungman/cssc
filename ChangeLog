@@ -1,11 +1,16 @@
 2016-02-21  James Youngman  <jay@gnu.org>
 
+	Remove mylist<T>::select(size_type).
+	* src/mylist.h (mylist): remove mylist<T>::select().
+	* unit-tests/test_mylist.cc: remove tests for mylist<T>::select().
+
 	Remove mylist<T>::operator=(void*).
 	* src/mylist.h (mylist): remove mylist<T>::operator=(void*).  The
 	effect of this method was to clear the list, so add a clear()
 	method instead, for closer matching to std::vector.n
 	* unit-tests/test_mylist.cc: remove tests for
 	mylist<T>::operator=(void*).
+
 	* src/sf-admin.cc (sccs_file::admin): use clear() to clear an
 	instance of mylist<T>, not assignment to NULL.
 

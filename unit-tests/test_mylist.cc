@@ -51,16 +51,6 @@ TEST(MylistTest, Assignment) {
   EXPECT_EQ(42, a[0]);
 }
 
-TEST(MylistTest, Select) {
-  mylist<int> a;
-
-  a.add(42);
-  EXPECT_EQ(1, a.size());
-  EXPECT_EQ(42, a[0]);
-  a.select(0) = 52;
-  EXPECT_EQ(52, a[0]);
-}
-
 TEST(MylistTest, Catenate) {
   mylist<int> a, b;
 
@@ -162,25 +152,4 @@ TEST(MylistDeathTest, IndexOnEmpty)
 {
   mylist<int> a;
   EXPECT_EXIT(a[0], ::testing::KilledBySignal(SIGABRT), "index");
-}
-
-
-TEST(MylistDeathTest, SelectTooLow)
-{
-  mylist<int> a;
-  a.add(2);
-  EXPECT_EXIT(a.select(-1), ::testing::KilledBySignal(SIGABRT), "index");
-}
-
-TEST(MylistDeathTest, SelectTooHigh)
-{
-  mylist<int> a;
-  a.add(2);
-  EXPECT_EXIT(a.select(1), ::testing::KilledBySignal(SIGABRT), "index");
-}
-
-TEST(MylistDeathTest, SelectOnEmpty)
-{
-  mylist<int> a;
-  EXPECT_EXIT(a.select(0), ::testing::KilledBySignal(SIGABRT), "index");
 }

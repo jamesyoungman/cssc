@@ -92,13 +92,6 @@ public:
       return items_[index];
     }
 
-  TYPE &
-  select(size_type index)
-    {
-      ASSERT(index >= 0 && index < items_.size());
-      return items_[index];
-    }
-
   const mylist<TYPE>& operator+=(const mylist& other)
   {
     typename impl_type::const_iterator ci;
