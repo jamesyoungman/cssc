@@ -93,45 +93,32 @@ bool sccs_file::prepare_seqstate(seq_state &state, seq_no seq,
 
 
 bool
-sccs_file::authorised() const {
-  mylist<string>::size_type len, i;
+sccs_file::authorised() const
+{
+  if (users.empty())
+    {
+      // If there is no list of authorized users, all users are authorised.
+      return true;
+    }
 
-  const char *user = get_user_name();
-
-  len = users.length();
-  if (len != 0) {
-    int found = 0;
-
-    for(i = 0; i < len; i++)
-      {
-        const char *s = users[i].c_str();
-        char c = s[0];
-
-
-	if (isdigit(c))
-	  {
-	    // FIXME: don't use atoi, it doesn't do error detection well.
-	    if (user_is_group_member(atoi(s)))
-	      {
-		found = 1;
-		break;
-	      }
-	  }
-	else if (strcmp(s, user) == 0)
-	  {
-	    found = 1;
-	    break;
-	  }
-      }
-
-    if (!found)
-      {
-        errormsg("%s: You are not authorized to make deltas.",
-                 name.c_str());
-        return false;
-      }
-  }
-  return true;
+  const char *myself = get_user_name();
+  for (const auto& authorized_user : users)
+    {
+      if (isdigit(authorized_user[0]))
+	{
+	  // FIXME: don't use atoi, it doesn't do error detection well.
+	  if (user_is_group_member(atoi(authorized_user.c_str())))
+	    {
+	      return true;
+	    }
+	}
+      else if (myself == authorized_user)
+	{
+	  return true;
+	}
+    }
+  errormsg("%s: You are not authorized to make deltas.", name.c_str());
+  return false;
 }
 
 

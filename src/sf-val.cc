@@ -104,48 +104,35 @@ sccs_file::get_module_type_flag()
     return std::string("");
 }
 
+namespace {
+  bool validate_seq_numbers (const string& name, const mylist<seq_no>& seqs, const char *sz_sid,
+			     seq_no limit, const char* seq_type)
+  {
+    for (auto s : seqs)
+      {
+	if (s > limit)
+	{
+	  errormsg ("%s: SID %s: %s seqno %u does not exist\n",
+		    name.c_str(), sz_sid, seq_type, (unsigned)s);
+	  return false;
+	}
+      }
+    return true;
+  }
+}
 
 bool
 sccs_file::validate_seq_lists(const delta_iterator& d) const
 {
   const char *sz_sid = d->id().as_string().c_str();
-  mylist<seq_no>::size_type i;
-  seq_no s;
   const seq_no highest_seq = delta_table->highest_seqno();
-
-  for (i=0; i<d->get_included_seqnos().length(); ++i)
-    {
-      s = d->get_included_seqnos()[i];
-      if (s > highest_seq)
-	{
-	  errormsg("%s: SID %s: included seqno %u does not exist\n",
-		   name.c_str(), sz_sid, (unsigned)s);
-	  return false;
-	}
-    }
-
-  for (i=0; i<d->get_excluded_seqnos().length(); ++i)
-     {
-       s = d->get_excluded_seqnos()[i];
-       if (s > highest_seq)
-	 {
-	   errormsg("%s: SID %s: excluded seqno %u does not exist\n",
-		    name.c_str(), sz_sid, (unsigned)s);
-	   return false;
-	 }
-     }
-
-  for (i=0; i<d->get_ignored_seqnos().length(); ++i)
-     {
-       s = d->get_ignored_seqnos()[i];
-       if (s > highest_seq)
-	 {
-	   errormsg("%s: SID %s: ignored seqno %u does not exist\n",
-		    name.c_str(), sz_sid, (unsigned)s);
-	   return false;
-	 }
-     }
-   return true;
+  const string& sname = name.sfile();
+  return (validate_seq_numbers(sname, d->get_included_seqnos(),
+			       sz_sid, highest_seq, "included") &&
+	  validate_seq_numbers(sname, d->get_excluded_seqnos(),
+			       sz_sid, highest_seq, "excluded") &&
+	  validate_seq_numbers(sname, d->get_ignored_seqnos(),
+			       sz_sid, highest_seq, "ignored"));
 }
 
 bool

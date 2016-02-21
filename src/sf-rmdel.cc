@@ -34,19 +34,12 @@
 #include "delta-iterator.h"
 #include "linebuf.h"
 
-static int
-is_seqlist_member(seq_no seq, mylist<seq_no> const &seq_list) {
-  const mylist<seq_no>::size_type len = seq_list.length();
-  for (mylist<seq_no>::size_type i = 0; i < len; i++)
-    {
-      if (seq == seq_list[i])
-	{
-	  return 1;
-	}
-    }
-  return 0;
+namespace {
+bool
+is_seqlist_member(seq_no seq_to_find, mylist<seq_no> const &seq_list) {
+  return std::find(seq_list.begin(), seq_list.end(), seq_to_find) != seq_list.end();
 }
-
+}
 
 typedef enum { COPY, DELETE, INSERT} update_state;
 

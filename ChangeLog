@@ -1,3 +1,28 @@
+2016-02-21  James Youngman  <jay@gnu.org>
+
+	Avoid using mylist<T>::length().
+	* src/sf-get2.cc (get): Use a range-based for loop instead of
+	indexing up to mylist<T>::length().
+	* src/sf-cdc.cc (cdc): Use mylist<T>::empty() rather than
+	comparing the result of length() against 0.
+	* src/sf-get3.cc (authorised): Use a range-based for loop instead
+	of indexing up to mylist<T>::length().
+	* src/sf-prs.cc (print_seq_list): Prefer mylist::size() to
+	mylist::length().
+	(print_delta): Use mylist<T>::empty() rather than comparing the
+	result of length() against 0.
+	* src/fileiter.cc (next): Prefer mylist::size() to
+	mylist::length().
+	* src/sf-admin.cc (sccs_file): Likewise.
+	* src/sf-val.cc (validate_seq_lists): Likewise, factoring repeated
+	code out into a new function, validate_seq_numbers.
+	* src/sf-rmdel.cc (is_seqlist_member): use std::find instead of
+	iterating over list members ourselves.
+	* src/sf-prt.cc (print_seq_list): use a range-based for loop
+	rather than iterating over the indexes in a mylist<seq_no>.
+	(sccs_file): Instead of checking mylist<T>::length() against 0,
+	use the empty() method.
+
 2016-02-20  James Youngman  <jay@gnu.org>
 
 	Prefer mylist::size() to mylist::length().

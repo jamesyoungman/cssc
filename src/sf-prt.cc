@@ -295,15 +295,11 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 static void
 print_seq_list(FILE *out, mylist<seq_no> const &list)
 {
-  const mylist<seq_no>::size_type len = list.length();
-
-  if (len > 0)
+  bool first = true;
+  for (const auto& seq : list)
     {
-      fprintf(out, "%u", list[0]);
-      for (mylist<seq_no>::size_type i = 1; i < len; i++)
-	{
-	  fprintf(out, " %u", list[i]);
-	}
+      fprintf(out, "%s%u", (first ? "" : " "), seq);
+      first = false;
     }
 }
 
@@ -384,7 +380,7 @@ sccs_file::prt(FILE *out,
 		  // nothing is printed.  This is a behavioural
 		  // difference that to fix seems to require a real
 		  // kludge.
-		  if (iter->get_included_seqnos().length())
+		  if (!iter->get_included_seqnos().empty())
 		    {
 		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Included:\t");
@@ -395,7 +391,7 @@ sccs_file::prt(FILE *out,
 		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Included:\t");
 		    }
-		  if (iter->get_excluded_seqnos().length())
+		  if (!iter->get_excluded_seqnos().empty())
 		    {
 		      fputs(nl_sep, out);	// either newline or space.
 		      fprintf(out, "Excluded:\t");
@@ -413,7 +409,7 @@ sccs_file::prt(FILE *out,
 		  fputs(nl_sep, out);	// either newline or space.
 		  print_string_list(out, iter->mrs(), "MRs:\t", nl_sep, "");
 		}
-	      if (iter->comments().length())
+	      if (!iter->comments().empty())
 		{
 		  fputs(nl_sep, out);	// either newline or space.
 		  print_string_list(out, iter->comments(), "", nl_sep, "");

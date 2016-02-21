@@ -63,11 +63,10 @@ sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
 }
 
 /* Prints a list of sequence numbers on the same line. */
-
 static void
 print_seq_list(FILE *out, mylist<seq_no> const &list) {
-  const mylist<seq_no>::size_type len = list.length();
-
+  const mylist<seq_no>::size_type len = list.size();
+  // TODO: see if we can use a more natural STL-like construct here.
   /* prs does actually print the sequences in reverse order! */
   if (len > 0)
     {
@@ -468,11 +467,11 @@ sccs_file::print_delta(FILE *out, const char *format,
         case KEY2('D', 'I'):
 	  /* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:), 
 	     but OpenSolaris 2009.06 (SunOS 5.11) shows two. */
-	  if (d.get_included_seqnos().length() > 0)
+	  if (!d.get_included_seqnos().empty())
 	    print_delta(out, ":Dn:", d);
-	  if (d.get_excluded_seqnos().length() > 0)
+	  if (!d.get_excluded_seqnos().empty())
 	    print_delta(out, "/:Dx:", d);
-	  if (d.get_ignored_seqnos().length() > 0)
+	  if (!d.get_ignored_seqnos().empty())
 	    print_delta(out, "/:Dg:", d);
 	  break;
 
@@ -497,7 +496,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY2('U','N'):
-	  if (users.length())
+	  if (!users.empty())
 	    print_string_list(out, users);
 	  else
 	    fprintf(out, "%s\n", "none");
@@ -576,7 +575,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           // is no description.
           // JY Sun Nov 25 01:33:46 2001; Solaris 2.6
           // prints "none" rather than "(none)".
-          if (0 == comments.length())
+          if (comments.empty())
             fputs("none\n", out);
           else
             print_string_list(out, comments);

@@ -131,7 +131,7 @@ sccs_file_iterator::next() {
 	  }
 
 	case DIRECTORY:
-		if (pos < files.length()) {
+		if (pos < files.size()) {
 			name = files[pos++];
 			return 1;
 		}

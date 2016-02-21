@@ -494,14 +494,9 @@ sccs_file::get(FILE *out, const std::string& gname,
 	      it.date().print(summary_file);
 	      fprintf (summary_file, " %s\n", it.user().c_str());
 
-	      if (it.comments().length())
+	      for (const string& comment : it.comments())
 		{
-		  const int len = it.comments().length();
-		  for(int i = 0; i < len; i++)
-		    {
-		      fprintf (summary_file, "\t%s\n",
-			       it.comments()[i].c_str());
-		    }
+		  fprintf (summary_file, "\t%s\n", comment.c_str());
 		}
 	    }
 	}

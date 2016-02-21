@@ -113,12 +113,12 @@ sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
 			    mrs_deleted));
     }
 
-  if (mrs_deleted || comment_updates.length())	// Prepend the new comments.
+  if (mrs_deleted || !comment_updates.empty())	// Prepend the new comments.
     {
       mylist<std::string> newcomments;
 
       // If there are comments to be added, add them.
-      if (comment_updates.length())
+      if (!comment_updates.empty())
 	newcomments += comment_updates;
 
       // If we had deleted any MRs, indicate that.
@@ -128,7 +128,7 @@ sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
       // If we had changed the revision commentary,
       // add a footer indicating when (if we only changed the
       // MRs, this doesn't happen)
-      if (comment_updates.length())
+      if (!comment_updates.empty())
 	{
 	  std::string changeline
 	    = std::string("*** CHANGED *** ")

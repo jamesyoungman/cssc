@@ -91,48 +91,47 @@ sccs_file::admin(const char *file_comment,
 	}
     }
 
-  mylist<std::string>::size_type len;
-  len = set_flags.length();
-  for (mylist<std::string>::size_type i = 0; i < len; i++)
+  for (const auto& set_flag : set_flags)
     {
-      const char *s = set_flags[i].c_str();
+      const char flag_letter = set_flag[0];
+      const char* flag_value = set_flag.c_str() + 1;
 
-      switch (*s++)
+      switch (flag_letter)
 	{
 	case 'b':
 	  flags.branch = 1;
 	  break;
 
 	case 'c':
-	  flags.ceiling = release(s);
+	  flags.ceiling = release(flag_value);
 	  if (!flags.ceiling.valid())
 	    {
-	      errormsg("Invalid release ceiling: '%s'", s);
+	      errormsg("Invalid release ceiling: '%s'", flag_value);
 	      return false;
 	    }
 	  break;
 
 	case 'f':
-	  flags.floor = release(s);
+	  flags.floor = release(flag_value);
 	  if (!flags.floor.valid())
 	    {
-	      errormsg("Invalid release floor: '%s'", s);
+	      errormsg("Invalid release floor: '%s'", flag_value);
 	      return false;
 	    }
 	  break;
 
 
 	case 'd':
-	  flags.default_sid = sid(s);
+	  flags.default_sid = sid(flag_value);
 	  if (!flags.default_sid.valid())
 	    {
-	      errormsg("Invalid default SID: '%s'", s);
+	      errormsg("Invalid default SID: '%s'", flag_value);
 	      return false;
 	    }
 	  break;
 
 	case 'i':
-	  if (strlen(s))
+	  if (strlen(flag_value) != 0)
 	    {
 	      errormsg("Flag 'i' does not take an argument.");
 	      return false;
@@ -149,7 +148,7 @@ sccs_file::admin(const char *file_comment,
 	  break;
 
 	case 'l':
-	  if (strcmp(s, "a") == 0)
+	  if (strcmp(flag_value, "a") == 0)
 	    {
 	      flags.all_locked = 1;
 	      flags.locked = release_list(); // empty list
@@ -157,18 +156,18 @@ sccs_file::admin(const char *file_comment,
 	  else
 	    {
 #ifdef ADMIN_MERGE_LOCKED_RELEASES
-	      flags.locked.merge(release_list(s));
+	      flags.locked.merge(release_list(flag_value));
 #else
 	      /* "admin -fl" clears any previously locked releases.
 	       */
 	      flags.locked = release_list(); // empty list
-	      flags.locked.merge(release_list(s));
+	      flags.locked.merge(release_list(flag_value));
 #endif
 	    }
 	  break;
 
 	case 'm':
-	  set_module_flag(s);
+	  set_module_flag(flag_value);
 	  break;
 
 	case 'n':
@@ -177,7 +176,7 @@ sccs_file::admin(const char *file_comment,
 
 
 	case 'q':
-	  set_user_flag(s);
+	  set_user_flag(flag_value);
 	  break;
 
 	case 'e':
@@ -186,11 +185,11 @@ sccs_file::admin(const char *file_comment,
 
 
 	case 't':
-	  set_type_flag(s);
+	  set_type_flag(flag_value);
 	  break;
 
 	case 'v':
-	  set_mr_checker_flag(s);
+	  set_mr_checker_flag(flag_value);
 	  break;
 
 	case 'x':
@@ -202,9 +201,8 @@ sccs_file::admin(const char *file_comment,
 	  // Argument is a comma-separated list of keyword letters to expand.
 	  warning("The 'y' (expanded keywords) flag is a Sun extension present only in Solaris 8 and later, and is not supported by other versions of SCCS.");
 	  set_expanded_keyword_flag(""); // delete any existing ones.
-	  while (*s)
+	  for (const char c : string(flag_value))
 	    {
-	      char c = *s++;
 	      if (',' != c)
 		{
 		  if (isalpha((unsigned char)c))
@@ -230,18 +228,17 @@ sccs_file::admin(const char *file_comment,
 	default:
 	  // TODO: this will fail for every file, so should probably
 	  // be a "hard" error.
-	  errormsg("Unrecognized flag '%c'", s[-1]);
+	  errormsg("Unrecognized flag '%c'", flag_letter);
 	  return false;
 	}
     }
 
-
-  len = unset_flags.length();
-  for (mylist<std::string>::size_type i = 0; i < len; i++)
+  for (const auto& unset_flag : unset_flags)
     {
-      const char *s = unset_flags[i].c_str();
-
-      switch (*s++)
+      const char flag_letter = unset_flag[0];
+      const string flag_value = string(unset_flag, 1);
+      // TODO: diagnose !flag_value.empty() for cases other than flag_letter=='l'
+      switch (flag_letter)
 	{
 	case 'b':
 	  flags.branch = 0;
@@ -270,7 +267,7 @@ sccs_file::admin(const char *file_comment,
 	  break;
 
 	case 'l':
-	  if (strcmp(s, "a") == 0)
+	  if (flag_value == "a")
 	    {
 	      flags.all_locked = 0;
 	      flags.locked = release_list();
@@ -282,12 +279,13 @@ sccs_file::admin(const char *file_comment,
 		  errormsg("Unlocking just release %s of %s is not possible, "
 			   "since all releases are locked.  "
 			   "Use admin -dla to unlock all releases.",
-			   s, name.c_str());
+			   flag_value.c_str(), name.c_str());
 		  return false;
 		}
 	      else
 		{
-		  flags.locked.remove(release_list(s));
+		  // TODO: consider adding release_list::release_list(const string&)
+		  flags.locked.remove(release_list(flag_value.c_str()));
 		}
 	    }
 	  break;
@@ -334,7 +332,7 @@ sccs_file::admin(const char *file_comment,
 	default:
 	  // TODO: this will fail for every file, so should probably
 	  // be a "hard" error.
-	  errormsg("Unrecognized flag '%c'", s[-1]);
+	  errormsg("Unrecognized flag '%c'", flag_letter);
 	  return false;
 	}
     }
