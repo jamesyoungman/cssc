@@ -28,6 +28,7 @@
 
 #include <set>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "sccsname.h"
@@ -286,7 +287,8 @@ public:
   bool admin(const char *file_comment,
              bool force_binary,
              const mylist<std::string>& set_flags, const mylist<std::string>& unset_flags, // FIXME: consider something more efficient
-             const mylist<std::string>& add_users, const mylist<std::string>& erase_users);
+             const mylist<std::string>& add_users,
+	     const std::unordered_set<std::string>& erase_users);
   bool create(const sid &initial_sid,
               const char *iname,
               const std::vector<std::string>& mrs,

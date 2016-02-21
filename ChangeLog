@@ -1,5 +1,22 @@
 2016-02-21  James Youngman  <jay@gnu.org>
 
+	Remove mylist<T>::operator-=(const mylist<T>&).
+	* src/mylist.h (mylist): remove mylist<T>::operator-=(const
+	mylist<T>&).
+	* unit-tests/test_mylist.cc: Remove tests of
+	mylist<T>::operator-=(const mylist<T>&).
+	* src/sccsfile.h (sccs_file::admin): change the type of
+	erase_users from mylist<string> to
+	std::unordered_set<std::string>.  This allows the implementation
+	to be more efficient without affecting the ordering of the
+	resulting user list.
+	* src/admin.cc (main): Update the type of erase_users
+	accordingly.
+	* src/sf-admin.cc (admin): take advantage of the efficiency of
+	std::unordered_set<T>::find() when computing the updated
+	authorized user list.  Hence we no longer need to call
+	mylist<T>::operator-=(const mylist<T>&).
+
 	Delete mylist<T>::add(), preferring push_back() instead.
 	* src/mylist.h (mylist): Delete mylist<T>::add() since we prefer
 	push_back().

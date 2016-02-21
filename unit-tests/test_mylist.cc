@@ -65,35 +65,6 @@ TEST(MylistTest, Catenate) {
   EXPECT_EQ(2, b.size());
 }
 
-TEST(MylistTest, MinusEmpty) {
-  mylist<int> a, empty;
-
-  a.push_back(42);
-  a -= empty;
-  EXPECT_EQ(1, a.size());
-  EXPECT_EQ(42, a[0]);
-
-  empty -=a ;
-  EXPECT_EQ(0, empty.size());
-  EXPECT_EQ(1, a.size());
-
-}
-
-TEST(MylistTest, Minus) {
-  mylist<int> a, b;
-
-  a.push_back(42);
-  b.push_back(53);
-  b.push_back(54);
-  a -= b;
-  EXPECT_EQ(1, a.size());
-  b.push_back(42);
-  a.push_back(96);
-  a -= b;
-  EXPECT_EQ(1, a.size());
-  EXPECT_EQ(96, a[0]);
-}
-
 TEST(MylistTest, EqualityEmpty)
 {
   mylist<int> a, b, c;

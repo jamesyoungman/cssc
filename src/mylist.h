@@ -93,25 +93,6 @@ public:
       }
   }
 
-  // TODO: remove this method
-  const mylist<TYPE>& operator-=(const mylist& other)
-  {
-    if (other.items_.size())
-      {
-	impl_type remaining;
-	std::set<TYPE> unwanted(other.items_.begin(), other.items_.end());
-
-	typename impl_type::const_iterator ci;
-	for (ci=items_.begin(); ci!=items_.end(); ++ci)
-	  {
-	    if (unwanted.find(*ci) == unwanted.end())
-	      {
-		remaining.push_back(*ci);
-	      }
-	  }
-	items_.swap(remaining);
-      }
-  }
   void clear() { items_.clear(); }
   iterator begin() { return items_.begin(); }
   const_iterator begin() const { return items_.begin(); }

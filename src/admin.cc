@@ -25,6 +25,7 @@
  */
 #include <config.h>
 
+#include <unordered_set>
 #include <errno.h>
 
 #include "cssc.h"
@@ -75,7 +76,8 @@ main(int argc, char **argv)
   const char *iname = NULL;			/* -i -I */
   const char *file_comment = NULL;		/* -t */
   mylist<string> set_flags, unset_flags;	/* -f, -d */
-  mylist<string> add_users, erase_users;	/* -a, -e */
+  mylist<string> add_users;			/* -a  */
+  std::unordered_set<string> erase_users;	/* -e */
   string mrs, comments;				/* -m, -y */
   int check_checksum = 0;	                /* -h */
   int validate       = 0;	                /* also -h */
@@ -186,7 +188,7 @@ main(int argc, char **argv)
       break;
 
     case 'e':
-      erase_users.push_back(opts.getarg());
+      erase_users.insert(opts.getarg());
       break;
 
     case 'm':

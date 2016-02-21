@@ -55,7 +55,8 @@ bool
 sccs_file::admin(const char *file_comment,
 		 bool force_binary,
 		 const mylist<std::string>& set_flags, const mylist<std::string>& unset_flags,
-		 const mylist<std::string>& add_users, const mylist<std::string>& erase_users)
+		 const mylist<std::string>& add_users,
+		 const std::unordered_set<std::string>& erase_users)
 {
   if (force_binary)
     flags.encoded = 1;
@@ -337,12 +338,15 @@ sccs_file::admin(const char *file_comment,
     }
 
   // Erase any required users from the list.
-  users -= erase_users;
-
-  // Add the specified users to the beginning of the user list.
   mylist<std::string> newusers = add_users;
-  newusers += users;
-  users = newusers;
+  for (const auto& user : users)
+    {
+      if (erase_users.find(user) == erase_users.end())
+	{
+	  newusers.push_back(user);
+	}
+    }
+  std::swap(users, newusers);
 
   return true;
 }
