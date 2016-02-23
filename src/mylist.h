@@ -83,18 +83,20 @@ public:
       ASSERT(index < items_.size());
       return items_[index];
     }
-#if 1
-  const mylist<TYPE>& operator+=(const mylist& other)
+
+  template <class InputIterator>
+  iterator insert(const_iterator position, InputIterator first, InputIterator last) 
   {
-    items_.insert(items_.end(), other.begin(), other.end());
+    return items_.insert(position, first, last);
   }
-#endif
 
   void clear() { items_.clear(); }
   iterator begin() { return items_.begin(); }
   const_iterator begin() const { return items_.begin(); }
+  const_iterator cbegin() const { return items_.cbegin(); }
   iterator end() { return items_.end(); }
   const_iterator end() const { return items_.end(); }
+  const_iterator cend() const { return items_.cend(); }
 
   ~mylist()
   {

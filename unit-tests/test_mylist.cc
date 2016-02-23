@@ -57,7 +57,9 @@ TEST(MylistTest, Catenate) {
   a.push_back(42);
   b.push_back(53);
   b.push_back(54);
-  a += b;
+  EXPECT_EQ(1, a.size());
+  EXPECT_EQ(2, b.size());
+  a.insert(a.end(), b.cbegin(), b.cend());
   EXPECT_EQ(3, a.size());
   EXPECT_EQ(42, a[0]);
   EXPECT_EQ(53, a[1]);

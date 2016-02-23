@@ -242,6 +242,11 @@ public:
     comments_ = updated_comments;
   }
 
+  void prepend_comments(const mylist<string>& prefix)
+  {
+    comments_.insert(comments_.begin(), prefix.begin(), prefix.end());
+  }
+
   void add_comment(const string& s)
   {
     comments_.push_back(s);

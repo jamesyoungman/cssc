@@ -119,11 +119,17 @@ sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
 
       // If there are comments to be added, add them.
       if (!comment_updates.empty())
-	newcomments += comment_updates;
+	{
+	  newcomments.insert(newcomments.end(),
+			     comment_updates.cbegin(), comment_updates.cend());
+	}
 
       // If we had deleted any MRs, indicate that.
       if (mrs_deleted)
-	newcomments += deletion_comment;
+	{
+	  newcomments.insert(newcomments.end(),
+			     deletion_comment.cbegin(), deletion_comment.cend());
+	}
 
       // If we had changed the revision commentary,
       // add a footer indicating when (if we only changed the
@@ -139,8 +145,7 @@ sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
 	  newcomments.push_back(changeline);
 	}
 
-      newcomments += d.comments();
-      d.set_comments(newcomments);
+      d.prepend_comments(newcomments);
     }
 
   return true;

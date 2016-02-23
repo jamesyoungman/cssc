@@ -1,3 +1,20 @@
+2016-02-23  James Youngman  <jay@gnu.org>
+
+	Remove mylist<T>::operator+=(), implementing insert() instead.
+	* src/mylist.h (mylist::insert): add insert() method, forwarding
+	to std::vector<T>::insert(), as a replacement for
+	mylist::operator+=() (and that method is removed).
+	(mylist::cbegin): add, forwarding to items_.cbegin().
+	(mylist::cend): add, forwarding to items_.cend().
+	* src/delta.h (delta::prepend_comments): Implement.
+	* src/sf-cdc.cc (sccs_file::cdc): Call mylist::insert() instead of
+	the removed mylist<T>::operator+=().  Also use
+	delta::prepend_comments() to prepend comments instead of copying
+	the old comments, modifying the list and callign set_comments().
+	* unit-tests/test_mylist.cc (MylistTest::Catenate::TestBody): use
+	the new insert method to perform the concatenation, instead of the
+	removed method operator+=.
+
 2016-02-21  James Youngman  <jay@gnu.org>
 
 	Avoid unnecessary for loop in mylist::operator+=(const mylist&).
