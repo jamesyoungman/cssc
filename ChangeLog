@@ -1,5 +1,13 @@
 2016-02-24  James Youngman  <jay@gnu.org>
 
+	Include <algorithm> where it is needed, and not where it is not.
+	* src/sf-rmdel.cc: include the <algorithm> header since we use
+	std::find.
+	* src/mylist.h: Don't include <algorithm>, the transitive
+	inclusion of which sf-rmsel.cc was previously takign advantage
+	of.
+
+	Replace constructor from const set& with a range of iterators.
 	* src/mylist.h (mylist::mylist): Add constructor from a range of
 	input iterators, allowing initialization from any container.
 	Remove the special-purpose constructor from const set&.  This

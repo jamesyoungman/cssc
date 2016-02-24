@@ -27,7 +27,7 @@
  */
 
 #include <config.h>
-
+#include <algorithm>
 #include "cssc.h"
 #include "sccsfile.h"
 #include "delta.h"

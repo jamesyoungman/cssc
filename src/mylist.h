@@ -29,7 +29,6 @@
 #define CSSC__LIST_H__
 
 #include <cstdlib>
-#include <algorithm>
 #include <vector>
 
 #if 0
