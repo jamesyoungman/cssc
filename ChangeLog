@@ -1,5 +1,8 @@
 2016-02-24  James Youngman  <jay@gnu.org>
 
+	Make mylist a simple synonym for std::vector.
+	* src/mylist.h: Make mylist a simple synonym for std::vector.
+
 	Don't require mylist<T>::operator[] to assert on index errors.
 	* unit-tests/test_mylist.cc: Remove tests which verify that
 	mylist<T>::operator[] assert-fails when an index is out of range
