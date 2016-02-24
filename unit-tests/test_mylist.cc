@@ -106,23 +106,3 @@ TEST(MylistTest, Different)
   b.push_back(1);
   EXPECT_FALSE(a == b);
 }
-
-TEST(MylistDeathTest, IndexTooLow)
-{
-  mylist<int> a;
-  a.push_back(2);
-  EXPECT_EXIT(a[-1], ::testing::KilledBySignal(SIGABRT), "index");
-}
-
-TEST(MylistDeathTest, IndexTooHigh)
-{
-  mylist<int> a;
-  a.push_back(2);
-  EXPECT_EXIT(a[1], ::testing::KilledBySignal(SIGABRT), "index");
-}
-
-TEST(MylistDeathTest, IndexOnEmpty)
-{
-  mylist<int> a;
-  EXPECT_EXIT(a[0], ::testing::KilledBySignal(SIGABRT), "index");
-}
