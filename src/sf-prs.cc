@@ -82,25 +82,15 @@ print_seq_list(FILE *out, mylist<seq_no> const &list) {
 
 
 /* Prints a list of strings, one per line. */
+template <class InputIterator>
 static void
-print_string_list(FILE *out, mylist<std::string> const &list)
+print_string_list(FILE *out, InputIterator first, InputIterator last)
 {
-  for (const auto& item : list)
+  for (InputIterator it = first; it != last; ++it)
     {
-      fprintf(out, "%s\n", item.c_str());
+      fprintf(out, "%s\n", it->c_str());
     }
 }
-
-/* Prints a list of strings, one per line. */
-static void
-print_string_list(FILE *out, std::vector<std::string> const &list)
-{
-  for (const auto& item : list)
-    {
-      fprintf(out, "%s\n", item.c_str());
-    }
-}
-
 
 /* Prints a boolean flag with its name.   Simply, if the
  * flag is unset, its name is not printed.
@@ -488,16 +478,16 @@ sccs_file::print_delta(FILE *out, const char *format,
 	  break;
 
         case KEY2('M','R'):
-          print_string_list(out, d.mrs());
+          print_string_list(out, d.mrs().cbegin(), d.mrs().cend());
           break;
 
         case KEY1('C'):
-          print_string_list(out, d.comments());
+          print_string_list(out, d.comments().cbegin(), d.comments().cend());
           break;
 
         case KEY2('U','N'):
 	  if (!users.empty())
-	    print_string_list(out, users);
+	    print_string_list(out, users.cbegin(), users.cend());
 	  else
 	    fprintf(out, "%s\n", "none");
           break;
@@ -578,7 +568,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           if (comments.empty())
             fputs("none\n", out);
           else
-            print_string_list(out, comments);
+            print_string_list(out, comments.cbegin(), comments.cend());
           break;
 
         case KEY2('B','D'):

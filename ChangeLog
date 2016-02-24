@@ -1,5 +1,13 @@
 2016-02-24  James Youngman  <jay@gnu.org>
 
+	Stop depending on mylist not actually being a synonym for std::vector.
+	* src/sf-prs.cc (print_string_list): Remove the two versions of
+	this function for std::vector<string> and mylist<string>.
+	Instead, implement a single template function which takes a range
+	of iterators.  This allows us not to care wither mylist is simply
+	compatible with std::vector, or actually is std::vector.
+	(print_delta): Update callers of print_string_list.
+
 	Include <algorithm> where it is needed, and not where it is not.
 	* src/sf-rmdel.cc: include the <algorithm> header since we use
 	std::find.
