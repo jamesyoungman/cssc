@@ -31,8 +31,11 @@
 #include <cstdlib>
 #include <algorithm>
 #include <vector>
-#include <set>
 
+#if 0
+template<class TYPE>
+using mylist = std::vector<TYPE>;
+#else
 #include "cssc-assert.h"
 
 template <class TYPE>
@@ -52,9 +55,10 @@ public:
   {
   }
 
-  explicit mylist(const std::set<TYPE>& from) 
+  template <class InputIterator>
+  mylist(InputIterator first, InputIterator last)
+    : items_(first, last)
   {
-    std::copy(from.begin(), from.end(), std::back_inserter(items_));
   }
 
   mylist()
@@ -102,6 +106,7 @@ public:
   {
   }
 };
+#endif
 
 #endif /* __LIST_H__ */
 

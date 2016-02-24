@@ -1,3 +1,12 @@
+2016-02-24  James Youngman  <jay@gnu.org>
+
+	* src/mylist.h (mylist::mylist): Add constructor from a range of
+	input iterators, allowing initialization from any container.
+	Remove the special-purpose constructor from const set&.  This
+	change provides closer compatibility with std::vector<T>,
+	* src/delta.h (delta::delat): Initialize included_ and excluded
+	using the iterator range instead of plain const set&.
+
 2016-02-23  James Youngman  <jay@gnu.org>
 
 	Remove mylist<T>::operator+=(), implementing insert() instead.
