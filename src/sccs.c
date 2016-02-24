@@ -2353,7 +2353,7 @@ gstrncat (char *to, const char *from, size_t n, size_t length)
     {
       gstrbotch (to, from);
     }
-  /* strncat(), unlike strncpy(), always appends a \0 to the destination. */
+  /* strncat() always appends a \0 to the destination. */
   return strncat (to, from, n);
 }
 

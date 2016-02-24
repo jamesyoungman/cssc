@@ -41,4 +41,4 @@ EXTRA_DIST = ChangeLog ChangeLog.1 ChangeLog.2
 
 
 distcheck-hook: 
-	"$(srcdir)/build-aux/check-googletest-files.sh" "$(srcdir)" "$(DIST_ARCHIVES)" 
+	"$(srcdir)/build-aux/check-googletest-files.sh" "$(srcdir)" "$(DIST_ARCHIVES)"

@@ -1275,7 +1275,7 @@ bool sccs_file::
 print_subsituted_flags_list(FILE *out, const char* separator) const
 {
   bool first = true;
-  for (auto flagletter : flags.substitued_flag_letters) 
+  for (auto flagletter : flags.substitued_flag_letters)
     {
       if (!first)
         {
@@ -1299,7 +1299,7 @@ is_known_keyword_char(char c)
 }
 
 void sccs_file::
-set_sfile_executable(bool state) 
+set_sfile_executable(bool state)
 {
   sfile_executable = state;
 }

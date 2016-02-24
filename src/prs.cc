@@ -175,7 +175,7 @@ main(int argc, char **argv)
 	    }
 	  if (!matched)
 	    {
-	      if (rid.valid()) 
+	      if (rid.valid())
 		{
 		  errormsg("%s: Requested SID doesn't exist.", name.c_str());
 		  retval = 1;

@@ -304,7 +304,7 @@ actual an actual @sc{sid} here (for example @samp{1.2} or
 you use the @option{-r} option, you must also use the @option{-i}
 option (not just the @option{-n} option).  If the initial @sc{sid} you
 specify is not on the trunk, some tools will fail to work with the
-resulting file.  See also @xref{SCCS Version Differences}.
+resulting file.  @xref{SCCS Version Differences}.
 
 @item -t@var{desc}
 Read in descriptive text for this file from @file{@var{desc}}.  This replaces
@@ -2580,7 +2580,7 @@ also executable (subject to the current umask value).  When a history
 file is created with @code{admin -i}, the history file is created with
 execute bits set (subject to the current umask value) if the input
 file is executable.  This usage of @code{admin -i} does not set the
-@code{x} flag in the history file.  
+@code{x} flag in the history file.
 
 When no argument is specified to the @samp{-i} option of @code{admin},
 the initial file body is taken from stdin.  If stdin is redirected

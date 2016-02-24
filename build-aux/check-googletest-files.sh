@@ -1,7 +1,7 @@
 #! /bin/sh
 
 deleteprefix() {
-    sed -n -e 's_^unit-tests/__p' 
+    sed -n -e 's_^unit-tests/__p'
 }
 
 findproblems() {
@@ -16,7 +16,7 @@ findproblems() {
 	    \(  -name .svn -o -name .gitignore  \) -prune , -type f ) | deleteprefix | sort >| "${ondisk}"
 
 	comm -13 "${released}" "${ondisk}" >| "${problems}"
-       
+
 	if [ -s "${problems}" ] ; then
 	    exec >&2
 	    echo "Problem: some files in googletest were not included in the release."
@@ -42,4 +42,3 @@ main() {
 
 
 main "$@"
-

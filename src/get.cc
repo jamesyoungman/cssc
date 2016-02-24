@@ -471,11 +471,11 @@ main(int argc, char **argv)
                   throw;
                 }
             }
-	  if (create_lfile) 
+	  if (create_lfile)
 	    {
               fclose (summary_file);
 	    }
-	  
+
           if (real_file)
             {
               fclose(out);

@@ -115,7 +115,7 @@ private:
 
   void set_sfile_executable(bool state);
   bool sfile_should_be_executable() const;
-  
+
 public:
 
   // sccs_file::sccs_file(sccs_name&, enum _mode) MUST

@@ -200,7 +200,7 @@ run_mr_checker(const char *prg, const char *arg1, const std::vector<std::string>
 
       args.push_back(arg1);
 
-      for (const auto& mr : mrs) 
+      for (const auto& mr : mrs)
 	{
 	  args.push_back(mr.c_str());
 	}

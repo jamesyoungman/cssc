@@ -455,7 +455,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY2('D', 'I'):
-	  /* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:), 
+	  /* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:),
 	     but OpenSolaris 2009.06 (SunOS 5.11) shows two. */
 	  if (!d.get_included_seqnos().empty())
 	    print_delta(out, ":Dn:", d);
@@ -654,7 +654,7 @@ sccs_file::prs(FILE *out, const std::string& format, sid rid, sccs_date cutoff_d
 	    break;
 	}
     }
-  else 				// EARLIER
+  else                          // EARLIER
     {
       while (iter.next(all_deltas))
 	{

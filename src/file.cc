@@ -116,7 +116,7 @@ is_readable(const char *name) {
 }
 
 static bool
-get_mode_bits(const char *filename, mode_t mask, mode_t *result) 
+get_mode_bits(const char *filename, mode_t mask, mode_t *result)
 {
   struct stat st;
   if (0 != stat(filename, &st))
@@ -130,7 +130,7 @@ bool
 get_open_file_xbits (FILE *f, bool *is_executable)
 {
   const int fd = fileno(f);
-  if (fd < 0) 
+  if (fd < 0)
     return false;
 
   struct stat st;
@@ -160,7 +160,7 @@ static int
 is_writable(const char *filename, int /* as_real_user = 1 */ )
 {
   mode_t bits;
-  if (!get_mode_bits(filename, 0222, &bits)) 
+  if (!get_mode_bits(filename, 0222, &bits))
     return 0;			// cannot tell
   return bits ? 1 : 0;
 }

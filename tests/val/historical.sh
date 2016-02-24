@@ -11,4 +11,3 @@
 # usual and (as far as I know) no current SCCS
 # implementation omits it.
 docommand c1 "${vg_val} s.comment-nospace" 0 IGNORE IGNORE
-

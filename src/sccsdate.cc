@@ -27,6 +27,7 @@
 #include <config.h>
 #include <cstring>
 #include <string>
+#include <memory>
 
 #include "cssc.h"
 #include "sccsdate.h"
@@ -226,18 +227,9 @@ sccs_date::sccs_date(const char *s)
 // Construct a date as specified in an SCCS file.
 sccs_date::sccs_date(const char *date, const char *time)
 {
-  char buf[11];
+  std::unique_ptr<char[]> date_copy(strdup(date));
+  char* const buf = date_copy.get();
   int century;
-
-  // Peter Kjellerstedt writes:-
-  //
-  // This is a gross hack to handle that some old implementation of SCCS
-  // has a Y2K bug that results in that dates are written incorrectly as
-  // :0/01/01 instead of 00/01/01 (the colon is of course the next
-  // character after '9' in the ASCII table). The following should handle
-  // this correctly for years up to 2069 (after which the time format
-  // used is not valid anyway).
-  strncpy(buf, date, 11);
 
   /* Check for the symtoms of SourceForge bug ID 513800, where
    * the Data General version of Unix puts a four-digit year
@@ -264,7 +256,14 @@ sccs_date::sccs_date(const char *date, const char *time)
       date = buf;
   }
 
-
+  // Peter Kjellerstedt writes:-
+  //
+  // This is a gross hack to handle that some old implementation of SCCS
+  // has a Y2K bug that results in that dates are written incorrectly as
+  // :0/01/01 instead of 00/01/01 (the colon is of course the next
+  // character after '9' in the ASCII table). The following should handle
+  // this correctly for years up to 2069 (after which the time format
+  // used is not valid anyway).
   if (buf[0] >= ':' && buf[0] <= '@')
     {
       warning("date in SCCS file contains character '%c': "

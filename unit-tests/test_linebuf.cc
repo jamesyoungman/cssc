@@ -179,4 +179,3 @@ TEST_F(LineBufTest, ReadLineSequence) {
   ASSERT_EQ(1, b.read_line(fp));
   fclose (fp);
 }
-

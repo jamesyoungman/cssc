@@ -1,5 +1,30 @@
 2016-02-24  James Youngman  <jay@gnu.org>
 
+	Fix a number of problems identified by "make syntax-check".
+	* src/get.cc: Remove trailing blanks.
+	* src/Makefile.am: Likewise.
+	* src/l-split.cc: Likewise.
+	* src/get.cc: Likewise.
+	* src/prs.cc: Likewise.
+	* src/run.cc: Likewise.
+	* src/sccsfile.cc: Likewise.
+	* src/sccsfile.h: Likewise.
+	* Makefile.am (distcheck-hook): Remove trailing blank.
+	* src/sccs.c (gstrncat): Avoid spurious warning about reference to
+	strncpy() in a comment.
+	* tests/val/historical.sh: Remove empty lines at EOF.
+	* unit-tests/test_linebuf.cc: Likewise.
+	* build-aux/check-googletest-files.sh: Remove empty lines at EOF.
+	(deleteprefix): Remove trailing blanks.
+	* NEWS: Change "the the" to "the" in item for CSSC-1.3.2.  Remove
+	trailing blanks.
+	* src/sccsdate.cc (sccs_date::sccs_date): Avoid the use of strncpy.
+	* docs/cssc.texi (Admin Options): Don't say "see also @xref".
+	(Executable File Support): Remove trailing blanks.
+	* src/sf-prs.cc (prs): Don't use the space-tab combination.
+	* src/file.cc (get_mode_bits): Remove trailing blanks.
+	(is_writable): Likewise.
+
 	Make mylist a simple synonym for std::vector.
 	* src/mylist.h: Make mylist a simple synonym for std::vector.
 

@@ -69,7 +69,7 @@ split_comments(const std::string& comments)
     {
       char *s = new char[strlen(comments.c_str()) + 1];
       memcpy( s, comments.c_str(), strlen(comments.c_str()) + 1);
-      
+
       char* start = s;
       char* end = strchr(s, '\n');
       while (end != NULL)
@@ -79,15 +79,15 @@ split_comments(const std::string& comments)
 	  start = end;
 	  end = strchr(start, '\n');
 	}
-      
+
       if (*start != '\0')
 	{
 	  comment_list.push_back(start);
 	}
-      
+
       delete[] s;
     }
-  
+
   return comment_list;
 }
 
