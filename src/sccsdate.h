@@ -50,7 +50,6 @@ class sccs_date
 
   // derived data
   int yearday;			// days since start of year.
-  int daysecond;		// seconds since start of day.
 
 public:
   sccs_date();

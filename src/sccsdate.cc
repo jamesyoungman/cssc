@@ -37,6 +37,31 @@
 
 #include <ctype.h>
 
+namespace
+{
+  int y2k_window(int year)
+  {
+    // In the X/Open Commands and Utilities Issue 5 standard,
+    // it is specified that yy/mm/dd type dates with values
+    // for "yy" which range from 69-99 are to be interpreted
+    // as 1969-1999 and dates with year values 00-68 are to be
+    // interpreted as 2000-2068.
+    //
+    // For more information about this, please see that
+    // document itself and also the X/Open Year-2000 FAQ,
+    // which can be obtained from the URL
+    // http://www.xopen.org/public/tech/base/year2000.html
+    //
+    if (year < 69)
+      year += 2000;
+    else
+      year += 1900;
+
+    ASSERT(year >= 1969);
+    ASSERT(year <  2069);
+    return year;
+  }
+}
 
 // The MySC code used to just check for (year % 4) and (year == 0).
 // This implementation is "right", but in any case it won't make a
@@ -57,7 +82,7 @@ is_leapyear(int year)
       else
         {
           if (year % 400)
-            return 0;           // century years are not leap-years exceot
+            return 0;           // century years are not leap-years except
           else
             return 1;           // every fourth one, which IS a leap year.
         }
@@ -110,6 +135,12 @@ static int
 get_two_digits(const char *s)
 {
   return get_digit(s[0]) * 10 + get_digit(s[1]);
+}
+
+static int
+get_two_digits(const string& s, size_t pos)
+{
+  return get_digit(s[pos]) * 10 + get_digit(s[pos+1]);
 }
 
 static int
@@ -197,21 +228,7 @@ sccs_date::sccs_date(const char *s)
     }
   else
     {
-      // In the X/Open Commands and Utilities Issue 5 standard,
-      // it is specified that yy/mm/dd type dates with values
-      // for "yy" which range from 69-99 are to be interpreted
-      // as 1969-1999 and dates with year values 00-68 are to be
-      // interpreted as 2000-2068.
-      //
-      // For more information about this, please see that
-      // document itself and also the X/Open Year-2000 FAQ,
-      // which can be obtained from the URL
-      // http://www.xopen.org/public/tech/base/year2000.html
-      //
-      if (year < 69)
-        year += 2000;
-      else
-        year += 1900;
+      year = y2k_window(year);
     }
 #endif
 
@@ -225,35 +242,33 @@ sccs_date::sccs_date(const char *s)
 }
 
 // Construct a date as specified in an SCCS file.
-sccs_date::sccs_date(const char *date, const char *time)
+sccs_date::sccs_date(const char *date_arg, const char *time)
 {
-  std::unique_ptr<char[]> date_copy(strdup(date));
-  char* const buf = date_copy.get();
+  string date(date_arg);
   int century;
 
   /* Check for the symtoms of SourceForge bug ID 513800, where
    * the Data General version of Unix puts a four-digit year
    * into the p-file.
    */
-  if (strlen(buf) > 4
-      && is_digit(buf[0])
-      && is_digit(buf[1])
-      && is_digit(buf[2])
-      && is_digit(buf[3])
-      && ('/' == buf[4]))
+  if (date.size() > 4
+      && is_digit(date[0])
+      && is_digit(date[1])
+      && is_digit(date[2])
+      && is_digit(date[3])
+      && ('/' == date[4]))
   {
       warning("this file has been written by a version of SCCS"
 	      " which uses four-digit years, which is contrary to the"
 	      " common SCCS file format (though it might have been a "
 	      " good idea in the first place)\n");
-      century = get_two_digits(&buf[0]);
-      date = buf + 2;
+      century = get_two_digits(date, 0);
+      date = string(date, 2);
   }
   else
   {
       // this is a normal two-digit date.
       century = 0;              // decide by windowing.
-      date = buf;
   }
 
   // Peter Kjellerstedt writes:-
@@ -264,14 +279,15 @@ sccs_date::sccs_date(const char *date, const char *time)
   // character after '9' in the ASCII table). The following should handle
   // this correctly for years up to 2069 (after which the time format
   // used is not valid anyway).
-  if (buf[0] >= ':' && buf[0] <= '@')
+  if (date[0] >= ':' && date[0] <= '@')
     {
       warning("date in SCCS file contains character '%c': "
 	      "a version of SCCS which is not Year 2000 compliant "
 	      "has probably been used on this file.\n",
-	      buf[0]);
-
-      buf[0] = static_cast<char>(buf[0] - 10);
+	      date[0]);
+      /* We're about to subtract 10 from date[0], so make sure that's safe. */
+      static_assert(':' > 10, "unsupported character encoding");
+      date[0] = static_cast<char>(date[0] - 10);
     }
 
   // The "1" in the if() is just there to make Emacs align the columns.
@@ -284,35 +300,29 @@ sccs_date::sccs_date(const char *date, const char *time)
       && is_digit(time[3]) && is_digit(time[4]) && time[5] == ':'
       && is_digit(time[6]) && is_digit(time[7]) && time[8] == '\0')
     {
-      year      = get_two_digits(&date[0]);
-      month     = get_two_digits(&date[3]);
-      month_day = get_two_digits(&date[6]);
+      year      = get_two_digits(date, 0);
+      month     = get_two_digits(date, 3);
+      month_day = get_two_digits(date, 6);
 
       hour      = get_two_digits(&time[0]);
       minute    = get_two_digits(&time[3]);
       second    = get_two_digits(&time[6]);
 
-      // Year 2000 fix (mandated by X/Open white paper, see above
-      // for more details).
       if (century)
       {
           // SourceForge bug ID 513800 - Data General Unix uses 4-digit year
           // in the p-file.
           year = century * 100 + year;
+	  ASSERT(year >= 1969);
+	  ASSERT(year <  2069);
       }
       else
       {
-
-          if (year < 69)
-              year += 2000;
-          else
-              year += 1900;
+	// Year 2000 fix (mandated by X/Open white paper, see above
+	// for more details).
+	year = y2k_window(year);
       }
-
       update_yearday();
-
-      ASSERT(year >= 1969);
-      ASSERT(year <  2069);
     }
 }
 
@@ -406,7 +416,6 @@ sccs_date::sccs_date()
 {
 }
 
-
 sccs_date
 sccs_date::now()                // static member.
 {
@@ -430,8 +439,6 @@ sccs_date::update_yearday()
 
   while (d++ < month_day)
     yearday++;
-
-  daysecond = ((hour * 60) + minute) * 60 + second;
 }
 
 
@@ -443,11 +450,28 @@ int sccs_date::compare(const sccs_date& d) const
     return diff;
   else if ( (diff = yearday - d.yearday) != 0)
     return diff;
+  
+  /* The implementation below can compute an incorrect result when
+     comparing dates on a day when there is a clock change.  For
+     example, suppose the clock is put pack an hour the first time it
+     reaches 02:00 on this day.  Let t1 be a time 3602 seconds into
+     this day, and t2 be a time 7201 seconds into this day.  For both,
+     hour=1 and minute=0 but t1 has second=2 and t2 has second=1.
+     This function will decide that t1 > t2 while in reality t2 > t1.
+
+     So in theory this implementation is incorrect.  However, since
+     the SCCS date format does not include time zone information, we
+     cannot receive t2 as input in this case (it would bre represnted
+     as the time 01:00::01 and would be understood to represent a time
+     3601 seconds into the day).
+   */
+  if ((diff = hour - d.hour) != 0)
+    return diff;
+  else if ((diff = minute - d.minute) != 0)
+    return diff;
   else
-    return daysecond - d.daysecond;
+    return second - d.second;
 }
-
-
 
 int sccs_date::operator >(sccs_date const & d) const
 {
@@ -464,7 +488,6 @@ int sccs_date::operator <=(sccs_date const &d) const
   return compare(d) <= 0;
 }
 
-
 int
 sccs_date::valid() const
 {
@@ -477,7 +500,6 @@ sccs_date::valid() const
     && hour >= 0 && hour < 24
     && minute >= 0 && minute < 60
     && second >= 0 && second <= 61;
-
 }
 
 

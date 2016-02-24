@@ -1,5 +1,16 @@
 2016-02-24  James Youngman  <jay@gnu.org>
 
+	Don't use unique_ptr on the result of strdup, and other cleanup.
+	* src/sccsdate.cc (y2k_window): move all year windowing
+	calculations into this new function.
+	(is_leapyear): fix typo in comment.
+	(get_two_digits): Add specialization which takes a constr
+	string&.
+	(sccs_date::sccs_date): Use y2k_window.  Also, instead of using
+	unique_ptr on a pointer returned by strdup, just use a std::string
+	instance.
+	* src/sccsdate.h (class sccs_date): Remove the daysecond field.
+
 	Fix a number of problems identified by "make syntax-check".
 	* src/get.cc: Remove trailing blanks.
 	* src/Makefile.am: Likewise.
