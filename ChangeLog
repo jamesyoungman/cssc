@@ -1,3 +1,18 @@
+2016-02-28  James Youngman  <jay@gnu.org>
+
+	Add tests covering p-file validity checks in sact.
+	* src/pfile.cc (sccs_pfile): Validate the delta SID (instead of
+	only the gotten SID).  When rejecting an invalid date, say
+	"date/time", since it may in fact be the time field which is
+	incorrect.
+	* tests/common/test-common: New options to docommand,
+	--stderr_regex and stdout_regex, allowing regex (egrep) matching
+	of tool output.  Each has a --no* counterpart which turns the
+	option off again (this is useful for deteating the defaults
+	provided by functions which wrap docommand).
+	* tests/sact/pfile_corruption.sh: New test, covering the p-file
+	validity checks in sact.
+
 2016-02-24  James Youngman  <jay@gnu.org>
 
 	Don't use unique_ptr on the result of strdup, and other cleanup.

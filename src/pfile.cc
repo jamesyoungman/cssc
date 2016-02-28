@@ -100,12 +100,16 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
                                              args[3], args[4],
                                              incl, excl);
 
-                        if (!tmp.got.valid() || !tmp.got.valid()) {
-                                corrupt(lineno, "Invalid SID");
+                        if (!tmp.got.valid()) {
+                                corrupt(lineno, "Invalid gotten SID");
+                        }
+
+                        if (!tmp.delta.valid()) {
+                                corrupt(lineno, "Invalid delta SID");
                         }
 
                         if (!tmp.date.valid()) {
-                                corrupt(lineno, "Invalid date");
+                                corrupt(lineno, "Invalid date/time");
                         }
 
                         if (!tmp.include.valid() || !tmp.exclude.valid()) {

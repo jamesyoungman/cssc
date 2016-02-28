@@ -179,13 +179,24 @@ docommand () {
 # $4 is what to expect on stdout
 # $5 is what to expect on stderr.
 #
-# If --silent is specified before the label, no output is notmally made.
+# If --silent is specified before the label, no output is normally made.
 #
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
-case $1 in
---silent) silent=true ; shift ;;
-       *) silent=false  ;;
+silent=false
+stdout_regex=false
+stderr_regex=false
+while case "$1" in
+--silent) silent=true ; true ;;
+--nosilent) silent=false ; true ;;
+--stderr_regex) stderr_regex=true ; true ;;
+--nostderr_regex) stderr_regex=false ; true ;;
+--stdout_regex) stdout_regex=true ; true ;;
+--nostdout_regex) stdout_regex=false ; true ;;
+*) false ;;
 esac
+do
+    shift
+done
 if test -z "${test_script}"; then
     script_dir=`dirname $0`
     case "${script_dir}" in
@@ -233,20 +244,46 @@ fi
 
 if test "$3" != "IGNORE"
 then
-    echo_nonl "$3" > expected.stdout
-    # diff can fail if the file does not end in newline.
-    echo        >>expected.stdout
-    echo        >>     got.stdout
-    diff expected.stdout got.stdout || fail $label: stdout format error with $1
+    if $stdout_regex; then
+	# We use egrep regexes to that we can run these tests on old
+	# versions of Solaris.  Older versions of Solaris do not
+	# support grep -E.
+	if egrep -e "$3" < got.stderr >/dev/null
+	then
+	    echo "# stdout output matches $3"  >> command.log
+	else
+	    echo "# stdout output does not match $3"  >> command.log
+	    fail $label: stdout output did not match "$3"
+	fi
+    else
+	echo_nonl "$3" > expected.stdout
+	# diff can fail if the file does not end in newline.
+	echo        >>expected.stdout
+	echo        >>     got.stdout
+	diff expected.stdout got.stdout || fail $label: stdout format error with $1
+    fi
 fi
 
 if test "$4" != "IGNORE"
 then
-    echo_nonl "$4" > expected.stderr
-    # diff can fail if the file does not end in newline.
-    echo        >>expected.stderr
-    echo        >>     got.stderr
-    diff expected.stderr got.stderr || fail $label: stderr format error with $1
+    if $stderr_regex; then
+	# We use egrep regexes to that we can run these tests on old
+	# versions of Solaris.  Older versions of Solaris do not
+	# support grep -E.
+	if egrep -e "$4" < got.stderr >/dev/null
+	then
+	    echo "# stderr output matches $4"  >> command.log
+	else
+	    echo "# stderr output does not match $4"  >> command.log
+	    fail $label: stderr output did not match "$4"
+	fi
+    else
+	echo_nonl "$4" > expected.stderr
+	# diff can fail if the file does not end in newline.
+	echo        >>expected.stderr
+	echo        >>     got.stderr
+	diff expected.stderr got.stderr || fail $label: stderr format error with $1
+    fi
 fi
 
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
