@@ -1,3 +1,10 @@
+2016-03-01  James Youngman  <jay@gnu.org>
+
+	Don't distrubite unit-tests/googletest/Makefile.in.
+	* unit-tests/Makefile.am (EXTRA_DIST): Don't include
+	googletest/Makefile.in, since we don't create that file, as
+	googletest is not in SUBDIRS.
+
 2016-02-28  James Youngman  <jay@gnu.org>
 
 	Add tests covering p-file validity checks in sact.

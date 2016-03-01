@@ -288,7 +288,6 @@ EXTRA_DIST += \
 	googletest/configure.ac \
 	googletest/m4/gtest.m4 \
 	googletest/Makefile.am \
-	googletest/Makefile.in \
 	googletest/README \
 	googletest/scripts/common.py \
 	googletest/scripts/gtest-config.in \
