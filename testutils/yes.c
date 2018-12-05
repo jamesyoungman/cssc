@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <signal.h>
 
 
 unsigned long
@@ -54,6 +54,8 @@ main(int argc, char *argv[])
   char *msg;
   unsigned long l;
 
+  /* make sure SIGPIPE is not ignored */
+  signal(SIGPIPE, SIG_DFL);
   argv++;
   argc--;
 
