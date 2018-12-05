@@ -58,6 +58,9 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
 #include <signal.h>             /* TODO: consider using sigaction(). */
 #include <errno.h>              /* TODO: same as in parent directory. */
 #include <pwd.h>                /* getpwuid() */
+#ifdef HAVE_GRP_H
+#include <grp.h>		/* setgroups() */
+#endif
 
 /* #include "pathnames.h" */
 /* The next few lines inserted from @(#)pathnames.h     8.1 (Berkeley) 6/6/93
@@ -489,14 +492,24 @@ setuid_warn(void)
 static void
 drop_privs(void)
 {
-  if (0 != setuid (getuid ()))
+  /* Call setgroups() before setuid(), see POS36-C */
+#ifdef HAVE_SETGROUPS
+  /* EPERM can be ignored here - if we can't call setgroups(), we're safe */
+  if (0 != setgroups(0, NULL) && errno != EPERM)
     {
-      perror("setuid");
+      perror("setgroups");
       exit(CSSC_EX_NOPERM);
     }
+#endif
+  /* Call setgid() before setuid(), see POS36-C */
   if (0 != setgid(getgid()))
     {
       perror("setgid");
+      exit(CSSC_EX_NOPERM);
+    }
+  if (0 != setuid (getuid ()))
+    {
+      perror("setuid");
       exit(CSSC_EX_NOPERM);
     }
   RealUser++;

@@ -1,3 +1,14 @@
+2019-05-05  Martin Wilck  <mwilck@suse.com>  (tiny change)
+
+	sccs: comply with POSIX POS36-C rule.
+	POS36-C compliance requires that setgid() is called before
+	setuid(), and both called after relinquishing extra groups with
+	setgroups(). See
+	https://wiki.sei.cmu.edu/confluence/display/c/POS36-C.+Observe+correct+revocation+order+while+relinquishing+privileges
+	* configure.ac: check for setgroups()
+	* src/sccs.c (drop_privs): correct call order: setgroups, setgid,
+	setuid.
+
 2019-05-05  James Youngman  <jay@gnu.org>
 
 	Suggest setting CSSC_DISABLE_VALGRIND=1 if system binaries cause

@@ -288,6 +288,7 @@ echo "Done checking accessibility of C headers while compiling as C++"
 dnl Posix/Unix header files:-
 AC_CHECK_HEADERS(prototypes.h io.h process.h pwd.h)
 AC_CHECK_HEADERS(sys/param.h sys/types.h)
+AC_CHECK_HEADERS(grp.h)
 AC_HEADER_DIRENT
 AC_HEADER_SYS_WAIT
 AC_HEADER_STAT
@@ -367,6 +368,7 @@ AC_CHECK_FUNCS(symlink readlink unsetenv fsetpos fileno fstat sysconf memchr)
 AC_CHECK_FUNCS(stat getpwuid getlogin setreuid pipe spawn geteuid getegid)
 
 
+AC_CHECK_FUNCS(setgroups)
 
 dnl
 dnl On AmigsOS, fork() is a stub (in ixemul.library).  This means that
