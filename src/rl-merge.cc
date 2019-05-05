@@ -23,6 +23,7 @@
  */
 
 #include <config.h>
+#include <vector>
 #include "cssc.h"
 #include "rel_list.h"
 
@@ -39,7 +40,7 @@ void release_list::merge(const release_list& m)
 // TODO: fix this horrendously inefficient implementation.
 void release_list::remove(const release_list& rm)
 {
-  mylist<release> newlist;
+  std::vector<release> newlist;
 
   for (const auto& r : l)
     {

@@ -26,18 +26,18 @@
 #ifndef INC_REL_LIST_H
 #define INC_REL_LIST_H
 
-#include "mylist.h" // NOT STL LIST !
+#include <vector>
 
 #include "release.h"
 
 
 class release_list
 {
-  mylist<release> l;
+  std::vector<release> l;
 
 public:
-  typedef typename mylist<release>::size_type size_type;
-  typedef typename mylist<release>::const_iterator const_iterator;
+  typedef typename std::vector<release>::size_type size_type;
+  typedef typename std::vector<release>::const_iterator const_iterator;
 
   // Constructors / destructors
   release_list();
