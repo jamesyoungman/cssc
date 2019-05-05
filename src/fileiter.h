@@ -29,7 +29,7 @@
 #define CSSC__FILEITER_H__
 
 #include <string>
-#include "mylist.h"
+#include <vector>
 #include "sccsname.h"
 
 class CSSC_Options;
@@ -49,8 +49,8 @@ private:
   int argc;
   int is_unique;
 
-  mylist<std::string> files;
-  mylist<std::string>::size_type pos;
+  std::vector<std::string> files;
+  std::vector<std::string>::size_type pos;
   sccs_name name;
 
 public:
