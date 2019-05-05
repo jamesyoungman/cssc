@@ -20,7 +20,6 @@ provided in the file "docs/Platforms".
  See the file INSTALL for the generic options you can use with "configure".
  Options for "configure" that are specific to CSSC are detailed below.
 
-
 --enable-binary
 
     This is the default setting (but the default setting may change
@@ -70,6 +69,12 @@ provided in the file "docs/Platforms".
     --disable-valgrind option.  To disable it afterward, you can
     simply set the enviroment variable CSSC_DISABLE_VALGRIND.
 
+    Occasionally a system binary (for example a shell) which is used
+    to run the tests will have a behaviour that Valgrind doesn't like.
+    Valgrind normally shows the name of the problem binary in its
+    error report.  If "make check" or "make distcheck" fail in this
+    way, try again with "env CSSC_DISABLE_VALGRIND=1 make check" or
+    similarly for "make distcheck".
 
 1.	Compiling
 
