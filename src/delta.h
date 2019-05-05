@@ -30,7 +30,6 @@
 #include <vector>
 #include "sid.h"
 #include "sccsdate.h"
-#include "mylist.h"
 
 using std::string;
 
@@ -47,9 +46,9 @@ class delta
   // as the Real Thing.  We have to output Excludes: lines
   // if the SCCS file contained even an EMPTY includes list.
   bool have_includes_, have_excludes_, have_ignores_;
-  mylist<seq_no> included_, excluded_, ignored_;
+  std::vector<seq_no> included_, excluded_, ignored_;
   std::vector<string> mrs_;
-  mylist<string> comments_;
+  std::vector<string> comments_;
   unsigned long inserted_, deleted_, unchanged_;
 
 public:
@@ -70,7 +69,7 @@ public:
   }
 
   delta(char t, sid i, sccs_date d, const string& u, seq_no s, seq_no p,
-	const std::vector<string>& mrs, const mylist<string>& cs)
+	const std::vector<string>& mrs, const std::vector<string>& cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
       have_includes_(false), have_excludes_(false),
@@ -85,7 +84,7 @@ public:
 
   delta(char t, sid i, sccs_date d, const string& u, seq_no s, seq_no p,
 	const std::set<seq_no>& incl, const std::set<seq_no>& excl,
-	const std::vector<string>& mrs, const mylist<string>& cs)
+	const std::vector<string>& mrs, const std::vector<string>& cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
       have_includes_(!incl.empty()), have_excludes_(!excl.empty()),
@@ -143,17 +142,17 @@ public:
     ++unchanged_;
   }
 
-  const mylist<seq_no>& get_included_seqnos() const
+  const std::vector<seq_no>& get_included_seqnos() const
   {
     return included_;
   }
 
-  const mylist<seq_no>& get_excluded_seqnos() const
+  const std::vector<seq_no>& get_excluded_seqnos() const
   {
     return excluded_;
   }
 
-  const mylist<seq_no>& get_ignored_seqnos() const
+  const std::vector<seq_no>& get_ignored_seqnos() const
   {
     return ignored_;
   }
@@ -233,17 +232,17 @@ public:
     mrs_.push_back(s);
   }
 
-  const mylist<string>& comments() const
+  const std::vector<string>& comments() const
   {
     return comments_;
   }
 
-  void set_comments(const mylist<string>& updated_comments)
+  void set_comments(const std::vector<string>& updated_comments)
   {
     comments_ = updated_comments;
   }
 
-  void prepend_comments(const mylist<string>& prefix)
+  void prepend_comments(const std::vector<string>& prefix)
   {
     comments_.insert(comments_.begin(), prefix.begin(), prefix.end());
   }

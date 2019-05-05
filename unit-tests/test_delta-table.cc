@@ -77,7 +77,7 @@ TEST(DeltaTable, SelectConst)
 TEST(DeltaTableDeathTest, SeqNoRangeChecks)
 {
   cssc_delta_table t;
-  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_comments;
   const std::vector<std::string> no_mrs;
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
 		seq_no(1), seq_no(0), no_mrs, no_comments);
@@ -94,7 +94,7 @@ TEST(DeltaTableDeathTest, SeqNoRangeChecks)
 TEST(DeltaTable, DeltaAtSeqExists)
 {
   cssc_delta_table t;
-  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_comments;
   const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
@@ -116,7 +116,7 @@ TEST(DeltaTable, DeltaAtSeqExists)
 TEST(DeltaTable, DeltaAtSeqWithGap)
 {
   cssc_delta_table t;
-  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_comments;
   const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
@@ -143,7 +143,7 @@ TEST(DeltaTable, DeltaAtSeqWithGap)
 TEST(DeltaTable, RemovedDelta)
 {
   cssc_delta_table t;
-  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_comments;
   const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
@@ -165,7 +165,7 @@ TEST(DeltaTable, FindAny)
 {
   cssc_delta_table t;
   const delta* p;
-  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_comments;
   const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",
@@ -195,7 +195,7 @@ TEST(DeltaTable, HighestSeqno)
 {
   cssc_delta_table t;
   const delta* p;
-  const mylist<std::string> no_comments;
+  const std::vector<std::string> no_comments;
   const std::vector<std::string> no_mrs;
 
   const delta a('D', sid("1.1"), sccs_date("990519014208"), "aldo",

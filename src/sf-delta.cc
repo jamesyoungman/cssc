@@ -426,7 +426,7 @@ sccs_file::add_delta(const std::string& gname,
 		     sccs_pfile& pfile,
 		     sccs_pfile::iterator it,
                      const std::vector<std::string>& new_mrs,
-		     const mylist<std::string>& new_comments,
+		     const std::vector<std::string>& new_comments,
                      bool display_diff_output)
 {
   const char *pline;
@@ -592,7 +592,7 @@ sccs_file::add_delta(const std::string& gname,
       // belonging to the new delta.
 
       // use our own comment.
-      mylist<std::string> auto_comment;
+      std::vector<std::string> auto_comment;
       auto_comment.push_back(std::string("AUTO NULL DELTA"));
 
       release last_auto_rel = release(it->delta);

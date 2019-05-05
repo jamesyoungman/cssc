@@ -1,3 +1,17 @@
+2019-05-06  James Youngman  <jay@gnu.org>
+
+	Switch test_delta-table.cc from mylist to vector.
+	* unit-tests/test_delta-table.cc: Switch data structures from
+	mylist<T> to std:vector<T> (for which mylist is an alias anyway).
+
+2019-05-05  James Youngman  <jay@gnu.org>
+
+	Switch class delta from using mylist<T> to vector<T>.
+	* src/delta.h: Switch data structures from mylist<T> to
+	std:vector<T> (for which mylist is an alias anyway).
+	* src/delta.cc (delta_main): Likewise.
+	* src/sf-delta.cc (add_delta): Likewise.
+
 2019-05-05  Martin Wilck  <mwilck@suse.com>  (tiny change)
 
 	sccs: comply with POSIX POS36-C rule.

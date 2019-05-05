@@ -139,7 +139,7 @@ delta_main(int argc, char **argv)
 	}
     }
 
-  mylist<std::string> comment_list;
+  std::vector<std::string> comment_list;
   std::vector<std::string> mr_list;
   int first = 1;
 
