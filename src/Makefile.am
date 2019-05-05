@@ -60,7 +60,7 @@ BUILT_SOURCES = version.cc
 CLEANFILES = sccsdiff
 
 noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
-	filepos.h my-getopt.h linebuf.h mylist.h pfile.h \
+	filepos.h my-getopt.h linebuf.h pfile.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h sysdep.h \
 	version.h ioerr.h delta-table.h delta.h \

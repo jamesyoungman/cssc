@@ -75,8 +75,8 @@ main(int argc, char **argv)
   bool force_binary = false;			/* -b */
   const char *iname = NULL;			/* -i -I */
   const char *file_comment = NULL;		/* -t */
-  mylist<string> set_flags, unset_flags;	/* -f, -d */
-  mylist<string> add_users;			/* -a  */
+  std::vector<string> set_flags, unset_flags;	/* -f, -d */
+  std::vector<string> add_users;			/* -a  */
   std::unordered_set<string> erase_users;	/* -e */
   string mrs, comments;				/* -m, -y */
   int check_checksum = 0;	                /* -h */
@@ -227,7 +227,7 @@ main(int argc, char **argv)
   if (check_checksum)
       reset_checksum = false;
 
-  mylist<string> comment_list;
+  std::vector<string> comment_list;
   std::vector<string> mr_list;
   int was_first = 1;
   sccs_file_iterator iter(opts);

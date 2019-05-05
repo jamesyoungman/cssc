@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <assert.h>
 
-#include "mylist.h"
 #include "sid.h"
 #include "sccsdate.h"
 #include "delta.h"
@@ -43,7 +42,7 @@ usage ()
 }
 
 static bool
-emit_ixg(FILE *fp, char signifier, const mylist<sid>& items)
+emit_ixg(FILE *fp, char signifier, const std::vector<sid>& items)
 {
   if (!items.empty())
     {
@@ -89,10 +88,10 @@ emit_delta(FILE *fp,
            const std::string& user,
            seq_no seq,
            seq_no prev_seq,
-           const mylist<sid>& included,
-           const mylist<sid>& excluded,
-           const mylist<sid>& ignored,
-           const mylist<std::string>& comments,
+           const std::vector<sid>& included,
+           const std::vector<sid>& excluded,
+           const std::vector<sid>& ignored,
+           const std::vector<std::string>& comments,
            const std::vector<std::string>& mrs)
 {
   fprintf(fp,
@@ -217,8 +216,8 @@ static bool make_delta(FILE *fp,
     prev_seq = 0;
 
   const std::vector<std::string> no_mrs;
-  const mylist<std::string> no_comments;
-  const mylist<sid> no_sids;
+  const std::vector<std::string> no_comments;
+  const std::vector<sid> no_sids;
   emit_delta(fp, 0u, 0u, 0u, 'D', id, current_time, username,
              this_seq, prev_seq, no_sids, no_sids, no_sids,
              no_comments, no_mrs);

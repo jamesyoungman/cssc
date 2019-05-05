@@ -64,13 +64,13 @@ sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
 
 /* Prints a list of sequence numbers on the same line. */
 static void
-print_seq_list(FILE *out, mylist<seq_no> const &list) {
-  const mylist<seq_no>::size_type len = list.size();
+print_seq_list(FILE *out, std::vector<seq_no> const &list) {
+  const std::vector<seq_no>::size_type len = list.size();
   // TODO: see if we can use a more natural STL-like construct here.
   /* prs does actually print the sequences in reverse order! */
   if (len > 0)
     {
-      mylist<seq_no>::size_type i = len-1;
+      std::vector<seq_no>::size_type i = len-1;
       do
 	{
 	  fprintf(out, "%u", list[i]);

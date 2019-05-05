@@ -34,7 +34,6 @@
 #include "sccsname.h"
 #include "sid.h"
 #include "sccsdate.h"
-#include "mylist.h"
 #include "rel_list.h"
 #include "delta.h"
 #include "pfile.h"
@@ -68,7 +67,7 @@ private:
   cssc_delta_table *delta_table;
   cssc_linebuf     *plinebuf;
 
-  mylist<std::string> users;	// FIXME: consider something more efficient.
+  std::vector<std::string> users;	// FIXME: consider something more efficient.
   struct sccs_file_flags
   {
     // TODO: consider std::unique_ptr<std::string> instead of std::string*.
@@ -92,7 +91,7 @@ private:
     std::set<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
   } flags;
 
-  mylist<std::string> comments;
+  std::vector<std::string> comments;
 
   static FILE *open_sccs_file(const char *name, enum _mode mode,
                               int *sump, bool *is_bk_file);
@@ -193,7 +192,7 @@ public:
   struct get_status
   {
     unsigned lines;
-    mylist<sid> included, excluded;
+    std::vector<sid> included, excluded;
     bool     success;
   };
 
@@ -264,7 +263,7 @@ public:
   bool add_delta(const std::string& gname,
 		 sccs_pfile &pfile,
 		 sccs_pfile::iterator it,
-                 const std::vector<std::string>& mrs, const mylist<std::string>& comments,
+                 const std::vector<std::string>& mrs, const std::vector<std::string>& comments,
                  bool display_diff_output);
 
   /* sccsfile.cc */
@@ -286,13 +285,13 @@ public:
   /* sf-admin.c */
   bool admin(const char *file_comment,
              bool force_binary,
-             const mylist<std::string>& set_flags, const mylist<std::string>& unset_flags, // FIXME: consider something more efficient
-             const mylist<std::string>& add_users,
+             const std::vector<std::string>& set_flags, const std::vector<std::string>& unset_flags, // FIXME: consider something more efficient
+             const std::vector<std::string>& add_users,
 	     const std::unordered_set<std::string>& erase_users);
   bool create(const sid &initial_sid,
               const char *iname,
               const std::vector<std::string>& mrs,
-              mylist<std::string>* comments,
+              std::vector<std::string>* comments,
               int suppress_comments,
               bool force_binary);
 
@@ -336,7 +335,7 @@ public:
 
   /* sf-cdc.c */
 
-  bool cdc(sid id, const std::vector<std::string>& mrs, const mylist<std::string>& comments);
+  bool cdc(sid id, const std::vector<std::string>& mrs, const std::vector<std::string>& comments);
 
   /* sf-rmdel.c */
 
@@ -363,7 +362,7 @@ private:
 /* l-split.c */
 
 std::vector<std::string> split_mrs(const std::string& mrs);
-mylist<std::string> split_comments(const std::string& comments);
+std::vector<std::string> split_comments(const std::string& comments);
 
 #endif /* __SCCSFILE_H__ */
 

@@ -45,7 +45,7 @@ print_string_list(FILE *out,
 		  const char* post,
 		  const char* dflt)
 {
-  const mylist<std::string>::size_type len = l.size();
+  const std::vector<std::string>::size_type len = l.size();
 
   if (0 == len)
     {
@@ -53,7 +53,7 @@ print_string_list(FILE *out,
     }
   else
     {
-      for (mylist<std::string>::size_type i = 0; i < len; i++)
+      for (std::vector<std::string>::size_type i = 0; i < len; i++)
 	{
 	  fprintf(out, "%s%s", pre, l[i].c_str());
 	  if (i < len-1)
@@ -293,7 +293,7 @@ do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
 }
 
 static void
-print_seq_list(FILE *out, mylist<seq_no> const &list)
+print_seq_list(FILE *out, std::vector<seq_no> const &list)
 {
   bool first = true;
   for (const auto& seq : list)

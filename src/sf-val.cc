@@ -105,7 +105,7 @@ sccs_file::get_module_type_flag()
 }
 
 namespace {
-  bool validate_seq_numbers (const string& name, const mylist<seq_no>& seqs, const char *sz_sid,
+  bool validate_seq_numbers (const string& name, const std::vector<seq_no>& seqs, const char *sz_sid,
 			     seq_no limit, const char* seq_type)
   {
     for (auto s : seqs)
@@ -143,7 +143,7 @@ sccs_file::validate_isomorphism() const
 }
 
 static bool
-validate_substituted_flags_list(const mylist<char> entries)
+validate_substituted_flags_list(const std::vector<char> entries)
 {
   // TODO: write this later.
   return true;

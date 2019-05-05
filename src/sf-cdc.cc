@@ -38,7 +38,7 @@
 /* Adds new MRs and comments to the specified delta. */
 
 static bool
-inlist(mylist<std::string> l, const std::string& find)
+inlist(std::vector<std::string> l, const std::string& find)
 {
   for (const auto& mr : l)
     {
@@ -54,7 +54,7 @@ static std::vector<std::string>
 process_mrs(const std::vector<std::string>& old_mrs,
 	    const std::vector<std::string>& to_add,
 	    const std::unordered_set<std::string>& to_delete,
-	    mylist<std::string>& comments,
+	    std::vector<std::string>& comments,
 	    bool& deleted)
 {
   std::vector<std::string> current(to_add);
@@ -79,7 +79,7 @@ process_mrs(const std::vector<std::string>& old_mrs,
 
 bool
 sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
-	       const mylist<std::string>& comment_updates)
+	       const std::vector<std::string>& comment_updates)
 {
   if (!edit_mode_ok(true))
     return false;
@@ -94,7 +94,7 @@ sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
 
   delta &d = *p;
 
-  mylist<std::string> deletion_comment;
+  std::vector<std::string> deletion_comment;
   bool mrs_deleted = false;
   if (!mr_updates.empty())
     {
@@ -115,7 +115,7 @@ sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
 
   if (mrs_deleted || !comment_updates.empty())	// Prepend the new comments.
     {
-      mylist<std::string> newcomments;
+      std::vector<std::string> newcomments;
 
       // If there are comments to be added, add them.
       if (!comment_updates.empty())

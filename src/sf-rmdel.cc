@@ -36,7 +36,7 @@
 
 namespace {
 bool
-is_seqlist_member(seq_no seq_to_find, mylist<seq_no> const &seq_list) {
+is_seqlist_member(seq_no seq_to_find, std::vector<seq_no> const &seq_list) {
   return std::find(seq_list.begin(), seq_list.end(), seq_to_find) != seq_list.end();
 }
 }

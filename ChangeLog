@@ -1,5 +1,31 @@
 2019-05-06  James Youngman  <jay@gnu.org>
 
+	Delete mylist.h.
+	* src/mylist.h: Delete mylist.h
+	* src/Makefile.am (noinst_HEADERS): Delete mylist.h
+	* src/sccsfile.cc: Don't include mylist.h.
+	* src/l-split.cc: Don't include mylist.h.
+	(split_comments): use std::vector<T> instead of mylist<T>.
+	* unit-tests/test_bigfile.cc: use std::vector<T> instead of
+	mylist<T>. Don't include mylist.h.
+	* unit-tests/test_delta.cc: Likewise.
+	* unit-tests/test_mylist.cc: Delete.
+	* unit-tests/Makefile.am (unit_tests): Remove test_mylist.
+
+	Switch class sccs_file from mylist<T> to vector<T>.
+	* src/sccsfile.h: use std::vector<T> instead of mylist<T>.
+	* src/sf-val.cc: Likewise.
+	* src/cdc.cc (main): Likewise.
+	* src/sf-prt.cc: Likewise.
+	* src/admin.cc (main): Likewise.
+	* src/sf-cdc.cc: Likewise.
+	* src/sf-admin.cc: Likewise.
+	* src/sf-write.cc: Likewise.
+	* src/get.cc (print_id_list): Likewise.
+	* src/sf-get.cc (prepare_seqstate_1): Likewise.
+	* src/sf-prs.cc (print_seq_list): Likewise.
+	* src/sf-rmdel.cc (is_seqlist_member): Likewise.
+
 	Switch test_delta-table.cc from mylist to vector.
 	* unit-tests/test_delta-table.cc: Switch data structures from
 	mylist<T> to std:vector<T> (for which mylist is an alias anyway).

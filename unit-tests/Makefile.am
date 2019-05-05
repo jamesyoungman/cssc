@@ -28,7 +28,7 @@ TESTS_ENVIRONMENT = GTEST_SOURCE_DIR="$(srcdir)/test" \
 		    sh testwrapper.sh
 TESTS = $(unit_tests)
 check_SCRIPTS = testwrapper.sh
-unit_tests = test_mylist test_sid test_relvbr \
+unit_tests = test_sid test_relvbr \
 	test_release test_sid_list test_rel_list test_sccsdate \
 	test_delta test_delta-table test_encoding \
 	test_encoding2 test_linebuf
@@ -36,7 +36,6 @@ noinst_LTLIBRARIES = googletest/lib/libgtest.la googletest/lib/libgtest_main.la
 
 check_PROGRAMS = $(unit_tests) test_bigfile
 
-test_mylist_SOURCES = test_mylist.cc
 test_sid_SOURCES = test_sid.cc
 test_relvbr_SOURCES = test_relvbr.cc
 test_release_SOURCES = test_release.cc

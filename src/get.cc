@@ -44,7 +44,7 @@
 /* Prints a list of included or excluded SIDs. */
 
 static void
-print_id_list(FILE *fp, const char *s, mylist<sid> const &list)
+print_id_list(FILE *fp, const char *s, std::vector<sid> const &list)
 {
   if (!list.empty())
     {

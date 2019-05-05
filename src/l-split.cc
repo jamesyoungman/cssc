@@ -27,7 +27,6 @@
 #include <config.h>
 
 #include "cssc.h"
-#include "mylist.h"
 #include "sccsfile.h"		// declares these functions.
 
 #include <string.h>
@@ -60,10 +59,10 @@ split_mrs(const std::string& mrs)
 // TODO: write a unit test for this, then update it to use something
 // more appropriate than new char[].  Perhaps also use std::find or
 // similar rather than strchr().
-mylist<std::string>
+std::vector<std::string>
 split_comments(const std::string& comments)
 {
-  mylist<std::string> comment_list;
+  std::vector<std::string> comment_list;
 
   if (!comments.empty())
     {

@@ -35,7 +35,6 @@
 #include "delta-iterator.h"
 #include "linebuf.h"
 #include "quit.h"
-#include "mylist.h"
 #include "ioerr.h"
 #include "file.h"
 

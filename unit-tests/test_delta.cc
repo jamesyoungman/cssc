@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 #include "delta.h"
-#include "mylist.h"
 #include "sccsdate.h"
 #include "sid.h"
 #include <gtest/gtest.h>
@@ -46,7 +45,7 @@ TEST(DeltaTest, Constructor)
   const seq_no seq(2), pred(1);
   std::set<seq_no> incl, excl;
   std::vector<std::string> mrlist;
-  mylist<std::string> comments;
+  std::vector<std::string> comments;
 
   mrlist.push_back(std::string("432"));
   mrlist.push_back(std::string("438"));
@@ -94,7 +93,7 @@ TEST(DeltaTest, Constructor)
 TEST(DeltaTest, Assignment)
 {
   std::vector<std::string> mrlist;
-  mylist<std::string> comments;
+  std::vector<std::string> comments;
 
   mrlist.push_back(std::string("123"));
   comments.push_back(std::string("yada"));
@@ -119,7 +118,7 @@ TEST(DeltaTest, Assignment)
 TEST(DeltaTest, Removed)
 {
   const std::vector<std::string> mrlist;
-  const mylist<std::string> comments;
+  const std::vector<std::string> comments;
   const delta e('R', sid("1.9"), sccs_date("990519014208"),
 		std::string("fred"), seq_no(6), seq_no(3), mrlist, comments);
   EXPECT_TRUE(e.removed());
@@ -128,7 +127,7 @@ TEST(DeltaTest, Removed)
 TEST(DeltaDeathTest, InvalidType)
 {
   const std::vector<std::string> mrlist;
-  const mylist<std::string> comments;
+  const std::vector<std::string> comments;
   EXPECT_EXIT(delta e('X', sid("1.9"), sccs_date("990519014208"),
 		      std::string("fred"), seq_no(6), seq_no(3), mrlist, comments),
 	      ::testing::KilledBySignal(SIGABRT),
@@ -200,7 +199,7 @@ TEST(DeltaTest, Mutators)
   EXPECT_EQ(2, d.comments().size());
 
   const std::string comment("Please remember to put the cat out.");
-  mylist<std::string> comments;
+  std::vector<std::string> comments;
   comments.push_back(comment);
   d.set_comments(comments);
   EXPECT_EQ(1, d.comments().size());

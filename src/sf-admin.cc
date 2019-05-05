@@ -54,8 +54,9 @@
 bool
 sccs_file::admin(const char *file_comment,
 		 bool force_binary,
-		 const mylist<std::string>& set_flags, const mylist<std::string>& unset_flags,
-		 const mylist<std::string>& add_users,
+		 const std::vector<std::string>& set_flags,
+		 const std::vector<std::string>& unset_flags,
+		 const std::vector<std::string>& add_users,
 		 const std::unordered_set<std::string>& erase_users)
 {
   if (force_binary)
@@ -338,7 +339,7 @@ sccs_file::admin(const char *file_comment,
     }
 
   // Erase any required users from the list.
-  mylist<std::string> newusers = add_users;
+  std::vector<std::string> newusers = add_users;
   for (const auto& user : users)
     {
       if (erase_users.find(user) == erase_users.end())
@@ -358,7 +359,7 @@ bool
 sccs_file::create(const sid &id,
 		  const char *iname,
 		  const std::vector<std::string>& mrs,
-		  mylist<std::string>* starting_comments,
+		  std::vector<std::string>* starting_comments,
 		  int suppress_comments, bool force_binary)
 {
 

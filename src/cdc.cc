@@ -138,7 +138,7 @@ main(int argc, char *argv[])
 	}
     }
 
-  mylist<std::string> comment_list;
+  std::vector<std::string> comment_list;
   std::vector<std::string> mr_list;
   comment_list = split_comments(comments);
   mr_list = split_mrs(mrs);

@@ -109,7 +109,7 @@ sccs_file::start_update() {
 
 
 static int
-print_seqs(FILE *out, char control, mylist<seq_no> const &seqs) {
+print_seqs(FILE *out, char control, std::vector<seq_no> const &seqs) {
   if (!seqs.empty())
     {
       if (printf_failed(fprintf(out, "\001%c", control)))
@@ -136,7 +136,7 @@ print_seqs(FILE *out, char control, mylist<seq_no> const &seqs) {
 int
 sccs_file::write_delta(FILE *out, struct delta const &d) const
 {
-  mylist<std::string>::size_type len, i;
+  std::vector<std::string>::size_type len, i;
 
   if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
                             cap5(d.inserted()),
@@ -182,7 +182,7 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
 int
 sccs_file::write(FILE *out) const
 {
-  mylist<std::string>::size_type len, i;
+  std::vector<std::string>::size_type len, i;
   const char *s;
 
   delta_iterator iter(delta_table);
