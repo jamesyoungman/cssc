@@ -1,3 +1,18 @@
+2019-05-05  James Youngman  <jay@gnu.org>
+
+	Suggest setting CSSC_DISABLE_VALGRIND=1 if system binaries cause
+	tests to fail.
+	* README (--disable-valgrind): point out that occasionally, a
+	system binary will cause Valgrind checking to make tests
+	fail. Explain how to work around this problem.
+
+	Include config.h before other files.
+	* build-aux/find-out-of-order-includes.sh: Script for identifying
+	source files which include other headers before "config.h", which
+	gnulib doesn't like.
+	* src/version.cc: Include "config.h" before <stdio.h> to avoid
+	complaints from gnulib.
+
 2016-03-01  James Youngman  <jay@gnu.org>
 
 	Don't distrubite unit-tests/googletest/Makefile.in.
