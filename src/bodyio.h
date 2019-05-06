@@ -43,8 +43,14 @@ bool body_insert(bool *binary,
 
 
 // Encoding functions...
-void encode_line(const char in[], char out[], size_t len);
+
+// encode a line; return the number of bytes output (not including the
+// terminating NUL).
+size_t encode_line(const char in[], char out[], size_t len);
+
+// decode a line, returning the number of characters in it.
 size_t decode_line(const char in[], char out[]);
+
 int encode_stream(FILE *fin, FILE *fout); //encodes whole file.
 
 

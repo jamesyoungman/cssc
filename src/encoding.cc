@@ -104,11 +104,13 @@ decode_line(const char in[], char out[])
   return len;
 }
 
-// encode a line
-void
+// encode a line; return the number of bytes output (not including the
+// terminating NUL).
+size_t
 encode_line(const char in[], char out[], size_t len)
 {
   ASSERT(len <= 60);
+  size_t emitted = 0u;
   char length_indicator = static_cast<char>(UUENC(len));
 
   *out++ = length_indicator;
@@ -117,6 +119,7 @@ encode_line(const char in[], char out[], size_t len)
 	encoding_impl::encode(in, out);
       in += 3u;
       out += 4u;
+      emitted += 4u;
       len -= 3u;
     }
   // deal with the tail of the buffer.
@@ -128,9 +131,11 @@ encode_line(const char in[], char out[], size_t len)
       tail[2] = char(0);
       encoding_impl::encode(tail, out);
       out += 4u;
+      emitted += 4u;
     }
 
   *out++ = '\n';
+  emitted++;
   *out++ = '\0';
 }
 
@@ -143,8 +148,11 @@ encode_stream(FILE *fin, FILE *fout)
   do
     {
       len = fread(inbuf, 1, 45, fin);
-      encode_line(inbuf, outbuf, len);
-      fprintf(fout, "%s", outbuf);
+      const size_t bytes = encode_line(inbuf, outbuf, len);
+      if (fwrite(outbuf, 1, bytes, fout) != bytes)
+	{
+	  return -1;
+	}
     }
   while (len);
 
