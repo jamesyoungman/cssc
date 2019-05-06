@@ -155,7 +155,6 @@ encode_stream(FILE *fin, FILE *fout)
       ASSERT(outbuf[bytes] == 0); // verify output is NUL-terminated
       if (fwrite(outbuf, 1, bytes, fout) != bytes)
 	{
-	  perror("fwrite");
 	  return -1;
 	}
     }
