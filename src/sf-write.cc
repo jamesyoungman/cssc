@@ -136,8 +136,6 @@ print_seqs(FILE *out, char control, std::vector<seq_no> const &seqs) {
 int
 sccs_file::write_delta(FILE *out, struct delta const &d) const
 {
-  std::vector<std::string>::size_type len, i;
-
   if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
                             cap5(d.inserted()),
                             cap5(d.deleted()),
@@ -182,9 +180,6 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
 int
 sccs_file::write(FILE *out) const
 {
-  std::vector<std::string>::size_type len, i;
-  const char *s;
-
   delta_iterator iter(delta_table);
   while (iter.next(1)) {
     if (write_delta(out, *iter.operator->())) {

@@ -546,7 +546,7 @@ main(int argc, char **argv)
 
           if (!no_output)
             {
-              fprintf(commentary, "%d lines\n", status.lines);
+              fprintf(commentary, "%u lines\n", status.lines);
             }
         }
       catch (CsscExitvalException e)

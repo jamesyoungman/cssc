@@ -362,6 +362,10 @@ private:
 /* sf-prt.cc */
 void print_flag(FILE *out, const char *fmt,  release flag, int& count);
 
+/* sf-prs.cc */
+void print_flag2(FILE *out, const char *s, const sid& it);
+void print_flag2(FILE *out, const char *s, const release_list& it);
+
 /* l-split.c */
 
 std::vector<std::string> split_mrs(const std::string& mrs);

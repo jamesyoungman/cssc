@@ -1,5 +1,19 @@
 2019-05-06  James Youngman  <jay@gnu.org>
 
+	Fix more compiler warnings.
+	* src/what.cc: Forward-declare usage().
+	* src/sccsfile.h: Declare print_flag2() functions.
+	* src/get.cc (main): Format the (unsigned in) line count with %u
+	instead of %d.
+	* src/environment.cc (max_sfile_line_len): Simplify a complex
+	boolean expression to silence a compiler warning suggesting
+	parentheses.
+	* src/writesubst.cc (write_subst): Print the output line number
+	with %u since it is an unsigned int.
+	* src/sf-write.cc (write_delta): Remove unsed variables "len" and
+	"i".
+	(write): Likewise, also "s".
+
 	Fix some compiler warnings. Also turn off warning options which
 	themselves just generate warnings.
 	* src/run.cc (run): Avoid mixing signed/unsigned quantities.

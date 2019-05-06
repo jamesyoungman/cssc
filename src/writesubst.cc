@@ -187,7 +187,7 @@ sccs_file::write_subst(const char *start,
               break;
 
             case 'C':
-              err = printf_failed(fprintf(out, "%d",
+              err = printf_failed(fprintf(out, "%u",
                                           parms->out_lineno));
               break;
 

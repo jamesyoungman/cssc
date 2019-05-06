@@ -89,9 +89,8 @@ long max_sfile_line_len(void)
       char *endptr;
       errno = 0;
       len = strtol(p, &endptr, 10);
-      if ( (endptr == p)
-	   || ( (LONG_MIN == len) || (LONG_MAX == len) ) && (0 != errno)
-	   || len < 0)
+      const bool overflow = ( ( (LONG_MIN == len) || (LONG_MAX == len) ) && (0 != errno) );
+      if ( (endptr == p) || overflow || len < 0)
 	{
 	  fprintf(stderr,
 		  "Error: Environment variable '%s' is set to '%s', but "

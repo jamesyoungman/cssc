@@ -46,6 +46,8 @@ typedef FILE *XFILE;
 
 const XFILE XOPEN_FAILURE = 0;
 
+void usage(void);
+
 inline XFILE
 xopen(const char *name) {
 #ifdef CONFIG_OPEN_SCCS_FILES_IN_BINARY_MODE
