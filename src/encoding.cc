@@ -51,6 +51,7 @@
 #define UUDEC(c)	(((c) - 040) & 077)
 #define UUENC(c)        (((c) & 077) + 040)
 
+namespace encoding_impl {
 
 void
 encode(const char in[3], char out[4])
@@ -82,6 +83,8 @@ decode(const char in[4], char out[3])
   out[2] = (t2 << 6) | (t3     ); // 2 + 6
 }
 
+}  // encoding_impl
+
 // decode a line, returning the number of characters in it.
 size_t
 decode_line(const char in[], char out[])
@@ -94,7 +97,7 @@ decode_line(const char in[], char out[])
   ++in;				// step over byte count.
   for (size_t n=0; n<len; n+=3)
     {
-      decode(in, out);
+      encoding_impl::decode(in, out);
       in += 4;
       out += 3;
     }
@@ -111,7 +114,7 @@ encode_line(const char in[], char out[], size_t len)
   *out++ = length_indicator;
   while (len > 2u)
     {
-      encode(in, out);
+	encoding_impl::encode(in, out);
       in += 3u;
       out += 4u;
       len -= 3u;
@@ -123,7 +126,7 @@ encode_line(const char in[], char out[], size_t len)
       tail[0] = in[0];
       tail[1] = (len > 1) ? in[1] : char(0);
       tail[2] = char(0);
-      encode(tail, out);
+      encoding_impl::encode(tail, out);
       out += 4u;
     }
 

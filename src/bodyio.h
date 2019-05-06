@@ -59,7 +59,9 @@ bool check_id_keywords(const char *s, size_t len);
 int encode_file(const char* name_in, const char* name_out);
 
 // These are only really extern so that unit-tests/test_encoding can execute them.
+namespace encoding_impl {
 void encode(const char in[3], char out[4]);
 void decode(const char in[4], char out[3]);
-
+}  // namespace encoding_impl
+ 
 #endif

@@ -24,6 +24,9 @@
 
 #include "bodyio.h"
 
+using encoding_impl::decode;
+using encoding_impl::encode;
+
 int
 test_encode(void)
 {

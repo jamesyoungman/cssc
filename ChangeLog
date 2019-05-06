@@ -1,5 +1,16 @@
 2019-05-06  James Youngman  <jay@gnu.org>
 
+	Move the implementation details of uuencoding/decoding into a
+	separate namespace.
+	* src/encoding.cc (encode): Put into an encoding_impl namespace to
+	emphasize that it is not intended as a public API for the rest of
+	the program to use.  It's not in an unnamed namespace since the
+	unit test still needs to use it.
+	* src/bodyio.h (encoding_impl): Put declarations of encode and
+	decode into this namespace.
+	* unit-tests/test_encoding.cc: Use the namespace-qualified names
+	for encode and decode.
+
 	Delete mylist.h.
 	* src/mylist.h: Delete mylist.h
 	* src/Makefile.am (noinst_HEADERS): Delete mylist.h
