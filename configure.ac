@@ -429,13 +429,15 @@ AC_ARG_ENABLE([warnings],
 		[want_warnings=$enableval],[want_warnings=no])
 gl_MANYWARN_ALL_GCC([ALL_GCC_WARNINGS])
 # Warnings not suitable for C++.
-WARNINGS_NOT_CXX="-Waggregate-return -Winline -Wnested-externs -Wtraditional -Wtraditional-conversion -Wdeclaration-after-statement -Wbad-function-cast -Wc++-compat -Wstrict-prototypes -Wold-style-definition -Wmissing-prototypes"
+WARNINGS_NOT_CXX="-Waggregate-return -Winline -Wnested-externs -Wtraditional -Wtraditional-conversion -Wdeclaration-after-statement -Wbad-function-cast -Wc++-compat -Wstrict-prototypes -Wold-style-definition -Wmissing-prototypes -Wdesignated-init -Wdiscarded-array-qualifiers -Wdiscarded-qualifiers -Wimplicit -Wimplicit-function-declaration -Wimplicit-int -Wincompatible-pointer-types -Wint-conversion -Wjump-misses-init -Wmissing-parameter-type -Wold-style-declaration -Woverride-init -Wpointer-sign -Wpointer-to-int-cast"
 # Warnings which give too many false positives from system headers.
 WARNINGS_SYS_HEADER_FALSE_POSITIVE="-Wsystem-headers -Wunreachable-code"
 # Warnings for things that are actually normal
 WARNINGS_NORMAL="-Wundef -Wpadded -Wredundant-decls"
+# Warnings that are just hints we don't want to take advantage of now.
+WARNINGS_HINTS_NOTYET="-Wsuggest-attribute=pure -Wsuggest-attribute=const"
 # All unwanted warnings
-UNWANTED_CXX_WARNINGS="$WARNINGS_NOT_CXX $WARNINGS_SYS_HEADER_FALSE_POSITIVE $WARNINGS_NORMAL"
+UNWANTED_CXX_WARNINGS="$WARNINGS_NOT_CXX $WARNINGS_SYS_HEADER_FALSE_POSITIVE $WARNINGS_NORMAL $WARNINGS_HINTS_NOTYET"
 AS_IF([test "x$want_warnings" != xno],
 [
 gl_MANYWARN_COMPLEMENT([GCC_WARNINGS], [$ALL_GCC_WARNINGS], [$UNWANTED_CXX_WARNINGS])

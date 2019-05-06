@@ -359,6 +359,9 @@ private:
   sccs_file(const sccs_file&);  // not allowed to use!
 };
 
+/* sf-prt.cc */
+void print_flag(FILE *out, const char *fmt,  release flag, int& count);
+
 /* l-split.c */
 
 std::vector<std::string> split_mrs(const std::string& mrs);

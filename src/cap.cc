@@ -27,11 +27,14 @@
 
 #include "cssc.h"
 
+namespace {
 
-template<class T> const T& cap_min(const T& a, const T& b)
+template<class T> constexpr T cap_min(T a, T b)
 {
   return (a < b) ? a : b;
 }
+
+}  // unnamed namespace
 
 // Many data fields in SCCS files are limited to five digits; hence
 // some output fields are capped at 99,999.

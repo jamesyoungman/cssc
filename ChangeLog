@@ -1,5 +1,19 @@
 2019-05-06  James Youngman  <jay@gnu.org>
 
+	Fix some compiler warnings. Also turn off warning options which
+	themselves just generate warnings.
+	* src/run.cc (run): Avoid mixing signed/unsigned quantities.
+	* src/sf-get2.cc (get): Avoid variable 'd' shadowing a variable of
+	the same name in an outer scope.
+	* src/sccsfile.h: Declare print_flag().
+	* src/cap.cc (cap_min): Simplify this function; we only use it for
+	trivially copyable types anyway.
+	* configure.ac: Disable some warnings known to the manywarnings
+	module (thus enabled with --enable-warnings) but which aren't
+	suitable for C++ compilation.  We disable them so that we don't
+	get a warning message from GCC about the inappropriate warning
+	option.
+
 	Use block I/O for encoded streams.
 	* src/encoding.cc (encode_line): return the number of bytes
 	output.

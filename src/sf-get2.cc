@@ -418,8 +418,8 @@ sccs_file::get(FILE *out, const std::string& gname,
     {
       if (delta_table->delta_at_seq_exists(s))
 	{
-	  const struct delta & d = delta_table->delta_at_seq(s);
-	  const sid & id(d.id());
+	  const struct delta & del = delta_table->delta_at_seq(s);
+	  const sid & id(del.id());
 
 	  if (!state.is_excluded(s) && !set)
 	    {

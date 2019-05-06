@@ -100,14 +100,13 @@ static bool call_system(const char *s)
 
 int
 run(const char *prg, std::vector<const char *> const &args) {
-        int i;
         const size_t len = args.size();
 
 #ifdef NEED_CALL_SYSTEM
 
         int cmdlen = strlen(prg) + 1;
 
-        for(i = 0; i < len; i++) {
+        for (size_t i = 0; i < len; i++) {
                 cmdlen += strlen(args[i]) + 1;
         }
 
@@ -115,7 +114,7 @@ run(const char *prg, std::vector<const char *> const &args) {
 
         strcpy(s, prg);
 
-        for(i = 0; i < len; i++) {
+        for (size_t i = 0; i < len; i++) {
                 strcat(s, " ");
                 strcat(s, args[i]);
         }
@@ -133,11 +132,10 @@ run(const char *prg, std::vector<const char *> const &args) {
 
         argv[0] = prg;
 
-        for(i = 0; i < len; i++) {
+        for (size_t i = 0; i < len; i++) {
                 argv[i + 1] = args[i];
         }
-
-        argv[i + 1] = NULL;
+        argv[len+1] = NULL;
 
 #ifndef HAVE_FORK
         // Use spawn() instead then
