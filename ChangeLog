@@ -1,5 +1,11 @@
 2019-05-06  James Youngman  <jay@gnu.org>
 
+	Use block I/O for encoded streams.
+	* src/encoding.cc (encode_line): return the number of bytes
+	output.
+	(encode_stream): Use the count returned by encode_line to perform
+	block I/O (with fwrite) instead of string I/O (with fprintf).
+
 	Move the implementation details of uuencoding/decoding into a
 	separate namespace.
 	* src/encoding.cc (encode): Put into an encoding_impl namespace to
