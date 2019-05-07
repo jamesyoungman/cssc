@@ -1,4 +1,4 @@
-New in CSSC-1.4.1-rc1, 2019-05-DD
+New in CSSC-1.4.1, 2019-05-07
 
          * This release - and future releases - of CSSC must be
            compiled with a C++ compiler that supports the 2011

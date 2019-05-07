@@ -27,7 +27,7 @@ dnl ...at least according to the "Gnits" rules outlined
 dnl in the Automake manual.
 dnl   usually use -git to indicate that the person who compiled
 dnl   the code got it from git.
-AC_INIT([GNU CSSC], [1.4.1-rc1], [bug-CSSC@gnu.org], [CSSC])
+AC_INIT([GNU CSSC], [1.4.1], [bug-CSSC@gnu.org], [CSSC])
 AC_CONFIG_SRCDIR([src/sccsfile.h])
 AC_CONFIG_AUX_DIR([build-aux])
 
