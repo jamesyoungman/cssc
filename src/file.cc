@@ -1,20 +1,20 @@
 /*
  * file.cc: Part of GNU CSSC.
  *
- *    Copyright (C) 1997,1998,1999,2001,2007, 2008, 2009, 2010, 2011, 2014 Free Software Foundation, Inc.
+ *  Copyright (C) 1997,1998,1999,2001,2007, 2008, 2009, 2010, 2011, 2014 Free Software Foundation, Inc.
  *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
@@ -331,15 +331,15 @@ restore_privileges()
 /* From the Linux manual page for open(2):-
  *
  * O_EXCL When used with O_CREAT, if the file already exists it is an
- *        error and the open will fail.  O_EXCL is broken on NFS file
- *        systems, programs which rely on it for performing locking
- *        tasks will contain a race condition.  The solution for
- *        performing atomic file locking using a lockfile is to create
- *        a unique file on the same fs (e.g., incorporating hostname
- *        and pid), use link(2) to make a link to the lockfile and use
- *        stat(2) on the unique file to check if its link count has
- *        increased to 2.  Do not use the return value of the link()
- *        call.
+ *      error and the open will fail.  O_EXCL is broken on NFS file
+ *      systems, programs which rely on it for performing locking
+ *      tasks will contain a race condition.  The solution for
+ *      performing atomic file locking using a lockfile is to create
+ *      a unique file on the same fs (e.g., incorporating hostname
+ *      and pid), use link(2) to make a link to the lockfile and use
+ *      stat(2) on the unique file to check if its link count has
+ *      increased to 2.  Do not use the return value of the link()
+ *      call.
  */
 
 
