@@ -13,3 +13,12 @@ m4
 missing
 stamp-h.in 
 ChangeLog
+config.cache
+config.h
+config.log
+maint.mk
+Makefile
+/libtool
+.deps
+/GNUmakefile
+
