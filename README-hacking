@@ -53,6 +53,13 @@ should output no difference.
 
 Enjoy!
 
+* If it's not your first GIT checkout
+
+We used to check the googletest subdirectory out from svn, but this
+has now moved to git.  Therefore you may need to delete any existing
+googletest directory before running "bootstrap".
+
+
 [*] The --enable-gcc-warnings option is useful only with glibc
 and with a very recent version of gcc.  You'll probably also have
 to use recent system headers.  If you configure with this option,
