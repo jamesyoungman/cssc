@@ -6,8 +6,8 @@
  *
  * echo.c, derived from code echo.c in Bash.
  *
- *  Copyright (C) 1987,1989,1991,1992,1993,1994,1995,
- *                1996,1998,2007 Free Software Foundation, Inc.
+ *  Copyright (C) 1987, 1989, 1991, 1992, 1993, 1994, 1995, 1996, 1998,
+ *  2007, 2019 Free Software Foundation, Inc.
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
