@@ -1,7 +1,8 @@
 
 /* lndir.c; part of GNU CSSC.
  *
- *    Copyright (C) 1997, Free Software Foundation, Inc.
+ * Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007,
+ * 2008, 2009, 2010, 2011, 2014, 2019 Free Software Foundation, Inc.
  *
  * This file is derived from xc/config/util/lndir.c in the X11R6 distribution.
  * It's been changed to make use of GNU Autoconf rather than xmkmf (imake)
