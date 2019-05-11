@@ -708,7 +708,7 @@ sccs_file::add_delta(const std::string& gname,
       if (got_line && c != 0)
         {
 	  // it's a control line.
-          seq_no seq = strict_atous(plinebuf->c_str() + 3);
+	    seq_no seq = strict_atous(here(), plinebuf->c_str() + 3);
 
 #ifdef JAY_DEBUG
           fprintf(stderr, "control line: %c %lu\n", c, (unsigned)seq);
@@ -716,7 +716,7 @@ sccs_file::add_delta(const std::string& gname,
 
           if (seq < 1 || seq > highest_delta_seqno())
             {
-              corrupt("Invalid sequence number");
+		corrupt(here(), "Invalid sequence number %u", unsigned(seq));
             }
 
           const char *msg = NULL;
@@ -733,13 +733,13 @@ sccs_file::add_delta(const std::string& gname,
               break;
 
             default:
-              corrupt("Unexpected control line");
+	      corrupt(here(), "Unexpected control line '%c'", c);
               break;
             }
 
           if (msg != NULL)
             {
-              corrupt(msg);
+		corrupt(here(), "%s", msg);
             }
         }
       else if (sstate.include_line())

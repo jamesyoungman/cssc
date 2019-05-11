@@ -33,25 +33,28 @@
 #include "delta-iterator.h"
 
 
-namespace {
-
   // Check that there are no loops on the way from s to the first delta.
-  bool check_loop_free(const char *name,
-		       cssc_delta_table* t,
-		       seq_no starting_seq,
-		       std::vector<bool>& loopfree,
-		       std::vector<bool>& seen)
-  {
+bool sccs_file::check_loop_free(cssc_delta_table* t,
+				seq_no starting_seq,
+				std::vector<bool>& loopfree,
+				std::vector<bool>& seen) const
+{
     bool ok = true;
     const seq_no highest_seqno = t->highest_seqno();
     seq_no lowest_dirty_seq = highest_seqno;
 
     std::vector<bool>::iterator i;
 
+    auto safe_predecessor = [t, this](seq_no s){
+	if (t->delta_at_seq_exists(s)) {
+	    return t->delta_at_seq(s).prev_seq();
+	} else {
+	    corrupt_file("missing seqno %u", unsigned(s));
+	}
+    };
+
     // Check there are no loops.
-    for (seq_no s=starting_seq;
-	 s;
-	 s = t->delta_at_seq(s).prev_seq())
+    for (seq_no s=starting_seq; s; s = safe_predecessor(s))
       {
 	if (s < lowest_dirty_seq)
 	  lowest_dirty_seq = s;
@@ -63,7 +66,7 @@ namespace {
 	else if (seen[s])
 	  {
 	    errormsg("%s: loop in predecessors at sequence number %u\n",
-		     name, (unsigned)s);
+		     name.c_str(), (unsigned)s);
 	    ok = false;
 	    break;
 	  }
@@ -90,10 +93,7 @@ namespace {
       *i = false;
 
     return ok;
-  }
 }
-
-
 
 const std::string
 sccs_file::get_module_type_flag()
@@ -242,8 +242,7 @@ sccs_file::validate() const
 
       ++seen_ever[s - 1];
 
-      if (!check_loop_free(name.c_str(),
-			   delta_table, delta_table->delta_at_seq(s).seq(),
+      if (!check_loop_free(delta_table, delta_table->delta_at_seq(s).seq(),
 			   loopfree, seen))
 	{
 	  // We already issued an error message.

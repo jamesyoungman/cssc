@@ -29,6 +29,7 @@
 #include <config.h>
 #include <errno.h>
 #include <string>
+#include <sstream>
 
 #include "cssc.h"
 #include "sccsfile.h"
@@ -43,6 +44,13 @@
 #include <unistd.h>             // SEEK_SET on SunOS.
 #include <sys/stat.h>           /* fstat(), struct stat */
 
+
+string sccs_file_location::as_string() const
+{
+  std::stringstream s;
+  s << lineno_;
+  return s.str();
+}
 
 #if defined HAVE_FILENO && defined HAVE_FSTAT
 /* If an SCCS file has a link count greater than one, then the normal
@@ -243,7 +251,7 @@ sccs_file::read_line(char* line_type)
       return false;
     }
 
-  lineno++;
+  here_.advance_line();
   if ( bufchar(0) == '\001')
     *line_type = bufchar(1);
   else
@@ -255,7 +263,7 @@ sccs_file::read_line(char* line_type)
 /* Quits with a message saying that SCCS file is corrupt. */
 
 NORETURN
-sccs_file::corrupt(const char *fmt, ...) const {
+sccs_file::corrupt(const sccs_file_location& loc, const char *fmt, ...) const {
   char buf[80];
   const char *p;
 
@@ -273,7 +281,29 @@ sccs_file::corrupt(const char *fmt, ...) const {
       p = buf;
     }
   s_corrupt_quit("%s: line %d: Corrupted SCCS file. (%s)",
-                 name.c_str(), lineno, p);
+                 name.c_str(), loc.line_number(), p);
+}
+
+NORETURN
+sccs_file::corrupt_file(const char *fmt, ...) const {
+  char buf[80];
+  const char *p;
+
+  va_list ap;
+  va_start(ap, fmt);
+  if (-1 == vsnprintf(buf, sizeof(buf), fmt, ap))
+    {
+      warning("%s: error message too long for buffer, so the "
+              "next message will lack some relevant detail",
+              name.c_str());
+      p = fmt;                  // best effort
+    }
+  else
+    {
+      p = buf;
+    }
+  s_corrupt_quit("%s: Corrupted SCCS file. (%s)",
+                 name.c_str(), p);
 }
 
 
@@ -282,7 +312,7 @@ sccs_file::corrupt(const char *fmt, ...) const {
 void
 sccs_file::check_arg() const {
         if (bufchar(2) != ' ') {
-                corrupt("Missing arg");
+	    corrupt(here(), "Missing arg");
         }
 }
 
@@ -292,7 +322,7 @@ sccs_file::check_arg() const {
 void
 sccs_file::check_noarg() const {
         if (bufchar(2) != '\0') {
-                corrupt("Unexpected arg");
+	    corrupt(here(), "Unexpected arg");
         }
 }
 
@@ -301,7 +331,7 @@ sccs_file::check_noarg() const {
    string isn't a valid number. */
 
 unsigned short
-sccs_file::strict_atous(const char *s) const
+sccs_file::strict_atous(const sccs_file_location& loc, const char *s) const
 {
   long n = 0;
 
@@ -310,12 +340,12 @@ sccs_file::strict_atous(const char *s) const
     {
       if (!isdigit((unsigned char)c))
         {
-          corrupt("Invalid number");
+	  corrupt(loc, "Invalid number");
         }
       n = n * 10 + (c - '0');
       if (n > 65535L)
         {
-          corrupt("Number too big");
+	  corrupt(loc, "Number too big");
         }
     }
 
@@ -327,7 +357,7 @@ sccs_file::strict_atous(const char *s) const
 // SCCS files should top out at 9999.
 
 unsigned long
-sccs_file::strict_atoul_idu(const char *s) const
+sccs_file::strict_atoul_idu(const sccs_file_location& loc, const char *s) const
 {
   unsigned long n = 0;
   bool found_ws = false;
@@ -356,7 +386,7 @@ sccs_file::strict_atoul_idu(const char *s) const
 
   if ('-' == *s)
     {
-      corrupt ("Line counts should be positive");
+      corrupt (loc, "Line counts should be positive");
     }
   else
     {
@@ -364,14 +394,14 @@ sccs_file::strict_atoul_idu(const char *s) const
       n = strtoul (s, &end, 10);
       if (*end && (*end) != ' ')
         {
-          corrupt ("Unexpected suffix %s on line number count", end);
+          corrupt (loc, "Unexpected suffix %s on line number count", end);
         }
     }
 
   if (n > limit)
     {
-      warning("%s: line %d: number field exceeds %lu.",
-              name.c_str(), lineno, limit);
+      warning("%s: %s: number field exceeds %lu.",
+              name.c_str(), loc.as_string().c_str(), limit);
     }
 
   return n;
@@ -392,19 +422,19 @@ sccs_file::read_delta() {
 
         if (plinebuf->split(3, args, 3, '/') != 3)
           {
-            corrupt("Two /'s expected");
+            corrupt(here(), "Two /'s expected");
           }
 
         // TODO: use constructor here?
         delta tmp;      /* The new delta */
-        tmp.set_idu(strict_atoul_idu(args[0]),
-                    strict_atoul_idu(args[1]),
-                    strict_atoul_idu(args[2]));
+        tmp.set_idu(strict_atoul_idu(here(), args[0]),
+                    strict_atoul_idu(here(), args[1]),
+                    strict_atoul_idu(here(), args[2]));
 
 	char line_type;
         if (!read_line(&line_type) || (line_type != 'd'))
 	  {
-	    corrupt("Expected '@d'");
+	    corrupt(here(), "Expected '@d'");
 	  }
 
         check_arg();
@@ -418,28 +448,33 @@ sccs_file::read_delta() {
           }
         else
           {
-            corrupt("Bad delta type");
+            corrupt(here(), "Bad delta type %s", args[0]);
           }
 
-        tmp.set_id(sid(args[1]));
-        tmp.set_date(sccs_date(args[2], args[3]));
-        tmp.set_user(args[4]);
-        tmp.set_seq(strict_atous(args[5]));
-        tmp.set_prev_seq(strict_atous(args[6]));
+	auto newid = sid(args[1]);
+	if (!newid.valid())
+	  {
+	    corrupt(here(), "Bad SID %s", args[1]);
+	  }
+	tmp.set_id(newid);
 
-        if (!tmp.id().valid()) {
-                corrupt("Bad SID");
-        }
-        if (!tmp.date().valid()) {
-                corrupt("Bad Date/Time");
-        }
+        auto newdate = sccs_date(args[2], args[3]);
+        if (!newdate.valid())
+	  {
+	    corrupt(here(), "Bad Date/Time %s %s", args[2], args[3]);
+	  }
+        tmp.set_date(newdate);
+
+        tmp.set_user(args[4]);
+        tmp.set_seq(strict_atous(here(), args[5]));
+        tmp.set_prev_seq(strict_atous(here(), args[6]));
 
         /* Read in any lists of included, excluded or ignored seq. no's. */
 
         char c;
 	if (!read_line(&c))
 	  {
-	    corrupt("Unexpected end-of-file");
+	    corrupt(here(), "Unexpected end-of-file");
 	  }
 
         int i;
@@ -491,7 +526,7 @@ sccs_file::read_delta() {
                                   ASSERT(*end == 0);
                                   ++end;
                                 }
-                                seq_no seq = strict_atous(start);
+                                seq_no seq = strict_atous(here(), start);
                                 switch (c) {
                                 case 'i':
                                   if (bDebug)
@@ -579,7 +614,7 @@ sccs_file::read_delta() {
 
 
         if (c != 'e') {
-                corrupt("Expected '@e'");
+	  corrupt(here(), "Expected '@e'");
         }
 
         check_noarg();
@@ -591,7 +626,7 @@ sccs_file::read_delta() {
 
 /* Check for BK flags */
 void
-sccs_file::check_bk_flag(char flagchar) const
+sccs_file::check_bk_flag(const sccs_file_location& loc, char flagchar) const
 {
   switch (flagchar)
     {
@@ -599,7 +634,7 @@ sccs_file::check_bk_flag(char flagchar) const
       return;
 
     default:
-      corrupt("Unknown flag '%c'.", flagchar);
+      corrupt(loc, "Unknown flag '%c'.", flagchar);
     }
 }
 
@@ -673,7 +708,7 @@ sccs_file::seek_to_body()
       errormsg("%s: fseek() failed!", name.c_str());
       return false;
     }
-  lineno = body_lineno;
+  here_ = body_location;
   return true;
 }
 
@@ -699,7 +734,7 @@ sccs_file::get_module_name() const
    locked if it isn't only being read.  */
 
 sccs_file::sccs_file(sccs_name &n, enum _mode m)
-  : name(n), f(0), mode(m), lineno(0), xfile_created(false), is_bk_file(false)
+  : name(n), f(0), mode(m), xfile_created(false), is_bk_file(false)
 {
   delta_table = new cssc_delta_table;
   plinebuf     = new cssc_linebuf;
@@ -795,13 +830,9 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
   /* the checksum is represented in the file as decimal.
    */
   signed int given_sum = 0;
-  const char *format;
-  if (is_bk_file)
-    format = "%*cH%d";
-  else
-    format = "%*ch%d";
-
-  if (1 != sscanf(plinebuf->c_str(), format, &given_sum))
+  if (1 != sscanf(plinebuf->c_str(),
+		  (is_bk_file ? "%*cH%d" : "%*ch%d"),
+		  &given_sum))
     {
       errormsg("Expected checksum line, found line beginning '%.3s'\n",
                plinebuf->c_str());
@@ -841,7 +872,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 
   if (c != 'u')
     {
-      corrupt("Expected '@u'");
+      corrupt(here(), "Expected '@u'");
     }
 
   check_noarg();
@@ -851,7 +882,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
     {
       if (c != 0)
         {
-          corrupt("User name expected.");
+          corrupt(here(), "User name expected.");
         }
       users.push_back(plinebuf->c_str());
       read_line(&c);		// FIXME: detect eof
@@ -872,7 +903,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       if (bufchar(3) == '\0'
           || (bufchar(4) != '\0' && bufchar(4) != ' '))
         {
-          corrupt("Bad flag arg.");
+          corrupt(here(), "Bad flag arg");
         }
 
       // We have to be careful to not crash on input lines like
@@ -916,7 +947,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
         flags.floor = release(arg);
         if (!flags.floor.valid())
           {
-            corrupt("Bad 'f' flag");
+            corrupt(here(), "Bad 'f' flag argument %s", arg);
           }
         break;
 
@@ -924,7 +955,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
         flags.ceiling = release(arg);
         if (!flags.ceiling.valid())
           {
-            corrupt("Bad 'c' flag");
+            corrupt(here(), "Bad 'c' flag argument %s", arg);
           }
         break;
 
@@ -932,7 +963,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
         flags.default_sid = sid(arg);
         if (!flags.default_sid.valid())
           {
-            corrupt("Bad 'd' flag");
+            corrupt(here(), "Bad 'd' flag argument %s", arg);
           }
         break;
 
@@ -985,17 +1016,17 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
         else if (got_arg && '0' == *arg)
           flags.encoded = 0;
         else
-          corrupt("Bad value '%c' for 'e' flag.", arg[0]);
+          corrupt(here(), "Bad value '%c' for 'e' flag.", arg[0]);
         break;
 
       default:
         if (is_bk_file)
           {
-            check_bk_flag(bufchar(3));
+            check_bk_flag(here(), bufchar(3));
           }
         else
           {
-            corrupt("Unknown flag '%c'.", bufchar(3));
+            corrupt(here(), "Unknown flag '%c'.", bufchar(3));
           }
       }
 
@@ -1004,7 +1035,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 
   if (c != 't')
     {
-      corrupt("Expected '@t'");
+      corrupt(here(), "Expected '@t'");
     }
 
   /* Sun's Code Manager sometimes emits lines of the form "^At 0" and
@@ -1023,7 +1054,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
 
   if (c != 'T')
     {
-      corrupt("Expected '@T'");
+      corrupt(here(), "Expected '@T'");
     }
 
   /* Sun's Code Manager sometimes emits lines of the form "^AT 0" and
@@ -1039,7 +1070,7 @@ sccs_file::sccs_file(sccs_name &n, enum _mode m)
       ctor_fail(errno, "ftell() failed.");
     }
 
-  body_lineno = lineno;
+  body_location = here_;
 }
 
 

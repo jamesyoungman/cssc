@@ -59,8 +59,16 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
   do
     {
       ASSERT(y <= seq);
+      if (!delta_table->delta_at_seq_exists(y)) {
+	  corrupt_file("missing sequence number %u", unsigned(y));
+      }
       const delta &d = delta_table->delta_at_seq(y);
-      ASSERT(d.prev_seq() < y);
+      if (d.prev_seq() == y) {
+	  corrupt_file("sequence number %u cannot be its own predecessor", unsigned(y));
+      } else if (d.prev_seq() > y) {
+	  corrupt_file("sequene number %u has invalid (subsequent) predecessor %u",
+		       unsigned(y), unsigned(d.prev_seq()));
+      }
       state.set_included(d.prev_seq(), y, false);
       y = d.prev_seq();
     } while (y > 0);
@@ -336,7 +344,7 @@ sccs_file::get(const string& gname, class seq_state &state,
   char line_type;
   if (!read_line(&line_type) || line_type != 'I')
     {
-      corrupt("Expected '@I'");
+      corrupt(here(), "Expected '@I'");
       return false;
     }
   check_arg();
@@ -346,7 +354,7 @@ sccs_file::get(const string& gname, class seq_state &state,
    * example, SunOS 4.1.1's SCCS implementation doesn't always
    * start with ^AI 1.
    */
-  unsigned short first_delta = strict_atous( plinebuf->c_str() + 3);
+  unsigned short first_delta = strict_atous(here(), plinebuf->c_str() + 3);
   state.start(first_delta, 'I'); /* 'I' means "insert". */
 
   FILE *out = parms.out;
@@ -438,9 +446,9 @@ sccs_file::get(const string& gname, class seq_state &state,
     /* A control line */
 
     check_arg();
-    seq_no seq = strict_atous(plinebuf->c_str() + 3);
+    seq_no seq = strict_atous(here(), plinebuf->c_str() + 3);
     if (seq < 1 || seq > highest_delta_seqno()) {
-      corrupt("Invalid serial number");
+      corrupt(here(), "Invalid serial number");
     }
 
     const char *msg = NULL;
@@ -456,12 +464,12 @@ sccs_file::get(const string& gname, class seq_state &state,
       break;
 
     default:
-      corrupt("Unexpected control line");
+      corrupt(here(), "Unexpected control line");
       break;
     }
 
     if (msg != NULL) {
-      corrupt(msg);
+      corrupt(here(), "%s", msg);
     }
   }
 

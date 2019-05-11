@@ -126,18 +126,18 @@ sccs_file::rmdel(sid id)
       if (0 != c)
 	{
 	  check_arg();
-	  if (strict_atous(plinebuf->c_str() + 3) == seq)
+	  if (strict_atous(here(), plinebuf->c_str() + 3) == seq)
 	    {
 	      if (!next_state(state, c))
 		{
-		  corrupt("Unexpected control line");
+		  corrupt(here(), "Unexpected control line");
 		  retval = false;
 		  break;
 		}
 	    }
 	  else if (state == INSERT)
 	    {
-	      corrupt("Non-terminal delta!?!");
+	      corrupt(here(), "Non-terminal delta!?!");
 	      retval = false;
 	      break;
 	    }
@@ -158,7 +158,7 @@ sccs_file::rmdel(sid id)
   // in the 'COPY' state.
   if (state != COPY)
     {
-      corrupt("Unexpected EOF");
+      corrupt(here(), "Unexpected EOF");
       return false;
     }
   // Only finish write out the file if we had no problem.

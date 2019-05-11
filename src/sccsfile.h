@@ -47,6 +47,33 @@ struct delta;
 class cssc_delta_table;
 class delta_iterator;
 
+class sccs_file_location
+{
+public:
+  sccs_file_location()  : lineno_(0) {}
+
+  int line_number() const
+  {
+    return lineno_;
+  }
+
+  string as_string() const;
+
+  void advance_line()
+  {
+    ++lineno_;
+  }
+
+  sccs_file_location& operator=(const sccs_file_location& other)
+  {
+    lineno_ = other.lineno_;
+    return *this;
+  }
+
+private:
+  int lineno_;
+};
+
 class sccs_file
 {
 public:
@@ -58,9 +85,9 @@ private:
   FILE *f;
   bool checksum_valid;
   enum _mode mode;
-  int lineno;
+  sccs_file_location here_;
   long body_offset;
-  int body_lineno;
+  sccs_file_location body_location;
   bool xfile_created;
   bool is_bk_file;
   bool sfile_executable;
@@ -96,11 +123,13 @@ private:
 
   static FILE *open_sccs_file(const char *name, enum _mode mode,
                               int *sump, bool *is_bk_file);
-  NORETURN corrupt(const char *fmt, ...) const POSTDECL_NORETURN;
+  const sccs_file_location& here() const { return here_; };
+  NORETURN corrupt(const sccs_file_location&, const char *fmt, ...) const POSTDECL_NORETURN;
+  NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
   void check_arg() const;
   void check_noarg() const;
-  unsigned short strict_atous(const char *s) const;
-  unsigned long strict_atoul_idu(const char *s) const;
+  unsigned short strict_atous(const sccs_file_location&, const char *s) const;
+  unsigned long strict_atoul_idu(const sccs_file_location&, const char *s) const;
 
   int read_line_param(FILE *f);
 
@@ -109,7 +138,7 @@ private:
   bool seek_to_body();
 
   /* Support for BitKeeper files */
-  void check_bk_flag(char flagchar) const;
+  void check_bk_flag(const sccs_file_location&, char flagchar) const;
   void check_bk_comment(char ch, char arg) const;
   bool edit_mode_ok(bool editing) const;
 
@@ -346,6 +375,10 @@ public:
   bool validate() const;
   bool validate_seq_lists(const delta_iterator& d) const;
   bool validate_isomorphism() const;
+  bool check_loop_free(cssc_delta_table* t,
+		       seq_no starting_seq,
+		       std::vector<bool>& loopfree,
+		       std::vector<bool>& seen) const;
 
   // Implementation is protected; in the existing [MySC]
   // implementation some of the implementation is private where
