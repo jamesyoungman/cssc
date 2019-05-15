@@ -153,7 +153,7 @@ main(int argc, char *argv[])
       try
 	{
 	  sccs_name &name = iter.get_name();
-	  sccs_file file(name, sccs_file::UPDATE);
+	  sccs_file file(name, UPDATE);
 
 	  // If we need an MR list, prompt if required.
 	  if (first)

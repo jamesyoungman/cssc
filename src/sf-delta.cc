@@ -41,340 +41,11 @@
 #include "delta-table.h"
 #include "delta-iterator.h"
 #include "bodyio.h"
-#include "filediff.h"
 #include "file.h"
+#include "subst-parms.h"
 
 #undef JAY_DEBUG
 
-
-class diff_state
-{
-public:
-  enum state { START, NOCHANGE, DELETE, INSERT, END };
-
-private:
-  enum state _state;
-  int in_lineno, out_lineno;
-  int lines_left;
-  int change_left;
-  bool echo_diff_output;
-
-  FILE *in;
-  cssc_linebuf linebuf;
-
-  NORETURN diff_output_corrupt() POSTDECL_NORETURN;
-  NORETURN diff_output_corrupt(const char *msg) POSTDECL_NORETURN;
-
-  void next_state();
-  int read_line()
-    {
-      int read_ret = linebuf.read_line(in);
-
-      if (echo_diff_output)
-        {
-          // If and only if we read in a new line, echo it.
-          if (0 == read_ret)
-            {
-              printf("%s", linebuf.c_str());
-            }
-        }
-      return read_ret;
-    }
-
-public:
-  diff_state(FILE *f, bool echo)
-    : _state(START),
-      in_lineno(0), out_lineno(0),
-      lines_left(0), change_left(0),
-      echo_diff_output(echo),
-      in(f)
-    {
-    }
-
-  enum state process(FILE *out, seq_no seq);
-
-  const char *
-  get_insert_line()
-    {
-      ASSERT(_state == INSERT);
-      ASSERT(linebuf[0] == '>' && linebuf[1] == ' ');
-      return linebuf.c_str() + 2;
-    }
-
-  int in_line() { return in_lineno; }
-  int out_line() { return out_lineno; }
-};
-
-
-/* Quit with an appropriate error message when a read operation
-   on the diff output fails. */
-
-NORETURN
-diff_state::diff_output_corrupt() {
-        if (ferror(in)) {
-                fatal_quit(errno, "(diff output): Read error.");
-        }
-        fatal_quit(-1, "(diff output): Unexpected EOF.");
-}
-
-
-/* Quit with a cryptic error message indicating that something
-   is wrong with the diff output. */
-
-NORETURN
-diff_state::diff_output_corrupt(const char *msg)
-{
-  fatal_quit(-1, "Diff output corrupt. (%s)", msg);
-}
-
-
-/* Figure out what the new state should be by processing the
-   diff output. */
-
-inline void
-diff_state::next_state()
-{
-  if (_state == DELETE && change_left != 0)
-    {
-      if (read_line())
-        {
-          diff_output_corrupt();
-        }
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): read %s", linebuf.c_str());
-#endif
-
-      if (strcmp(linebuf.c_str(), "---\n") != 0)
-        {
-          diff_output_corrupt("expected ---");
-        }
-      lines_left = change_left;
-      change_left = 0;
-      _state = INSERT;
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): returning INSERT [1]\n");
-#endif
-      return;
-    }
-
-  if (_state != NOCHANGE)
-    {
-      if (read_line())
-        {
-          if (ferror(in))
-            {
-              diff_output_corrupt();
-            }
-          _state = END;
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): returning END [2]");
-#endif
-      return;
-        }
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state()[3]: read %s", linebuf.c_str());
-#endif
-
-      /* Ignore "\ No newline at end of file" if it appears
-         at the end of the diff output. */
-
-      if (linebuf[0] == '\\')
-        {
-          if (!read_line())
-            {
-              diff_output_corrupt("Expected EOF");
-            }
-          if (ferror(in))
-            {
-              diff_output_corrupt();
-            }
-          _state = END;
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): returning END [4]\n");
-#endif
-          return;
-        }
-
-    }
-
-  char *s = NULL;
-  int line1, line2, line3, line4;
-  char c;
-
-  line1 = (int) strtol(linebuf.c_str(), &s, 10);
-  line2 = line1;
-  if (*s == ',')
-    {
-      line2 = (int) strtol(s + 1, &s, 10);
-      if (line2 <= line1)
-        {
-          diff_output_corrupt("left end line");
-        }
-    }
-
-  c = *s;
-
-  ASSERT(c != '\0');
-
-  if (c == 'a')
-    {
-      if (line1 >= in_lineno)
-        {
-          _state = NOCHANGE;
-          lines_left = line1 - in_lineno + 1;
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): returning NOCHANGE [5]\n");
-#endif
-          return;
-        }
-      if (line1 + 1 != in_lineno)
-        {
-          diff_output_corrupt("left start line [case 1]");
-        }
-    }
-  else
-    {
-      if (line1 > in_lineno)
-        {
-          _state = NOCHANGE;
-          lines_left = line1 - in_lineno;
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): returning END\n");
-#endif
-          return;
-        }
-      if (line1 != in_lineno)
-        {
-          diff_output_corrupt("left start line [case 2]");
-        }
-    }
-
-  line3 = (int) strtol(s + 1, &s, 10);
-  if (c == 'd')
-    {
-      if (line3 != out_lineno)
-        {
-          diff_output_corrupt("right start line [case 1]");
-        }
-    }
-  else
-    {
-      if (line3 != out_lineno + 1)
-        {
-          diff_output_corrupt("right start line [case 2]");
-        }
-    }
-
-  line4 = line3;
-  if (*s == ',')
-    {
-      line4 = (int) strtol(s + 1, &s, 10);
-      if (line4 <= line3)
-        {
-          diff_output_corrupt("right end line");
-        }
-    }
-
-  if (*s != '\n')
-    {
-      diff_output_corrupt("EOL");
-    }
-
-  switch (c)
-    {
-    case 'a':
-      _state = INSERT;
-      lines_left = line4 - line3 + 1;
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): returning INSERT [6]\n");
-#endif
-      break;
-
-    case 'd':
-      _state = DELETE;
-      lines_left = line2 - line1 + 1;
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): returning DELETE [7]\n");
-#endif
-      break;
-
-    case 'c':
-      _state = DELETE;
-      lines_left = line2 - line1 + 1;
-      change_left = line4 - line3 + 1;
-#ifdef JAY_DEBUG
-      fprintf(stderr, "next_state(): returning DELETE [8]\n");
-#endif
-      break;
-
-    default:
-      diff_output_corrupt("unknown operation");
-    }
-}
-
-
-/* Figure out whether a line is being inserted, deleted or left unchanged.
-   Output new control lines accordingly. */
-
-inline /* enum */ diff_state::state
-diff_state::process(FILE *out, seq_no seq)
-{
-  if (_state != INSERT)
-    {
-      in_lineno++;
-    }
-
-  if (_state != END)
-    {
-      ASSERT(lines_left >= 0);
-      if (lines_left == 0)
-        {
-          if (_state == DELETE || _state == INSERT)
-            {
-              fprintf(out, "\001E %d\n", seq);
-            }
-          next_state();
-          if (_state == INSERT)
-            {
-              fprintf(out, "\001I %d\n", seq);
-            }
-          else if (_state == DELETE)
-            {
-              fprintf(out, "\001D %d\n", seq);
-            }
-        }
-      lines_left--;
-    }
-
-  if (_state == DELETE)
-    {
-      if (read_line())
-        {
-          diff_output_corrupt();
-        }
-      if (linebuf[0] != '<' || linebuf[1] != ' ')
-        {
-          diff_output_corrupt("expected <");
-        }
-    }
-  else
-    {
-      if (_state == INSERT)
-        {
-          if (read_line())
-            {
-              diff_output_corrupt();
-            }
-          if (linebuf[0] != '>' || linebuf[1] != ' ')
-            {
-              diff_output_corrupt("expected >");
-            }
-        }
-      out_lineno++;
-    }
-
-  return _state;
-}
 
 class FileDeleter
 {
@@ -406,17 +77,6 @@ public:
 
 
 
-static void line_too_long(long int max_len, size_t actual_len)
-{
-  errormsg("Input line is %lu characters long but "
-           "the maximum allowed SCCS file line length "
-           "is %ld characters (see output of delta -V)\n",
-           (unsigned long) actual_len,
-           max_len);
-}
-
-
-
 /* Adds a new delta to the SCCS file.  It doesn't add the delta to the
    delta list in sccs_file object, so this should be the last operation
    performed before the object is destroyed. */
@@ -429,9 +89,6 @@ sccs_file::add_delta(const std::string& gname,
 		     const std::vector<std::string>& new_comments,
                      bool display_diff_output)
 {
-  const char *pline;
-  size_t len;
-  const unsigned long int len_max = max_sfile_line_len();
   ASSERT(mode == UPDATE);
 
   if (!check_keywords_in_file(gname.c_str()))
@@ -535,11 +192,20 @@ sccs_file::add_delta(const std::string& gname,
   FileDeleter another_cleaner(dname, false);
 
   const struct delta blankdelta;
-  struct subst_parms parms(get_out, (const char*)NULL, blankdelta,
+  struct subst_parms parms(dname, get_module_name(), get_out,
+			   (const char*)NULL, blankdelta,
                            0, sccs_date());
   seq_state gsstate(sstate);
 
-  get(dname, gsstate, parms, 0, 0, 0, 0, GET_NO_DECODE);
+  auto success = get(dname, gsstate, parms, /*do_kw_subst=*/0, /*show_sid=*/0,
+		     /*show_module=*/0, /*debug=*/0, GET_NO_DECODE,
+		     /*for_edit=*/false);
+  if (!success)
+    {
+      // TODO: surely this should affect the return value.
+      warning("failed to get %s into %s",
+	      name.sfile().c_str(), dname.c_str());
+    }
 
   if (fclose_failed(fclose(get_out)))
     {
@@ -547,24 +213,12 @@ sccs_file::add_delta(const std::string& gname,
       return false;
     }
 
-
-  FileDiff differ(dname.c_str(), file_to_diff.c_str());
-  FILE *diff_out = differ.start();
-
-
-  class diff_state dstate(diff_out, display_diff_output);
-
-
   // The delta operation consists of:-
   // 1. Writing out the information for the new delta.
   // 2. Writing out any automatic null deltas.
   // 3. Copying the body of the s-file to the output file,
   //    modifying it as indicated by the output of the diff
   //    program.
-
-  if (false == seek_to_body())  // prepare to read the body for predecessor.
-    return false;
-
 
   // The new delta header includes info about what deltas
   // are included, excluded, ignored.   Compute that now.
@@ -645,7 +299,7 @@ sccs_file::add_delta(const std::string& gname,
   // but what we actually want to create is a list of seq_no.
   if (!it->include.empty())
     {
-      const_delta_iterator iter(delta_table);
+      const_delta_iterator iter(delta_table.get());
       while (iter.next())
         {
           if (it->include.member(iter->id()))
@@ -656,7 +310,7 @@ sccs_file::add_delta(const std::string& gname,
     }
   if (!it->exclude.empty())
     {
-      const_delta_iterator iter(delta_table);
+      const_delta_iterator iter(delta_table.get());
       while (iter.next())
         {
           if (it->exclude.member(iter->id()))
@@ -693,238 +347,28 @@ sccs_file::add_delta(const std::string& gname,
   FILE *df = fopen_as_real_user("delta.dbg", "w");
 #endif
 
-  // We have to continue while there is data on the input s-file,
-  // or data fro the diff, so we don't just stop when read_line()
-  // returns -1.
-  while (1)
-    {
-      char c;
-      // read line from the old body.
-      const bool got_line = read_line(&c);
 
-#ifdef JAY_DEBUG
-      fprintf(stderr, "input: %s\n", plinebuf->c_str());
-#endif
-      if (got_line && c != 0)
-        {
-	  // it's a control line.
-	    seq_no seq = strict_atous(here(), plinebuf->c_str() + 3);
-
-#ifdef JAY_DEBUG
-          fprintf(stderr, "control line: %c %lu\n", c, (unsigned)seq);
-#endif
-
-          if (seq < 1 || seq > highest_delta_seqno())
-            {
-		corrupt(here(), "Invalid sequence number %u", unsigned(seq));
-            }
-
-          const char *msg = NULL;
-
-          switch (c)
-            {
-            case 'E':
-              msg = sstate.end(seq);
-              break;
-
-            case 'D':
-            case 'I':
-              msg = sstate.start(seq, c);
-              break;
-
-            default:
-	      corrupt(here(), "Unexpected control line '%c'", c);
-              break;
-            }
-
-          if (msg != NULL)
-            {
-		corrupt(here(), "%s", msg);
-            }
-        }
-      else if (sstate.include_line())
-        {
-#ifdef JAY_DEBUG
-          fprintf(stderr, "body line, inserting\n");
-#endif
-
-
-          // We just read a body line and prev delta is in insert
-          // mode.  We need to decide if this line must also go into
-          // this version.  If not, we need to emit delete commands.
-          // On the other hand, we may need to insert data before it.
-          // But if we just want to insert it into this version too,
-          // we still need to count it as an unchanged line.
-
-          /* enum */ diff_state::state action;
-
-          do
-            {
-              // decide what to do with this line.
-              // process() also emits the neccesary command
-              // (insert, delete, end).
-              action = dstate.process(out, new_delta.seq());
-              switch (action)
-                {
-
-                case diff_state::DELETE:
-                  // signal that we want to delete that line,
-                  // and break out of this inner loop (we do
-                  // that by leaving the INSERT state).  The
-                  // outer loop will deal with copying the line
-                  // into the output, after we've emitted our
-                  // delete marker; dstate.process() already
-                  // did that.  We still need to copy the line
-                  // into the output because even though the line
-                  // is deleted in this delta, it still needs to
-                  // be there for previous deltas.  That's what
-                  // history files are for.
-
-                  // Sanity check: if we're deleting a line, there
-                  // must have been one on the input.
-                  ASSERT(c != -1);
-#ifdef JAY_DEBUG
-                  fprintf(stderr, "diff_state::DELETE\n");
-#endif
-#ifdef DEBUG_FILE
-                  fprintf(df, "%4d %4d - %s\n",
-                          dstate.in_line(),
-                          dstate.out_line(),
-                          linebuf.c_str());
-                  fflush(df);
-#endif
-		  new_delta.increment_deleted();
-                  break;
-
-                case diff_state::INSERT:
-                  // We're inserting some data.   Emit that
-                  // data.  When we've done that, we'll either
-                  // go to the DELETE state (i.e. changed text)
-                  // or the NOCHANGE state (simple insertion).
-                  // Until then, copy data from the diff output
-                  // into our own output.
-#ifdef JAY_DEBUG
-          fprintf(stderr, "diff_state::INSERT\n");
-#endif
-#ifdef DEBUG_FILE
-                  fprintf(df, "%4d %4d + %s",
-                          dstate.in_line(),
-                          dstate.out_line(),
-                          dstate.get_insert_line());
-                  fflush(df);
-#endif
-                  new_delta.increment_inserted();
-
-                  pline = dstate.get_insert_line();
-                  len = strlen(pline);
-                  if (len)
-                    len -= 1u;  // newline char should not contribute.
-
-                  if (0 == len_max || len < len_max)
-                    {
-                      if (fputs_failed(fputs(pline, out)))
-                        {
-                          return false;
-                        }
-                    }
-                  else
-                    {
-                      // The line is too long.
-                      line_too_long(len_max, len);
-                      return false;
-                    }
-                  break;
-
-                case diff_state::END:
-#ifdef JAY_DEBUG
-          fprintf(stderr, "diff_state::END\n");
-#endif
-                  if (c == -1)
-                    {
-                      break;
-                    }
-                  /* FALLTHROUGH */
-                case diff_state::NOCHANGE:
-                  // line unchanged - so there must have been an input line,
-                  // so we cannot be at the end of the data.
-                  ASSERT(c != -1);
-#ifdef DEBUG_FILE
-                  fprintf(df, "%4d %4d   %s\n",
-                          dstate.in_line(),
-                          dstate.out_line(),
-                          linebuf.c_str());
-                  fflush(df);
-#endif
-                  new_delta.increment_unchanged();
-                  break;
-
-                default:
-                  abort();
-                }
-            } while (action == diff_state::INSERT);
-
-#ifdef JAY_DEBUG
-          fprintf(stderr, "while (action==diff_state::INSERT) loop ended.\n");
-#endif
-        }
-
-      if (!got_line)
-        {
-          // If we've exhausted the input we may still have a block to
-          // insert at the end.
-          while (diff_state::INSERT == dstate.process(out, new_delta.seq()))
-            {
-              new_delta.increment_inserted();
-
-              pline = dstate.get_insert_line();
-              len = strlen(pline);
-              if (len)
-                len -= 1u;      // newline char should not contribute.
-
-              if (0 == len_max
-                  || len < len_max
-                  )
-                {
-                  if (fputs_failed(fputs(pline, out)))
-                    {
-                      return false;
-                    }
-                }
-              else
-                {
-                  // The line is too long.
-                  line_too_long(len_max, len);
-                  return false;
-                }
-            }
-
-          break;
-        }
-
-
-#ifdef JAY_DEBUG
-      fprintf(stderr, "-> %s\n", plinebuf->c_str());
-#endif
-      fputs(plinebuf->c_str(), out);
-      putc('\n', out);
-    }
+  delta_result result =
+  body_scanner_->delta(dname, file_to_diff, highest_delta_seqno(), new_delta.seq(),
+		       &sstate, out, display_diff_output);
 
 #ifdef DEBUG_FILE
   fclose(df);
 #endif
 
-
   // The order of things that we do at this point is quite
   // important; we want only to update the s- and p- files if
   // everything worked.
-  differ.finish(diff_out); // "give back" the FILE pointer.
-  ASSERT(0 == diff_out);
 
   // It would be nice to know if the diff failed, but actually
   // diff's return value indicates if there was a difference
   // or not.
 
   pfile.delete_lock(it);
+
+  if (!result.success)
+    return false;		// the delta operation failed.
+  new_delta.set_idu(result.inserted, result.deleted, result.unchanged);
 
   if (!end_update(&out, new_delta))
     return false;

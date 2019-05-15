@@ -31,6 +31,7 @@
 #include <utility>
 #include <iterator>
 
+#include "mode.h"
 #include "sccsname.h"
 #include "sid.h"
 #include "sccsdate.h"
@@ -78,7 +79,7 @@ template<typename It, typename Pred> struct filter_iterator
 
 class sccs_pfile {
 public:
-  enum _mode { READ, APPEND, UPDATE };
+  enum _mode { PFILE_READ, PFILE_APPEND, PFILE_UPDATE };
   enum find_status { FOUND, NOT_FOUND, AMBIGUOUS };
 
 private:

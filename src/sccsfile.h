@@ -38,6 +38,8 @@
 #include "rel_list.h"
 #include "delta.h"
 #include "pfile.h"
+#include "mode.h"
+#include "parser.h"
 
 class seq_state;        /* seqstate.h */
 class cssc_linebuf;
@@ -47,55 +49,16 @@ struct delta;
 class cssc_delta_table;
 class delta_iterator;
 
-class sccs_file_location
+struct get_status
 {
-public:
-  sccs_file_location()  : lineno_(0) {}
-
-  int line_number() const
-  {
-    return lineno_;
-  }
-
-  string as_string() const;
-
-  void advance_line()
-  {
-    ++lineno_;
-  }
-
-  sccs_file_location& operator=(const sccs_file_location& other)
-  {
-    lineno_ = other.lineno_;
-    return *this;
-  }
-
-private:
-  int lineno_;
+  unsigned lines;
+  std::vector<sid> included, excluded;
+  bool     success;
 };
 
 class sccs_file
 {
-public:
-  enum _mode { READ, UPDATE, CREATE, FIX_CHECKSUM };
-
 private:
-
-  sccs_name& name;
-  FILE *f;
-  bool checksum_valid;
-  enum _mode mode;
-  sccs_file_location here_;
-  long body_offset;
-  sccs_file_location body_location;
-  bool xfile_created;
-  bool is_bk_file;
-  bool sfile_executable;
-
-  cssc_delta_table *delta_table;
-  cssc_linebuf     *plinebuf;
-
-  std::vector<std::string> users;	// FIXME: consider something more efficient.
   struct sccs_file_flags
   {
     // TODO: consider std::unique_ptr<std::string> instead of std::string*.
@@ -119,41 +82,23 @@ private:
     std::set<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
   } flags;
 
-  std::vector<std::string> comments;
-
-  static FILE *open_sccs_file(const char *name, enum _mode mode,
-                              int *sump, bool *is_bk_file);
-  const sccs_file_location& here() const { return here_; };
-  NORETURN corrupt(const sccs_file_location&, const char *fmt, ...) const POSTDECL_NORETURN;
   NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
-  void check_arg() const;
-  void check_noarg() const;
-  unsigned short strict_atous(const sccs_file_location&, const char *s) const;
-  unsigned long strict_atoul_idu(const sccs_file_location&, const char *s) const;
-
-  int read_line_param(FILE *f);
-
-  bool read_line(char* line_type);
-  void read_delta();
-  bool seek_to_body();
 
   /* Support for BitKeeper files */
-  void check_bk_flag(const sccs_file_location&, char flagchar) const;
-  void check_bk_comment(char ch, char arg) const;
   bool edit_mode_ok(bool editing) const;
 
   void set_sfile_executable(bool state);
   bool sfile_should_be_executable() const;
 
 public:
-
   // sccs_file::sccs_file(sccs_name&, enum _mode) MUST
   // take a non-const reference to an sccs_name as an
   // argument in order to get the semantics of lock
   // ownership correct; an sccs_name carries with it a
   // lock, so if we copy it, either the copy does not
   // have a lock or we have too many locks in total.
-  sccs_file(sccs_name &name, enum _mode mode);
+  sccs_file(sccs_name &name, enum _mode mode,
+	    ParserOptions = ParserOptions());
   bool checksum_ok() const;
 
   sid find_most_recent_sid(sid id) const;
@@ -161,6 +106,7 @@ public:
 
   int is_delta_creator(const char *user, sid id) const;
 
+  void check_bk_flag(const sccs_file_location&, char flagchar) const;
 
   /* Forwarding functions for the delta table.
    */
@@ -172,39 +118,28 @@ public:
   sid seq_to_sid(seq_no) const;
 
 
-  /* Forwarding functinos for the line buffer.
-   */
-  char bufchar(int pos) const;
-
   ~sccs_file();
 
   /* sf-get.c */
-private:
-  struct subst_parms
-  {
-    FILE *out;
-    const char *wstring;
-    struct delta const &delta;
-    unsigned out_lineno;
-    sccs_date now;
-    int found_id;
-
-    subst_parms(FILE *o, const char *w, struct delta const &d,
-                unsigned int l, sccs_date n)
-      : out(o), wstring(w), delta(d), out_lineno(l), now(n),
-        found_id(0) {}
-  };
-
-  typedef int (sccs_file::*subst_fn_t)(const char *,
-                                       struct subst_parms *,
-                                       struct delta const&) const;
-
-  bool get(const std::string& name, class seq_state &state,
+  bool get(const string& gname, class seq_state &state,
            struct subst_parms &parms,
            bool do_kw_subst,
            int show_sid = 0, int show_module = 0, int debug = 0,
            bool no_decode = false, bool for_edit = false);
+  bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
+  get_status get(FILE *out,
+		 const string& gname,
+		 FILE *summary_file,
+		 sid id,
+		 sccs_date cutoff_date = sccs_date(),
+		 sid_list include = sid_list(""),
+		 sid_list exclude = sid_list(""),
+		 int keywords = 0, const char *wstring = NULL,
+		 int show_sid = 0, int show_module = 0,
+		 int debug = 0, bool for_edit = false);
   enum { GET_NO_DECODE = true };
+
+private:
   bool print_subsituted_flags_list(FILE *out, const char* separator) const;
   static bool is_known_keyword_char(char c);
 
@@ -219,13 +154,6 @@ private:
 		   bool get_top_delta) const;
 
 public:
-  struct get_status
-  {
-    unsigned lines;
-    std::vector<sid> included, excluded;
-    bool     success;
-  };
-
   bool find_requested_sid(sid requested, sid &found,
                           bool include_branches=false) const ;
   bool find_requested_seqno(seq_no n, sid &found) const ;
@@ -233,19 +161,8 @@ public:
                     const sccs_pfile &pfile, int *failed) const;
   bool test_locks(sid got, const sccs_pfile&) const;
 
-  struct get_status get(FILE *out, const std::string& name,
-			FILE *summary_file,
-			sid id,
-                        sccs_date cutoff_date = sccs_date(),
-                        sid_list include = sid_list(""),
-                        sid_list exclude = sid_list(""),
-                        int keywords = 0, const char *wstring = NULL,
-                        int show_sid = 0, int show_module = 0,
-                        int debug = 0, bool for_edit = false);
 
 private:
-
-  void saw_unknown_feature(const char *fmt, ...) const;
 
   /* sf-get3.c */
   bool prepare_seqstate(seq_state &state, seq_no seq,
@@ -327,9 +244,8 @@ public:
 
   /* sf-prs.c */
 private:
-  bool get(FILE *out, const std::string& name, seq_no seq, bool for_edit);
   void print_flags(FILE *out) const;
-  void print_delta(FILE *out, const char *format,
+  void print_delta(FILE *out, const char *outname, const char *format,
                    struct delta const &delta);
 
   /* sf-kw.cc */
@@ -352,7 +268,8 @@ public:
   };
 
 
-  bool prs(FILE *out, const std::string& format, sid rid, sccs_date cutoff_date,
+  bool prs(FILE *out, const char *outname,
+	   const std::string& format, sid rid, sccs_date cutoff_date,
            enum when when, bool all_deltas, bool *matched);
 
   bool prt(FILE *out, struct cutoff exclude, int all_deltas,
@@ -389,23 +306,39 @@ protected:
 private:
   // Because we now have a pointer member, don't use the compiler's
   // default assignment and constructor.
-  const sccs_file& operator=(const sccs_file&); // not allowed to use!
-  sccs_file(const sccs_file&);  // not allowed to use!
+  const sccs_file& operator=(const sccs_file&) = delete; // not allowed to use!
+  sccs_file(const sccs_file&) = delete;  // not allowed to use!
+
+private:
+  sccs_name& name;
+  bool checksum_valid_;
+  enum _mode mode;
+  bool xfile_created;
+  bool edit_mode_ok_;
+  bool sfile_executable;
+  std::unique_ptr<cssc_delta_table> delta_table;
+  std::unique_ptr<sccs_file_body_scanner> body_scanner_;
+  std::vector<std::string> users;	// FIXME: consider something more efficient.
+  std::vector<std::string> comments;
 };
 
 /* sf-prt.cc */
 void print_flag(FILE *out, const char *fmt,  release flag, int& count);
+void print_flag(FILE *out, const char *fmt, std::string flag, int& count);
+void print_flag(FILE *out, const char *fmt,  int flag, int& count);
+void print_flag(FILE *out, const char *fmt,  sid flag, int& count);
 
 /* sf-prs.cc */
 void print_flag2(FILE *out, const char *s, const sid& it);
 void print_flag2(FILE *out, const char *s, const release_list& it);
+void print_flag2(FILE *out, const char *s, const release& it);
 
 /* l-split.c */
 
 std::vector<std::string> split_mrs(const std::string& mrs);
 std::vector<std::string> split_comments(const std::string& comments);
 
-#endif /* __SCCSFILE_H__ */
+#endif /* CSSC__SCCSFILE_H__ */
 
 /* Local variables: */
 /* mode: c++ */

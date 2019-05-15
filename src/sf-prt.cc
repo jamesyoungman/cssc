@@ -217,81 +217,6 @@ sccs_file::cutoff::cutoff()
   // all done above.
 }
 
-// Print the body of an SCCS file, transforming all "^A"s
-// into "*** "s.
-static bool
-do_print_body(const char *name, FILE *fp, long body_offset, FILE *out)
-{
-  bool ret = true;
-
-  // When pos_saver goes out of scope the file position on "fp" is restored.
-  FilePosSaver pos_saver(fp);
-
-  if (0 != fseek(fp, body_offset, SEEK_SET))
-    {
-      errormsg_with_errno("%s: fseek() failed!", name);
-      return false;		// can't read body now, so just fail.
-    }
-
-
-  if (putc_failed(putc('\n', out)))
-    ret = false;
-
-  int ch;
-  while ( ret && (ch=getc(fp)) != EOF )
-    {
-      if ('\001' == ch)
-	{
-	  if (fputs_failed(fputs("*** ", out)))
-	    {
-	      ret = false;	// write error
-	      break;
-	    }
-	}
-      else if ('\n' == ch)
-	{
-	  int peek = getc(fp);
-
-	  if ('\001' == peek)
-	    {
-	      ungetc(peek, fp);
-	      if (putc_failed(putc('\n', out)))
-		ret = false;
-	    }
-	  else if (EOF == peek)
-	    {
-	      if (putc_failed(putc('\n', out)))
-		ret = false;
-	      break;
-	    }
-	  else
-	    {
-	      ungetc(peek, fp);
-	      if (fputs_failed(fputs("\n\t", out)))
-		{
-		  ret = false;	// write error
-		  break;
-		}
-	    }
-	}
-      else
-	{
-	  if (putc_failed(putc(ch, out)))
-	    {
-	      ret = false;	// write error
-	      break;
-	    }
-	}
-    }
-  if (ferror(fp))		// read error is fatal.
-    {
-      errormsg_with_errno("%s: read failed!", name);
-      ret = false;
-    }
-
-  // When pos_saver goes out of scope the file position is restored.
-  return ret;
-}
 
 static void
 print_seq_list(FILE *out, std::vector<seq_no> const &list)
@@ -335,7 +260,7 @@ sccs_file::prt(FILE *out,
 	}
 
       bool stop_now = false;
-      const_delta_iterator iter(delta_table);
+      const_delta_iterator iter(delta_table.get());
 
       while (!stop_now && iter.next(all_deltas))
 	{
@@ -525,7 +450,7 @@ sccs_file::prt(FILE *out,
     {
       // seek_to_body() is a non-const member, so we have this
       // silly workaround.
-      do_print_body(name.c_str(), f, body_offset, out);
+      body_scanner_->print_body(out, name.c_str());
     }
 
   return true;

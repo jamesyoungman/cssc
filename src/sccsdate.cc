@@ -451,7 +451,7 @@ int sccs_date::compare(const sccs_date& d) const
     return diff;
   else if ( (diff = yearday - d.yearday) != 0)
     return diff;
-  
+
   /* The implementation below can compute an incorrect result when
      comparing dates on a day when there is a clock change.  For
      example, suppose the clock is put pack an hour the first time it

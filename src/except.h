@@ -23,6 +23,7 @@
 #define CSSC_INC_EXCEPT_H 1
 
 #include <cstdlib>
+#include <string>
 
 // Exception classes
 struct CsscException
@@ -30,7 +31,22 @@ struct CsscException
   // abstract base.
 };
 
+class CsscInvalidData : public CsscException
+{
+ CsscInvalidData(const std::string& message)
+    : msg_(message)
+  {
+  }
+  const std::string message() const 
+  {
+    return msg_;
+  }
+  
+ private:
+  std::string msg_;
+};
 
+  
 struct CsscExitvalException : public CsscException
 {
   int exitval;

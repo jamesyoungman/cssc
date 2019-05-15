@@ -37,6 +37,7 @@
 #include "seqstate.h"
 #include "delta-iterator.h"
 #include "delta-table.h"
+#include "subst-parms.h"
 
 
 bool sccs_file::sid_matches(const sid& requested,
@@ -117,7 +118,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
   // possible to determine which SID this is by
   // looking at the tree of SIDs alone.
 
-  const_delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table.get());
   while (iter.next())
     {
       if (sid_matches(requested, iter->id(), get_top_delta))
@@ -373,8 +374,7 @@ sccs_file::test_locks(sid got, const sccs_pfile& pf) const
    Most of the actual work is done with a seqstate object that
    figures out whether or not given line of the SCCS file body
    should be included in the output file. */
-
-/* struct */ sccs_file::get_status
+get_status
 sccs_file::get(FILE *out, const std::string& gname,
 	       FILE *summary_file,
 	       sid id, sccs_date cutoff_date,
@@ -512,7 +512,8 @@ sccs_file::get(FILE *out, const std::string& gname,
   // passed as a parameter to the substitution function.
   // (eugh...)
   // Changed to use dparm not d to deal with Cutoff Date (Mark Fortescue)
-  struct subst_parms parms(out, wstring, *dparm,
+  struct subst_parms parms(gname, get_module_name(),
+			   out, wstring, *dparm,
                            0, sccs_date::now());
 
 

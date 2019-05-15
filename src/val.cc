@@ -155,7 +155,7 @@ main(int argc, char **argv)
       try
 	{
 	  sccs_name &name = iter.get_name();
-	  sccs_file file(name, sccs_file::READ);
+	  sccs_file file(name, READ);
 
 	  if (had_r_option)
 	    {

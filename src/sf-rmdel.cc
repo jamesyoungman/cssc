@@ -42,36 +42,6 @@ is_seqlist_member(seq_no seq_to_find, std::vector<seq_no> const &seq_list) {
 }
 }
 
-typedef enum { COPY, DELETE, INSERT} update_state;
-
-static int
-next_state(update_state& current, // this arg is MODIFIED!
-	   int key)
-{
-  if (current == COPY)
-    {
-      switch (key)
-	{
-	case 'I':
-	  current = INSERT;
-	  return 1;
-	case 'D':
-	  current = DELETE;
-	  return 1;
-	}
-    }
-  else
-    {
-      if ('E' == key)
-	{
-	  current = COPY;
-	  return 1;
-	}
-    }
-  return 0;		// not expected.
-}
-
-
 bool
 sccs_file::rmdel(sid id)
 {
@@ -86,7 +56,7 @@ sccs_file::rmdel(sid id)
     }
   const seq_no seq = d->seq();
 
-  const_delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table.get());
   while (iter.next())
     {
       if (iter->prev_seq() == seq)
@@ -116,57 +86,12 @@ sccs_file::rmdel(sid id)
       return false;
     }
 
-  update_state state = COPY;
-  char c;
-
-  bool retval = true;
-
-  while (read_line(&c))
+  if (body_scanner_->remove(out, seq))
     {
-      if (0 != c)
-	{
-	  check_arg();
-	  if (strict_atous(here(), plinebuf->c_str() + 3) == seq)
-	    {
-	      if (!next_state(state, c))
-		{
-		  corrupt(here(), "Unexpected control line");
-		  retval = false;
-		  break;
-		}
-	    }
-	  else if (state == INSERT)
-	    {
-	      corrupt(here(), "Non-terminal delta!?!");
-	      retval = false;
-	      break;
-	    }
-	  else
-	    {
-	      fputs(plinebuf->c_str(), out);
-	      putc('\n', out);
-	    }
-	}
-      else if (state != INSERT)
-	{
-	  fputs(plinebuf->c_str(), out);
-	  putc('\n', out);
-	}
+      // Only finish write out the file if we had no problem.
+      return end_update(&out);
     }
-
-  // We should end the file after an 'E', that is,
-  // in the 'COPY' state.
-  if (state != COPY)
-    {
-      corrupt(here(), "Unexpected EOF");
-      return false;
-    }
-  // Only finish write out the file if we had no problem.
-  if (true == retval)
-    {
-      retval = end_update(&out);
-    }
-  return retval;
+  return false;
 }
 
 /* Local variables: */

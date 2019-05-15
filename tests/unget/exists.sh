@@ -11,7 +11,9 @@ s1=s.$g1
 s2=s.$g2
 p1=p.$g1
 p2=p.$g2
-all="$s1 $g1 $p1 $s2 $g2 $p2 xxx1 xxx2 old.$g1 old.$g2"
+x1=x.$g1
+x2=x.$g2
+all="$s1 $g1 $p1 $s2 $g2 $p2 xxx1 xxx2 old.$g1 old.$g2 $x1 $x2"
 
 m=mfile
 remove $all $m

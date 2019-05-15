@@ -49,6 +49,7 @@ cssc_linebuf::cssc_linebuf()
 int
 cssc_linebuf::read_line(FILE *f)
 {
+  ASSERT(CONFIG_LINEBUF_CHUNK_SIZE > 2u);
   buf[buflen - 2u] = '\0';
 
   ASSERT(buflen < INT_MAX);

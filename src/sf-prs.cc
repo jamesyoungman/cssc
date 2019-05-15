@@ -37,6 +37,7 @@
 #include "delta-table.h"
 #include "linebuf.h"
 #include "cssc-assert.h"
+#include "subst-parms.h"
 
 inline bool
 sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
@@ -47,7 +48,9 @@ sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
   if (!edit_mode_ok(for_edit))
     return false;
 
-  struct subst_parms parms(out, (const char*)0, delta_table->delta_at_seq(seq),
+  const char * w = nullptr;
+  struct subst_parms parms(gname, get_module_name(), out, w,
+			   delta_table->delta_at_seq(seq),
 			   0, sccs_date());
   class seq_state state(highest_delta_seqno());
 
@@ -279,7 +282,7 @@ print_flag(FILE *out, const sid &it)
    delta table. */
 
 void
-sccs_file::print_delta(FILE *out, const char *format,
+sccs_file::print_delta(FILE *out, const char *outname, const char *format,
                        struct delta const &d)
 {
   const char *s = format;
@@ -358,6 +361,7 @@ sccs_file::print_delta(FILE *out, const char *format,
           continue;
         }
 
+      // TODO: diagnose write errors in this switch statement.
       switch (key)
         {
         default:
@@ -366,12 +370,11 @@ sccs_file::print_delta(FILE *out, const char *format,
           continue;
 
         case KEY2('D','t'):
-          print_delta(out, ":DT: :I: :D: :T: :P: :DS: :DP:",
-                      d);
+          print_delta(out, outname, ":DT: :I: :D: :T: :P: :DS: :DP:", d);
           break;
 
         case KEY2('D','L'):
-          print_delta(out, ":Li:/:Ld:/:Lu:", d);
+          print_delta(out, outname, ":Li:/:Ld:/:Lu:", d);
           break;
 
         case KEY2('L','i'):
@@ -458,11 +461,11 @@ sccs_file::print_delta(FILE *out, const char *format,
 	  /* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:),
 	     but OpenSolaris 2009.06 (SunOS 5.11) shows two. */
 	  if (!d.get_included_seqnos().empty())
-	    print_delta(out, ":Dn:", d);
+	    print_delta(out, outname, ":Dn:", d);
 	  if (!d.get_excluded_seqnos().empty())
-	    print_delta(out, "/:Dx:", d);
+	    print_delta(out, outname, "/:Dx:", d);
 	  if (!d.get_ignored_seqnos().empty())
-	    print_delta(out, "/:Dg:", d);
+	    print_delta(out, outname, "/:Dg:", d);
 	  break;
 
         case KEY2('D','n'):
@@ -572,20 +575,12 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY2('B','D'):
-          if (seek_to_body())
-            {
-	      char ch;
-              while (read_line(&ch))
-                {
-                  fputs(plinebuf->c_str(), out);
-                  putc('\n', out);
-                }
-            }
-          else
-            {
-              // TODO: what should we do if the seek fails?
-              // for now, do nothing (that is, don't produce output for :BD:).
-            }
+	  if (!body_scanner_->emit_raw_body(out, outname))
+	    {
+	      /* TODO: signal that something failed.  We already
+	         issued an error message, but this function returns
+	         void. */
+	    }
           break;
 
         case KEY2('G','B'):
@@ -593,11 +588,11 @@ sccs_file::print_delta(FILE *out, const char *format,
           break;
 
         case KEY1('W'):
-          print_delta(out, ":Z::M:\t:I:", d);
+          print_delta(out, outname, ":Z::M:\t:I:", d);
           break;
 
         case KEY1('A'):
-          print_delta(out, ":Z::Y: :M: :I::Z:", d);
+          print_delta(out, outname, ":Z::Y: :M: :I::Z:", d);
           break;
 
         case KEY1('Z'):
@@ -621,10 +616,11 @@ sccs_file::print_delta(FILE *out, const char *format,
 
 /* Prints out parts of the SCCS file.  */
 bool
-sccs_file::prs(FILE *out, const std::string& format, sid rid, sccs_date cutoff_date,
+sccs_file::prs(FILE *out, const char *outname,
+	       const std::string& format, sid rid, sccs_date cutoff_date,
                enum when cutoff_type, bool all_deltas, bool *matched)
 {
-  const_delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table.get());
   const char *fmt = format.c_str();
 
   if (cutoff_type == SIDONLY)
@@ -635,7 +631,7 @@ sccs_file::prs(FILE *out, const std::string& format, sid rid, sccs_date cutoff_d
 	  if (!rid.valid() || (rid == iter->id()))
 	    {
 	      *matched = true;
-	      print_delta(out, fmt, *iter.operator->());
+	      print_delta(out, outname, fmt, *iter.operator->());
 	      putc('\n', out);
 	      break;
 	    }
@@ -648,7 +644,7 @@ sccs_file::prs(FILE *out, const std::string& format, sid rid, sccs_date cutoff_d
 	  if (cutoff_date.valid() && iter->date() < cutoff_date)
 	    break;
 	  *matched = true;
-	  print_delta(out, fmt, *iter.operator->());
+	  print_delta(out, outname, fmt, *iter.operator->());
 	  putc('\n', out);
 	  if (rid.valid() && (rid == iter->id()))
 	    break;
@@ -666,7 +662,7 @@ sccs_file::prs(FILE *out, const std::string& format, sid rid, sccs_date cutoff_d
 	  if (cutoff_date.valid() && (cutoff_date < iter->date()))
 	    continue;
 	  *matched = true;
-	  print_delta(out, fmt, *iter.operator->());
+	  print_delta(out, outname, fmt, *iter.operator->());
 	  putc('\n', out);
 	}
     }

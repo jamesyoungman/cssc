@@ -77,6 +77,9 @@ NORETURN ctor_fail(int err, const char *fmt, ...)  POSTDECL_NORETURN;
 NORETURN s_unrecognised_feature_quit(const char *fmt, va_list ap) POSTDECL_NORETURN;
 NORETURN ctor_fail_nomsg(int err)  POSTDECL_NORETURN;
 NORETURN nomem()  POSTDECL_NORETURN;
+class sccs_file_location;
+NORETURN corrupt(const sccs_file_location& loc, const char *fmt, ...) POSTDECL_NORETURN;
+
 extern void usage();
 
 #endif /* __QUIT_H__ */

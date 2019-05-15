@@ -60,12 +60,13 @@ BUILT_SOURCES = version.cc
 CLEANFILES = sccsdiff
 
 noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
-	filepos.h my-getopt.h linebuf.h pfile.h \
+	filepos.h my-getopt.h linebuf.h pfile.h parser.h \
 	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
 	seqstate.h sf-chkmr.h sid.h sid_list.h sl-merge.h sysdep.h \
 	version.h ioerr.h delta-table.h delta.h \
 	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
-	relvbr.h cssc-assert.h cleanup.h
+	relvbr.h cssc-assert.h cleanup.h mode.h optional.h l-split.h \
+	location.h body-scanner.h base-reader.h subst-parms.h diff-state.h
 
 libcssc_a_SOURCES = \
 	rl-merge.cc \
@@ -75,13 +76,14 @@ libcssc_a_SOURCES = \
 	sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc \
 	l-split.cc prompt.cc run.cc filediff.cc \
 	cap.cc sf-write.cc \
-	sccsfile.cc rel_list.cc \
+	sccsfile.cc parser.cc rel_list.cc \
 	sccs-delta.cc delta-table.cc delta-iterator.cc \
 	fileiter.cc file.cc linebuf.cc \
 	sccsname.cc sid.cc sccsdate.cc fnsplit.cc \
 	quit.cc fatalsig.cc \
 	my-getopt.cc version.cc fdclosed.cc \
-	showconfig.cc  environment.cc
+	showconfig.cc  environment.cc \
+	body-scanner.cc location.cc base-reader.cc diff-state.cc
 
 # The source lists for the actual executables....
 what_SOURCES = what.cc

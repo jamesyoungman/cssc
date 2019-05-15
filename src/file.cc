@@ -735,11 +735,11 @@ file_lock::file_lock(const std::string& zname): locked(0), name(zname)
   return;
 }
 
-  file_lock::~file_lock() {
-        if (locked) {
-                locked = 0;
-                unlink(name.c_str());
-        }
+file_lock::~file_lock() {
+  if (locked) {
+    locked = 0;
+    unlink(name.c_str());
+  }
 }
 
 

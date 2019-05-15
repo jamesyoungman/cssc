@@ -27,8 +27,11 @@
 
 #include <config.h>
 
+#include <errno.h>
+
 #include "cssc.h"
 #include "sccsfile.h"		// declares these functions.
+#include "l-split.h"		// declares these functions.
 
 #include <string.h>
 #include <string>
@@ -90,6 +93,65 @@ split_comments(const std::string& comments)
 
   return comment_list;
 }
+
+class FileCloser
+{
+public:
+  explicit FileCloser(FILE* fp)
+    : f_(fp) {}
+
+  ~FileCloser()
+  {
+    fclose(f_);
+    f_ = nullptr;
+  }
+
+private:
+  FILE* f_;
+};
+
+std::pair<int, std::vector<std::string>>
+read_file_lines(const char* file_name)
+{
+  std::vector<std::string> result, tmp;
+  errno = 0;
+  FILE *f = fopen(file_name, "r");
+  if (f == nullptr)
+    {
+      return std::make_pair(errno, result);
+    }
+  FileCloser closer(f);
+
+  int ch;
+  string s;
+  bool empty = true;
+  while ((ch=getc(f)) != EOF)
+    {
+      if (ch == '\n')
+	{
+	  tmp.push_back(s);
+	  s.clear();
+	  empty = true;
+	}
+      else
+	{
+	  s.push_back(static_cast<char>(ch));
+	  empty = false;
+	}
+    }
+  if (!empty)
+    {
+      tmp.push_back(s);
+    }
+  if (ferror(f))
+    {
+      return std::make_pair(errno, result);
+    }
+  std::swap(tmp, result);
+  return std::make_pair(errno, result);
+}
+
+
 
 /* Local variables: */
 /* mode: c++ */

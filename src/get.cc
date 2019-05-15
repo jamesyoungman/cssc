@@ -330,10 +330,10 @@ main(int argc, char **argv)
           sccs_pfile *pfile = NULL;
           if (for_edit)
             {
-              pfile = new sccs_pfile(name, sccs_pfile::APPEND);
+              pfile = new sccs_pfile(name, sccs_pfile::PFILE_APPEND);
             }
 
-          sccs_file file(name, sccs_file::READ);
+          sccs_file file(name, READ);
           sid new_delta;
           sid retrieve;
 
@@ -454,7 +454,7 @@ main(int argc, char **argv)
 	    }
 
           const int keywords = !suppress_keywords;
-          struct sccs_file::get_status status;
+          get_status status;
 
           try
             {

@@ -157,14 +157,14 @@ main(int argc, char **argv)
       try
 	{
 	  sccs_name &name = iter.get_name();
-	  sccs_file file(name, sccs_file::READ);
+	  sccs_file file(name, READ);
 
 	  if (default_processing)
 	    {
 	      printf("%s:\n\n", name.c_str());
 	    }
 	  bool matched = false;
-	  if (!file.prs(stdout, format, rid, cutoff_date, selected,
+	  if (!file.prs(stdout, "standard output", format, rid, cutoff_date, selected,
 			all_deltas, &matched))
 	    {
 	      retval = 1;

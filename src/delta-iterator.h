@@ -26,6 +26,8 @@
 #ifndef CSSC_DELTA_ITERATOR_H
 #define CSSC_DELTA_ITERATOR_H 1
 
+#include <memory>
+
 class cssc_delta_table;
 class delta;
 
@@ -35,7 +37,7 @@ class delta_iterator
   int pos;
 
 public:
-  delta_iterator(cssc_delta_table *d);
+  explicit delta_iterator(cssc_delta_table*);
 
   int next(int all = 0);
   int index() const;
@@ -52,7 +54,7 @@ class const_delta_iterator
   int pos;
 
 public:
-  const_delta_iterator(cssc_delta_table const *d);
+  explicit const_delta_iterator(const cssc_delta_table*);
 
   int next(int all = 0);
   int index() const;

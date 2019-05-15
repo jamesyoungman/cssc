@@ -31,6 +31,7 @@
 #include <cerrno>
 
 #include "cssc.h"
+#include "location.h"
 #include "sysdep.h"
 #include "quit.h"
 #include "except.h"
@@ -188,6 +189,31 @@ s_corrupt_quit(const char *fmt, ...) {
         ASSERT(0);              // not reached.
 }
 
+/* Quits with a message saying that SCCS file is corrupt. */
+
+NORETURN
+corrupt(const sccs_file_location& loc, const char *fmt, ...) {
+  char buf[80];
+  const char *p;
+
+  va_list ap;
+  va_start(ap, fmt);
+  if (-1 == vsnprintf(buf, sizeof(buf), fmt, ap))
+    {
+      warning("%s: error message too long for buffer, so the "
+              "next message will lack some relevant detail",
+              loc.name().c_str());
+      p = fmt;                  // best effort
+    }
+  else
+    {
+      p = buf;
+    }
+  s_corrupt_quit("%s: Corrupted SCCS file. (%s)", loc.as_string().c_str(), p);
+}
+
+
+
 NORETURN
 s_missing_quit(const char *fmt, ...) {
         va_list ap;
@@ -205,7 +231,7 @@ s_missing_quit(const char *fmt, ...) {
 
 
 /* s_unrecognised_feature_quit is usually called by
- * sccs_file::saw_unknown_feature().
+ * sccs_file_parser::saw_unknown_feature().
  */
 NORETURN
 s_unrecognised_feature_quit(const char *fmt, va_list ap)

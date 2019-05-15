@@ -143,7 +143,7 @@ sccs_file::validate_isomorphism() const
 }
 
 static bool
-validate_substituted_flags_list(const std::vector<char> entries)
+validate_substituted_flags_list(const std::vector<char>)
 {
   // TODO: write this later.
   return true;
@@ -161,7 +161,7 @@ sccs_file::validate() const
     }
 
   // for each delta:-
-  delta_iterator iter(delta_table);
+  delta_iterator iter(delta_table.get());
   const seq_no highest_seq = delta_table->highest_seqno();
   int *seen_ever = new int[highest_seq];
   std::vector<bool> seen(highest_seq+1, false);
@@ -242,7 +242,7 @@ sccs_file::validate() const
 
       ++seen_ever[s - 1];
 
-      if (!check_loop_free(delta_table, delta_table->delta_at_seq(s).seq(),
+      if (!check_loop_free(delta_table.get(), delta_table->delta_at_seq(s).seq(),
 			   loopfree, seen))
 	{
 	  // We already issued an error message.

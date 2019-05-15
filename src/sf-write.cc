@@ -33,6 +33,7 @@
 #include "sccsfile.h"
 #include "delta.h"
 #include "delta-iterator.h"
+#include "delta-table.h"
 #include "linebuf.h"
 #include "filepos.h"
 #include "file.h"
@@ -180,7 +181,7 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
 int
 sccs_file::write(FILE *out) const
 {
-  delta_iterator iter(delta_table);
+  const_delta_iterator iter(delta_table.get());
   while (iter.next(1)) {
     if (write_delta(out, *iter.operator->())) {
       return 1;
@@ -459,16 +460,24 @@ sccs_file::end_update(FILE **pout)
       fclose(*pout);
       *pout = NULL;
       xfile_error("Write error.");
+      return false;
     }
 
   int sum;
   std::string xname = name.xfile();
 
   // Open the file (obtaining the checksum) and immediately close it.
-  bool dummy_bk_flag;
-  if (fclose_failed(fclose(open_sccs_file(xname.c_str(), READ,
-					  &sum, &dummy_bk_flag))))
-    xfile_error("Error closing file.");
+  {
+    auto opts = ParserOptions().set_silent_checksum_error(true);
+    auto open_result = sccs_file_parser::open_sccs_file(xname, READ, opts);
+    if (!open_result)
+      {
+	xfile_error("Error opening file.");
+	return false;
+      }
+    sum = open_result->computed_sum;
+  }
+
 
   // For "admin -i", we may need to change the "encoded" flag
   // from 0 to 1, if we found out that the input file was
@@ -555,14 +564,16 @@ sccs_file::update_checksum()
 
 
 /* Update the SCCS file */
-
 bool
 sccs_file::update()
 {
   ASSERT(mode != CREATE);
+  ASSERT(body_scanner_);
 
-  if (!seek_to_body())
-    return false;
+  if (!body_scanner_->seek_to_body())
+    {
+      return false;
+    }
 
   FILE *out = start_update();
   if (NULL == out)
@@ -575,19 +586,12 @@ sccs_file::update()
 
   // assume that since the earlier seek_to_body() worked,
   // this one will too.
-  if (!seek_to_body())
+  if (!body_scanner_->seek_to_body())
     return false;
-
-  char line_type;
-  while (read_line(&line_type))
+  if (!body_scanner_->copy_to(out))
     {
-      if (fputs_failed(fputs(plinebuf->c_str(), out))
-          || putc_failed(putc('\n', out)))
-        {
           xfile_error("Write error.");
-        }
     }
-
   return end_update(&out);
 }
 

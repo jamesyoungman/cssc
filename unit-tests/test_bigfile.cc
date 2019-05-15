@@ -324,7 +324,7 @@ main (int argc, char *argv[])
           fclose (fp);
 
           // Fix the checksum.
-          sccs_file file (name, sccs_file::FIX_CHECKSUM);
+          sccs_file file (name, FIX_CHECKSUM);
           if (!file.update_checksum())
             {
               fprintf (stderr, "Failed to update the checksum of file %s", argv[i]);

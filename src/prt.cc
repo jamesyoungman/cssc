@@ -190,7 +190,7 @@ main(int argc, char **argv)
 
 	  fprintf(stdout, "\n");
 
-	  sccs_file file(name, sccs_file::READ);
+	  sccs_file file(name, READ);
 
 	  if (!file.prt(stdout,
 			exclude,		  // -y, -c, -r

@@ -29,6 +29,7 @@
 #include "sccsfile.h"
 #include "delta.h"
 #include "ioerr.h"
+#include "subst-parms.h"
 
 // #include "pfile.h"
 // #include "seqstate.h"

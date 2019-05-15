@@ -152,8 +152,8 @@ delta_main(int argc, char **argv)
 	{
 	  bool failed = false;
 	  sccs_name &name = iter.get_name();
-	  sccs_file file(name, sccs_file::UPDATE);
-	  sccs_pfile pfile(name, sccs_pfile::UPDATE);
+	  sccs_file file(name, UPDATE);
+	  sccs_pfile pfile(name, sccs_pfile::PFILE_UPDATE);
 
 	  if (first)
 	    {

@@ -49,7 +49,7 @@ usage() {
 static bool
 is_locked(sccs_name& name, sid rid)
 {
-  sccs_pfile pfile(name, sccs_pfile::READ);
+  sccs_pfile pfile(name, sccs_pfile::PFILE_READ);
   for (sccs_pfile::const_iterator it = pfile.begin();
        it != pfile.end();
        ++it)
@@ -117,7 +117,7 @@ main(int argc, char **argv)
       try
 	{
 	  sccs_name &name = iter.get_name();
-	  sccs_file file(name, sccs_file::UPDATE);
+	  sccs_file file(name, UPDATE);
 
 	  if (is_locked(name, rid))
 	    {

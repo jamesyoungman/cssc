@@ -29,6 +29,7 @@
 #ifndef CSSC__LINEBUF_H__
 #define CSSC__LINEBUF_H__
 
+#include "location.h"
 
 /* This class is used to read lines of unlimited length from a file. */
 
@@ -41,7 +42,6 @@ public:
   cssc_linebuf();
 
   int read_line(FILE *f);
-
   const char *c_str() const { return buf; }
   const char *c_str() { return buf; }
   void set_char(unsigned offset, char value);
@@ -55,7 +55,8 @@ public:
   char *operator +(int index) const { return buf + index; }
 #endif
 
-  ~cssc_linebuf() { delete[] buf; }
+  ~cssc_linebuf() { delete[] buf; buf = nullptr; }
+  cssc_linebuf& operator=(const cssc_linebuf&) = delete;
 };
 
 #endif /* __LINEBUF_H__ */

@@ -32,6 +32,8 @@
 using std::string;
 
 #include "cssc.h"
+
+#include "body-scanner.h"
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
@@ -314,7 +316,8 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 }
 
 bool
-sccs_file::get(const string& gname, class seq_state &state,
+sccs_file::get(const string& gname,
+	       class seq_state &state,
                struct subst_parms &parms,
                bool do_kw_subst,
                int show_sid, int show_module, int debug,
@@ -333,148 +336,15 @@ sccs_file::get(const string& gname, class seq_state &state,
   else
     outputfn = output_body_line_text;
 
-
-  if (!seek_to_body())
-    return false;
-
-
-  /* The following statement is not correct. */
-  /* "@I 1" should start the body of the SCCS file */
-
-  char line_type;
-  if (!read_line(&line_type) || line_type != 'I')
+  auto subst = [this, &parms](const char *start, struct delta const& gotten_delta,
+			bool force_expansion) -> int
     {
-      corrupt(here(), "Expected '@I'");
-      return false;
-    }
-  check_arg();
+      return this->write_subst(start, &parms, gotten_delta, force_expansion);
+    };
 
-  /* The check on the following line is certainly wrong, since
-   * the first body line need not refer to the first delta.  For
-   * example, SunOS 4.1.1's SCCS implementation doesn't always
-   * start with ^AI 1.
-   */
-  unsigned short first_delta = strict_atous(here(), plinebuf->c_str() + 3);
-  state.start(first_delta, 'I'); /* 'I' means "insert". */
-
-  FILE *out = parms.out;
-
-  while (1) {
-    if (!read_line(&line_type))
-      {
-	break;  /* EOF */
-      }
-
-    if (line_type == 0) {
-      /* A non-control line */
-
-      if (debug) {
-        if (state.include_line()) {
-          putc('I', f);
-        } else {
-          putc('D', f);
-        }
-        putc(' ', f);
-      } else if (!state.include_line()) {
-        continue;
-      }
-
-      parms.out_lineno++;
-
-      if (show_module)
-        fprintf(out, "%s\t", get_module_name().c_str());
-
-      if (show_sid)
-        {
-          seq_to_sid(state.active_seq()).print(out);
-          putc('\t', out);
-        }
-
-      int err;
-      if (do_kw_subst)
-        {
-          // If there is a cutoff date,
-          // prepare_seqstate() will take account of
-          // it.  We need the keyword substitution to
-          // take account of this and substitute the
-          // correct stuff.... so we figure out what
-          // delta has actually been selected here...
-
-
-          if (flags.encoded)
-            {
-              /*
-               * We ignore the possiblity of keyword substitution.
-               * I don't think "real" SCCS does keyword substitution
-               * for this case either -- James Youngman <jay@gnu.org>
-               */
-              err = outputfn(out, plinebuf);
-            }
-          else
-            {
-                // Mark Reynolds <mark@aoainc.com>: GCC 2.8.1 on VAX
-                // Ultrix 4.2 doesn't seem to get this call right.
-                // Since subst_fn is always write_subst anyway, we
-                // work around it by using the function pointer just as a
-                // boolean variable.   Yeuch.
-                //
-                // 2001-07-30: get rid of all the cruft by using a boolean
-                //             flag instead of a function pointer, for all
-                //             systems.
-                err = write_subst(plinebuf->c_str(), &parms, parms.delta, false);
-
-              if (fputc_failed(fputc('\n', out)))
-                err = 1;
-            }
-        }
-      else
-        {
-          if (!parms.found_id && plinebuf->check_id_keywords())
-            parms.found_id = 1;
-          err = outputfn(out, plinebuf);
-        }
-
-      if (err)
-        {
-          errormsg_with_errno("%s: Write error.", gname.c_str());
-          return false;
-        }
-
-      continue;
-    }
-
-    /* A control line */
-
-    check_arg();
-    seq_no seq = strict_atous(here(), plinebuf->c_str() + 3);
-    if (seq < 1 || seq > highest_delta_seqno()) {
-      corrupt(here(), "Invalid serial number");
-    }
-
-    const char *msg = NULL;
-
-    switch (line_type) {
-    case 'E':
-      msg = state.end(seq);
-      break;
-
-    case 'D':
-    case 'I':
-      msg = state.start(seq, line_type);
-      break;
-
-    default:
-      corrupt(here(), "Unexpected control line");
-      break;
-    }
-
-    if (msg != NULL) {
-      corrupt(here(), "%s", msg);
-    }
-  }
-
-  fflush(out);
-  return true;
+  return body_scanner_->get(gname, *delta_table, subst,
+			    outputfn, flags.encoded, state, parms,
+			    do_kw_subst, debug, show_module, show_sid);
 }
 
 /* Local variables: */

@@ -30,7 +30,7 @@
 #include "delta-iterator.h"
 
 bool
-cssc_delta_table::delta_at_seq_exists(seq_no seq)
+cssc_delta_table::delta_at_seq_exists(seq_no seq) const
 {
   const seq_no limit = l.get_high_seqno();
   ASSERT (0 < seq);
@@ -39,7 +39,7 @@ cssc_delta_table::delta_at_seq_exists(seq_no seq)
 }
 
 const delta &
-cssc_delta_table::delta_at_seq(seq_no seq)
+cssc_delta_table::delta_at_seq(seq_no seq) const
 {
   const seq_no limit = l.get_high_seqno();
   ASSERT (0 < seq);

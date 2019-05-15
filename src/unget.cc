@@ -115,7 +115,7 @@ main(int argc, char **argv)
       try
 	{
 	  sccs_name &name = iter.get_name();
-	  sccs_pfile pfile(name, sccs_pfile::UPDATE);
+	  sccs_pfile pfile(name, sccs_pfile::PFILE_UPDATE);
 
 	  const std::pair<sccs_pfile::find_status, sccs_pfile::iterator> found(pfile.find_sid(rid));
 	  switch (found.first)

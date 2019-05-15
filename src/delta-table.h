@@ -111,13 +111,13 @@ public:
     return *this;
   }
 
-  bool delta_at_seq_exists(seq_no seq)
+  bool delta_at_seq_exists(seq_no seq) const
   {
     std::map<seq_no, size_t>::const_iterator i = seq_table.find(seq);
     return i != seq_table.end();
   }
 
-  const delta& delta_at_seq(seq_no seq)
+  const delta& delta_at_seq(seq_no seq) const
   {
     std::map<seq_no, size_t>::const_iterator i = seq_table.find(seq);
     ASSERT (i != seq_table.end());
@@ -146,8 +146,8 @@ public:
 
   // These two methods should b const, but are not because they
   // call build_seq_table().
-  bool delta_at_seq_exists(seq_no seq);
-  const delta & delta_at_seq(seq_no seq);
+  bool delta_at_seq_exists(seq_no seq) const;
+  const delta & delta_at_seq(seq_no seq) const;
 
   const delta *find(sid id) const;
   const delta *find_any(sid id) const; // includes removed deltas.

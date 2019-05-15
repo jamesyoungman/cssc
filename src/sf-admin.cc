@@ -31,6 +31,7 @@
 #include <string>
 #include <vector>
 #include "cssc.h"
+#include "l-split.h"
 #include "sccsfile.h"
 #include "sl-merge.h"
 #include "delta.h"
@@ -51,7 +52,6 @@
 
 /* Changes the file comment, flags, and/or the user authorization list
    of the SCCS file. */
-
 bool
 sccs_file::admin(const char *file_comment,
 		 bool force_binary,
@@ -66,29 +66,19 @@ sccs_file::admin(const char *file_comment,
   if (file_comment != NULL)
     {
       comments.clear();
-      if (file_comment[0] != '\0')
+      if (file_comment[0])
 	{
-	  FILE *fc = fopen(file_comment, "r");
-	  if (NULL == fc)
+	  std::pair<int, std::vector<std::string>> comment_lines =
+	    read_file_lines(file_comment);
+	  if (comment_lines.first != 0)
 	    {
-	      errormsg_with_errno("%s: Can't open comment file", file_comment);
-	      return false;
-	    }
-
-	  while (!read_line_param(fc))
-	    {
-	      comments.push_back(plinebuf->c_str());
-	    }
-
-	  if (ferror(fc))
-	    {
+	      errno = comment_lines.first;
 	      errormsg_with_errno("%s: Read error", file_comment);
-	      fclose(fc);
 	      return false;
 	    }
 	  else
 	    {
-	      fclose(fc);
+	      std::swap(comment_lines.second, comments);
 	    }
 	}
     }
@@ -407,7 +397,10 @@ sccs_file::create(const sid &id,
   FILE *out = start_update(new_delta);
   if (NULL == out)
     {
-      fclose(in);
+      if (in != NULL)
+	{
+	  fclose(in);
+	}
       return false;
     }
 

@@ -47,7 +47,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 
         pname = name.pfile();
 
-        if (mode != READ) {
+        if (mode != PFILE_READ) {
                 if (name.lock()) {
                         ctor_fail(-1,
                                   "%s: SCCS file is locked.  Try again later.",
@@ -159,7 +159,7 @@ sccs_pfile::print_lock_sid(FILE *fp, const_iterator pos) const
 
 
 sccs_pfile::~sccs_pfile() {
-        if (mode != READ) {
+        if (mode != PFILE_READ) {
                 name.unlock();
         }
 }
