@@ -20,7 +20,7 @@
  *
  *
  * This file centralises knowledge of the return values
- * of the various <stdio.h> functions.
+ * of the various <cstdio> functions.
  *
  */
 

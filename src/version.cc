@@ -1,5 +1,5 @@
 #include "config.h"
-#include <stdio.h>
+#include <cstdio>
 #include "version.h"
 
 #define version_core "GNU CSSC 1.4.1-rc1"

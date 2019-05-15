@@ -48,7 +48,7 @@
 
 #include <config.h>
 
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>      /* for exit() */
 #include <string.h>      /* for strchr() */
 

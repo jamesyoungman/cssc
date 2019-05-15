@@ -29,7 +29,7 @@
 #define NO_COMMON_HEADERS
 
 #include <config.h>
-#include <stdio.h>
+#include <cstdio>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>

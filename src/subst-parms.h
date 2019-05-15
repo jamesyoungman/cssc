@@ -23,7 +23,7 @@
 #ifndef CSSC__SUBST_PARMS_H__
 #define CSSC__SUBST_PARMS_H__
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 
 #include "delta.h"

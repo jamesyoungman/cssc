@@ -28,7 +28,7 @@
 #ifndef CSSC__FILEDIFF_H
 #define CSSC__FILEDIFF_H
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 
 class FileDiff

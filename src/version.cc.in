@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include "version.h"
 
 #define version_core "GNU CSSC @VERSION@"

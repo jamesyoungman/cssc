@@ -31,7 +31,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 
 #include "cssc.h"		/* for CONFIG_CAN_HARD_LINK_AN_OPEN_FILE */
