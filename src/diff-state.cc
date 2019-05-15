@@ -53,7 +53,7 @@ diff_state::diff_output_corrupt(const char *msg)
 inline void
 diff_state::next_state()
 {
-  if (_state == DELETE && change_left != 0)
+  if (_state == diffstate::DELETE && change_left != 0)
     {
       if (read_line())
         {
@@ -69,14 +69,14 @@ diff_state::next_state()
         }
       lines_left = change_left;
       change_left = 0;
-      _state = INSERT;
+      _state = diffstate::INSERT;
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): returning INSERT [1]\n");
 #endif
       return;
     }
 
-  if (_state != NOCHANGE)
+  if (_state != diffstate::NOCHANGE)
     {
       if (read_line())
         {
@@ -84,7 +84,7 @@ diff_state::next_state()
             {
               diff_output_corrupt();
             }
-          _state = END;
+          _state = diffstate::END;
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): returning END [2]");
 #endif
@@ -107,7 +107,7 @@ diff_state::next_state()
             {
               diff_output_corrupt();
             }
-          _state = END;
+          _state = diffstate::END;
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): returning END [4]\n");
 #endif
@@ -139,7 +139,7 @@ diff_state::next_state()
     {
       if (line1 >= in_lineno)
         {
-          _state = NOCHANGE;
+          _state = diffstate::NOCHANGE;
           lines_left = line1 - in_lineno + 1;
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): returning NOCHANGE [5]\n");
@@ -155,7 +155,7 @@ diff_state::next_state()
     {
       if (line1 > in_lineno)
         {
-          _state = NOCHANGE;
+          _state = diffstate::NOCHANGE;
           lines_left = line1 - in_lineno;
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): returning END\n");
@@ -202,7 +202,7 @@ diff_state::next_state()
   switch (c)
     {
     case 'a':
-      _state = INSERT;
+      _state = diffstate::INSERT;
       lines_left = line4 - line3 + 1;
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): returning INSERT [6]\n");
@@ -210,7 +210,7 @@ diff_state::next_state()
       break;
 
     case 'd':
-      _state = DELETE;
+      _state = diffstate::DELETE;
       lines_left = line2 - line1 + 1;
 #ifdef JAY_DEBUG
       fprintf(stderr, "next_state(): returning DELETE [7]\n");
@@ -218,7 +218,7 @@ diff_state::next_state()
       break;
 
     case 'c':
-      _state = DELETE;
+      _state = diffstate::DELETE;
       lines_left = line2 - line1 + 1;
       change_left = line4 - line3 + 1;
 #ifdef JAY_DEBUG
@@ -235,29 +235,29 @@ diff_state::next_state()
 /* Figure out whether a line is being inserted, deleted or left unchanged.
    Output new control lines accordingly. */
 
-/* enum */ diff_state::state
+diffstate
 diff_state::process(FILE *out, seq_no seq)
 {
-  if (_state != INSERT)
+  if (_state != diffstate::INSERT)
     {
       in_lineno++;
     }
 
-  if (_state != END)
+  if (_state != diffstate::END)
     {
       ASSERT(lines_left >= 0);
       if (lines_left == 0)
         {
-          if (_state == DELETE || _state == INSERT)
+          if (_state == diffstate::DELETE || _state == diffstate::INSERT)
             {
               fprintf(out, "\001E %d\n", seq);
             }
           next_state();
-          if (_state == INSERT)
+          if (_state == diffstate::INSERT)
             {
               fprintf(out, "\001I %d\n", seq);
             }
-          else if (_state == DELETE)
+          else if (_state == diffstate::DELETE)
             {
               fprintf(out, "\001D %d\n", seq);
             }
@@ -265,7 +265,7 @@ diff_state::process(FILE *out, seq_no seq)
       lines_left--;
     }
 
-  if (_state == DELETE)
+  if (_state == diffstate::DELETE)
     {
       if (read_line())
         {
@@ -278,7 +278,7 @@ diff_state::process(FILE *out, seq_no seq)
     }
   else
     {
-      if (_state == INSERT)
+      if (_state == diffstate::INSERT)
         {
           if (read_line())
             {

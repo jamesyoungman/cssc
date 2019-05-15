@@ -29,13 +29,12 @@
 #include "delta.h"
 #include "linebuf.h"
 
+enum class diffstate { START, NOCHANGE, DELETE, INSERT, END };
+
 class diff_state
 {
-public:
-  enum state { START, NOCHANGE, DELETE, INSERT, END };
-
 private:
-  enum state _state;
+  diffstate _state;
   int in_lineno, out_lineno;
   int lines_left;
   int change_left;
@@ -65,7 +64,7 @@ private:
 
 public:
   diff_state(FILE *f, bool echo)
-    : _state(START),
+    : _state(diffstate::START),
       in_lineno(0), out_lineno(0),
       lines_left(0), change_left(0),
       echo_diff_output(echo),
@@ -73,12 +72,12 @@ public:
     {
     }
 
-  enum state process(FILE *out, seq_no seq);
+  diffstate process(FILE *out, seq_no seq);
 
   const char *
   get_insert_line()
     {
-      ASSERT(_state == INSERT);
+      ASSERT(_state == diffstate::INSERT);
       ASSERT(linebuf[0] == '>' && linebuf[1] == ' ');
       return linebuf.c_str() + 2;
     }

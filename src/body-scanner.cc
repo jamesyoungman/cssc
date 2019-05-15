@@ -336,7 +336,7 @@ sccs_file_body_scanner::delta(const string& dname,
 	      // But if we just want to insert it into this version too,
 	      // we still need to count it as an unchanged line.
 
-	      /* enum */ diff_state::state action;
+	      diffstate action;
 
 	      do
 		{
@@ -347,7 +347,7 @@ sccs_file_body_scanner::delta(const string& dname,
 		  switch (action)
 		    {
 
-		    case diff_state::DELETE:
+		    case diffstate::DELETE:
 		      // signal that we want to delete that line,
 		      // and break out of this inner loop (we do
 		      // that by leaving the INSERT state).  The
@@ -376,7 +376,7 @@ sccs_file_body_scanner::delta(const string& dname,
 		      ++result.deleted;
 		      break;
 
-		    case diff_state::INSERT:
+		    case diffstate::INSERT:
 		      {
 			// We're inserting some data.   Emit that
 			// data.  When we've done that, we'll either
@@ -417,7 +417,7 @@ sccs_file_body_scanner::delta(const string& dname,
 			break;
 		      }
 		
-		    case diff_state::END:
+		    case diffstate::END:
 #ifdef JAY_DEBUG
 		      fprintf(stderr, "diff_state::END\n");
 #endif
@@ -426,7 +426,7 @@ sccs_file_body_scanner::delta(const string& dname,
 			  break;
 			}
 		      /* FALLTHROUGH */
-		    case diff_state::NOCHANGE:
+		    case diffstate::NOCHANGE:
 		      // line unchanged - so there must have been an input line,
 		      // so we cannot be at the end of the data.
 		      ASSERT(c != -1);
@@ -443,7 +443,7 @@ sccs_file_body_scanner::delta(const string& dname,
 		    default:
 		      abort();
 		    }
-		} while (action == diff_state::INSERT);
+		} while (action == diffstate::INSERT);
 
 #ifdef JAY_DEBUG
 	      fprintf(stderr, "while (action==diff_state::INSERT) loop ended.\n");
@@ -454,7 +454,7 @@ sccs_file_body_scanner::delta(const string& dname,
 	    {
 	      // If we've exhausted the input we may still have a block to
 	      // insert at the end.
-	      while (diff_state::INSERT == dstate.process(out, new_seq))
+	      while (diffstate::INSERT == dstate.process(out, new_seq))
 		{
 		  ++result.inserted;
 
