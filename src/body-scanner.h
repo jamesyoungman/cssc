@@ -22,7 +22,7 @@
 #ifndef CSSC__BODY_SCANNER_H__
 #define CSSC__BODY_SCANNER_H__
 
-#include <stdio.h>
+#include <cstdio>
 #include <sys/types.h>		/* off_t */
 #include <string>
 #include <functional>

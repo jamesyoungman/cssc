@@ -23,7 +23,7 @@
 #include "config.h"
 #include "cssc.h"
 
-#include <stdio.h>
+#include <cstdio>
 #include <string.h>
 
 #include <memory>
