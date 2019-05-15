@@ -35,7 +35,7 @@
 #include <config.h>
 
 #include <unistd.h>
-#include <stdio.h>		/* perror() */
+#include <cstdio>		/* perror() */
 
 #include "cssc.h"
 #include "sysdep.h"
