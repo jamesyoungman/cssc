@@ -23,7 +23,7 @@
 #ifndef CSSC__DIFF_STATE_H
 #define CSSC__DIFF_STATE_H
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "defaults.h"
 #include "delta.h"
