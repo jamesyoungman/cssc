@@ -79,8 +79,8 @@ template<typename It, typename Pred> struct filter_iterator
 
 class sccs_pfile {
 public:
-  enum _mode { PFILE_READ, PFILE_APPEND, PFILE_UPDATE };
-  enum find_status { FOUND, NOT_FOUND, AMBIGUOUS };
+  enum class pfile_mode { PFILE_READ, PFILE_APPEND, PFILE_UPDATE };
+  enum class find_status { FOUND, NOT_FOUND, AMBIGUOUS };
 
 private:
   struct edit_lock
@@ -104,7 +104,7 @@ private:
 
   sccs_name &name;
   string pname;
-  enum _mode mode;
+  pfile_mode mode;
 
   std::list<edit_lock> edit_locks;
 
@@ -143,7 +143,7 @@ private:
   }
 
 public:
-  sccs_pfile(sccs_name &name, enum _mode mode);
+  sccs_pfile(sccs_name &name, pfile_mode mode);
 
   typedef std::list<edit_lock>::size_type size_type;
   typedef std::list<edit_lock>::iterator iterator;

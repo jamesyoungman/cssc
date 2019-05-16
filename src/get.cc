@@ -330,7 +330,7 @@ main(int argc, char **argv)
           sccs_pfile *pfile = NULL;
           if (for_edit)
             {
-              pfile = new sccs_pfile(name, sccs_pfile::PFILE_APPEND);
+              pfile = new sccs_pfile(name, sccs_pfile::pfile_mode::PFILE_APPEND);
             }
 
           sccs_file file(name, READ);

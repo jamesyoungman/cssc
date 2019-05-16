@@ -115,13 +115,13 @@ main(int argc, char **argv)
       try
 	{
 	  sccs_name &name = iter.get_name();
-	  sccs_pfile pfile(name, sccs_pfile::PFILE_UPDATE);
+	  sccs_pfile pfile(name, sccs_pfile::pfile_mode::PFILE_UPDATE);
 
 	  const std::pair<sccs_pfile::find_status, sccs_pfile::iterator> found(pfile.find_sid(rid));
 	  switch (found.first)
 	    {
 	      // normal case...
-	    case sccs_pfile::FOUND:
+	    case sccs_pfile::find_status::FOUND:
 	      if (!iter.unique())
 		printf("\n%s:\n", name.c_str());
 
@@ -140,7 +140,7 @@ main(int argc, char **argv)
 	      break;
 
 	      // error cases...
-	    case sccs_pfile::NOT_FOUND:
+	    case sccs_pfile::find_status::NOT_FOUND:
 	      if (!rid.valid())
 		errormsg("%s: You have no edits outstanding.", name.c_str());
 	      else
@@ -150,7 +150,7 @@ main(int argc, char **argv)
 	      retval = 1;
 	      break;
 
-	    case sccs_pfile::AMBIGUOUS:
+	    case sccs_pfile::find_status::AMBIGUOUS:
 	      if (!rid.valid())
 		errormsg("%s: Specified SID is ambiguous.", name.c_str());
 	      else

@@ -38,8 +38,8 @@ sccs_pfile::corrupt(int lineno, const char *msg) const {
                        pname.c_str(), lineno, msg);
 }
 
-sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
-                : name(n), mode(m) {
+sccs_pfile::sccs_pfile(sccs_name &n, pfile_mode m)
+  : name(n), mode(m) {
 
         if (!name.valid()) {
                 ctor_fail(-1, "%s: Not a SCCS file.", name.c_str());
@@ -47,7 +47,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, enum _mode m)
 
         pname = name.pfile();
 
-        if (mode != PFILE_READ) {
+        if (mode != pfile_mode::PFILE_READ) {
                 if (name.lock()) {
                         ctor_fail(-1,
                                   "%s: SCCS file is locked.  Try again later.",
@@ -159,7 +159,7 @@ sccs_pfile::print_lock_sid(FILE *fp, const_iterator pos) const
 
 
 sccs_pfile::~sccs_pfile() {
-        if (mode != PFILE_READ) {
+  if (mode != pfile_mode::PFILE_READ) {
                 name.unlock();
         }
 }

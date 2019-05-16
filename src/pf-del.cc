@@ -49,7 +49,7 @@ sccs_pfile::find_sid(const sid& id)
 	{
 	  if (found != end())
 	    {
-	      return make_pair(AMBIGUOUS, end());
+	      return make_pair(find_status::AMBIGUOUS, end());
 	    }
 	  found = it;
 	}
@@ -57,9 +57,9 @@ sccs_pfile::find_sid(const sid& id)
 
   if (found == end())
     {
-      return make_pair(NOT_FOUND, end());
+      return make_pair(find_status::NOT_FOUND, end());
     }
-  return make_pair(FOUND, found);
+  return make_pair(find_status::FOUND, found);
 }
 
 bool

@@ -49,7 +49,7 @@ usage() {
 static bool
 is_locked(sccs_name& name, sid rid)
 {
-  sccs_pfile pfile(name, sccs_pfile::PFILE_READ);
+  sccs_pfile pfile(name, sccs_pfile::pfile_mode::PFILE_READ);
   for (sccs_pfile::const_iterator it = pfile.begin();
        it != pfile.end();
        ++it)

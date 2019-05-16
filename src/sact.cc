@@ -76,7 +76,7 @@ main(int argc, char **argv)
       try
 	{
 	  sccs_name &name = iter.get_name();
-	  sccs_pfile pfile(name, sccs_pfile::PFILE_READ);
+	  sccs_pfile pfile(name, sccs_pfile::pfile_mode::PFILE_READ);
 
 
 	  bool first = true;

@@ -35,7 +35,7 @@
 bool
 sccs_pfile::add_lock(sid got, sid delta,
 		     sid_list &included, sid_list &excluded) {
-	ASSERT(mode == PFILE_APPEND);
+        ASSERT(mode == pfile_mode::PFILE_APPEND);
 	struct edit_lock new_lock;
 	bool pfile_already_exists;
 
