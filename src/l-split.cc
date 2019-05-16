@@ -152,6 +152,54 @@ read_file_lines(const char* file_name)
 }
 
 
+std::string::const_iterator
+split_string(std::string::const_iterator first, std::string::const_iterator last,
+	     char delimiter, std::vector<std::string>* output,
+	     std::string::size_type field_limit)
+{
+  bool empty;			// when true, current is empty
+  std::string current;
+  current.reserve(last - first);
+  auto emit = [output, &current, &field_limit]()
+    {
+      output->push_back(current);
+      current.clear();
+      --field_limit;
+    };
+
+  while (field_limit > 0u)
+    {
+      char ch;
+      if (first == last)
+	{
+	  ch = delimiter;
+	  emit();
+	  empty = true;
+	}
+      else
+	{
+	  ch = *first++;
+	  if (ch == delimiter)
+	    {
+	      emit();
+	      empty = false;
+	    }
+	  else
+	    {
+	      current.push_back(ch);
+	    }
+	}
+      if (first == last)
+	{
+	  break;
+	}
+    }
+  if (field_limit > 0u && !empty)
+    {
+      emit();
+    }
+  return first;
+}
 
 /* Local variables: */
 /* mode: c++ */
