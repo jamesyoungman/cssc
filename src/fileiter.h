@@ -51,7 +51,7 @@ private:
   int is_unique;
 
   std::vector<std::string> files;
-  std::vector<std::string>::size_type pos;
+  std::vector<std::string>::size_type pos; // current iteration position
   sccs_name name;
 
 public:
@@ -62,15 +62,13 @@ public:
 
   sccs_name &get_name() { return name; }
 
-  // JAY mod: using is now a keyword; change the function name to
-  // using_source().
   enum sources using_source() { return source; }
   bool using_stdin() { return STDIN == source; }
 
-  // unique() returns nonzero if more than exactly one file was
-  // specified on the command line; zero if more than one was
-  // specified or the names are gotten from a directory or pipe.
-  int unique() const;
+  // unique() returns nonzero if exactly one file was specified on the
+  // command line; zero if more than one was specified or the names
+  // are gotten from a directory or pipe.
+  bool unique() const;
 };
 
 #endif /* __FILEITER_H__ */

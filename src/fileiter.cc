@@ -43,7 +43,7 @@
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	: argv(opts.get_argv() + opts.get_index()),
 	  argc(opts.get_argc() - opts.get_index()),
-	  is_unique(0)
+	  is_unique(false)
 {
 
 	if (argc < 1) {
@@ -109,7 +109,7 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 }
 
 
-int
+bool
 sccs_file_iterator::unique() const
 {
   return is_unique;
