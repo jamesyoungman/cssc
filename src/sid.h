@@ -199,7 +199,7 @@ public:
   }
 
   int print(FILE *f) const;
-  int printf(FILE *f, char fmt, int force_zero=0) const;
+  int printf(FILE *f, char fmt, bool force_zero=false) const;
 
   int			// 0 return means success.
   dprint(FILE *f) const {

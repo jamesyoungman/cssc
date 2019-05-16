@@ -305,7 +305,7 @@ sid::print(FILE *out) const {
 }
 
 int
-sid::printf(FILE *out, char c, int force_zero /*=0*/) const {
+sid::printf(FILE *out, char c, bool force_zero /*=false*/) const {
 	ASSERT(valid());
 	ASSERT(!partial_sid());
 
