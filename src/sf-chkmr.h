@@ -23,9 +23,6 @@
  *
  *
  * Defines the check_mrs member function of the class sccs_file.
- *
- * @(#) CSSC sf-chkmr.h 1.1 93/11/09 17:17:51
- *
  */
 
 #ifndef CSSC__SF_CHKMR_H__

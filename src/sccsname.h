@@ -23,9 +23,6 @@
  *
  *
  * Defines the class sccs_name.
- *
- * @(#) CSSC sccsname.h 1.1 93/11/09 17:17:50
- *
  */
 
 #ifndef CSSC__SCCSNAME_H__

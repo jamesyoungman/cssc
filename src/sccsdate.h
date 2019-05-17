@@ -23,9 +23,6 @@
  *
  *
  * Defines the class sccs_date.
- *
- * @(#) CSSC sccsdate.h 1.1 93/11/09 17:17:49
- *
  */
 
 #ifndef CSSC__SCCSDATE_H__

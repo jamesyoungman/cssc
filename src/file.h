@@ -23,9 +23,6 @@
  *
  *
  * Declares system dependent routines for accessing files.
- *
- * @(#) CSSC file.h 1.1 93/11/09 17:17:46
- *
  */
 
 #ifndef CSSC__FILE_H__

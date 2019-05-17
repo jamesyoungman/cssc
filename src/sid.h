@@ -24,9 +24,6 @@
  *
  * Defines the classes sid, and release as well as the typedef's sid_list
  * and release_list.
- *
- * @(#) CSSC sid.h 1.1 93/11/09 17:17:51
- *
  */
 
 #ifndef CSSC__SID_H__

@@ -23,9 +23,6 @@
  *
  *
  * Includes system dependent header files.
- *
- * @(#) CSSC sysdep.h 1.2 93/11/10 04:48:37
- *
  */
 
 #ifndef CSSC__SYSDEP_H__

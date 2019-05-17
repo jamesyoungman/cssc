@@ -23,9 +23,6 @@
  *
  *
  * Sets the default values of configuration macros left undefined.
- *
- * @(#) CSSC defaults.h 1.1 93/11/09 17:17:46
- *
  */
 
 #ifndef CSSC__DEFAULTS_H__

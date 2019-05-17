@@ -23,9 +23,6 @@
  *
  *
  * Merge and remove member functions of the template range_list.
- *
- * @(#) CSSC sl-merge.c 1.1 93/11/09 17:18:03
- *
  */
 #include "cssc.h"
 #include "sid.h"
