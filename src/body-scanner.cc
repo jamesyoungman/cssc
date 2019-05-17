@@ -196,25 +196,36 @@ bool sccs_file_body_scanner::get(const std::string& gname,
       corrupt(here(), "Invalid serial number %u converted from '%s'", unsigned(seq), plinebuf->c_str());
     }
 
-    const char *msg = NULL;
+    auto badstate = [this](const std::string& msg)
+      {
+	corrupt(here(), "%s", msg.c_str());
+      };
 
     switch (line_type) {
     case 'E':
-      msg = state.end(seq);
+      {
+	auto outcome = state.end(seq);
+	if (!outcome.first)
+	  {
+	    badstate(outcome.second);
+	  }
+      }
       break;
 
     case 'D':
     case 'I':
-      msg = state.start(seq, line_type);
+      {
+	auto outcome = state.start(seq, line_type);
+	if (!outcome.first)
+	  {
+	    badstate(outcome.second);
+	  }
+      }
       break;
 
     default:
       corrupt(here(), "Unexpected control line");
       break;
-    }
-
-    if (msg != NULL) {
-      corrupt(here(), "%s", msg);
     }
   }
 
@@ -299,27 +310,36 @@ sccs_file_body_scanner::delta(const std::string& dname,
 		  corrupt(here(), "Invalid sequence number %u", unsigned(seq));
 		}
 
-	      const char *msg = NULL;
-
+	      auto badstate = [this](const std::string& msg)
+		{
+		  corrupt(here(), "%s", msg.c_str());
+		};
 	      switch (c)
 		{
 		case 'E':
-		  msg = sstate->end(seq);
+		  {
+		    auto outcome = sstate->end(seq);
+		    if (!outcome.first)
+		      {
+			badstate(outcome.second);
+		      }
+		  }
 		  break;
 
 		case 'D':
 		case 'I':
-		  msg = sstate->start(seq, c);
+		  {
+		    auto outcome = sstate->start(seq, c);
+		    if (!outcome.first)
+		      {
+			badstate(outcome.second);
+		      }
+		  }
 		  break;
 
 		default:
 		  corrupt(here(), "Unexpected control line '%c'", c);
 		  break;
-		}
-
-	      if (msg != NULL)
-		{
-		  corrupt(here(), "%s", msg);
 		}
 	    }
 	  else if (sstate->include_line())

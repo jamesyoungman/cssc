@@ -43,19 +43,21 @@ class seq_state
   // Make assignment and copy constructor private.
   const seq_state& operator=(const seq_state& s);
 
-  unsigned char * pIncluded;
-  unsigned char * pExcluded;
-  unsigned char * pIgnored;
-  unsigned char * pNonrecursive;
-  unsigned char * pExplicit;
-  seq_no        * pDoneBy;
+  struct one_state
+  {
+    bool included;
+    bool excluded;
+    bool ignored;
+    bool non_recursive;
+    bool is_explicit;
+    seq_no done_by;
+    bool active;
+    char command;
+  };
 
-  unsigned char * pActive;
-  char          * pCommand;
-
-  seq_no          last;
-  seq_no          active; // for use by "get -m" and so on.
-
+  std::vector<one_state> states_;
+  seq_no          last_;
+  seq_no          active_; // for use by "get -m" and so on.
 
   // We keep a record of the open ^AI or ^AD expressions
   // that are currently in effect, while reading the SCCS file.
@@ -94,15 +96,16 @@ public:
 
   // stuff for use when reading the body of the s-file.
 
-  // When we find ^AI or ^AD
-  const char * start(seq_no seq, char command);
+  // When we find ^AI or ^AD.
+  // pair.first == success indicator
+  // pair.second == error message
+  std::pair<bool,std::string> start(seq_no seq, char command);
 
   // When we find ^AE.
-  const char * end(seq_no seq);
+  std::pair<bool,std::string> end(seq_no seq);
 
   // Tells us if the delta at the top of the stack is being included.
   int include_line() const;
-
 
   // finding out which seq is active, currently.
   seq_no active_seq() const;

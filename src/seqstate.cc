@@ -23,6 +23,7 @@
  */
 
 #include <config.h>
+#include <utility>
 #include "cssc.h"
 #include "seqstate.h"
 
@@ -30,60 +31,32 @@
 
 
 seq_state::seq_state(seq_no l) :
-  last(l),
-  active(0u)
+  last_(l),
+  active_(0u)
 {
-  pIncluded = new unsigned char[l + 1];
-  pIgnored  = new unsigned char[l + 1];
-  pExcluded = new unsigned char[l + 1];
-  pExplicit = new unsigned char[l + 1];
-  pDoneBy   = new seq_no       [l + 1];
-  pNonrecursive = new unsigned char[l + 1];
-  pActive   = new unsigned char[l + 1];
-  pCommand  = new          char[l + 1];
-
-  for(int i=0; i <= last; i++)
+  states_.reserve(last_+1);
+  one_state initial_condition;
+  initial_condition.included = false;
+  initial_condition.ignored = false;
+  initial_condition.excluded = false;
+  initial_condition.is_explicit = false;
+  initial_condition.done_by = 0u;
+  initial_condition.non_recursive = false;
+  initial_condition.active = false;
+  initial_condition.command = '\0';
+  for (decltype(last_) i = 0; i <= last_; ++i)
     {
-      pIncluded[i] = 0;
-      pIgnored[i]  = 0;
-      pExcluded[i] = 0;
-      pExplicit[i] = 0;
-      pDoneBy[i]   = 0u;
-      pNonrecursive[i] = 0;
-      pActive[i]   = 0;
-      pCommand[i]  = 0;
+      states_.push_back(initial_condition);
     }
-
   decide_disposition();
 }
 
 
 seq_state::seq_state(const seq_state& s) :
-  last(s.last),
-  active(s.active)
-
+  last_(s.last_),
+  active_(s.active_)
 {
-  pIncluded = new unsigned char[last + 1];
-  pIgnored  = new unsigned char[last + 1];
-  pExcluded = new unsigned char[last + 1];
-  pExplicit = new unsigned char[last + 1];
-  pDoneBy   = new seq_no       [last + 1];
-  pNonrecursive = new unsigned char[last + 1];
-  pActive   = new unsigned char[last + 1];
-  pCommand  = new          char[last + 1];
-
-  for( int i=0; i <= last; i++)
-    {
-      pIncluded[i] = s.pIncluded[i];
-      pIgnored [i] = s.pIgnored [i];
-      pExcluded[i] = s.pExcluded[i];
-      pExplicit[i] = s.pExplicit[i];
-      pDoneBy  [i] = s.pDoneBy[i];
-      pNonrecursive[i] = s.pNonrecursive[i];
-      pActive[i]   = s.pActive[i];
-      pCommand[i]  = s.pCommand[i];
-    }
-
+  states_ = s.states_;
   decide_disposition();
 }
 
@@ -91,101 +64,94 @@ seq_state::seq_state(const seq_state& s) :
 
 bool seq_state::is_included(seq_no n) const
 {
-  return pIncluded[n];
+  return states_[n].included;
 }
 
 bool seq_state::is_excluded(seq_no n) const
 {
-  return pExcluded[n];
+  return states_[n].excluded;
 }
 
 bool seq_state::is_ignored(seq_no n) const
 {
-  return pIgnored[n];
+  return states_[n].ignored;
 }
 
 void seq_state::set_explicitly_included(seq_no n, seq_no who)
 {
-  if (0 == pIncluded[n])	// if not already included...
+  if (!states_[n].included)  	// if not already included...
     {
       set_included(n, who);
-      pExplicit[n] = 1;
-      pNonrecursive[n] = true;
-      pDoneBy[n] = who;
+      one_state& s = states_[n];
+      s.is_explicit = true;
+      s.non_recursive = true;
+      s.done_by = who;
     }
 }
 
 void seq_state::set_explicitly_excluded(seq_no n, seq_no who)
 {
   set_excluded(n, who);
-  pExplicit[n] = 1;
-  pNonrecursive[n] = true;
-  pDoneBy[n] = who;
+  one_state& s = states_[n];
+  s.is_explicit = true;
+  s.non_recursive = true;
+  s.done_by = who;
 }
 
 void seq_state::set_included(seq_no n,
 			     seq_no who,
 			     bool bNonRecursive /*=false*/)
 {
-  pIncluded[n] = 1;
-  pIgnored[n]  = 0;
-  pExcluded[n] = 0;
-  pNonrecursive[n] = bNonRecursive;
-  pDoneBy[n] = who;
+  one_state& s = states_[n];
+  s.included = true;
+  s.ignored = false;
+  s.excluded = false;
+  s.non_recursive = bNonRecursive;
+  s.done_by = who;
 }
 
 void seq_state::set_ignored(seq_no n, seq_no who)
 {
-  pIgnored [n] = 1;
-  pIncluded[n] = 0;
-  pExcluded[n] = 0;
-  pNonrecursive[n] = true;
-  pDoneBy[n] = who;
+  one_state& s = states_[n];
+  s.ignored = true;
+  s.included = false;
+  s.excluded = false;
+  s.non_recursive = true;
+  s.done_by = who;
 }
 
 void seq_state::set_excluded(seq_no n, seq_no who)
 {
-  pExcluded[n] = 1;
-  pIncluded[n] = 0;
-  pIgnored [n] = 0;
-  pDoneBy[n] = who;
+  one_state& s = states_[n];
+  s.excluded = true;
+  s.included = false;
+  s.ignored = false;
+  s.done_by = who;
 }
 
 bool seq_state::is_explicitly_tagged(seq_no n) const
 {
-  return pExplicit[n];
+  return states_[n].is_explicit;
 }
 
 bool seq_state::is_nonrecursive(seq_no n) const
 {
-  return pNonrecursive[n];
+  return states_[n].non_recursive;
 }
 
 bool seq_state::is_recursive(seq_no n) const
 {
-  return !is_nonrecursive(n);
+  return !states_[n].non_recursive;
 }
 
 seq_no seq_state::whodunit(seq_no n) const
 {
-  return pDoneBy[n];
+  return states_[n].done_by;
 }
 
 
 seq_state::~seq_state()
 {
-  delete[] pIncluded;
-  delete[] pIgnored;
-  delete[] pExcluded;
-  delete[] pExplicit;
-  delete[] pDoneBy;
-  delete[] pNonrecursive;
-  delete[] pActive;
-  delete[] pCommand;
-
-  pIncluded = pExcluded = pIgnored = pExplicit = pNonrecursive = pActive = 0;
-  pDoneBy = 0;
-  pCommand = 0;
 }
 
 // stuff for use when reading the body of the s-file.
@@ -209,14 +175,15 @@ seq_state::decide_disposition()
   seq_no our_highest_delete         = 0u;
   seq_no owner_of_current_insertion = 0u;
 
-  for (seq_no s=0; s <= last; ++s)
+  for (seq_no s=0; s <= last_; ++s)
     {
-      if (!pActive[s])
+      const one_state& current = states_[s];
+      if (!current.active)
 	{
 	  continue;
 	}
 
-      if ('I' == pCommand[s])
+      if ('I' == current.command)
 	{
 	  if (is_included(s))
 	    {
@@ -256,9 +223,9 @@ seq_state::decide_disposition()
     {
       bool ignored = false;
 
-      active = our_highest_insert;
+      active_ = our_highest_insert;
       inserting = true;
-      if (is_ignored(active))
+      if (is_ignored(active_))
 	ignored = true;
 
       if (ignored)
@@ -281,35 +248,39 @@ seq_state::decide_disposition()
 
 
 // When we find ^AI or ^AD
-const char *
+std::pair<bool,std::string>
 seq_state::start(seq_no seq, char command_letter)
 {
+  auto fail = [](const char *msg) -> std::pair<bool, std::string>
+    {
+      return std::make_pair(false, std::string(msg));
+    };
+
   // begin diagnostic-only code.
   if (command_letter != 'I' && command_letter != 'D')
     {
-      return "invalid command letter";
+      return fail("invalid command letter");
     }
-  else if (seq > last)
+  else if (seq > last_)
     {
-      return "invalid sequence number";
+      return fail("invalid sequence number");
     }
-  else if (pActive[seq])
+  else if (states_[seq].active)
     {
-      if (pCommand[seq] == 'I')
+      if (states_[seq].command == 'I')
 	{
-	  return "^AI for sequence number which is already active";
+	  return fail("^AI for sequence number which is already active");
 	}
       else
 	{
-	  return "^AD for sequence number which is already active";
+	  return fail("^AD for sequence number which is already active");
 	}
     }
   // end diagnostic-only code.
 
 
-  pActive[seq] = 1;
-  pCommand[seq] = command_letter;
-
+  states_[seq].active = true;
+  states_[seq].command = command_letter;
   decide_disposition();
 
 #ifdef DEBUG_COMMANDS
@@ -319,34 +290,38 @@ seq_state::start(seq_no seq, char command_letter)
 	  (unsigned) seq,
 	  inserting ? 'Y' : 'N');
 #endif
-  return NULL;
+  return std::make_pair(true, std::string());;
 }
 
 // When we find ^AE.
-const char *
+std::pair<bool, std::string>
 seq_state::end(seq_no seq)
 {
-  if (seq > last)
+  auto fail = [](const char *msg) -> std::pair<bool, std::string>
     {
-      return "invalid sequence number";
+      return std::make_pair(false, std::string(msg));
+    };
+  if (seq > last_)
+    {
+      return fail("invalid sequence number");
     }
-  else if (pActive[seq])
+  else if (states_[seq].active)
     {
-      pActive[seq] = 0;
-      pCommand[seq] = 0;
+      states_[seq].active = false;
+      states_[seq].command = 0;
       decide_disposition();
 #ifdef DEBUG_COMMANDS
-	  fprintf(stderr,
-		  "^A%c %u: inserting=%c\n",
-		  'E',
-		  (unsigned) seq,
-		  inserting ? 'Y' : 'N');
+      fprintf(stderr,
+	      "^A%c %u: inserting=%c\n",
+	      'E',
+	      (unsigned) seq,
+	      inserting ? 'Y' : 'N');
 #endif
-	  return NULL;
+      return std::make_pair(true, std::string());;
     }
   else
     {
-      return "unmatched ^AE";
+      return fail("unmatched ^AE");
     }
 }
 
@@ -360,5 +335,5 @@ seq_state::include_line() const
 
 seq_no seq_state::active_seq() const
 {
-  return active;
+  return active_;
 }
