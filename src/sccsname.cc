@@ -49,22 +49,22 @@ base_part(const std::string& name)
   return basename;
 }
 
-int
+bool
 sccs_name::valid_filename(const char *thename)
 {
   ASSERT(0 != thename);
-
-  if (thename && thename[0])
-    {
-      std::string base = base_part(std::string(thename));
-      const int valid = (base.at(0) == 's' && base.at(1) == '.');
-      return valid;
-    }
-  else
+  if (!thename[0])
     {
       // empty filename; not valid.
-      return 0;
+      return false;
     }
+
+  const std::string base = base_part(std::string(thename));
+  if (base.size() < 2)
+    {
+      return false;
+    }
+  return base[0] == 's' && base[1] == '.';
 }
 
 void

@@ -61,7 +61,7 @@ class sccs_name
   sccs_name(sccs_name const &);
 
 public:
-  static int valid_filename(const char *name);
+  static bool valid_filename(const char *name);
   /* The initialisers on the following line have been re-ordered
    * to follow the declaration order.
    */
@@ -108,7 +108,7 @@ public:
 
   ~sccs_name()
   {
-    if (lock_cnt > 1) 
+    if (lock_cnt > 1)
       {
 	warning("deleting sccs_name instance whle lock_cnt is %d "
 		"(expected <= 1)", lock_cnt);
