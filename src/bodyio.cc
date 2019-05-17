@@ -121,7 +121,7 @@ body_insert_text(const char iname[], const char oname[],
   column = 0;
   while ( EOF != (ch=getc(in)) )
     {
-      if (CONFIG_EOL_CHARACTER == ch)
+      if ('\n' == ch)
 	++nl;
 
       // check for ^A at start of line.

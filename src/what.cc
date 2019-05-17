@@ -158,9 +158,6 @@ print_what(char *s, char *end, XFILE f) {
 		case '"':
 		case '>':
 		case '\n':
-#if CONFIG_EOL_CHARACTER != '\n'
-		case CONFIG_EOL_CHARACTER:
-#endif
 		case '\\':
 		case '\0':
 			return s;
@@ -175,9 +172,6 @@ print_what(char *s, char *end, XFILE f) {
 		case '"':
 		case '>':
 		case '\n':
-#if CONFIG_EOL_CHARACTER != '\n'
-		case CONFIG_EOL_CHARACTER:
-#endif
 		case '\\':
 		case '\0':
 		  /* Note that only one test case currently covers this line

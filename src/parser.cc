@@ -413,7 +413,7 @@ static bool eat_rest_of_line(FILE* f_local, const string& name)
 {
   int c;
   errno = 0;
-  while ( (c=getc(f_local)) != CONFIG_EOL_CHARACTER)
+  while ( (c=getc(f_local)) != '\n')
     {
       if (EOF == c)
         {
