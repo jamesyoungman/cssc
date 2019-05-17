@@ -31,6 +31,7 @@
 #include <climits>
 
 #include "cssc.h"
+#include "bodyio.h"
 #include "linebuf.h"
 #include "cssc-assert.h"
 #include "ioerr.h"
@@ -117,6 +118,10 @@ set_char(unsigned offset, char value)
   buf[offset] = value;
 }
 
+bool cssc_linebuf::check_id_keywords() const
+{
+  return ::check_id_keywords(buf, strlen(buf));	// TODO: make NUL-safe!
+}
 
 /* Local variables: */
 /* mode: c++ */
