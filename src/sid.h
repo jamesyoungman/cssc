@@ -211,9 +211,6 @@ public:
 
 
 inline sid::sid(release r): rel(r), level(0), branch(0), sequence(0) {}
-//inline sid::operator release() const { return release(rel); }
-
-#if 1
 
 inline int operator >(release i1, sid const &i2) { return i1 > release(i2); }
 inline int operator <(release i1, sid const &i2) { return i1 < release(i2); }
@@ -228,8 +225,6 @@ inline int operator >=(sid const &i1, release i2) { return release(i1) >= i2; }
 inline int operator <=(sid const &i1, release i2) { return release(i1) <= i2; }
 inline int operator ==(sid const &i1, release i2) { return release(i1) == i2; }
 inline int operator !=(sid const &i1, release i2) { return release(i1) != i2; }
-
-#endif
 
 typedef range_list<sid> sid_list;
 
