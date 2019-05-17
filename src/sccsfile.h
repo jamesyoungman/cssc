@@ -101,7 +101,7 @@ public:
   // ownership correct; an sccs_name carries with it a
   // lock, so if we copy it, either the copy does not
   // have a lock or we have too many locks in total.
-  sccs_file(sccs_name &name, enum _mode mode,
+  sccs_file(sccs_name &name, sccs_file_open_mode mode,
 	    ParserOptions = ParserOptions());
   bool checksum_ok() const;
 
@@ -319,7 +319,7 @@ private:
 private:
   sccs_name& name;
   bool checksum_valid_;
-  enum _mode mode;
+  enum sccs_file_open_mode mode;
   bool xfile_created;
   bool edit_mode_ok_;
   bool sfile_executable;

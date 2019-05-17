@@ -73,7 +73,8 @@ namespace
 #endif
 
 
-  FILE * do_open_sccs_file(const char *name, enum _mode mode, const ParserOptions&)
+  FILE * do_open_sccs_file(const char *name, sccs_file_open_mode mode,
+			   const ParserOptions&)
   {
     FILE *f_local;
 
@@ -112,7 +113,8 @@ namespace
 
 // Factory function for creating a parser.
 std::unique_ptr<sccs_file_parser::open_result>
-sccs_file_parser::open_sccs_file(const std::string& name, enum _mode mode,
+sccs_file_parser::open_sccs_file(const std::string& name,
+				 sccs_file_open_mode mode,
 				 ParserOptions opts)
 {
   FILE * f = do_open_sccs_file(name.c_str(), mode, opts);
@@ -133,7 +135,8 @@ sccs_file_parser::open_sccs_file(const std::string& name, enum _mode mode,
 }
 
 
-sccs_file_parser::sccs_file_parser(const string& n, enum _mode m, FILE *f,
+sccs_file_parser::sccs_file_parser(const string& n, sccs_file_open_mode m,
+				   FILE *f,
 				   sccs_file_parser::constructor_cookie)
   : sccs_file_reader_base(n, f, sccs_file_location(n, 0)),
     mode_(m), is_bk_file_(false)

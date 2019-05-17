@@ -109,7 +109,7 @@ public:
 
   // Open an SCCS file.  Result is null on failure.
   static std::unique_ptr<open_result>
-  open_sccs_file(const string& name, enum _mode, ParserOptions);
+  open_sccs_file(const string& name, sccs_file_open_mode, ParserOptions);
   
   NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
   void saw_unknown_feature(const char *fmt, ...) const;
@@ -118,7 +118,7 @@ public:
   // The purpose of the constructor_cookie is to allow make_unique to
   // use a public constructor without allowing make_unique to be used
   // outside the class.
-  sccs_file_parser(const string& name, enum _mode, FILE *f, constructor_cookie c);
+  sccs_file_parser(const string& name, sccs_file_open_mode, FILE *f, constructor_cookie c);
 
 protected:
   std::unique_ptr<sccs_file_parser::open_result>
@@ -132,7 +132,7 @@ protected:
 private:
   sccs_file_parser& operator=(const sccs_file_parser&) = delete;
 
-  enum _mode mode_;
+  sccs_file_open_mode mode_;
   bool is_bk_file_;
 };
 

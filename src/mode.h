@@ -26,7 +26,7 @@
 #ifndef CSSC__MODE_H__
 #define CSSC__MODE_H__
 
-enum _mode { READ, UPDATE, CREATE, FIX_CHECKSUM };
+enum sccs_file_open_mode { READ, UPDATE, CREATE, FIX_CHECKSUM };
 
 #endif /* CSSC__MODE_H__ */
 

@@ -266,16 +266,15 @@ main(int argc, char **argv)
 	      continue;	// with next file
 	    }
 
-	  _mode mode;
-
+	  sccs_file_open_mode mode = sccs_file_open_mode::READ;
 	  if (check_checksum)
-	    mode = READ;
+	    mode = sccs_file_open_mode::READ;
 	  else if (new_sccs_file)
-	    mode = CREATE;
+	    mode = sccs_file_open_mode::CREATE;
 	  else if (reset_checksum)
-	    mode = FIX_CHECKSUM;
+	    mode = sccs_file_open_mode::FIX_CHECKSUM;
 	  else
-	    mode = UPDATE;
+	    mode = sccs_file_open_mode::UPDATE;
 
 	  sccs_file file(name, mode);
 

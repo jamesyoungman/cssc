@@ -109,7 +109,7 @@ sccs_file::get_module_name() const
    created it reads in the all but the body of the file.  The file is
    locked if it isn't only being read.  */
 
-sccs_file::sccs_file(sccs_name &n, enum _mode m,
+sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
 		     ParserOptions opts)
   : name(n), checksum_valid_(false), mode(m), xfile_created(false), edit_mode_ok_(true),
     sfile_executable(false),
