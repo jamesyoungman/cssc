@@ -29,17 +29,16 @@
 #define CSSC__SCCSNAME_H__
 
 #include <string>
-using std::string;
 
 #include "filelock.h"
 
-string base_part(const string &name);
-string canonify_filename(const char* fname);
+std::string base_part(const std::string &name);
+std::string canonify_filename(const char* fname);
 
 class sccs_name
 {
-  string sname;		// name of the s. file.
-  string gname;
+  std::string sname;		// name of the s. file.
+  std::string gname;
 
   // We hold separate strings for the part before
   // and the part after the character that changes:
@@ -49,7 +48,7 @@ class sccs_name
   //  dir/l.foo.c
   // In these cases, name_front is "dir/" and name_rear is ".foo.c".
 
-  string name_front, name_rear;
+  std::string name_front, name_rear;
 
   file_lock *lock_ptr;
   int lock_cnt;
@@ -72,29 +71,31 @@ public:
    * to follow the declaration order.
    */
   sccs_name(): lock_ptr(0), lock_cnt(0)  {}
-  sccs_name &operator =(const string& n); /* undefined */
+  sccs_name &operator =(const std::string& n); /* undefined */
 
   bool valid() const { return sname.length() > 0; }
   void make_valid();
 
   const char * c_str() const { return sname.c_str(); }
 
-  string sub_file(char insertme) const;
-  string sfile() const { return sname; }
-  string gfile() const { return gname; }
-  string lfile() const;
+  std::string sub_file(char insertme) const;
+  std::string sfile() const { return sname; }
+  std::string gfile() const { return gname; }
+  std::string lfile() const;
 
-  string pfile() const { return sub_file('p'); }
-  string qfile() const { return sub_file('q'); }
-  string xfile() const { return sub_file('x'); }
-  string zfile() const { return sub_file('z'); }
+  std::string pfile() const { return sub_file('p'); }
+  std::string qfile() const { return sub_file('q'); }
+  std::string xfile() const { return sub_file('x'); }
+  std::string zfile() const { return sub_file('z'); }
 
+  // TODO: use a better "result" type which can encode failure
+  // information.
   int
   lock()
   {
     if (lock_cnt++ == 0)
       {
-	string zf = zfile();
+	std::string zf = zfile();
 	lock_ptr = new file_lock(zf);
 	return lock_ptr->failed();
       }

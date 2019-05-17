@@ -52,7 +52,7 @@ public:
   sccs_file_body_scanner(const std::string& filename, FILE*f, off_t body_pos, long body_pos_line_number);
   ~sccs_file_body_scanner();
 
-  bool get(const string& gname, const cssc_delta_table&,
+  bool get(const std::string& gname, const cssc_delta_table&,
 	   std::function<int(const char *start,
 			     struct delta const& gotten_delta,
 			     bool force_expansion)> write_subst,
@@ -62,7 +62,7 @@ public:
 	   bool do_kw_subst, bool debug, bool show_module, bool show_sid);
 
   delta_result
-  delta(const string& dname, const string& file_to_diff,
+  delta(const std::string& dname, const std::string& file_to_diff,
 	seq_no highest_delta_seqno, seq_no new_seq_no, seq_state*, FILE* out,
 	bool display_diff_output);
 
@@ -73,7 +73,7 @@ public:
 
   // Print the body of an SCCS file to |out|, transforming all "^A"s
   // into "*** "s.  The name of the output file is |name|.
-  bool print_body(FILE* out, const string& name);
+  bool print_body(FILE* out, const std::string& name);
 
 private:
   FILE* f_;

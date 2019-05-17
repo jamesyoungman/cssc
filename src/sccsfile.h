@@ -124,14 +124,14 @@ public:
   ~sccs_file();
 
   /* sf-get.c */
-  bool get(const string& gname, class seq_state &state,
+  bool get(const std::string& gname, class seq_state &state,
            struct subst_parms &parms,
            bool do_kw_subst,
            int show_sid = 0, int show_module = 0, int debug = 0,
            bool no_decode = false, bool for_edit = false);
   bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
   get_status get(FILE *out,
-		 const string& gname,
+		 const std::string& gname,
 		 FILE *summary_file,
 		 sid id,
 		 sccs_date cutoff_date = sccs_date(),
@@ -208,7 +208,7 @@ public:
       return 0;
   }
 
-  bool check_mrs(const std::vector<string>& mrs);
+  bool check_mrs(const std::vector<std::string>& mrs);
 
 
 

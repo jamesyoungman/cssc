@@ -71,7 +71,7 @@ bool sccs_file_body_scanner::seek_to_body()
   return true;
 }
 
-bool sccs_file_body_scanner::get(const string& gname,
+bool sccs_file_body_scanner::get(const std::string& gname,
 				 const cssc_delta_table& delta_table,
 				 std::function<int(const char *start,
 						   struct delta const& gotten_delta,
@@ -252,8 +252,8 @@ namespace
 }  // namespace
 
 delta_result
-sccs_file_body_scanner::delta(const string& dname,
-			      const string& file_to_diff,
+sccs_file_body_scanner::delta(const std::string& dname,
+			      const std::string& file_to_diff,
 			      seq_no highest_delta_seqno,
 			      seq_no new_seq,
 			      seq_state *sstate, FILE *out,
@@ -520,7 +520,7 @@ sccs_file_body_scanner::emit_raw_body(FILE* out, const char *outname)
 }
 
 bool
-sccs_file_body_scanner::print_body(FILE *out, const string& outname)
+sccs_file_body_scanner::print_body(FILE *out, const std::string& outname)
 {
   bool ret = true;
 

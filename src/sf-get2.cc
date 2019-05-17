@@ -495,7 +495,7 @@ sccs_file::get(FILE *out, const std::string& gname,
 	      it.date().print(summary_file);
 	      fprintf (summary_file, " %s\n", it.user().c_str());
 
-	      for (const string& comment : it.comments())
+	      for (const std::string& comment : it.comments())
 		{
 		  fprintf (summary_file, "\t%s\n", comment.c_str());
 		}

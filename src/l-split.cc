@@ -123,7 +123,7 @@ read_file_lines(const char* file_name)
   FileCloser closer(f);
 
   int ch;
-  string s;
+  std::string s;
   bool empty = true;
   while ((ch=getc(f)) != EOF)
     {

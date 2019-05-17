@@ -30,16 +30,14 @@
 #include <string>
 #include "cleanup.h"
 
-using std::string;
-
 class file_lock : private cleanup {
 	int locked;
-	string name;
+        std::string name;
 
 	void do_cleanup() { this->~file_lock(); }
 
 public:
-	file_lock(const string& zname);
+        file_lock(const std::string& zname);
 	int failed() { return !locked; }
 	~file_lock();
 };

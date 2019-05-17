@@ -409,7 +409,7 @@ sccs_file_parser::strict_atoul_idu(const sccs_file_location& loc, const char *s)
 }
 
 
-static bool eat_rest_of_line(FILE* f_local, const string& name)
+static bool eat_rest_of_line(FILE* f_local, const std::string& name)
 {
   int c;
   errno = 0;

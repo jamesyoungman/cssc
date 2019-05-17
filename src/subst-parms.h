@@ -48,7 +48,7 @@ subst_parms(const std::string& name, const std::string modname,
     delta(d), out_lineno(l), now(n),
     found_id(0) {}
 
-  const string& get_module_name() const
+  const std::string& get_module_name() const
   {
     return module_name;
   }

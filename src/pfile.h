@@ -86,7 +86,7 @@ private:
   struct edit_lock
   {
     sid got, delta;
-    string user;
+    std::string user;
     sccs_date date;
     sid_list include, exclude;
 
@@ -103,7 +103,7 @@ private:
   };
 
   sccs_name &name;
-  string pname;
+  std::string pname;
   pfile_mode mode;
 
   std::list<edit_lock> edit_locks;

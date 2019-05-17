@@ -105,7 +105,7 @@ sccs_file::get_module_type_flag()
 }
 
 namespace {
-  bool validate_seq_numbers (const string& name, const std::vector<seq_no>& seqs, const char *sz_sid,
+  bool validate_seq_numbers (const std::string& name, const std::vector<seq_no>& seqs, const char *sz_sid,
 			     seq_no limit, const char* seq_type)
   {
     for (auto s : seqs)
@@ -126,7 +126,7 @@ sccs_file::validate_seq_lists(const delta_iterator& d) const
 {
   const char *sz_sid = d->id().as_string().c_str();
   const seq_no highest_seq = delta_table->highest_seqno();
-  const string& sname = name.sfile();
+  const std::string& sname = name.sfile();
   return (validate_seq_numbers(sname, d->get_included_seqnos(),
 			       sz_sid, highest_seq, "included") &&
 	  validate_seq_numbers(sname, d->get_excluded_seqnos(),

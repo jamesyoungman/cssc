@@ -29,8 +29,6 @@
 #define CSSC__FILE_H__
 
 #include <string>
-using std::string;
-
 #include <sys/types.h>
 
 #include "filelock.h"
@@ -58,13 +56,13 @@ const char *get_user_name();
 int user_is_group_member(gid_t gid);
 FILE *fcreate(const std::string& name, int mode);
 FILE *fopen_as_real_user(const char *name, const char *mode);
-bool set_file_mode(const string &gname, bool writable, bool executable);
-bool set_gfile_writable(const string& gname, bool writable, bool executable);
+bool set_file_mode(const std::string &gname, bool writable, bool executable);
+bool set_gfile_writable(const std::string& gname, bool writable, bool executable);
 bool unlink_gfile_if_present(const char *gfile_name);
 bool unlink_file_as_real_user(const char *gfile_name);
-void split_filename(const string& fullname,
-		    string& dirname,
-		    string& basename);
+void split_filename(const std::string& fullname,
+		    std::string& dirname,
+		    std::string& basename);
 
 
 #ifdef CONFIG_SYNC_BEFORE_REOPEN

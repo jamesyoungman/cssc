@@ -139,7 +139,7 @@ get_two_digits(const char *s)
 }
 
 static int
-get_two_digits(const string& s, size_t pos)
+get_two_digits(const std::string& s, size_t pos)
 {
   return get_digit(s[pos]) * 10 + get_digit(s[pos+1]);
 }
@@ -245,7 +245,7 @@ sccs_date::sccs_date(const char *s)
 // Construct a date as specified in an SCCS file.
 sccs_date::sccs_date(const char *date_arg, const char *time)
 {
-  string date(date_arg);
+  std::string date(date_arg);
   int century;
 
   /* Check for the symtoms of SourceForge bug ID 513800, where
@@ -264,7 +264,7 @@ sccs_date::sccs_date(const char *date_arg, const char *time)
 	      " common SCCS file format (though it might have been a "
 	      " good idea in the first place)\n");
       century = get_two_digits(date, 0);
-      date = string(date, 2);
+      date = std::string(date, 2);
   }
   else
   {

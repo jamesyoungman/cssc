@@ -193,7 +193,7 @@ sccs_file::admin(const char *file_comment,
 	  // Argument is a comma-separated list of keyword letters to expand.
 	  warning("The 'y' (expanded keywords) flag is a Sun extension present only in Solaris 8 and later, and is not supported by other versions of SCCS.");
 	  set_expanded_keyword_flag(""); // delete any existing ones.
-	  for (const char c : string(flag_value))
+	  for (const char c : std::string(flag_value))
 	    {
 	      if (',' != c)
 		{
@@ -228,7 +228,7 @@ sccs_file::admin(const char *file_comment,
   for (const auto& unset_flag : unset_flags)
     {
       const char flag_letter = unset_flag[0];
-      const string flag_value = string(unset_flag, 1);
+      const std::string flag_value = std::string(unset_flag, 1);
       // TODO: diagnose !flag_value.empty() for cases other than flag_letter=='l'
       switch (flag_letter)
 	{

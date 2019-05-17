@@ -29,8 +29,6 @@
 #define CSSC__SCCSDATE_H__
 
 #include <string>
-using std::string;
-
 #include <cstdio>
 
 #include "ioerr.h"
@@ -59,7 +57,7 @@ public:
   int valid() const;
 
   static sccs_date now();
-  string as_string() const;
+  std::string as_string() const;
 
   int printf(FILE *f, char fmt) const;
   int print(FILE *f) const;

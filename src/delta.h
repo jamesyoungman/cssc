@@ -32,8 +32,6 @@
 #include "sid.h"
 #include "sccsdate.h"
 
-using std::string;
-
 typedef unsigned short seq_no;
 
 class delta
@@ -41,15 +39,15 @@ class delta
   char delta_type_;
   sid id_;
   sccs_date date_;
-  string user_;
+  std::string user_;
   seq_no seq_, prev_seq_;
   // have_* are a hack to ensure that prt works the same way
   // as the Real Thing.  We have to output Excludes: lines
   // if the SCCS file contained even an EMPTY includes list.
   bool have_includes_, have_excludes_, have_ignores_;
   std::vector<seq_no> included_, excluded_, ignored_;
-  std::vector<string> mrs_;
-  std::vector<string> comments_;
+  std::vector<std::string> mrs_;
+  std::vector<std::string> comments_;
   unsigned long inserted_, deleted_, unchanged_;
 
 public:
@@ -69,8 +67,8 @@ public:
     ASSERT(is_valid_delta_type(delta_type_));
   }
 
-  delta(char t, sid i, sccs_date d, const string& u, seq_no s, seq_no p,
-	const std::vector<string>& mrs, const std::vector<string>& cs)
+  delta(char t, sid i, sccs_date d, const std::string& u, seq_no s, seq_no p,
+	const std::vector<std::string>& mrs, const std::vector<std::string>& cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
       have_includes_(false), have_excludes_(false),
@@ -83,9 +81,9 @@ public:
     ASSERT(is_valid_delta_type(delta_type_));
   }
 
-  delta(char t, sid i, sccs_date d, const string& u, seq_no s, seq_no p,
+  delta(char t, sid i, sccs_date d, const std::string& u, seq_no s, seq_no p,
 	const std::set<seq_no>& incl, const std::set<seq_no>& excl,
-	const std::vector<string>& mrs, const std::vector<string>& cs)
+	const std::vector<std::string>& mrs, const std::vector<std::string>& cs)
     : delta_type_(t), id_(i), date_(d), user_(u),
       seq_(s), prev_seq_(p),
       have_includes_(!incl.empty()), have_excludes_(!excl.empty()),
@@ -106,8 +104,8 @@ public:
   inline const sccs_date& date() const { return date_; }
   void set_date(const sccs_date& d) { date_ = d; }
 
-  inline const string& user() const {return user_; }
-  void set_user(const string& u) { user_ = u; }
+  inline const std::string& user() const {return user_; }
+  void set_user(const std::string& u) { user_ = u; }
 
   inline seq_no seq() const { return seq_; }
   void set_seq(const seq_no& s) { seq_ = s; }
@@ -218,37 +216,37 @@ public:
     have_ignores_ = true;
   }
 
-  const std::vector<string>& mrs() const
+  const std::vector<std::string>& mrs() const
   {
     return mrs_;
   }
 
-  void set_mrs(const std::vector<string>& updated_mrs)
+  void set_mrs(const std::vector<std::string>& updated_mrs)
   {
     mrs_ = updated_mrs;
   }
 
-  void add_mr(const string& s)
+  void add_mr(const std::string& s)
   {
     mrs_.push_back(s);
   }
 
-  const std::vector<string>& comments() const
+  const std::vector<std::string>& comments() const
   {
     return comments_;
   }
 
-  void set_comments(const std::vector<string>& updated_comments)
+  void set_comments(const std::vector<std::string>& updated_comments)
   {
     comments_ = updated_comments;
   }
 
-  void prepend_comments(const std::vector<string>& prefix)
+  void prepend_comments(const std::vector<std::string>& prefix)
   {
     comments_.insert(comments_.begin(), prefix.begin(), prefix.end());
   }
 
-  void add_comment(const string& s)
+  void add_comment(const std::string& s)
   {
     comments_.push_back(s);
   }
