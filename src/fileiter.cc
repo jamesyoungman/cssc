@@ -47,14 +47,14 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 {
 
 	if (argc < 1) {
-		source = NONE;
+	        source_ = source::NONE;
 		return;
 	}
 
 	char *first = argv[0];
 
 	if (strcmp(first, "-") == 0) {
-		source = STDIN;
+		source_ = source::STDIN;
 		return;
 	}
 
@@ -98,13 +98,13 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 
 			closedir(dir);
 
-			source = DIRECTORY;
+			source_ = source::DIRECTORY;
 			pos = 0;
 			return;
 		}
 	}
 
-	source = ARGS;
+	source_ = source::ARGS;
 	is_unique = (1 == argc);
 }
 
@@ -118,8 +118,8 @@ sccs_file_iterator::unique() const
 
 int
 sccs_file_iterator::next() {
-	switch (source) {
-	case STDIN:
+	switch (source_) {
+	case source::STDIN:
 	  {
 	    cssc_linebuf linebuf;
 
@@ -131,14 +131,14 @@ sccs_file_iterator::next() {
 	    return 1;
 	  }
 
-	case DIRECTORY:
+	case source::DIRECTORY:
 		if (pos < files.size()) {
 			name = files[pos++];
 			return 1;
 		}
 		return 0;
 
-	case ARGS:
+	case source::ARGS:
 		if (argc-- <= 0) {
 			return 0;
 		}

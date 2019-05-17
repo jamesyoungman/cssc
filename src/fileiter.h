@@ -41,10 +41,10 @@ class CSSC_Options;
 class sccs_file_iterator
 {
 public:
-  enum sources { NONE = 0, ARGS, STDIN, DIRECTORY };
+  enum class source { NONE = 0, ARGS, STDIN, DIRECTORY };
 
 private:
-  enum sources source;
+  source source_;
 
   char **argv;
   int argc;
@@ -62,8 +62,9 @@ public:
 
   sccs_name &get_name() { return name; }
 
-  enum sources using_source() { return source; }
-  bool using_stdin() { return STDIN == source; }
+  source using_source() { return source_; }
+  bool empty() const { return source_ == source::NONE; }
+  bool using_stdin() { return source::STDIN == source_; }
 
   // unique() returns nonzero if exactly one file was specified on the
   // command line; zero if more than one was specified or the names

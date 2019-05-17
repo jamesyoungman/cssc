@@ -232,7 +232,7 @@ main(int argc, char **argv)
   std::vector<string> mr_list;
   int was_first = 1;
   sccs_file_iterator iter(opts);
-  if (! iter.using_source())
+  if (iter.empty())
     {
       errormsg("No SCCS file specified.");
       return 1;

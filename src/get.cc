@@ -307,7 +307,7 @@ main(int argc, char **argv)
 
 
   sccs_file_iterator iter(opts);
-  if (sccs_file_iterator::NONE == iter.using_source())
+  if (sccs_file_iterator::source::NONE == iter.using_source())
     {
       errormsg("No SCCS file specified");
       return 1;
