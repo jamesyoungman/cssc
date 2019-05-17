@@ -31,10 +31,6 @@
 #ifndef CSSC__DEFAULTS_H__
 #define CSSC__DEFAULTS_H__
 
-#ifndef LIDENT
-#define LIDENT(ident) cssc_##ident
-#endif
-
 #define NORETURN void
 
 #ifndef POSTDECL_NORETURN
@@ -46,15 +42,6 @@
 #define POSTDECL_NORETURN /* does not return */
 #endif
 #endif
-
-
-#ifndef CDECL
-#ifdef __BORLANDC__
-#define CDECL __cdecl
-#else
-#define CDECL
-#endif
-#endif /* CDECL */
 
 #ifndef CONFIG_NULL_FILENAME
 #define CONFIG_NULL_FILENAME "/dev/null"
