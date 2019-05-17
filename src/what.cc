@@ -26,8 +26,6 @@
  *
  */
 
-#define NO_COMMON_HEADERS
-
 #include <config.h>
 #include <cstdio>
 #include <string.h>

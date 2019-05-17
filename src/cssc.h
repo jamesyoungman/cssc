@@ -74,10 +74,7 @@
 #undef  CONFIG_MSDOS_FILES
 #define CONFIG_DJGPP
 
-#ifndef NO_COMMON_HEADERS
 std::string prompt_user(const char *prompt);
-#endif /* NO_COMMON_HEADERS */
-
 unsigned long cap5(unsigned long); // see cap.cc
 bool is_id_keyword_letter(char ch);
 
