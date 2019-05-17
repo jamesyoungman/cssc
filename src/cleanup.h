@@ -25,6 +25,9 @@
 #ifndef CSSC__CLEANUP_H__
 #define CSSC__CLEANUP_H__
 
+// TODO: consider switching to using a template cleanup object with a
+// lambda for custom cleanup actions.
+
 // Cleaner is a class that you should have in scope in main;
 // it ensures that all required cleanups are run even if you don't
 // call quit().
