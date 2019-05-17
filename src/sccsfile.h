@@ -60,9 +60,6 @@ struct get_status
 
 class sccs_file
 {
-  // TODO: we have lots of public/private sections in this class
-  // definition.  Almost certainly more than we need, and too many for
-  // clarity.  Tidy these up.
 public:
   // sccs_file::sccs_file(sccs_name&, enum _mode) MUST
   // take a non-const reference to an sccs_name as an
@@ -72,6 +69,77 @@ public:
   // have a lock or we have too many locks in total.
   sccs_file(sccs_name &name, sccs_file_open_mode mode,
 	    ParserOptions = ParserOptions());
+  ~sccs_file();
+
+  enum when { EARLIER, SIDONLY, LATER };
+  enum { GET_NO_DECODE = true };
+  
+  struct cutoff
+  {
+    bool enabled;
+    bool most_recent_sid_only;
+    sid  cutoff_sid;
+    const struct delta *cutoff_delta;
+    sccs_date first_accepted;
+    sccs_date last_accepted;
+
+    cutoff();
+    bool excludes_delta(sid, sccs_date, bool& stop_now) const;
+    void print(FILE *out) const;
+  };
+
+  // Command handlers
+  bool get(const std::string& gname, class seq_state &state,
+           struct subst_parms &parms,
+           bool do_kw_subst,
+           int show_sid = 0, int show_module = 0, int debug = 0,
+           bool no_decode = false, bool for_edit = false);
+  bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
+  get_status get(FILE *out,
+		 const std::string& gname,
+		 FILE *summary_file,
+		 sid id,
+		 sccs_date cutoff_date = sccs_date(),
+		 sid_list include = sid_list(""),
+		 sid_list exclude = sid_list(""),
+		 int keywords = 0,
+		 cssc::optional<std::string> wstring = cssc::optional<std::string>(),
+		 int show_sid = 0, int show_module = 0,
+		 int debug = 0, bool for_edit = false);
+  // At a high level, delta is implemented via add_delta
+  bool add_delta(const std::string& gname,
+		 sccs_pfile &pfile,
+		 sccs_pfile::iterator it,
+                 const std::vector<std::string>& mrs, const std::vector<std::string>& comments,
+                 bool display_diff_output);
+
+  bool admin(const char *file_comment,
+             bool force_binary,
+             const std::vector<std::string>& set_flags, const std::vector<std::string>& unset_flags, // FIXME: consider something more efficient
+             const std::vector<std::string>& add_users,
+	     const std::unordered_set<std::string>& erase_users);
+  bool create(const sid &initial_sid,
+              const char *iname,
+              const std::vector<std::string>& mrs,
+              std::vector<std::string>* comments,
+              int suppress_comments,
+              bool force_binary);
+
+  bool prs(FILE *out, const char *outname,
+	   const std::string& format, sid rid, sccs_date cutoff_date,
+           enum when when, delta_selector selector, bool *matched);
+
+  bool prt(FILE *out, struct cutoff exclude, delta_selector selector,
+           int print_body, int print_delta_table, int print_flags,
+           int incl_excl_ignore, int first_line_only, int print_desc,
+           int print_users) const;
+
+  bool cdc(sid id, const std::vector<std::string>& mrs, const std::vector<std::string>& comments);
+  bool rmdel(sid rid);
+  bool validate() const;
+
+  ////////////////////////////////////////////////////////////////////////
+  
   bool checksum_ok() const;
 
   sid find_most_recent_sid(sid id) const;
@@ -91,28 +159,7 @@ public:
   sid seq_to_sid(seq_no) const;
 
 
-  ~sccs_file();
-
   /* sf-get.c */
-  bool get(const std::string& gname, class seq_state &state,
-           struct subst_parms &parms,
-           bool do_kw_subst,
-           int show_sid = 0, int show_module = 0, int debug = 0,
-           bool no_decode = false, bool for_edit = false);
-  bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
-  get_status get(FILE *out,
-		 const std::string& gname,
-		 FILE *summary_file,
-		 sid id,
-		 sccs_date cutoff_date = sccs_date(),
-		 sid_list include = sid_list(""),
-		 sid_list exclude = sid_list(""),
-		 int keywords = 0,
-		 cssc::optional<std::string> wstring = cssc::optional<std::string>(),
-		 int show_sid = 0, int show_module = 0,
-		 int debug = 0, bool for_edit = false);
-  enum { GET_NO_DECODE = true };
-
   bool find_requested_sid(sid requested, sid &found,
                           bool include_branches=false) const ;
   bool find_requested_seqno(seq_no n, sid &found) const ;
@@ -139,12 +186,6 @@ public:
 
   bool check_mrs(const std::vector<std::string>& mrs);
 
-  bool add_delta(const std::string& gname,
-		 sccs_pfile &pfile,
-		 sccs_pfile::iterator it,
-                 const std::vector<std::string>& mrs, const std::vector<std::string>& comments,
-                 bool display_diff_output);
-
   /* sccsfile.cc */
   void set_mr_checker_flag(const char *s);
   void set_module_flag(const char *s);
@@ -162,55 +203,8 @@ public:
   const std::string  get_module_type_flag();
 
   /* sf-admin.c */
-  bool admin(const char *file_comment,
-             bool force_binary,
-             const std::vector<std::string>& set_flags, const std::vector<std::string>& unset_flags, // FIXME: consider something more efficient
-             const std::vector<std::string>& add_users,
-	     const std::unordered_set<std::string>& erase_users);
-  bool create(const sid &initial_sid,
-              const char *iname,
-              const std::vector<std::string>& mrs,
-              std::vector<std::string>* comments,
-              int suppress_comments,
-              bool force_binary);
-
-  enum when { EARLIER, SIDONLY, LATER };
-  struct cutoff
-  {
-    bool enabled;
-    bool most_recent_sid_only;
-    sid  cutoff_sid;
-    const struct delta *cutoff_delta;
-    sccs_date first_accepted;
-    sccs_date last_accepted;
-
-    cutoff();
-    bool excludes_delta(sid, sccs_date, bool& stop_now) const;
-    void print(FILE *out) const;
-  };
-
-
-  bool prs(FILE *out, const char *outname,
-	   const std::string& format, sid rid, sccs_date cutoff_date,
-           enum when when, delta_selector selector, bool *matched);
-
-  bool prt(FILE *out, struct cutoff exclude, delta_selector selector,
-           int print_body, int print_delta_table, int print_flags,
-           int incl_excl_ignore, int first_line_only, int print_desc,
-           int print_users) const;
-
   std::string get_module_name() const;
 
-  /* sf-cdc.c */
-
-  bool cdc(sid id, const std::vector<std::string>& mrs, const std::vector<std::string>& comments);
-
-  /* sf-rmdel.c */
-
-  bool rmdel(sid rid);
-
-  /* sf-val.cc */
-  bool validate() const;
   bool validate_seq_lists(const delta_iterator& d) const;
   bool validate_isomorphism() const;
   bool check_loop_free(cssc_delta_table* t,
