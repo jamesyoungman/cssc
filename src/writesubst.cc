@@ -106,8 +106,6 @@ sccs_file::write_subst(const char *start,
 	  // We need to expand the keyletter.
           switch (c)
             {
-              const char *s;
-
             case 'M':
               {
                 const char *mod = get_module_name().c_str();
@@ -205,49 +203,52 @@ sccs_file::write_subst(const char *start,
               break;
 
             case 'W':
-              s = parms->wstring;
-              if (0 == s)
-                {
-                  /* At some point I had been told that SunOS 4.1.4
-                   * apparently uses a space rather than a tab here.
-                   * However, a test on 4.1.4 shows otherwise.
-                   *
-                   * From: "Carl D. Speare" <carlds@attglobal.net>
-                   * Subject: RE: SunOS 4.1.4
-                   * To: 'James Youngman' <jay@gnu.org>,
-                   *         "cssc-users@gnu.org" <cssc-users@gnu.org>
-                   * Date: Wed, 11 Jul 2001 01:07:36 -0400
-                   *
-                   * Ok, here's what I got:
-                   *
-                   * %W% in a file called test.c expanded to:
-                   *
-                   * @(#)test.c<TAB>1.1
-                   *
-                   * Sorry, but my SunOS machine is lacking a network
-                   * connection, so I can't bring it over into
-                   * mail-land. But, there you are, for what it's
-                   * worth.
-                   *
-                   * --Carl
-                   *
-                   */
-                  s = "%Z" "%%M" "%\t%" "I%";
-                  /* NB: strange formatting of the string above is
-                   * to preserve it unchanged even if this source code does
-                   * itself get checked into SCCS or CSSC.
-                   */
-                }
-              else
-                {
-                  /* protect against recursion */
-                  parms->wstring = 0;
-                }
-              err = write_subst(s, parms, d, true);
-              if (0 == parms->wstring)
-                {
-                  parms->wstring = s;
-                }
+	      {
+		cssc::optional<std::string> saved_wstring = parms->wstring;
+		if (!saved_wstring.has_value())
+		  {
+		    /* At some point I had been told that SunOS 4.1.4
+		     * apparently uses a space rather than a tab here.
+		     * However, a test on 4.1.4 shows otherwise.
+		     *
+		     * From: "Carl D. Speare" <carlds@attglobal.net>
+		     * Subject: RE: SunOS 4.1.4
+		     * To: 'James Youngman' <jay@gnu.org>,
+		     *         "cssc-users@gnu.org" <cssc-users@gnu.org>
+		     * Date: Wed, 11 Jul 2001 01:07:36 -0400
+		     *
+		     * Ok, here's what I got:
+		     *
+		     * %W% in a file called test.c expanded to:
+		     *
+		     * @(#)test.c<TAB>1.1
+		     *
+		     * Sorry, but my SunOS machine is lacking a network
+		     * connection, so I can't bring it over into
+		     * mail-land. But, there you are, for what it's
+		     * worth.
+		     *
+		     * --Carl
+		     *
+		     */
+		    saved_wstring = std::string("%Z" "%%M" "%\t%" "I%");
+		    /* NB: strange formatting of the string above is
+		     * to preserve it unchanged even if this source code does
+		     * itself get checked into SCCS or CSSC.
+		     */
+		  }
+		else
+		  {
+		    /* protect against recursion */
+		    parms->wstring = cssc::optional<std::string>();
+		  }
+		ASSERT(saved_wstring.has_value());
+		err = write_subst(saved_wstring.value().c_str(), parms, d, true);
+		if (!parms->wstring.has_value())
+		  {
+		    parms->wstring = saved_wstring;
+		  }
+	      }
               break;
 
             case 'A':

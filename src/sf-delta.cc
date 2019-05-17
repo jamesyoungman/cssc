@@ -191,9 +191,10 @@ sccs_file::add_delta(const std::string& gname,
     }
   FileDeleter another_cleaner(dname, false);
 
+  auto w = cssc::optional<std::string>();
   const struct delta blankdelta;
   struct subst_parms parms(dname, get_module_name(), get_out,
-			   (const char*)NULL, blankdelta,
+			   w, blankdelta,
                            0, sccs_date());
   seq_state gsstate(sstate);
 

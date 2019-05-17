@@ -48,7 +48,7 @@ sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
   if (!edit_mode_ok(for_edit))
     return false;
 
-  const char * w = nullptr;
+  auto w = cssc::optional<std::string>();
   struct subst_parms parms(gname, get_module_name(), out, w,
 			   delta_table->delta_at_seq(seq),
 			   0, sccs_date());

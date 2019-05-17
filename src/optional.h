@@ -16,6 +16,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef CSSC_OPTIONAL_H
+#define CSSC_OPTIONAL_H
+
 #include "cssc-assert.h"
 
 namespace cssc 
@@ -57,5 +60,8 @@ namespace cssc
     };
 }  // namespace cssc
 
+#endif /* CSSC_OPTIONAL_H */
 
-
+/* Local variables: */
+/* mode: c++ */
+/* End: */

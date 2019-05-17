@@ -379,7 +379,7 @@ sccs_file::get(FILE *out, const std::string& gname,
 	       FILE *summary_file,
 	       sid id, sccs_date cutoff_date,
                sid_list include, sid_list exclude,
-               int keywords, const char *wstring,
+               int keywords, cssc::optional<std::string> wstring,
                int show_sid, int show_module, int debug,
 	       bool for_edit)
 {

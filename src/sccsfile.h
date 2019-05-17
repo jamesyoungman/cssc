@@ -39,6 +39,7 @@
 #include "delta.h"
 #include "pfile.h"
 #include "mode.h"
+#include "optional.h"
 #include "parser.h"
 
 class seq_state;        /* seqstate.h */
@@ -137,7 +138,8 @@ public:
 		 sccs_date cutoff_date = sccs_date(),
 		 sid_list include = sid_list(""),
 		 sid_list exclude = sid_list(""),
-		 int keywords = 0, const char *wstring = NULL,
+		 int keywords = 0,
+		 cssc::optional<std::string> wstring = cssc::optional<std::string>(),
 		 int show_sid = 0, int show_module = 0,
 		 int debug = 0, bool for_edit = false);
   enum { GET_NO_DECODE = true };

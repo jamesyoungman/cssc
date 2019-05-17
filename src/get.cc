@@ -91,7 +91,7 @@ main(int argc, char **argv)
   int send_body_to_stdout = 0;		/* -p */
   int silent = 0;                       /* -s */
   int no_output = 0;                    /* -g */
-  const char *wstring = NULL;           /* -w */
+  cssc::optional<std::string> wstring;	/* -w */
   sid_list include, exclude;            /* -i, -x */
   sccs_date cutoff_date;                /* -c */
   int show_sid = 0;                     /* -m */
@@ -236,7 +236,10 @@ main(int argc, char **argv)
           break;
 
         case 'w':
-          wstring = opts.getarg();
+	  if (opts.getarg()) 
+	    {
+	      wstring = std::string(opts.getarg());
+	    }
           break;
 
         case 'a':
