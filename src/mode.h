@@ -19,9 +19,6 @@
  *
  * CSSC was originally Based on MySC, by Ross Ridge, which was
  * placed in the Public Domain.
- *
- *
- * Definition of the class sccs_file.
  */
 #ifndef CSSC__MODE_H__
 #define CSSC__MODE_H__
