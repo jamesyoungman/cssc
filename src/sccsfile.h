@@ -37,6 +37,7 @@
 #include "sccsdate.h"
 #include "rel_list.h"
 #include "delta.h"
+#include "delta-iterator.h"
 #include "pfile.h"
 #include "mode.h"
 #include "optional.h"
@@ -277,10 +278,9 @@ public:
 
   bool prs(FILE *out, const char *outname,
 	   const std::string& format, sid rid, sccs_date cutoff_date,
-           enum when when, bool all_deltas, bool *matched);
+           enum when when, delta_selector selector, bool *matched);
 
-  bool prt(FILE *out, struct cutoff exclude, int all_deltas,
-           //
+  bool prt(FILE *out, struct cutoff exclude, delta_selector selector,
            int print_body, int print_delta_table, int print_flags,
            int incl_excl_ignore, int first_line_only, int print_desc,
            int print_users) const;

@@ -31,21 +31,35 @@
 class cssc_delta_table;
 class delta;
 
+enum class delta_selector
+  {
+    current,			// non-deleted deltas
+    all				// all deltas
+  };
+
 class delta_iterator
 {
   cssc_delta_table *dtbl;
   int pos;
 
 public:
-  explicit delta_iterator(cssc_delta_table*);
+  delta_iterator(cssc_delta_table*, delta_selector);
 
-  int next(int all = 0);
+  bool next();			// returns false when exhausted.
   int index() const;
 
   delta * operator ->();
   const delta * operator ->() const;
 
   void rewind();
+
+private:
+  inline bool all()  const
+  {
+    return selector_ == delta_selector::all;
+  }
+
+  delta_selector selector_;
 };
 
 class const_delta_iterator
@@ -54,14 +68,22 @@ class const_delta_iterator
   int pos;
 
 public:
-  explicit const_delta_iterator(const cssc_delta_table*);
+  const_delta_iterator(const cssc_delta_table*, delta_selector);
 
-  int next(int all = 0);
+  bool next();
   int index() const;
 
   delta const * operator ->() const;
 
   void rewind();
+
+private:
+  inline bool all()  const
+  {
+    return selector_ == delta_selector::all;
+  }
+
+  delta_selector selector_;
 };
 
 #endif /* CSSC_DELTA_TABLE_H */

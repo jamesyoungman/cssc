@@ -56,7 +56,7 @@ sccs_file::rmdel(sid id)
     }
   const seq_no seq = d->seq();
 
-  const_delta_iterator iter(delta_table.get());
+  const_delta_iterator iter(delta_table.get(), delta_selector::current);
   while (iter.next())
     {
       if (iter->prev_seq() == seq)

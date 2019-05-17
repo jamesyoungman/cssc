@@ -300,7 +300,7 @@ sccs_file::add_delta(const std::string& gname,
   // but what we actually want to create is a list of seq_no.
   if (!it->include.empty())
     {
-      const_delta_iterator iter(delta_table.get());
+      const_delta_iterator iter(delta_table.get(), delta_selector::current);
       while (iter.next())
         {
           if (it->include.member(iter->id()))
@@ -311,7 +311,7 @@ sccs_file::add_delta(const std::string& gname,
     }
   if (!it->exclude.empty())
     {
-      const_delta_iterator iter(delta_table.get());
+      const_delta_iterator iter(delta_table.get(), delta_selector::current);
       while (iter.next())
         {
           if (it->exclude.member(iter->id()))

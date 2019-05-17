@@ -233,7 +233,7 @@ print_seq_list(FILE *out, std::vector<seq_no> const &list)
 bool
 sccs_file::prt(FILE *out,
 	       cutoff exclude,	      // -y, -c, -r
-	       int all_deltas,	      // -a
+	       delta_selector selector,	// -a => delta_selector::all
 	       int print_body,	      // -b
 	       int print_delta_table, // -d
 	       int print_flags,	      // -f
@@ -260,16 +260,19 @@ sccs_file::prt(FILE *out,
 	}
 
       bool stop_now = false;
-      const_delta_iterator iter(delta_table.get());
+      const_delta_iterator iter(delta_table.get(), selector);
 
-      while (!stop_now && iter.next(all_deltas))
+      while (!stop_now && iter.next())
 	{
 	  if (exclude.excludes_delta(iter->id(), iter->date(), stop_now))
 	    continue;
 
-	  // Unless -a was specified, don't print removed deltas.
-	  if (!all_deltas && iter->removed())
-	    continue;
+	  // Unless -a was specified, don't print removed deltas.  But
+	  // they also should not be returned by the iterator.
+	  if (iter->removed()) 
+	    {
+	      ASSERT(selector == delta_selector::all);
+	    }
 
 	  if (exclude.enabled)	// -y, -c, or -r option.
 	    fprintf(out, "%s:\t", name.c_str());

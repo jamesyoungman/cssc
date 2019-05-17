@@ -181,8 +181,8 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
 int
 sccs_file::write(FILE *out) const
 {
-  const_delta_iterator iter(delta_table.get());
-  while (iter.next(1)) {
+  const_delta_iterator iter(delta_table.get(), delta_selector::all);
+  while (iter.next()) {
     if (write_delta(out, *iter.operator->())) {
       return 1;
     }

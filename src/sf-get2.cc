@@ -118,7 +118,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
   // possible to determine which SID this is by
   // looking at the tree of SIDs alone.
 
-  const_delta_iterator iter(delta_table.get());
+  const_delta_iterator iter(delta_table.get(), delta_selector::current);
   while (iter.next())
     {
       if (sid_matches(requested, iter->id(), get_top_delta))

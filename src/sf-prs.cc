@@ -618,15 +618,15 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
 bool
 sccs_file::prs(FILE *out, const char *outname,
 	       const std::string& format, sid rid, sccs_date cutoff_date,
-               enum when cutoff_type, bool all_deltas, bool *matched)
+               enum when cutoff_type, delta_selector selector, bool *matched)
 {
-  const_delta_iterator iter(delta_table.get());
+  const_delta_iterator iter(delta_table.get(), selector);
   const char *fmt = format.c_str();
 
   if (cutoff_type == SIDONLY)
     {
       ASSERT (!cutoff_date.valid());
-      while (iter.next(all_deltas))
+      while (iter.next())
 	{
 	  if (!rid.valid() || (rid == iter->id()))
 	    {
@@ -639,7 +639,7 @@ sccs_file::prs(FILE *out, const char *outname,
     }
   else if (cutoff_type == LATER)
     {
-      while (iter.next(all_deltas))
+      while (iter.next())
 	{
 	  if (cutoff_date.valid() && iter->date() < cutoff_date)
 	    break;
@@ -652,7 +652,7 @@ sccs_file::prs(FILE *out, const char *outname,
     }
   else                          // EARLIER
     {
-      while (iter.next(all_deltas))
+      while (iter.next())
 	{
 	  if (!*matched)
 	    {

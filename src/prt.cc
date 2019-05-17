@@ -54,7 +54,7 @@ int
 main(int argc, char **argv)
 {
   Cleaner arbitrary_name;
-  int all_deltas = 0;		// -a
+  delta_selector selector = delta_selector::current; // -a
   int print_body = 0;		// -b
   int print_delta_table = 0;	// -d
   int print_flags = 0;		// -f
@@ -83,7 +83,7 @@ main(int argc, char **argv)
 	  return 2;
 
 	case 'a':
-	  all_deltas = 1;
+	  selector = delta_selector::all;
 	  break;
 	case 'b':
 	  print_body = 1;
@@ -194,7 +194,7 @@ main(int argc, char **argv)
 
 	  if (!file.prt(stdout,
 			exclude,		  // -y, -c, -r
-			all_deltas,		  // -a
+			selector,		  // -a
 			print_body,		  // -b
 			print_delta_table,	  // -d
 			print_flags,	  // -f

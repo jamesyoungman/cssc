@@ -44,7 +44,7 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
 {
 
   ASSERT(0 != delta_table);
-  const_delta_iterator iter(delta_table.get());
+  const_delta_iterator iter(delta_table.get(), delta_selector::current);
 
   while (iter.next())
     {

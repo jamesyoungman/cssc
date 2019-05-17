@@ -51,7 +51,7 @@ main(int argc, char **argv)
   std::string format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
   sid rid(sid::null_sid());
   /* enum */ sccs_file::when selected = sccs_file::SIDONLY;
-  bool all_deltas = false;
+  delta_selector selector = delta_selector::current; // -a
   sccs_date cutoff_date;
   int default_processing = 1;
 
@@ -121,7 +121,7 @@ main(int argc, char **argv)
 	  break;
 
 	case 'a':
-	  all_deltas = true;
+	  selector = delta_selector::all;
 	  break;
 
 	case 'V':
@@ -165,7 +165,7 @@ main(int argc, char **argv)
 	    }
 	  bool matched = false;
 	  if (!file.prs(stdout, "standard output", format, rid, cutoff_date, selected,
-			all_deltas, &matched))
+			selector, &matched))
 	    {
 	      retval = 1;
 	    }

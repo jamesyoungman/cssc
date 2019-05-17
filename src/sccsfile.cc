@@ -322,7 +322,7 @@ sccs_file::find_most_recent_sid(sid id) const {
         sid found;
 
         ASSERT(0 != delta_table);
-        const_delta_iterator iter(delta_table.get());
+        const_delta_iterator iter(delta_table.get(), delta_selector::current);
 
         while (iter.next()) {
           if (id.trunk_match(iter->id())) {
@@ -344,7 +344,7 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
 
   ASSERT(0 != delta_table);
 
-  const_delta_iterator iter(delta_table.get());
+  const_delta_iterator iter(delta_table.get(), delta_selector::current);
   while (iter.next())
     {
       if (!found || iter->date() > d)

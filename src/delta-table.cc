@@ -84,7 +84,7 @@ delta const * cssc_delta_table::
 find(sid id) const
 {
   ASSERT(0 != this);
-  const_delta_iterator iter(this);
+  const_delta_iterator iter(this, delta_selector::current);
 
   while (iter.next())
     {
@@ -104,9 +104,9 @@ delta const * cssc_delta_table::
 find_any(sid id) const
 {
   ASSERT(0 != this);
-  const_delta_iterator iter(this);
+  const_delta_iterator iter(this, delta_selector::all);
 
-  while (iter.next(1))
+  while (iter.next())
     {
       if (iter->id() == id)
 	{
@@ -121,7 +121,7 @@ delta * cssc_delta_table::
 find(sid id)
 {
   ASSERT(0 != this);
-  delta_iterator iter(this);
+  delta_iterator iter(this, delta_selector::current);
 
   while (iter.next())
     {

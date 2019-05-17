@@ -161,7 +161,7 @@ sccs_file::validate() const
     }
 
   // for each delta:-
-  delta_iterator iter(delta_table.get());
+  delta_iterator iter(delta_table.get(), delta_selector::current);
   const seq_no highest_seq = delta_table->highest_seqno();
   int *seen_ever = new int[highest_seq];
   std::vector<bool> seen(highest_seq+1, false);
