@@ -44,30 +44,6 @@ Stop now!  Compilers should obey #error!  Stop I say, stop!  Run for it Harold!
 #endif
 #endif
 
-
-
-
-#ifndef HAVE_FORK
-
-#if !defined HAVE_SPAWN && !defined CONFIG_DJGPP
-
-#define STATUS(n) (0)
-#define STATUS_MSG(n)
-
-#else /* !defined(HAVE_SPAWN) && !defined(CONFIG_DJGPP) */
-
-#define STATUS(n) (n)
-#define STATUS_MSG(n) "(status = %d)", (n)
-
-#endif /* !defined(HAVE_SPAWN) && !defined(CONFIG_DJGPP) */
-
-#else /* HAVE_FORK is defined */
-
-#define STATUS(n) ((n) << 8)
-#define STATUS_MSG(n) "(status = %d, %d)", (n) >> 8, (n) & 0xff
-
-#endif /* HAVE_FORK */
-
 int run(const char *prg, std::vector<const char *> const &args);
 int run_mr_checker(const char *prg, const char *arg1,
 		   const std::vector<std::string>& mrs);
