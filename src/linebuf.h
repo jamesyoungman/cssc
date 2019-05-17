@@ -35,18 +35,35 @@
 
 class cssc_linebuf
 {
+  // TODO: use some STL data structure, or a Cord, to hold the data.
   char *buf;
   size_t buflen;
 
 public:
   cssc_linebuf();
 
+  // TODO: clarify meaning of return value.
   int read_line(FILE *f);
+
+  // TODO: Reduce the use of c_str() in favour of operations that more
+  // directly reflect what the program actually needs (perhaps for
+  // example a string_view).
   const char *c_str() const { return buf; }
   const char *c_str() { return buf; }
+
+  // TODO: set_char is only used in sccs_file_parser::read_delta, to
+  // nul-terminate the string.  If we move to string_view, we can
+  // probably achieve the same thing by truncating the string_view
+  // (and hence no need to modify the buffer at all).
   void set_char(unsigned offset, char value);
+
+  // TODO: split into a vector of std::string, perhaps.
   int split(int offset, char **args, int len, char c);
-  int check_id_keywords() const;
+
+  // Returns true if the buffer contains a valid SCCS id keyword.
+  bool check_id_keywords() const;
+
+  // write returns nonzero on FAILURE.
   int write(FILE*) const;
 
   char &operator [](int index) const { return buf[index]; }

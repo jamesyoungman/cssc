@@ -93,7 +93,7 @@ check_id_keywords(const char *s, size_t len)
   return false;
 }
 
-int cssc_linebuf::check_id_keywords() const
+bool cssc_linebuf::check_id_keywords() const
 {
   return ::check_id_keywords(buf, strlen(buf));	// TODO: make NUL-safe!
 }
