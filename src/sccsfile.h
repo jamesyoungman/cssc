@@ -60,38 +60,6 @@ struct get_status
 
 class sccs_file
 {
-private:
-  struct sccs_file_flags
-  {
-    // TODO: consider std::unique_ptr<std::string> instead of std::string*.
-    std::string *type;
-    std::string *mr_checker;
-    int no_id_keywords_is_fatal;
-    int branch;
-    std::string *module;
-    release floor;
-    release ceiling;
-    sid default_sid;
-    int null_deltas;
-    int joint_edit;
-    release_list locked;
-    int all_locked;
-    std::string *user_def;
-    std::string *reserved;
-
-    int encoded;
-    int executable;
-    std::set<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
-  } flags;
-
-  NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
-
-  /* Support for BitKeeper files */
-  bool edit_mode_ok(bool editing) const;
-
-  void set_sfile_executable(bool state);
-  bool sfile_should_be_executable() const;
-
   // TODO: we have lots of public/private sections in this class
   // definition.  Almost certainly more than we need, and too many for
   // clarity.  Tidy these up.
@@ -145,21 +113,6 @@ public:
 		 int debug = 0, bool for_edit = false);
   enum { GET_NO_DECODE = true };
 
-private:
-  bool print_subsituted_flags_list(FILE *out, const char* separator) const;
-  static bool is_known_keyword_char(char c);
-
-  /* sf-get2.c */
-  int write_subst(const char *start,
-                  struct subst_parms *parms,
-                  struct delta const& gotten_delta,
-		  bool force_expansion) const;
-
-  bool sid_matches(const sid& requested,
-		   const sid& found,
-		   bool get_top_delta) const;
-
-public:
   bool find_requested_sid(sid requested, sid &found,
                           bool include_branches=false) const ;
   bool find_requested_seqno(seq_no n, sid &found) const ;
@@ -168,27 +121,6 @@ public:
   bool test_locks(sid got, const sccs_pfile&) const;
 
 
-private:
-
-  /* sf-get3.c */
-  bool prepare_seqstate(seq_state &state, seq_no seq,
-                        sid_list include,
-                        sid_list exclude, sccs_date cutoff_date);
-  bool prepare_seqstate_1(seq_state &state, seq_no seq);
-  bool prepare_seqstate_2(seq_state &state, sid_list include,
-                        sid_list exclude, sccs_date cutoff_date);
-  bool authorised() const;
-
-  /* sf-write.c */
-private:
-  void xfile_error(const char *msg) const;
-  FILE *start_update();         // this opens the x-file
-  int write_delta(FILE *out, struct delta const &delta) const;
-  int write(FILE *out) const;
-  bool end_update(FILE **out);  // NB: this closes the x-file too.
-  int rehack_encoded_flag(FILE *out, int *sum) const;
-
-public:
   bool update_checksum();
   bool update();
 
@@ -197,13 +129,7 @@ public:
   FILE *start_update(struct delta const &new_delta);
   bool end_update(FILE **out, struct delta const &new_delta);
 
-  /* sf-delta.c */
-private:
-  bool check_keywords_in_file(const char *name);
-
-public:
-  int
-  mr_required() const
+  int mr_required() const
   {
     if (flags.mr_checker)
       return 1;
@@ -212,8 +138,6 @@ public:
   }
 
   bool check_mrs(const std::vector<std::string>& mrs);
-
-
 
   bool add_delta(const std::string& gname,
 		 sccs_pfile &pfile,
@@ -250,16 +174,6 @@ public:
               int suppress_comments,
               bool force_binary);
 
-  /* sf-prs.c */
-private:
-  void print_flags(FILE *out) const;
-  void print_delta(FILE *out, const char *outname, const char *format,
-                   struct delta const &delta);
-
-  /* sf-kw.cc */
-  void no_id_keywords(const char name[]) const;
-
-public:
   enum when { EARLIER, SIDONLY, LATER };
   struct cutoff
   {
@@ -310,13 +224,83 @@ public:
 protected:
   bool sid_in_use(sid id, const sccs_pfile& p) const;
 
+  /* sf-get3.c */
+  bool prepare_seqstate(seq_state &state, seq_no seq,
+                        sid_list include,
+                        sid_list exclude, sccs_date cutoff_date);
+  bool prepare_seqstate_1(seq_state &state, seq_no seq);
+  bool prepare_seqstate_2(seq_state &state, sid_list include,
+                        sid_list exclude, sccs_date cutoff_date);
+  bool authorised() const;
+
+  /* sf-write.c */
+  void xfile_error(const char *msg) const;
+  FILE *start_update();         // this opens the x-file
+  int write_delta(FILE *out, struct delta const &delta) const;
+  int write(FILE *out) const;
+  bool end_update(FILE **out);  // NB: this closes the x-file too.
+  int rehack_encoded_flag(FILE *out, int *sum) const;
+
 private:
+  /* sf-prs.c */
+  void print_flags(FILE *out) const;
+  void print_delta(FILE *out, const char *outname, const char *format,
+                   struct delta const &delta);
+
+  /* sf-kw.cc */
+  void no_id_keywords(const char name[]) const;
+
+  bool check_keywords_in_file(const char *name);
+
   // Because we now have a pointer member, don't use the compiler's
   // default assignment and constructor.
   const sccs_file& operator=(const sccs_file&) = delete; // not allowed to use!
   sccs_file(const sccs_file&) = delete;  // not allowed to use!
 
-private:
+  bool print_subsituted_flags_list(FILE *out, const char* separator) const;
+  static bool is_known_keyword_char(char c);
+
+  /* sf-get2.c */
+  int write_subst(const char *start,
+                  struct subst_parms *parms,
+                  struct delta const& gotten_delta,
+		  bool force_expansion) const;
+
+  bool sid_matches(const sid& requested,
+		   const sid& found,
+		   bool get_top_delta) const;
+
+  NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
+
+  /* Support for BitKeeper files */
+  bool edit_mode_ok(bool editing) const;
+
+  void set_sfile_executable(bool state);
+  bool sfile_should_be_executable() const;
+
+  struct sccs_file_flags
+  {
+    // TODO: consider std::unique_ptr<std::string> instead of std::string*.
+    std::string *type;
+    std::string *mr_checker;
+    int no_id_keywords_is_fatal;
+    int branch;
+    std::string *module;
+    release floor;
+    release ceiling;
+    sid default_sid;
+    int null_deltas;
+    int joint_edit;
+    release_list locked;
+    int all_locked;
+    std::string *user_def;
+    std::string *reserved;
+
+    int encoded;
+    int executable;
+    std::set<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
+  } flags;
+
   sccs_name& name;
   bool checksum_valid_;
   enum sccs_file_open_mode mode;
