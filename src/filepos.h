@@ -37,41 +37,42 @@
 
 class FilePosSaver		// with fsetpos()...
 {
-  FILE *f;
-  int disarmed;
+  FILE *f_;
+  bool disarmed_;
 
 #ifdef HAVE_FSETPOS
-  fpos_t pos;
-
+  fpos_t pos_;
  public:
-  FilePosSaver(FILE *fp) : f(fp), disarmed(0)
+  FilePosSaver(FILE *fp)
+    : f_(fp), disarmed_(false)
     {
-      if (0 != fgetpos(f, &pos))
+      if (0 != fgetpos(f_, &pos_))
 	ctor_fail(errno, "fgetpos() failed!");
       // better, later; throw exception.
     }
 
   ~FilePosSaver()		// and restore it in the destructor.
     {
-      if (!disarmed)
-	if (0 != fsetpos(f, &pos))
+      if (!disarmed_)
+	if (0 != fsetpos(f_, &pos_))
 	  ctor_fail(errno, "fsetpos() failed!");
     }
 
 #else
-  long   offset;
+  long   offset_;
 
  public:
-  FilePosSaver(FILE *fp) : f(fp), disarmed(0)
+  FilePosSaver(FILE *fp)
+    : f_(fp), disarmed_(false)
     {
-      if (-1L == (offset = ftell(f)) )
+      if (-1L == (offset_ = ftell(f_)) )
 	ctor_fail(errno, "ftell() failed."); // better, later; throw exception.
     }
 
   ~FilePosSaver()		// and restore it in the destructor.
     {
-      if (!disarmed)
-	if (0 != fseek(f, offset, SEEK_SET))
+      if (!disarmed_)
+	if (0 != fseek(f_, offset_, SEEK_SET))
 	  ctor_fail(errno, "fseek() failed!");
     }
 
@@ -81,9 +82,8 @@ class FilePosSaver		// with fsetpos()...
 
   void disarm()			// turn off the restore at the destructor.
   {
-    disarmed = 1;
+    disarmed_ = true;
   }
 };
-
 
 #endif
