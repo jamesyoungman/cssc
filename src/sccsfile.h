@@ -90,6 +90,9 @@ private:
   void set_sfile_executable(bool state);
   bool sfile_should_be_executable() const;
 
+  // TODO: we have lots of public/private sections in this class
+  // definition.  Almost certainly more than we need, and too many for
+  // clarity.  Tidy these up.
 public:
   // sccs_file::sccs_file(sccs_name&, enum _mode) MUST
   // take a non-const reference to an sccs_name as an
