@@ -28,9 +28,11 @@
 #ifndef CSSC__SCCSNAME_H__
 #define CSSC__SCCSNAME_H__
 
+#include <memory>
 #include <string>
 
 #include "filelock.h"
+#include "quit.h"
 
 std::string base_part(const std::string &name);
 std::string canonify_filename(const char* fname);
@@ -50,17 +52,10 @@ class sccs_name
 
   std::string name_front, name_rear;
 
-  file_lock *lock_ptr;
+  std::unique_ptr<file_lock> lock_;
   int lock_cnt;
 
   void create();
-
-  void
-  destroy()
-  {
-    if (lock_cnt > 0)
-      delete lock_ptr;
-  }
 
   sccs_name &operator =(sccs_name const &);
   sccs_name(sccs_name const &);
@@ -70,7 +65,7 @@ public:
   /* The initialisers on the following line have been re-ordered
    * to follow the declaration order.
    */
-  sccs_name(): lock_ptr(0), lock_cnt(0)  {}
+  sccs_name(): lock_cnt(0)  {}
   sccs_name &operator =(const std::string& n); /* undefined */
 
   bool valid() const { return sname.length() > 0; }
@@ -96,8 +91,8 @@ public:
     if (lock_cnt++ == 0)
       {
 	std::string zf = zfile();
-	lock_ptr = new file_lock(zf);
-	return lock_ptr->failed();
+	lock_ = std::make_unique<file_lock>(zf);
+	return lock_->failed();
       }
     return 0;
   }
@@ -107,13 +102,17 @@ public:
   {
     if (--lock_cnt == 0)
       {
-	delete lock_ptr;
+	lock_.release();
       }
   }
 
   ~sccs_name()
   {
-    destroy();
+    if (lock_cnt > 1) 
+      {
+	warning("deleting sccs_name instance whle lock_cnt is %d "
+		"(expected <= 1)", lock_cnt);
+      }
   }
 };
 
