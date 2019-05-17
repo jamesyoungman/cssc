@@ -35,7 +35,6 @@
 #include "my-getopt.h"
 #include "pfile.h"
 #include "sccsfile.h"
-#include "sf-chkmr.h"
 #include "version.h"
 #include "except.h"
 #include "ioerr.h"

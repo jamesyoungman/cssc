@@ -31,7 +31,6 @@
 
 #include "cssc.h"
 #include "sccsfile.h"
-#include "sf-chkmr.h"
 #include "fileiter.h"
 #include "sid_list.h"
 #include "sl-merge.h"

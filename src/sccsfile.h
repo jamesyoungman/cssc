@@ -205,7 +205,9 @@ public:
       return 0;
   }
 
-  int check_mrs(const std::vector<std::string>& mrs);
+  bool check_mrs(const std::vector<string>& mrs);
+
+
 
   bool add_delta(const std::string& gname,
 		 sccs_pfile &pfile,

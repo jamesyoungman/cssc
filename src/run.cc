@@ -34,6 +34,7 @@
 
 #include "cssc.h"
 #include "run.h"
+#include "sccsfile.h"
 #include "sysdep.h"
 #include "quit.h"
 
@@ -185,8 +186,15 @@ run(const char *prg, std::vector<const char *> const &args) {
 #endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 }
 
-/* Runs a program to check MRs. */
+bool
+sccs_file::check_mrs(const std::vector<string>& mrs)
+{
+  ASSERT(0 != flags.mr_checker);
+  return 0 != run_mr_checker(flags.mr_checker->c_str(),
+			     name.gfile().c_str(), mrs);
+}
 
+/* Runs a program to check MRs. */
 int
 run_mr_checker(const char *prg, const char *arg1, const std::vector<std::string>& mrs)
 {

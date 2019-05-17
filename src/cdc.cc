@@ -30,7 +30,6 @@
 #include "my-getopt.h"
 #include "fileiter.h"
 #include "sccsfile.h"
-#include "sf-chkmr.h"
 #include "version.h"
 #include "delta.h"
 #include "except.h"
