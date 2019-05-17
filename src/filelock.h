@@ -34,6 +34,7 @@ class file_lock : private cleanup {
 	int locked;
         std::string name;
 
+        // TODO: consider a more modern kind of cleanup object.
 	void do_cleanup() { this->~file_lock(); }
 
 public:
