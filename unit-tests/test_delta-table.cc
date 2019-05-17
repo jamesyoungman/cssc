@@ -29,7 +29,7 @@
 TEST(DeltaTable, Constructor)
 {
   cssc_delta_table t;
-  ASSERT_EQ(0, t.length());
+  ASSERT_EQ(0, t.size());
   delta del;
   t.add(del);
 
@@ -40,10 +40,10 @@ TEST(DeltaTable, Constructor)
 TEST(DeltaTable, Add)
 {
   cssc_delta_table t;
-  ASSERT_EQ(0, t.length());
+  ASSERT_EQ(0, t.size());
   delta del;
   t.add(del);
-  ASSERT_EQ(1, t.length());
+  ASSERT_EQ(1, t.size());
 }
 
 // prepend
@@ -51,15 +51,15 @@ TEST(DeltaTable, Add)
 TEST(DeltaTable, Prepend)
 {
   cssc_delta_table t;
-  ASSERT_EQ(0, t.length());
+  ASSERT_EQ(0, t.size());
   delta a, b;
   a.set_seq(seq_no(1));
   b.set_seq(seq_no(2));
   t.add(a);
   t.prepend(b);
-  ASSERT_EQ(2, t.length());
-  EXPECT_EQ(2, t.select(0).seq());
-  EXPECT_EQ(1, t.select(1).seq());
+  ASSERT_EQ(2, t.size());
+  EXPECT_EQ(2, t.at(0).seq());
+  EXPECT_EQ(1, t.at(1).seq());
 }
 
 // select const
@@ -70,7 +70,7 @@ TEST(DeltaTable, SelectConst)
   a.set_seq(seq_no(3));
   t.add(a);
   const cssc_delta_table& tc(t);
-  EXPECT_EQ(3, tc.select(0).seq());
+  EXPECT_EQ(3, tc.at(0).seq());
 }
 
 TEST(DeltaTableDeathTest, SeqNoRangeChecks)

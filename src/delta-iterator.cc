@@ -43,9 +43,9 @@ delta_iterator::next()
 {
   ASSERT(0 != dtbl);
 
-  while (++pos < dtbl->length())
+  while (++pos < dtbl->size())
     {
-      if (all() || !dtbl->select(pos).removed())
+      if (all() || !dtbl->at(pos).removed())
 	{
 	  return 1;
 	}
@@ -58,18 +58,20 @@ int delta_iterator::index() const
   return pos;
 }
 
+// TODO: probably better for operator-> to return a reference.
 delta const *
 delta_iterator::operator ->() const
 {
   ASSERT(0 != dtbl);
-  return &dtbl->select(pos);
+  return &dtbl->at(pos);
 }
 
+// TODO: probably better for operator-> to return a reference.
 delta *
 delta_iterator::operator ->()
 {
   ASSERT(0 != dtbl);
-  return &dtbl->select(pos);
+  return &dtbl->at(pos);
 }
 
 
@@ -85,9 +87,9 @@ bool
 const_delta_iterator::next()
 {
   ASSERT(0 != dtbl);
-  while (++pos < dtbl->length())
+  while (++pos < dtbl->size())
     {
-      if (all() || !dtbl->select(pos).removed())
+      if (all() || !dtbl->at(pos).removed())
 	{
 	  return true;
 	}
@@ -104,7 +106,7 @@ delta const *
 const_delta_iterator::operator ->() const
 {
   ASSERT(0 != dtbl);
-  return &dtbl->select(pos);
+  return &dtbl->at(pos);
 }
 
 

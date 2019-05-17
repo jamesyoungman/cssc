@@ -79,19 +79,19 @@ public:
     return high_release;
   }
 
-  size_type length() const
+  size_type size() const
   {
     return items.size();
   }
 
-  const delta& select(size_type i) const
+  const delta& at(size_type i) const
   {
-    return items[i];
+    return items.at(i);
   }
 
-  delta& select(size_type i)
+  delta& at(size_type i)
   {
-    return items[i];
+    return items.at(i);
   }
 
   void add(const delta& d)
@@ -104,9 +104,9 @@ public:
 
   stl_delta_list& operator += (const stl_delta_list& other)
   {
-    for (size_type i=0; i<other.length(); ++i)
+    for (size_type i=0; i<other.size(); ++i)
       {
-	add(other.select(i));
+	add(other.at(i));
       }
     return *this;
   }
@@ -157,10 +157,10 @@ public:
   seq_no next_seqno()    const;
   sid highest_release() const { return l.get_high_release(); }
 
-  size_type length() const { return l.length(); }
+  size_type size() const { return l.size(); }
 
-  const delta& select(size_type pos) const { return l.select(pos); }
-  delta& select(size_type pos) { return l.select(pos); }
+  const delta& at(size_type pos) const { return l.at(pos); }
+  delta& at(size_type pos) { return l.at(pos); }
 
   ~cssc_delta_table();
 };
