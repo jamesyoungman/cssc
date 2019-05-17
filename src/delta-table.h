@@ -144,8 +144,6 @@ public:
   void add(const delta &d);
   void prepend(const delta &); /* sf-add.c */
 
-  // These two methods should b const, but are not because they
-  // call build_seq_table().
   bool delta_at_seq_exists(seq_no seq) const;
   const delta & delta_at_seq(seq_no seq) const;
 
