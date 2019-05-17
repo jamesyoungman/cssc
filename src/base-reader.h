@@ -86,7 +86,6 @@ class sccs_file_reader_base
 	return false;
       }
 
-    here_.advance_line();
     if ( bufchar(0) == '\001')
       *line_type = bufchar(1);
     else
@@ -100,6 +99,7 @@ class sccs_file_reader_base
       {
 	return 1;
       }
+    here_.advance_line();
     // chomp the newline from the end of the line.
     // TODO: make me 8-bit clean!
     (*plinebuf)[strlen(plinebuf->c_str()) - 1] = '\0';
