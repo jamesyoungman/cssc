@@ -3,7 +3,11 @@ TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel \
 TESTFILE_SUFFIXES = .sh
 MKDIR = mkdir
 
-links: $(TESTDIRS)
+
+remove_trash:
+	trash="`find . -name 'z.*' -print`"; echo "$${trash}" >&2 ; test -z "$${trash}" || exit 1
+
+links: $(TESTDIRS) remove_trash
 	../testutils/lndir $(srcdir) 
 
 common: 
