@@ -15,5 +15,3 @@ config.h should be #included first
 # q with an exit code is a GNU extension, don't use it.
 q
 }
-
-   

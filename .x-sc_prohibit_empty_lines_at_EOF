@@ -2,3 +2,4 @@ COPYING
 bsd/COPYING.bsd
 ChangeLog
 tests/prs/s_foo_bd_output\.txt
+tests/prt/all\.expected\.Z

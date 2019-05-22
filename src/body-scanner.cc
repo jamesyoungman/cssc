@@ -703,4 +703,3 @@ sccs_file_body_scanner::remove(FILE *out, seq_no seq)
     }
   return true;
 }
-

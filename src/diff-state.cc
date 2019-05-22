@@ -294,4 +294,3 @@ diff_state::process(FILE *out, seq_no seq)
 
   return _state;
 }
-

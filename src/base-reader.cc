@@ -52,4 +52,3 @@ unsigned short strict_atous(const sccs_file_location& loc, const char *s)
     }
   return (unsigned short) n;
 }
-

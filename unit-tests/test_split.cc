@@ -105,4 +105,3 @@ TEST(SplitStringTest, LimitZero) {
   EXPECT_EQ(input.begin(), result);
   ASSERT_EQ(0, fields.size());
 }
-
