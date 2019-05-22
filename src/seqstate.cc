@@ -79,7 +79,7 @@ bool seq_state::is_ignored(seq_no n) const
 
 void seq_state::set_explicitly_included(seq_no n, seq_no who)
 {
-  if (!states_[n].included)  	// if not already included...
+  if (!states_[n].included)	// if not already included...
     {
       set_included(n, who);
       one_state& s = states_[n];

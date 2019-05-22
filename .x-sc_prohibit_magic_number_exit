@@ -4,3 +4,4 @@ my-getopt.cc
 testutils/ekko.c
 testutils/last-time.c
 what.cc
+build-aux/find-out-of-order-includes.sh
