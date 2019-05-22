@@ -36,13 +36,15 @@
 */
 #include <config.h>
 
+#include <locale.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
 
 #include <sys/stat.h>
-
+#include "progname.h"
+#include "gettext.h"
 
 
 
@@ -291,10 +293,10 @@ int (* const actions[])(const char *) = { test_encode, test_decode, test_all };
 
 
 static void
-usage(const char *prog)
+usage()
 {
   size_t i;
-  fprintf(stderr, "Usage: %s [", prog ? prog : "uu_decode");
+  fprintf(stderr, "Usage: %s [", program_name ? program_name : "uu_decode");
   for (i=0; i<NELEM(options); ++i)
     {
       fprintf(stderr, "%s %s", (i>0) ? " |" : "", options[i]);
@@ -308,6 +310,18 @@ main(int argc, char *argv[])
   size_t i;
   const char *argument;
 
+  set_program_name (argv[0]);
+  if (NULL == setlocale(LC_ALL, ""))
+    {
+      /* If we can't set the locale as the user wishes,
+       * emit an error message and continue.   The error
+       * message will of course be in the "C" locale.
+       */
+      perror("Error setting locale");
+    }
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+
   if (argc == 3)
   {
       argument = argv[2];
@@ -318,7 +332,7 @@ main(int argc, char *argv[])
   }
   else
   {
-      usage(argv[0]);
+      usage();
       return 1;
   }
 

@@ -21,11 +21,14 @@
  */
 #include <config.h>
 
+#include <locale.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
 
+#include "gettext.h"
+#include "progname.h"
 
 unsigned long
 total_len(int argc, char * argv[])
@@ -53,6 +56,18 @@ main(int argc, char *argv[])
 {
   char *msg;
   unsigned long l;
+
+  set_program_name (argv[0]);
+  if (NULL == setlocale(LC_ALL, ""))
+    {
+      /* If we can't set the locale as the user wishes,
+       * emit an error message and continue.   The error
+       * message will of course be in the "C" locale.
+       */
+      perror("Error setting locale");
+    }
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
 
   /* make sure SIGPIPE is not ignored */
   signal(SIGPIPE, SIG_DFL);

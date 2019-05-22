@@ -37,6 +37,8 @@ AC_CONFIG_MACRO_DIR([unit-tests/googletest/m4])
 AC_SUBST(AUXDIR,$ac_aux_dir)
 AM_INIT_AUTOMAKE([gnits readme-alpha check-news tar-ustar 1.11.6])
 AC_CONFIG_HEADERS(config.h)
+AC_SUBST([LIBINTL])
+AC_SUBST([LTLIBINTL])
 
 dnl Feature and package checks
 binary_defaulted=no

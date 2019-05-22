@@ -62,6 +62,17 @@ int main()
   int *pfield;
   int old_field_val;
 
+  if (NULL == setlocale(LC_ALL, ""))
+    {
+      /* If we can't set the locale as the user wishes,
+       * emit an error message and continue.   The error
+       * message will of course be in the "C" locale.
+       */
+      perror("Error setting locale");
+    }
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+
   tm_time.tm_year = 97;		/* 1997 */
   tm_time.tm_mon = 0;		/* counts from zero for some reason. */
   tm_time.tm_mday = 1;

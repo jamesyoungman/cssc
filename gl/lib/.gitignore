@@ -74,3 +74,4 @@ wchar.in.h
 /pthread.c
 /pthread.in.h
 /sched.in.h
+/gettext.h

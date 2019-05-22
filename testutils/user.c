@@ -21,12 +21,16 @@
  */
 #include <config.h>
 
+#include <locale.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+
+#include "progname.h"
+#include "gettext.h"
 
 const char usage_str[] = "usage: \"user name\" or \"user group\"\n";
 
@@ -180,6 +184,18 @@ static gid_t foreign_group(void)
 
 int main(int argc, char *argv[])
 {
+  set_program_name (argv[0]);
+  if (NULL == setlocale(LC_ALL, ""))
+    {
+      /* If we can't set the locale as the user wishes,
+       * emit an error message and continue.   The error
+       * message will of course be in the "C" locale.
+       */
+      perror("Error setting locale");
+    }
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+
   if (2 == argc)
     {
       if (0 == strcmp(argv[1], "name"))

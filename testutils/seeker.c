@@ -21,6 +21,7 @@
  */
 #include <config.h>
 
+#include <locale.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
@@ -30,7 +31,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-
+#include "gettext.h"
+#include "progname.h"
 
 #define ERR_USAGE (1)
 
@@ -144,6 +146,17 @@ int main(int argc, char *argv[])
   int i;
   unsigned int j;
 
+  set_program_name (argv[0]);
+  if (NULL == setlocale(LC_ALL, ""))
+    {
+      /* If we can't set the locale as the user wishes,
+       * emit an error message and continue.   The error
+       * message will of course be in the "C" locale.
+       */
+      perror("Error setting locale");
+    }
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
 
   for (i=1; i<argc; ++i)
     {

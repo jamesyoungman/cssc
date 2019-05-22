@@ -66,6 +66,7 @@ in this Software without prior written authorization from the X Consortium.
 #endif
 
 
+#include <locale.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <stdarg.h>
@@ -78,6 +79,8 @@ in this Software without prior written authorization from the X Consortium.
 #include <sys/types.h>
 
 #include "dirent-safer.h"
+#include "progname.h"
+#include "gettext.h"
 
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 2048
@@ -288,6 +291,18 @@ main (int ac, char *av[])
 {
     char *fn, *tn;
     struct stat fs, ts;
+
+    set_program_name (av[0]);
+    if (NULL == setlocale(LC_ALL, ""))
+      {
+	/* If we can't set the locale as the user wishes,
+	 * emit an error message and continue.   The error
+	 * message will of course be in the "C" locale.
+	 */
+	perror("Error setting locale");
+      }
+    bindtextdomain (PACKAGE, LOCALEDIR);
+    textdomain (PACKAGE);
 
     silent = 0;
     if (ac > 1)

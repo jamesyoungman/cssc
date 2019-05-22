@@ -40,25 +40,40 @@
  */
 #include <config.h>
 
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "gettext.h"
+#include "progname.h"
 
 int
-main(argc, argv)
-     int argc;
-     char *argv[];
+main(int argc, char *argv[])
 {
   int i, j;
+  const char * prog;
 
+  set_program_name (argv[0]);
+  if (NULL == setlocale(LC_ALL, ""))
+    {
+      /* If we can't set the locale as the user wishes,
+       * emit an error message and continue.   The error
+       * message will of course be in the "C" locale.
+       */
+      perror("Error setting locale");
+    }
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+
+  prog = program_name ? program_name : "yammer";
   if (argc != 3)
     {
-      fprintf(stderr, "usage: %s count string\n", argv[0]);
+      fprintf(stderr, "usage: %s count string\n", prog);
       return 2;
     }
   else if ((i = atoi(argv[1])) <= 0)
     {
-      fprintf(stderr, "%s: invalid count '%s'\n", argv[0], argv[1]);
+      fprintf(stderr, "%s: invalid count '%s'\n", prog, argv[1]);
       return 2;
     }
   else

@@ -24,10 +24,14 @@
  */
 #include <config.h>
 
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+
+#include "progname.h"
+#include "gettext.h"
 
 
 /* echo [-neE] [arg ...]
@@ -66,9 +70,6 @@ on System V systems with the -E option.
 #  define VALID_ECHO_OPTIONS "n"
 #endif /* !V9_ECHO */
 
-/* The name this program was run with. */
-char *program_name;
-
 /* Print the words in LIST to standard output.  If the first word is
    `-n', then don't print a trailing newline.  We also support the
    echo syntax from Version 9 unix systems. */
@@ -78,7 +79,17 @@ main (int argc, char **argv)
 {
   int display_return = 1, do_v9 = 0;
 
-  program_name = argv[0];
+  set_program_name (argv[0]);
+  if (NULL == setlocale(LC_ALL, ""))
+    {
+      /* If we can't set the locale as the user wishes,
+       * emit an error message and continue.   The error
+       * message will of course be in the "C" locale.
+       */
+      perror("Error setting locale");
+    }
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
 
 /* System V machines already have a /bin/sh with a v9 behaviour.  We
    use the identical behaviour for these machines so that the

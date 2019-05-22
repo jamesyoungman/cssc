@@ -28,7 +28,7 @@ csscutildir = $(libexecdir)/cssc
 ACLOCAL_AMFLAGS = -I m4
 generic_CPPFLAGS = -I ../gl/lib -I $(srcdir)/../gl/lib
 AM_CPPFLAGS = $(generic_CPPFLAGS)
-AM_CFLAGS = "-DPREFIX=\"$(csscutildir)/\"" $(generic_CPPFLAGS)
+AM_CFLAGS = "-DPREFIX=\"$(csscutildir)/\"" "-DLOCALEDIR=\"$(localedir)\"" $(generic_CPPFLAGS)
 
 AM_LDFLAGS = -L../gl/lib
 LDADD = -lgnulib

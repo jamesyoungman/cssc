@@ -60,6 +60,7 @@ static const char filever[] = "$Id: sccs.c,v 1.44 2007/12/19 00:21:14 jay Exp $"
 #ifdef HAVE_GRP_H
 #include <grp.h>		/* setgroups() */
 #endif
+#include <gettext.h>
 
 /* #include "pathnames.h" */
 /* The next few lines inserted from @(#)pathnames.h     8.1 (Berkeley) 6/6/93
@@ -612,6 +613,7 @@ main (int argc, char **argv)
 
   if (TrustEnvironment)
     {
+#ifdef HAVE_SETLOCALE
 #ifndef __ultrix
       /* Mark Reynolds <mark@aoainc.com>: If $LANG is not
        * set, setlocale() fails on VAX Ultrix 4.2.
@@ -625,7 +627,11 @@ main (int argc, char **argv)
           perror("Error setting locale");
         }
 #endif
+#endif
     }
+
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
 
   check_data_integrity();
 
