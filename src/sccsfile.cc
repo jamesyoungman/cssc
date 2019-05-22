@@ -162,11 +162,12 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
     {
       opts = ParserOptions(opts).set_silent_checksum_error(true);
     }
-  auto opened = sccs_file_parser::open_sccs_file(name.sfile(), READ, opts);
-  if (!opened)
+  auto failure_or_opened = sccs_file_parser::open_sccs_file(name.sfile(), READ, opts);
+  if (!failure_or_opened.ok())
     {
       ctor_fail(-1, "%s: Cannot open SCCS file.\n", name.c_str());
     }
+  auto opened = std::move(*failure_or_opened);
   // We do not support edit operations on Bitkeeper files.
   edit_mode_ok_ = !opened->is_bk;
   set_sfile_executable (opened->is_executable);

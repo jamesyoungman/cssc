@@ -26,6 +26,8 @@
 #include <string.h>
 #include <memory>
 
+#include "failure.h"
+#include "failure_or.h"
 #include "linebuf.h"
 #include "location.h"
 #include "quit.h"
@@ -66,6 +68,23 @@ class sccs_file_reader_base
       }
   }
 
+  cssc::FailureOr<char> read_line()
+  {
+    if (read_line_param())
+      {
+	if (ferror(f_))
+	  {
+	    errormsg_with_errno("%s: read error", name().c_str());
+	  }
+	return cssc::make_error(cssc::error::UnexpectedEOF);
+      }
+
+    if ( bufchar(0) == '\001')
+      return bufchar(1);
+    else
+      return char(0);
+  }
+
 /*
  * Reads a line from the SCCS file.
  * Result:
@@ -75,22 +94,13 @@ class sccs_file_reader_base
  */
   bool read_line(char *line_type)
   {
-    // TODO: convert to return std::pair<bool, char> instead.
-    if (read_line_param())
+    auto failure_or_type = read_line();
+    if (failure_or_type.ok())
       {
-	if (ferror(f_))
-	  {
-	    errormsg_with_errno("%s: read error", name().c_str());
-	  }
-	/* TODO: distinguish EOF from failure. */
-	return false;
+	*line_type = *failure_or_type;
+	return true;
       }
-
-    if ( bufchar(0) == '\001')
-      *line_type = bufchar(1);
-    else
-      *line_type = char(0);
-    return true;
+    return false;
   }
 
   int read_line_param()

@@ -30,6 +30,7 @@
 
 #include "base-reader.h"
 #include "body-scanner.h"
+#include "failure_or.h"
 #include "optional.h"
 #include "location.h"
 #include "mode.h"
@@ -108,7 +109,7 @@ public:
   };
 
   // Open an SCCS file.  Result is null on failure.
-  static std::unique_ptr<open_result>
+  static cssc::FailureOr<std::unique_ptr<open_result> >
   open_sccs_file(const string& name, sccs_file_open_mode, ParserOptions);
 
   NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;

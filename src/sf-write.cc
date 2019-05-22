@@ -470,12 +470,12 @@ sccs_file::end_update(FILE **pout)
   {
     auto opts = ParserOptions().set_silent_checksum_error(true);
     auto open_result = sccs_file_parser::open_sccs_file(xname, READ, opts);
-    if (!open_result)
+    if (!open_result.ok())
       {
 	xfile_error("Error opening file.");
 	return false;
       }
-    sum = open_result->computed_sum;
+    sum = (*open_result)->computed_sum;
   }
 
 

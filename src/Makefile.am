@@ -82,7 +82,9 @@ libcssc_a_SOURCES = \
 	version.h ioerr.h delta-table.h delta.h \
 	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
 	relvbr.h cssc-assert.h cleanup.h mode.h optional.h l-split.h \
-	location.h body-scanner.h base-reader.h subst-parms.h diff-state.h
+	location.h body-scanner.h base-reader.h subst-parms.h diff-state.h \
+	body-scanner.cc location.cc base-reader.cc diff-state.cc \
+	failure.cc failure.h failure_or.h
 
 # The source lists for the actual executables....
 what_SOURCES = what.cc

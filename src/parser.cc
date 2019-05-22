@@ -34,6 +34,7 @@
 
 #include "delta.h"
 #include "delta-table.h"
+#include "failure_or.h"
 #include "file.h"
 #include "linebuf.h"
 #include "quit.h"
@@ -75,7 +76,8 @@ namespace
 #endif
 
 
-  FILE * do_open_sccs_file(const char *name, sccs_file_open_mode mode,
+  cssc::FailureOr<FILE*>
+  do_open_sccs_file(const char *name, sccs_file_open_mode mode,
 			   const ParserOptions&)
   {
     FILE *f_local;
@@ -91,10 +93,11 @@ namespace
 
     if (f_local == NULL)
       {
+	auto result = cssc::make_error_from_errno(errno);
 	const char *purpose = (mode == UPDATE) ? "update" : "reading";
 	s_missing_quit("Cannot open SCCS file %s for %s", name, purpose);
+	return result;
 	/*NOTEACHED*/
-	return nullptr;
       }
 
     if (!just_one_link(f_local))
@@ -106,7 +109,7 @@ namespace
 		 "please fix the problem.\n",
 		 name);
 	(void)fclose(f_local);
-	return nullptr;
+	return cssc::make_error(cssc::error::FileHasHardLinks);
       }
     return f_local;
   }
@@ -114,16 +117,18 @@ namespace
 
 
 // Factory function for creating a parser.
-std::unique_ptr<sccs_file_parser::open_result>
+cssc::FailureOr<std::unique_ptr<sccs_file_parser::open_result>>
 sccs_file_parser::open_sccs_file(const std::string& name,
 				 sccs_file_open_mode mode,
 				 ParserOptions opts)
 {
-  FILE * f = do_open_sccs_file(name.c_str(), mode, opts);
-  if (nullptr == f)
+  auto failure_or_file = do_open_sccs_file(name.c_str(), mode, opts);
+  if (!failure_or_file.ok() )
     {
-      return nullptr;		// we already issued an error message.
+      return failure_or_file.code();
     }
+  FILE * f = *failure_or_file;
+  ASSERT(f != NULL);
 
   auto p = std::make_unique<sccs_file_parser>(name, mode, f, constructor_cookie{});
   // TODO: having an f_ member in a base class and passing in the same
