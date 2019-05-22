@@ -24,6 +24,8 @@
 #include "config.h"
 
 #include <sys/stat.h>           /* fstat(), struct stat */
+#include <limits.h>		/* INT_MAX, INT_MIN */
+#include <errno.h>
 
 #include "cssc.h"
 // TODO: eliminate the need to #include "defaults.h" directly.
@@ -558,22 +560,49 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
       ASSERT(c == 'h');
     }
 
+
   /* the checksum is represented in the file as decimal.
    */
   signed int given_sum = 0;
-  if (1 != sscanf(plinebuf->c_str(),
-		  (is_bk ? "%*cH%d" : "%*ch%d"),
-		  &result->stored_sum))
+  const char *start = plinebuf->c_str() + 2;
+  char* end = nullptr;
+  errno = 0;
+  long n = strtol(start, &end, 10);
+  auto loc = here();
+  bool *valid = &result->checksum_valid_;
+  auto report_bad_csum = [this, &opts, valid, loc, start](const char *msg)
     {
+      *valid = false;
       if (!opts.silent_checksum_error())
 	{
-	  errormsg("Expected checksum line, found line beginning '%.3s'\n",
-		   plinebuf->c_str());
+	  // sometimes we write a placeholder for the checksum line,
+	  // meaning that we call this function expecting an invalid
+	  // checksum line.  Calling errormsg unconditionally here
+	  // would be confusing for the user since in those cases the
+	  // history file doesn't start out with an invalid checksum.
+	  errormsg("Bad checksum line, found line '%s': %s", start, msg);
+	  corrupt(loc, msg);
 	}
-      result->checksum_valid_ = false;
+    };
+  if (n == LONG_MAX && errno)
+    {
+      report_bad_csum("checksum value too large");
+      result->stored_sum = INT_MAX;
+    }
+  else if (n == LONG_MIN && errno)
+    {
+      report_bad_csum("checksum value too small");
+      result->stored_sum = INT_MIN;
     }
   else
     {
+      result->stored_sum = (n > INT_MAX) ? INT_MAX :
+	((n < INT_MIN) ? INT_MIN : static_cast<int>(n));
+      if (*end)
+	{
+	  report_bad_csum("trailing junk after checksum, expected just newline");
+	}
+
       given_sum &= 0xFFFFu;
       result->checksum_valid_ = (result->stored_sum == result->computed_sum);
       if (!result->checksum_valid_ && !opts.silent_checksum_error())
