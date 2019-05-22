@@ -59,15 +59,6 @@ AM_INSTALLCHECK_STD_OPTIONS_EXEMPT = \
 BUILT_SOURCES = version.cc
 CLEANFILES = sccsdiff
 
-noinst_HEADERS = cssc.h defaults.h file.h fileiter.h filelock.h \
-	filepos.h my-getopt.h linebuf.h pfile.h parser.h \
-	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
-	seqstate.h sid.h sid_list.h sl-merge.h sysdep.h \
-	version.h ioerr.h delta-table.h delta.h \
-	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
-	relvbr.h cssc-assert.h cleanup.h mode.h optional.h l-split.h \
-	location.h body-scanner.h base-reader.h subst-parms.h diff-state.h
-
 libcssc_a_SOURCES = \
 	rl-merge.cc \
 	bodyio.cc sf-get.cc sf-get3.cc \
@@ -83,7 +74,15 @@ libcssc_a_SOURCES = \
 	quit.cc fatalsig.cc \
 	my-getopt.cc version.cc fdclosed.cc \
 	showconfig.cc  environment.cc \
-	body-scanner.cc location.cc base-reader.cc diff-state.cc
+	body-scanner.cc location.cc base-reader.cc diff-state.cc \
+	cssc.h defaults.h file.h fileiter.h filelock.h \
+	filepos.h my-getopt.h linebuf.h pfile.h parser.h \
+	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
+	seqstate.h sid.h sid_list.h sl-merge.h sysdep.h \
+	version.h ioerr.h delta-table.h delta.h \
+	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
+	relvbr.h cssc-assert.h cleanup.h mode.h optional.h l-split.h \
+	location.h body-scanner.h base-reader.h subst-parms.h diff-state.h
 
 # The source lists for the actual executables....
 what_SOURCES = what.cc
