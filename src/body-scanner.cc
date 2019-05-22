@@ -436,7 +436,7 @@ sccs_file_body_scanner::delta(const std::string& dname,
 			  }
 			break;
 		      }
-		
+
 		    case diffstate::END:
 #ifdef JAY_DEBUG
 		      fprintf(stderr, "diff_state::END\n");

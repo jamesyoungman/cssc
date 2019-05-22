@@ -11,7 +11,7 @@ depcomp
 install-sh
 m4
 missing
-stamp-h.in 
+stamp-h.in
 ChangeLog
 config.cache
 config.h

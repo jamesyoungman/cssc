@@ -408,7 +408,7 @@
 	* tests/bsd-sccs/driver-basic.sh, tests/cdc/2comment.sh, tests/cdc/4order.sh, tests/delta/basic2.sh, tests/delta/ignored.sh, tests/delta/iterbasic.sh, tests/get/annotate.sh, tests/get/create.sh, tests/get/doubleinc.sh, testutils/lndir.c, testutils/seeker.c, docs/BUGS, docs/CREDITS, docs/CREDITS.short.txt, docs/FIXED, docs/Platforms, docs/cssc.texi, bsd/sccs.c, run.cc, sccsfile.cc, sccsfile.h, sccsname.h, seqstate.cc, seqstate.h, sf-delta.cc, sf-get.cc, sf-get2.cc, sf-get3.cc, sf-prs.cc, val.cc, visibility.cc, ChangeLog, Makefile.am, NEWS, configure.in, file.cc, linebuf.cc, quit.cc:
 	Reverted trunk files to same contents as 0.11 patchlevel 3.
 
-1999-12-09  Mark Fortescue <mark@mtfhpc.demon.co.uk> 
+1999-12-09  Mark Fortescue <mark@mtfhpc.demon.co.uk>
 
 	* relvbr.h, sf-get2.cc, sid.cc, sid.h
 	Fixed a problem with branching
@@ -563,7 +563,7 @@
 1999-03-20  James Youngman  <jay@gnu.org>
 
 	* Released 0.10beta.pl0.
-	
+
 	* docs/cssc.texi: Updated version number.
 
 	* bsd/sccs.c, docs/cssc.texi, delta.cc, configure.in:
@@ -1052,7 +1052,7 @@
 	unused/ffsync.cc, unused/fsync.cc, unused/move-if-change,
 	unused/dosfile.cc, unused/dummy.cc, unused/_chmod.cc, dosfile.cc,
 	ffsync.cc, move-if-change, pipe.cc, pipe.h, sid_list.cc,
-	_chmod.cc, dummy.cc, fsync.cc: 
+	_chmod.cc, dummy.cc, fsync.cc:
 	Moved some files into the "unused" directory; we don't use them
 	any more and keeping them aroung means that they have to be
 	considered during global search and replace operations.  That's
@@ -1359,7 +1359,7 @@
 
 	* sf-rmdel.cc, sid.cc, sccs-delta.cc, sccsname.cc, prs.cc,
 	quit.cc, pipe.cc, fsync.cc, pf-add.cc, file.cc, fileiter.cc,
-	delta.cc, cdc.cc, delta-table.cc: 
+	delta.cc, cdc.cc, delta-table.cc:
 	Get the name of the file right, in each file's comment header.
 
 	* sf-write.cc, sccsfile.h:
@@ -1376,7 +1376,7 @@
 1998-05-08  James Youngman  <jay@gnu.org>
 
 	* CSSC-0.06alpha.pl7 released.
-	
+
 	* NEWS, configure.in, ChangeLog: Released 0.06alpha.pl7.
 
 	* docs/cssc.texi: Added header for install-info.
@@ -1400,7 +1400,7 @@
 1998-05-05  James Youngman  <jay@gnu.org>
 
 	* CSSC-0.06alpha.pl6 released.
-	
+
 	* NEWS: Added entry about "sccs.c".
 
 1998-05-04  James Youngman  <jay@gnu.org>
@@ -1562,9 +1562,9 @@
 	* sf-delta.cc, fileiter.cc:
 	Make FileDiff::finish() return a bool; it returns false if pclose()
 	indicates that the spawned process returned a nonzero exit status.
-	[ REVERSED -- this was a BAD idea, diff returns 1 if the 
+	[ REVERSED -- this was a BAD idea, diff returns 1 if the
 	  files differ! ]
-	
+
 	* sccsdiff.sh.in:
 	Bug report from Richard Polton: IRIX's pr(1) requires a space between
 	the "-h" and its argument.

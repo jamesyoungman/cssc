@@ -37,16 +37,16 @@ class CsscInvalidData : public CsscException
     : msg_(message)
   {
   }
-  const std::string message() const 
+  const std::string message() const
   {
     return msg_;
   }
-  
+
  private:
   std::string msg_;
 };
 
-  
+
 struct CsscExitvalException : public CsscException
 {
   int exitval;

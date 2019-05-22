@@ -70,5 +70,5 @@ namespace encoding_impl {
 void encode(const char in[3], char out[4]);
 void decode(const char in[4], char out[3]);
 }  // namespace encoding_impl
- 
+
 #endif

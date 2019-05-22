@@ -1927,7 +1927,7 @@
 	fixing the quoting in order to avoid subsequent merge problems and
 	spurious diffs.
 
-	Silence a spurious error about changing old NEWS entries.	
+	Silence a spurious error about changing old NEWS entries.
 	* cfg.mk (old_NEWS_hash): Set old_NEWS_hash to the md5sum of a
 	zero-length input in order to silence a spurious error about
 	changing old NEWS entries.
@@ -1955,7 +1955,7 @@
 
 	Adopt the use of the gnulib maintainer-makefile module.
 	(gnulib_modules): Add maintainer-makefile.
-	
+
 	Update to GNU Free Documentation License, Version 1.3 (from 1.2).
 	* docs/cssc.texi (@copying): Update from FDL 1.2 to FDL 1.3.
 	* bootstrap.conf (gnulib_modules): Import module fdl.
@@ -2013,7 +2013,7 @@
 
 	Show the value of $(VALGRIND) at the start of regression testing.
 	* tests/Makefile.am (test-initial): echo $(VALGRIND).
-	
+
 	Add unit test verifying that we don't read uninitialised data in encode.
 	* unit-tests/test_encoding2.cc: New unit test file.  Verifies that
 	we don't read uninitialised data when we reach the end of the
@@ -2063,7 +2063,7 @@
 
 	Inline delta::removed(), for a small performance boost.
 	* delta.h (class delta): Inline delta::removed().
-	* sccs-delta.cc: Remove the non-inline version. 
+	* sccs-delta.cc: Remove the non-inline version.
 
 	Call strtoul to do the actual conversion, for a small performance boost.
 	* sccsfile.cc (strict_atoul_idu): Call strtoul to perform the
@@ -2251,7 +2251,7 @@
 	Run the unit tests under valgrind.
 	* configure.ac: Check for the presence of valgrind.  If we find
 	it, use valgrind -q --trace-children=yes.
-	
+
 	* unit-tests/Makefile.am (TESTS_ENVIRONMENT): Run the tests under
 	valgrind.
 	* tests/README: Explain that these are regression tests and point
@@ -2336,13 +2336,13 @@
 	* prompt.cc: Likewise.
 	* fdclosed.cc: Include defaults.h.
 	* run.cc: Include quit.h
-	
+
 2010-04-24  James Youngman  <jay@gnu.org>
 
 	Include system headers where they are needed, not in cssc.h.
 	* except.h: Add a multiple-include guard.  #include <cstdlib>.
 	* environment.cc: #include <cstdlib>, <cstring>, <cerrno>
-	* bodyio.cc: #include <cstring>, ioerr.h, file.h.	
+	* bodyio.cc: #include <cstring>, ioerr.h, file.h.
 	* fileiter.cc: Likewise.
 	* linebuf.cc: Likewise.
 	* prompt.cc: Likewise.
@@ -2478,7 +2478,7 @@
 
 	Add unit tests for delta-table.h.
 	* unit-tests/test_delta-table.cc: New file, contains unit tests
-	for delta-table.h. 
+	for delta-table.h.
 	* unit-tests/Makefile.am (test_delta_table_SOURCES): New
 	variable.
 	(check_PROGRAMS): Add test_delta-table.
@@ -2557,8 +2557,8 @@
 	fix a typo in a comment.
 	(prs): Use the new accessor functions.
 	* sf-prt.cc (cutoff::excludes_delta): Use the new accessor functions.
-	(cutoff::print): Likewise.	
-	(sccs_file::prt): Likewise.	
+	(cutoff::print): Likewise.
+	(sccs_file::prt): Likewise.
 	* sf-rmdel.cc (sccs_file::rmdel): Use the new accessor functions.
 	* sf-val.cc (sccs_file::validate_seq_lists): Use the new accessor functions.
 	(sccs_file::validate_isomorphism): Likewise.
@@ -2606,14 +2606,14 @@
 	* mylist.h (operator==): Implement operator==.
 	* unit-tests/test_mylist.cc (MylistTest): Add unit tests for
 	operator==.
-	
+
 	Remove some obsolete comments.
 	* mylist.h: Remove a spurious extra "Local Variables" comment.
 
 	* sid_list.h: Remove some obsolete (and long commented-out) code.
 	* relvbr.h (class relvbr): Likewise.
 	* release.h (class release): Likewise.
-	
+
 	Finish test_sccsdate.cc.
 	* unit-tests/test_sccsdate.cc: Added unit tests for the remaining
 	public methods of sccs_date.
@@ -2632,11 +2632,11 @@
 	Add TODO list for unit tests we need to write.
 	* unit-tests/TODO.txt: New file; a working list of what unit tests
 	are still needed.
-					 
+
 	Add unit tests for sccsdate.h.
 	* unit-tests/test_sccsdate.cc: New file.
 	* unit-tests/Makefile.am (test_sccsdate_SOURCES): Add
-	test_sccsdate.cc.  
+	test_sccsdate.cc.
 	(check_PROGRAMS): Add test_sccsdate.
 
 	Explain what the googletest directory is and how to run unit tests.
@@ -2928,7 +2928,7 @@
 	* missing: Likewise.
 	* install-sh: Likewise.
 	* docs/texinfo.tex: Likewise
-	
+
 	* configure.ac (AC_CHECK_DECL_IN_HEADER): Quote the definition of
 	the function.
 	(AC_CHECK_GLOBAL): Likewise.
@@ -2937,8 +2937,8 @@
 
 	* auxfiles/CSSC.spec.in: Reflect changes in the RPM spec
 	file format and requrements since 2003.
-	(License): Changed "Copyright" tag to "License".  
-	(%makeinstall): Do not make the /usr/sccs symbolic link.  
+	(License): Changed "Copyright" tag to "License".
+	(%makeinstall): Do not make the /usr/sccs symbolic link.
 	(%files): Add various binaries to %files.
 
 2008-01-18  James Youngman  <jay@gnu.org>
@@ -2948,7 +2948,7 @@
 	* docs/cssc.texi: Updated copyright year.  Bumped the revision
 	number and updated the VERSION macro.  Updated the "UPDATED"
 	variable to the current time.
-	
+
 	* version.h (version): Don't show the RCS ID of the main program
 	in the version output; just keep the existing CSSC release number.
 
@@ -2958,12 +2958,12 @@
 2008-01-07  James Youngman  <jay@gnu.org>
 
 	* sf-val.cc (validate_isomorphism): Warn if a delta has two
-	derived deltas on the trunk.  
+	derived deltas on the trunk.
 
 	* release.h: Fixed typo in the file header comment.
 
 	* delta-table.h (class cssc_delta_table): Don't initialise sid
-	objects from NULL.  
+	objects from NULL.
 
 	* fileiter.cc (sccs_file_iterator): Ignore subdirectories, even if
 	they do start with "s.".
@@ -2991,7 +2991,7 @@
 
 	* sf-val.cc (validate_isomorphism): Extend the comment setting out
 	the design for this method.  The method is still unimplemented,
-	though.  
+	though.
 
 	Various tidyings-up of TODO items.
 	* prompt.cc (prompt_user): Now that this code is well tested,
@@ -3023,7 +3023,7 @@
 	* sf-get2.cc (sccs_file::get): Add the new summary_file parameter
 	and, if it's not NULL, emit a delta summary.
 	* docs/cssc.texi (get options): Document the options -l, -lp and
-	-L.  
+	-L.
 	(Filenames): Mention the l-file.
 	(prt usage): Mention that the delta summary file contains much the
 	same information.
@@ -3034,7 +3034,7 @@
 	* sf-prt.cc (sccs_file::prt): Fixed typo in comment.
 
 	* NEWS: Updated with changes for the early 0.02 releases by
-	diffing the unpacked tar archives.  
+	diffing the unpacked tar archives.
 
 2007-12-19  James Youngman  <jay@gnu.org>
 
@@ -3125,12 +3125,12 @@
 	Update license to GPL version 3.
 	* NEWS: Mention this change.
 	* docs/cssc.texi (Copying): Put the GPL in a separate, unnumbered,
-	section. 
+	section.
 
 	* docs/cssc.texi: Change license to version 1.2 of the GNU Free
 	Documentation License.
 	* docs/Makefile.am (cssc_TEXINFOS): Depend on fdl.texi, so that it
-	gets distributed. 
+	gets distributed.
 	* NEWS: Mention this change.
 
 	* docs/Makefile.am (cssc_TEXINFOS): Don't depend on
@@ -3140,17 +3140,17 @@
 	* doc/texinfo.tex: Update to the version of texinfo.tex used in
 	automake-1.8.  Yo avoid future compatibility issues, it makes
 	sense to remove this file from CVS in fact, but we won't do that
-	just yet. 
+	just yet.
 
 	* tests/bsd-sccs/delsfile.sh (cleanup): Also clean up ./s.foo when
 	we're finished.
 
 	Fix build problems caused by the fact that generating
 	testutils/Makefile in the top level directory produces
-	a Makefile that expects to use config.h, while we actually 
+	a Makefile that expects to use config.h, while we actually
 	want to use DEFS in the testutils subdirectory.
 	* configure.ac: Call AC_OUTPUT only once.  Do not emit
-	testutils/Makefile. 
+	testutils/Makefile.
 	* testutils/configure.ac: Fixed typo.
 
 
@@ -3233,7 +3233,7 @@
 	* COPYING: Fixed the FSF address.
 	* Makefile.am, remove.c, rename.c, sccsdiff.sh.in, strerror.c,
 	version.h: Included copyright notices in some files where these
-	were missing 
+	were missing
 
 2007-03-14  James Youngman  <jay@gnu.org>
 

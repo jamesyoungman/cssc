@@ -38,13 +38,13 @@ class seq_state;
 struct delta_result
 {
   delta_result() : success(false), inserted(0), deleted(0), unchanged(0) {}
-  
+
   bool success;
   unsigned long inserted;
   unsigned long deleted;
   unsigned long unchanged;
 };
-  
+
 class sccs_file_body_scanner : public sccs_file_reader_base
 {
 public:

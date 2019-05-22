@@ -30,7 +30,7 @@
 #include "location.h"
 #include "quit.h"
 
-class sccs_file_reader_base 
+class sccs_file_reader_base
 {
  public:
   explicit sccs_file_reader_base(const std::string& n, FILE *f, sccs_file_location pos)
@@ -39,17 +39,17 @@ class sccs_file_reader_base
     plinebuf{std::make_unique<cssc_linebuf>()}
   {}
 
-  const std::string& name() const 
+  const std::string& name() const
     {
       return here_.name();
     }
-  
+
   const sccs_file_location& here() const
   {
     return here_;
   };
-  
-  void check_arg() const 
+
+  void check_arg() const
   {
     if (bufchar(2) != ' ')
       {
@@ -58,7 +58,7 @@ class sccs_file_reader_base
   }
 
   /* Checks the a control line has no arguments. */
-  void check_noarg() const 
+  void check_noarg() const
   {
     if (bufchar(2) != '\0')
       {
@@ -92,8 +92,8 @@ class sccs_file_reader_base
       *line_type = char(0);
     return true;
   }
-  
-  int read_line_param() 
+
+  int read_line_param()
   {
     if (plinebuf->read_line(f_))
       {
@@ -112,11 +112,11 @@ class sccs_file_reader_base
   }
 
  protected:
-  void set_line_number(int num) 
+  void set_line_number(int num)
   {
     here_ = sccs_file_location(here_.name(), num);
   }
-  
+
   std::unique_ptr<cssc_linebuf> plinebuf;
   sccs_file_location here_;
 

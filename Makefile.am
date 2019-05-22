@@ -57,5 +57,5 @@ gen-ChangeLog:
 		echo "$(top_srcdir) has no .git subdirectory" >&2 ;      \
 	fi
 
-distcheck-hook: 
+distcheck-hook:
 	"$(srcdir)/build-aux/check-googletest-files.sh" "$(srcdir)" "$(DIST_ARCHIVES)"
