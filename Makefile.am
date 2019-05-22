@@ -49,12 +49,12 @@ dist-hook: gen-ChangeLog
 .PHONY: gen-ChangeLog
 gen-ChangeLog:
 	$(AM_V_GEN)if test -d $(top_srcdir)/.git; then             \
-	  $(AUXDIR)/gen-changelog.sh $(top_srcdir) > $(distdir)/cl-t \
-	      && { rm -f $(distdir)/ChangeLog                      \
-	             && mv $(distdir)/cl-t $(distdir)/ChangeLog; } \
+		$(AUXDIR)/gen-changelog.sh $(top_srcdir) > $(distdir)/cl-t \
+			&& { rm -f $(distdir)/ChangeLog                      \
+			&& mv $(distdir)/cl-t $(distdir)/ChangeLog; } \
 	else                                                       \
-	  echo "WARNING: $@: cannot generate ChangeLog since" >&2 && \
-	  echo "$(top_srcdir) has no .git subdirectory" >&2 ;      \
+		echo "WARNING: $@: cannot generate ChangeLog since" >&2 && \
+		echo "$(top_srcdir) has no .git subdirectory" >&2 ;      \
 	fi
 
 distcheck-hook: 

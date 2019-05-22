@@ -80,7 +80,7 @@ class sccs_file_reader_base
       {
 	if (ferror(f_))
 	  {
-	    errormsg_with_errno("%s: Read error.", name().c_str());
+	    errormsg_with_errno("%s: read error", name().c_str());
 	  }
 	/* TODO: distinguish EOF from failure. */
 	return false;
