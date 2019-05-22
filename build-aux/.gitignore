@@ -16,3 +16,4 @@
 /test-driver
 /snippet/*
 /googletest-Makefile.am
+/config.rpath
