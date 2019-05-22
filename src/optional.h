@@ -21,10 +21,10 @@
 
 #include "cssc-assert.h"
 
-namespace cssc 
+namespace cssc
 {
   // optional implements a limited subset of C++17's std::optional.
-  template <typename T> class optional 
+  template <typename T> class optional
     {
     public:
       optional(const T& value)
@@ -33,17 +33,17 @@ namespace cssc
       optional()
 	: hasvalue_(false), value_{} {}
 
-      constexpr bool has_value() const 
+      constexpr bool has_value() const
       {
 	return hasvalue_;
       }
 
-      constexpr const T& value() const 
+      constexpr const T& value() const
       {
 	ASSERT(hasvalue_);
 	return value_;
       }
-      
+
       optional& operator=(const T& value) {
 	// This doesn't match std::optional very well.  I don't think
 	// that will matter for us, our use of cssc::optional is very
@@ -52,8 +52,8 @@ namespace cssc
 	hasvalue_ = true;
 	return *this;
       }
-      
-      
+
+
     private:
       bool hasvalue_;
       T value_;

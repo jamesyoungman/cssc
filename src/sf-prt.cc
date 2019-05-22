@@ -269,7 +269,7 @@ sccs_file::prt(FILE *out,
 
 	  // Unless -a was specified, don't print removed deltas.  But
 	  // they also should not be returned by the iterator.
-	  if (iter->removed()) 
+	  if (iter->removed())
 	    {
 	      ASSERT(selector == delta_selector::all);
 	    }

@@ -73,7 +73,7 @@ public:
 
   enum when { EARLIER, SIDONLY, LATER };
   enum { GET_NO_DECODE = true };
-  
+
   struct cutoff
   {
     bool enabled;
@@ -139,7 +139,7 @@ public:
   bool validate() const;
 
   ////////////////////////////////////////////////////////////////////////
-  
+
   bool checksum_ok() const;
 
   sid find_most_recent_sid(sid id) const;

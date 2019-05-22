@@ -41,7 +41,7 @@ struct subst_parms
   unsigned out_lineno;
   sccs_date now;
   int found_id;
-  
+
 subst_parms(const std::string& name, const std::string modname,
 	    FILE *o, cssc::optional<std::string> w, struct delta const &d,
 	    unsigned int l, sccs_date n)

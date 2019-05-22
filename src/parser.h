@@ -38,7 +38,7 @@ class cssc_linebuf;
 class cssc_delta_table;
 class delta;
 
-struct parsed_flag 
+struct parsed_flag
 {
   parsed_flag(const sccs_file_location& loc, char f, const std::string& v)
     : where(loc), letter(f), value{cssc::optional<std::string>(v)} {}
@@ -54,13 +54,13 @@ class ParserOptions
 {
 public:
   explicit ParserOptions()
-  : silent_checksum_error_(false) 
+  : silent_checksum_error_(false)
   {
   }
 
   ParserOptions(const ParserOptions& other) = default;
 
-  ParserOptions& set_silent_checksum_error(bool state) 
+  ParserOptions& set_silent_checksum_error(bool state)
   {
     silent_checksum_error_ = state;
     return *this;
@@ -83,12 +83,12 @@ private:
   using string = std::string;
 
 public:
-  static ParserOptions Defaults() 
+  static ParserOptions Defaults()
   {
     return ParserOptions();
   }
-  
-  struct open_result 
+
+  struct open_result
   {
     template <class T> using optional = cssc::optional<T>;
     std::unique_ptr<sccs_file_parser> parser;
@@ -97,7 +97,7 @@ public:
     int stored_sum;		// from the header
     // if checksum_valid is false, stored_sum is either uninitialised
     // (e.g. malformed header line) or does not equal computed_sum.
-    bool checksum_valid_;	
+    bool checksum_valid_;
     bool is_bk;
     bool is_executable;
     std::unique_ptr<cssc_delta_table> delta_table;
@@ -110,7 +110,7 @@ public:
   // Open an SCCS file.  Result is null on failure.
   static std::unique_ptr<open_result>
   open_sccs_file(const string& name, sccs_file_open_mode, ParserOptions);
-  
+
   NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
   void saw_unknown_feature(const char *fmt, ...) const;
   bool seek_to_body();

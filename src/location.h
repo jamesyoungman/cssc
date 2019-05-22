@@ -25,7 +25,7 @@
 
 #include <string>
 
-class sccs_file_location 
+class sccs_file_location
 {
 public:
   explicit sccs_file_location(const std::string& n)
@@ -37,9 +37,9 @@ public:
   {
     return name_;
   }
-  
+
   std::string as_string() const;
-  
+
   int line_number() const
   {
     return lineno_;
@@ -50,11 +50,11 @@ public:
     ++lineno_;
   }
 
-  void set_line_number(int n) 
+  void set_line_number(int n)
   {
     lineno_ = n;
   }
-  
+
   sccs_file_location& operator=(const sccs_file_location&);
 
 protected:

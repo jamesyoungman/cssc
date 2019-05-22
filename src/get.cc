@@ -236,7 +236,7 @@ main(int argc, char **argv)
           break;
 
         case 'w':
-	  if (opts.getarg()) 
+	  if (opts.getarg())
 	    {
 	      wstring = std::string(opts.getarg());
 	    }

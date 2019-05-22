@@ -12,7 +12,7 @@ find . \
                                  if (f[1] != "config.h") {
                                     printf("%s:%s\n", FILENAME, f[1]);
                                  }
-                                 exit(0); 
-                 }               
+                                 exit(0);
+                 }
              }' "$file"
     done

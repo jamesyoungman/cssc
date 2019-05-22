@@ -1,5 +1,5 @@
 /^ *# *include ["<].*[">]/ {
-s/^ *# *include ["<]\(.*\)[">]/\1/ 
+s/^ *# *include ["<]\(.*\)[">]/\1/
 t YESREALLY
 i\
 Internal error - regexes are inconsistent
