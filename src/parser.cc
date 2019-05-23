@@ -542,12 +542,12 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
   result->is_bk = is_bk;
 
   // If the history file is executable, remember this fact.
-  result->is_executable = false;
-  bool executable;
-  if (get_open_file_xbits(f_local, &executable))
-    {
-      result->is_executable = executable;
-    }
+  cssc::FailureOr<bool> got = get_open_file_xbits(f_local);
+  if (got.ok()) 
+    result->is_executable = *got;
+  else
+    result->is_executable = false;
+    
 
   char c;
   read_line(&c);		// FIXME: check for EOF

@@ -31,6 +31,8 @@
 #include <string>
 #include <sys/types.h>
 
+#include "failure.h"
+#include "failure_or.h"
 #include "filelock.h"
 
 enum create_mode {
@@ -44,14 +46,14 @@ enum create_mode {
 	CREATE_EXECUTABLE    = 0200   // A SCO extension.
 };
 
-bool stdout_to_null();
+cssc::Failure stdout_to_null();
 FILE *stdout_to_stderr();
 int stdin_is_a_tty();
 FILE *open_null();
 int is_readable(const char *name);
 int is_directory(const char *name);
 int file_exists(const char *name);
-bool get_open_file_xbits (FILE *f, bool *is_executable);
+cssc::FailureOr<bool> get_open_file_xbits (FILE *f);
 const char *get_user_name();
 int user_is_group_member(gid_t gid);
 FILE *fcreate(const std::string& name, int mode);

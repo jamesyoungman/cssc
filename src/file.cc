@@ -44,18 +44,19 @@
 #include "dirent-safer.h"
 
 /* Redirects stdout to a "null" file (eg. /dev/null). */
-bool
+cssc::Failure
 stdout_to_null()
 {
   if (NULL == freopen(CONFIG_NULL_FILENAME, "w", stdout))
     {
+      int saved_errno = errno;
       errormsg_with_errno("Can't redirect stdout to "
                           CONFIG_NULL_FILENAME );
-      return false;
+      return cssc::make_failure_from_errno(errno);
     }
   else
     {
-      return true;
+      return cssc::Failure::Ok();
     }
 }
 
@@ -127,19 +128,18 @@ get_mode_bits(const char *filename, mode_t mask, mode_t *result)
   return true;
 }
 
-bool
-get_open_file_xbits (FILE *f, bool *is_executable)
+cssc::FailureOr<bool>
+get_open_file_xbits (FILE *f)
 {
   const int fd = fileno(f);
   if (fd < 0)
-    return false;
+    return cssc::make_failure_from_errno(errno);
 
   struct stat st;
   if (0 != fstat(fd, &st))
-    return false;
+    return cssc::make_failure_from_errno(errno);
 
-  *is_executable = st.st_mode & 0111;
-  return true;
+  return st.st_mode & 0111;
 }
 
 

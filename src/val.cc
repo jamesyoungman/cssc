@@ -138,7 +138,7 @@ main(int argc, char **argv)
 
   if (silent)
     {
-      if (!stdout_to_null())
+      if (!stdout_to_null().ok())
 	return 1;	// fatal error.
     }
 

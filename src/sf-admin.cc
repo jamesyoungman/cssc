@@ -389,9 +389,11 @@ sccs_file::create(const sid &id,
 	    }
 	}
 
-      bool file_is_executable = false;
-      if (get_open_file_xbits(in, &file_is_executable))
-	set_sfile_executable(file_is_executable);
+      cssc::FailureOr<bool> got = get_open_file_xbits(in);
+      if (got.ok())
+	{
+	  set_sfile_executable(*got);
+	}
     }
 
   FILE *out = start_update(new_delta);
