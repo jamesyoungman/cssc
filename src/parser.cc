@@ -97,7 +97,6 @@ namespace
 	const char *purpose = (mode == UPDATE) ? "update" : "reading";
 	s_missing_quit("Cannot open SCCS file %s for %s", name, purpose);
 	return result;
-	/*NOTEACHED*/
       }
 
     if (!just_one_link(f_local))
@@ -437,7 +436,7 @@ static bool eat_rest_of_line(FILE* f_local, const std::string& name)
           else
             {
               s_corrupt_quit("%s: Unexpected EOF.", name.c_str());
-              /*NOTEACHED*/
+              /*NOTREACHED*/
             }
           return false;
         }
@@ -491,7 +490,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
       (void)fclose(f_local);
       s_corrupt_quit("%s: No SCCS-file magic number.  "
                      "Did you specify the right file?", name);
-      /*NOTEACHED*/
+      /*NOTREACHED*/
       return nullptr;
     }
 
