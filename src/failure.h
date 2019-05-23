@@ -44,8 +44,9 @@ namespace cssc
   enum class error
     {
       NotAnSccsHistoryFile = 1000,
-        UnexpectedEOF,
-        FileHasHardLinks,
+      UnexpectedEOF,
+      FileHasHardLinks,
+      BodyIsBinary,
     };
 
   class Failure

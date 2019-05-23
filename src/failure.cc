@@ -41,6 +41,8 @@ namespace cssc
 	return "unexpected end-of-file";
       case isit(error::FileHasHardLinks):
 	return "refusing to open for writing a file with a link count greater than 1";
+      case isit(error::BodyIsBinary):
+	return "file body cannot be stored in an SCCS history file without encoding";
       default:
 	return "unknown CSSC error";
       }

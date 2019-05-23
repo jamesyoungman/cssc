@@ -44,8 +44,7 @@ static bool check_line_len(const char *iname,
 			   long int len_max,
 			   int column,
 			   int ch,
-			   FILE *in,
-			   bool *binary)
+			   FILE *in)
 {
   if (0 == len_max || column < len_max)
     {
@@ -60,7 +59,6 @@ static bool check_line_len(const char *iname,
 	  errormsg("%s: line length exceeds %ld characters, "
 		   "treating as binary.\n",
 		   iname, len_max );
-	  *binary = true;
 	}
       else
 	{
@@ -78,8 +76,6 @@ static bool check_line_len(const char *iname,
 /* body_insert_text()
  *
  * Insert a file into an SCCS file (e.g. for admin).
- * return false (and restore initial file positions)
- * for failure.
  *
  * We fail if the input contains a ^A immediately following
  * a newline (which is special to SCCS), or if the input
@@ -92,13 +88,11 @@ static bool check_line_len(const char *iname,
  *  2) many diff(1) programs only cope with text files
  *   that end with a newline.
  */
-bool
+cssc::Failure
 body_insert_text(const char iname[], const char oname[],
 		 FILE *in, FILE *out,
 		 unsigned long int *lines,
-		 bool *idkw,
-		 bool *binary,
-		 bool *io_failure)
+		 bool *idkw)
 {
   int ch, last;
   unsigned long int nl;		// number of lines.
@@ -112,11 +106,6 @@ body_insert_text(const char iname[], const char oname[],
   *idkw = found_id = false;
   nl = 0uL;
   last = '\n';
-  *io_failure = false;
-
-  // Make sure we don't already think it is binary -- if so, this
-  // function should never have been called.
-  ASSERT(false == *binary);
 
   column = 0;
   while ( EOF != (ch=getc(in)) )
@@ -135,16 +124,17 @@ body_insert_text(const char iname[], const char oname[],
 		       "treating as binary.\n",
 		       iname);
 	      ungetc(ch, in);	// push back the control character.
-	      *binary = true;
-	      return false;	// output file pointer implicitly rewound
+	      // output file pointer implicitly rewound
+	      return cssc::make_failure(cssc::error::BodyIsBinary);
 	    }
 	}
       else
 	{
 	  ++column;
-	  if (!check_line_len(iname, len_max, ++column, ch, in, binary))
+	  if (!check_line_len(iname, len_max, ++column, ch, in))
 	    {
-	      return false; // output file pointer implicitly rewound
+	      // output file pointer implicitly rewound
+	      return cssc::make_failure(cssc::error::BodyIsBinary);
 	    }
 	}
 
@@ -154,9 +144,9 @@ body_insert_text(const char iname[], const char oname[],
       // course uses even more space)
       if (putc_failed(putc(ch, out)))
 	{
+	  const int saved_errno = errno;
 	  errormsg_with_errno("%s: Write error.", oname);
-	  *io_failure = true;
-	  return false;
+	  return cssc::make_failure_from_errno(saved_errno);
 	}
 
       if (!found_id)		// Check for ID keywords.
@@ -176,9 +166,9 @@ body_insert_text(const char iname[], const char oname[],
 
   if (ferror(in))
     {
+      const int saved_errno = errno;
       errormsg_with_errno("%s: Read error.", iname);
-      *io_failure = true;
-      return false;
+      return cssc::make_failure_from_errno(saved_errno);
     }
 
 
@@ -187,14 +177,14 @@ body_insert_text(const char iname[], const char oname[],
     {
       errormsg("%s: no newline at end of file, treating as binary\n",
 	       iname);
-      *binary = true;
-      return false;		// file pointers implicitly rewound
+      // output file pointer implicitly rewound
+      return cssc::make_failure(cssc::error::BodyIsBinary);
     }
 
   // Success; do not rewind the output file.
   o_saver.disarm();
   *lines = nl;
-  return true;
+  return cssc::Failure::Ok();
 }
 
 // Keywords: a file containing the octal characters
@@ -309,17 +299,22 @@ body_insert(bool *binary,
     {
       // body_insert_text() takes care of rewinding the output
       // file; we may not even be able to rewind the input file.
-      bool io_failure = false;
-      if (body_insert_text(iname, oname, in, out, lines, idkw, binary,
-			   &io_failure))
+      ASSERT(*binary == false);
+      auto result = body_insert_text(iname, oname, in, out, lines, idkw);
+      if (result.ok())
 	{
 	  return true;		// Success.
 	}
       else
 	{
-	  if (io_failure)
-	    return false;
+	  // TODO: use a std::error_condition here instead.
+	  const auto isbin = cssc::make_failure(cssc::error::BodyIsBinary);
+	  if (result.code() != isbin.code())
+	    {
+	      return false;
+	    }
 
+	  *binary = true;
 	  if (!binary_file_creation_allowed())
 	    {
 	      // We can't try again with a binary file, because that
@@ -332,7 +327,6 @@ body_insert(bool *binary,
 	  // the first segment of the file written to the x-file
 	  // already, and the remainder is still waiting to be
 	  // read, so we can recover all the data.
-	  *binary = true;
 	  FILE *tmp = tmpfile();
 	  if (tmp)
 	    {

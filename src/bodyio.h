@@ -25,11 +25,12 @@
 #define CSSC_INC_BODYIO_H 1
 
 #include <cstdio>
+#include "failure.h"
 
-bool body_insert_text(const char iname[], const char oname[],
-		      FILE *in, FILE *out,
-		      unsigned long int *lines,
-		      bool *idkw, bool *binary, bool *fail);
+cssc::Failure body_insert_text(const char iname[], const char oname[],
+			       FILE *in, FILE *out,
+			       unsigned long int *lines,
+			       bool *idkw);
 
 bool body_insert_binary(const char iname[], const char oname[],
 			FILE *in, FILE *out,
