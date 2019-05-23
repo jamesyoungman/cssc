@@ -570,17 +570,18 @@ cssc::Failure set_gfile_writable(const std::string& gname, bool writable, bool e
  * This is SourceForge bug number 481707.
  */
 
-bool unlink_gfile_if_present(const char *gfile_name)
+cssc::Failure unlink_gfile_if_present(const char *gfile_name)
 {
   give_up_privileges();
-  bool rv = true;
+  cssc::Failure rv = cssc::Failure::Ok();
 
   if (file_exists(gfile_name))
     {
       if (unlink(gfile_name) < 0)
         {
+	  int saved_errno = errno;
           errormsg_with_errno("Cannot unlink the file %s", gfile_name);
-          rv = false;
+          rv = cssc::make_failure_from_errno(saved_errno);
         }
     }
   restore_privileges();
@@ -593,14 +594,14 @@ bool unlink_gfile_if_present(const char *gfile_name)
  * Unlinks the specified file as the real user.
  * The caller is responsible for issuing any error message,
  */
-bool unlink_file_as_real_user(const char *gfile_name)
+cssc::Failure unlink_file_as_real_user(const char *gfile_name)
 {
   give_up_privileges();
-  bool rv = true;
+  cssc::Failure rv = cssc::Failure::Ok();
   if (unlink(gfile_name) < 0)
     {
       // The caller is responsible for issuing any error message,
-      rv = false;
+      rv = cssc::make_failure_from_errno(errno);
     }
   restore_privileges();
 
@@ -636,7 +637,7 @@ create(const std::string& name, int mode) {
                 errno = 0;
                 return -1;
 #endif
-        } else if (!unlink_gfile_if_present(name.c_str())) {
+        } else if (!unlink_gfile_if_present(name.c_str()).ok()) {
                 return -1;
         }
 

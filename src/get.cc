@@ -512,8 +512,10 @@ main(int argc, char **argv)
           if (!status.success) // get failed.
             {
               retval = 1;
-	      if (!unlink_file_as_real_user(gname.c_str()))
+	      if (!unlink_file_as_real_user(gname.c_str()).ok())
 		{
+		  // TODO: issue a more detailed error message using
+		  // the Failure object.
 		  errormsg_with_errno("Failed to remove file %s",
 				      gname.c_str());
 		}
@@ -536,7 +538,9 @@ main(int argc, char **argv)
                   // Failed to add the lock to the p-file.
                   if (real_file)
                     {
-		      if (!unlink_file_as_real_user(gname.c_str()))
+		      // TODO: issue a better error message using the
+		      // Failure object.
+		      if (!unlink_file_as_real_user(gname.c_str()).ok())
 			{
 			  errormsg_with_errno("Failed to remove file %s",
 					      gname.c_str());

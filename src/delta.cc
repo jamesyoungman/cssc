@@ -262,7 +262,9 @@ delta_main(int argc, char **argv)
 		      /* SourceForge bug 489005: remove the g-file
 		       * as the real user if we are running setuid.
 		       */
-		      if (!unlink_file_as_real_user(gname.c_str()))
+		      // TODO: issue a better error message using the
+		      // Failure object.
+		      if (!unlink_file_as_real_user(gname.c_str()).ok())
 			{
 			  errormsg_with_errno("Failed to remove file %s",
 					      gname.c_str());

@@ -65,9 +65,15 @@ public:
           bool bOK;
 
           if (as_real_user)
-            bOK = unlink_file_as_real_user(s);
+	    {
+	      // TODO: issue a better error message using the Failure
+	      // object.
+	      bOK = unlink_file_as_real_user(s).ok();
+	    }
           else
-            bOK = (remove(s) == 0);
+	    {
+	      bOK = (remove(s) == 0);
+	    }
           if (!bOK)
             perror(s);
         }

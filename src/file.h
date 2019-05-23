@@ -60,8 +60,8 @@ FILE *fcreate(const std::string& name, int mode);
 FILE *fopen_as_real_user(const char *name, const char *mode);
 cssc::Failure set_file_mode(const std::string &gname, bool writable, bool executable);
 cssc::Failure set_gfile_writable(const std::string& gname, bool writable, bool executable);
-bool unlink_gfile_if_present(const char *gfile_name);
-bool unlink_file_as_real_user(const char *gfile_name);
+cssc::Failure unlink_gfile_if_present(const char *gfile_name);
+cssc::Failure unlink_file_as_real_user(const char *gfile_name);
 void split_filename(const std::string& fullname,
 		    std::string& dirname,
 		    std::string& basename);
