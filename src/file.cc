@@ -495,17 +495,17 @@ static int atomic_nfs_create(const std::string& path, int flags, int perms)
 /* CYGWIN seems to be unable to create a file for writing, with mode
  * 0444, so this code resets the mode after we have closed the g-file.
  */
-bool set_file_mode(const std::string &gname, bool writable, bool executable)
+cssc::Failure set_file_mode(const std::string &gname, bool writable, bool executable)
 {
   const char *name = gname.c_str();
   struct stat statbuf;
   int fd = open(name, O_RDONLY);
-
   if (fd < 0)
     {
+      int saved_errno = errno;
       errormsg_with_errno("%s: cannot open file in order to change its mode",
 			  name);
-      return false;
+      return cssc::make_failure_from_errno(saved_errno);
     }
   else
     {
@@ -526,20 +526,22 @@ bool set_file_mode(const std::string &gname, bool writable, bool executable)
 	  if (0 == fchmod(fd, mode))
 	    {
 	      close(fd);
-	      return true;
+	      return cssc::Failure::Ok();
 	    }
 	  else
 	    {
+	      int saved_errno = errno;
 	      errormsg_with_errno("%s: cannot set mode of file to 0%o",
 				  name, mode);
 	      close(fd);
-	      return false;
+	      return cssc::make_failure_from_errno(saved_errno);
 	    }
 	}
       else
 	{
+	  int saved_errno = errno;
 	  errormsg_with_errno("%s: cannot stat file", name);
-	  return false;
+	  return cssc::make_failure_from_errno(saved_errno);
 	}
     }
 }
@@ -550,12 +552,12 @@ bool set_file_mode(const std::string &gname, bool writable, bool executable)
  * the real user's files.  However, we need to do this (for example,
  * for get -k).  This is SourceForge bug 451519.
  */
-bool set_gfile_writable(const std::string& gname, bool writable, bool executable)
+cssc::Failure set_gfile_writable(const std::string& gname, bool writable, bool executable)
 {
   give_up_privileges();
-  bool rv = set_file_mode(gname, writable, executable);
+  auto result = set_file_mode(gname, writable, executable);
   restore_privileges();
-  return rv;
+  return result;
 }
 
 

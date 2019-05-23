@@ -543,11 +543,11 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
 
   // If the history file is executable, remember this fact.
   cssc::FailureOr<bool> got = get_open_file_xbits(f_local);
-  if (got.ok()) 
+  if (got.ok())
     result->is_executable = *got;
   else
     result->is_executable = false;
-    
+
 
   char c;
   read_line(&c);		// FIXME: check for EOF

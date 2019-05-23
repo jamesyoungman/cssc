@@ -486,7 +486,7 @@ main(int argc, char **argv)
               if (suppress_keywords)
               {
                   if (!set_gfile_writable(gname, true,
-					  file.gfile_should_be_executable()))
+					  file.gfile_should_be_executable()).ok())
                       retval = 1;
 		  maybe_clear_archive_bit(gname);
               }
@@ -498,7 +498,7 @@ main(int argc, char **argv)
                  */
                 give_up_privileges();
                 if (!set_gfile_writable(gname, false,
-					file.gfile_should_be_executable()))
+					file.gfile_should_be_executable()).ok())
                     status.success = false;
                 restore_privileges();
               }
