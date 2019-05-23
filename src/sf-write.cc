@@ -570,7 +570,7 @@ sccs_file::update()
   ASSERT(mode != CREATE);
   ASSERT(body_scanner_);
 
-  if (!body_scanner_->seek_to_body())
+  if (!body_scanner_->seek_to_body().ok())
     {
       return false;
     }
@@ -586,7 +586,7 @@ sccs_file::update()
 
   // assume that since the earlier seek_to_body() worked,
   // this one will too.
-  if (!body_scanner_->seek_to_body())
+  if (!body_scanner_->seek_to_body().ok())
     return false;
   if (!body_scanner_->copy_to(out))
     {

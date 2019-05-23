@@ -29,6 +29,7 @@
 #ifndef CSSC__LINEBUF_H__
 #define CSSC__LINEBUF_H__
 
+#include "failure.h"
 #include "location.h"
 
 /* This class is used to read lines of unlimited length from a file. */
@@ -42,8 +43,7 @@ class cssc_linebuf
 public:
   cssc_linebuf();
 
-  // TODO: clarify meaning of return value.
-  int read_line(FILE *f);
+  cssc::Failure read_line(FILE *f);
 
   // TODO: Reduce the use of c_str() in favour of operations that more
   // directly reflect what the program actually needs (perhaps for

@@ -76,7 +76,7 @@ class sccs_file_reader_base
 	  {
 	    errormsg_with_errno("%s: read error", name().c_str());
 	  }
-	return cssc::make_error(cssc::error::UnexpectedEOF);
+	return cssc::make_failure(cssc::error::UnexpectedEOF);
       }
 
     if ( bufchar(0) == '\001')
@@ -105,7 +105,7 @@ class sccs_file_reader_base
 
   int read_line_param()
   {
-    if (plinebuf->read_line(f_))
+    if (!plinebuf->read_line(f_).ok())
       {
 	return 1;
       }

@@ -30,6 +30,7 @@
 
 #include "base-reader.h"
 #include "body-scanner.h"
+#include "failure.h"
 #include "failure_or.h"
 #include "optional.h"
 #include "location.h"
@@ -114,7 +115,6 @@ public:
 
   NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
   void saw_unknown_feature(const char *fmt, ...) const;
-  bool seek_to_body();
 
   // The purpose of the constructor_cookie is to allow make_unique to
   // use a public constructor without allowing make_unique to be used

@@ -22,8 +22,9 @@
  * placed in the Public Domain.
  */
 #include "config.h"
-#include "diff-state.h"
 #include "cssc.h"
+#include "diff-state.h"
+#include "failure.h"
 
 
 /* Quit with an appropriate error message when a read operation
@@ -55,7 +56,7 @@ diff_state::next_state()
 {
   if (_state == diffstate::DELETE && change_left != 0)
     {
-      if (read_line())
+      if (!read_line().ok())
         {
           diff_output_corrupt();
         }
@@ -78,7 +79,7 @@ diff_state::next_state()
 
   if (_state != diffstate::NOCHANGE)
     {
-      if (read_line())
+      if (!read_line().ok())
         {
           if (ferror(in))
             {
@@ -99,7 +100,9 @@ diff_state::next_state()
 
       if (linebuf[0] == '\\')
         {
-          if (!read_line())
+	  // if we can read a line, we weren't at EOF.
+	  auto status = read_line();
+          if (status.ok() || !cssc::isEOF(status))
             {
               diff_output_corrupt("Expected EOF");
             }
@@ -267,7 +270,7 @@ diff_state::process(FILE *out, seq_no seq)
 
   if (_state == diffstate::DELETE)
     {
-      if (read_line())
+      if (!read_line().ok())
         {
           diff_output_corrupt();
         }
@@ -280,7 +283,7 @@ diff_state::process(FILE *out, seq_no seq)
     {
       if (_state == diffstate::INSERT)
         {
-          if (read_line())
+          if (!read_line().ok())
             {
               diff_output_corrupt();
             }

@@ -52,24 +52,24 @@ class FailureOr
  public:
   FailureOr(const T& val)
     : value_(val),
-      code_(std::error_code())
+      fail_(Failure::Ok())
   {
   }
 
   FailureOr(T&& val)
     : value_(std::move(val)),
-      code_(std::error_code())
+      fail_(Failure::Ok())
   {
   }
 
-  FailureOr(std::error_code code)
-    : value_(), code_(code)
+  FailureOr(Failure fail)
+    : value_(), fail_(fail)
   {
   }
 
   constexpr bool ok()  const
   {
-    return !code_;
+    return fail_.ok();
   }
 
   void assert_ok() const
@@ -92,18 +92,28 @@ class FailureOr
     return value_;
   }
 
-  std::error_code code() const
-    {
-      if (!code_)
-	{
-	  throw NonEmptyFailureOr("call to code() on a non-empty FailureOr instance");
-	}
-      return code_;
-    }
+  constexpr const Failure& fail()  const
+  {
+    if (ok())
+      {
+	throw NonEmptyFailureOr("call to fail() on a non-empty FailureOr instance");
+      }
+    return fail_;
+  }
+
+  constexpr std::error_code code()  const
+  {
+    auto code = fail_.code();
+    if (!code)
+      {
+	throw NonEmptyFailureOr("call to code() on a non-empty FailureOr instance");
+      }
+    return code;
+  }
 
   std::string message() const
   {
-    return code().message();
+    return fail_.message();
   }
 
   const char * c_str() const
@@ -113,7 +123,7 @@ class FailureOr
 
  private:
   T value_;
-  std::error_code code_;
+  Failure fail_;
 };
 
 }  // namespace cssc

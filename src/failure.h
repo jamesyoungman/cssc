@@ -48,15 +48,60 @@ namespace cssc
         FileHasHardLinks,
     };
 
-  inline std::error_code make_error(error e)
+  class Failure
+  {
+  public:
+    explicit Failure(std::error_code ec) : code_(ec) {}
+
+    // We deliberately do not have an implicit cast to bool so that we
+    // don't end up in a situation where changing "bool foo()" to
+    // "Failure foo()" results in the opposite interpretation.  This is
+    // what happens if you use a std::error_code directly.
+    bool ok() const
     {
-      return std::error_code(static_cast<int>(e), cssc_category());
+      return !code_;
     }
 
-  inline std::error_code make_error_from_errno(int errno_val)
+    std::error_code code() const
+    {
+      return code_;
+    }
+
+    std::string message() const
+    {
+      return code_.message();
+    }
+
+    static Failure Ok()
+    {
+      return Failure(std::error_code());
+    }
+
+  private:
+    std::error_code code_;
+  };
+
+  inline Failure make_failure(error e)
+  {
+    return Failure(std::error_code(static_cast<int>(e), cssc_category()));
+  }
+
+  inline Failure make_failure_from_errno(int errno_val)
   {
     ASSERT(errno_val != 0);
-    return std::error_code(static_cast<int>(errno_val), std::generic_category());
+    return Failure(std::error_code(static_cast<int>(errno_val), std::generic_category()));
+  }
+
+  inline Failure ok()
+  {
+    return Failure(std::error_code());
+  }
+
+  inline bool isEOF(const Failure& f)
+  {
+    const auto code = f.code();
+    return code.category() == cssc_category() &&
+      code.value() == static_cast<int>(error::UnexpectedEOF);
   }
 
 }  // namespace cssc

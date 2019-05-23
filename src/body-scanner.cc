@@ -23,15 +23,16 @@
 #include "config.h"
 #include "cssc.h"
 
-#include <cstdio>
 #include <string.h>
-
+#include <cstdio>
 #include <memory>
+#include <system_error>
 
 #include "body-scanner.h"
 #include "delta.h"
 #include "delta-table.h"
 #include "diff-state.h"
+#include "failure.h"
 #include "filediff.h"
 #include "filepos.h"
 #include "ioerr.h"
@@ -58,17 +59,18 @@ sccs_file_body_scanner::~sccs_file_body_scanner()
   f_ = nullptr;
 }
 
-bool sccs_file_body_scanner::seek_to_body()
+cssc::Failure sccs_file_body_scanner::seek_to_body()
 {
   if (fseek(f_, body_start_, SEEK_SET) != 0)
     {
-      // this quit should NOT be fatal; we should proceed
-      // to the next file if we can.
+      auto fail = cssc::make_failure_from_errno(errno);
+      // This should NOT be fatal; we should proceed to the next file
+      // if we can.
       errormsg("%s: fseek() failed!", name().c_str());
-      return false;
+      return fail;
     }
   here_.set_line_number(start_.line_number());
-  return true;
+  return cssc::ok();
 }
 
 bool sccs_file_body_scanner::get(const std::string& gname,
@@ -84,7 +86,7 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 {
   const seq_no highest_delta_seqno = delta_table.highest_seqno();
 
-  if (!seek_to_body())
+  if (!seek_to_body().ok())
     return false;
 
   /* The following statement is not correct. */
@@ -271,7 +273,7 @@ sccs_file_body_scanner::delta(const std::string& dname,
 			      bool display_diff_output)
 {
   delta_result result;
-  if (!seek_to_body())  // prepare to read the body for predecessor.
+  if (!seek_to_body().ok())  // prepare to read the body for predecessor.
     {
       result.success = false;
       return result;
@@ -522,7 +524,7 @@ sccs_file_body_scanner::delta(const std::string& dname,
 bool
 sccs_file_body_scanner::emit_raw_body(FILE* out, const char *outname)
 {
-  if (!seek_to_body())
+  if (!seek_to_body().ok())
     {
       return false;		// error message already emitted.
     }
@@ -547,7 +549,7 @@ sccs_file_body_scanner::print_body(FILE *out, const std::string& outname)
   // When pos_saver goes out of scope the file position on "f_" is restored.
   FilePosSaver pos_saver(f_);
 
-  if (!seek_to_body())
+  if (!seek_to_body().ok())
     {
       errormsg_with_errno("%s: fseek() failed!", name().c_str());
       return false;		// can't read body now, so just fail.

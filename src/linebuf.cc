@@ -29,9 +29,11 @@
 #include <cstdio>
 #include <cstring>
 #include <climits>
+#include <system_error>
 
 #include "cssc.h"
 #include "bodyio.h"
+#include "failure.h"
 #include "linebuf.h"
 #include "cssc-assert.h"
 #include "ioerr.h"
@@ -47,7 +49,7 @@ cssc_linebuf::cssc_linebuf()
 }
 
 
-int
+cssc::Failure
 cssc_linebuf::read_line(FILE *f)
 {
   ASSERT(CONFIG_LINEBUF_CHUNK_SIZE > 2u);
@@ -59,7 +61,7 @@ cssc_linebuf::read_line(FILE *f)
     {
       char c = buf[buflen - 2u];
       if (c == '\0' || c == '\n')
-	return 0;
+	return cssc::ok();
 
 //
 // Add another chunk
@@ -76,8 +78,11 @@ cssc_linebuf::read_line(FILE *f)
 
       s = fgets(s, CONFIG_LINEBUF_CHUNK_SIZE + 1u, f); // fill the new chunk
     }
-
-  return 1;
+  if (ferror(f))
+    {
+      return cssc::make_failure_from_errno(errno);
+    }
+  return cssc::make_failure(cssc::error::UnexpectedEOF);
 }
 
 

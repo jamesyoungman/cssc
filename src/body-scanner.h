@@ -26,9 +26,11 @@
 #include <sys/types.h>		/* off_t */
 #include <string>
 #include <functional>
+#include <system_error>
 
 #include "base-reader.h"
 #include "delta.h"		/* for seq_no */
+#include "failure.h"
 #include "location.h"
 
 class cssc_linebuf;
@@ -66,7 +68,7 @@ public:
 	seq_no highest_delta_seqno, seq_no new_seq_no, seq_state*, FILE* out,
 	bool display_diff_output);
 
-  bool seek_to_body();
+  cssc::Failure seek_to_body();
   bool copy_to(FILE*);
   bool emit_raw_body(FILE*, const char*);
   bool remove(FILE*, seq_no id);

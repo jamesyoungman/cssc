@@ -65,7 +65,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, pfile_mode m)
                 cssc_linebuf linebuf;
 
                 int lineno = 0;
-                while (!linebuf.read_line(pf)) {
+                while (linebuf.read_line(pf).ok()) {
                   // chomp the newline
                   // TODO: make me 8-bit clean!
                   linebuf[strlen(linebuf.c_str()) - 1] = '\0';

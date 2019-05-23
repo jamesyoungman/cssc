@@ -20,9 +20,12 @@
  *
  */
 #include <config.h>
-#include <stdio.h>
 #include "linebuf.h"
+
+#include <stdio.h>
 #include <gtest/gtest.h>
+
+#include "failure.h"
 
 class LineBufTest : public ::testing::Test {
 public:
@@ -44,11 +47,11 @@ public:
     FILE *fp;
 
     fp = MakeFile("hello:there:world", 17);
-    ASSERT_EQ(0, three_colon.read_line(fp));
+    ASSERT_TRUE(three_colon.read_line(fp).ok());
     fclose (fp);
 
     fp = MakeFile ("one\0two/three\n", 14);
-    ASSERT_EQ(0, two_slash_with_null.read_line(fp));
+    ASSERT_TRUE(two_slash_with_null.read_line(fp).ok());
     fclose (fp);
   }
 };
@@ -136,7 +139,7 @@ TEST_F(LineBufTest, Keywords) {
   EXPECT_EQ(0, two_slash_with_null.check_id_keywords());
   cssc_linebuf kwbuf;
   FILE *fp = MakeFile ("hello %M% world\n", 16);
-  ASSERT_EQ(0, kwbuf.read_line(fp));
+  ASSERT_TRUE(kwbuf.read_line(fp).ok());
   fclose (fp);
   EXPECT_EQ(1, kwbuf.check_id_keywords());
 }
@@ -150,7 +153,7 @@ TEST_F(LineBufTest, Write) {
   rewind (fp);
   /* Now read back the modified data. */
   cssc_linebuf buf;
-  ASSERT_EQ(0, buf.read_line(fp));
+  ASSERT(buf.read_line(fp).ok());
   EXPECT_EQ('t', buf[0]);
   EXPECT_EQ('e', buf[1]);
   fclose (fp);
@@ -162,19 +165,19 @@ TEST_F(LineBufTest, ReadLineSequence) {
   rewind (fp);
   cssc_linebuf b;
   
-  ASSERT_EQ(0, b.read_line(fp));
+  ASSERT_TRUE(b.read_line(fp).ok());
   EXPECT_EQ(0, strcmp(b.c_str(), "one\n"))
     << "actual value was '" << b.c_str() << "'";
   
-  ASSERT_EQ(0, b.read_line(fp));
+  ASSERT_TRUE(b.read_line(fp).ok());
   EXPECT_EQ(0, strcmp(b.c_str(), "two\n"))
     << "actual value was '" << b.c_str() << "'";
 
-  ASSERT_EQ(0, b.read_line(fp));
+  ASSERT_TRUE(b.read_line(fp).ok());
   EXPECT_EQ(0, strcmp(b.c_str(), "three\n"))
     << "actual value was '" << b.c_str() << "'";
 
   /* Make sure we also detect EOF. */
-  ASSERT_EQ(1, b.read_line(fp));
+  ASSERT_FALSE(b.read_line(fp).ok());
   fclose (fp);
 }

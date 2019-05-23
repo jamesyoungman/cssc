@@ -27,6 +27,7 @@
 
 #include "defaults.h"
 #include "delta.h"
+#include "failure.h"
 #include "linebuf.h"
 
 enum class diffstate { START, NOCHANGE, DELETE, INSERT, END };
@@ -47,19 +48,16 @@ private:
   NORETURN diff_output_corrupt(const char *msg) POSTDECL_NORETURN;
 
   void next_state();
-  int read_line()
+  cssc::Failure read_line()
     {
-      int read_ret = linebuf.read_line(in);
+      cssc::Failure bad = linebuf.read_line(in);
 
-      if (echo_diff_output)
+      // If and only if we read in a new line, echo it.
+      if (echo_diff_output && bad.ok())
         {
-          // If and only if we read in a new line, echo it.
-          if (0 == read_ret)
-            {
-              printf("%s", linebuf.c_str());
-            }
+	  printf("%s", linebuf.c_str());
         }
-      return read_ret;
+      return bad;
     }
 
 public:

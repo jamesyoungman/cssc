@@ -116,6 +116,7 @@ sccs_file_iterator::unique() const
 }
 
 
+// TODO: return Failure instead of int.
 int
 sccs_file_iterator::next() {
 	switch (source_) {
@@ -123,7 +124,7 @@ sccs_file_iterator::next() {
 	  {
 	    cssc_linebuf linebuf;
 
-	    if (linebuf.read_line(stdin)) {
+	    if (!linebuf.read_line(stdin).ok()) {
 	      return 0;
 	    }
 	    std::string s (linebuf.c_str());

@@ -93,7 +93,7 @@ namespace
 
     if (f_local == NULL)
       {
-	auto result = cssc::make_error_from_errno(errno);
+	auto result = cssc::make_failure_from_errno(errno);
 	const char *purpose = (mode == UPDATE) ? "update" : "reading";
 	s_missing_quit("Cannot open SCCS file %s for %s", name, purpose);
 	return result;
@@ -108,7 +108,7 @@ namespace
 		 "please fix the problem.\n",
 		 name);
 	(void)fclose(f_local);
-	return cssc::make_error(cssc::error::FileHasHardLinks);
+	return cssc::make_failure(cssc::error::FileHasHardLinks);
       }
     return f_local;
   }
@@ -124,7 +124,7 @@ sccs_file_parser::open_sccs_file(const std::string& name,
   auto failure_or_file = do_open_sccs_file(name.c_str(), mode, opts);
   if (!failure_or_file.ok() )
     {
-      return failure_or_file.code();
+      return failure_or_file.fail();
     }
   FILE * f = *failure_or_file;
   ASSERT(f != NULL);
