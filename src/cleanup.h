@@ -25,6 +25,8 @@
 #ifndef CSSC__CLEANUP_H__
 #define CSSC__CLEANUP_H__
 
+#include <functional>
+
 // TODO: consider switching to using a template cleanup object with a
 // lambda for custom cleanup actions.
 
@@ -72,5 +74,23 @@ public:
         static int in_child() { return in_child_flag; }
 #endif
 };
+
+// clumsy name, but we will need to rename "class cleanup" to give
+// this its name.
+class ResourceCleanup 
+{
+ public:
+  explicit ResourceCleanup(std::function<void()> action)
+    : doit_(action) {}
+
+  ~ResourceCleanup()
+    {
+      doit_();
+    }
+  
+ private:
+  std::function<void()> doit_;
+};
+
 
 #endif

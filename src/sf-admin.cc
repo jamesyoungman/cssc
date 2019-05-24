@@ -420,7 +420,7 @@ sccs_file::create(const sid &id,
 		      iname,		// input file name
 		      name.xfile().c_str(), // output file name
 		      in, out,
-		      &lines, &found_id))
+		      &lines, &found_id).ok())
 	{
 	  new_delta.set_inserted(lines);
 

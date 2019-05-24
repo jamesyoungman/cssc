@@ -32,16 +32,16 @@ cssc::Failure body_insert_text(const char iname[], const char oname[],
 			       unsigned long int *lines,
 			       bool *idkw);
 
-bool body_insert_binary(const char iname[], const char oname[],
-			FILE *in, FILE *out,
-			unsigned long int *lines,
-			bool *idkw);
+cssc::Failure body_insert_binary(const char iname[], const char oname[],
+				 FILE *in, FILE *out,
+				 unsigned long int *lines,
+				 bool *idkw);
 
-bool body_insert(bool *binary,
-		 const char iname[], const char oname[],
-		 FILE *in, FILE *out,
-		 unsigned long int *lines,
-		 bool *idkw);
+cssc::Failure body_insert(bool *binary,
+			  const char iname[], const char oname[],
+			  FILE *in, FILE *out,
+			  unsigned long int *lines,
+			  bool *idkw);
 
 
 // Encoding functions...

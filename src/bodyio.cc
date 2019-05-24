@@ -48,7 +48,7 @@ static bool check_line_len(const char *iname,
 {
   if (0 == len_max || column < len_max)
     {
-      return true;		// no maximum.
+      return true;
     }
   else
     {
@@ -200,7 +200,7 @@ body_insert_text(const char iname[], const char oname[],
 // at least it doesn't expand those on output!
 
 
-bool
+cssc::Failure
 body_insert_binary(const char iname[], const char oname[],
 		   FILE *in, FILE *out,
 		   unsigned long int *lines,
@@ -229,8 +229,9 @@ body_insert_binary(const char iname[], const char oname[],
 
       if (fputs_failed(fputs(outbuf, out)))
 	{
+	  const int saved_errno = errno;
 	  errormsg_with_errno("%s: Write error.", oname);
-	  return false;
+	  return cssc::make_failure_from_errno(saved_errno);
 	}
 
       ++nl;
@@ -239,24 +240,26 @@ body_insert_binary(const char iname[], const char oname[],
   // the end of the encoded file.
   if (fputs_failed(fputs(" \n", out)))
     {
+      const int saved_errno = errno;
       errormsg_with_errno("%s: Write error.", oname);
-      return false;
+      return cssc::make_failure_from_errno(saved_errno);
     }
 
   ++nl;
 
   if (ferror(in))
     {
+      const int saved_errno = errno;
       errormsg_with_errno("%s: Read error.", iname);
-      return false;
+      return cssc::make_failure_from_errno(saved_errno);
     }
 
   *lines = nl;
-  return true;
+  return cssc::Failure::Ok();
 }
 
 
-static bool
+static cssc::Failure
 copy_data(FILE *in, FILE *out)
 {
   char buf[BUFSIZ];
@@ -267,23 +270,25 @@ copy_data(FILE *in, FILE *out)
       nout = fwrite(buf, 1, n, out);
       if (nout < n)
 	{
+	  const int saved_errno = errno;
 	  errormsg_with_errno("copy_data: write error.");
-	  return false;
+	  return cssc::make_failure_from_errno(saved_errno);
 	}
     }
   if (ferror(in))
     {
+      const int saved_errno = errno;
       errormsg_with_errno("copy_data: read error.");
-      return false;
+      return cssc::make_failure_from_errno(saved_errno);
     }
   else
     {
-      return true;		// success
+      return cssc::Failure::Ok();
     }
 }
 
 
-bool
+cssc::Failure
 body_insert(bool *binary,
 	    const char iname[], const char oname[],
 	    FILE *in, FILE *out,
@@ -302,71 +307,53 @@ body_insert(bool *binary,
       ASSERT(*binary == false);
       auto result = body_insert_text(iname, oname, in, out, lines, idkw);
       if (result.ok())
+	return cssc::Failure::Ok();
+
+      // TODO: use a std::error_condition here instead.
+      const auto isbin = cssc::make_failure(cssc::error::BodyIsBinary);
+      if (result.code() != isbin.code())
+	return result;
+
+      *binary = true;
+      if (!binary_file_creation_allowed())
 	{
-	  return true;		// Success.
+	  // We can't try again with a binary file, because that
+	  // feature is disabled.
+	  return cssc::make_failure(cssc::error::BodyIsBinary);
 	}
-      else
+
+      // It wasn't text after all.  We may be reading from
+      // stdin, so we can't seek on it.  But we have
+      // the first segment of the file written to the x-file
+      // already, and the remainder is still waiting to be
+      // read, so we can recover all the data.
+      FILE *tmp = tmpfile();
+      if (!tmp)
 	{
-	  // TODO: use a std::error_condition here instead.
-	  const auto isbin = cssc::make_failure(cssc::error::BodyIsBinary);
-	  if (result.code() != isbin.code())
-	    {
-	      return false;
-	    }
-
-	  *binary = true;
-	  if (!binary_file_creation_allowed())
-	    {
-	      // We can't try again with a binary file, because that
-	      // feature is disabled.
-	      return false;
-	    }
-
-	  // It wasn't text after all.  We may be reading from
-	  // stdin, so we can't seek on it.  But we have
-	  // the first segment of the file written to the x-file
-	  // already, and the remainder is still waiting to be
-	  // read, so we can recover all the data.
-	  FILE *tmp = tmpfile();
-	  if (tmp)
-	    {
-	      bool ret = true;
-
-	      try
-		{
-		  // Recover the data already written to the output
-		  // file and then rewind it, so that we can overwrite
-		  // it with the encoded version.
-		  FilePosSaver *fp_out = new FilePosSaver(out);
-
-		  if (copy_data(out, tmp) && copy_data(in,  tmp))
-		    {
-		      delete fp_out;	// rewind the file OUT.
-		      rewind(tmp);
-
-		      ret = body_insert_binary("temporary file",
-					       oname, tmp, out, lines, idkw);
-		    }
-		  else
-		    {
-		      ret = false;
-		    }
-		}
-	      catch (CsscException)
-		{
-		  fclose(tmp);
-		  throw;
-		}
-
-	      fclose(tmp);
-	      return ret;
-	    }
-	  else
-	    {
-	      errormsg_with_errno("Could not create temporary file\n");
-	      return false;
-	    }
+	  const int saved_errno = errno;
+	  errormsg_with_errno("Could not create temporary file\n");
+	  return cssc::make_failure_from_errno(saved_errno);
 	}
+      ResourceCleanup clean([tmp](){ fclose(tmp); });
+      bool ret = true;
+      // Recover the data already written to the output
+      // file and then rewind it, so that we can overwrite
+      // it with the encoded version.
+      FilePosSaver *fp_out = new FilePosSaver(out);
+      cssc::Failure copy_done = copy_data(out, tmp);
+      if (!copy_done.ok()) 
+	{
+	  return copy_done;
+	}
+      copy_done = copy_data(in,  tmp);
+      if (!copy_done.ok()) 
+	{
+	  return copy_done;
+	}
+      delete fp_out;	// rewind the file OUT.
+      rewind(tmp);
+      return body_insert_binary("temporary file",
+				oname, tmp, out, lines, idkw);
     }
 }
 
