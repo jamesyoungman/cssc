@@ -58,8 +58,8 @@ int encode_stream(FILE *fin, FILE *fout); //encodes whole file.
 
 // Decoding (output) functions
 class cssc_linebuf;
-int output_body_line_text  (FILE *fp, const cssc_linebuf*);
-int output_body_line_binary(FILE *fp, const cssc_linebuf*);
+cssc::Failure output_body_line_text  (FILE *fp, const cssc_linebuf*);
+cssc::Failure output_body_line_binary(FILE *fp, const cssc_linebuf*);
 
 
 bool check_id_keywords(const char *s, size_t len);

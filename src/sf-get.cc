@@ -202,7 +202,7 @@ sccs_file::get(const string& gname,
   if (!edit_mode_ok(for_edit))	// "get -e" on BK files is not allowed
     return false;
 
-  int (*outputfn)(FILE*,const cssc_linebuf*);
+  cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*);
   if (flags.encoded && false == no_decode)
     outputfn = output_body_line_binary;
   else

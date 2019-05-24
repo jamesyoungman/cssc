@@ -86,7 +86,7 @@ cssc_linebuf::read_line(FILE *f)
 }
 
 
-int cssc_linebuf::write(FILE *f) const
+cssc::Failure cssc_linebuf::write(FILE *f) const
 {
   size_t len = strlen(buf);
   return fwrite_failed(fwrite(buf, sizeof(char), len, f), len);

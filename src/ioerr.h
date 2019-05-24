@@ -27,6 +27,7 @@
 #ifndef CSSC__IOERR_H__
 #define CSSC__IOERR_H__
 
+#include "failure.h"
 
 #define  fclose_failed(n) (EOF == (n))
 #define   fputc_failed(n) (EOF == (n))
@@ -37,5 +38,10 @@
 #define  printf_failed(n) ((n) < 0)
 #define fprintf_failed(n) ((n) < 0)
 
-#define  fwrite_failed(n,desired) ((n) < (desired))
+inline cssc::Failure fwrite_failed(int written, int desired) {
+  if (written < desired)
+      return cssc::make_failure_from_errno(errno);
+  return cssc::Failure::Ok();
+}
+
 #endif

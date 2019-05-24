@@ -78,7 +78,7 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 				 std::function<int(const char *start,
 						   struct delta const& gotten_delta,
 						   bool force_expansion)> write_subst,
-				 int (*outputfn)(FILE*,const cssc_linebuf*),
+				 cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*),
 				 bool encoded, // TODO: remove in favour of just outputfn
 				 class seq_state &state,
 				 struct subst_parms &parms,
@@ -155,7 +155,7 @@ bool sccs_file_body_scanner::get(const std::string& gname,
                * I don't think "real" SCCS does keyword substitution
                * for this case either -- James Youngman <jay@gnu.org>
                */
-              err = outputfn(out, plinebuf.get());
+              err = !outputfn(out, plinebuf.get()).ok();
             }
           else
             {
@@ -178,7 +178,7 @@ bool sccs_file_body_scanner::get(const std::string& gname,
         {
           if (!parms.found_id && plinebuf->check_id_keywords())
             parms.found_id = 1;
-          err = outputfn(out, plinebuf.get());
+          err = !outputfn(out, plinebuf.get()).ok();
         }
 
       if (err)

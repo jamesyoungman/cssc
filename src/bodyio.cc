@@ -357,12 +357,20 @@ body_insert(bool *binary,
     }
 }
 
-int output_body_line_text(FILE *fp, const cssc_linebuf* plb)
+cssc::Failure output_body_line_text(FILE *fp, const cssc_linebuf* plb)
 {
-  return plb->write(fp) || fputc_failed(fputc('\n', fp));
+  cssc::Failure result = plb->write(fp);
+  if (!result.ok())
+    return result;
+
+  if (fputc_failed(fputc('\n', fp)))
+    {
+      return cssc::make_failure_from_errno(errno);
+    }
+    return cssc::Failure::Ok();
 }
 
-int output_body_line_binary(FILE *fp, const cssc_linebuf* plb)
+cssc::Failure output_body_line_binary(FILE *fp, const cssc_linebuf* plb)
 {
   // Curiously, if the file is encoded, we know that
   // the encoded form is only about 60 characters

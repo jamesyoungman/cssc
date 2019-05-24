@@ -63,8 +63,7 @@ public:
   // Returns true if the buffer contains a valid SCCS id keyword.
   bool check_id_keywords() const;
 
-  // write returns nonzero on FAILURE.
-  int write(FILE*) const;
+  cssc::Failure write(FILE*) const;
 
   char &operator [](int index) const { return buf[index]; }
 
