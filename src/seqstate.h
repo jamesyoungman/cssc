@@ -99,9 +99,11 @@ public:
   // When we find ^AI or ^AD.
   // pair.first == success indicator
   // pair.second == error message
+  // TODO: return cssc::Failure instead?
   std::pair<bool,std::string> start(seq_no seq, char command);
 
   // When we find ^AE.
+  // TODO: return cssc::Failure instead?
   std::pair<bool,std::string> end(seq_no seq);
 
   // Tells us if the delta at the top of the stack is being included.

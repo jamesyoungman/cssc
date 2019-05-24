@@ -89,12 +89,15 @@ public:
   };
 
   // Command handlers
+  // TODO: return cssc::Failure instead of bool?
   bool get(const std::string& gname, class seq_state &state,
            struct subst_parms &parms,
            bool do_kw_subst,
            int show_sid = 0, int show_module = 0, int debug = 0,
            bool no_decode = false, bool for_edit = false);
+  // TODO: return cssc::Failure instead of bool?
   bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
+  // TODO: return cssc::FailureOr<get_status>?
   get_status get(FILE *out,
 		 const std::string& gname,
 		 FILE *summary_file,
@@ -107,17 +110,20 @@ public:
 		 int show_sid = 0, int show_module = 0,
 		 int debug = 0, bool for_edit = false);
   // At a high level, delta is implemented via add_delta
+  // TODO: return cssc::Failure instead of bool?
   bool add_delta(const std::string& gname,
 		 sccs_pfile &pfile,
 		 sccs_pfile::iterator it,
                  const std::vector<std::string>& mrs, const std::vector<std::string>& comments,
                  bool display_diff_output);
 
+  // TODO: return cssc::Failure instead of bool?
   bool admin(const char *file_comment,
              bool force_binary,
              const std::vector<std::string>& set_flags, const std::vector<std::string>& unset_flags, // FIXME: consider something more efficient
              const std::vector<std::string>& add_users,
 	     const std::unordered_set<std::string>& erase_users);
+  // TODO: return cssc::Failure instead of bool?
   bool create(const sid &initial_sid,
               const char *iname,
               const std::vector<std::string>& mrs,
@@ -125,17 +131,22 @@ public:
               int suppress_comments,
               bool force_binary);
 
+  // TODO: return cssc::Failure instead of bool?
   bool prs(FILE *out, const char *outname,
 	   const std::string& format, sid rid, sccs_date cutoff_date,
            enum when when, delta_selector selector, bool *matched);
 
+  // TODO: return cssc::Failure instead of bool?
   bool prt(FILE *out, struct cutoff exclude, delta_selector selector,
            int print_body, int print_delta_table, int print_flags,
            int incl_excl_ignore, int first_line_only, int print_desc,
            int print_users) const;
 
+  // TODO: return cssc::Failure instead of bool?
   bool cdc(sid id, const std::vector<std::string>& mrs, const std::vector<std::string>& comments);
+  // TODO: return cssc::Failure instead of bool?
   bool rmdel(sid rid);
+  // TODO: return cssc::Failure instead of bool?
   bool validate() const;
 
   ////////////////////////////////////////////////////////////////////////
@@ -143,6 +154,7 @@ public:
   bool checksum_ok() const;
 
   sid find_most_recent_sid(sid id) const;
+  // TODO: return cssc::Failure instead of bool?
   bool find_most_recent_sid(sid& s, sccs_date& d) const;
 
   int is_delta_creator(const char *user, sid id) const;
@@ -160,20 +172,26 @@ public:
 
 
   /* sf-get.c */
+  // TODO: return cssc::FailureOr<sid> instead? Or an optional<sid>?
   bool find_requested_sid(sid requested, sid &found,
                           bool include_branches=false) const ;
+  // TODO: return cssc::FailureOr<sid> instead?  Or an optional<sid>?
   bool find_requested_seqno(seq_no n, sid &found) const ;
   sid find_next_sid(sid requested, sid got, int branch,
                     const sccs_pfile &pfile, int *failed) const;
+  // TODO: return cssc::Failure instead of bool?
   bool test_locks(sid got, const sccs_pfile&) const;
 
 
+  // TODO: return cssc::Failure instead of bool?
   bool update_checksum();
+  // TODO: return cssc::Failure instead of bool?
   bool update();
 
   /* sf-add.c */
 
   FILE *start_update(struct delta const &new_delta);
+  // TODO: return cssc::Failure instead of bool?
   bool end_update(FILE **out, struct delta const &new_delta);
 
   int mr_required() const
@@ -184,6 +202,7 @@ public:
       return 0;
   }
 
+  // TODO: return cssc::Failure instead of bool?
   bool check_mrs(const std::vector<std::string>& mrs);
 
   /* sccsfile.cc */
@@ -205,8 +224,11 @@ public:
   /* sf-admin.c */
   std::string get_module_name() const;
 
+  // TODO: return cssc::Failure instead of bool?
   bool validate_seq_lists(const delta_iterator& d) const;
+  // TODO: return cssc::Failure instead of bool?
   bool validate_isomorphism() const;
+  // TODO: return cssc::Failure instead of bool?
   bool check_loop_free(cssc_delta_table* t,
 		       seq_no starting_seq,
 		       std::vector<bool>& loopfree,
@@ -219,10 +241,13 @@ protected:
   bool sid_in_use(sid id, const sccs_pfile& p) const;
 
   /* sf-get3.c */
+  // TODO: return cssc::Failure instead of bool?
   bool prepare_seqstate(seq_state &state, seq_no seq,
                         sid_list include,
                         sid_list exclude, sccs_date cutoff_date);
+  // TODO: return cssc::Failure instead of bool?
   bool prepare_seqstate_1(seq_state &state, seq_no seq);
+  // TODO: return cssc::Failure instead of bool?
   bool prepare_seqstate_2(seq_state &state, sid_list include,
                         sid_list exclude, sccs_date cutoff_date);
   bool authorised() const;
@@ -232,6 +257,7 @@ protected:
   FILE *start_update();         // this opens the x-file
   int write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
+  // TODO: return cssc::Failure instead of bool?
   bool end_update(FILE **out);  // NB: this closes the x-file too.
   int rehack_encoded_flag(FILE *out, int *sum) const;
 
@@ -244,6 +270,7 @@ private:
   /* sf-kw.cc */
   void no_id_keywords(const char name[]) const;
 
+  // TODO: return cssc::Failure instead of bool?
   bool check_keywords_in_file(const char *name);
 
   // Because we now have a pointer member, don't use the compiler's
@@ -251,10 +278,12 @@ private:
   const sccs_file& operator=(const sccs_file&) = delete; // not allowed to use!
   sccs_file(const sccs_file&) = delete;  // not allowed to use!
 
+  // TODO: return cssc::Failure instead of bool?
   bool print_subsituted_flags_list(FILE *out, const char* separator) const;
   static bool is_known_keyword_char(char c);
 
   /* sf-get2.c */
+  // TODO: return cssc::Failure instead of int?
   int write_subst(const char *start,
                   struct subst_parms *parms,
                   struct delta const& gotten_delta,

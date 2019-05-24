@@ -194,9 +194,12 @@ public:
 			    || level == id.level));
   }
 
+  // TODO: return cssc::Failure instead?
   int print(FILE *f) const;
+  // TODO: return cssc::Failure instead?
   int printf(FILE *f, char fmt, bool force_zero=false) const;
 
+  // TODO: return cssc::Failure instead?
   int			// 0 return means success.
   dprint(FILE *f) const {
     return EOF == fprintf(f, "%d.%d.%d.%d",

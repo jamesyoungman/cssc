@@ -171,11 +171,15 @@ public:
     return it != end();
   }
 
+  // TODO: return cssc::Failure instead of bool?
   bool add_lock(sid got, sid delta,
 		sid_list &included, sid_list &excluded);
+
   std::pair<find_status, iterator> find_sid(const sid& id);
   int  print_lock_sid(FILE *fp, const_iterator pos) const;
   void delete_lock(iterator i) { edit_locks.erase(i); }
+
+  // TODO: return cssc::Failure instead of bool?
   bool update(bool pfile_already_exists) const;
 
   ~sccs_pfile();
