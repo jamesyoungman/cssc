@@ -8,6 +8,15 @@
 remove command.log log log.stdout log.stderr
 mkdir test 2>/dev/null
 
+script_dir=`dirname $0`
+case "${script_dir}" in
+	.) script_dir=`pwd`;;
+esac
+script_base=`basename ${script_dir}`
+test_script="${script_base}"/`basename $0`
+labelprefix="${test_script}:"
+
+
 g=foo
 s=s.$g
 p=p.$g
@@ -155,12 +164,12 @@ then
     docommand E30 "${vg_delta} -yNoComment $s" 0 IGNORE IGNORE
     docommand E31 "${get} -k $s"                0 IGNORE IGNORE
     
-    echo_nonl E32...
+    echo_nonl "${labelprefix}E32..."
     if diff $g.saved $g 
     then
         echo passed
     else
-        fail "E32: Expcected to get the same contents back, did we did not" 
+        fail "E32: Expected to get the same contents back, but we did not"
     fi
     remove $g
 

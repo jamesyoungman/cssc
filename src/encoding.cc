@@ -28,6 +28,7 @@
 
 #include <config.h>
 
+#include <utility>
 #include "string.h"
 #include "cssc.h"
 #include "bodyio.h"
@@ -143,23 +144,29 @@ encode_line(const char in[], char out[], size_t len)
   return emitted;
 }
 
-int
+std::pair<cssc::Failure, cssc::Failure>
 encode_stream(FILE *fin, FILE *fout)
 {
   char inbuf[80], outbuf[80];
   size_t len;
 
+  clearerr(fin);
   do
     {
       len = fread(inbuf, 1, 45, fin);
+      if (ferror(fin))
+	{
+	  return std::make_pair(cssc::make_failure_from_errno(errno),
+				cssc::Failure::Ok());
+	}
       const size_t bytes = encode_line(inbuf, outbuf, len);
       ASSERT(outbuf[bytes] == 0); // verify output is NUL-terminated
       if (fwrite(outbuf, 1, bytes, fout) != bytes)
 	{
-	  return -1;
+	  return std::make_pair(cssc::Failure::Ok(),
+				cssc::make_failure_from_errno(errno));
 	}
     }
   while (len);
-
-  return ferror(fin) || ferror(fout);
+  return std::make_pair(cssc::Failure::Ok(), cssc::Failure::Ok());
 }

@@ -77,7 +77,7 @@ public:
 
 // clumsy name, but we will need to rename "class cleanup" to give
 // this its name.
-class ResourceCleanup 
+class ResourceCleanup
 {
  public:
   explicit ResourceCleanup(std::function<void()> action)
@@ -87,7 +87,7 @@ class ResourceCleanup
     {
       doit_();
     }
-  
+
  private:
   std::function<void()> doit_;
 };

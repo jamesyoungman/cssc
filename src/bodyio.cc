@@ -341,12 +341,12 @@ body_insert(bool *binary,
       // it with the encoded version.
       FilePosSaver *fp_out = new FilePosSaver(out);
       cssc::Failure copy_done = copy_data(out, tmp);
-      if (!copy_done.ok()) 
+      if (!copy_done.ok())
 	{
 	  return copy_done;
 	}
       copy_done = copy_data(in,  tmp);
-      if (!copy_done.ok()) 
+      if (!copy_done.ok())
 	{
 	  return copy_done;
 	}
@@ -407,20 +407,24 @@ encode_file(const char *nin, const char *nout)
     {
       try
 	{
-	  encode_stream(fin, fout);
-
-	  if (ferror(fin) || fclose_failed(fclose(fin)))
+	  auto encoded = encode_stream(fin, fout);
+	  if (!encoded.first.ok())
 	    {
-	      errormsg_with_errno("%s: Read error.\n", nin);
+	      errormsg("%s: read error: %s\n", nin, encoded.first.message().c_str());
 	      retval = -1;
 	    }
-	  else
+	  if (!encoded.second.ok())
 	    {
-	      if (ferror(fout) || fclose_failed(fclose(fout)))
-		{
-		  errormsg_with_errno("%s: Write error.\n", nout);
-		  retval = -1;
-		}
+	      errormsg("%s: write error: %s\n", nout, encoded.second.message().c_str());
+	      retval = -1;
+	    }
+	  if (fclose_failed(fclose(fin)))
+	    {
+	      errormsg_with_errno("%s: close failed: %s\n", nin, strerror(errno));
+	    }
+	  if (fclose_failed(fclose(fout)))
+	    {
+	      errormsg_with_errno("%s: close failed: %s\n", nout, strerror(errno));
 	    }
 	}
       catch (CsscException)

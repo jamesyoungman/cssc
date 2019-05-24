@@ -30,7 +30,16 @@ using encoding_impl::encode;
 int
 test_encode(void)
 {
-  return encode_stream(stdin, stdout);
+  auto result = encode_stream(stdin, stdout);
+  if (!result.first.ok()) 
+    {
+      return 1;
+    }
+  if (!result.second.ok()) 
+    {
+      return 1;
+    }
+  return 0;
 }
 
 int

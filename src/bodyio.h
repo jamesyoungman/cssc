@@ -53,7 +53,10 @@ size_t encode_line(const char in[], char out[], size_t len);
 // decode a line, returning the number of characters in it.
 size_t decode_line(const char in[], char out[]);
 
-int encode_stream(FILE *fin, FILE *fout); //encodes whole file.
+// Two results, the first signals failure on fin, the second failure
+// on fout.
+std::pair<cssc::Failure,cssc::Failure>
+encode_stream(FILE *fin, FILE *fout); //encodes whole file.
 
 
 // Decoding (output) functions
