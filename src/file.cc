@@ -26,6 +26,8 @@
  */
 #include "config.h"
 
+#include <iomanip>
+#include <iostream>
 #include <string>
 #include <errno.h>
 #include <sys/types.h>
@@ -49,10 +51,9 @@ stdout_to_null()
 {
   if (NULL == freopen(CONFIG_NULL_FILENAME, "w", stdout))
     {
-      int saved_errno = errno;
-      errormsg_with_errno("Can't redirect stdout to "
-                          CONFIG_NULL_FILENAME );
-      return cssc::make_failure_from_errno(errno);
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose()
+	<< "can't redirect stdout to " << CONFIG_NULL_FILENAME;
     }
   else
     {
@@ -502,10 +503,8 @@ cssc::Failure set_file_mode(const std::string &gname, bool writable, bool execut
   int fd = open(name, O_RDONLY);
   if (fd < 0)
     {
-      int saved_errno = errno;
-      errormsg_with_errno("%s: cannot open file in order to change its mode",
-			  name);
-      return cssc::make_failure_from_errno(saved_errno);
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << name << ": cannot open file in order to change its mode";
     }
   else
     {
@@ -530,18 +529,17 @@ cssc::Failure set_file_mode(const std::string &gname, bool writable, bool execut
 	    }
 	  else
 	    {
-	      int saved_errno = errno;
-	      errormsg_with_errno("%s: cannot set mode of file to 0%o",
-				  name, mode);
+	      const int saved_errno = errno;
 	      close(fd);
-	      return cssc::make_failure_from_errno(saved_errno);
+	      return cssc::make_failure_builder_from_errno(saved_errno)
+		.diagnose() << name << ": cannot set mode of file to "
+			    << std::setfill('0') << std::oct << std::setw(4) << mode;
 	    }
 	}
       else
 	{
-	  int saved_errno = errno;
-	  errormsg_with_errno("%s: cannot stat file", name);
-	  return cssc::make_failure_from_errno(saved_errno);
+	  return cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "cannot stat file " << name;
 	}
     }
 }
@@ -579,9 +577,8 @@ cssc::Failure unlink_gfile_if_present(const char *gfile_name)
     {
       if (unlink(gfile_name) < 0)
         {
-	  int saved_errno = errno;
-          errormsg_with_errno("Cannot unlink the file %s", gfile_name);
-          rv = cssc::make_failure_from_errno(saved_errno);
+          rv = cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "cannot unlink the file " << gfile_name;
         }
     }
   restore_privileges();

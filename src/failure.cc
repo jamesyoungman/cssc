@@ -20,6 +20,7 @@
 #include "config.h"
 
 #include "failure.h"
+#include "quit.h"
 
 namespace
 {
@@ -64,6 +65,66 @@ namespace cssc
   {
     return std::error_condition(static_cast<int>(e),
 				cssc_category());
+  }
+
+  std::string Failure::to_string() const
+  {
+    if (detail_.empty())
+      return code_.message();
+    else
+      return detail_ + "; " + code_.message();
+  }
+
+  FailureBuilder::FailureBuilder(std::error_code ec)
+    : code_(ec),
+      diagnose_(false),
+      detail_(false)
+  {
+  }
+
+  FailureBuilder::operator Failure() const
+  {
+    return build();
+  }
+
+  FailureBuilder& FailureBuilder::diagnose()
+  {
+    diagnose_ = true;
+    return *this;
+  }
+
+  FailureBuilder::FailureBuilder(error e)
+    : code_(static_cast<int>(e), cssc_category()),
+      diagnose_(false),
+      detail_(false)
+  {
+  }
+
+  FailureBuilder::FailureBuilder(const FailureBuilder& other)
+      : code_(other.code_),
+	diagnose_(other.diagnose_),
+	detail_(other.detail_)
+    {
+      os_ << other.os_.str();
+    }
+
+  FailureBuilder::~FailureBuilder()
+  {
+    if (diagnose_)
+      {
+	errormsg("%s", build().to_string().c_str());
+      }
+  }
+
+  Failure FailureBuilder::build() const
+  {
+    return detail_ ? Failure(code_, os_.str()) : Failure(code_);
+  }
+
+  FailureBuilder make_failure_builder_from_errno(int errno_val)
+  {
+    std::error_code ec(errno_val, std::generic_category());
+    return FailureBuilder(ec);
   }
 
 }  // namespace cssc

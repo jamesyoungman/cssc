@@ -67,6 +67,12 @@ class FailureOr
   {
   }
 
+  FailureOr(FailureBuilder f)
+    : value_(),
+      fail_(f)
+  {
+  }
+
   constexpr bool ok()  const
   {
     return fail_.ok();
@@ -111,14 +117,14 @@ class FailureOr
     return code;
   }
 
-  std::string message() const
+  std::string to_string() const
   {
-    return fail_.message();
+    return fail_.to_string();
   }
 
   const char * c_str() const
   {
-    return message().c_str();
+    return to_string().c_str();
   }
 
  private:

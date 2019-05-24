@@ -20,6 +20,8 @@
 #define CSSC__FAILURE_H__
 
 #include "cssc-assert.h"
+
+#include <sstream>
 #include <system_error>
 #include <type_traits>
 
@@ -52,7 +54,10 @@ namespace cssc
   class Failure
   {
   public:
-    explicit Failure(std::error_code ec) : code_(ec) {}
+    explicit Failure(std::error_code ec)
+      : code_(ec) {}
+    explicit Failure(std::error_code ec, const std::string& detail)
+      : code_(ec), detail_(detail) {}
 
     // We deliberately do not have an implicit cast to bool so that we
     // don't end up in a situation where changing "bool foo()" to
@@ -68,10 +73,7 @@ namespace cssc
       return code_;
     }
 
-    std::string message() const
-    {
-      return code_.message();
-    }
+    std::string to_string() const;
 
     static Failure Ok()
     {
@@ -80,11 +82,18 @@ namespace cssc
 
   private:
     std::error_code code_;
+    std::string detail_;
   };
 
   inline Failure make_failure(error e)
   {
     return Failure(std::error_code(static_cast<int>(e), cssc_category()));
+  }
+
+  inline Failure make_failure(error e, const std::string& detail)
+  {
+    return Failure(std::error_code(static_cast<int>(e), cssc_category()),
+		   detail);
   }
 
   inline Failure make_failure_from_errno(int errno_val)
@@ -93,10 +102,49 @@ namespace cssc
     return Failure(std::error_code(static_cast<int>(errno_val), std::generic_category()));
   }
 
+  inline Failure make_failure_from_errno(int errno_val, const std::string& detail)
+  {
+    ASSERT(errno_val != 0);
+    return Failure(std::error_code(static_cast<int>(errno_val), std::generic_category()),
+		   detail);
+  }
+
   inline Failure ok()
   {
     return Failure(std::error_code());
   }
+
+
+  class FailureBuilder
+  {
+  public:
+    explicit FailureBuilder(std::error_code ec);
+    explicit FailureBuilder(error e);
+    FailureBuilder(const FailureBuilder& other);
+    operator Failure() const;
+    ~FailureBuilder();
+    FailureBuilder& diagnose();
+
+    template <typename T> FailureBuilder& operator<<(const T& item)
+    {
+      os_ << item;
+      detail_ = true;
+      return *this;
+    }
+
+  protected:
+    Failure build() const;
+
+  private:
+    std::ostringstream os_;
+    std::error_code code_;
+    bool diagnose_;
+    bool detail_;
+  };
+
+  FailureBuilder make_failure_builder_from_errno(int errno_val);
+  FailureBuilder make_failure_builder_from_errno(int errno_val, const std::string& detail);
+
 
   inline bool isEOF(const Failure& f)
   {

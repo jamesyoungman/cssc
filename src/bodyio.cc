@@ -120,33 +120,29 @@ body_insert_text(const char iname[], const char oname[],
 
 	  if ('\001' == ch)
 	    {
-	      errormsg("%s: control character at start of line, "
-		       "treating as binary.\n",
-		       iname);
 	      ungetc(ch, in);	// push back the control character.
 	      // output file pointer implicitly rewound
-	      return cssc::make_failure(cssc::error::BodyIsBinary);
+	      return cssc::FailureBuilder(cssc::error::BodyIsBinary)
+		<< iname << ": control character at start of line, "
+		<< "treating as binary.\n";
 	    }
 	}
       else
 	{
+	  // TODO: are there too many increment operations here?
 	  ++column;
 	  if (!check_line_len(iname, len_max, ++column, ch, in))
 	    {
 	      // output file pointer implicitly rewound
-	      return cssc::make_failure(cssc::error::BodyIsBinary);
+	      return cssc::FailureBuilder(cssc::error::BodyIsBinary)
+		<< iname << ": line is too long, treating as binary";
 	    }
 	}
 
-
-      // FIXME TODO: if we get "disk full" while trying to write the
-      // body of an SCCS file, we will retry with binary (which of
-      // course uses even more space)
       if (putc_failed(putc(ch, out)))
 	{
-	  const int saved_errno = errno;
-	  errormsg_with_errno("%s: Write error.", oname);
-	  return cssc::make_failure_from_errno(saved_errno);
+	  return cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "write error on " << oname;
 	}
 
       if (!found_id)		// Check for ID keywords.
@@ -166,19 +162,17 @@ body_insert_text(const char iname[], const char oname[],
 
   if (ferror(in))
     {
-      const int saved_errno = errno;
-      errormsg_with_errno("%s: Read error.", iname);
-      return cssc::make_failure_from_errno(saved_errno);
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "read error on " << iname;
     }
 
 
   // Make sure the file ended with a newline.
   if ('\n' != last)
     {
-      errormsg("%s: no newline at end of file, treating as binary\n",
-	       iname);
       // output file pointer implicitly rewound
-      return cssc::make_failure(cssc::error::BodyIsBinary);
+      return cssc::FailureBuilder(cssc::error::BodyIsBinary)
+	<< iname << ": no newline at end of file, treating as binary";
     }
 
   // Success; do not rewind the output file.
@@ -229,9 +223,8 @@ body_insert_binary(const char iname[], const char oname[],
 
       if (fputs_failed(fputs(outbuf, out)))
 	{
-	  const int saved_errno = errno;
-	  errormsg_with_errno("%s: Write error.", oname);
-	  return cssc::make_failure_from_errno(saved_errno);
+	  return cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "write error on " << oname;
 	}
 
       ++nl;
@@ -240,18 +233,16 @@ body_insert_binary(const char iname[], const char oname[],
   // the end of the encoded file.
   if (fputs_failed(fputs(" \n", out)))
     {
-      const int saved_errno = errno;
-      errormsg_with_errno("%s: Write error.", oname);
-      return cssc::make_failure_from_errno(saved_errno);
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "write error on " << oname;
     }
 
   ++nl;
 
   if (ferror(in))
     {
-      const int saved_errno = errno;
-      errormsg_with_errno("%s: Read error.", iname);
-      return cssc::make_failure_from_errno(saved_errno);
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "read error on " << iname;
     }
 
   *lines = nl;
@@ -270,16 +261,14 @@ copy_data(FILE *in, FILE *out)
       nout = fwrite(buf, 1, n, out);
       if (nout < n)
 	{
-	  const int saved_errno = errno;
-	  errormsg_with_errno("copy_data: write error.");
-	  return cssc::make_failure_from_errno(saved_errno);
+	  return cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "write error in copy_data";
 	}
     }
   if (ferror(in))
     {
-      const int saved_errno = errno;
-      errormsg_with_errno("copy_data: read error.");
-      return cssc::make_failure_from_errno(saved_errno);
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "read error in copy_data";
     }
   else
     {
@@ -319,7 +308,8 @@ body_insert(bool *binary,
 	{
 	  // We can't try again with a binary file, because that
 	  // feature is disabled.
-	  return cssc::make_failure(cssc::error::BodyIsBinary);
+	  return cssc::FailureBuilder(cssc::error::BodyIsBinary)
+	    << "body is binary and encoding is not allowed";
 	}
 
       // It wasn't text after all.  We may be reading from
@@ -330,9 +320,8 @@ body_insert(bool *binary,
       FILE *tmp = tmpfile();
       if (!tmp)
 	{
-	  const int saved_errno = errno;
-	  errormsg_with_errno("Could not create temporary file\n");
-	  return cssc::make_failure_from_errno(saved_errno);
+	  return cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "Could not create temporary file";
 	}
       ResourceCleanup clean([tmp](){ fclose(tmp); });
       bool ret = true;
@@ -383,6 +372,7 @@ cssc::Failure output_body_line_binary(FILE *fp, const cssc_linebuf* plb)
 }
 
 
+// TODO: make this function return cssc::Failure.
 int
 encode_file(const char *nin, const char *nout)
 {
@@ -410,12 +400,12 @@ encode_file(const char *nin, const char *nout)
 	  auto encoded = encode_stream(fin, fout);
 	  if (!encoded.first.ok())
 	    {
-	      errormsg("%s: read error: %s\n", nin, encoded.first.message().c_str());
+	      errormsg("%s: read error: %s\n", nin, encoded.first.to_string().c_str());
 	      retval = -1;
 	    }
 	  if (!encoded.second.ok())
 	    {
-	      errormsg("%s: write error: %s\n", nout, encoded.second.message().c_str());
+	      errormsg("%s: write error: %s\n", nout, encoded.second.to_string().c_str());
 	      retval = -1;
 	    }
 	  if (fclose_failed(fclose(fin)))

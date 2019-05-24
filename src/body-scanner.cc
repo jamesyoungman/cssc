@@ -63,11 +63,8 @@ cssc::Failure sccs_file_body_scanner::seek_to_body()
 {
   if (fseek(f_, body_start_, SEEK_SET) != 0)
     {
-      auto fail = cssc::make_failure_from_errno(errno);
-      // This should NOT be fatal; we should proceed to the next file
-      // if we can.
-      errormsg("%s: fseek() failed!", name().c_str());
-      return fail;
+      return cssc::make_failure_builder_from_errno(errno)
+	<< "fseek failed on " << name();
     }
   here_.set_line_number(start_.line_number());
   return cssc::ok();

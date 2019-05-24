@@ -101,14 +101,13 @@ namespace
 
     if (!just_one_link(f_local))
       {
-	// xx: issue error message here
-	errormsg("%s had a hard link count which is greater than one.\n"
-		 "This means that the normal process of updating the file\n"
-		 "would break the hard link.  This error is therefore fatal,\n"
-		 "please fix the problem.\n",
-		 name);
 	(void)fclose(f_local);
-	return cssc::make_failure(cssc::error::FileHasHardLinks);
+	return cssc::FailureBuilder(cssc::error::FileHasHardLinks)
+	  .diagnose()
+	  << name << " had a hard link count which is greater than one. "
+	  "This means that the normal process of updating the file "
+	  "would break the hard link.  This error is therefore fatal, "
+	  "please fix the problem.";
       }
     return f_local;
   }
