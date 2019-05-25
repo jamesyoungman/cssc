@@ -152,7 +152,6 @@ public:
   cssc::Failure  print_lock_sid(FILE *fp, const_iterator pos) const;
   void delete_lock(iterator i) { edit_locks.erase(i); }
 
-  // TODO: return cssc::Failure instead of bool?
   cssc::Failure update(bool pfile_already_exists) const;
 
   ~sccs_pfile();
