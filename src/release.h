@@ -32,6 +32,7 @@
 
 #include <cstdio>
 #include "cssc-assert.h"
+#include "failure.h"
 
 class sid;
 
@@ -95,7 +96,13 @@ public:
       return r1.rel != r2.rel;
     }
 
-  int print(FILE *out) const { return (fprintf(out, "%d", rel) < 0); }
+  cssc::Failure print(FILE *out) const {
+    if (fprintf(out, "%d", rel) < 0)
+      {
+	return cssc::make_failure_from_errno(errno);
+      }
+    return cssc::Failure::Ok();
+  }
 };
 
 /* Local variables: */

@@ -213,12 +213,14 @@ sccs_file::write(FILE *out) const
   // c ceiling
   if (flags.ceiling.valid())
     {
-      if (fputs_failed(fputs("\001f c ", out))
-         || flags.ceiling.print(out)
-         || putc_failed(putc('\n', out)))
-        {
-          return 1;
-        }
+      if (fputs_failed(fputs("\001f c ", out)))
+	return 1;
+
+      if (!flags.ceiling.print(out).ok())
+	return 1;
+
+      if (putc_failed(putc('\n', out)))
+	return 1;
     }
 
   // d default SID
@@ -235,12 +237,14 @@ sccs_file::write(FILE *out) const
   // f floor
   if (flags.floor.valid())
     {
-      if (fputs_failed(fputs("\001f f ", out))
-          || flags.floor.print(out)
-          || putc_failed(putc('\n', out)))
-        {
-          return 1;
-        }
+      if (fputs_failed(fputs("\001f f ", out)))
+	return 1;
+
+      if (!flags.floor.print(out).ok())
+	return 1;
+
+      if (putc_failed(putc('\n', out)))
+	return 1;
     }
 
   // i no id kw is error

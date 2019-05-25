@@ -88,7 +88,7 @@ bool release_list::print(FILE * out) const
 	    return false;
 	}
       first = false;
-      if (release.print(out))
+      if (!release.print(out).ok())
 	return false;
     }
   return true;
