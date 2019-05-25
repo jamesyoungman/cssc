@@ -158,54 +158,55 @@ sid::gt(sid const &id) const {
 	return sequence > id.sequence;
 }
 
-int
+bool
 sid::gte(sid const &id) const {
 	if (rel > id.rel) {
-		return 1;
+		return true;
 	}
 	if (rel != id.rel) {
-		return 0;
+		return false;
 	}
 	if (level > id.level) {
-		return 1;
+		return true;
 	}
 	if (level != id.level) {
-		return 0;
+		return false;
 	}
 #if 0
+	// XXX: why is this code commented out?
 	if (branch > id.branch) {
-		return 1;
+		return true;
 	}
 	if (branch != id.branch) {
-		return 0;
+		return false;
 	}
 #endif
 	return sequence >= id.sequence;
 }
 
-int
+bool
 sid::partial_match(sid const &id) const {
 	if (!comparable(id)) {
-		return 0;
+		return false;
 	}
 
 	if (rel == 0) {
-		return 1;
+		return true;
 	}
 	if (rel != id.rel) {
-		return 0;
+		return false;
 	}
 	if (level == 0) {
-		return 1;
+		return true;
 	}
 	if (level != id.level) {
-		return 0;
+		return false;
 	}
 	if (branch == 0) {
-		return 1;
+		return true;
 	}
 	if (branch != id.branch) {
-		return 0;
+		return false;
 	}
 	return sequence == 0 || sequence == id.rel;
 }

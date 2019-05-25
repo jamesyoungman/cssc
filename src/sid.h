@@ -65,7 +65,7 @@ public:
   sid(relvbr);		/* Defined below */
 
   bool is_null() const { return rel <= 0; }
-  int gte(sid const &id) const; // used by sccs_file::find_requested_sid().
+  bool gte(sid const &id) const; // used by sccs_file::find_requested_sid().
 
 #if 1
   sid(sid const &id): rel(id.rel), level(id.level),
@@ -83,13 +83,14 @@ public:
 
   bool valid() const { return rel > 0; }
 
-  int
+  bool
   partial_sid() const {
     return level == 0 || (branch != 0 && sequence == 0);
   }
   int components() const;
   bool on_trunk() const;
 
+  // TODO: is this conversion really needed?
   operator void const *() const {
     if (rel == 0)  {
       return NULL;
@@ -99,33 +100,35 @@ public:
 
   //	operator release() const;	/* Defined below */
 
-  friend int
+  friend bool
   operator >(sid const &i1, sid const &i2) {
     return i1.comparable(i2) && i1.gt(i2);
   }
 
-  friend int
+  friend bool
   operator >=(sid const &i1, sid const &i2) {
     return i1.comparable(i2) && i1.gte(i2);
   }
 
-  friend int
+  friend bool
   operator <(sid const &i1, sid const &i2) {
     return i1.comparable(i2) && !i1.gte(i2);
   }
 
-  friend int
+  friend bool
   operator <=(sid const &i1, sid const &i2) {
     return i1.comparable(i2) && !i1.gt(i2);
   }
 
-  friend int
+  friend bool
   operator ==(sid const &i1, sid const &i2) {
     return memcmp(&i1, &i2, sizeof(sid)) == 0;
   }
 
-  friend int
+  friend bool
   operator !=(sid const &i1, sid const &i2) {
+    // TODO: choose a safer way to do the comparison
+    // The issue is struct padding, etc.
     return memcmp(&i1, &i2, sizeof(sid)) != 0;
   }
 
@@ -169,26 +172,26 @@ public:
     return *this;
   }
 
-  int
+  bool
   is_trunk_successor(sid const &id) const {
     return branch == 0 && *this < id;
   }
 
-  int
+  bool
   branch_greater_than(sid const &id) const {
     return rel == id.rel && level == id.level
       && branch > id.branch;
   }
 
-  int partial_match(sid const &id) const;
+  bool partial_match(sid const &id) const;
   bool matches(const sid &m, int nfields) const;
 
-  int
+  bool
   release_only() const {
     return rel != 0 && level == 0;
   }
 
-  int
+  bool
   trunk_match(sid const &id) const {
     return rel == 0
       || (rel == id.rel && (level == 0
@@ -217,19 +220,19 @@ public:
 
 inline sid::sid(release r): rel(r), level(0), branch(0), sequence(0) {}
 
-inline int operator >(release i1, sid const &i2) { return i1 > release(i2); }
-inline int operator <(release i1, sid const &i2) { return i1 < release(i2); }
-inline int operator >=(release i1, sid const &i2) { return i1 >= release(i2); }
-inline int operator <=(release i1, sid const &i2) { return i1 <= release(i2); }
-inline int operator ==(release i1, sid const &i2) { return i1 == release(i2); }
-inline int operator !=(release i1, sid const &i2) { return i1 != release(i2); }
+inline bool operator >(release i1, sid const &i2) { return i1 > release(i2); }
+inline bool operator <(release i1, sid const &i2) { return i1 < release(i2); }
+inline bool operator >=(release i1, sid const &i2) { return i1 >= release(i2); }
+inline bool operator <=(release i1, sid const &i2) { return i1 <= release(i2); }
+inline bool operator ==(release i1, sid const &i2) { return i1 == release(i2); }
+inline bool operator !=(release i1, sid const &i2) { return i1 != release(i2); }
 
-inline int operator >(sid const &i1, release i2) { return release(i1) > i2; }
-inline int operator <(sid const &i1, release i2) { return release(i1) < i2; }
-inline int operator >=(sid const &i1, release i2) { return release(i1) >= i2; }
-inline int operator <=(sid const &i1, release i2) { return release(i1) <= i2; }
-inline int operator ==(sid const &i1, release i2) { return release(i1) == i2; }
-inline int operator !=(sid const &i1, release i2) { return release(i1) != i2; }
+inline bool operator >(sid const &i1, release i2) { return release(i1) > i2; }
+inline bool operator <(sid const &i1, release i2) { return release(i1) < i2; }
+inline bool operator >=(sid const &i1, release i2) { return release(i1) >= i2; }
+inline bool operator <=(sid const &i1, release i2) { return release(i1) <= i2; }
+inline bool operator ==(sid const &i1, release i2) { return release(i1) == i2; }
+inline bool operator !=(sid const &i1, release i2) { return release(i1) != i2; }
 
 typedef range_list<sid> sid_list;
 
