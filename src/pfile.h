@@ -145,9 +145,8 @@ public:
     return it != end();
   }
 
-  // TODO: return cssc::Failure instead of bool?
-  bool add_lock(sid got, sid delta,
-		sid_list &included, sid_list &excluded);
+  cssc::Failure add_lock(sid got, sid delta,
+			 sid_list &included, sid_list &excluded);
 
   std::pair<find_status, iterator> find_sid(const sid& id);
   int  print_lock_sid(FILE *fp, const_iterator pos) const;

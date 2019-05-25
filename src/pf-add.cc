@@ -32,7 +32,7 @@
 #include "file.h"
 
 
-bool
+cssc::Failure
 sccs_pfile::add_lock(sid got, sid delta,
 		     sid_list &included, sid_list &excluded) {
         ASSERT(mode == pfile_mode::PFILE_APPEND);
@@ -54,7 +54,7 @@ sccs_pfile::add_lock(sid got, sid delta,
 
 	edit_locks.push_back(new_lock);
 
-	return update( pfile_already_exists ).ok();
+	return update( pfile_already_exists );
 }
 
 /* Local variables: */

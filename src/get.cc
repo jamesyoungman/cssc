@@ -533,7 +533,8 @@ main(int argc, char **argv)
               new_delta.print(commentary);
 	      fputc('\n', commentary);
 
-              if (!pfile->add_lock(retrieve, new_delta, include, exclude))
+	      cssc::Failure added = pfile->add_lock(retrieve, new_delta, include, exclude);
+              if (!added.ok())
                 {
                   // Failed to add the lock to the p-file.
                   if (real_file)

@@ -147,7 +147,7 @@ sccs_pfile::update(bool pfile_already_exists) const
   auto rewrite = [q_name, &qfile_deleter, &pf, this, pfile_already_exists]() -> cssc::Failure
     {
       auto written = write_edit_locks(pf, q_name);
-      if (!written.ok()) 
+      if (!written.ok())
 	return written.fail();
       const lock_count_type locks_remaining = *written;
       if (fclose_failed(fclose(pf)))
