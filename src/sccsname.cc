@@ -49,22 +49,27 @@ base_part(const std::string& name)
   return basename;
 }
 
-bool
+cssc::Failure invalid_name(const std::string& reason)
+{
+  return cssc::make_failure(cssc::error::NotAnSccsHistoryFileName, reason);
+}
+
+cssc::Failure
 sccs_name::valid_filename(const char *thename)
 {
   ASSERT(0 != thename);
   if (!thename[0])
     {
-      // empty filename; not valid.
-      return false;
+      return invalid_name("SCCS history file names may not be empty");
     }
 
   const std::string base = base_part(std::string(thename));
-  if (base.size() < 2)
+  if ((base.size() < 2)
+      || (base[0] != 's') || (base[1] != '.'))
     {
-      return false;
+      return invalid_name("SCCS history file names must begin with 's.'");
     }
-  return base[0] == 's' && base[1] == '.';
+  return cssc::Failure::Ok();
 }
 
 void
@@ -138,7 +143,7 @@ void
 sccs_name::make_valid()
 {
   ASSERT(sname.length() != 0);
-  ASSERT(!valid_filename(sname.c_str()));
+  ASSERT(valid_filename(sname.c_str()).ok());
 
   std::string dirpart, basepart;
   split_filename(sname, dirpart, basepart);

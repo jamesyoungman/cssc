@@ -80,7 +80,7 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 			while (dent != NULL) {
 				std::string directory_entry = std::string(dirname) + std::string(dent->d_name);
 
-				if (sccs_name::valid_filename(directory_entry.c_str())
+				if (sccs_name::valid_filename(directory_entry.c_str()).ok()
 				    && is_readable(directory_entry.c_str()))
 				  {
 				    if (is_directory(directory_entry.c_str()))

@@ -31,6 +31,7 @@
 #include <memory>
 #include <string>
 
+#include "failure.h"
 #include "filelock.h"
 #include "quit.h"
 
@@ -61,8 +62,7 @@ class sccs_name
   sccs_name(sccs_name const &);
 
 public:
-  // TODO: return cssc::Failure instead?
-  static bool valid_filename(const char *name);
+  static cssc::Failure valid_filename(const char *name);
   /* The initialisers on the following line have been re-ordered
    * to follow the declaration order.
    */
