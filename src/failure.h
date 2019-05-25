@@ -50,6 +50,7 @@ namespace cssc
       UnexpectedEOF,
       FileHasHardLinks,
       BodyIsBinary,
+      LockNotHeld,
     };
 
   class Failure
@@ -59,6 +60,12 @@ namespace cssc
       : code_(ec) {}
     explicit Failure(std::error_code ec, const std::string& detail)
       : code_(ec), detail_(detail) {}
+
+    // The default constructor signals "OK".
+    Failure()
+    {
+      ASSERT(ok());
+    }
 
     // We deliberately do not have an implicit cast to bool so that we
     // don't end up in a situation where changing "bool foo()" to
@@ -91,6 +98,11 @@ namespace cssc
     std::error_code code_;
     std::string detail_;
   };
+
+  inline Failure Update(const Failure& orig, const Failure& next)
+  {
+    return orig.ok() ? next : orig;
+  }
 
   inline Failure make_failure(error e)
   {

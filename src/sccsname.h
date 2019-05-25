@@ -63,13 +63,14 @@ class sccs_name
 
 public:
   static cssc::Failure valid_filename(const char *name);
+  // TODO: probably don't need both valid_filename and valid.
+  bool valid() const { return sname.length() > 0; }
   /* The initialisers on the following line have been re-ordered
    * to follow the declaration order.
    */
   sccs_name(): lock_cnt(0)  {}
   sccs_name &operator =(const std::string& n); /* undefined */
 
-  bool valid() const { return sname.length() > 0; }
   void make_valid();
 
   const char * c_str() const { return sname.c_str(); }
@@ -84,25 +85,26 @@ public:
   std::string xfile() const { return sub_file('x'); }
   std::string zfile() const { return sub_file('z'); }
 
-  // TODO: use a better "result" type which can encode failure
-  // information.
-  int
+  cssc::Failure
   lock()
   {
     if (lock_cnt++ == 0)
       {
 	std::string zf = zfile();
 	lock_ = std::make_unique<file_lock>(zf);
-	return lock_->failed();
+	return lock_->is_locked();
       }
-    return 0;
+    return cssc::Failure::Ok();
   }
 
   void
   unlock()
   {
+    // TODO: assert that it's locked?
     if (--lock_cnt == 0)
       {
+	// Releasing the unique_ptr deletes the lock object which
+	// releases the lock.
 	lock_.release();
       }
   }

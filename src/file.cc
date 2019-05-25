@@ -38,6 +38,7 @@
 
 #include "cssc.h"		/* for CONFIG_CAN_HARD_LINK_AN_OPEN_FILE */
 #include "cssc-assert.h"
+#include "failure.h"
 #include "sysdep.h"
 #include "file.h"
 #include "quit.h"
@@ -396,7 +397,7 @@ maybe_wait_a_bit(long attempt, const char *lockfile)
     if (waitfor)
     {
         errormsg("Sleeping for %d second%s "
-                 "while waiting for lock on %s; my PID is %ld\n",
+                 "while waiting for lock on %s; my PID is %ld",
                  waitfor,
                  ( (waitfor == 1) ? "" : "s"),
                  lockfile,
@@ -695,21 +696,26 @@ FILE *fopen_as_real_user(const char *s, const char *mode)
 
 
 
-static int
+static cssc::Failure
 put_pid(FILE *f)
 {
-  return fprintf(f, "%lu", (unsigned long int)getpid());
+  auto val = static_cast<unsigned long int>(getpid());
+  if (fprintf_failed(fprintf(f, "%lu", val)))
+    return cssc::make_failure_from_errno(errno);
+  return cssc::Failure::Ok();
 }
 
 
-static int
+static cssc::Failure
 do_lock(FILE *f)                // process-aware version
 {
-  return put_pid(f) < 0;
+  return put_pid(f);
 }
 
 
-file_lock::file_lock(const std::string& zname): locked(0), name(zname)
+file_lock::file_lock(const std::string& zname)
+  : lock_state_(),		// empty optional.
+    name(zname)
 {
   ASSERT(name == zname);
   FILE *f = fcreate(zname,
@@ -718,26 +724,34 @@ file_lock::file_lock(const std::string& zname): locked(0), name(zname)
     {
       if (errno == EEXIST)
         {
+	  ASSERT(lock_state_.has_value());
+	  ASSERT(lock_state_.value().ok());
           return;
         }
-      errormsg_with_errno("%s: Can't create lock file", zname.c_str());
+      lock_state_ = cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "can't create lock file " <<  zname;
       ctor_fail_nomsg(1);
     }
 
-  if (do_lock(f) != 0 || fclose_failed(fclose(f)))
+  cssc::Failure done = do_lock(f);
+  if (fclose_failed(fclose(f)))
+    {
+      done = cssc::Update(done,
+			  cssc::make_failure_builder_from_errno(errno)
+			  .diagnose() << "failed to close " << zname);
+    }
+  if (!done.ok())
     {
       remove(zname.c_str());
-      errormsg_with_errno("%s: Write error", zname.c_str());
       ctor_fail_nomsg(1);
     }
-
-  locked = 1;
+  lock_state_ = done;
   return;
 }
 
 file_lock::~file_lock() {
-  if (locked) {
-    locked = 0;
+  if (lock_state_.has_value()) {
+    lock_state_.reset();
     unlink(name.c_str());
   }
 }

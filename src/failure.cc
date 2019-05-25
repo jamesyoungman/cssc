@@ -38,12 +38,16 @@ namespace cssc
       {
       case isit(error::NotAnSccsHistoryFile):
 	return "not an SCCS history file";
+      case isit(error::NotAnSccsHistoryFileName):
+	return "not an SCCS history file name";
       case isit(error::UnexpectedEOF):
 	return "unexpected end-of-file";
       case isit(error::FileHasHardLinks):
 	return "refusing to open for writing a file with a link count greater than 1";
       case isit(error::BodyIsBinary):
 	return "file body cannot be stored in an SCCS history file without encoding";
+      case isit(error::LockNotHeld):
+	return "cannot continue without holding the lock on the SCCS file";
       default:
 	return "unknown CSSC error";
       }

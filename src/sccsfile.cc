@@ -142,10 +142,11 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
 
   if (mode != READ)
     {
-      if (name.lock())
+      auto locked = name.lock();
+      if (!locked.ok())
         {
-          ctor_fail(-1, "%s: SCCS file is locked.  Try again later.",
-               name.c_str());
+          ctor_fail(-1, "%s: SCCS file is locked (%s).  Try again later.",
+		    name.c_str(), locked.to_string().c_str());
         }
     }
 

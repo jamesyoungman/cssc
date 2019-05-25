@@ -31,7 +31,13 @@ namespace cssc
 	: hasvalue_(true), value_(value) {}
 
       optional()
-	: hasvalue_(false), value_{} {}
+	: hasvalue_(false), value_() {}
+
+      void reset()
+      {
+	hasvalue_ = false;
+	value_ = T();
+      }
 
       constexpr bool has_value() const
       {

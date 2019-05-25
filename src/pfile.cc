@@ -47,13 +47,15 @@ sccs_pfile::sccs_pfile(sccs_name &n, pfile_mode m)
 
         pname = name.pfile();
 
-        if (mode != pfile_mode::PFILE_READ) {
-                if (name.lock()) {
-                        ctor_fail(-1,
-                                  "%s: SCCS file is locked.  Try again later.",
-                                  name.c_str());
-                }
-        }
+        if (mode != pfile_mode::PFILE_READ)
+	  {
+	    if (!name.lock().ok())
+	      {
+		ctor_fail(-1,
+			  "%s: SCCS file is locked.  Try again later.",
+			  name.c_str());
+	      }
+	  }
 
         FILE *pf = fopen(pname.c_str(), "r");
         if (pf == NULL) {

@@ -29,17 +29,25 @@
 #define CSSC__FILELOCK_H__
 #include <string>
 #include "cleanup.h"
+#include "failure.h"
+#include "optional.h"
 
 class file_lock : private cleanup {
-	int locked;
-        std::string name;
+        cssc::optional<cssc::Failure> lock_state_;
+        std::string name;	// TODO: add trailing underscore
 
         // TODO: consider a more modern kind of cleanup object.
 	void do_cleanup() { this->~file_lock(); }
 
 public:
         file_lock(const std::string& zname);
-	int failed() { return !locked; }
+        cssc::Failure is_locked() const {
+	  if (lock_state_.has_value())
+	    {
+	      return lock_state_.value();
+	    }
+	  return cssc::make_failure(cssc::error::LockNotHeld);
+	}
 	~file_lock();
 };
 
