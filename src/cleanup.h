@@ -83,6 +83,13 @@ class ResourceCleanup
   explicit ResourceCleanup(std::function<void()> action)
     : doit_(action) {}
 
+  static inline void noop() { }
+
+  void disarm()
+  {
+    doit_ = noop;
+  }
+
   ~ResourceCleanup()
     {
       doit_();

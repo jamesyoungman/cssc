@@ -129,7 +129,7 @@ main(int argc, char **argv)
 	      fputc('\n', stdout);
 
 	      pfile.delete_lock(found.second);
-	      if (!pfile.update(true))
+	      if (!pfile.update(true).ok())
 		retval = 1;
 
 	      if (!keep_gfile)

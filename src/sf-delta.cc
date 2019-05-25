@@ -383,7 +383,7 @@ sccs_file::add_delta(const std::string& gname,
   printf("%lu inserted\n%lu deleted\n%lu unchanged\n",
          new_delta.inserted(), new_delta.deleted(), new_delta.unchanged());
 
-  if (pfile.update(true))
+  if (pfile.update(true).ok())
     return true;
   else
     return false;

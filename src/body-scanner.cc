@@ -140,9 +140,9 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 	  if (fputc_failed(fputc('\n', out)))
 	    err = 1;
 	}
-      else 
+      else
 	{
-	  if (!do_kw_subst) 
+	  if (!do_kw_subst)
 	    {
 	      if (!parms.found_id && plinebuf->check_id_keywords())
 		  parms.found_id = 1;

@@ -54,7 +54,7 @@ sccs_pfile::add_lock(sid got, sid delta,
 
 	edit_locks.push_back(new_lock);
 
-	return update( pfile_already_exists );
+	return update( pfile_already_exists ).ok();
 }
 
 /* Local variables: */

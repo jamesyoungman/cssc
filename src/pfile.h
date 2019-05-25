@@ -31,6 +31,7 @@
 #include <utility>
 #include <iterator>
 
+#include "failure.h"
 #include "mode.h"
 #include "sccsname.h"
 #include "sid.h"
@@ -107,6 +108,7 @@ private:
   pfile_mode mode;
 
   std::list<edit_lock> edit_locks;
+  typedef std::list<edit_lock>::size_type lock_count_type;
 
   NORETURN corrupt(int lineno, const char *msg) const  POSTDECL_NORETURN;
 
@@ -180,7 +182,7 @@ public:
   void delete_lock(iterator i) { edit_locks.erase(i); }
 
   // TODO: return cssc::Failure instead of bool?
-  bool update(bool pfile_already_exists) const;
+  cssc::Failure update(bool pfile_already_exists) const;
 
   ~sccs_pfile();
 };

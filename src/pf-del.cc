@@ -62,77 +62,85 @@ sccs_pfile::find_sid(const sid& id)
   return make_pair(find_status::FOUND, found);
 }
 
-bool
+cssc::Failure
 sccs_pfile::update(bool pfile_already_exists) const
 {
   const std::string q_name(name.qfile());
-  const char* qname = q_name.c_str();
 
-  FILE *pf = fcreate(qname, CREATE_EXCLUSIVE);
+  FILE *pf = fcreate(q_name.c_str(), CREATE_EXCLUSIVE);
   if (pf == NULL)
     {
-      errormsg_with_errno("%s: Can't create temporary file.", qname);
-      return false;
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << q_name << ": Can't create temporary file";
     }
+  cssc::Failure qfile_deletion_result = cssc::Failure::Ok();
 
-  int count = 0;
+  ResourceCleanup qfile_deleter([q_name, &pf, &qfile_deletion_result]() {
+      if (pf != NULL)
+	{
+	  if (fclose_failed(fclose(pf)))
+	    {
+	      qfile_deletion_result = cssc::make_failure_builder_from_errno(errno)
+		.diagnose() << "failed to close " << q_name;
+	    }
+	  pf = NULL;
+	}
+      if (0 != remove(q_name.c_str()))
+	{
+	  qfile_deletion_result = cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "failed to remove " << q_name;
+	}
+    });
 
-  try
+  auto rewrite = [q_name, &qfile_deleter, &pf, this, pfile_already_exists]() -> cssc::Failure
     {
+      lock_count_type locks_remaining = 0;
+
       for (const_iterator it = begin(); it != end(); ++it)
 	{
 	  if (write_edit_lock(pf, *it))
 	    {
-	      errormsg_with_errno("%s: Write error.", qname);
-	      remove(qname);
-	      return false;
+	      return cssc::make_failure_builder_from_errno(errno)
+		.diagnose() << q_name << ": write error";
 	    }
-	  count++;
+	  locks_remaining++;
 	}
 
       if (fclose_failed(fclose(pf)))
 	{
-	  errormsg_with_errno("%s: Write error.", qname);
-	  remove(qname);
-	  return false;
+	  return cssc::make_failure_builder_from_errno(errno)
+	  .diagnose() << q_name << ": write error";
 	}
-    }
-  catch (CsscException)
-    {
-      // got an exception; delete the temporary file and re-throw the exception
-      remove(qname);
-      throw;
-    }
+      pf = NULL;
 
-  if (pfile_already_exists)
-    {
-      if (remove(pname.c_str()) != 0)
+      if (pfile_already_exists)
 	{
-	  errormsg_with_errno("%s: Can't remove old p-file.", pname.c_str());
-	  return false;
+	  if (remove(pname.c_str()) != 0)
+	    {
+	      return cssc::make_failure_builder_from_errno(errno)
+	      .diagnose() << pname << ": can't remove old p-file";
+	    }
 	}
-    }
 
-  if (count == 0)		// no locks left -> no pfile rewuired.
-    {
-      if (remove(qname) != 0)
+      if (locks_remaining)	// pfile is still required
 	{
-	  errormsg_with_errno("%s: Can't remove temporary file.",
-			      pname.c_str());
-	  return false;
+	  if (rename(q_name.c_str(), pname.c_str()) != 0)
+	    {
+	      // this is really bad; we have already deleted the old p-file!
+	      return cssc::make_failure_builder_from_errno(errno)
+	      .diagnose() << "failed to rename " << q_name << " to " << pname;
+	    }
+	  qfile_deleter.disarm();
 	}
-    }
+
+      return cssc::Failure::Ok();
+    };
+
+  auto rewrite_result = rewrite();
+  if (!rewrite_result.ok())
+    return rewrite_result;
   else
-    {
-      if (rename(qname, pname.c_str()) != 0)
-	{
-	  // this is really bad; we have already deleted the old p-file!
-	  errormsg_with_errno("%s: Can't rename new p-file.",
-	       qname);
-	  return false;
-	}
-    }
-  return true;
+    return qfile_deletion_result;
 }
 
 /* Local variables: */
