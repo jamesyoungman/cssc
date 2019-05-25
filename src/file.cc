@@ -715,9 +715,9 @@ do_lock(FILE *f)                // process-aware version
 
 file_lock::file_lock(const std::string& zname)
   : lock_state_(),		// empty optional.
-    name(zname)
+    name_(zname)
 {
-  ASSERT(name == zname);
+  ASSERT(name_ == zname);
   FILE *f = fcreate(zname,
                     CREATE_READ_ONLY | CREATE_EXCLUSIVE | CREATE_NFS_ATOMIC);
   if (0 == f)
@@ -752,7 +752,7 @@ file_lock::file_lock(const std::string& zname)
 file_lock::~file_lock() {
   if (lock_state_.has_value()) {
     lock_state_.reset();
-    unlink(name.c_str());
+    unlink(name_.c_str());
   }
 }
 

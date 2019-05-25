@@ -34,7 +34,7 @@
 
 class file_lock : private cleanup {
         cssc::optional<cssc::Failure> lock_state_;
-        std::string name;	// TODO: add trailing underscore
+        std::string name_;
 
         // TODO: consider a more modern kind of cleanup object.
 	void do_cleanup() { this->~file_lock(); }
