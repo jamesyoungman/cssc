@@ -54,7 +54,6 @@ public:
 
   release &operator++() { rel++; return *this; }
   release &operator--() { rel--; return *this; }
-
   operator unsigned long() const
   {
     ASSERT(valid());
@@ -66,32 +65,32 @@ public:
     return rel;
   }
 
-  friend int operator <(release r1, release r2)
+  friend bool operator <(release r1, release r2)
     {
       return r1.rel < r2.rel;
     }
 
-  friend int operator >(release r1, release r2)
+  friend bool operator >(release r1, release r2)
     {
       return r1.rel > r2.rel;
     }
 
-  friend int operator <=(release r1, release r2)
+  friend bool operator <=(release r1, release r2)
     {
       return r1.rel <= r2.rel;
     }
 
-  friend int operator >=(release r1, release r2)
+  friend bool operator >=(release r1, release r2)
     {
       return r1.rel >= r2.rel;
     }
 
-  friend int operator ==(release r1, release r2)
+  friend bool operator ==(release r1, release r2)
     {
       return r1.rel == r2.rel;
     }
 
-  friend int operator !=(release r1, release r2)
+  friend bool operator !=(release r1, release r2)
     {
       return r1.rel != r2.rel;
     }
