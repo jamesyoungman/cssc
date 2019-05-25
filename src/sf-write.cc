@@ -142,7 +142,7 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
                             cap5(d.deleted()),
                             cap5(d.unchanged())))
       || printf_failed(fprintf(out, "\001d %c ", d.get_type()))
-      || d.id().print(out)
+      || !d.id().print(out).ok()
       || putc_failed(putc(' ', out))
       || d.date().print(out)
       || printf_failed(fprintf(out, " %s %u %u\n",
@@ -225,7 +225,7 @@ sccs_file::write(FILE *out) const
   if (flags.default_sid.valid())
     {
       if (fputs_failed(fputs("\001f d ", out))
-          || flags.default_sid.print(out)
+          || !flags.default_sid.print(out).ok()
           || putc_failed(putc('\n', out)))
         {
           return 1;

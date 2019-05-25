@@ -361,13 +361,13 @@ range_list<TYPE>::print(FILE *out) const
   range<TYPE> *p = head;
   while (1)
     {
-      if (p->from.print(out))
+      if (!p->from.print(out).ok())
         {
           return 1;
         }
       if (p->to != p->from
           && (putc('-', out) == EOF
-              || p->to.print(out)))
+              || !p->to.print(out).ok()))
         {
           return 1;
         }

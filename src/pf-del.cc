@@ -65,19 +65,31 @@ sccs_pfile::find_sid(const sid& id)
 cssc::FailureOr<sccs_pfile::lock_count_type>
 sccs_pfile::write_edit_locks(FILE *out, const std::string& file_name) const
 {
-  auto write_error = [file_name]() -> cssc::Failure
+  auto diagnose = [file_name](cssc::Failure orig) -> cssc::Failure
     {
-      return cssc::make_failure_builder_from_errno(errno)
-      .diagnose()
-      << "failed to write to " << file_name;
+      return cssc::FailureBuilder(orig)
+      .diagnose() << "failed to write to " << file_name;
     };
 
-  auto write_edit_lock = [write_error, out](struct edit_lock const &it)
+  auto write_error = [diagnose]() -> cssc::Failure
     {
-      if (it.got.print(out)
-	  || putc_failed(putc(' ', out))
-	  || it.delta.print(out)
-	  || putc_failed(putc(' ', out))
+      return diagnose(cssc::make_failure_builder_from_errno(errno));
+    };
+
+  auto write_edit_lock = [write_error, out, diagnose](struct edit_lock const &it)
+    {
+      auto written = it.got.print(out);
+      if (!written.ok())
+	return diagnose(written);
+
+      if (putc_failed(putc(' ', out)))
+	{
+	  return write_error();
+	}
+      if (!(written = it.delta.print(out)).ok())
+	return diagnose(written);
+
+      if (putc_failed(putc(' ', out))
 	  || fputs_failed(fputs(it.user.c_str(), out))
 	  || putc_failed(putc(' ', out))
 	  || it.date.print(out))

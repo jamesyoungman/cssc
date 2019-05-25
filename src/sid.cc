@@ -285,7 +285,7 @@ bool sid::matches(const sid &m, int nfields) const
 }
 
 
-int
+cssc::Failure
 sid::print(FILE *out) const {
 	ASSERT(valid());
 	ASSERT(rel != 0);
@@ -299,9 +299,9 @@ sid::print(FILE *out) const {
 				&& printf_failed(fprintf(out, ".%d",
 							 sequence))))))))
 	  {
-	    return 1;
+	    return cssc::make_failure_from_errno(errno);
 	  }
-	return 0;
+	return cssc::Failure::Ok();
 }
 
 int

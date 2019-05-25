@@ -114,7 +114,7 @@ sccs_file::write_subst(const char *start,
             break;
 
             case 'I':
-              err = d.id().print(out);
+              err = !d.id().print(out).ok();
               break;
 
             case 'R':

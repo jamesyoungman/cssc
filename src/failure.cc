@@ -75,6 +75,12 @@ namespace cssc
       return detail_ + "; " + code_.message();
   }
 
+  const std::string& Failure::detail() const
+  {
+    return detail_;
+  }
+
+
   FailureBuilder::FailureBuilder(std::error_code ec)
     : code_(ec),
       diagnose_(false),
@@ -106,6 +112,14 @@ namespace cssc
 	detail_(other.detail_)
     {
       os_ << other.os_.str();
+    }
+
+  FailureBuilder::FailureBuilder(const Failure& f)
+    : code_(f.code()),
+      diagnose_(false),
+      detail_(f.detail().empty())
+    {
+      os_ << f.detail();
     }
 
   FailureBuilder::~FailureBuilder()

@@ -151,7 +151,7 @@ sccs_pfile::find_to_be_created(const sid& id) const
   return end();
 }
 
-int
+cssc::Failure
 sccs_pfile::print_lock_sid(FILE *fp, const_iterator pos) const
 {
   return pos->delta.print(fp);

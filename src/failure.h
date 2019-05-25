@@ -75,6 +75,12 @@ namespace cssc
 
     std::string to_string() const;
 
+    // Most callers should call to_string() since it includes the
+    // detailed error message from the std::error_code too.  The
+    // detail() method is mainly intended for use in
+    // FailureBuilder::FailureBuilder(const Failure&).
+    const std::string& detail() const;
+
     static Failure Ok()
     {
       return Failure(std::error_code());
@@ -120,6 +126,7 @@ namespace cssc
   public:
     explicit FailureBuilder(std::error_code ec);
     explicit FailureBuilder(error e);
+    FailureBuilder(const Failure& f);
     FailureBuilder(const FailureBuilder& other);
     operator Failure() const;
     ~FailureBuilder();

@@ -32,6 +32,7 @@
 #include <string>
 
 #include "cssc-assert.h"
+#include "failure.h"
 #include "sid_list.h"
 
 #include "release.h"
@@ -194,8 +195,7 @@ public:
 			    || level == id.level));
   }
 
-  // TODO: return cssc::Failure instead?
-  int print(FILE *f) const;
+  cssc::Failure print(FILE *f) const;
   // TODO: return cssc::Failure instead?
   int printf(FILE *f, char fmt, bool force_zero=false) const;
 
