@@ -274,7 +274,7 @@ sccs_file::write(FILE *out) const
       if (fputs_failed(fputs("\001f l ", out)))
         return 1;               // failed
 
-      if (!flags.locked.print(out))
+      if (!flags.locked.print(out).ok())
         return 1;               // failed
 
       if (putc_failed(putc('\n', out)))

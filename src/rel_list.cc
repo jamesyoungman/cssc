@@ -77,7 +77,7 @@ release_list::~release_list()
 {
 }
 
-bool release_list::print(FILE * out) const
+cssc::Failure release_list::print(FILE * out) const
 {
   bool first = true;
   for (const auto& release : l)
@@ -85,13 +85,14 @@ bool release_list::print(FILE * out) const
       if (!first)
 	{
 	  if (putc_failed(fputc(' ', out)))
-	    return false;
+	    return cssc::make_failure_from_errno(errno);
 	}
       first = false;
-      if (!release.print(out).ok())
-	return false;
+      auto printed = release.print(out);
+      if (!printed.ok())
+	return printed;
     }
-  return true;
+  return cssc::Failure::Ok();
 }
 
 

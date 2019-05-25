@@ -51,8 +51,7 @@ public:
   void remove(const release_list& r);
 
   // I/O
-  // TODO: return cssc::Failure instead of bool?
-  bool print(FILE *) const;
+  cssc::Failure print(FILE *) const;
 
   // Accessors
   bool empty() const { return l.empty(); }
