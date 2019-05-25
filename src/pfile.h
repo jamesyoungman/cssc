@@ -32,6 +32,7 @@
 #include <iterator>
 
 #include "failure.h"
+#include "failure_or.h"
 #include "mode.h"
 #include "sccsname.h"
 #include "sid.h"
@@ -112,37 +113,8 @@ private:
 
   NORETURN corrupt(int lineno, const char *msg) const  POSTDECL_NORETURN;
 
-  static int
-  write_edit_lock(FILE *out, struct edit_lock const &it)
-  {
-    if (it.got.print(out)
-	|| putc_failed(putc(' ', out))
-	|| it.delta.print(out)
-	|| putc_failed(putc(' ', out))
-	|| fputs_failed(fputs(it.user.c_str(), out))
-	|| putc_failed(putc(' ', out))
-	|| it.date.print(out))
-      {
-	return 1;
-      }
-
-    if (!it.include.empty()
-	&& ((fputs(" -i", out) == EOF || it.include.print(out))))
-      {
-	return 1;
-      }
-
-    if (!it.exclude.empty()
-	&& ((fputs(" -x", out) == EOF || it.exclude.print(out))))
-      {
-	return 1;
-      }
-
-    if (putc('\n', out) == EOF) {
-      return 1;
-    }
-    return 0;
-  }
+  cssc::FailureOr<lock_count_type>
+  write_edit_locks(FILE *out, const std::string& file_name) const;
 
 public:
   sccs_pfile(sccs_name &name, pfile_mode mode);

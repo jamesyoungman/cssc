@@ -22,6 +22,8 @@
 #include <stdexcept>
 #include <system_error>
 
+#include "failure.h"
+
 namespace cssc
 {
   class EmptyFailureOr : public std::logic_error {

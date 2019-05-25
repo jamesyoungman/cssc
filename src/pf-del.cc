@@ -62,6 +62,58 @@ sccs_pfile::find_sid(const sid& id)
   return make_pair(find_status::FOUND, found);
 }
 
+cssc::FailureOr<sccs_pfile::lock_count_type>
+sccs_pfile::write_edit_locks(FILE *out, const std::string& file_name) const
+{
+  auto write_error = [file_name]() -> cssc::Failure
+    {
+      return cssc::make_failure_builder_from_errno(errno)
+      .diagnose()
+      << "failed to write to " << file_name;
+    };
+
+  auto write_edit_lock = [write_error, out](struct edit_lock const &it)
+    {
+      if (it.got.print(out)
+	  || putc_failed(putc(' ', out))
+	  || it.delta.print(out)
+	  || putc_failed(putc(' ', out))
+	  || fputs_failed(fputs(it.user.c_str(), out))
+	  || putc_failed(putc(' ', out))
+	  || it.date.print(out))
+	{
+	  return write_error();
+	}
+
+      if (!it.include.empty()
+	  && ((fputs(" -i", out) == EOF || it.include.print(out))))
+	{
+	  return write_error();
+	}
+
+      if (!it.exclude.empty()
+	  && ((fputs(" -x", out) == EOF || it.exclude.print(out))))
+	{
+	  return write_error();
+	}
+
+      if (putc('\n', out) == EOF) {
+	return write_error();
+      }
+      return cssc::Failure::Ok();
+    };
+
+  lock_count_type locks_remaining = 0;
+  for (const_iterator it = begin(); it != end(); ++it)
+    {
+      auto written = write_edit_lock(*it);
+      if (!written.ok())
+	return written;
+      locks_remaining++;
+    }
+  return locks_remaining;
+}
+
 cssc::Failure
 sccs_pfile::update(bool pfile_already_exists) const
 {
@@ -94,18 +146,10 @@ sccs_pfile::update(bool pfile_already_exists) const
 
   auto rewrite = [q_name, &qfile_deleter, &pf, this, pfile_already_exists]() -> cssc::Failure
     {
-      lock_count_type locks_remaining = 0;
-
-      for (const_iterator it = begin(); it != end(); ++it)
-	{
-	  if (write_edit_lock(pf, *it))
-	    {
-	      return cssc::make_failure_builder_from_errno(errno)
-		.diagnose() << q_name << ": write error";
-	    }
-	  locks_remaining++;
-	}
-
+      auto written = write_edit_locks(pf, q_name);
+      if (!written.ok()) 
+	return written.fail();
+      const lock_count_type locks_remaining = *written;
       if (fclose_failed(fclose(pf)))
 	{
 	  return cssc::make_failure_builder_from_errno(errno)
