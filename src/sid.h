@@ -196,14 +196,16 @@ public:
   }
 
   cssc::Failure print(FILE *f) const;
-  // TODO: return cssc::Failure instead?
-  int printf(FILE *f, char fmt, bool force_zero=false) const;
+  cssc::Failure printf(FILE *f, char fmt, bool force_zero=false) const;
 
-  // TODO: return cssc::Failure instead?
-  int			// 0 return means success.
-  dprint(FILE *f) const {
-    return EOF == fprintf(f, "%d.%d.%d.%d",
-			  rel, level, branch, sequence);
+  cssc::Failure
+  dprint(FILE *f) const
+  {
+    if (fprintf(f, "%d.%d.%d.%d", rel, level, branch, sequence) < 0)
+      {
+	return cssc::make_failure_from_errno(errno);
+      }
+    return cssc::Failure::Ok();
   }
 
   std::string as_string() const;

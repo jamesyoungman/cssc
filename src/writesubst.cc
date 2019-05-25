@@ -118,19 +118,19 @@ sccs_file::write_subst(const char *start,
               break;
 
             case 'R':
-              err = d.id().printf(out, 'R', 1);
+              err = !d.id().printf(out, 'R', 1).ok();
               break;
 
             case 'L':
-              err = d.id().printf(out, 'L', 1);
+              err = !d.id().printf(out, 'L', 1).ok();
               break;
 
             case 'B':
-              err = d.id().printf(out, 'B', 1);
+              err = !d.id().printf(out, 'B', 1).ok();
               break;
 
             case 'S':
-              err = d.id().printf(out, 'S', 1);
+              err = !d.id().printf(out, 'S', 1).ok();
               break;
 
             case 'D':

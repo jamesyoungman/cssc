@@ -304,7 +304,7 @@ sid::print(FILE *out) const {
 	return cssc::Failure::Ok();
 }
 
-int
+cssc::Failure
 sid::printf(FILE *out, char c, bool force_zero /*=false*/) const {
 	ASSERT(valid());
 	ASSERT(!partial_sid());
@@ -323,21 +323,25 @@ sid::printf(FILE *out, char c, bool force_zero /*=false*/) const {
 	case 'B':
 	        // this field is completely blank for trunk revisions.
                 if (!force_zero && 0 == branch && 0 == sequence)
-		  return 0;
+		  return cssc::Failure::Ok();
 		n = branch;
 		break;
 
 	case 'S':
 	        // this field is completely blank for trunk revisions.
                 if (!force_zero && 0 == branch && 0 == sequence)
-		  return 0;
+		  return cssc::Failure::Ok();
 		n = sequence;
 		break;
 
 	default:
           ASSERT(0);
 	}
-	return printf_failed(fprintf(out, "%d", n));
+	if (printf_failed(fprintf(out, "%d", n)))
+	  {
+	    return cssc::make_failure_from_errno(errno);
+	  }
+	return cssc::Failure::Ok();
 }
 
 relvbr::relvbr(const sid &s) :  rel( (short)s.rel ), level( (short)s.level ), branch( (short)s.branch )
