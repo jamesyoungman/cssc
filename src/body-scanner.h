@@ -59,7 +59,7 @@ public:
 			     struct delta const& gotten_delta,
 			     bool force_expansion)> write_subst,
 	   cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*),
-	   bool encoded, // TODO: remove in favour of just outputfn
+	   bool encoded,
 	   class seq_state &state, struct subst_parms &parms,
 	   bool do_kw_subst, bool debug, bool show_module, bool show_sid);
 

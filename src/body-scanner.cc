@@ -76,7 +76,7 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 						   struct delta const& gotten_delta,
 						   bool force_expansion)> write_subst,
 				 cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*),
-				 bool encoded, // TODO: remove in favour of just outputfn
+				 bool encoded,
 				 class seq_state &state,
 				 struct subst_parms &parms,
 				 bool do_kw_subst, bool /*debug*/, bool show_module, bool show_sid)
@@ -133,51 +133,22 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 	  d.id().print(out);
           putc('\t', out);
         }
-
       int err;
-      if (do_kw_subst)
-        {
-          // If there is a cutoff date,
-          // prepare_seqstate() will take account of
-          // it.  We need the keyword substitution to
-          // take account of this and substitute the
-          // correct stuff.... so we figure out what
-          // delta has actually been selected here...
-
-
-          if (encoded)
-            {
-              /*
-               * We ignore the possiblity of keyword substitution.
-               * I don't think "real" SCCS does keyword substitution
-               * for this case either -- James Youngman <jay@gnu.org>
-               */
-              err = !outputfn(out, plinebuf.get()).ok();
-            }
-          else
-            {
-                // Mark Reynolds <mark@aoainc.com>: GCC 2.8.1 on VAX
-                // Ultrix 4.2 doesn't seem to get this call right.
-                // Since subst_fn is always write_subst anyway, we
-                // work around it by using the function pointer just as a
-                // boolean variable.   Yeuch.
-                //
-                // 2001-07-30: get rid of all the cruft by using a boolean
-                //             flag instead of a function pointer, for all
-                //             systems.
-                err = write_subst(plinebuf->c_str(), parms.delta, false);
-
-              if (fputc_failed(fputc('\n', out)))
-                err = 1;
-            }
-        }
-      else
-        {
-          if (!parms.found_id && plinebuf->check_id_keywords())
-            parms.found_id = 1;
-          err = !outputfn(out, plinebuf.get()).ok();
-        }
-
+      if (do_kw_subst && !encoded)
+	{
+	  err = write_subst(plinebuf->c_str(), parms.delta, false);
+	  if (fputc_failed(fputc('\n', out)))
+	    err = 1;
+	}
+      else 
+	{
+	  if (!do_kw_subst) 
+	    {
+	      if (!parms.found_id && plinebuf->check_id_keywords())
+		  parms.found_id = 1;
+	    }
+	  err = !outputfn(out, plinebuf.get()).ok();
+	}
       if (err)
         {
           errormsg_with_errno("%s: Write error.", gname);
