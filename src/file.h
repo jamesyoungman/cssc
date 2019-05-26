@@ -49,7 +49,7 @@ enum create_mode {
 cssc::Failure stdout_to_null();
 int stdin_is_a_tty();
 FILE *open_null();
-int is_readable(const char *name);
+bool is_readable(const char *name);
 int is_directory(const char *name);
 int file_exists(const char *name);
 cssc::FailureOr<bool> get_open_file_xbits (FILE *f);

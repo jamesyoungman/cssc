@@ -91,10 +91,11 @@ open_null()
 
 /* Returns true if the file exists and is readable. */
 
-int
-is_readable(const char *name) {
-        return access(name, 04) != -1;
-}
+bool
+is_readable(const char *name)
+{
+  return access(name, R_OK) != -1;
+} 
 
 static bool
 get_mode_bits(const char *filename, mode_t mask, mode_t *result)
