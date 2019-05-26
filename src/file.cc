@@ -39,12 +39,17 @@
 #include "cssc.h"		/* for CONFIG_CAN_HARD_LINK_AN_OPEN_FILE */
 #include "cssc-assert.h"
 #include "failure.h"
+#include "failure_or.h"
 #include "sysdep.h"
 #include "file.h"
 #include "quit.h"
 #include "ioerr.h"
 #include "defaults.h"
 #include "dirent-safer.h"
+
+using cssc::Failure;
+using cssc::FailureOr;
+
 
 /* Redirects stdout to a "null" file (eg. /dev/null). */
 cssc::Failure
@@ -351,7 +356,7 @@ restore_privileges()
  * second time we perform the fstat().  Therefore we use stat(2)
  * rather than fstat(2).
  */
-static long get_nlinks(const char *name)
+static FailureOr<long> get_nlinks(const char *name)
 {
   struct stat st;
 
@@ -361,7 +366,7 @@ static long get_nlinks(const char *name)
     }
   else
     {
-      return -1L;
+      return cssc::make_failure_from_errno(errno);
     }
 }
 
@@ -407,18 +412,30 @@ maybe_wait_a_bit(long attempt, const char *lockfile)
 }
 
 
-static int atomic_nfs_create(const std::string& path, int flags, int perms)
+static FailureOr<int> atomic_nfs_create(const std::string& path, int flags, int perms)
 {
-  std::string dirname, basename;
-  char buf[32];
-  const char *pstr = path.c_str();
+  auto fallback = [&path, flags, perms]() -> cssc::FailureOr<int>
+    {
+      /* Our fallback option is to assume that the file system
+       * supports O_EXCL if it does not support link(2).
+       *
+       * Assuming that O_EXCL works is less safe than not asuuming it,
+       * since NFS v2 clients have to "fake" O_EXCL.
+       */
+      int fd = open(path.c_str(), flags, perms);
+      if (fd < 0)
+	return cssc::make_failure_from_errno(errno);
+      return fd;
+    };
 
+  std::string dirname, basename;
   split_filename(path, dirname, basename);
 
   /* Rely (slightly) on only 11 characters of filename. */
   for (long attempt=0; attempt < 10000; ++attempt)
     {
       /* form the name of a lock file. */
+      char buf[32];
       sprintf(buf, "nfslck%ld", attempt);
       const std::string lockname = dirname + std::string(buf);
       const char *lockstr = lockname.c_str();
@@ -427,41 +444,45 @@ static int atomic_nfs_create(const std::string& path, int flags, int perms)
       int fd = open(lockstr, flags, perms);
       if (fd >= 0)
         {
-          if (1 == get_nlinks(lockstr))
+	  cssc::FailureOr<long> links = get_nlinks(lockstr);
+	  if (!links.ok())
+	    {
+	      // stat not supported on this file system or the file
+	      // was deleted.
+	      return fallback();
+	    }
+          if (*links == 1)
             {
               int link_errno = 0;
               errno = 0;
-              if (-1 == link(lockstr, pstr))
+              if (-1 == link(lockstr, path.c_str()))
                 link_errno = errno;
 
               /* ignore other responses */
-
-              if (2 == get_nlinks(lockstr))
+	      links = get_nlinks(lockstr);
+              if (links.ok() && (2 == *links))
                 {
                   unlink(lockstr);
                   return fd;    /* success! */
                 }
               else              /* link(2) failed. */
                 {
+		  close(fd);
+		  unlink(lockstr);
+
 		  /* A VirtualBox shared folder (Solaris guest, Linux host,
 		     ext3 as the underlying file system) returns ENOSYS when
 		     we attempt to use link(2). */
                   if (EPERM == link_errno || ENOSYS == link_errno)
                     {
                       /* containing file system does not support hard links. */
-                      close(fd);
-                      unlink(lockstr);
-
-                      /* assume that the file system supports O_EXCL if it does
-                       * not support link(2).
-                       */
-                      return open(pstr, flags, perms);
+		      return fallback();
                     }
                   else
-                  {
+		    {
                       /* The z.* file exists; wait a bit. */
-                      maybe_wait_a_bit(attempt, pstr);
-                  }
+                      maybe_wait_a_bit(attempt, path.c_str());
+		    }
                 }
             }
           close(fd);
@@ -479,14 +500,11 @@ static int atomic_nfs_create(const std::string& path, int flags, int perms)
                * Try again.  Sleep first if we're not doing well,
                * but try to avoid pathalogical cases...
                */
-              maybe_wait_a_bit(attempt, pstr);
+              maybe_wait_a_bit(attempt, path.c_str());
               break;
 
             default:            /* hard failure. */
-              /* fall back on the less-safe method, which will
-               * probably still fail
-               */
-              return open(pstr, flags, perms);
+              return fallback();
             }
         }
     }
@@ -657,9 +675,17 @@ create(const std::string& name, int mode) {
           }
 
         if (CONFIG_CAN_HARD_LINK_AN_OPEN_FILE && (mode & CREATE_NFS_ATOMIC) )
-          fd = atomic_nfs_create(name.c_str(), flags, perms);
+	  {
+	    cssc::FailureOr<int> fofd = atomic_nfs_create(name.c_str(), flags, perms);
+	    if (fofd.ok())
+	      fd = *fofd;
+	    else
+	      fd = -1;
+	  }
         else
-          fd = open(name.c_str(), flags, perms);
+	  {
+	    fd = open(name.c_str(), flags, perms);
+	  }
 
         if (mode & CREATE_AS_REAL_USER)
           {
