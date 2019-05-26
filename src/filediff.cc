@@ -63,7 +63,7 @@ FileDiff::start()
                space + quote + name1 + quote +
                space + quote + name2 + quote);
 
-  TempPrivDrop();
+  TempPrivDrop guard();
   fp_ = popen(cmd.c_str(), "r");
   return fp_;
 }

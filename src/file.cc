@@ -572,7 +572,7 @@ cssc::Failure set_file_mode(const std::string &gname, bool writable, bool execut
  */
 cssc::Failure set_gfile_writable(const std::string& gname, bool writable, bool executable)
 {
-  TempPrivDrop();
+  TempPrivDrop guard();
   return set_file_mode(gname, writable, executable);
 }
 
@@ -588,7 +588,7 @@ cssc::Failure set_gfile_writable(const std::string& gname, bool writable, bool e
 
 cssc::Failure unlink_gfile_if_present(const char *gfile_name)
 {
-  TempPrivDrop();
+  TempPrivDrop guard();
   if (file_exists(gfile_name))
     {
       if (unlink(gfile_name) < 0)
@@ -608,7 +608,7 @@ cssc::Failure unlink_gfile_if_present(const char *gfile_name)
  */
 cssc::Failure unlink_file_as_real_user(const char *gfile_name)
 {
-  TempPrivDrop();
+  TempPrivDrop guard();
   if (unlink(gfile_name) < 0)
     {
       // The caller is responsible for issuing any error message,
@@ -726,7 +726,7 @@ fcreate(const std::string& name, int mode) {
 
 FILE *fopen_as_real_user(const char *s, const char *mode)
 {
-  TempPrivDrop();
+  TempPrivDrop guard();
   return fopen(s, mode);
 }
 

@@ -498,7 +498,7 @@ main(int argc, char **argv)
                  * will have to temporarily set EUID=RUID.
                  */
 
-		TempPrivDrop();
+		TempPrivDrop guard();
                 if (!set_gfile_writable(gname, false,
 					file.gfile_should_be_executable()).ok())
                     status.success = false;

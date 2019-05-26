@@ -27,17 +27,17 @@ class TempPrivDrop
 {
  public:
   explicit TempPrivDrop(bool real = true)
-    : real_(real) 
+    : real_(real)
   {
-    if (real_) 
+    if (real_)
       {
 	give_up_privileges();
       }
   }
 
-  ~TempPrivDrop() 
+  ~TempPrivDrop()
     {
-      if (real_) 
+      if (real_)
 	{
 	  restore_privileges();
 	}

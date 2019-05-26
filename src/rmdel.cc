@@ -36,6 +36,7 @@
 #include "delta.h"
 #include "except.h"
 #include "file.h"
+#include "privs.h"
 
 
 void
@@ -127,29 +128,13 @@ main(int argc, char **argv)
 	    }
 	  else
 	    {
-	      if (!file.is_delta_creator(get_user_name(), rid))
-		{
-		  give_up_privileges();
-		  tossed_privileges = 1;
-		}
-
+	      TempPrivDrop guard(!file.is_delta_creator(get_user_name(), rid));
 	      if (!file.rmdel(rid))
 		retval = 1;
-
-	      if (tossed_privileges)
-		{
-		  restore_privileges();
-		  tossed_privileges = 0;
-		}
 	    }
 	}
       catch (CsscExitvalException e)
 	{
-	  if (tossed_privileges)
-	    {
-	      restore_privileges();
-	      tossed_privileges = 0;
-	    }
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
