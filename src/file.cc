@@ -628,7 +628,7 @@ cssc::Failure unlink_file_as_real_user(const char *gfile_name)
 /* returns a file descriptor open to a newly created file. */
 
 static int
-create(const std::string& name, int mode) {
+createfile(const std::string& name, int mode) {
         int flags = O_CREAT;
 
         if (mode & CREATE_FOR_UPDATE) {
@@ -699,7 +699,7 @@ create(const std::string& name, int mode) {
 
 FILE *
 fcreate(const std::string& name, int mode) {
-        int fd = create(name.c_str(), mode);
+        int fd = createfile(name.c_str(), mode);
         if (fd == -1) {
                 return NULL;
         }
