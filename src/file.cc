@@ -182,105 +182,11 @@ file_exists(const char *name) {
 }
 
 
-
-
-static int unprivileged = 0;
-
 #ifdef CONFIG_UIDS
 
-/* A flag to indicate whether or not the programme is an privileged
-   (effective UID != real UID) or unprivileged (effective UID == real
-   UID). */
-
-#ifdef SAVED_IDS_OK
-
-static uid_t old_euid;
-
-// Set-user-id is saved.  TODO: What about setuid-root binaries?
-void
-give_up_privileges() {
-        if (unprivileged++ == 0) {
-                old_euid = geteuid();
-                if (setuid(getuid()) == -1) {
-                        fatal_quit(errno, "setuid(%d) failed", getuid());
-                }
-                ASSERT(getuid() == geteuid());
-        }
-}
-
-void
-restore_privileges() {
-        if (--unprivileged == 0) {
-                if (setuid(old_euid) == -1) {
-                        fatal_quit(errno, "setuid(%d) failed", old_euid);
-                }
-                ASSERT(geteuid() == old_euid);
-        }
-        ASSERT(unprivileged >= 0);
-}
-
-#elif defined(HAVE_SETREUID)
-
-// POSIX saved IDs not provided or not always provided; use
-// setreuid() instead.
-
-static uid_t old_ruid, old_euid;
-
-void
-give_up_privileges() {
-        if (unprivileged++ == 0) {
-                old_ruid = getuid();
-                old_euid = geteuid();
-
-                if (setreuid(old_euid, old_ruid) == -1) {
-                        fatal_quit(errno, "setreuid(%d, %d) failed.",
-                                   old_euid, old_ruid);
-                }
-                ASSERT(geteuid() == old_ruid);
-        }
-}
-
-void
-restore_privileges() {
-        if (--unprivileged == 0) {
-                if (setreuid(old_ruid, old_euid) == -1) {
-                        fatal_quit(errno, "setreuid(%d, %d) failed.",
-                                   old_ruid, old_euid);
-                }
-                ASSERT(geteuid() == old_euid);
-        }
-        ASSERT(unprivileged >= 0);
-}
-
-
-#else /* defined(HAVE_SETREUID) */
-
-// Processes do not have a saved set-user-id,
-// and setreuid() is not available.
-void
-give_up_privileges() {
-        ++unprivileged;
-        if (geteuid() != getuid()) {
-                fatal_quit(-1, "Set UID not supported.");
-        }
-}
-
-void
-restore_privileges() {
-        --unprivileged;
-        ASSERT(unprivileged >= 0);
-}
-
-#endif /* defined(HAVE_SETREUID) */
-
-// inline int
-// open_as_real_user(const char *name, int mode, int perm) {
-//         give_up_privileges();
-//         int fd = open(name, mode, perm);
-//         restore_privileges();
-//         return fd;
-// }
-
+/* This function is documented in the subsection "USER" in the
+ * CSSC manual.
+ */
 const char *
 get_user_name()
 {
@@ -314,28 +220,12 @@ get_user_name()
 }
 
 int
-user_is_group_member(int) {
-        return 0;
-}
-
-
-void
-give_up_privileges()
+user_is_group_member(int)
 {
-  // Dummy implementation for systems without Unix-like UIDs.
-  unprivileged++;
+  return 0;
 }
-
-void
-restore_privileges()
-{
-  // Dummy implementation for systems without Unix-like UIDs.
-  --unprivileged;
-}
-
-
-
 #endif /* CONFIG_UIDS */
+
 
 /* From the Linux manual page for open(2):-
  *

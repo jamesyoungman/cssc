@@ -71,9 +71,6 @@ void split_filename(const std::string& fullname,
 int ffsync(FILE *f);
 #endif
 
-void give_up_privileges();
-void restore_privileges();
-
 #ifdef CONFIG_USE_ARCHIVE_BIT
 void clear_archive_bit(const char *name);
 #endif

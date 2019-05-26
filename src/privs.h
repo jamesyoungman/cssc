@@ -26,28 +26,12 @@
 class TempPrivDrop
 {
  public:
-  explicit TempPrivDrop(bool real = true)
-    : real_(real)
-  {
-    if (real_)
-      {
-	give_up_privileges();
-      }
-  }
-
-  ~TempPrivDrop()
-    {
-      if (real_)
-	{
-	  restore_privileges();
-	}
-    }
+  explicit TempPrivDrop(bool real = true);
+  ~TempPrivDrop();
 
  private:
   bool real_;
 };
-
-
 #endif /* CSSC__PRIV_H__ */
 
 /* Local variables: */
