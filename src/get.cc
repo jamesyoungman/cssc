@@ -291,17 +291,20 @@ main(int argc, char **argv)
 
   if (silent)
     {
-      commentary = open_null();
-      if (NULL == commentary)
-        return 1;       // fatal error.
+      cssc::FailureOr<FILE*> opened = open_null();
+      if (!opened.ok())
+	return 1;       // fatal error.
+      commentary = *opened;
     }
 
   if (no_output)
     {
       got_gname = 0;
       gname = "null";
-      if (NULL == (out = open_null()))
-        return 1;
+      cssc::FailureOr<FILE*> opened = open_null();
+      if (!opened.ok())
+	return 1;       // fatal error.
+      out = *opened;
     }
   else if (send_body_to_stdout)
     {

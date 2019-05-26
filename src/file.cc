@@ -79,12 +79,15 @@ stdin_is_a_tty() {
 
 /* Opens a stream to write to the "null" file (eg. /dev/null). */
 
-FILE *
+cssc::FailureOr<FILE *>
 open_null()
 {
   FILE *f = fopen(CONFIG_NULL_FILENAME, "w");
   if (NULL == f)
-    perror(CONFIG_NULL_FILENAME);
+    {
+      return cssc::make_failure_builder_from_errno(errno)
+	<< "failed to optn " << CONFIG_NULL_FILENAME;
+    }
   return f;
 }
 
@@ -95,7 +98,7 @@ bool
 is_readable(const char *name)
 {
   return access(name, R_OK) != -1;
-} 
+}
 
 static bool
 get_mode_bits(const char *filename, mode_t mask, mode_t *result)
@@ -136,9 +139,9 @@ get_open_file_xbits (FILE *f)
  * access/eaccess, but those return 0 for root for
  * files that we choose to not actually count as
  * writeable.
- * 
- * Note that is_readable still uses access.  I don't 
- * know (now) why the disparity.  But the regression 
+ *
+ * Note that is_readable still uses access.  I don't
+ * know (now) why the disparity.  But the regression
  * test suite doesn't include setuid execution, so it
  * would likely not notice a difference in these
  * semantics.
