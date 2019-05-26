@@ -48,6 +48,8 @@ namespace cssc
 	return "file body cannot be stored in an SCCS history file without encoding";
       case isit(error::LockNotHeld):
 	return "cannot continue without holding the lock on the SCCS file";
+      case isit(error::DeclineToOverwriteOutputFile):
+	return "refusing to overwrite output file";
       default:
 	return "unknown CSSC error";
       }

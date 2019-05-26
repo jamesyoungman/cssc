@@ -51,6 +51,7 @@ namespace cssc
       FileHasHardLinks,
       BodyIsBinary,
       LockNotHeld,
+      DeclineToOverwriteOutputFile,
     };
 
   class Failure

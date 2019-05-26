@@ -563,7 +563,7 @@ static int convert_createfile_mode_to_perms(int mode)
 
 
 /* returns a file descriptor open to a newly created file. */
-static int
+static FailureOr<int>
 createfile(const std::string& name, int mode) {
   const int flags = convert_createfile_mode_to_open_mode(mode);
   const int perms = convert_createfile_mode_to_perms(mode);
@@ -572,30 +572,31 @@ createfile(const std::string& name, int mode) {
     {
       if ((mode & CREATE_FOR_GET) && !is_overwrite_ok(name, mode))
 	{
-	  return -1;
+	  return cssc::make_failure(cssc::error::DeclineToOverwriteOutputFile);
 	}
-      else if (!unlink_gfile_if_present(name.c_str()).ok())
+      else 
 	{
-	  return -1;
+	  auto unlinked = unlink_gfile_if_present(name.c_str());
+	  if (!unlinked.ok())
+	    return unlinked;
 	}
     }
-
-  int fd;
 
   TempPrivDrop drop(mode & CREATE_AS_REAL_USER);
   if (CONFIG_CAN_HARD_LINK_AN_OPEN_FILE && (mode & CREATE_NFS_ATOMIC) )
     {
       cssc::FailureOr<int> fofd = atomic_nfs_create(name.c_str(), flags, perms);
-      if (fofd.ok())
-	fd = *fofd;
-      else
-	fd = -1;
+      if (!fofd.ok())
+	return fofd.fail();
+      return *fofd;
     }
   else
     {
-      fd = open(name.c_str(), flags, perms);
+      const int fd = open(name.c_str(), flags, perms);
+      if (fd < 0) 
+	return cssc::make_failure_from_errno(errno);
+      return fd;
     }
-  return fd;
 }
 
 
@@ -603,14 +604,12 @@ createfile(const std::string& name, int mode) {
 
 FILE *
 fcreate(const std::string& name, int mode) {
-        int fd = createfile(name.c_str(), mode);
-        if (fd == -1) {
-                return NULL;
-        }
-        if (mode & CREATE_FOR_UPDATE) {
-                return fdopen(fd, "w+");
-        }
-        return fdopen(fd, "w");
+  cssc::FailureOr<int> fofd = createfile(name.c_str(), mode);
+  if (!fofd.ok()) {
+    return NULL;
+  }
+  const int fd = *fofd;
+  return fdopen(fd,(mode & CREATE_FOR_UPDATE) ? "w+" : "w");
 }
 
 
