@@ -67,7 +67,7 @@ cssc::Failure output_body_line_binary(FILE *fp, const cssc_linebuf*);
 
 bool check_id_keywords(const char *s, size_t len);
 
-int encode_file(const char* name_in, const char* name_out);
+cssc::Failure encode_file(const char* name_in, const char* name_out);
 
 // These are only really extern so that unit-tests/test_encoding can execute them.
 namespace encoding_impl {

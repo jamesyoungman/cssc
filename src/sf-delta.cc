@@ -114,7 +114,8 @@ sccs_file::add_delta(const std::string& gname,
   if (flags.encoded)
     {
       std::string uname(name.sub_file('u'));
-      if (0 != encode_file(gname.c_str(), uname.c_str()))
+      cssc::Failure encoded = encode_file(gname.c_str(), uname.c_str());
+      if (!encoded.ok())
         {
           return false;
         }

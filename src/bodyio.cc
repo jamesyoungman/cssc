@@ -373,59 +373,55 @@ cssc::Failure output_body_line_binary(FILE *fp, const cssc_linebuf* plb)
 }
 
 
-// TODO: make this function return cssc::Failure.
-int
+cssc::Failure
 encode_file(const char *nin, const char *nout)
 {
-  int retval = 0;
-
   FILE *fin = fopen_as_real_user(nin, "rb");	// binary
   if (0 == fin)
     {
-      errormsg_with_errno("Failed to open \"%s\" for reading.\n", nin);
-      return -1;
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "failed to open \"" << nin << "\" for reading";
     }
+  ResourceCleanup cleanup_in([fin]() { fclose(fin); } );
 
-//  FILE *fout = fopen(nout, "w"); // text
   cssc::FailureOr<FILE*> fof = fcreate(nout, CREATE_EXCLUSIVE); // text
   if (!fof.ok())
     {
-      cssc::FailureBuilder(fof.fail())
+      return cssc::FailureBuilder(fof.fail())
 	.diagnose() << "Failed to open " << nout << " for writing";
-      return -1;
     }
-  else
+  FILE *fout = *fof;
+
+  ResourceCleanup cleanup_out([fout, nout]() {
+      fclose(fout);
+      remove(nout);
+    });
+
+  auto encoded = encode_stream(fin, fout);
+  if (!encoded.first.ok())
     {
-      FILE *fout = *fof;
-      try
-	{
-	  auto encoded = encode_stream(fin, fout);
-	  if (!encoded.first.ok())
-	    {
-	      errormsg("%s: read error: %s\n", nin, encoded.first.to_string().c_str());
-	      retval = -1;
-	    }
-	  if (!encoded.second.ok())
-	    {
-	      errormsg("%s: write error: %s\n", nout, encoded.second.to_string().c_str());
-	      retval = -1;
-	    }
-	  if (fclose_failed(fclose(fin)))
-	    {
-	      errormsg_with_errno("%s: close failed: %s\n", nin, strerror(errno));
-	    }
-	  if (fclose_failed(fclose(fout)))
-	    {
-	      errormsg_with_errno("%s: close failed: %s\n", nout, strerror(errno));
-	    }
-	}
-      catch (CsscException)
-	{
-	  remove(nout);
-	  throw;
-	}
-      if (0 != retval)
-	remove(nout);
+      return cssc::make_failure_builder(encoded.first)
+	.diagnose() << "read error on " << nin;
     }
-  return retval;
+  if (!encoded.second.ok())
+    {
+      return cssc::make_failure_builder(encoded.second)
+	.diagnose() << "write error on " << nout;
+    }
+
+  if (cleanup_in.disarm(), fclose_failed(fclose(fin)))
+    {
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "failed to close " << nin;
+    }
+
+  if (fclose_failed(fclose(fout)))
+    {
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "failed to close " << nout;
+    }
+
+  // Success, so don't delete the output file.
+  cleanup_out.disarm();
+  return cssc::Failure::Ok();
 }

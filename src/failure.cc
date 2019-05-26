@@ -147,4 +147,13 @@ namespace cssc
     return FailureBuilder(ec);
   }
 
+  // This doesn't do anything that you can't do by invoking the
+  // FailureBuilder constructor, but the consistency of style in the
+  // other factory functions leads one to assume this function would
+  // also exist.
+  FailureBuilder make_failure_builder(const cssc::Failure& f)
+  {
+    return FailureBuilder(f);
+  }
+
 }  // namespace cssc
