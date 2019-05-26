@@ -47,7 +47,6 @@ enum create_mode {
 };
 
 cssc::Failure stdout_to_null();
-FILE *stdout_to_stderr();
 int stdin_is_a_tty();
 FILE *open_null();
 int is_readable(const char *name);

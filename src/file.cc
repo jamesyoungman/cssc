@@ -69,35 +69,6 @@ stdout_to_null()
 }
 
 
-/* Redirects to stdout to stderr. */
-
-FILE *
-stdout_to_stderr() {
-        fflush(stdout);
-        fflush(stderr);
-
-        int out = dup(1);
-        if (out == -1)
-          {
-            errormsg_with_errno("dup(1) failed");
-            return NULL;
-          }
-
-        if (close(1) == -1 || dup(2) != 1)
-          {
-            errormsg_with_errno("Can't redirect stdout to stderr");
-            return NULL;
-          }
-
-        FILE *f = fdopen(out, "w");
-        if (f == NULL)
-          {
-            errormsg_with_errno("fdopen failed");
-            return NULL;
-          }
-        return f;
-}
-
 /* Returns true if stdin is not a file. */
 
 int
