@@ -136,8 +136,14 @@ get_open_file_xbits (FILE *f)
  * access/eaccess, but those return 0 for root for
  * files that we choose to not actually count as
  * writeable.
+ * 
+ * Note that is_readable still uses access.  I don't 
+ * know (now) why the disparity.  But the regression 
+ * test suite doesn't include setuid execution, so it
+ * would likely not notice a difference in these
+ * semantics.
  */
-static int
+static bool
 is_writable(const char *filename, int /* as_real_user = 1 */ )
 {
   mode_t bits;
