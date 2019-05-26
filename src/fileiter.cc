@@ -83,14 +83,20 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 				if (sccs_name::valid_filename(directory_entry.c_str()).ok()
 				    && is_readable(directory_entry.c_str()))
 				  {
-				    if (is_directory(directory_entry.c_str()))
+				    cssc::FailureOr<bool> dircheck = is_directory(directory_entry.c_str());
+				    if (dircheck.ok())
 				      {
-					warning("Ignoring subdirectory %s",
-						directory_entry.c_str());
+					if (*dircheck)
+					  warning("Ignoring subdirectory %s",
+						  directory_entry.c_str());
+					else
+					  files.push_back(directory_entry);
 				      }
 				    else
 				      {
-					files.push_back(directory_entry);
+					warning("Don't know if %s is a subdirectory (%s), ignoring it",
+						directory_entry.c_str(),
+						dircheck.to_string().c_str());
 				      }
 				  }
 				dent = readdir(dir);

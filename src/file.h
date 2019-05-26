@@ -50,7 +50,7 @@ cssc::Failure stdout_to_null();
 bool stdin_is_a_tty();
 cssc::FailureOr<FILE*> open_null();
 bool is_readable(const char *name);
-int is_directory(const char *name);
+cssc::FailureOr<bool> is_directory(const char *name);
 int file_exists(const char *name);
 cssc::FailureOr<bool> get_open_file_xbits (FILE *f);
 const char *get_user_name();

@@ -675,17 +675,23 @@ file_lock::~file_lock() {
 
 
 
-int
+cssc::FailureOr<bool>
 is_directory(const char *name)
 {
-  bool retval = false;
+  errno = 0;
   DIR *p = opendir(name);
   if (p)
     {
-      retval = true;
       closedir(p);
+      return true;
     }
-  return retval;
+  else if (ENOTDIR == errno)
+    {
+      return false;
+    }
+  return cssc::make_failure_builder_from_errno(errno)
+    << "unable to determine whether " << name
+    << " is a directory";
 }
 
 
