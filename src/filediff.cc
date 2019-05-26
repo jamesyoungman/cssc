@@ -30,6 +30,7 @@
 #include "cssc-assert.h"
 #include "filediff.h"
 #include "file.h"
+#include "privs.h"
 
 
 FileDiff::FileDiff(const char *n1, const char *n2)
@@ -62,10 +63,8 @@ FileDiff::start()
                space + quote + name1 + quote +
                space + quote + name2 + quote);
 
-  give_up_privileges();
+  TempPrivDrop();
   fp_ = popen(cmd.c_str(), "r");
-  restore_privileges();
-
   return fp_;
 }
 

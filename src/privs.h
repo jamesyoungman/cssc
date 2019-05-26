@@ -26,7 +26,7 @@
 class TempPrivDrop
 {
  public:
-  explicit TempPrivDrop(bool real)
+  explicit TempPrivDrop(bool real = true)
     : real_(real) 
   {
     if (real_) 

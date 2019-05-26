@@ -38,6 +38,7 @@
 #include "version.h"
 #include "except.h"
 #include "file.h"
+#include "privs.h"
 
 #include <limits.h>
 
@@ -496,11 +497,11 @@ main(int argc, char **argv)
                  * and so if we want to change its mode, we
                  * will have to temporarily set EUID=RUID.
                  */
-                give_up_privileges();
+
+		TempPrivDrop();
                 if (!set_gfile_writable(gname, false,
 					file.gfile_should_be_executable()).ok())
                     status.success = false;
-                restore_privileges();
               }
             }
 

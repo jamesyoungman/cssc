@@ -564,7 +564,7 @@ cssc::Failure set_file_mode(const std::string &gname, bool writable, bool execut
     }
 }
 
-/* Set the mode of the g-file.  We need to give up provs to do this,
+/* Set the mode of the g-file.  We need to give up privs to do this,
  * since the user as whom we are running setuid does not necessarily
  * have search privs on the current directory, or privs to chmod
  * the real user's files.  However, we need to do this (for example,
@@ -572,10 +572,8 @@ cssc::Failure set_file_mode(const std::string &gname, bool writable, bool execut
  */
 cssc::Failure set_gfile_writable(const std::string& gname, bool writable, bool executable)
 {
-  give_up_privileges();
-  auto result = set_file_mode(gname, writable, executable);
-  restore_privileges();
-  return result;
+  TempPrivDrop();
+  return set_file_mode(gname, writable, executable);
 }
 
 
@@ -590,20 +588,17 @@ cssc::Failure set_gfile_writable(const std::string& gname, bool writable, bool e
 
 cssc::Failure unlink_gfile_if_present(const char *gfile_name)
 {
-  give_up_privileges();
-  cssc::Failure rv = cssc::Failure::Ok();
-
+  TempPrivDrop();
   if (file_exists(gfile_name))
     {
       if (unlink(gfile_name) < 0)
         {
-          rv = cssc::make_failure_builder_from_errno(errno)
+          return cssc::make_failure_builder_from_errno(errno)
 	    .diagnose() << "cannot unlink the file " << gfile_name;
         }
     }
-  restore_privileges();
+  return cssc::Failure::Ok();
 
-  return rv;
 }
 
 /* unlink_file_as_real_user
@@ -613,19 +608,16 @@ cssc::Failure unlink_gfile_if_present(const char *gfile_name)
  */
 cssc::Failure unlink_file_as_real_user(const char *gfile_name)
 {
-  give_up_privileges();
-  cssc::Failure rv = cssc::Failure::Ok();
+  TempPrivDrop();
   if (unlink(gfile_name) < 0)
     {
       // The caller is responsible for issuing any error message,
-      rv = cssc::make_failure_from_errno(errno);
+      return cssc::make_failure_from_errno(errno);
     }
-  restore_privileges();
-
-  return rv;
+  return cssc::Failure::Ok();
 }
 
-static bool is_overwrite_ok(const std::string& name, int mode) 
+static bool is_overwrite_ok(const std::string& name, int mode)
 {
 #ifdef CONFIG_USE_ARCHIVE_BIT
   if (file_exists(name.c_str()) && test_archive_bit(name.c_str()))
@@ -645,10 +637,10 @@ static bool is_overwrite_ok(const std::string& name, int mode)
 }
 
 
-static int convert_createfile_mode_to_open_mode(int mode) 
+static int convert_createfile_mode_to_open_mode(int mode)
 {
   int flags = O_CREAT;
-  
+
   if (mode & CREATE_FOR_UPDATE)
     {
       flags |= O_RDWR;
@@ -665,7 +657,7 @@ static int convert_createfile_mode_to_open_mode(int mode)
   return flags;
 }
 
-static int convert_createfile_mode_to_perms(int mode) 
+static int convert_createfile_mode_to_perms(int mode)
 {
   int perms = 0644;
   if (mode & CREATE_READ_ONLY)
@@ -685,7 +677,7 @@ static int
 createfile(const std::string& name, int mode) {
   const int flags = convert_createfile_mode_to_open_mode(mode);
   const int perms = convert_createfile_mode_to_perms(mode);
-  
+
   if (!(mode & CREATE_EXCLUSIVE))
     {
       if ((mode & CREATE_FOR_GET) && !is_overwrite_ok(name, mode))
@@ -734,12 +726,8 @@ fcreate(const std::string& name, int mode) {
 
 FILE *fopen_as_real_user(const char *s, const char *mode)
 {
-  FILE *fp = NULL;
-
-  give_up_privileges();
-  fp = fopen(s, mode);
-  restore_privileges();
-  return fp;
+  TempPrivDrop();
+  return fopen(s, mode);
 }
 
 
