@@ -54,7 +54,7 @@ int is_directory(const char *name);
 int file_exists(const char *name);
 cssc::FailureOr<bool> get_open_file_xbits (FILE *f);
 const char *get_user_name();
-int user_is_group_member(gid_t gid);
+bool user_is_group_member(gid_t gid);
 cssc::FailureOr<FILE*> fcreate(const std::string& name, int mode);
 FILE *fopen_as_real_user(const char *name, const char *mode);
 cssc::Failure set_file_mode(const std::string &gname, bool writable, bool executable);

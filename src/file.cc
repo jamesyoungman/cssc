@@ -176,7 +176,7 @@ get_user_name()
   return p->pw_name;
 }
 
-int
+bool
 user_is_group_member(gid_t gid)
 {
   return gid == getegid();
@@ -197,7 +197,7 @@ get_user_name()
     return "unknown";
 }
 
-int
+bool
 user_is_group_member(int)
 {
   return 0;
