@@ -46,6 +46,7 @@
 #include "ioerr.h"
 #include "defaults.h"
 #include "dirent-safer.h"
+#include "privs.h"
 
 using cssc::Failure;
 using cssc::FailureOr;
@@ -624,74 +625,95 @@ cssc::Failure unlink_file_as_real_user(const char *gfile_name)
   return rv;
 }
 
+static bool is_overwrite_ok(const std::string& name, int mode) 
+{
+#ifdef CONFIG_USE_ARCHIVE_BIT
+  if (file_exists(name.c_str()) && test_archive_bit(name.c_str()))
+    {
+      errormsg("%s: File exists and its archive attribute is set.",
+	       name.c_str());
+      return false;
+    }
+#else
+  if (is_writable(name.c_str(), mode & CREATE_AS_REAL_USER))
+    {
+      errormsg("%s: File exists and is writable.", name.c_str());
+      return false;
+    }
+#endif
+  return true;
+}
+
+
+static int convert_createfile_mode_to_open_mode(int mode) 
+{
+  int flags = O_CREAT;
+  
+  if (mode & CREATE_FOR_UPDATE)
+    {
+      flags |= O_RDWR;
+    }
+  else
+    {
+      flags |= O_WRONLY;
+    }
+
+  if (mode & CREATE_EXCLUSIVE)
+    {
+      flags |= O_EXCL;
+    }
+  return flags;
+}
+
+static int convert_createfile_mode_to_perms(int mode) 
+{
+  int perms = 0644;
+  if (mode & CREATE_READ_ONLY)
+    {
+      perms = 0444;
+    }
+  if (mode & CREATE_EXECUTABLE)
+    {
+      perms |= 0111;
+    }
+  return perms;
+}
+
 
 /* returns a file descriptor open to a newly created file. */
-
 static int
 createfile(const std::string& name, int mode) {
-        int flags = O_CREAT;
+  const int flags = convert_createfile_mode_to_open_mode(mode);
+  const int perms = convert_createfile_mode_to_perms(mode);
+  
+  if (!(mode & CREATE_EXCLUSIVE))
+    {
+      if ((mode & CREATE_FOR_GET) && !is_overwrite_ok(name, mode))
+	{
+	  return -1;
+	}
+      else if (!unlink_gfile_if_present(name.c_str()).ok())
+	{
+	  return -1;
+	}
+    }
 
-        if (mode & CREATE_FOR_UPDATE) {
-                flags |= O_RDWR;
-        } else {
-                flags |= O_WRONLY;
-        }
+  int fd;
 
-        if (mode & CREATE_EXCLUSIVE) {
-                flags |= O_EXCL;
-#ifdef CONFIG_USE_ARCHIVE_BIT
-        } else if ((mode & CREATE_FOR_GET)
-                   && file_exists(name.c_str())
-                   && test_archive_bit(name.c_str())) {
-                errormsg("%s: File exists and its archive attribute is set.",
-                     name.c_str());
-                return -1;
-#else
-        } else if ((mode & CREATE_FOR_GET)
-                   && is_writable(name.c_str(), mode & CREATE_AS_REAL_USER)) {
-                errormsg("%s: File exists and is writable.", name.c_str());
-                errno = 0;
-                return -1;
-#endif
-        } else if (!unlink_gfile_if_present(name.c_str()).ok()) {
-                return -1;
-        }
-
-        int perms = 0644;
-        if (mode & CREATE_READ_ONLY) {
-                perms = 0444;
-        }
-
-	if (mode & CREATE_EXECUTABLE)
-	  {
-	    perms |= 0111;
-	  }
-
-        int fd;
-
-        if (mode & CREATE_AS_REAL_USER)
-          {
-            give_up_privileges();
-          }
-
-        if (CONFIG_CAN_HARD_LINK_AN_OPEN_FILE && (mode & CREATE_NFS_ATOMIC) )
-	  {
-	    cssc::FailureOr<int> fofd = atomic_nfs_create(name.c_str(), flags, perms);
-	    if (fofd.ok())
-	      fd = *fofd;
-	    else
-	      fd = -1;
-	  }
-        else
-	  {
-	    fd = open(name.c_str(), flags, perms);
-	  }
-
-        if (mode & CREATE_AS_REAL_USER)
-          {
-            restore_privileges();
-          }
-        return fd;
+  TempPrivDrop drop(mode & CREATE_AS_REAL_USER);
+  if (CONFIG_CAN_HARD_LINK_AN_OPEN_FILE && (mode & CREATE_NFS_ATOMIC) )
+    {
+      cssc::FailureOr<int> fofd = atomic_nfs_create(name.c_str(), flags, perms);
+      if (fofd.ok())
+	fd = *fofd;
+      else
+	fd = -1;
+    }
+  else
+    {
+      fd = open(name.c_str(), flags, perms);
+    }
+  return fd;
 }
 
 
