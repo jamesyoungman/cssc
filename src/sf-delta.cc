@@ -183,18 +183,19 @@ sccs_file::add_delta(const std::string& gname,
    * that problem.
    */
   const int xmode = gfile_should_be_executable() ? CREATE_EXECUTABLE : 0;
-  FILE *get_out = fcreate(dname, CREATE_EXCLUSIVE | xmode);
-  if (NULL == get_out)
+  cssc::FailureOr<FILE*> fof = fcreate(dname, CREATE_EXCLUSIVE | xmode);
+  if (!fof.ok())
     {
       remove(dname.c_str());
-      get_out = fcreate(dname, CREATE_EXCLUSIVE | xmode);
+      fof = fcreate(dname, CREATE_EXCLUSIVE | xmode);
     }
-
-  if (NULL == get_out)
+  if (!fof.ok())
     {
-      errormsg_with_errno("Cannot create file %s", dname.c_str());
+      cssc::FailureBuilder(fof.fail())
+	.diagnose() << "cannot create file " << dname;
       return false;
     }
+  FILE *get_out = *fof;
   FileDeleter another_cleaner(dname, false);
 
   auto w = cssc::optional<std::string>();

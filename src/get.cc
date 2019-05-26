@@ -431,16 +431,16 @@ main(int argc, char **argv)
 		  mode |= CREATE_EXECUTABLE;
 		}
 
-              out = fcreate(gname, mode);
               real_file = true;
-
-              if (NULL == out)
+	      cssc::FailureOr<FILE*> fof = fcreate(gname, mode);
+              if (!fof.ok())
                 {
-                  if (errno)
-                    perror(gname.c_str());
+		  out = NULL;
+		  errormsg("%s", fof.to_string());
                   retval = 1;
                   continue;     // with next file....
                 }
+	      out = *fof;
             }
 
 	  FILE *summary_file = NULL;
@@ -449,7 +449,19 @@ main(int argc, char **argv)
 	      if (create_lfile)
 		{
 		  std::string lname = name.lfile();
-		  summary_file = fcreate(lname, CREATE_READ_ONLY);
+		  cssc::FailureOr<FILE*> fof = fcreate(lname, CREATE_READ_ONLY);
+		  if (!fof.ok())
+		    {
+		      // XXX: This would probably be surprising to the
+		      // user (compared witht he alternative of faling
+		      // with an error message).  Compare what other
+		      // SCCS implementation do.
+		      summary_file = NULL;
+		    }
+		  else
+		    {
+		      summary_file = *fof;
+		    }
 		}
 	      else
 		{

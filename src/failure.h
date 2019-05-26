@@ -166,6 +166,7 @@ namespace cssc
   FailureBuilder make_failure_builder_from_errno(int errno_val);
   FailureBuilder make_failure_builder_from_errno(int errno_val, const std::string& detail);
 
+  FailureBuilder make_failure_builder(const Failure&);
 
   inline bool isEOF(const Failure& f)
   {

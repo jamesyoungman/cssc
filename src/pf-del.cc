@@ -131,12 +131,13 @@ sccs_pfile::update(bool pfile_already_exists) const
 {
   const std::string q_name(name.qfile());
 
-  FILE *pf = fcreate(q_name.c_str(), CREATE_EXCLUSIVE);
-  if (pf == NULL)
+  cssc::FailureOr<FILE*> fof = fcreate(q_name.c_str(), CREATE_EXCLUSIVE);
+  if (!fof.ok())
     {
-      return cssc::make_failure_builder_from_errno(errno)
-	.diagnose() << q_name << ": Can't create temporary file";
+      return cssc::FailureBuilder(fof.fail())
+	.diagnose() << "can't create temporary file " << q_name;
     }
+  FILE *pf = *fof;
   cssc::Failure qfile_deletion_result = cssc::Failure::Ok();
 
   ResourceCleanup qfile_deleter([q_name, &pf, &qfile_deletion_result]() {

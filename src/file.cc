@@ -574,7 +574,7 @@ createfile(const std::string& name, int mode) {
 	{
 	  return cssc::make_failure(cssc::error::DeclineToOverwriteOutputFile);
 	}
-      else 
+      else
 	{
 	  auto unlinked = unlink_gfile_if_present(name.c_str());
 	  if (!unlinked.ok())
@@ -593,7 +593,7 @@ createfile(const std::string& name, int mode) {
   else
     {
       const int fd = open(name.c_str(), flags, perms);
-      if (fd < 0) 
+      if (fd < 0)
 	return cssc::make_failure_from_errno(errno);
       return fd;
     }
@@ -602,14 +602,22 @@ createfile(const std::string& name, int mode) {
 
 /* Returns a file stream open to a newly created file. */
 
-FILE *
+cssc::FailureOr<FILE *>
 fcreate(const std::string& name, int mode) {
   cssc::FailureOr<int> fofd = createfile(name.c_str(), mode);
-  if (!fofd.ok()) {
-    return NULL;
-  }
+  if (!fofd.ok())
+    {
+      return fofd.fail();
+    }
   const int fd = *fofd;
-  return fdopen(fd,(mode & CREATE_FOR_UPDATE) ? "w+" : "w");
+  FILE* result = fdopen(fd,(mode & CREATE_FOR_UPDATE) ? "w+" : "w");
+  if (result == NULL)
+    {
+      return cssc::make_failure_builder_from_errno(errno)
+	<< "unable to associate a mode \"" << mode << "\" FILE* with a file "
+	<< "descriptor open on file " << name;
+    }
+  return result;
 }
 
 
@@ -643,21 +651,24 @@ file_lock::file_lock(const std::string& zname)
     name_(zname)
 {
   ASSERT(name_ == zname);
-  FILE *f = fcreate(zname,
-                    CREATE_READ_ONLY | CREATE_EXCLUSIVE | CREATE_NFS_ATOMIC);
-  if (0 == f)
+  cssc::FailureOr<FILE*> fof =
+    fcreate(zname, CREATE_READ_ONLY | CREATE_EXCLUSIVE | CREATE_NFS_ATOMIC);
+  if (!fof.ok())
     {
+      // XXX: do not assume errno has been preserved.
       if (errno == EEXIST)
         {
 	  ASSERT(lock_state_.has_value());
 	  ASSERT(lock_state_.value().ok());
           return;
         }
-      lock_state_ = cssc::make_failure_builder_from_errno(errno)
-	.diagnose() << "can't create lock file " <<  zname;
+      lock_state_ =
+	(cssc::FailureBuilder(fof.fail())
+	 .diagnose() << "can't create lock file " <<  zname);
       ctor_fail_nomsg(1);
     }
 
+  FILE *f = *fof;
   cssc::Failure done = do_lock(f);
   if (fclose_failed(fclose(f)))
     {

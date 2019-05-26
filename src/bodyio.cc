@@ -30,6 +30,7 @@
 
 #include "cssc.h"
 #include "bodyio.h"
+#include "failure.h"
 #include "quit.h"
 #include "cssc-assert.h"
 #include "filepos.h"
@@ -386,15 +387,16 @@ encode_file(const char *nin, const char *nout)
     }
 
 //  FILE *fout = fopen(nout, "w"); // text
-  FILE *fout = fcreate(nout, CREATE_EXCLUSIVE); // text
-
-  if (0 == fout)
+  cssc::FailureOr<FILE*> fof = fcreate(nout, CREATE_EXCLUSIVE); // text
+  if (!fof.ok())
     {
-      errormsg_with_errno("Failed to open \"%s\" for writing.\n", nout);
-      retval = -1;
+      cssc::FailureBuilder(fof.fail())
+	.diagnose() << "Failed to open " << nout << " for writing";
+      return -1;
     }
   else
     {
+      FILE *fout = *fof;
       try
 	{
 	  auto encoded = encode_stream(fin, fout);

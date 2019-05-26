@@ -87,15 +87,17 @@ sccs_file::start_update() {
 
 	// The 'x' flag is a SCO extension.
 	const int x = sfile_should_be_executable() ? CREATE_EXECUTABLE : 0;
-        FILE *out = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE | x);
-
-        if (out == NULL)
+	cssc::FailureOr<FILE *> fof = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE | x);
+        if (!fof.ok())
           {
-            xfile_error("Can't create temporary file for update.");
+	    std::string msg = fof.to_string() +
+	      "; can't create temporary file for update";
+	    xfile_error(msg.c_str());
             return NULL;
           }
         else
           {
+	    FILE *out = *fof;
             xfile_created = true;
 
             if (fputs_failed(fputs("\001h-----\n", out)))
