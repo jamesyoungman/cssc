@@ -34,6 +34,7 @@
 #include "delta.h"
 #include "except.h"
 #include "file.h"
+#include "privs.h"
 
 
 void
@@ -143,8 +144,6 @@ main(int argc, char *argv[])
   comment_list = split_comments(comments);
   mr_list = split_mrs(mrs);
 
-  int tossed_privileges = 0;
-
   int first = 1;
 
   while (iter.next())
@@ -214,12 +213,7 @@ main(int argc, char *argv[])
 	    }
 
 
-	  if (!file.is_delta_creator(get_user_name(), rid))
-	    {
-	      give_up_privileges();
-	      tossed_privileges = 1;
-	    }
-
+	  TempPrivDrop guard(!file.is_delta_creator(get_user_name(), rid));
 	  if (file.cdc(rid, mr_list, comment_list))
 	    {
 	      if (!file.update())
@@ -229,20 +223,9 @@ main(int argc, char *argv[])
 	    {
 	      retval = 1;
 	    }
-
-	  if (tossed_privileges)
-	    {
-	      restore_privileges();
-	      tossed_privileges = 0;
-	    }
 	}
       catch (CsscExitvalException e)
 	{
-	  if (tossed_privileges)
-	    {
-	      restore_privileges();
-	      tossed_privileges = 0;
-	    }
 	  if (e.exitval > retval)
 	    retval = e.exitval;
 	}
