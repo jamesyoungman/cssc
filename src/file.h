@@ -47,7 +47,7 @@ enum create_mode {
 };
 
 cssc::Failure stdout_to_null();
-int stdin_is_a_tty();
+bool stdin_is_a_tty();
 FILE *open_null();
 bool is_readable(const char *name);
 int is_directory(const char *name);

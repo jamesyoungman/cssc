@@ -71,7 +71,7 @@ stdout_to_null()
 
 /* Returns true if stdin is not a file. */
 
-int
+bool
 stdin_is_a_tty() {
         return isatty(0);
 }
