@@ -24,9 +24,9 @@
 #include "config.h"
 #include "privs.h"
 
-namespace 
+namespace
 {
-  
+
 /* A flag to indicate whether or not the programme is an privileged
    (effective UID != real UID) or unprivileged (effective UID == real
    UID). */
@@ -152,4 +152,3 @@ TempPrivDrop::~TempPrivDrop()
       restore_privileges();
     }
 }
-
