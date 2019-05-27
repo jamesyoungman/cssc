@@ -82,7 +82,7 @@ cssc_linebuf::read_line(FILE *f)
     {
       return cssc::make_failure_from_errno(errno);
     }
-  return cssc::make_failure(cssc::error::UnexpectedEOF);
+  return cssc::make_failure(cssc::errorcode::UnexpectedEOF);
 }
 
 

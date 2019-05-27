@@ -43,7 +43,7 @@ namespace cssc
 
   const std::error_category& cssc_category();
 
-  enum class error
+  enum class errorcode
     {
       NotAnSccsHistoryFile = 1000,
       NotAnSccsHistoryFileName,
@@ -105,12 +105,12 @@ namespace cssc
     return orig.ok() ? next : orig;
   }
 
-  inline Failure make_failure(error e)
+  inline Failure make_failure(errorcode e)
   {
     return Failure(std::error_code(static_cast<int>(e), cssc_category()));
   }
 
-  inline Failure make_failure(error e, const std::string& detail)
+  inline Failure make_failure(errorcode e, const std::string& detail)
   {
     return Failure(std::error_code(static_cast<int>(e), cssc_category()),
 		   detail);
@@ -139,7 +139,7 @@ namespace cssc
   {
   public:
     explicit FailureBuilder(std::error_code ec);
-    explicit FailureBuilder(error e);
+    explicit FailureBuilder(errorcode e);
     FailureBuilder(const Failure& f);
     FailureBuilder(const FailureBuilder& other);
     operator Failure() const;
@@ -172,7 +172,7 @@ namespace cssc
   {
     const auto code = f.code();
     return code.category() == cssc_category() &&
-      code.value() == static_cast<int>(error::UnexpectedEOF);
+      code.value() == static_cast<int>(errorcode::UnexpectedEOF);
   }
 
 }  // namespace cssc
@@ -180,7 +180,7 @@ namespace cssc
 namespace std
 {
   template <>
-    struct is_error_code_enum<cssc::error>
+    struct is_error_code_enum<cssc::errorcode>
     : public true_type {};
 }
 

@@ -24,7 +24,7 @@
 
 namespace
 {
-  constexpr int isit(cssc::error e)
+  constexpr int isit(cssc::errorcode e)
   {
     return static_cast<int>(e);
   }
@@ -36,19 +36,19 @@ namespace cssc
   {
     switch (ev)
       {
-      case isit(error::NotAnSccsHistoryFile):
+      case isit(errorcode::NotAnSccsHistoryFile):
 	return "not an SCCS history file";
-      case isit(error::NotAnSccsHistoryFileName):
+      case isit(errorcode::NotAnSccsHistoryFileName):
 	return "not an SCCS history file name";
-      case isit(error::UnexpectedEOF):
+      case isit(errorcode::UnexpectedEOF):
 	return "unexpected end-of-file";
-      case isit(error::FileHasHardLinks):
+      case isit(errorcode::FileHasHardLinks):
 	return "refusing to open for writing a file with a link count greater than 1";
-      case isit(error::BodyIsBinary):
+      case isit(errorcode::BodyIsBinary):
 	return "file body cannot be stored in an SCCS history file without encoding";
-      case isit(error::LockNotHeld):
+      case isit(errorcode::LockNotHeld):
 	return "cannot continue without holding the lock on the SCCS file";
-      case isit(error::DeclineToOverwriteOutputFile):
+      case isit(errorcode::DeclineToOverwriteOutputFile):
 	return "refusing to overwrite output file";
       default:
 	return "unknown CSSC error";
@@ -61,13 +61,13 @@ namespace cssc
     return instance;
   }
 
-  std::error_code make_error_code(error e)
+  std::error_code make_error_code(errorcode e)
   {
     return std::error_code(static_cast<int>(e),
 			   cssc_category());
   }
 
-  std::error_condition make_error_condition(error e)
+  std::error_condition make_error_condition(errorcode e)
   {
     return std::error_condition(static_cast<int>(e),
 				cssc_category());
@@ -105,7 +105,7 @@ namespace cssc
     return *this;
   }
 
-  FailureBuilder::FailureBuilder(error e)
+  FailureBuilder::FailureBuilder(errorcode e)
     : code_(static_cast<int>(e), cssc_category()),
       diagnose_(false),
       detail_(false)

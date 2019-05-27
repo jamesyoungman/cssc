@@ -102,7 +102,7 @@ namespace
     if (!just_one_link(f_local))
       {
 	(void)fclose(f_local);
-	return cssc::FailureBuilder(cssc::error::FileHasHardLinks)
+	return cssc::FailureBuilder(cssc::errorcode::FileHasHardLinks)
 	  .diagnose()
 	  << name << " had a hard link count which is greater than one. "
 	  "This means that the normal process of updating the file "

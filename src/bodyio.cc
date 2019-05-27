@@ -123,7 +123,7 @@ body_insert_text(const char iname[], const char oname[],
 	    {
 	      ungetc(ch, in);	// push back the control character.
 	      // output file pointer implicitly rewound
-	      return cssc::FailureBuilder(cssc::error::BodyIsBinary)
+	      return cssc::FailureBuilder(cssc::errorcode::BodyIsBinary)
 		<< iname << ": control character at start of line, "
 		<< "treating as binary.\n";
 	    }
@@ -135,7 +135,7 @@ body_insert_text(const char iname[], const char oname[],
 	  if (!check_line_len(iname, len_max, ++column, ch, in))
 	    {
 	      // output file pointer implicitly rewound
-	      return cssc::FailureBuilder(cssc::error::BodyIsBinary)
+	      return cssc::FailureBuilder(cssc::errorcode::BodyIsBinary)
 		<< iname << ": line is too long, treating as binary";
 	    }
 	}
@@ -172,7 +172,7 @@ body_insert_text(const char iname[], const char oname[],
   if ('\n' != last)
     {
       // output file pointer implicitly rewound
-      return cssc::FailureBuilder(cssc::error::BodyIsBinary)
+      return cssc::FailureBuilder(cssc::errorcode::BodyIsBinary)
 	<< iname << ": no newline at end of file, treating as binary";
     }
 
@@ -300,7 +300,7 @@ body_insert(bool *binary,
 	return cssc::Failure::Ok();
 
       // TODO: use a std::error_condition here instead.
-      const auto isbin = cssc::make_failure(cssc::error::BodyIsBinary);
+      const auto isbin = cssc::make_failure(cssc::errorcode::BodyIsBinary);
       if (result.code() != isbin.code())
 	return result;
 
@@ -309,7 +309,7 @@ body_insert(bool *binary,
 	{
 	  // We can't try again with a binary file, because that
 	  // feature is disabled.
-	  return cssc::FailureBuilder(cssc::error::BodyIsBinary)
+	  return cssc::FailureBuilder(cssc::errorcode::BodyIsBinary)
 	    << "body is binary and encoding is not allowed";
 	}
 

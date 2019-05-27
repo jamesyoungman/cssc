@@ -553,7 +553,7 @@ createfile(const std::string& name, int mode) {
     {
       if ((mode & CREATE_FOR_GET) && !is_overwrite_ok(name, mode))
 	{
-	  return cssc::make_failure(cssc::error::DeclineToOverwriteOutputFile);
+	  return cssc::make_failure(cssc::errorcode::DeclineToOverwriteOutputFile);
 	}
       else
 	{

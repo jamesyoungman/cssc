@@ -51,7 +51,7 @@ base_part(const std::string& name)
 
 cssc::Failure invalid_name(const std::string& reason)
 {
-  return cssc::make_failure(cssc::error::NotAnSccsHistoryFileName, reason);
+  return cssc::make_failure(cssc::errorcode::NotAnSccsHistoryFileName, reason);
 }
 
 cssc::Failure

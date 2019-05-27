@@ -76,7 +76,7 @@ class sccs_file_reader_base
 	  {
 	    errormsg_with_errno("%s: read error", name().c_str());
 	  }
-	return cssc::make_failure(cssc::error::UnexpectedEOF);
+	return cssc::make_failure(cssc::errorcode::UnexpectedEOF);
       }
 
     if ( bufchar(0) == '\001')

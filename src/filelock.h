@@ -46,7 +46,7 @@ public:
 	    {
 	      return lock_state_.value();
 	    }
-	  return cssc::make_failure(cssc::error::LockNotHeld);
+	  return cssc::make_failure(cssc::errorcode::LockNotHeld);
 	}
 	~file_lock();
 };
