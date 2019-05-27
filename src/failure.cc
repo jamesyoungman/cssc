@@ -44,8 +44,12 @@ namespace cssc
 	return "unexpected end-of-file";
       case isit(errorcode::FileHasHardLinks):
 	return "refusing to open for writing a file with a link count greater than 1";
-      case isit(errorcode::BodyIsBinary):
-	return "file body cannot be stored in an SCCS history file without encoding";
+      case isit(errorcode::ControlCharacterAtStartOfLine):
+	return "file body cannot be stored in an SCCS history file without encoding, because there is a control character (ASCII code 1) at the start of a line";
+      case isit(errorcode::BodyLineTooLong):
+	return "file body cannot be stored in an SCCS history file without encoding, because it contains a very long line";
+      case isit(errorcode::FileDoesNotEndWithNewline):
+	return "file body cannot be stored in an SCCS history file without encoding, because it does not end with newline";
       case isit(errorcode::LockNotHeld):
 	return "cannot continue without holding the lock on the SCCS file";
       case isit(errorcode::DeclineToOverwriteOutputFile):
@@ -55,22 +59,44 @@ namespace cssc
       }
   }
 
-  const std::error_category& cssc_category()
-  {
-    static category_impl instance;
-    return instance;
-  }
-
   std::error_code make_error_code(errorcode e)
   {
     return std::error_code(static_cast<int>(e),
 			   cssc_category());
   }
 
-  std::error_condition make_error_condition(errorcode e)
+  std::error_condition make_error_condition(condition e)
   {
     return std::error_condition(static_cast<int>(e),
 				cssc_category());
+  }
+
+  bool category_impl::equivalent(const std::error_code& code, int condition) const noexcept
+  {
+    if (static_cast<int>(condition::BodyIsBinary) == condition)
+      {
+	if (code.category() != cssc_category())
+	  {
+	    return false;
+	  }
+
+	switch (code.value())
+	  {
+	  case isit(errorcode::ControlCharacterAtStartOfLine):
+	  case isit(errorcode::BodyLineTooLong):
+	  case isit(errorcode::FileDoesNotEndWithNewline):
+	    return true;
+	  default:
+	    return false;
+	  }
+      }
+  }
+
+
+  const std::error_category& cssc_category()
+  {
+    static category_impl instance;
+    return instance;
   }
 
   std::string Failure::to_string() const
@@ -103,13 +129,6 @@ namespace cssc
   {
     diagnose_ = true;
     return *this;
-  }
-
-  FailureBuilder::FailureBuilder(errorcode e)
-    : code_(static_cast<int>(e), cssc_category()),
-      diagnose_(false),
-      detail_(false)
-  {
   }
 
   FailureBuilder::FailureBuilder(const FailureBuilder& other)
@@ -154,6 +173,12 @@ namespace cssc
   FailureBuilder make_failure_builder(const cssc::Failure& f)
   {
     return FailureBuilder(f);
+  }
+
+  // This also is just here for consistency.
+  FailureBuilder make_failure_builder(errorcode e)
+  {
+    return FailureBuilder(e);
   }
 
 }  // namespace cssc

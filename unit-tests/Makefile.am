@@ -31,7 +31,7 @@ check_SCRIPTS = testwrapper.sh
 unit_tests = test_sid test_relvbr \
 	test_release test_sid_list test_rel_list test_sccsdate \
 	test_delta test_delta-table test_encoding \
-	test_encoding2 test_linebuf test_split
+	test_encoding2 test_linebuf test_split test_failure
 noinst_LTLIBRARIES = googletest/lib/libgtest.la googletest/lib/libgtest_main.la
 
 check_PROGRAMS = $(unit_tests) test_bigfile
@@ -48,6 +48,7 @@ test_encoding_SOURCES = test_encoding.cc
 test_encoding2_SOURCES = test_encoding2.cc
 test_linebuf_SOURCES = test_linebuf.cc
 test_split_SOURCES = test_split.cc
+test_failure_SOURCES = test_failure.cc
 test_bigfile_SOURCES = test_bigfile.cc
 test_bigfile_LDADD = ../src/libcssc.a
 

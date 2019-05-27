@@ -39,19 +39,31 @@ namespace cssc
 
     // None of our errors are equivalent to any of the errors in
     // std::errc, so we define no conversions.
+
+    bool equivalent(const std::error_code& code,
+		    int condition) const noexcept override;
   };
 
   const std::error_category& cssc_category();
 
+  // errorcode is for storing in std::error_code
   enum class errorcode
     {
       NotAnSccsHistoryFile = 1000,
       NotAnSccsHistoryFileName,
       UnexpectedEOF,
       FileHasHardLinks,
-      BodyIsBinary,
+      ControlCharacterAtStartOfLine,
+      FileDoesNotEndWithNewline,
+      BodyLineTooLong,
       LockNotHeld,
       DeclineToOverwriteOutputFile,
+    };
+
+  // condition is for storing in std::error_condition
+  enum class condition
+    {
+      BodyIsBinary = 50000
     };
 
   class Failure
@@ -105,6 +117,9 @@ namespace cssc
     return orig.ok() ? next : orig;
   }
 
+  std::error_condition make_error_condition(condition e);
+  std::error_code make_error_code(errorcode e);
+
   inline Failure make_failure(errorcode e)
   {
     return Failure(std::error_code(static_cast<int>(e), cssc_category()));
@@ -139,7 +154,6 @@ namespace cssc
   {
   public:
     explicit FailureBuilder(std::error_code ec);
-    explicit FailureBuilder(errorcode e);
     FailureBuilder(const Failure& f);
     FailureBuilder(const FailureBuilder& other);
     operator Failure() const;
@@ -163,10 +177,10 @@ namespace cssc
     bool detail_;
   };
 
-  FailureBuilder make_failure_builder_from_errno(int errno_val);
-  FailureBuilder make_failure_builder_from_errno(int errno_val, const std::string& detail);
-
+  FailureBuilder make_failure_builder(errorcode e);
   FailureBuilder make_failure_builder(const Failure&);
+
+  FailureBuilder make_failure_builder_from_errno(int errno_val);
 
   inline bool isEOF(const Failure& f)
   {
@@ -182,8 +196,11 @@ namespace std
   template <>
     struct is_error_code_enum<cssc::errorcode>
     : public true_type {};
-}
 
+  template <>
+    struct is_error_condition_enum<cssc::condition>
+    : public true_type {};
+}
 #endif /* CSSC__FAILURE_H__*/
 
 /* Local variables: */
