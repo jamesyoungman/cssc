@@ -354,7 +354,8 @@ sccs_file::write(FILE *out) const
       if (printf_failed(fprintf(out, "\001f y ")))
 	return 1;
 
-      if (!print_subsituted_flags_list(out, " "))
+      cssc::Failure printed = print_subsituted_flags_list(out, " ");
+      if (!printed.ok())
 	return 1;
 
       if (printf_failed(fprintf(out, "\n")))

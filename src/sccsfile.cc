@@ -478,7 +478,7 @@ bool sccs_file::branches_allowed() const
   return 0 != flags.branch;
 }
 
-bool
+cssc::Failure
 sccs_file::print_subsituted_flags_list(FILE *out, const char* separator) const
 {
   bool first = true;
@@ -488,15 +488,15 @@ sccs_file::print_subsituted_flags_list(FILE *out, const char* separator) const
         {
 	  // A space separator is required.
           if (printf_failed(fprintf(out, "%s", separator)))
-            return false;
+            return cssc::make_failure_from_errno(errno);
         }
       first = false;
 
       // print the keyword letter.
       if (printf_failed(fprintf(out, "%c", flagletter)))
-        return false;
+	return cssc::make_failure_from_errno(errno);
     }
-  return true;
+  return cssc::Failure::Ok();
 }
 
 bool

@@ -278,8 +278,7 @@ private:
   const sccs_file& operator=(const sccs_file&) = delete; // not allowed to use!
   sccs_file(const sccs_file&) = delete;  // not allowed to use!
 
-  // TODO: return cssc::Failure instead of bool?
-  bool print_subsituted_flags_list(FILE *out, const char* separator) const;
+  cssc::Failure print_subsituted_flags_list(FILE *out, const char* separator) const;
   static bool is_known_keyword_char(char c);
 
   /* sf-get2.c */
