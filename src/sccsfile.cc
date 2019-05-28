@@ -69,21 +69,17 @@ sccs_file::corrupt_file(const char *fmt, ...) const {
 
 /* Find out if it is OK to change the file - called by cdc, rmdel, get -e
  */
-bool
-sccs_file::edit_mode_ok(bool editing) const
+cssc::Failure
+sccs_file::edit_mode_permitted(bool editing) const
 {
   if (editing && !edit_mode_ok_)
     {
-      errormsg("%s: This is a BitKeeper file.  Checking BitKeeper files out "
-               "for editing (or otherwise modifying them) is not supported "
-               "at the moment, sorry.\n",
-               name.c_str());
-      return false;
+      return cssc::make_failure_builder(cssc::errorcode::CannotEditBitkeeperFile)
+	<< name.c_str() << " is a BitKeeper file.  Checking BitKeeper files out "
+	<< "for editing (or otherwise modifying them) is not supported "
+	<< "at the moment, sorry.";
     }
-  else
-    {
-      return true;
-    }
+  return cssc::Failure::Ok();
 }
 
 
@@ -177,11 +173,10 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
 
   if (mode != READ)
     {
-      if (!edit_mode_ok(true))
+      cssc::Failure edit_permitted = edit_mode_permitted(true);
+      if (!edit_permitted.ok())
         {
-          ctor_fail(-1,
-                    "%s: Editing is not supported for BitKeeper files.\n",
-                    name.c_str());
+          ctor_fail(-1, "%s", edit_permitted.to_string().c_str());
         }
     }
   if (FIX_CHECKSUM == mode)

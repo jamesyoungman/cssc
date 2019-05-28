@@ -54,15 +54,14 @@ public:
   sccs_file_body_scanner(const std::string& filename, FILE*f, off_t body_pos, long body_pos_line_number);
   ~sccs_file_body_scanner();
 
-  bool get(const std::string& gname, const cssc_delta_table&,
-	   std::function<int(const char *start,
-			     struct delta const& gotten_delta,
-			     bool force_expansion)> write_subst,
-	   cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*),
-	   bool encoded,
-	   class seq_state &state, struct subst_parms &parms,
-	   bool do_kw_subst, bool debug, bool show_module, bool show_sid);
-
+  cssc::Failure get(const std::string& gname, const cssc_delta_table&,
+		    std::function<cssc::Failure(const char *start,
+						struct delta const& gotten_delta,
+						bool force_expansion)> write_subst,
+		    cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*),
+		    bool encoded,
+		    class seq_state &state, struct subst_parms &parms,
+		    bool do_kw_subst, bool debug, bool show_module, bool show_sid);
   delta_result
   delta(const std::string& dname, const std::string& file_to_diff,
 	seq_no highest_delta_seqno, seq_no new_seq_no, seq_state*, FILE* out,

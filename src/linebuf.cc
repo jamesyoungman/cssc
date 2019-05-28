@@ -61,7 +61,7 @@ cssc_linebuf::read_line(FILE *f)
     {
       char c = buf[buflen - 2u];
       if (c == '\0' || c == '\n')
-	return cssc::ok();
+	return cssc::Failure::Ok();
 
 //
 // Add another chunk

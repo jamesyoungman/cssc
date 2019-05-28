@@ -51,6 +51,7 @@ namespace cssc
     {
       NotAnSccsHistoryFile = 1000,
       NotAnSccsHistoryFileName,
+      CannotEditBitkeeperFile,
       UnexpectedEOF,
       FileHasHardLinks,
       ControlCharacterAtStartOfLine,
@@ -145,12 +146,6 @@ namespace cssc
     return Failure(std::error_code(static_cast<int>(errno_val), std::generic_category()),
 		   detail);
   }
-
-  inline Failure ok()
-  {
-    return Failure(std::error_code());
-  }
-
 
   class FailureBuilder
   {

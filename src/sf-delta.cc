@@ -203,14 +203,14 @@ sccs_file::add_delta(const std::string& gname,
                            0, sccs_date());
   seq_state gsstate(sstate);
 
-  auto success = get(dname, gsstate, parms, /*do_kw_subst=*/0, /*show_sid=*/0,
-		     /*show_module=*/0, /*debug=*/0, GET_NO_DECODE,
-		     /*for_edit=*/false);
-  if (!success)
+  cssc::Failure got = get(dname, gsstate, parms, /*do_kw_subst=*/0, /*show_sid=*/0,
+			  /*show_module=*/0, /*debug=*/0, GET_NO_DECODE,
+			  /*for_edit=*/false);
+  if (!got.ok())
     {
       // TODO: surely this should affect the return value.
-      warning("failed to get %s into %s",
-	      name.sfile().c_str(), dname.c_str());
+      warning("failed to get %s into %s: %s",
+	      name.sfile().c_str(), dname.c_str(), got.to_string());
     }
 
   if (fclose_failed(fclose(get_out)))

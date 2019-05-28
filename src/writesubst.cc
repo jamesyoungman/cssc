@@ -26,6 +26,7 @@
 #include <string>
 
 #include "cssc.h"
+#include "failure.h"
 #include "sccsfile.h"
 #include "delta.h"
 #include "ioerr.h"
@@ -58,235 +59,249 @@ static bool expand_keyletter(char which, const std::set<char>& expanded)
 /* Write a line of a file after substituting any id keywords in it.
    Returns true if an error occurs. */
 
-int
+cssc::Failure
 sccs_file::write_subst(const char *start,
                        struct subst_parms *parms,
                        const delta& d,
 		       bool force_expansion) const
 {
-  FILE *out = parms->out;
-
-  const char *percent = strchr(start, '%');
-  while (percent != NULL)
+  int err = [this, &start, parms, d, force_expansion]() -> int
     {
-      char c = percent[1];
-      if (c != '\0' && percent[2] == '%')
-        {
-          if (start != percent
-              && fwrite(start, percent - start, 1, out) != 1)
-            {
-              return 1;
-            }
+      FILE *out = parms->out;
 
-          int err = 0;
-	  if (!force_expansion
-	      && false == expand_keyletter(c, flags.substitued_flag_letters))
+      const char *percent = strchr(start, '%');
+      while (percent != NULL)
+	{
+	  char c = percent[1];
+	  if (c != '\0' && percent[2] == '%')
 	    {
-	      // We do not expand this key letter.   Just emit the raw
-	      // characters.
-	      err = fputc_failed(fputc('%', out))
-		||  fputc_failed(fputc(c,   out))
-		||  fputc_failed(fputc('%', out));
+	      if (start != percent
+		  && fwrite(start, percent - start, 1, out) != 1)
+		{
+		  return 1;
+		}
+
+	      int err = 0;
+	      if (!force_expansion
+		  && false == expand_keyletter(c, flags.substitued_flag_letters))
+		{
+		  // We do not expand this key letter.   Just emit the raw
+		  // characters.
+		  err = fputc_failed(fputc('%', out))
+		    ||  fputc_failed(fputc(c,   out))
+		    ||  fputc_failed(fputc('%', out));
+
+		  if (err)
+		    {
+		      return 1;
+		    }
+		  else
+		    {
+		      start = percent+3;
+		      percent = strchr(start, '%');
+		      continue;
+		    }
+		}
+	      percent += 3;
+
+
+
+	      // We need to expand the keyletter.
+	      switch (c)
+		{
+		case 'M':
+		  {
+		    const char *mod = get_module_name().c_str();
+		    err = fputs_failed(fputs(mod, out));
+		  }
+		  break;
+
+		case 'I':
+		  err = !d.id().print(out).ok();
+		  break;
+
+		case 'R':
+		  err = !d.id().printf(out, 'R', 1).ok();
+		  break;
+
+		case 'L':
+		  err = !d.id().printf(out, 'L', 1).ok();
+		  break;
+
+		case 'B':
+		  err = !d.id().printf(out, 'B', 1).ok();
+		  break;
+
+		case 'S':
+		  err = !d.id().printf(out, 'S', 1).ok();
+		  break;
+
+		case 'D':
+		  err = parms->now.printf(out, 'D');
+		  break;
+
+		case 'H':
+		  err = parms->now.printf(out, 'H');
+		  break;
+
+		case 'T':
+		  err = parms->now.printf(out, 'T');
+		  break;
+
+		case 'E':
+		  err = d.date().printf(out, 'D');
+		  break;
+
+		case 'G':
+		  err = d.date().printf(out, 'H');
+		  break;
+
+		case 'U':
+		  err = d.date().printf(out, 'T');
+		  break;
+
+		case 'Y':
+		  if (flags.type)
+		    {
+		      err = fputs_failed(fputs(flags.type->c_str(), out));
+		    }
+		  break;
+
+		case 'F':
+		  err =
+		    fputs_failed(fputs(base_part(name.sfile()).c_str(),
+				       out));
+		  break;
+
+		case 'P':
+		  if (1) // introduce new scope...
+		    {
+		      cssc::FailureOr<string> canon = canonify_filename(name.c_str());
+		      if (!canon.ok())
+			{
+			  // XXX: probably the resulting error message issued
+			  // by the caller will be a bit inaccurate.
+			  err = 1;
+			}
+		      else
+			{
+			  string path(*canon);
+			  err = fputs_failed(fputs(path.c_str(), out));
+			}
+		    }
+		  break;
+
+		case 'Q':
+		  if (flags.user_def)
+		    {
+		      err = fputs_failed(fputs(flags.user_def->c_str(), out));
+		    }
+		  break;
+
+		case 'C':
+		  err = printf_failed(fprintf(out, "%u",
+					      parms->out_lineno));
+		  break;
+
+		case 'Z':
+		  if (fputc_failed(fputc('@', out))
+		      || fputs_failed(fputs("(#)", out)))
+		    {
+		      err = 1;
+		    }
+		  else
+		    {
+		      err = 0;
+		    }
+		  break;
+
+		case 'W':
+		  {
+		    cssc::optional<std::string> saved_wstring = parms->wstring;
+		    if (!saved_wstring.has_value())
+		      {
+			/* At some point I had been told that SunOS 4.1.4
+			 * apparently uses a space rather than a tab here.
+			 * However, a test on 4.1.4 shows otherwise.
+			 *
+			 * From: "Carl D. Speare" <carlds@attglobal.net>
+			 * Subject: RE: SunOS 4.1.4
+			 * To: 'James Youngman' <jay@gnu.org>,
+			 *         "cssc-users@gnu.org" <cssc-users@gnu.org>
+			 * Date: Wed, 11 Jul 2001 01:07:36 -0400
+			 *
+			 * Ok, here's what I got:
+			 *
+			 * %W% in a file called test.c expanded to:
+			 *
+			 * @(#)test.c<TAB>1.1
+			 *
+			 * Sorry, but my SunOS machine is lacking a network
+			 * connection, so I can't bring it over into
+			 * mail-land. But, there you are, for what it's
+			 * worth.
+			 *
+			 * --Carl
+			 *
+			 */
+			saved_wstring = std::string("%Z" "%%M" "%\t%" "I%");
+			/* NB: strange formatting of the string above is
+			 * to preserve it unchanged even if this source code does
+			 * itself get checked into SCCS or CSSC.
+			 */
+		      }
+		    else
+		      {
+			/* protect against recursion */
+			parms->wstring = cssc::optional<std::string>();
+		      }
+		    ASSERT(saved_wstring.has_value());
+		    if (!write_subst(saved_wstring.value().c_str(), parms, d, true).ok())
+		      err = 1;
+		    if (!parms->wstring.has_value())
+		      {
+			parms->wstring = saved_wstring;
+		      }
+		  }
+		  break;
+
+		case 'A':
+		  if (!write_subst("%Z""%%Y""% %M""% %I"
+				   "%%Z""%",
+				   parms, d, true).ok())
+		    {
+		      err = 1;
+		    }
+		  break;
+
+		default:
+		  start = percent - 3;
+		  percent = percent - 1;
+		  continue;
+		}
+
+	      parms->found_id = 1;
 
 	      if (err)
 		{
 		  return 1;
 		}
-	      else
-		{
-		  start = percent+3;
-		  percent = strchr(start, '%');
-		  continue;
-		}
+	      start = percent;
 	    }
-          percent += 3;
+	  else
+	    {
+	      percent++;
+	    }
+	  percent = strchr(percent, '%');
+	}
 
-
-
-	  // We need to expand the keyletter.
-          switch (c)
-            {
-            case 'M':
-              {
-                const char *mod = get_module_name().c_str();
-                err = fputs_failed(fputs(mod, out));
-              }
-            break;
-
-            case 'I':
-              err = !d.id().print(out).ok();
-              break;
-
-            case 'R':
-              err = !d.id().printf(out, 'R', 1).ok();
-              break;
-
-            case 'L':
-              err = !d.id().printf(out, 'L', 1).ok();
-              break;
-
-            case 'B':
-              err = !d.id().printf(out, 'B', 1).ok();
-              break;
-
-            case 'S':
-              err = !d.id().printf(out, 'S', 1).ok();
-              break;
-
-            case 'D':
-              err = parms->now.printf(out, 'D');
-              break;
-
-            case 'H':
-              err = parms->now.printf(out, 'H');
-              break;
-
-            case 'T':
-              err = parms->now.printf(out, 'T');
-              break;
-
-            case 'E':
-              err = d.date().printf(out, 'D');
-              break;
-
-            case 'G':
-              err = d.date().printf(out, 'H');
-              break;
-
-            case 'U':
-              err = d.date().printf(out, 'T');
-              break;
-
-            case 'Y':
-              if (flags.type)
-                {
-                  err = fputs_failed(fputs(flags.type->c_str(), out));
-                }
-              break;
-
-            case 'F':
-              err =
-                fputs_failed(fputs(base_part(name.sfile()).c_str(),
-                                   out));
-              break;
-
-            case 'P':
-              if (1) // introduce new scope...
-                {
-		  cssc::FailureOr<string> canon = canonify_filename(name.c_str());
-		  if (!canon.ok())
-		    {
-		      // XXX: probably the resulting error message issued
-		      // by the caller will be a bit inaccurate.
-		      err = 1;
-		    }
-		  else
-		    {
-		      string path(*canon);
-		      err = fputs_failed(fputs(path.c_str(), out));
-		    }
-                }
-              break;
-
-            case 'Q':
-              if (flags.user_def)
-                {
-                  err = fputs_failed(fputs(flags.user_def->c_str(), out));
-                }
-              break;
-
-            case 'C':
-              err = printf_failed(fprintf(out, "%u",
-                                          parms->out_lineno));
-              break;
-
-            case 'Z':
-              if (fputc_failed(fputc('@', out))
-                  || fputs_failed(fputs("(#)", out)))
-                {
-                  err = 1;
-                }
-              else
-                {
-                  err = 0;
-                }
-              break;
-
-            case 'W':
-	      {
-		cssc::optional<std::string> saved_wstring = parms->wstring;
-		if (!saved_wstring.has_value())
-		  {
-		    /* At some point I had been told that SunOS 4.1.4
-		     * apparently uses a space rather than a tab here.
-		     * However, a test on 4.1.4 shows otherwise.
-		     *
-		     * From: "Carl D. Speare" <carlds@attglobal.net>
-		     * Subject: RE: SunOS 4.1.4
-		     * To: 'James Youngman' <jay@gnu.org>,
-		     *         "cssc-users@gnu.org" <cssc-users@gnu.org>
-		     * Date: Wed, 11 Jul 2001 01:07:36 -0400
-		     *
-		     * Ok, here's what I got:
-		     *
-		     * %W% in a file called test.c expanded to:
-		     *
-		     * @(#)test.c<TAB>1.1
-		     *
-		     * Sorry, but my SunOS machine is lacking a network
-		     * connection, so I can't bring it over into
-		     * mail-land. But, there you are, for what it's
-		     * worth.
-		     *
-		     * --Carl
-		     *
-		     */
-		    saved_wstring = std::string("%Z" "%%M" "%\t%" "I%");
-		    /* NB: strange formatting of the string above is
-		     * to preserve it unchanged even if this source code does
-		     * itself get checked into SCCS or CSSC.
-		     */
-		  }
-		else
-		  {
-		    /* protect against recursion */
-		    parms->wstring = cssc::optional<std::string>();
-		  }
-		ASSERT(saved_wstring.has_value());
-		err = write_subst(saved_wstring.value().c_str(), parms, d, true);
-		if (!parms->wstring.has_value())
-		  {
-		    parms->wstring = saved_wstring;
-		  }
-	      }
-              break;
-
-            case 'A':
-              err = write_subst("%Z""%%Y""% %M""% %I"
-                                "%%Z""%",
-                                parms, d, true);
-              break;
-
-            default:
-              start = percent - 3;
-              percent = percent - 1;
-              continue;
-            }
-
-          parms->found_id = 1;
-
-          if (err)
-            {
-              return 1;
-            }
-          start = percent;
-        }
-      else
-        {
-          percent++;
-        }
-      percent = strchr(percent, '%');
+      return fputs_failed(fputs(start, out));
+    }();
+  if (err )
+    {
+      // TODO: refactor this funciton so that we can use a more
+      // specific error code.
+      return cssc::make_failure_builder(cssc::errorcode::GetFileBodyFailed);
     }
-
-  return fputs_failed(fputs(start, out));
+  return cssc::Failure::Ok();
 }

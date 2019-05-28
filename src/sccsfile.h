@@ -88,12 +88,11 @@ public:
   };
 
   // Command handlers
-  // TODO: return cssc::Failure instead of bool?
-  bool get(const std::string& gname, class seq_state &state,
-           struct subst_parms &parms,
-           bool do_kw_subst,
-           int show_sid = 0, int show_module = 0, int debug = 0,
-           bool no_decode = false, bool for_edit = false);
+  cssc::Failure get(const std::string& gname, class seq_state &state,
+		    struct subst_parms &parms,
+		    bool do_kw_subst,
+		    int show_sid = 0, int show_module = 0, int debug = 0,
+		    bool no_decode = false, bool for_edit = false);
   // TODO: return cssc::Failure instead of bool?
   bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
   // TODO: return cssc::FailureOr<get_status>?
@@ -280,10 +279,10 @@ private:
 
   /* sf-get2.c */
   // TODO: return cssc::Failure instead of int?
-  int write_subst(const char *start,
-                  struct subst_parms *parms,
-                  struct delta const& gotten_delta,
-		  bool force_expansion) const;
+  cssc::Failure write_subst(const char *start,
+			    struct subst_parms *parms,
+			    struct delta const& gotten_delta,
+			    bool force_expansion) const;
 
   bool sid_matches(const sid& requested,
 		   const sid& found,
@@ -292,7 +291,7 @@ private:
   NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
 
   /* Support for BitKeeper files */
-  bool edit_mode_ok(bool editing) const;
+  cssc::Failure edit_mode_permitted(bool editing) const;
 
   void set_sfile_executable(bool state);
   bool sfile_should_be_executable() const;

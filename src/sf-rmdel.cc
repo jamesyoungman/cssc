@@ -45,7 +45,7 @@ is_seqlist_member(seq_no seq_to_find, std::vector<seq_no> const &seq_list) {
 bool
 sccs_file::rmdel(sid id)
 {
-  if (!edit_mode_ok(true))
+  if (!edit_mode_permitted(true).ok())
     return false;
 
   delta *d = find_delta(id);

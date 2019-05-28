@@ -395,8 +395,9 @@ sccs_file::get(FILE *out, const std::string& gname,
 
   ASSERT(0 != delta_table);
 
-  if (!edit_mode_ok(for_edit))	// "get -e" on BK files is not allowed
-    return fail("cannot edit BitKeeper files");
+  cssc::Failure edit_allowed = edit_mode_permitted(for_edit);
+  if (!edit_allowed.ok())	// "get -e" on BK files is not allowed
+    return edit_allowed;
 
   prepare_seqstate(state, d->seq(), include, exclude, cutoff_date);
 
@@ -507,8 +508,12 @@ sccs_file::get(FILE *out, const std::string& gname,
                            0, sccs_date::now());
 
 
-  if (!get(gname, state, parms, keywords, show_sid, show_module, debug))
-    return fail("get failed");
+  cssc::Failure got = get(gname, state, parms, keywords, show_sid, show_module, debug);
+  if (!got.ok())
+    {
+      // TODO: verify whether or not we need to delete the g-file.
+      return got;
+    }
 
   // only issue a warning about there being no keywords
   // substituted, IF keyword substitution was being done.

@@ -67,24 +67,26 @@ cssc::Failure sccs_file_body_scanner::seek_to_body()
 	<< "fseek failed on " << name();
     }
   here_.set_line_number(start_.line_number());
-  return cssc::ok();
+  return cssc::Failure::Ok();
 }
 
-bool sccs_file_body_scanner::get(const std::string& gname,
-				 const cssc_delta_table& delta_table,
-				 std::function<int(const char *start,
-						   struct delta const& gotten_delta,
-						   bool force_expansion)> write_subst,
-				 cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*),
-				 bool encoded,
-				 class seq_state &state,
-				 struct subst_parms &parms,
-				 bool do_kw_subst, bool /*debug*/, bool show_module, bool show_sid)
+cssc::Failure
+sccs_file_body_scanner::get(const std::string& gname,
+			    const cssc_delta_table& delta_table,
+			    std::function<cssc::Failure(const char *start,
+							struct delta const& gotten_delta,
+							bool force_expansion)> write_subst,
+			    cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*),
+			    bool encoded,
+			    class seq_state &state,
+			    struct subst_parms &parms,
+			    bool do_kw_subst, bool /*debug*/, bool show_module, bool show_sid)
 {
   const seq_no highest_delta_seqno = delta_table.highest_seqno();
 
-  if (!seek_to_body().ok())
-    return false;
+  cssc::Failure seek = seek_to_body();
+  if (!seek.ok())
+    return seek;
 
   /* The following statement is not correct. */
   /* "@I 1" should start the body of the SCCS file */
@@ -93,7 +95,7 @@ bool sccs_file_body_scanner::get(const std::string& gname,
   if (!read_line(&line_type) || line_type != 'I')
     {
       corrupt(here(), "Expected '@I'");
-      return false;
+      /*NOTREACHED*/
     }
   check_arg();
 
@@ -133,12 +135,21 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 	  d.id().print(out);
           putc('\t', out);
         }
-      int err;
       if (do_kw_subst && !encoded)
 	{
-	  err = write_subst(plinebuf->c_str(), parms.delta, false);
+	  cssc::Failure wrote = write_subst(plinebuf->c_str(), parms.delta, false);
+	  if (!wrote.ok())
+	    {
+	      wrote = cssc::make_failure_builder(wrote)
+		<< "failed to write to " << gname;
+	    }
 	  if (fputc_failed(fputc('\n', out)))
-	    err = 1;
+	    {
+	      wrote = Update(wrote, cssc::make_failure_builder_from_errno(errno)
+			     << "failed to write to " << gname);
+	    }
+	  if (!wrote.ok())
+	    return wrote;
 	}
       else
 	{
@@ -147,14 +158,13 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 	      if (!parms.found_id && plinebuf->check_id_keywords())
 		  parms.found_id = 1;
 	    }
-	  err = !outputfn(out, plinebuf.get()).ok();
+	  cssc::Failure wrote = outputfn(out, plinebuf.get());
+	  if (!wrote.ok())
+	    {
+	      return cssc::make_failure_builder(wrote)
+		<< "failed to write to " << gname;
+	    }
 	}
-      if (err)
-        {
-          errormsg_with_errno("%s: Write error.", gname);
-          return false;
-        }
-
       continue;
     }
 
@@ -164,11 +174,13 @@ bool sccs_file_body_scanner::get(const std::string& gname,
     seq_no seq = strict_atous(here(), plinebuf->c_str() + 3);
     if (seq < 1 || seq > highest_delta_seqno) {
       corrupt(here(), "Invalid serial number %u converted from '%s'", unsigned(seq), plinebuf->c_str());
+      /*NOTREACHED*/
     }
 
     auto badstate = [this](const std::string& msg)
       {
 	corrupt(here(), "%s", msg.c_str());
+	/*NOTREACHED*/
       };
 
     switch (line_type) {
@@ -178,6 +190,7 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 	if (!outcome.first)
 	  {
 	    badstate(outcome.second);
+	    /*NOTREACHED*/
 	  }
       }
       break;
@@ -189,18 +202,24 @@ bool sccs_file_body_scanner::get(const std::string& gname,
 	if (!outcome.first)
 	  {
 	    badstate(outcome.second);
+	    /*NOTREACHED*/
 	  }
       }
       break;
 
     default:
       corrupt(here(), "Unexpected control line");
+      /*NOTREACHED*/
       break;
     }
   }
 
-  fflush(out);
-  return true;
+  if (fflush_failed(fflush(out)))
+    {
+      return cssc::make_failure_builder_from_errno(errno)
+	<< "failed to flush output to " << gname;
+    }
+  return cssc::Failure::Ok();	// success
 }
 
 bool

@@ -108,7 +108,7 @@ main(int argc, char **argv)
   int show_sid = 0;                     /* -m */
   int show_module = 0;                  /* -n */
   int debug = 0;                        /* -D */
-  std::string gname;                       /* -G */
+  std::string gname;                    /* -G */
   int got_gname = 0;                    /* -G */
   seq_no seq = 0;                       /* -a */
   int get_top_delta = 0;                /* -t */
@@ -318,7 +318,7 @@ main(int argc, char **argv)
     }
   else if (send_body_to_stdout)
     {
-      gname = "-";
+      gname = "standard output";
       out = stdout;
     }
 
@@ -483,14 +483,16 @@ main(int argc, char **argv)
 	    }
 
           const int keywords = !suppress_keywords;
-	  cssc::optional<get_status> status;
 	  Failure f;
 
 	  ResourceCleanup gfile_cleaner([out, gname, &f, real_file](){
 	      if (!real_file)
 		return;
-	      f = Update(f, cssc::make_failure_builder(fclose_failure(out))
-			 .diagnose() << "failed to close " << gname);
+	      if (fclose_failed(fclose(out)))
+		{
+		  f = Update(f, cssc::make_failure_builder(fclose_failure(out))
+			     .diagnose() << "failed to close " << gname);
+		}
 	      if (0 != remove(gname.c_str()))
 		{
 		  f = Update(f, cssc::make_failure_builder_from_errno(errno)
@@ -506,8 +508,10 @@ main(int argc, char **argv)
 	      // The "get" operation succeeded, keep the output.
 	      gfile_cleaner.disarm();
 	    }
-
-	  f  = Update(f, gotten.fail());
+	  else
+	    {
+	      f  = Update(f, gotten.fail());
+	    }
 	  if (create_lfile)
 	    {
               fclose (summary_file);
@@ -551,9 +555,9 @@ main(int argc, char **argv)
 	      f = Update(f, fputc_failure('\n', commentary));
 
 	      Failure added = pfile->add_lock(retrieve, new_delta, include, exclude);
-	      f = Update(f, added);
               if (!added.ok())
                 {
+		  f = Update(f, added);
                   // Failed to add the lock to the p-file.
                   if (real_file)
                     {
@@ -569,7 +573,6 @@ main(int argc, char **argv)
 	    {
 	      retval = 1;
 	    }
-
           if (!no_output)
             {
 	      ASSERT(gotten.ok());

@@ -45,7 +45,7 @@ sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
   sid_list no_includes, no_excludes;
   sccs_date no_cutoff;
 
-  if (!edit_mode_ok(for_edit))
+  if (!edit_mode_permitted(for_edit).ok())
     return false;
 
   auto w = cssc::optional<std::string>();
@@ -55,7 +55,7 @@ sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
   class seq_state state(highest_delta_seqno());
 
   prepare_seqstate(state, seq, no_includes, no_excludes, no_cutoff);
-  return get(gname, state, parms, true);
+  return get(gname, state, parms, true).ok();
 }
 
 /* Prints a list of sequence numbers on the same line. */

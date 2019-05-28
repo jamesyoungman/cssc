@@ -186,7 +186,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
     }
 }
 
-bool
+cssc::Failure
 sccs_file::get(const string& gname,
 	       class seq_state &state,
                struct subst_parms &parms,
@@ -198,8 +198,9 @@ sccs_file::get(const string& gname,
   ASSERT(mode != CREATE);
   ASSERT(mode != FIX_CHECKSUM);
 
-  if (!edit_mode_ok(for_edit))	// "get -e" on BK files is not allowed
-    return false;
+  cssc::Failure edit_allowed  = edit_mode_permitted(for_edit);
+  if (!edit_allowed.ok())	// "get -e" on BK files is not allowed
+    return edit_allowed;
 
   cssc::Failure (*outputfn)(FILE*,const cssc_linebuf*);
   if (flags.encoded && false == no_decode)
@@ -208,11 +209,10 @@ sccs_file::get(const string& gname,
     outputfn = output_body_line_text;
 
   auto subst = [this, &parms](const char *start, struct delta const& gotten_delta,
-			bool force_expansion) -> int
+			      bool force_expansion) -> cssc::Failure
     {
       return this->write_subst(start, &parms, gotten_delta, force_expansion);
     };
-
   return body_scanner_->get(gname, *delta_table, subst,
 			    outputfn, flags.encoded, state, parms,
 			    do_kw_subst, debug, show_module, show_sid);

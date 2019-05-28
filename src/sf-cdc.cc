@@ -82,7 +82,7 @@ bool
 sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
 	       const std::vector<std::string>& comment_updates)
 {
-  if (!edit_mode_ok(true))
+  if (!edit_mode_permitted(true).ok())
     return false;
 
   delta *p = find_delta(id);

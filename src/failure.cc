@@ -40,6 +40,8 @@ namespace cssc
 	return "not an SCCS history file";
       case isit(errorcode::NotAnSccsHistoryFileName):
 	return "not an SCCS history file name";
+      case isit(errorcode::CannotEditBitkeeperFile):
+	return "editing BitKeeper files is currently not supported";
       case isit(errorcode::UnexpectedEOF):
 	return "unexpected end-of-file";
       case isit(errorcode::FileHasHardLinks):
