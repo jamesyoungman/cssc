@@ -277,8 +277,8 @@ private:
   cssc::Failure print_subsituted_flags_list(FILE *out, const char* separator) const;
   static bool is_known_keyword_char(char c);
 
-  /* sf-get2.c */
   // TODO: return cssc::Failure instead of int?
+  cssc::FailureOr<bool> emit_keyletter_expansion(FILE *out, struct subst_parms *parms, const delta& d, char c) const;
   cssc::Failure write_subst(const char *start,
 			    struct subst_parms *parms,
 			    struct delta const& gotten_delta,
