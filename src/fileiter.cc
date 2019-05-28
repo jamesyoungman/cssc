@@ -61,10 +61,10 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 
 	if (first[0] != '\0') {
 		DIR *dir = opendir(first);
-		ResourceCleanup dir_closer([&dir](){
-		    closedir(dir);
-		  });
 		if (dir != NULL) {
+		        ResourceCleanup dir_closer([&dir](){
+		            closedir(dir);
+		        });
 			const char *slash = NULL;
 			const size_t len = strlen(first);
 
