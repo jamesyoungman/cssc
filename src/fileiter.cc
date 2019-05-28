@@ -80,8 +80,27 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 
 			std::string dirname(std::string(first) + std::string(slash));
 
-			struct dirent *dent = readdir(dir);
-			while (dent != NULL) {
+			unsigned long entry_error_count = 0;
+			int sample_entry_errno = 0;
+			for (;;) {
+                                errno = 0;
+			        struct dirent *dent = readdir(dir);
+				if (dent == nullptr)
+				  {
+				    if (errno == 0)
+				      {
+					break; // end of directory entries
+				      }
+				    else
+				      {
+					// Otherwise it's a directory
+					// read error which might be
+					// followed by some valid
+					// files.
+					if (entry_error_count++ == 0)
+					  sample_entry_errno = errno;
+				      }
+				  }
 				std::string directory_entry = std::string(dirname) + std::string(dent->d_name);
 
 				if (sccs_name::valid_filename(directory_entry.c_str()).ok()
@@ -103,9 +122,13 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 						dircheck.to_string().c_str());
 				      }
 				  }
-				dent = readdir(dir);
 			}
-
+			if (entry_error_count)
+			  {
+			    warning("%lu errors occurred reading from directory '%s' (example: \"%s\"), "
+				    "so some directory entries may have been ignored.",
+				    entry_error_count, first, strerror(sample_entry_errno));
+			  }
 			source_ = source::DIRECTORY;
 			pos = 0;
 			return;
