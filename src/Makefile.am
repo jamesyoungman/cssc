@@ -31,7 +31,7 @@ AM_CPPFLAGS = $(generic_CPPFLAGS)
 AM_CFLAGS = "-DPREFIX=\"$(csscutildir)/\"" "-DLOCALEDIR=\"$(localedir)\"" $(generic_CPPFLAGS)
 
 AM_LDFLAGS = -L../gl/lib
-LDADD = -lgnulib
+LDADD = libcssc.a -lgnulib
 
 AM_CXXFLAGS = $(WARN_CFLAGS)
 noinst_LIBRARIES = libcssc.a
@@ -98,19 +98,6 @@ cdc_SOURCES = cdc.cc sf-cdc.cc
 admin_SOURCES = admin.cc sf-admin.cc sf-val.cc
 delta_SOURCES = delta.cc sf-delta.cc pf-del.cc
 val_SOURCES = val.cc sf-val.cc
-
-get_LDADD = libcssc.a $(LIBOBJS)
-delta_LDADD = libcssc.a $(LIBOBJS)
-admin_LDADD = libcssc.a $(LIBOBJS)
-prs_LDADD = libcssc.a $(LIBOBJS)
-what_LDADD = libcssc.a $(LIBOBJS)
-unget_LDADD = libcssc.a $(LIBOBJS)
-sact_LDADD = libcssc.a $(LIBOBJS)
-cdc_LDADD = libcssc.a $(LIBOBJS)
-rmdel_LDADD = libcssc.a $(LIBOBJS)
-prt_LDADD = libcssc.a $(LIBOBJS)
-val_LDADD = libcssc.a $(LIBOBJS)
-sccs_LDADD = libcssc.a $(LIBOBJS) -lgnulib
 
 sccsdiff: sccsdiff.sh
 	sed -e 's:__csscutildir__:$(csscutildir):g' < sccsdiff.sh > $@ && chmod a+x $@ || { rm -f $@; false; }
