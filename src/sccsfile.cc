@@ -359,8 +359,8 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
   return found;
 }
 
-void sccs_file::
-set_mr_checker_flag(const char *s)
+void
+sccs_file::set_mr_checker_flag(const char *s)
 {
   if (flags.mr_checker)
     delete flags.mr_checker;
@@ -368,8 +368,8 @@ set_mr_checker_flag(const char *s)
   flags.mr_checker = new std::string(s);
 }
 
-void sccs_file::
-set_module_flag(const char *s)
+void
+sccs_file::set_module_flag(const char *s)
 {
   if (flags.module)
     delete flags.module;
@@ -377,8 +377,8 @@ set_module_flag(const char *s)
   flags.module = new std::string(s);
 }
 
-void  sccs_file::
-set_user_flag(const char *s)
+void
+sccs_file::set_user_flag(const char *s)
 {
   if (flags.user_def)
     delete flags.user_def;
@@ -386,8 +386,8 @@ set_user_flag(const char *s)
   flags.user_def = new std::string(s);
 }
 
-void sccs_file::
-set_type_flag(const char *s)
+void
+sccs_file::set_type_flag(const char *s)
 {
   if (flags.type)
     delete flags.type;
@@ -395,8 +395,8 @@ set_type_flag(const char *s)
   flags.type = new std::string(s);
 }
 
-void sccs_file::
-set_reserved_flag(const char *s)
+void
+sccs_file::set_reserved_flag(const char *s)
 {
   if (flags.reserved)
     delete flags.reserved;
@@ -405,8 +405,7 @@ set_reserved_flag(const char *s)
 }
 
 
-void sccs_file::
-set_expanded_keyword_flag(const char *s)
+void sccs_file::set_expanded_keyword_flag(const char *s)
 {
   const size_t len = strlen(s);
   std::set<char> tmp_letters(s, s + len);
@@ -479,8 +478,8 @@ bool sccs_file::branches_allowed() const
   return 0 != flags.branch;
 }
 
-bool sccs_file::
-print_subsituted_flags_list(FILE *out, const char* separator) const
+bool
+sccs_file::print_subsituted_flags_list(FILE *out, const char* separator) const
 {
   bool first = true;
   for (auto flagletter : flags.substitued_flag_letters)
@@ -500,27 +499,27 @@ print_subsituted_flags_list(FILE *out, const char* separator) const
   return true;
 }
 
-bool sccs_file::
-is_known_keyword_char(char c)
+bool
+sccs_file::is_known_keyword_char(char c)
 {
   return strchr("MIRLBSDHTEGUYFPQCZWA", c) != NULL;
 }
 
-void sccs_file::
-set_sfile_executable(bool state)
+void
+sccs_file::set_sfile_executable(bool state)
 {
   sfile_executable = state;
 }
 
-bool sccs_file::
-gfile_should_be_executable() const
+bool
+sccs_file::gfile_should_be_executable() const
 {
   return sfile_executable || flags.executable;
 }
 
 
-bool sccs_file::
-sfile_should_be_executable() const
+bool
+sccs_file::sfile_should_be_executable() const
 {
   return sfile_executable;
 }
