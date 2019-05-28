@@ -26,6 +26,8 @@
  */
 #include "config.h"
 
+#include <functional>
+#include <initializer_list>
 #include <string>
 #include <errno.h>
 
@@ -52,7 +54,7 @@ print_id_list(FILE *fp, const char *s, std::vector<sid> const &list)
   cssc::Failure status;
   if (!list.empty())
     {
-      if (fprintf_failed(fprintf(fp, "%s:\n", s))) 
+      if (fprintf_failed(fprintf(fp, "%s:\n", s)))
 	status = cssc::Update(status, cssc::make_failure_from_errno(errno));
 
       for (const auto& sid : list)
@@ -83,7 +85,9 @@ static void maybe_clear_archive_bit(const std::string &)
 
 #define EXITVAL_INVALID_OPTION (1)
 
-
+using cssc::Update;
+using cssc::Failure;
+using cssc::FailureOr;
 int
 main(int argc, char **argv)
 {
@@ -297,7 +301,7 @@ main(int argc, char **argv)
 
   if (silent)
     {
-      cssc::FailureOr<FILE*> opened = open_null();
+      FailureOr<FILE*> opened = open_null();
       if (!opened.ok())
 	return 1;       // fatal error.
       commentary = *opened;
@@ -307,7 +311,7 @@ main(int argc, char **argv)
     {
       got_gname = 0;
       gname = "null";
-      cssc::FailureOr<FILE*> opened = open_null();
+      FailureOr<FILE*> opened = open_null();
       if (!opened.ok())
 	return 1;       // fatal error.
       out = *opened;
@@ -441,7 +445,7 @@ main(int argc, char **argv)
 		}
 
               real_file = true;
-	      cssc::FailureOr<FILE*> fof = fcreate(gname, mode);
+	      FailureOr<FILE*> fof = fcreate(gname, mode);
               if (!fof.ok())
                 {
 		  out = NULL;
@@ -458,7 +462,7 @@ main(int argc, char **argv)
 	      if (create_lfile)
 		{
 		  std::string lname = name.lfile();
-		  cssc::FailureOr<FILE*> fof = fcreate(lname, CREATE_READ_ONLY);
+		  FailureOr<FILE*> fof = fcreate(lname, CREATE_READ_ONLY);
 		  if (!fof.ok())
 		    {
 		      // XXX: This would probably be surprising to the
@@ -479,106 +483,98 @@ main(int argc, char **argv)
 	    }
 
           const int keywords = !suppress_keywords;
-          get_status status;
+	  cssc::optional<get_status> status;
+	  Failure f;
 
-          try
-            {
-	      status = file.get(out, gname, summary_file, retrieve, cutoff_date,
-				include, exclude, keywords, wstring,
-				show_sid, show_module, debug, for_edit);
-            }
-          catch (CsscException)
-            {
-              // the get failed.  Delete the g-file and re-throw the exception.
-              if (real_file)
-                {
-                  fclose(out);
-                  remove(gname.c_str());
-                  throw;
-                }
-            }
+	  ResourceCleanup gfile_cleaner([out, gname, &f, real_file](){
+	      if (!real_file)
+		return;
+	      f = Update(f, cssc::make_failure_builder(fclose_failure(out))
+			 .diagnose() << "failed to close " << gname);
+	      if (0 != remove(gname.c_str()))
+		{
+		  f = Update(f, cssc::make_failure_builder_from_errno(errno)
+			     .diagnose() << "failed to delete " << gname);
+		}
+	    });
+	  cssc::FailureOr<get_status> gotten =
+	    file.get(out, gname, summary_file, retrieve, cutoff_date,
+		     include, exclude, keywords, wstring,
+		     show_sid, show_module, debug, for_edit);
+	  if (gotten.ok())
+	    {
+	      // The "get" operation succeeded, keep the output.
+	      gfile_cleaner.disarm();
+	    }
+
+	  f  = Update(f, gotten.fail());
 	  if (create_lfile)
 	    {
               fclose (summary_file);
 	    }
 
-          if (real_file)
-            {
-              fclose(out);
-              if (suppress_keywords)
-              {
-                  if (!set_gfile_writable(gname, true,
-					  file.gfile_should_be_executable()).ok())
-                      retval = 1;
-		  maybe_clear_archive_bit(gname);
-              }
-              else
-              {
-                /* The g-file was created with the real uid,
-                 * and so if we want to change its mode, we
-                 * will have to temporarily set EUID=RUID.
-                 */
-
-		TempPrivDrop guard();
-                if (!set_gfile_writable(gname, false,
-					file.gfile_should_be_executable()).ok())
-                    status.success = false;
-              }
-            }
-
-          // We delete this file if the "get" failed.
-          // However, this is not conditional on "retval" since
-          // if the previous attempt failed, we would like the others
-          // to succeed.
-
-          if (!status.success) // get failed.
-            {
-              retval = 1;
-	      if (!unlink_file_as_real_user(gname.c_str()).ok())
+          // We delete this file if the "get" failed.  However, this
+          // is not conditional on "retval" since if the iteration for
+          // the previous history file failed, we would like to
+          // succeed on the remaining files.
+	  if (real_file)
+	    {
+	      f = Update(f, fclose_failure(out));
+	      /* The g-file was created with the real uid,
+	       * and so if we want to change its mode, we
+	       * will have to temporarily set EUID=RUID.
+	       * set_gfile_writable already does that.
+	       */
+	      f = Update(f,
+			 set_gfile_writable(gname, suppress_keywords,
+					    file.gfile_should_be_executable()));
+	      if (suppress_keywords)
 		{
-		  // TODO: issue a more detailed error message using
-		  // the Failure object.
-		  errormsg_with_errno("Failed to remove file %s",
-				      gname.c_str());
+		  maybe_clear_archive_bit(gname);
 		}
+	    }
+
+          if (!gotten.ok()) // get failed.
+            {
+	      // gfile_cleaner should delete the unwanted g-file.
               continue;
             }
 
-          if (!print_id_list(commentary, "Included", status.included).ok()) retval = 1;
-          if (!print_id_list(commentary, "Excluded", status.excluded).ok()) retval = 1;
-          if (!retrieve.print(commentary).ok()) retval = 1;
-          if (fputc_failed(fputc('\n', commentary))) retval = 1;
-
+	  f = Update(f, print_id_list(commentary, "Included", (*gotten).included));
+	  f = Update(f, print_id_list(commentary, "Excluded", (*gotten).excluded));
+	  f = Update(f, retrieve.print(commentary));
+	  f = Update(f, fputc_failure('\n', commentary));
           if (for_edit)
             {
-              if (fprintf_failed(fprintf(commentary, "new delta "))) retval = 1;
-              if (!new_delta.print(commentary).ok()) retval = 1;
-	      if (fputc_failed(fputc('\n', commentary))) retval = 1;
+	      f = Update(f, fprintf_failure(fprintf(commentary, "new delta ")));
+	      f = Update(f, new_delta.print(commentary));
+	      f = Update(f, fputc_failure('\n', commentary));
 
-	      cssc::Failure added = pfile->add_lock(retrieve, new_delta, include, exclude);
+	      Failure added = pfile->add_lock(retrieve, new_delta, include, exclude);
+	      f = Update(f, added);
               if (!added.ok())
                 {
-                  retval = 1;   // remember the failure.
                   // Failed to add the lock to the p-file.
                   if (real_file)
                     {
-		      // TODO: issue a better error message using the
-		      // Failure object.
-		      if (!unlink_file_as_real_user(gname.c_str()).ok())
-			{
-			  errormsg_with_errno("Failed to remove file %s",
-					      gname.c_str());
-			}
+		      f = Update(f, cssc::make_failure_builder
+				 (unlink_file_as_real_user(gname.c_str()))
+				 .diagnose() << "Failed to remove file " << gname);
                     }
                 }
               delete pfile;
               pfile = NULL;
             }
+	  if (!f.ok())
+	    {
+	      retval = 1;
+	    }
 
           if (!no_output)
             {
-	      // TODO: should a failure here affect the exit status?
-              fprintf(commentary, "%u lines\n", status.lines);
+	      ASSERT(gotten.ok());
+	      // TODO: should an fprintf failure here affect the exit status?
+	      fprintf(commentary, "%u lines\n", (*gotten).lines);
             }
         }
       catch (CsscExitvalException e)

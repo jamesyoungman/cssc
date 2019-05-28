@@ -374,7 +374,7 @@ sccs_file::test_locks(sid got, const sccs_pfile& pf) const
    Most of the actual work is done with a seqstate object that
    figures out whether or not given line of the SCCS file body
    should be included in the output file. */
-get_status
+cssc::FailureOr<get_status>
 sccs_file::get(FILE *out, const std::string& gname,
 	       FILE *summary_file,
 	       sid id, sccs_date cutoff_date,
@@ -383,10 +383,9 @@ sccs_file::get(FILE *out, const std::string& gname,
                int show_sid, int show_module, int debug,
 	       bool for_edit)
 {
-
-  /* Set the return status. */
-  struct get_status status;
-  status.success = true;
+  auto fail = [](const std::string& msg) {
+    return cssc::make_failure_builder(cssc::errorcode::GetFileBodyFailed) << msg;
+  };
 
   ASSERT(0 != delta_table);
 
@@ -397,18 +396,9 @@ sccs_file::get(FILE *out, const std::string& gname,
   ASSERT(0 != delta_table);
 
   if (!edit_mode_ok(for_edit))	// "get -e" on BK files is not allowed
-    {
-      status.success = false;
-      return status;
-    }
+    return fail("cannot edit BitKeeper files");
 
-
-  if (!prepare_seqstate(state, d->seq(),
-                        include, exclude, cutoff_date))
-    {
-      status.success = false;
-      return status;
-    }
+  prepare_seqstate(state, d->seq(), include, exclude, cutoff_date);
 
   // Fix by Mark Fortescue.
   // Fix Cutoff Date Problem
@@ -517,13 +507,9 @@ sccs_file::get(FILE *out, const std::string& gname,
                            0, sccs_date::now());
 
 
-  status.success = get(gname, state, parms, keywords,
-                       show_sid, show_module, debug);
+  if (!get(gname, state, parms, keywords, show_sid, show_module, debug))
+    return fail("get failed");
 
-  if (status.success == false)
-    {
-      return status;
-    }
   // only issue a warning about there being no keywords
   // substituted, IF keyword substitution was being done.
   if (keywords && !parms.found_id)
@@ -532,7 +518,9 @@ sccs_file::get(FILE *out, const std::string& gname,
       // this function normally returns.
     }
 
-  status.lines = parms.out_lineno;
+  /* Set the return status. */
+  struct get_status goodstatus;
+  goodstatus.lines = parms.out_lineno;
 
   seq_no seq;
   for(seq = 1; seq <= highest_delta_seqno(); seq++)
@@ -542,13 +530,12 @@ sccs_file::get(FILE *out, const std::string& gname,
           const sid id = seq_to_sid(seq);
 
           if (state.is_included(seq))
-            status.included.push_back(id);
+            goodstatus.included.push_back(id);
           else if (state.is_excluded(seq))
-            status.excluded.push_back(id);
+            goodstatus.excluded.push_back(id);
         }
     }
-
-  return status;
+  return goodstatus;
 }
 
 /* Local variables: */

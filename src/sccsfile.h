@@ -55,7 +55,6 @@ struct get_status
 {
   unsigned lines;
   std::vector<sid> included, excluded;
-  bool     success;
 };
 
 class sccs_file
@@ -98,17 +97,17 @@ public:
   // TODO: return cssc::Failure instead of bool?
   bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
   // TODO: return cssc::FailureOr<get_status>?
-  get_status get(FILE *out,
-		 const std::string& gname,
-		 FILE *summary_file,
-		 sid id,
-		 sccs_date cutoff_date = sccs_date(),
-		 sid_list include = sid_list(""),
-		 sid_list exclude = sid_list(""),
-		 int keywords = 0,
-		 cssc::optional<std::string> wstring = cssc::optional<std::string>(),
-		 int show_sid = 0, int show_module = 0,
-		 int debug = 0, bool for_edit = false);
+  cssc::FailureOr<get_status> get(FILE *out,
+				  const std::string& gname,
+				  FILE *summary_file,
+				  sid id,
+				  sccs_date cutoff_date = sccs_date(),
+				  sid_list include = sid_list(""),
+				  sid_list exclude = sid_list(""),
+				  int keywords = 0,
+				  cssc::optional<std::string> wstring = cssc::optional<std::string>(),
+				  int show_sid = 0, int show_module = 0,
+				  int debug = 0, bool for_edit = false);
   // At a high level, delta is implemented via add_delta
   // TODO: return cssc::Failure instead of bool?
   bool add_delta(const std::string& gname,
@@ -241,15 +240,13 @@ protected:
   bool sid_in_use(sid id, const sccs_pfile& p) const;
 
   /* sf-get3.c */
-  // TODO: return cssc::Failure instead of bool?
-  bool prepare_seqstate(seq_state &state, seq_no seq,
+  void prepare_seqstate(seq_state &state, seq_no seq,
                         sid_list include,
                         sid_list exclude, sccs_date cutoff_date);
-  // TODO: return cssc::Failure instead of bool?
-  bool prepare_seqstate_1(seq_state &state, seq_no seq);
-  // TODO: return cssc::Failure instead of bool?
-  bool prepare_seqstate_2(seq_state &state, sid_list include,
+  void prepare_seqstate_1(seq_state &state, seq_no seq);
+  void prepare_seqstate_2(seq_state &state, sid_list include,
                         sid_list exclude, sccs_date cutoff_date);
+
   bool authorised() const;
 
   /* sf-write.c */

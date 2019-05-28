@@ -54,15 +54,8 @@ sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
 			   0, sccs_date());
   class seq_state state(highest_delta_seqno());
 
-  if (prepare_seqstate(state, seq,
-                       no_includes, no_excludes, no_cutoff))
-  {
-      return get(gname, state, parms, true);
-  }
-  else
-  {
-      return false;
-  }
+  prepare_seqstate(state, seq, no_includes, no_excludes, no_cutoff);
+  return get(gname, state, parms, true);
 }
 
 /* Prints a list of sequence numbers on the same line. */

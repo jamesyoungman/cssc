@@ -47,7 +47,7 @@ using std::string;
 // #include "strstr.cc"
 // #endif
 
-bool
+void
 sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 {
   bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
@@ -184,7 +184,6 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
               "sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)"
               " done\n");
     }
-  return true;
 }
 
 bool

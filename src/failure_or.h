@@ -34,14 +34,6 @@ namespace cssc
       : std::logic_error(msg) {}
   };
 
-  class NonEmptyFailureOr : public std::logic_error {
-  public:
-    explicit NonEmptyFailureOr(const std::string& msg)
-      : std::logic_error(msg) {}
-    explicit NonEmptyFailureOr(const char* msg)
-      : std::logic_error(msg) {}
-  };
-
 // FailureOr is something of a reinvented wheel.  I decided not to try
 // to use Boost.Outcome because it requires a very recent (as of
 // mid-2019) version of GCC.  I decided not to use
@@ -102,21 +94,16 @@ class FailureOr
 
   constexpr const Failure& fail()  const
   {
-    if (ok())
-      {
-	throw NonEmptyFailureOr("call to fail() on a non-empty FailureOr instance");
-      }
+    // We allow calls to fail() on OK instances so allow this pattern:
+    // cssc::FailureOr<int> DoSomething();
+    // auto done = DoSomething();
+    // f = cssc::Update(f, done.fail());
     return fail_;
   }
 
   constexpr std::error_code code()  const
   {
-    auto code = fail_.code();
-    if (!code)
-      {
-	throw NonEmptyFailureOr("call to code() on a non-empty FailureOr instance");
-      }
-    return code;
+    return fail_.code();
   }
 
   std::string to_string() const

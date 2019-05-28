@@ -38,9 +38,9 @@
  * be included and which are to be excluded.
  */
 
-bool
+void
 sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
-                            sid_list exclude, sccs_date cutoff_date)
+			      sid_list exclude, sccs_date cutoff_date)
 {
 
   ASSERT(0 != delta_table);
@@ -72,22 +72,15 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
       ASSERT(0 != delta_table);
     }
   ASSERT(0 != delta_table);
-
-  return true;
 }
 
 
-bool sccs_file::prepare_seqstate(seq_state &state, seq_no seq,
+void sccs_file::prepare_seqstate(seq_state &state, seq_no seq,
                                  sid_list include,
                                  sid_list exclude, sccs_date cutoff_date)
 {
-    if (!prepare_seqstate_1(state, seq))
-        return false;
-
-    if (!prepare_seqstate_2(state, include, exclude, cutoff_date))
-        return false;
-
-    return true;
+    prepare_seqstate_1(state, seq);
+    prepare_seqstate_2(state, include, exclude, cutoff_date);
 }
 
 

@@ -159,12 +159,9 @@ sccs_file::add_delta(const std::string& gname,
   seq_no predecessor_seq = got_delta->seq();
 
 
-  if (!prepare_seqstate(sstate, predecessor_seq,
-                        it->include, it->exclude,
-                        sccs_date()))
-  {
-      return false;
-  }
+  prepare_seqstate(sstate, predecessor_seq,
+		   it->include, it->exclude,
+		   sccs_date());
 
   /* The d-file is created in the SCCS directory (XXX: correct?) */
   std::string dname(name.sub_file('d'));

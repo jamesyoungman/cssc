@@ -44,4 +44,25 @@ inline cssc::Failure fwrite_failed(int written, int desired) {
   return cssc::Failure::Ok();
 }
 
+inline cssc::Failure fputc_failure(int ch, FILE *f) {
+  if (fputc(ch, f) == EOF)
+    return cssc::make_failure_from_errno(errno);
+  return cssc::Failure::Ok();
+}
+
+inline cssc::Failure fprintf_failure(int rv)
+{
+  if (rv < 0)
+    return cssc::make_failure_from_errno(errno);
+  return cssc::Failure::Ok();
+}
+
+inline cssc::Failure fclose_failure(FILE *fp)
+{
+  if (fclose(fp) != 0)
+    return cssc::make_failure_from_errno(errno);
+  return cssc::Failure::Ok();
+}
+
+
 #endif
