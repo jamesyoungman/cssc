@@ -248,75 +248,69 @@ sccs_file::write_subst(const char *start,
                        const delta& d,
 		       bool force_expansion) const
 {
-  int err = [this, &start, parms, d, force_expansion]() -> int
+  FILE *out = parms->out;
+
+  const char *percent = strchr(start, '%');
+  while (percent != NULL)
     {
-      FILE *out = parms->out;
-
-      const char *percent = strchr(start, '%');
-      while (percent != NULL)
+      char c = percent[1];
+      if (c != '\0' && percent[2] == '%')
 	{
-	  char c = percent[1];
-	  if (c != '\0' && percent[2] == '%')
+	  if (start != percent
+	      && fwrite(start, percent - start, 1, out) != 1)
 	    {
-	      if (start != percent
-		  && fwrite(start, percent - start, 1, out) != 1)
-		{
-		  return 1;
-		}
+	      return cssc::make_failure_builder_from_errno(errno)
+		<< "write failed";
+	    }
 
-	      int err = 0;
-	      if (!force_expansion
-		  && false == expand_keyletter(c, flags.substitued_flag_letters))
+	  if (!force_expansion
+	      && false == expand_keyletter(c, flags.substitued_flag_letters))
+	    {
+	      // We do not expand this key letter.   Just emit the raw
+	      // characters.
+	      if (fputc_failed(fputc('%', out))
+		  ||  fputc_failed(fputc(c,   out))
+		  ||  fputc_failed(fputc('%', out)))
 		{
-		  // We do not expand this key letter.   Just emit the raw
-		  // characters.
-		  err = fputc_failed(fputc('%', out))
-		    ||  fputc_failed(fputc(c,   out))
-		    ||  fputc_failed(fputc('%', out));
-
-		  if (err)
-		    {
-		      return 1;
-		    }
-		  else
-		    {
-		      start = percent+3;
-		      percent = strchr(start, '%');
-		      continue;
-		    }
-		}
-	      percent += 3;
-
-	      cssc::FailureOr<bool> done = emit_keyletter_expansion(out, parms, d, c);
-	      if (done.ok())
-		{
-		  if (*done)
-		    {
-		      start = percent - 3;
-		      percent = percent - 1;
-		      continue;
-		    }
+		  return cssc::make_failure_builder_from_errno(errno)
+		    << "failed to write unexpanded keyletter "
+		    << "'%" << c << "%' to output file";
 		}
 	      else
 		{
-		  return 1;
+		  start = percent+3;
+		  percent = strchr(start, '%');
+		  continue;
 		}
-	      start = percent;
+	    }
+	  percent += 3;
+
+	  cssc::FailureOr<bool> done = emit_keyletter_expansion(out, parms, d, c);
+	  if (done.ok())
+	    {
+	      if (*done)
+		{
+		  start = percent - 3;
+		  percent = percent - 1;
+		  continue;
+		}
 	    }
 	  else
 	    {
-	      percent++;
+	      return done.fail();
 	    }
-	  percent = strchr(percent, '%');
+	  start = percent;
 	}
+      else
+	{
+	  percent++;
+	}
+      percent = strchr(percent, '%');
+    }
 
-      return fputs_failed(fputs(start, out));
-    }();
-  if (err )
+  if (fputs_failed(fputs(start, out)))
     {
-      // TODO: refactor this funciton so that we can use a more
-      // specific error code.
-      return cssc::make_failure_builder(cssc::errorcode::GetFileBodyFailed);
+      return cssc::make_failure_builder_from_errno(errno) << "write failed";
     }
   return cssc::Failure::Ok();
 }
