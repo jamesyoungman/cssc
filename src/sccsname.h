@@ -32,11 +32,12 @@
 #include <string>
 
 #include "failure.h"
+#include "failure_or.h"
 #include "filelock.h"
 #include "quit.h"
 
 std::string base_part(const std::string &name);
-std::string canonify_filename(const char* fname);
+cssc::FailureOr<std::string> canonify_filename(const char* fname);
 
 class sccs_name
 {

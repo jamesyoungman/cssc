@@ -33,9 +33,6 @@ split_filename(const std::string &fullname,
 {
   ASSERT(fullname.length() > 0);
 
-  dirname = std::string("");	// empty string.
-  basename = fullname;
-
   /* Find the final slash.
    */
   std::string::size_type i = fullname.find_last_of('/');
@@ -43,7 +40,11 @@ split_filename(const std::string &fullname,
     {
       dirname = fullname.substr(0, i+1); // initial i characters
       basename = fullname.substr(i+1, std::string::npos);
-      return;
+    }
+  else
+    {
+      dirname = "";
+      basename = fullname;
     }
 }
 

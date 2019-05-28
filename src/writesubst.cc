@@ -173,8 +173,18 @@ sccs_file::write_subst(const char *start,
             case 'P':
               if (1) // introduce new scope...
                 {
-                  string path(canonify_filename(name.c_str()));
-                  err = fputs_failed(fputs(path.c_str(), out));
+		  cssc::FailureOr<string> canon = canonify_filename(name.c_str());
+		  if (!canon.ok())
+		    {
+		      // XXX: probably the resulting error message issued
+		      // by the caller will be a bit inaccurate.
+		      err = 1;
+		    }
+		  else
+		    {
+		      string path(*canon);
+		      err = fputs_failed(fputs(path.c_str(), out));
+		    }
                 }
               break;
 

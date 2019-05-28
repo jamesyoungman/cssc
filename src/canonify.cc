@@ -21,61 +21,108 @@
  * Functions for canonifying filenames.
  */
 #include <config.h>
+
+#include <cerrno>
+#include <limits>
 #include <string>
+#include <vector>
 
 #include "sccsname.h"
+#include "failure.h"
 #include "file.h"
 
 
 #include <cstring>
 
 #include <unistd.h>		// chdir()
+#include <string.h>		// strerror
 #include <stddef.h>
 
 using std::string;
 
-static string
+namespace
+{
+static
+cssc::FailureOr<string::size_type>
+new_cap(string::size_type current)
+{
+  string::size_type increment = current/2;
+  if (0 == increment)
+    increment = 1;
+  if (std::numeric_limits<string::size_type>::max() - increment < current)
+    return cssc::make_failure_from_errno(ERANGE);
+
+  return current + increment;
+}
+}  // unnamed namespace
+
+static cssc::FailureOr<string>
 get_current_directory()
 {
-  size_t len = 1;
-  char *p;
-
+  std::vector<char> result;
+  result.reserve(16);
   for (;;)
     {
-      if (NULL != (p = new char[len]))
+      result.resize(result.capacity());
+      const char *p = getcwd(result.data(), result.capacity());
+      if (nullptr != p)
 	{
-	  const char *q;
-	  if ( NULL != (q=getcwd(p, len)) )	// success!
-	    {
-	      string ret(q);
-	      delete[] p;
-	      return ret;
-	    }
-	  else
-	    {
-	      len *= 2;		// try a larger buffer.
-	    }
-	  delete[] p;
+	  return string(p);	// success!
 	}
-      else			// allocation failed.
-	{
-	  return ".";		// this is a cop-out really.
-	}
+
+      if (errno != ERANGE)
+	return cssc::make_failure_from_errno(errno);
+
+      // The buffer was too small, increase it.
+      auto updated = new_cap(result.capacity());
+      if (!updated.ok())
+	return updated.fail();	// Failed.
+      // Ensure we make progress at every iteration.
+      ASSERT(*updated > result.capacity());
+      result.reserve(*updated);
     }
 }
 
 
-string
+cssc::FailureOr<string>
 canonify_filename(const char* fname)
 {
   string dirname, basename;
   split_filename(fname, dirname, basename);
+  bool changed_dir = false;
 
-  string old_dir(get_current_directory());
-  chdir(dirname.c_str());
-  string canonical_dir(get_current_directory());
-  chdir(old_dir.c_str());
+  cssc::FailureOr<string> old = get_current_directory();
+  if (!old.ok())
+    return old;			// failure
+  const string old_dir(*old);
 
+  if (dirname != "")
+    {
+      if (0 != chdir(dirname.c_str()))
+	{
+	  return cssc::make_failure_builder_from_errno(errno)
+	    << "unable to chdir to " << dirname;
+	}
+      changed_dir = true;
+    }
+
+  // Now that we have changed working directory, all return paths need
+  // to restore the working directory.
+  ResourceCleanup recover_cwd([old_dir, changed_dir](){
+      if (!changed_dir)
+	return;
+      if (0 != chdir(old_dir.c_str()))
+	{
+	  fatal_quit(2, "unable to restore current directory to %s: %s",
+		     old_dir.c_str(), strerror(errno));
+	}
+    });
+
+  cssc::FailureOr<string> curr = get_current_directory();
+  if (!curr.ok())
+    return curr;		// failure
+
+  string canonical_dir(*curr);
   return string(canonical_dir + string("/") + basename);
 }
 

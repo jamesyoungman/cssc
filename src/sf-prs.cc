@@ -605,7 +605,14 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
           break;
 
         case KEY2('P','N'):
-          fputs(canonify_filename(name.c_str()).c_str(), out);
+	  {
+	    cssc::FailureOr<std::string> canon = canonify_filename(name.c_str());
+	    if (canon.ok())
+	      {
+		const std::string path(*canon);
+		fputs(path.c_str(), out);
+	      }
+	  }
           break;
         }
     }
