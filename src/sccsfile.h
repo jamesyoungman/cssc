@@ -95,7 +95,6 @@ public:
 		    bool no_decode = false, bool for_edit = false);
   // TODO: return cssc::Failure instead of bool?
   bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
-  // TODO: return cssc::FailureOr<get_status>?
   cssc::FailureOr<get_status> get(FILE *out,
 				  const std::string& gname,
 				  FILE *summary_file,
@@ -277,7 +276,6 @@ private:
   cssc::Failure print_subsituted_flags_list(FILE *out, const char* separator) const;
   static bool is_known_keyword_char(char c);
 
-  // TODO: return cssc::Failure instead of int?
   cssc::FailureOr<bool> emit_keyletter_expansion(FILE *out, struct subst_parms *parms, const delta& d, char c) const;
   cssc::Failure write_subst(const char *start,
 			    struct subst_parms *parms,
