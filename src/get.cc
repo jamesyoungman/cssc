@@ -30,6 +30,7 @@
 #include <errno.h>
 
 #include "cssc.h"
+#include "failure.h"
 #include "fileiter.h"
 #include "sccsfile.h"
 #include "delta.h"
@@ -45,17 +46,22 @@
 
 /* Prints a list of included or excluded SIDs. */
 
-static void
+static cssc::Failure
 print_id_list(FILE *fp, const char *s, std::vector<sid> const &list)
 {
+  cssc::Failure status;
   if (!list.empty())
     {
-      fprintf(fp, "%s:\n", s);
+      if (fprintf_failed(fprintf(fp, "%s:\n", s))) 
+	status = cssc::Update(status, cssc::make_failure_from_errno(errno));
+
       for (const auto& sid : list)
         {
-          sid.print(fp);
-          fputc('\n', fp);
+	  status = cssc::Update(status, sid.print(fp));
+          if (fputc_failed(fputc('\n', fp)))
+	    status = cssc::Update(status, cssc::make_failure_from_errno(errno));
         }
+      return status;
     }
 }
 
@@ -538,20 +544,21 @@ main(int argc, char **argv)
               continue;
             }
 
-          print_id_list(commentary, "Included", status.included);
-          print_id_list(commentary, "Excluded", status.excluded);
-          retrieve.print(commentary);
-          fputc('\n', commentary);
+          if (!print_id_list(commentary, "Included", status.included).ok()) retval = 1;
+          if (!print_id_list(commentary, "Excluded", status.excluded).ok()) retval = 1;
+          if (!retrieve.print(commentary).ok()) retval = 1;
+          if (fputc_failed(fputc('\n', commentary))) retval = 1;
 
           if (for_edit)
             {
-              fprintf(commentary, "new delta ");
-              new_delta.print(commentary);
-	      fputc('\n', commentary);
+              if (fprintf_failed(fprintf(commentary, "new delta "))) retval = 1;
+              if (!new_delta.print(commentary).ok()) retval = 1;
+	      if (fputc_failed(fputc('\n', commentary))) retval = 1;
 
 	      cssc::Failure added = pfile->add_lock(retrieve, new_delta, include, exclude);
               if (!added.ok())
                 {
+                  retval = 1;   // remember the failure.
                   // Failed to add the lock to the p-file.
                   if (real_file)
                     {
@@ -563,7 +570,6 @@ main(int argc, char **argv)
 					      gname.c_str());
 			}
                     }
-                  retval = 1;   // remember the failure.
                 }
               delete pfile;
               pfile = NULL;
@@ -571,6 +577,7 @@ main(int argc, char **argv)
 
           if (!no_output)
             {
+	      // TODO: should a failure here affect the exit status?
               fprintf(commentary, "%u lines\n", status.lines);
             }
         }
