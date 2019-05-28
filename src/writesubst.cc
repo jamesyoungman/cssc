@@ -60,114 +60,111 @@ cssc::FailureOr<bool>
 sccs_file::emit_keyletter_expansion(FILE *out, struct subst_parms *parms, const delta& d, char c) const
 {
   // We need to expand the keyletter.
-  int err = 0;
+#define RETURN_IF_ERROR(expression) do { cssc::Failure f = (expression); if (!f.ok()) { return f;  } } while(0)
+#define ERRNO_ERROR_IF_NONZERO(expression) do { int x = (expression); if (x) { return cssc::make_failure_builder_from_errno(errno); } } while(0)
   switch (c)
     {
     case 'M':
       {
 	const char *mod = get_module_name().c_str();
-	err = fputs_failed(fputs(mod, out));
+	ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(mod, out)));
       }
-      break;
+      return false;
 
     case 'I':
-      err = !d.id().print(out).ok();
-      break;
+      RETURN_IF_ERROR(d.id().print(out));
+      return false;
 
     case 'R':
-      err = !d.id().printf(out, 'R', 1).ok();
-      break;
+      RETURN_IF_ERROR(d.id().printf(out, 'R', 1));
+      return false;
 
     case 'L':
-      err = !d.id().printf(out, 'L', 1).ok();
-      break;
+      RETURN_IF_ERROR(d.id().printf(out, 'L', 1));
+      return false;
 
     case 'B':
-      err = !d.id().printf(out, 'B', 1).ok();
-      break;
+      RETURN_IF_ERROR(d.id().printf(out, 'B', 1));
+      return false;
 
     case 'S':
-      err = !d.id().printf(out, 'S', 1).ok();
-      break;
+      RETURN_IF_ERROR(d.id().printf(out, 'S', 1));
+      return false;
 
     case 'D':
-      err = !parms->now.printf(out, 'D').ok();
-      break;
+      RETURN_IF_ERROR(parms->now.printf(out, 'D'));
+      return false;
 
     case 'H':
-      err = !parms->now.printf(out, 'H').ok();
-      break;
+      RETURN_IF_ERROR(parms->now.printf(out, 'H'));
+      return false;
 
     case 'T':
-      err = !parms->now.printf(out, 'T').ok();
-      break;
+      RETURN_IF_ERROR(parms->now.printf(out, 'T'));
+      return false;
 
     case 'E':
-      err = !d.date().printf(out, 'D').ok();
-      break;
+      RETURN_IF_ERROR(d.date().printf(out, 'D'));
+      return false;
 
     case 'G':
-      err = !d.date().printf(out, 'H').ok();
-      break;
+      RETURN_IF_ERROR(d.date().printf(out, 'H'));
+      return false;
 
     case 'U':
-      err = !d.date().printf(out, 'T').ok();
-      break;
+      RETURN_IF_ERROR(d.date().printf(out, 'T'));
+      return false;
 
     case 'Y':
       if (flags.type)
 	{
-	  err = fputs_failed(fputs(flags.type->c_str(), out));
+	  ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(flags.type->c_str(), out)));
 	}
-      break;
+      else
+	{
+	  // Expands to nothing.
+	}
+      return false;
 
     case 'F':
-      err =
-	fputs_failed(fputs(base_part(name.sfile()).c_str(),
-			   out));
-      break;
+      ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(base_part(name.sfile()).c_str(),
+						out)));
+      return false;
 
     case 'P':
       if (1) // introduce new scope...
 	{
 	  cssc::FailureOr<string> canon = canonify_filename(name.c_str());
 	  if (!canon.ok())
-	    {
-	      // XXX: probably the resulting error message issued
-	      // by the caller will be a bit inaccurate.
-	      err = 1;
-	    }
-	  else
-	    {
-	      string path(*canon);
-	      err = fputs_failed(fputs(path.c_str(), out));
-	    }
+	    return canon.fail();
+	  string path(*canon);
+	  ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(path.c_str(), out)));
 	}
-      break;
+      return false;
 
     case 'Q':
       if (flags.user_def)
 	{
-	  err = fputs_failed(fputs(flags.user_def->c_str(), out));
-	}
-      break;
-
-    case 'C':
-      err = printf_failed(fprintf(out, "%u",
-				  parms->out_lineno));
-      break;
-
-    case 'Z':
-      if (fputc_failed(fputc('@', out))
-	  || fputs_failed(fputs("(#)", out)))
-	{
-	  err = 1;
+	  ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(flags.user_def->c_str(), out)));
 	}
       else
 	{
-	  err = 0;
+	  // Expands to nothing.
 	}
-      break;
+      return false;
+
+    case 'C':
+      ERRNO_ERROR_IF_NONZERO(printf_failed(fprintf(out, "%u",
+						   parms->out_lineno)));
+      return false;
+
+    case 'Z':
+      {
+	const int fail = fputc_failed(fputc('@', out))
+	  || fputs_failed(fputs("(#)", out));
+	ERRNO_ERROR_IF_NONZERO(fail);
+      }
+      return false;
 
     case 'W':
       {
@@ -210,31 +207,30 @@ sccs_file::emit_keyletter_expansion(FILE *out, struct subst_parms *parms, const 
 	    parms->wstring = cssc::optional<std::string>();
 	  }
 	ASSERT(saved_wstring.has_value());
-	if (!write_subst(saved_wstring.value().c_str(), parms, d, true).ok())
-	  err = 1;
+	cssc::Failure recursed = write_subst(saved_wstring.value().c_str(),
+					     parms, d, true);
+	if (!recursed.ok())
+	  return recursed;
 	if (!parms->wstring.has_value())
 	  {
 	    parms->wstring = saved_wstring;
 	  }
       }
-      break;
+      return false;
 
     case 'A':
-      if (!write_subst("%Z""%%Y""% %M""% %I"
-		       "%%Z""%",
-		       parms, d, true).ok())
-	{
-	  err = 1;
-	}
-      break;
+      {
+	cssc::Failure recursed = write_subst("%Z""%%Y""% %M""% %I"
+					     "%%Z""%",
+					     parms, d, true);
+	if (!recursed.ok())
+	  return recursed;
+	return false;
+      }
 
     default:
       return true;
     }
-  if (err)
-    return cssc::make_failure(cssc::errorcode::GetFileBodyFailed);
-  else
-    return false;
 }
 
 

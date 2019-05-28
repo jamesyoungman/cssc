@@ -59,8 +59,6 @@ namespace cssc
       BodyLineTooLong,
       LockNotHeld,
       DeclineToOverwriteOutputFile,
-      // TODO: GetFileBodyFailed should be temporary, because it is too vague.
-      GetFileBodyFailed,
     };
 
   // condition is for storing in std::error_condition

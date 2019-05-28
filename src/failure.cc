@@ -56,8 +56,6 @@ namespace cssc
 	return "cannot continue without holding the lock on the SCCS file";
       case isit(errorcode::DeclineToOverwriteOutputFile):
 	return "refusing to overwrite output file";
-      case isit(errorcode::GetFileBodyFailed):
-	return "failed to get file body"; // TODO: retire this code soon.
       default:
 	return "unknown CSSC error";
       }
