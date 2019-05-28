@@ -54,7 +54,7 @@ public:
   sccs_date(int yr, int mth, int day,
 	    int hr, int min, int sec);
 
-  int valid() const;
+  bool valid() const;
 
   static sccs_date now();
   std::string as_string() const;
@@ -62,10 +62,9 @@ public:
   int printf(FILE *f, char fmt) const;
   int print(FILE *f) const;
 
-  int operator >(sccs_date const &) const;
-  int operator <(sccs_date const &) const;
-
-  int operator <=(sccs_date const &) const;
+  bool operator >(sccs_date const &) const;
+  bool operator <(sccs_date const &) const;
+  bool operator <=(sccs_date const &) const;
 
 private:
   inline int compare(sccs_date const &) const;

@@ -474,22 +474,22 @@ int sccs_date::compare(const sccs_date& d) const
     return second - d.second;
 }
 
-int sccs_date::operator >(sccs_date const & d) const
+bool sccs_date::operator >(sccs_date const & d) const
 {
   return compare(d) > 0;
 }
 
-int sccs_date::operator <(sccs_date const &d) const
+bool sccs_date::operator <(sccs_date const &d) const
 {
   return compare(d) < 0;
 }
 
-int sccs_date::operator <=(sccs_date const &d) const
+bool sccs_date::operator <=(sccs_date const &d) const
 {
   return compare(d) <= 0;
 }
 
-int
+bool
 sccs_date::valid() const
 {
   // Allow the seconds field to get as high as 61, since that is what
