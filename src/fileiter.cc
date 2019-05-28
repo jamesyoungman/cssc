@@ -31,6 +31,7 @@
 #include <string>
 
 #include "cssc.h"
+#include "cleanup.h"
 #include "sccsname.h"
 #include "fileiter.h"
 #include "linebuf.h"
@@ -60,6 +61,9 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 
 	if (first[0] != '\0') {
 		DIR *dir = opendir(first);
+		ResourceCleanup dir_closer([&dir](){
+		    closedir(dir);
+		  });
 		if (dir != NULL) {
 			const char *slash = NULL;
 			const size_t len = strlen(first);
@@ -101,8 +105,6 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 				  }
 				dent = readdir(dir);
 			}
-
-			closedir(dir);
 
 			source_ = source::DIRECTORY;
 			pos = 0;
