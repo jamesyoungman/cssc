@@ -383,10 +383,6 @@ sccs_file::get(FILE *out, const std::string& gname,
                int show_sid, int show_module, int debug,
 	       bool for_edit)
 {
-  auto fail = [](const std::string& msg) {
-    return cssc::make_failure_builder(cssc::errorcode::GetFileBodyFailed) << msg;
-  };
-
   ASSERT(0 != delta_table);
 
   seq_state state(highest_delta_seqno());
