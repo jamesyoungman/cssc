@@ -679,7 +679,7 @@ cssc::FailureOr<bool>
 is_directory(const char *name)
 {
   errno = 0;
-  DIR *p = opendir(name);
+  DIR *p = opendir_safer(name);
   if (p)
     {
       closedir(p);
