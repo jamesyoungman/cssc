@@ -157,7 +157,7 @@ public:
   // TODO: return cssc::Failure instead of bool?
   bool find_most_recent_sid(sid& s, sccs_date& d) const;
 
-  int is_delta_creator(const char *user, sid id) const;
+  bool is_delta_creator(const char *user, sid id) const;
 
   void check_bk_flag(const sccs_file_location&, char flagchar) const;
 

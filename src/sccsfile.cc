@@ -412,7 +412,7 @@ void sccs_file::set_expanded_keyword_flag(const char *s)
   std::swap(tmp_letters, flags.substitued_flag_letters);
 }
 
-int
+bool
 sccs_file::is_delta_creator(const char *user, sid id) const
 {
   const delta *d = find_delta(id);
