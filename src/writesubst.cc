@@ -231,11 +231,10 @@ sccs_file::emit_keyletter_expansion(FILE *out, struct subst_parms *parms, const 
     default:
       return true;
     }
-  parms->found_id = 1;
   if (err)
     return cssc::make_failure(cssc::errorcode::GetFileBodyFailed);
   else
-    return cssc::Failure::Ok();
+    return false;
 }
 
 
@@ -286,18 +285,18 @@ sccs_file::write_subst(const char *start,
 	  percent += 3;
 
 	  cssc::FailureOr<bool> done = emit_keyletter_expansion(out, parms, d, c);
-	  if (done.ok())
+	  if (!done.ok())
+	    return done.fail();
+
+	  if (*done)
 	    {
-	      if (*done)
-		{
-		  start = percent - 3;
-		  percent = percent - 1;
-		  continue;
-		}
+	      start = percent - 3;
+	      percent = percent - 1;
+	      continue;
 	    }
 	  else
 	    {
-	      return done.fail();
+	      parms->found_id = 1;
 	    }
 	  start = percent;
 	}

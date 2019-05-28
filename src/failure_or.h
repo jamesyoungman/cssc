@@ -59,6 +59,11 @@ class FailureOr
   FailureOr(Failure fail)
     : value_(), fail_(fail)
   {
+    // You should not create a FailureOr<T> from an instance of
+    // Failure which does not actually represent an error, since this
+    // leaves the FailureOr instance empty with a default-constructed
+    // T.
+    ASSERT(!fail.ok());
   }
 
   FailureOr(FailureBuilder f)
