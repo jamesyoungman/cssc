@@ -91,27 +91,27 @@ sccs_file::emit_keyletter_expansion(FILE *out, struct subst_parms *parms, const 
       break;
 
     case 'D':
-      err = parms->now.printf(out, 'D');
+      err = !parms->now.printf(out, 'D').ok();
       break;
 
     case 'H':
-      err = parms->now.printf(out, 'H');
+      err = !parms->now.printf(out, 'H').ok();
       break;
 
     case 'T':
-      err = parms->now.printf(out, 'T');
+      err = !parms->now.printf(out, 'T').ok();
       break;
 
     case 'E':
-      err = d.date().printf(out, 'D');
+      err = !d.date().printf(out, 'D').ok();
       break;
 
     case 'G':
-      err = d.date().printf(out, 'H');
+      err = !d.date().printf(out, 'H').ok();
       break;
 
     case 'U':
-      err = d.date().printf(out, 'T');
+      err = !d.date().printf(out, 'T').ok();
       break;
 
     case 'Y':

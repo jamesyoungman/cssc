@@ -31,7 +31,7 @@
 #include <string>
 #include <cstdio>
 
-#include "ioerr.h"
+#include "failure.h"
 #include "quit.h"
 
 class sccs_date
@@ -59,8 +59,8 @@ public:
   static sccs_date now();
   std::string as_string() const;
 
-  int printf(FILE *f, char fmt) const;
-  int print(FILE *f) const;
+  cssc::Failure printf(FILE *f, char fmt) const;
+  cssc::Failure print(FILE *f) const;
 
   bool operator >(sccs_date const &) const;
   bool operator <(sccs_date const &) const;

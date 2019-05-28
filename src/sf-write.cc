@@ -145,11 +145,19 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
                             cap5(d.unchanged())))
       || printf_failed(fprintf(out, "\001d %c ", d.get_type()))
       || !d.id().print(out).ok()
-      || putc_failed(putc(' ', out))
-      || d.date().print(out)
-      || printf_failed(fprintf(out, " %s %u %u\n",
-                               d.user().c_str(),
-                               d.seq(), d.prev_seq())))
+      || putc_failed(putc(' ', out)))
+    {
+      return 1;
+    }
+
+  if (!d.date().print(out).ok())
+    {
+      return 1;
+    }
+
+  if (printf_failed(fprintf(out, " %s %u %u\n",
+			    d.user().c_str(),
+			    d.seq(), d.prev_seq())))
     {
       return 1;
     }

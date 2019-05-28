@@ -32,6 +32,8 @@
 
 #include "cssc.h"
 #include "sccsdate.h"
+#include "ioerr.h"
+#include "failure.h"
 #include "cssc-assert.h"
 
 #include <time.h>
@@ -327,7 +329,7 @@ sccs_date::sccs_date(const char *date_arg, const char *time)
     }
 }
 
-int
+cssc::Failure
 sccs_date::printf(FILE *f, char fmt) const
 {
   const int yy = year % 100;
@@ -335,15 +337,15 @@ sccs_date::printf(FILE *f, char fmt) const
   switch(fmt)
     {
     case 'D':
-      return printf_failed(fprintf(f, "%02d/%02d/%02d",
-                                   yy, month, month_day));
+      return fprintf_failure(fprintf(f, "%02d/%02d/%02d",
+				     yy, month, month_day));
     case 'H':
-      return printf_failed(fprintf(f, "%02d/%02d/%02d",
-                                   month, month_day, yy));
+      return fprintf_failure(fprintf(f, "%02d/%02d/%02d",
+				     month, month_day, yy));
 
     case 'T':
-      return printf_failed(fprintf(f, "%02d:%02d:%02d",
-                                   hour, minute, second));
+      return fprintf_failure(fprintf(f, "%02d:%02d:%02d",
+				     hour, minute, second));
     }
 
   int value = 0;
@@ -378,15 +380,16 @@ sccs_date::printf(FILE *f, char fmt) const
       // This code IS reached, when ASSERT() expands to nothing.
       // TODO: throw exception here
     }
-  return printf_failed(fprintf(f, "%02d", value));
+  return fprintf_failure(fprintf(f, "%02d", value));
 }
 
-int
+cssc::Failure
 sccs_date::print(FILE *f) const
 {
-  return this->printf(f, 'D')
-    || putc_failed(putc(' ', f))
-    || this->printf(f, 'T');
+  cssc::Failure fail = this->printf(f, 'D');
+  fail = Update(fail, fputc_failure(' ', f));
+  fail = Update(fail, this->printf(f, 'T'));
+  return fail;
 }
 
 

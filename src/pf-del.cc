@@ -78,7 +78,7 @@ sccs_pfile::write_edit_locks(FILE *out, const std::string& file_name) const
 
   auto write_edit_lock = [write_error, out, diagnose](struct edit_lock const &it)
     {
-      auto written = it.got.print(out);
+      cssc::Failure written = it.got.print(out);
       if (!written.ok())
 	return diagnose(written);
 
@@ -91,11 +91,14 @@ sccs_pfile::write_edit_locks(FILE *out, const std::string& file_name) const
 
       if (putc_failed(putc(' ', out))
 	  || fputs_failed(fputs(it.user.c_str(), out))
-	  || putc_failed(putc(' ', out))
-	  || it.date.print(out))
+	  || putc_failed(putc(' ', out)))
 	{
 	  return write_error();
 	}
+
+      written = it.date.print(out);
+      if (!written.ok())
+	return diagnose(written);
 
       if (!it.include.empty()
 	  && ((fputs(" -i", out) == EOF || it.include.print(out))))
