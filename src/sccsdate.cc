@@ -418,7 +418,7 @@ sccs_date::sccs_date(int yr, int mth, int day,
 
 sccs_date::sccs_date()
   : year(-1), month(-1), month_day(-1),
-    hour(-1), minute(-1), second(-1)
+    hour(-1), minute(-1), second(-1), yearday(-1)
 {
 }
 
@@ -450,6 +450,9 @@ sccs_date::update_yearday()
 
 int sccs_date::compare(const sccs_date& d) const
 {
+  ASSERT(valid());
+  ASSERT(d.valid());
+
   int diff;
 
   if ( (diff = year - d.year) != 0 )
