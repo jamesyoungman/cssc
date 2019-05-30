@@ -58,7 +58,6 @@ int delta_iterator::index() const
   return pos;
 }
 
-// TODO: probably better for operator-> to return a reference.
 delta const *
 delta_iterator::operator ->() const
 {
@@ -66,7 +65,6 @@ delta_iterator::operator ->() const
   return &dtbl->at(pos);
 }
 
-// TODO: probably better for operator-> to return a reference.
 delta *
 delta_iterator::operator ->()
 {
