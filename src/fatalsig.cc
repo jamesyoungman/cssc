@@ -26,6 +26,9 @@
 #include "config.h"
 
 #include <cstdlib>
+#include <cstring>
+#include <map>
+#include <vector>
 #include <signal.h>             /* TODO: consider using sigaction(). */
 
 #include "cssc-assert.h"
@@ -33,6 +36,8 @@
 #include "quit.h"
 #include "version.h"
 
+namespace
+{
 
 /* The expansion of RETSIGTYPE is automatically decided by the configure
  * script; its value is define in config.h.
@@ -44,67 +49,57 @@ typedef RETSIGTYPE (*sighandler)(int);
  * receipt is normally fatal and for which we wish to perform
  * cleanup.
  */
-static const int fatal_signals_to_trap[] =
+const std::vector<int> fatal_signals_to_trap =
 {
   SIGHUP, SIGINT, SIGQUIT, SIGPIPE
 };
-#define N_TRAPPED_SIGS (sizeof(fatal_signals_to_trap) /   \
-                        sizeof(fatal_signals_to_trap[0]))
 
 /* In the array set_sig_handlers() we keep the initial disposition
  * of the signals whose dispositions we alter, in order to
  * restore them inside the signal handler.
  */
-static sighandler initial_dispositions[N_TRAPPED_SIGS];
-static int already_called = 0;
-
+std::map<int, sighandler> initial_dispositions;
 
 /* set_sig_handlers
  *
  * This function sets up signal handers for various fatal signals and
  * remembers the original settings.
  */
-static void set_sig_handlers( sighandler pfn )
+void set_sig_handlers( sighandler pfn )
 {
-  unsigned int i;
-
-  for (i=0u; i<N_TRAPPED_SIGS; ++i)
+  for (int sig : fatal_signals_to_trap)
     {
-      int sig = fatal_signals_to_trap[i];
-      sighandler orighand = signal(sig, pfn);
-
-      if (SIG_ERR == orighand)
+      struct sigaction action, oa;
+      memset(&oa, 0, sizeof(oa));
+      memset(&action, 0, sizeof(action));
+      action.sa_handler = pfn;
+      if (0 != sigaction(sig, &action, &oa))
         {
           /* This is a nonfatal error. */
-          errormsg_with_errno("Failed to set signal handler for signal %d",
-                              sig);
-          initial_dispositions[i] = SIG_DFL;
+          errormsg_with_errno("Failed to set signal handler for signal %d", sig);
+          oa.sa_handler = SIG_DFL;
         }
-      else
-        {
-          initial_dispositions[i] = orighand;
-        }
+      initial_dispositions[sig] = oa.sa_handler;
     }
 }
 
 /* reset_sig_handlers
  *
  * Resets the original signal handlers for the fatal signals
- * as saved in the array initial_dispositions.
+ * as saved in initial_dispositions.
  */
-static void reset_sig_handlers( void )
+void reset_sig_handlers( void )
 {
-  unsigned int i;
-
-  for (i=0u; i; ++i)
+  for (const auto mapping : initial_dispositions)
     {
-      int sig = fatal_signals_to_trap[i];
-
-      if (SIG_ERR == signal(sig, initial_dispositions[i]))
-        {
+      struct sigaction action;
+      memset(&action, 0, sizeof(action));
+      action.sa_handler = mapping.second;
+      if (0 != sigaction(mapping.first, &action, NULL))
+	{
           /* This is a nonfatal error. */
           errormsg_with_errno("Failed to reset signal handler for signal %d",
-                              sig);
+			      mapping.first);
         }
     }
 }
@@ -137,9 +132,11 @@ handle_fatal_sig(int /* whatsig */ )
   exit(1);
 }
 
+}  // unnamed namespace
 
 void quit_on_fatal_signals (void)
 {
+  static int already_called = 0;
   ASSERT(already_called == 0);
 
   set_sig_handlers(handle_fatal_sig);
