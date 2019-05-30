@@ -98,13 +98,13 @@ public:
 				  const std::string& gname,
 				  FILE *summary_file,
 				  sid id,
-				  sccs_date cutoff_date = sccs_date(),
-				  sid_list include = sid_list(""),
-				  sid_list exclude = sid_list(""),
-				  int keywords = 0,
-				  cssc::optional<std::string> wstring = cssc::optional<std::string>(),
-				  int show_sid = 0, int show_module = 0,
-				  int debug = 0, bool for_edit = false);
+				  sccs_date cutoff_date,
+				  sid_list include,
+				  sid_list exclude,
+				  bool keywords,
+				  cssc::optional<std::string> wstring,
+				  bool show_sid, bool show_module,
+				  bool debug, bool for_edit);
   // At a high level, delta is implemented via add_delta
   // TODO: return cssc::Failure instead of bool?
   bool add_delta(const std::string& gname,

@@ -379,8 +379,8 @@ sccs_file::get(FILE *out, const std::string& gname,
 	       FILE *summary_file,
 	       sid id, sccs_date cutoff_date,
                sid_list include, sid_list exclude,
-               int keywords, cssc::optional<std::string> wstring,
-               int show_sid, int show_module, int debug,
+               bool keywords, cssc::optional<std::string> wstring,
+               bool show_sid, bool show_module, bool debug,
 	       bool for_edit)
 {
   ASSERT(0 != delta_table);
