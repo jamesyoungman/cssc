@@ -192,8 +192,8 @@ sccs_file::do_get(const string& gname,
 		  struct subst_parms &parms,
 		  bool do_kw_subst,
 		  int show_sid, int show_module, int debug,
-		  bool no_decode /* = false */,
-		  bool for_edit /* = false */)
+		  bool no_decode,
+		  bool for_edit)
 {
   ASSERT(mode != CREATE);
   ASSERT(mode != FIX_CHECKSUM);
