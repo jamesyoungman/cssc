@@ -91,8 +91,8 @@ public:
   cssc::Failure get(const std::string& gname, class seq_state &state,
 		    struct subst_parms &parms,
 		    bool do_kw_subst,
-		    int show_sid = 0, int show_module = 0, int debug = 0,
-		    bool no_decode = false, bool for_edit = false);
+		    int show_sid, int show_module, int debug,
+		    bool no_decode, bool for_edit);
   cssc::Failure prs_get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
   cssc::FailureOr<get_status> get(FILE *out,
 				  const std::string& gname,

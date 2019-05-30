@@ -504,7 +504,8 @@ sccs_file::get(FILE *out, const std::string& gname,
                            0, sccs_date::now());
 
 
-  cssc::Failure got = get(gname, state, parms, keywords, show_sid, show_module, debug);
+  cssc::Failure got = get(gname, state, parms, keywords, show_sid, show_module, debug,
+			  false, false);
   if (!got.ok())
     {
       // TODO: verify whether or not we need to delete the g-file.
