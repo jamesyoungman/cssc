@@ -377,8 +377,10 @@ sccs_date::printf(FILE *f, char fmt) const
 
     default:
       ASSERT(!"sccs_date::printf: Invalid format");
-      // This code IS reached, when ASSERT() expands to nothing.
-      // TODO: throw exception here
+      /* This line is reached when ASSERT expands to nothing. */
+      return cssc::make_failure_builder_from_errno(EINVAL)
+	.diagnose() << "sccs_date::printf: Invalid format letter '"
+		    << fmt << "'";
     }
   return fprintf_failure(fprintf(f, "%02d", value));
 }
