@@ -100,16 +100,14 @@ public:
 				  bool show_sid, bool show_module,
 				  bool debug, bool for_edit);
 
-  // do_get computes and emits the gotten body for delta, and other callers.
+  // do_get emits the gotten body (i.e. the actual result you would
+  // get from "get -p s.foo").  It's used by prs, delta and so forth,
+  // as well as sccs_file::get().
   cssc::Failure do_get(const std::string& gname, class seq_state &state,
 		       struct subst_parms &parms,
 		       bool do_kw_subst,
 		       int show_sid, int show_module, int debug,
 		       bool no_decode, bool for_edit);
-
-  // prs_get is essentially a convenience method used in prs which
-  // forwards to do_get.
-  cssc::Failure prs_get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
 
   // Command handlers
   // At a high level, delta is implemented via add_delta
