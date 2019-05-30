@@ -39,14 +39,15 @@
 #include "cssc-assert.h"
 #include "subst-parms.h"
 
-inline bool
-sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
+inline cssc::Failure
+sccs_file::prs_get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
 {
   sid_list no_includes, no_excludes;
   sccs_date no_cutoff;
 
-  if (!edit_mode_permitted(for_edit).ok())
-    return false;
+  cssc::Failure permitted = edit_mode_permitted(for_edit);
+  if (!permitted.ok())
+    return permitted;
 
   auto w = cssc::optional<std::string>();
   struct subst_parms parms(gname, get_module_name(), out, w,
@@ -55,7 +56,7 @@ sccs_file::get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
   class seq_state state(highest_delta_seqno());
 
   prepare_seqstate(state, seq, no_includes, no_excludes, no_cutoff);
-  return get(gname, state, parms, true).ok();
+  return get(gname, state, parms, true);
 }
 
 /* Prints a list of sequence numbers on the same line. */
@@ -577,7 +578,7 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
           break;
 
         case KEY2('G','B'):
-          get(out, "-", d.seq(), false); // TODO: check return value?
+          prs_get(out, "-", d.seq(), false); // TODO: check return value?
           break;
 
         case KEY1('W'):

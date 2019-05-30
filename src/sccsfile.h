@@ -93,8 +93,7 @@ public:
 		    bool do_kw_subst,
 		    int show_sid = 0, int show_module = 0, int debug = 0,
 		    bool no_decode = false, bool for_edit = false);
-  // TODO: return cssc::Failure instead of bool?
-  bool get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
+  cssc::Failure prs_get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
   cssc::FailureOr<get_status> get(FILE *out,
 				  const std::string& gname,
 				  FILE *summary_file,
