@@ -39,26 +39,6 @@
 #include "cssc-assert.h"
 #include "subst-parms.h"
 
-inline cssc::Failure
-sccs_file::prs_get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
-{
-  sid_list no_includes, no_excludes;
-  sccs_date no_cutoff;
-
-  cssc::Failure permitted = edit_mode_permitted(for_edit);
-  if (!permitted.ok())
-    return permitted;
-
-  auto w = cssc::optional<std::string>();
-  struct subst_parms parms(gname, get_module_name(), out, w,
-			   delta_table->delta_at_seq(seq),
-			   0, sccs_date());
-  class seq_state state(highest_delta_seqno());
-
-  prepare_seqstate(state, seq, no_includes, no_excludes, no_cutoff);
-  return do_get(gname, state, parms, true, 0, 0, 0, false, false);
-}
-
 /* Prints a list of sequence numbers on the same line. */
 static void
 print_seq_list(FILE *out, std::vector<seq_no> const &list) {
@@ -274,6 +254,28 @@ print_flag(FILE *out, const sid &it)
 
 /* Prints selected parts of an SCCS file and the specified entry in the
    delta table. */
+
+
+inline cssc::Failure
+sccs_file::prs_get(FILE *out, const std::string& gname, seq_no seq, bool for_edit)
+{
+  sid_list no_includes, no_excludes;
+  sccs_date no_cutoff;
+
+  cssc::Failure permitted = edit_mode_permitted(for_edit);
+  if (!permitted.ok())
+    return permitted;
+
+  auto w = cssc::optional<std::string>();
+  struct subst_parms parms(gname, get_module_name(), out, w,
+			   delta_table->delta_at_seq(seq),
+			   0, sccs_date());
+  class seq_state state(highest_delta_seqno());
+
+  prepare_seqstate(state, seq, no_includes, no_excludes, no_cutoff);
+  return do_get(gname, state, parms, true, 0, 0, 0, false, false);
+}
+
 
 void
 sccs_file::print_delta(FILE *out, const char *outname, const char *format,

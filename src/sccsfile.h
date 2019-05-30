@@ -87,13 +87,7 @@ public:
     void print(FILE *out) const;
   };
 
-  // Command handlers
-  cssc::Failure do_get(const std::string& gname, class seq_state &state,
-		       struct subst_parms &parms,
-		       bool do_kw_subst,
-		       int show_sid, int show_module, int debug,
-		       bool no_decode, bool for_edit);
-  cssc::Failure prs_get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
+  // sccs_file::get performs the get operation for the "get" binary.
   cssc::FailureOr<get_status> get(FILE *out,
 				  const std::string& gname,
 				  FILE *summary_file,
@@ -105,6 +99,19 @@ public:
 				  cssc::optional<std::string> wstring,
 				  bool show_sid, bool show_module,
 				  bool debug, bool for_edit);
+
+  // do_get computes and emits the gotten body for delta, and other callers.
+  cssc::Failure do_get(const std::string& gname, class seq_state &state,
+		       struct subst_parms &parms,
+		       bool do_kw_subst,
+		       int show_sid, int show_module, int debug,
+		       bool no_decode, bool for_edit);
+
+  // prs_get is essentially a convenience method used in prs which
+  // forwards to do_get.
+  cssc::Failure prs_get(FILE *out, const std::string& gname, seq_no seq, bool for_edit);
+
+  // Command handlers
   // At a high level, delta is implemented via add_delta
   // TODO: return cssc::Failure instead of bool?
   bool add_delta(const std::string& gname,
