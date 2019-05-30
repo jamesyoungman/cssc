@@ -273,10 +273,6 @@ delta_main(int argc, char **argv)
 		}
 	    }
 	}
-      catch (CsscReallyFatalException e)
-	{
-	  exit(e.exitval);
-	}
       catch (CsscExitvalException e)
 	{
 	  if (e.exitval > retval)

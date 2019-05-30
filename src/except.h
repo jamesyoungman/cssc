@@ -58,11 +58,6 @@ struct CsscQuitException : public CsscExitvalException
   CsscQuitException(int n) : CsscExitvalException(n) { }
 };
 
-struct CsscReallyFatalException : public CsscExitvalException
-{
-  CsscReallyFatalException(int n) : CsscExitvalException(n) { }
-};
-
 struct CsscContstructorFailedException : public CsscExitvalException
 {
   CsscContstructorFailedException(int n) : CsscExitvalException(n) { }
