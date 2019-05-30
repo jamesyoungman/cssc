@@ -187,13 +187,13 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 }
 
 cssc::Failure
-sccs_file::get(const string& gname,
-	       class seq_state &state,
-               struct subst_parms &parms,
-               bool do_kw_subst,
-               int show_sid, int show_module, int debug,
-               bool no_decode /* = false */,
-	       bool for_edit /* = false */)
+sccs_file::do_get(const string& gname,
+		  class seq_state &state,
+		  struct subst_parms &parms,
+		  bool do_kw_subst,
+		  int show_sid, int show_module, int debug,
+		  bool no_decode /* = false */,
+		  bool for_edit /* = false */)
 {
   ASSERT(mode != CREATE);
   ASSERT(mode != FIX_CHECKSUM);

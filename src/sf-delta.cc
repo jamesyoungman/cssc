@@ -203,9 +203,9 @@ sccs_file::add_delta(const std::string& gname,
                            0, sccs_date());
   seq_state gsstate(sstate);
 
-  cssc::Failure got = get(dname, gsstate, parms, /*do_kw_subst=*/0, /*show_sid=*/0,
-			  /*show_module=*/0, /*debug=*/0, GET_NO_DECODE,
-			  /*for_edit=*/false);
+  cssc::Failure got = do_get(dname, gsstate, parms, /*do_kw_subst=*/0, /*show_sid=*/0,
+			     /*show_module=*/0, /*debug=*/0, GET_NO_DECODE,
+			     /*for_edit=*/false);
   if (!got.ok())
     {
       // TODO: surely this should affect the return value.
