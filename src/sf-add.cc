@@ -41,12 +41,14 @@ FILE *
 sccs_file::start_update(const delta &new_delta)
 {
   FILE *out = start_update();
-  if (out)
+  if (out == NULL)
+    return out;
+  cssc::Failure written = write_delta(out, new_delta);
+  if (!written.ok() || write(out))
     {
-      if (write_delta(out, new_delta) || write(out))
-	{
-	  xfile_error("Write error.");
-	}
+      xfile_error("Write error.");
+      fclose(out);
+      return NULL;
     }
   return out;
 }

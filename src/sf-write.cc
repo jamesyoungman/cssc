@@ -137,52 +137,54 @@ print_seqs(FILE *out, char control, std::vector<seq_no> const &seqs) {
 /* Outputs an entry to the delta table of a new SCCS file.
    Returns non-zero if an error occurs.  */
 
-int
+cssc::Failure
 sccs_file::write_delta(FILE *out, struct delta const &d) const
 {
   if (printf_failed(fprintf(out, "\001s %05lu/%05lu/%05lu\n",
                             cap5(d.inserted()),
                             cap5(d.deleted()),
                             cap5(d.unchanged())))
-      || printf_failed(fprintf(out, "\001d %c ", d.get_type()))
-      || !d.id().print(out).ok()
-      || putc_failed(putc(' ', out)))
+      || printf_failed(fprintf(out, "\001d %c ", d.get_type())))
     {
-      return 1;
+      return cssc::make_failure_from_errno(errno);
     }
+  cssc::Failure done = d.id().print(out);
+  if (!done.ok())
+      return done;
 
-  if (!d.date().print(out).ok())
-    {
-      return 1;
-    }
+  if (putc_failed(putc(' ', out)))
+      return cssc::make_failure_from_errno(errno);
+  done = d.date().print(out);
+  if (!done.ok())
+    return done;
 
   if (printf_failed(fprintf(out, " %s %u %u\n",
 			    d.user().c_str(),
 			    d.seq(), d.prev_seq())))
     {
-      return 1;
+      return cssc::make_failure_from_errno(errno);
     }
-
-  if (!print_seqs(out, 'i', d.get_included_seqnos()).ok()
-      || !print_seqs(out, 'x', d.get_excluded_seqnos()).ok()
-      || !print_seqs(out, 'g', d.get_ignored_seqnos()).ok())
-    {
-      return 1;
-    }
+  done = cssc::Update(done, print_seqs(out, 'i', d.get_included_seqnos()));
+  done = cssc::Update(done, print_seqs(out, 'x', d.get_excluded_seqnos()));
+  done = cssc::Update(done, print_seqs(out, 'g', d.get_ignored_seqnos()));
+  if (!done.ok())
+    return done;
 
   for (const auto& mr : d.mrs())
     {
       if (printf_failed(fprintf(out, "\001m %s\n", mr.c_str())))
-	return 1;
+	return cssc::make_failure_from_errno(errno);
     }
 
   for (const auto& comment : d.comments())
     {
       if (printf_failed(fprintf(out, "\001c %s\n", comment.c_str())))
-	return 1;
+	return cssc::make_failure_from_errno(errno);
     }
 
-  return fputs_failed(fputs("\001e\n", out));
+  if (fputs_failed(fputs("\001e\n", out)))
+    return cssc::make_failure_from_errno(errno);
+  return cssc::Failure::Ok();
 }
 
 
@@ -194,7 +196,7 @@ sccs_file::write(FILE *out) const
 {
   const_delta_iterator iter(delta_table.get(), delta_selector::all);
   while (iter.next()) {
-    if (write_delta(out, *iter.operator->())) {
+    if (!write_delta(out, *iter.operator->()).ok()) {
       return 1;
     }
   }

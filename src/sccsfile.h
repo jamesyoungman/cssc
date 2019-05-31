@@ -255,7 +255,7 @@ protected:
   /* sf-write.c */
   void xfile_error(const char *msg) const;
   FILE *start_update();         // this opens the x-file
-  int write_delta(FILE *out, struct delta const &delta) const;
+  cssc::Failure write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
   // TODO: return cssc::Failure instead of bool?
   cssc::Failure end_update(FILE **out);  // NB: this closes the x-file too.
