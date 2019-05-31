@@ -9,9 +9,9 @@
 s=s.testfile
 
 remove $s
-../../testutils/uu_decode --decode < testfile.uue || miscarry could not uudecode testfile.uue.
+cp testfile_s s.testfile || miscarry 'could not stage test input s.testfile'
 
-# XXX: the IGNORE in the followig lines is because of the warning message we
+# XXX: the IGNORE in the following lines is because of the warning message we
 #      get about the excluded deltas feature not being fully tested.
 
 do_output d1 "${vg_prt} -u $s" 0 expected/nodel.-u IGNORE

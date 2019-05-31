@@ -3,9 +3,7 @@
 . ../common/need-prt
 export prt
 
-
-remove s.testfile2
-../../testutils/uu_decode --decode < s.testfile2.uue || miscarry could not uudecode testfile2.uue.
+cp testfile2_s s.testfile2 || miscarry 'could not prepare test input s.testfile2'
 
 sh all-variations.txt 2>&1 >got.stdout | 
     grep -v "feature not fully tested: excluded delta"
