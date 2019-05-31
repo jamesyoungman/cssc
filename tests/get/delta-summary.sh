@@ -8,7 +8,8 @@ s=s.$g
 l=l.$g
 p=p.$g
 remove $s $g $l $p
-../../testutils/uu_decode --decode < keys.uue || miscarry could not extract test file.
+
+cp keys.txt_s s.keys.txt || miscarry 'could not stage test file s.keys.txt'
 
 summary="\
     1.2	97/10/25 23:04:58 james

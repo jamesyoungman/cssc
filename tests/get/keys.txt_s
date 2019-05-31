@@ -1,0 +1,21 @@
+h14915
+s 00001/00001/00000
+d D 1.2 97/10/25 23:04:58 james 2 1
+c changed the one and only line
+e
+s 00001/00000/00000
+d D 1.1 97/10/25 23:04:20 james 1 0
+c date and time created 97/10/25 23:04:20 by james
+e
+u
+U
+t
+T
+I 1
+D 2
+1.1 %I%
+E 1
+E 2
+I 2
+1.2 %I%
+E 2

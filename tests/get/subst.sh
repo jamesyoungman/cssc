@@ -80,7 +80,8 @@ remove $s $output
 # and so forth when working with the -c date cutoff.
 s=s.keys.txt
 remove $s
-../../testutils/uu_decode --decode < keys.uue || miscarry could not extract test file.
+cp keys.txt_s s.keys.txt  || miscarry 'could not stage test file s.keys.txt'
+
 docommand K1 "${vg_get} -p -c971025230458 $s" 0 "1.2 1.2\n" "1.2\n1 lines\n"
 docommand K2 "${vg_get} -p -c971025230457 $s" 0 "1.1 1.1\n" \
 	"IGNORE"
