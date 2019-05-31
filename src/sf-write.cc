@@ -115,26 +115,23 @@ sccs_file::start_update() {
 }
 
 
-static int
+static cssc::Failure
 print_seqs(FILE *out, char control, std::vector<seq_no> const &seqs) {
   if (!seqs.empty())
     {
       if (printf_failed(fprintf(out, "\001%c", control)))
-	{
-	  return 1;
-	}
+	return cssc::make_failure_from_errno(errno);
+
       for (const auto& seq : seqs)
 	{
 	  if (printf_failed(fprintf(out, " %u", seq))) {
-	    return 1;
+	    return cssc::make_failure_from_errno(errno);
 	  }
 	}
       if (putc_failed(putc('\n', out)))
-	{
-	  return 1;
-	}
+	return cssc::make_failure_from_errno(errno);
     }
-  return 0;
+  return cssc::Failure::Ok();
 }
 
 /* Outputs an entry to the delta table of a new SCCS file.
@@ -166,9 +163,9 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
       return 1;
     }
 
-  if (print_seqs(out, 'i', d.get_included_seqnos())
-      || print_seqs(out, 'x', d.get_excluded_seqnos())
-      || print_seqs(out, 'g', d.get_ignored_seqnos()))
+  if (!print_seqs(out, 'i', d.get_included_seqnos()).ok()
+      || !print_seqs(out, 'x', d.get_excluded_seqnos()).ok()
+      || !print_seqs(out, 'g', d.get_ignored_seqnos()).ok())
     {
       return 1;
     }
