@@ -57,11 +57,11 @@ docommand a4 "${vg_get} -p s.umsp.txt" 0 "garçon mañana áóäæèêëìñåòôùé\n" IGNORE
 ## as EOF.  That would be a bug.
 
 echo_nonl a5...
-if ../../testutils/uu_decode --decode < char255.uue
+if cp char255.input char255.txt
 then
     echo passed
 else
-    miscarry uudecode failed.
+    miscarry 'failed to stage char255.txt'
 fi
 
 remove s.char255.txt
