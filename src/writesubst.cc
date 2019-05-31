@@ -66,8 +66,8 @@ sccs_file::emit_keyletter_expansion(FILE *out, struct subst_parms *parms, const 
     {
     case 'M':
       {
-	const char *mod = get_module_name().c_str();
-	ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(mod, out)));
+	const std::string mod = get_module_name();
+	ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(mod.c_str(), out)));
       }
       return false;
 
