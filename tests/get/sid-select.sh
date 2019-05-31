@@ -8,8 +8,7 @@
 # Get a test file...
 s=s.testfile
 remove $s
-../../testutils/uu_decode --decode < testfile.uue || 
-    miscarry could not extract test file.
+cp testfile_s s.testfile || miscarry 'could not stage test file s.testfile'
 
 get_expect () {
 label=$1         ; shift
