@@ -143,8 +143,8 @@ public:
            int incl_excl_ignore, int first_line_only, int print_desc,
            int print_users) const;
 
-  // TODO: return cssc::Failure instead of bool?
-  bool cdc(sid id, const std::vector<std::string>& mrs, const std::vector<std::string>& comments);
+  // The caller must check edit_mode_permitted() before calling cdc().
+  void cdc(delta*, const std::vector<std::string>& mrs, const std::vector<std::string>& comments);
   // TODO: return cssc::Failure instead of bool?
   bool rmdel(sid rid);
   // TODO: return cssc::Failure instead of bool?
@@ -234,6 +234,8 @@ public:
 		       seq_no starting_seq,
 		       std::vector<bool>& loopfree,
 		       std::vector<bool>& seen) const;
+  /* Support for BitKeeper files */
+  cssc::Failure edit_mode_permitted(bool editing) const;
 
   // Implementation is protected; in the existing [MySC]
   // implementation some of the implementation is private where
@@ -291,9 +293,6 @@ private:
 		   bool get_top_delta) const;
 
   NORETURN corrupt_file(const char *fmt, ...) const POSTDECL_NORETURN;
-
-  /* Support for BitKeeper files */
-  cssc::Failure edit_mode_permitted(bool editing) const;
 
   void set_sfile_executable(bool state);
   bool sfile_should_be_executable() const;

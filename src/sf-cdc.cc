@@ -35,6 +35,7 @@
 #include "delta.h"
 #include "file.h"
 
+using cssc::Failure;
 
 /* Adds new MRs and comments to the specified delta. */
 
@@ -78,21 +79,10 @@ process_mrs(const std::vector<std::string>& old_mrs,
 }
 
 
-bool
-sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
+void
+sccs_file::cdc(delta *p, const std::vector<std::string>& mr_updates,
 	       const std::vector<std::string>& comment_updates)
 {
-  if (!edit_mode_permitted(true).ok())
-    return false;
-
-  delta *p = find_delta(id);
-  if (!p)
-    {
-      errormsg("%s: Requested SID doesn't exist.", name.c_str());
-      return false;
-    }
-
-
   delta &d = *p;
 
   std::vector<std::string> deletion_comment;
@@ -148,8 +138,6 @@ sccs_file::cdc(sid id, const std::vector<std::string>& mr_updates,
 
       d.prepend_comments(newcomments);
     }
-
-  return true;
 }
 
 /* Local variables: */

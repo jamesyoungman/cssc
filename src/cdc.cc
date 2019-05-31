@@ -33,6 +33,7 @@
 #include "version.h"
 #include "delta.h"
 #include "except.h"
+#include "failure.h"
 #include "file.h"
 #include "privs.h"
 
@@ -212,16 +213,23 @@ main(int argc, char *argv[])
 
 	    }
 
-
-	  TempPrivDrop guard(!file.is_delta_creator(get_user_name(), rid));
-	  if (file.cdc(rid, mr_list, comment_list))
+	  cssc::Failure can_edit = file.edit_mode_permitted(true);
+	  delta *p = file.find_delta(rid);
+	  if (!p)
 	    {
-	      if (!file.update())
-		retval = 1;
+	      errormsg("%s: Requested SID %s doesn't exist.", name.c_str(), rid.as_string().c_str());
+	      retval = 1;
+	    }
+	  else if (!can_edit.ok())
+	    {
+	      retval = 1;
 	    }
 	  else
 	    {
-	      retval = 1;
+	      TempPrivDrop guard(!file.is_delta_creator(get_user_name(), rid));
+	      file.cdc(p, mr_list, comment_list);
+	      if (!file.update())
+		retval = 1;
 	    }
 	}
       catch (CsscExitvalException e)
