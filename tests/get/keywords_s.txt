@@ -1,0 +1,94 @@
+h00215
+s 00083/00000/00000
+d D 1.1 97/10/25 13:19:31 james 1 0
+c date and time created 97/10/25 13:19:31 by james
+e
+u
+U
+t
+T
+I 1
+This file contains all the %-keywords so that we can make sure
+that sccs-get substitutes them all correctly.
+
+In the descriptive comments, I use "$" for "%" so that those
+keywords that expand into the value of other keywords, like 
+$A$ have useful descriptions.
+
+$A$ Expands to $Z$$Y$ $M$ $I$$Z$
+_A_ %A%
+    %Z%%Y% %M% %I%%Z%
+
+$B$ expands to the SID branch component.
+_B_ %B%
+
+$C$ is the current line number.  We have two in a row here, just for fun.
+_C_ %C%
+_C_ %C%
+
+$D$ is the current date (year/month/day, the only sensible order).
+Only two digits for the year.  Oops.
+_D_ %D%
+
+$E$: date of the newest delta.
+_E_ %E%
+
+$F$: name of the s.file.
+_F_ %F%
+
+$G$: Like $E$, but in the US order, mm/dd/yy.
+_G_ %G%
+
+$I$: SID of the retrieved version ($R$.$L$.$B$.$S$)
+_I_ %I%
+%R%.%L%.%B%.%S%
+
+$L$: level of the SID.
+_L_ %L%
+
+$M$: module name (value of m flag or base name fo the s.file if the 
+m flag is not set).
+_M_ %M%
+
+$P$: Full name of the s.file (not easy to test).
+_P_ %P%
+
+$Q$: value of the q flag.
+_Q_ %Q%
+
+$R$: release component of SID
+_R_ %R%
+
+$S$: sequence component of SID
+_S_ %S%
+
+$U$: time the newest applied delta was created
+_U_ %U%
+
+$W$: "what": stands for $Z$ $M$ $I$ (useful for sccs-what)
+_W_ %W%
+    %Z% %M% %I%
+
+$Y$: value of the t flag (!)
+_Y_ %Y%
+
+$Z$: expands to @(#) the marker string for sccs-what.
+_Z_ %Z%
+
+
+-------------------
+STOP HERE
+-------------------
+
+The following entries are very hard to test automatically.
+
+$H$: Current date, US order.
+%H% : not easily testable; best to use separate test script.
+
+$T$: current time (difficult to test....)
+%T%
+
+
+End of file.
+
+E 1

@@ -14,7 +14,7 @@ output=get.output
 
 
 remove $s $f
-../../testutils/uu_decode --decode < keywords.uue || miscarry could not extract test file.
+cp keywords_s.txt s.keywords.txt || miscarry 'could not stage test file s.keywords.txt'
 
 # Expand all the keywords from the s.file and save the format in 
 # a temporary file.   We then examine this file later.
