@@ -7,24 +7,19 @@
 
 g=sf111140_testcase.txt
 s=s.$g
-x=x.$g 
+x=x.$g
 z=z.$g
 p=p.$g
-u=sf111140_testcase.uue
 
 remove $g $s $x $z $p
 
-../../testutils/uu_decode --decode <$u || 
-    miscarry could not uudecode file $u.
+cp sf111140_testcase_s s.sf111140_testcase.txt ||
+    miscarry 'could not stage test input s.sf111140_testcase.txt'
 
-
-
-
-
-# If we check out version 1.16 of the provided file (in which 
-# a trunk delta includes a delta that was on a trunk) we 
+# If we check out version 1.16 of the provided file (in which
+# a trunk delta includes a delta that was on a trunk) we
 # should get the same body as recorded in the file sf111140.wtd.
-# 
+#
 test_base=`basename $0`
 test_dir=`dirname $0`
 case "${test_dir}" in
@@ -37,7 +32,7 @@ do_pair() {
     seq="$1"
     sid="$2"
 
-    if awk "\$1 == $seq {print}" <  sf111140_full.txt | 
+    if awk "\$1 == $seq {print}" <  sf111140_full.txt |
 	sed 's/^[0-9]* //'> wanted.tmp
     then
 	do_output "${label_prefix}:f${seq}" "${vg_get} -r${sid} -p $s" 0 wanted.tmp IGNORE
@@ -52,8 +47,8 @@ record_pair() {
     sid="$2"
 
     echo_nonl "${seq} " >&2
-    ${vg_get} -p -r${sid} ${s} 2>/dev/null | 
-    awk "{printf(\"%s %s\n\", $seq, \$0);}" 
+    ${vg_get} -p -r${sid} ${s} 2>/dev/null |
+    awk "{printf(\"%s %s\n\", $seq, \$0);}"
 }
 
 
