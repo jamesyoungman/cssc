@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include "cssc.h"
+#include "failure.h"
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
@@ -376,8 +377,12 @@ sccs_file::add_delta(const std::string& gname,
     return false;		// the delta operation failed.
   new_delta.set_idu(result.inserted, result.deleted, result.unchanged);
 
-  if (!end_update(&out, new_delta))
-    return false;
+  cssc::Failure updated = end_update(&out, new_delta);
+  if (!updated.ok())
+    {
+      errormsg("failed to complete update of %s", updated.to_string().c_str());
+      return false;
+    }
 
   printf("%lu inserted\n%lu deleted\n%lu unchanged\n",
          new_delta.inserted(), new_delta.deleted(), new_delta.unchanged());

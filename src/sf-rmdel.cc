@@ -30,6 +30,7 @@
 #include <config.h>
 #include <algorithm>
 #include "cssc.h"
+#include "failure.h"
 #include "sccsfile.h"
 #include "delta.h"
 #include "delta-iterator.h"
@@ -89,7 +90,12 @@ sccs_file::rmdel(sid id)
   if (body_scanner_->remove(out, seq))
     {
       // Only finish write out the file if we had no problem.
-      return end_update(&out);
+      cssc::Failure updated = end_update(&out);
+      if (!updated.ok())
+	{
+	  errormsg("failed to complete update of %s", updated.to_string().c_str());
+	}
+      return updated.ok();
     }
   return false;
 }

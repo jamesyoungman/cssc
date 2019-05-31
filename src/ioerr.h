@@ -64,5 +64,12 @@ inline cssc::Failure fclose_failure(FILE *fp)
   return cssc::Failure::Ok();
 }
 
+inline cssc::Failure fflush_failure(FILE *fp)
+{
+  if (fflush_failed(fflush(fp)))
+    return cssc::make_failure_from_errno(errno);
+  return cssc::Failure::Ok();
+}
+
 
 #endif

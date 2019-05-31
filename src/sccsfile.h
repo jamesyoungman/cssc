@@ -192,8 +192,7 @@ public:
   /* sf-add.c */
 
   FILE *start_update(struct delta const &new_delta);
-  // TODO: return cssc::Failure instead of bool?
-  bool end_update(FILE **out, struct delta const &new_delta);
+  cssc::Failure end_update(FILE **out, struct delta const &new_delta);
 
   int mr_required() const
   {
@@ -259,8 +258,8 @@ protected:
   int write_delta(FILE *out, struct delta const &delta) const;
   int write(FILE *out) const;
   // TODO: return cssc::Failure instead of bool?
-  bool end_update(FILE **out);  // NB: this closes the x-file too.
-  int rehack_encoded_flag(FILE *out, int *sum) const;
+  cssc::Failure end_update(FILE **out);  // NB: this closes the x-file too.
+  cssc::Failure rehack_encoded_flag(FILE *out, int *sum) const;
 
 private:
   /* sf-prs.c */

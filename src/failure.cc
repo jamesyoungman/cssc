@@ -56,6 +56,8 @@ namespace cssc
 	return "cannot continue without holding the lock on the SCCS file";
       case isit(errorcode::DeclineToOverwriteOutputFile):
 	return "refusing to overwrite output file";
+      case isit(errorcode::InternalErrorNoEncodedFlagFound):
+	return "internal error: failed to find encoded flag to adjust it in the output file";
       default:
 	return "unknown CSSC error";
       }

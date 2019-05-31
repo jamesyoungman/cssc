@@ -34,10 +34,14 @@
 #include "delta.h"
 #include "delta-iterator.h"
 #include "delta-table.h"
+#include "ioerr.h"
 #include "linebuf.h"
+#include "failure.h"
 #include "filepos.h"
 #include "file.h"
 #include "ioerr.h"
+
+using cssc::Failure;
 
 /* Quit because an error related to the x-file. */
 void
@@ -402,7 +406,7 @@ sccs_file::write(FILE *out) const
 
 
 
-int
+Failure
 sccs_file::rehack_encoded_flag(FILE *fp, int *sum) const
 {
   // Find the encoded flag.  Maybe change it.
@@ -413,7 +417,8 @@ sccs_file::rehack_encoded_flag(FILE *fp, int *sum) const
   const int nmatch = strlen(match);
   int n;
 
-  while ( EOF != (ch=getc(fp)) )
+  errno = 0;
+  while (EOF != (ch=getc(fp)))
     {
       if ('\n' == last)
         {
@@ -431,142 +436,179 @@ sccs_file::rehack_encoded_flag(FILE *fp, int *sum) const
                       putc('1', fp);
                       const int d =  ('1' - '0'); // change to checksum.
                       *sum = (*sum + d) & 0xFFFF; // adjust checksum.
-                      return 0;
+                      return cssc::Failure::Ok();
                     }
                   else
                     {
+		      const int saved_errno = errno;
                       pos->disarm();
                       delete pos;
-                      return 0; // flag was already set.
+		      if (!saved_errno)
+			return cssc::Failure::Ok();// flag was already set.
+		      return cssc::make_failure_from_errno(errno);
                     }
                 }
               ++n;              // advance match.
               ch = getc(fp);
+	      if (EOF == ch)
+		{
+		  break;
+		}
             }
           // match failed.
         }
       last = ch;
     }
-  return 1;                     // failed!
+  // Failure: we either reached EOF or experienced a read error.
+  if (errno)
+    return cssc::make_failure_from_errno(errno);
+  return cssc::make_failure(cssc::errorcode::InternalErrorNoEncodedFlagFound);
 }
 
 
-static bool
+static Failure
 maybe_sync(FILE *fp)
 {
 #ifdef CONFIG_SYNC_BEFORE_REOPEN
   if (ffsync(fp) == EOF)
-    return false;
+    return cssc::make_failure_from_errno(errno);
 #else
   (void) &fp;                           // use the otherwise-unused parameter.
 #endif
-  return true;
+  return cssc::Failure::Ok();
 }
 
 
 /* End the update of the SCCS file by updating the checksum, and
    renaming the x-file to replace the old SCCS file. */
 
-bool
+Failure
 sccs_file::end_update(FILE **pout)
 {
-  if (fflush_failed(fflush(*pout)) || !maybe_sync(*pout))
+  Failure real_result = cssc::Failure::Ok();
+  ResourceCleanup pout_closer([&pout, &real_result](){
+      if (*pout != NULL)
+	{
+	  real_result = cssc::Update(real_result, fclose_failure(*pout));
+	  *pout = NULL;
+	}
+    });
+
+  const std::string xname = name.xfile();
+  auto diagnose = [xname](Failure f) -> cssc::FailureBuilder
     {
-      fclose(*pout);
-      *pout = NULL;
-      xfile_error("Write error.");
-      return false;
-    }
+      return cssc::FailureBuilder(f).diagnose()
+      << "failed to update " << xname;
+    };
 
-  int sum;
-  std::string xname = name.xfile();
+  // We execute the rest of end_update() inside a lambda so that we
+  // can adjust real_result if we fail to close *pout.
+  real_result = cssc::Update(real_result, [this, xname, &pout, diagnose]() -> cssc::Failure {
+      auto write_error = [xname](int saved_errno)
+	{
+	  return cssc::make_failure_builder_from_errno(saved_errno)
+	  .diagnose() << "failed to write to " << xname;
+	};
 
-  // Open the file (obtaining the checksum) and immediately close it.
-  {
-    auto opts = ParserOptions().set_silent_checksum_error(true);
-    auto open_result = sccs_file_parser::open_sccs_file(xname, READ, opts);
-    if (!open_result.ok())
+      Failure result = fflush_failure(*pout);
+      if (!result.ok())
+	return diagnose(result) << "failed to flush " << xname;
+
+      result = cssc::Update(result, maybe_sync(*pout));
+      if (!result.ok())
+	return diagnose(result) << "failed to sync " << xname;
+
+      int sum;
+      // Open the file (obtaining the checksum) and immediately close it.
       {
-	xfile_error("Error opening file.");
-	return false;
+	auto opts = ParserOptions().set_silent_checksum_error(true);
+	auto open_result = sccs_file_parser::open_sccs_file(xname, READ, opts);
+	if (!open_result.ok())
+	  return diagnose(open_result.fail()) << "failed to open " << xname;
+	sum = (*open_result)->computed_sum;
       }
-    sum = (*open_result)->computed_sum;
-  }
 
 
-  // For "admin -i", we may need to change the "encoded" flag
-  // from 0 to 1, if we found out that the input file was
-  // binary, but the "-b" command line option had not been
-  // given.  The checksum is adjusted if required.
-  if (flags.encoded)
-    {
+      // For "admin -i", we may need to change the "encoded" flag
+      // from 0 to 1, if we found out that the input file was
+      // binary, but the "-b" command line option had not been
+      // given.  The checksum is adjusted if required.
+      if (flags.encoded)
+	{
+	  rewind(*pout);
+	  // TODO: change retrn type of rehack_encoded_flag.
+	  Failure hacked = rehack_encoded_flag(*pout, &sum);
+	  if (!hacked.ok())
+	    return diagnose(hacked) << "failed to update encoded flag in "
+				    << name.xfile();
+	}
+
+
       rewind(*pout);
-      if (0 != rehack_encoded_flag(*pout, &sum))
-        {
-          xfile_error("Write error.");
-        }
-    }
-
-
-  rewind(*pout);
-  if (printf_failed(fprintf(*pout, "\001h%05d", sum)))
-    {
-      (void) fclose(*pout);
+      if (printf_failed(fprintf(*pout, "\001h%05d", sum)))
+	{
+	  return write_error(errno);
+	}
+      if (fclose_failed(fclose(*pout)))
+	{
+	  *pout = NULL;		// don't attempt to close it again.
+	  return cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "failed to close " << xname;
+	}
       *pout = NULL;
-      xfile_error("Write error.");
-    }
-  if (fclose_failed(fclose(*pout)))
-    {
-      *pout = NULL;
-      xfile_error("Write error.");
-    }
 
-  /* JY, 2001-08-27: Under Windows we cannot rename or delete an open
-   * file, so we close both the x-file and the s-file here in end_update().
-   * I think closing the file here is harmless for all platforms, but
-   * for the moment I will make it conditional.
-   *
-   * The destructor sccs_file::~sccs_file() asserts that the file pointer
-   * is not NULL, so we reopen the file in this case.
-   */
+      /* JY, 2001-08-27: Under Windows we cannot rename or delete an open
+       * file, so we close both the x-file and the s-file here in end_update().
+       * I think closing the file here is harmless for all platforms, but
+       * for the moment I will make it conditional.
+       *
+       * The destructor sccs_file::~sccs_file() asserts that the file pointer
+       * is not NULL, so we reopen the file in this case.
+       */
 #if defined __CYGWIN__
-  if (f)
-    {
-      /* Only in modes other than create, will f be non-NULL */
-      fclose(f);
-    }
+      if (f)
+	{
+	  /* Only in modes other than create, will f be non-NULL */
+	  fclose(f);
+	}
 #endif
 
-  bool retval = false;
+      cssc::Failure retval = cssc::Failure::Ok();
 
-  if (mode != CREATE && remove(name.c_str()) == -1)
-    {
-      errormsg_with_errno("%s: Can't remove old SCCS file.", name.c_str());
-      retval = false;
-    }
-  else if (rename(xname.c_str(), name.c_str()) == -1)
-    {
-      xfile_error("Can't rename new SCCS file.");
-      retval = false;
-    }
-  else
-    {
-      xfile_created = false;    // What was the x-file is now the new s-file.
-      retval = true;
-    }
+      if (mode != CREATE && remove(name.c_str()) == -1)
+	{
+	  return cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "failed to remove " << name.c_str();
+	}
+      else if (rename(xname.c_str(), name.c_str()) == -1)
+	{
+	  return cssc::make_failure_builder_from_errno(errno)
+	    .diagnose() << "failed to rename " << xname.c_str()
+			<< " to " << name.c_str();
+	}
+      else
+	{
+	  xfile_created = false;    // What was the x-file is now the new s-file.
+	  retval = cssc::Failure::Ok();
+	}
 
 #if defined __CYGWIN__
-  int dummy_sum;
+      int dummy_sum;
 
-  std::string sfile_name = name.sfile();
-  f = open_sccs_file(sfile_name.c_str(), READ, &dummy_sum, &dummy_bk_flag);
-  if (0 == f)
-    {
-      s_missing_quit("Cannot re-open SCCS file %s for reading", name.c_str());
-      retval = false;
-    }
+      std::string sfile_name = name.sfile();
+      // We will get a compilation error on this next line now,
+      // because the type of open_sccs_file has changed.  But
+      // I don't have access to a Cygwin system for testing.
+      f = open_sccs_file(sfile_name.c_str(), READ, &dummy_sum);
+      if (0 == f)
+	{
+	  s_missing_quit("Cannot re-open SCCS file %s for reading", name.c_str());
+	  retval = cssc::make_failure_from_errno(errno);
+	}
 #endif
-  return retval;
+      return retval;
+    }());
+  return real_result;
 }
 
 
@@ -607,7 +649,7 @@ sccs_file::update()
     {
           xfile_error("Write error.");
     }
-  return end_update(&out);
+  return end_update(&out).ok();	// TODO: change return type
 }
 
 /* Local variables: */

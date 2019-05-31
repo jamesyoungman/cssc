@@ -31,6 +31,7 @@
 #include <string>
 #include <vector>
 #include "cssc.h"
+#include "failure.h"
 #include "l-split.h"
 #include "sccsfile.h"
 #include "sl-merge.h"
@@ -448,8 +449,12 @@ sccs_file::create(const sid &id,
 
   // if the "encoded" flag needs to be changed,
   // end_update() will change it.
-  if (!end_update(&out, new_delta))
-    return false;
+  cssc::Failure updated = end_update(&out, new_delta);
+  if (!updated.ok())
+    {
+      errormsg("failed to complete update of %s", updated.to_string().c_str());
+      return false;
+    }
 
   return ret;
 }

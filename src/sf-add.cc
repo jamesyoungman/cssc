@@ -54,14 +54,16 @@ sccs_file::start_update(const delta &new_delta)
 
 /* Set the line counts in the prepended delta and then end the update. */
 
-bool
+cssc::Failure
 sccs_file::end_update(FILE **pout, const delta &d)
 {
   if (fflush_failed(fflush(*pout)))
     {
+      const int saved_errno = errno;
       fclose(*pout);
       *pout = NULL;
-      xfile_error("Write error.");
+      return cssc::make_failure_builder_from_errno(saved_errno)
+	.diagnose() << "failed to flush " << name.xfile();
     }
 
   rewind(*pout);
@@ -73,13 +75,13 @@ sccs_file::end_update(FILE **pout, const delta &d)
     {
       fclose(*pout);
       *pout = NULL;
-      xfile_error("Write error.");
+      return cssc::make_failure_builder_from_errno(errno)
+	.diagnose() << "failed to write to " << name.xfile();
     }
 
-  bool retval = end_update(pout);
-
+  cssc::Failure updated = end_update(pout);
   delta_table->prepend(d);
-  return retval;
+  return updated;
 }
 
 /* Local variables: */

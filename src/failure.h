@@ -59,6 +59,7 @@ namespace cssc
       BodyLineTooLong,
       LockNotHeld,
       DeclineToOverwriteOutputFile,
+      InternalErrorNoEncodedFlagFound,
     };
 
   // condition is for storing in std::error_condition
