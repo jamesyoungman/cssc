@@ -11,11 +11,12 @@ else
   AM_CXXFLAGS = -DGTEST_HAS_PTHREAD=0
 endif
 
-LDADD = googletest/lib/libgtest.la googletest/lib/libgtest_main.la ../src/libcssc.a
+AM_LDFLAGS = -L../gl/lib
+LDADD = googletest/lib/libgtest.la googletest/lib/libgtest_main.la ../src/libcssc.a -lgnulib
 
 
 # We do not include googletest in SUBDIRS since the Makefile.am file
-# in thart directory forces "make install" to fail, because it doesn't
+# in that directory forces "make install" to fail, because it doesn't
 # want to install the built libraries.  We on the other hand just
 # avoid installing them by using noinst_.  This means that the
 # googletest targets are built by rules in this Makefile.am.
@@ -50,7 +51,7 @@ test_linebuf_SOURCES = test_linebuf.cc
 test_split_SOURCES = test_split.cc
 test_failure_SOURCES = test_failure.cc
 test_bigfile_SOURCES = test_bigfile.cc
-test_bigfile_LDADD = ../src/libcssc.a
+
 
 
 # The death tests may leave a core file behind.  Some systems also use
