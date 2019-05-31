@@ -45,13 +45,7 @@ echo "garחon maסana בףהזטךכלסועפשי" >$g
 docommand a1 "${vg_admin} -i$g $s" 0 IGNORE IGNORE
 docommand a2 "${vg_get} -p $s" 0 "garחon maסana בףהזטךכלסועפשי\n" IGNORE
 
-echo_nonl a3...
-if ../../testutils/uu_decode --decode < s.umsp.uue
-then
-    echo passed
-else
-    miscarry uudecode failed.
-fi
+cp umsp_s s.umsp.txt || miscarry 'failed to stage s.umsp.txt'
 
 docommand a4 "${vg_get} -p s.umsp.txt" 0 "garחon maסana בףהזטךכלסועפשי\n" IGNORE
 
