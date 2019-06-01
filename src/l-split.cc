@@ -110,15 +110,16 @@ private:
   FILE* f_;
 };
 
-std::pair<int, std::vector<std::string>>
+cssc::FailureOr<std::vector<std::string>>
 read_file_lines(const char* file_name)
 {
-  std::vector<std::string> result, tmp;
+  std::vector<std::string> tmp;
   errno = 0;
   FILE *f = fopen(file_name, "r");
   if (f == nullptr)
     {
-      return std::make_pair(errno, result);
+      return cssc::make_failure_builder_from_errno(errno)
+	<< "failed to read from " << file_name;
     }
   FileCloser closer(f);
 
@@ -145,10 +146,10 @@ read_file_lines(const char* file_name)
     }
   if (ferror(f))
     {
-      return std::make_pair(errno, result);
+      return cssc::make_failure_builder_from_errno(errno)
+	<< "failed to read from " << file_name;
     }
-  std::swap(tmp, result);
-  return std::make_pair(errno, result);
+  return tmp;
 }
 
 

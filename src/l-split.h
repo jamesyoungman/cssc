@@ -30,6 +30,8 @@
 #include <string>
 #include <utility>
 
+#include "failure_or.h"
+
 std::vector<std::string> split_mrs(const std::string& mrs);
 std::vector<std::string> split_comments(const std::string& comments);
 
@@ -38,9 +40,7 @@ split_string(std::string::const_iterator first, std::string::const_iterator last
 	     char delimiter, std::vector<std::string>* output,
 	     std::string::size_type field_limit = std::numeric_limits<std::string::size_type>::max());
 
-// Read a file, split it into lines and return them.  If successful, result.first
-// is zero and the lines are in result.second.  On failure, result.first holds the
-// resulting value of errno.
-std::pair<int, std::vector<std::string>> read_file_lines(const char* file_name);
+// Read a file, split it into lines and return them.
+cssc::FailureOr<std::vector<std::string>> read_file_lines(const char* file_name);
 
 #endif

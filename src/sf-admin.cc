@@ -69,17 +69,16 @@ sccs_file::admin(const char *file_comment,
       comments.clear();
       if (file_comment[0])
 	{
-	  std::pair<int, std::vector<std::string>> comment_lines =
+	  cssc::FailureOr<std::vector<std::string>> comment_lines =
 	    read_file_lines(file_comment);
-	  if (comment_lines.first != 0)
+	  if (!comment_lines.ok())
 	    {
-	      errno = comment_lines.first;
-	      errormsg_with_errno("%s: Read error", file_comment);
+	      errormsg("%s: %s", comment_lines.fail().to_string());
 	      return false;
 	    }
 	  else
 	    {
-	      std::swap(comment_lines.second, comments);
+	      std::swap(*comment_lines, comments);
 	    }
 	}
     }
