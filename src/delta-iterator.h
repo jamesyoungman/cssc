@@ -48,8 +48,10 @@ public:
   bool next();			// returns false when exhausted.
   int index() const;
 
-  delta * operator ->();
+  delta * operator->();
+  delta& operator*();
   const delta * operator ->() const;
+  const delta& operator*() const;
 
   void rewind();
 
@@ -74,6 +76,7 @@ public:
   int index() const;
 
   delta const * operator ->() const;
+  const delta& operator*() const;
 
   void rewind();
 

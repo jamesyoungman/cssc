@@ -64,6 +64,11 @@ protected:
   int lineno_;
 };
 
+namespace std
+{
+  ostream& operator<<(ostream& os, const sccs_file_location& loc);
+}
+
 #endif /* CSSC__LOCATION_H__ */
 
 /* Local variables: */

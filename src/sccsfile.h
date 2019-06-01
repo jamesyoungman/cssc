@@ -146,7 +146,7 @@ public:
   // The caller must check edit_mode_permitted() before calling cdc().
   void cdc(delta*, const std::vector<std::string>& mrs, const std::vector<std::string>& comments);
   // TODO: return cssc::Failure instead of bool?
-  bool rmdel(sid rid);
+  cssc::Failure rmdel(sid rid);
   // TODO: return cssc::Failure instead of bool?
   bool validate() const;
 

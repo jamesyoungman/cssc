@@ -60,6 +60,14 @@ namespace cssc
 	return "internal error: failed to find encoded flag to adjust it in the output file";
       case isit(errorcode::DeclineToCreateHistoryFileThatAlreadyExists):
 	return "refusing to create a history file because it already exists";
+      case isit(errorcode::UsagePreconditionFailureSidNotFound):
+	return "the selected revision is not present in the history file";
+      case isit(errorcode::UsagePreconditionFailureDeltaHasSuccessor):
+	return "the selected revision cannot be removed as it has a successor in the history file";
+      case isit(errorcode::UsagePreconditionFailureDeltaInUse):
+	return "the selected revision cannot be removed as it is referred to by another delta in the history file";
+      case isit(errorcode::HistoryFileCorrupt):
+	return "format/parsing error in history file";
       default:
 	return "unknown CSSC error";
       }

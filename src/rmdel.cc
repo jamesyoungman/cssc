@@ -129,7 +129,7 @@ main(int argc, char **argv)
 	  else
 	    {
 	      TempPrivDrop guard(!file.is_delta_creator(get_user_name(), rid));
-	      if (!file.rmdel(rid))
+	      if (!file.rmdel(rid).ok())
 		retval = 1;
 	    }
 	}

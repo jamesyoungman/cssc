@@ -61,6 +61,10 @@ namespace cssc
       DeclineToOverwriteOutputFile,
       InternalErrorNoEncodedFlagFound,
       DeclineToCreateHistoryFileThatAlreadyExists,
+      UsagePreconditionFailureSidNotFound,
+      UsagePreconditionFailureDeltaHasSuccessor,
+      UsagePreconditionFailureDeltaInUse,
+      HistoryFileCorrupt,
     };
 
   // condition is for storing in std::error_condition

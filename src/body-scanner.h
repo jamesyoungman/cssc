@@ -70,7 +70,7 @@ public:
   cssc::Failure seek_to_body();
   bool copy_to(FILE*);
   bool emit_raw_body(FILE*, const char*);
-  bool remove(FILE*, seq_no id);
+  cssc::Failure remove(FILE*, seq_no id);
 
   // Print the body of an SCCS file to |out|, transforming all "^A"s
   // into "*** "s.  The name of the output file is |name|.

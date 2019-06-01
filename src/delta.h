@@ -283,7 +283,6 @@ public:
   }
 };
 
-
 #endif /* CSSC_DELTA_H */
 
 /* Local variables: */

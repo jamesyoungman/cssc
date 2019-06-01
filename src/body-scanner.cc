@@ -642,7 +642,7 @@ namespace
 }  // namespace
 
 
-bool
+cssc::Failure
 sccs_file_body_scanner::remove(FILE *out, seq_no seq)
 {
   update_state state = COPY;
@@ -659,27 +659,33 @@ sccs_file_body_scanner::remove(FILE *out, seq_no seq)
 	    {
 	      if (!next_state(state, c))
 		{
-		  corrupt(here(), "Unexpected control line");
-		  retval = false;
-		  break;
+		  return cssc::make_failure_builder(cssc::errorcode::HistoryFileCorrupt)
+		    << "unexpected control line at " << here();
 		}
 	    }
 	  else if (state == INSERT)
 	    {
-	      corrupt(here(), "Non-terminal delta!?!");
-	      retval = false;
-	      break;
+	      return cssc::make_failure_builder(cssc::errorcode::HistoryFileCorrupt)
+		<< "non-terminal delta at " << here();
 	    }
 	  else
 	    {
-	      fputs(plinebuf->c_str(), out);
-	      putc('\n', out);
+	      if (fputs_failed(fputs(plinebuf->c_str(), out))
+		  || putc_failed(putc('\n', out)))
+		{
+		  return cssc::make_failure_builder_from_errno(errno)
+		    << "write error on output file";
+		}
 	    }
 	}
       else if (state != INSERT)
 	{
-	  fputs(plinebuf->c_str(), out);
-	  putc('\n', out);
+	  if (fputs_failed(fputs(plinebuf->c_str(), out))
+	      || putc_failed(putc('\n', out)))
+	    {
+	      return cssc::make_failure_builder_from_errno(errno)
+		    << "write error on output file";
+	    }
 	}
     }
 
@@ -687,8 +693,8 @@ sccs_file_body_scanner::remove(FILE *out, seq_no seq)
   // in the 'COPY' state.
   if (state != COPY)
     {
-      corrupt(here(), "Unexpected EOF");
-      return false;
+      return cssc::make_failure_builder_from_errno(errno)
+	<< "unexpected EOF at " << here();
     }
-  return true;
+  return cssc::Failure::Ok();
 }

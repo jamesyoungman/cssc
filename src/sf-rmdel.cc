@@ -43,17 +43,19 @@ is_seqlist_member(seq_no seq_to_find, std::vector<seq_no> const &seq_list) {
 }
 }
 
-bool
+cssc::Failure
 sccs_file::rmdel(sid id)
 {
-  if (!edit_mode_permitted(true).ok())
-    return false;
+  cssc::Failure can_edit = edit_mode_permitted(true);
+  if (!can_edit.ok())
+    return can_edit;
 
   delta *d = find_delta(id);
   if (0 == d)
     {
-      errormsg("%s: Specified SID not found in SCCS file.", name.c_str());
-      return false;
+      return cssc::make_failure_builder(cssc::errorcode::UsagePreconditionFailureSidNotFound)
+	.diagnose()
+	<< "Revision " << id << " is not present in " << name.sfile();
     }
   const seq_no seq = d->seq();
 
@@ -62,16 +64,19 @@ sccs_file::rmdel(sid id)
     {
       if (iter->prev_seq() == seq)
 	{
-	  errormsg("%s: Specified SID has a successor.", name.c_str());
-	  return false;
+	  auto prev_sid = iter->id();
+	  return cssc::make_failure_builder(cssc::errorcode::UsagePreconditionFailureDeltaHasSuccessor)
+	    .diagnose()
+	    << "Revision " << id << " has a successor " << prev_sid
+	    << " in " << name.sfile();
 	}
       if (is_seqlist_member(seq, iter->get_included_seqnos())
 	  || is_seqlist_member(seq, iter->get_excluded_seqnos())
 	  || is_seqlist_member(seq, iter->get_ignored_seqnos()))
 	{
-	  errormsg("%s: Specified SID is used in another delta.",
-	       name.c_str());
-	  return false;
+	  return cssc::make_failure_builder(cssc::errorcode::UsagePreconditionFailureDeltaInUse)
+	    .diagnose()
+	    << "Revision " << id << " is used by " << iter->id() << " in " << name.sfile();
 	}
     }
 
@@ -79,29 +84,27 @@ sccs_file::rmdel(sid id)
 
   cssc::FailureOr<FILE*> fof = start_update();
   if (!fof.ok())
-    return false;
+    return fof.fail();
   ASSERT(*fof != NULL);
   FILE *out = *fof;
 
-  if (!write(out).ok())
-    {
-      xfile_error("Write error.");
-      return false;
-    }
+  cssc::Failure written = write(out);
+  if (!written.ok())
+    return written;
 
-  if (body_scanner_->remove(out, seq))
+  cssc::Failure removed = body_scanner_->remove(out, seq);
+  if (!removed.ok())
+    return removed;
+
+  // Only finish write out the file if we had no problem.
+  cssc::Failure updated = end_update(&out);
+  if (!updated.ok())
     {
-      // Only finish write out the file if we had no problem.
-      cssc::Failure updated = end_update(&out);
-      if (!updated.ok())
-	{
-	  errormsg("failed to complete update of %s", updated.to_string().c_str());
-	  return false;
-	}
-      ASSERT(out == NULL);
-      return updated.ok();
+      return cssc::make_failure_builder(updated)
+	.diagnose() << "failed to complete update";
     }
-  return false;
+  ASSERT(out == NULL);
+  return cssc::Failure::Ok();
 }
 
 /* Local variables: */

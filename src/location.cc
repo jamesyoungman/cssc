@@ -40,3 +40,12 @@ sccs_file_location::operator=(const sccs_file_location& other)
   lineno_ = other.lineno_;
   return *this;
 }
+
+namespace std
+{
+  ostream& operator<<(ostream& os, const sccs_file_location& loc)
+  {
+    os << loc.as_string();
+    return os;
+  }
+}  // namespace std
