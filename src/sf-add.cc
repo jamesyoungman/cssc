@@ -40,9 +40,10 @@
 FILE *
 sccs_file::start_update(const delta &new_delta)
 {
-  FILE *out = start_update();
-  if (out == NULL)
-    return out;
+  cssc::FailureOr<FILE*> fof = start_update();
+  if (!fof.ok())
+    return NULL;
+  FILE *out = *fof;
   cssc::Failure written = write_delta(out, new_delta);
   if (!written.ok() || write(out))
     {

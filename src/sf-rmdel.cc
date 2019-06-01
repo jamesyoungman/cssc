@@ -77,9 +77,11 @@ sccs_file::rmdel(sid id)
 
   d->set_type('R');
 
-  FILE *out = start_update();
-  if (NULL == out)
+  cssc::FailureOr<FILE*> fof = start_update();
+  if (!fof.ok())
     return false;
+  ASSERT(*fof != NULL);
+  FILE *out = *fof;
 
   if (write(out))
     {
@@ -94,7 +96,9 @@ sccs_file::rmdel(sid id)
       if (!updated.ok())
 	{
 	  errormsg("failed to complete update of %s", updated.to_string().c_str());
+	  return false;
 	}
+      ASSERT(out == NULL);
       return updated.ok();
     }
   return false;

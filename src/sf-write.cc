@@ -30,6 +30,7 @@
 #include <string>
 
 #include "cssc.h"
+#include "failure.h"
 #include "sccsfile.h"
 #include "delta.h"
 #include "delta-iterator.h"
@@ -54,14 +55,14 @@ sccs_file::xfile_error(const char *msg) const
 /* Start the update of the SCCS file by creating the x-file which will
    become the new SCCS file and writing a dummy checksum line to it. */
 
-FILE *
+cssc::FailureOr<FILE*>
 sccs_file::start_update() {
         ASSERT(mode != READ);
 
         if (mode == CREATE && file_exists(name.c_str()))
           {
-            errormsg("%s: SCCS file already exists.", name.c_str());
-            return NULL;
+	    return cssc::make_failure_builder(cssc::errorcode::DeclineToCreateHistoryFileThatAlreadyExists)
+	      .diagnose() << name.sfile() << ": SCCS file already exists";
           }
 
         std::string xname = name.xfile();
@@ -94,10 +95,8 @@ sccs_file::start_update() {
 	cssc::FailureOr<FILE *> fof = fcreate(xname, CREATE_READ_ONLY | CREATE_FOR_UPDATE | x);
         if (!fof.ok())
           {
-	    std::string msg = fof.to_string() +
-	      "; can't create temporary file for update";
-	    xfile_error(msg.c_str());
-            return NULL;
+	    return cssc::make_failure_builder(fof.fail())
+	      .diagnose() <<  xname << ": can't create temporary file for update";
           }
         else
           {
@@ -106,9 +105,10 @@ sccs_file::start_update() {
 
             if (fputs_failed(fputs("\001h-----\n", out)))
               {
-                xfile_error("write error");
+		const int saved_errno = errno;
                 fclose(out);
-                return NULL;
+		return cssc::make_failure_builder_from_errno(saved_errno)
+		  .diagnose() << "failed to write to " << xname;
               }
             return out;
           }
@@ -631,9 +631,10 @@ sccs_file::update()
       return false;
     }
 
-  FILE *out = start_update();
-  if (NULL == out)
+  cssc::FailureOr<FILE*> fof = start_update();
+  if (!fof.ok())
     return false;               // don't start writing the x-file.
+  FILE *out = *fof;
 
   if (write(out))
     {

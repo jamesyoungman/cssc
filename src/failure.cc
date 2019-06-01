@@ -58,6 +58,8 @@ namespace cssc
 	return "refusing to overwrite output file";
       case isit(errorcode::InternalErrorNoEncodedFlagFound):
 	return "internal error: failed to find encoded flag to adjust it in the output file";
+      case isit(errorcode::DeclineToCreateHistoryFileThatAlreadyExists):
+	return "refusing to create a history file because it already exists";
       default:
 	return "unknown CSSC error";
       }

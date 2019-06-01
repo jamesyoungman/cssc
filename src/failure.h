@@ -60,6 +60,7 @@ namespace cssc
       LockNotHeld,
       DeclineToOverwriteOutputFile,
       InternalErrorNoEncodedFlagFound,
+      DeclineToCreateHistoryFileThatAlreadyExists,
     };
 
   // condition is for storing in std::error_condition
