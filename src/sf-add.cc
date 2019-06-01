@@ -37,19 +37,26 @@
 /* Starts an update of an SCCS file that includes a new entry to be
    prepended to delta table. */
 
-FILE *
+cssc::FailureOr<FILE *>
 sccs_file::start_update(const delta &new_delta)
 {
+  auto fail = [](cssc::Failure f) -> cssc::Failure
+    {
+      return cssc::FailureBuilder(f)
+      .diagnose() << "failed to start update of output file";
+    };
+
   cssc::FailureOr<FILE*> fof = start_update();
   if (!fof.ok())
-    return NULL;
+    return fail(fof.fail());
   FILE *out = *fof;
-  cssc::Failure written = write_delta(out, new_delta);
-  if (!written.ok() || write(out))
+  cssc::Failure done = write_delta(out, new_delta);
+  if (done.ok())
+    done = cssc::Update(done, write(out));
+  if (!done.ok())
     {
-      xfile_error("Write error.");
       fclose(out);
-      return NULL;
+      return fail(done);
     }
   return out;
 }

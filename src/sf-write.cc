@@ -191,219 +191,239 @@ sccs_file::write_delta(FILE *out, struct delta const &d) const
 /* Writes everything up to the body to new SCCS file.  Returns non-zero
    if an error occurs. */
 
-int
+cssc::Failure
 sccs_file::write(FILE *out) const
 {
-  const_delta_iterator iter(delta_table.get(), delta_selector::all);
-  while (iter.next()) {
-    if (!write_delta(out, *iter.operator->()).ok()) {
-      return 1;
-    }
-  }
-
-  if (fputs_failed(fputs("\001u\n", out))) {
-    return 1;
-  }
-
-  for (const auto& user : users)
+  cssc::Failure result = [this, out]()
     {
-      ASSERT(user[0] != '\001');
-      if (printf_failed(fprintf(out, "%s\n", user.c_str())))
-	return 1;
-    }
+      const_delta_iterator iter(delta_table.get(), delta_selector::all);
+      while (iter.next())
+	{
+	  cssc::Failure written = write_delta(out, *iter.operator->());
+	  if (!written.ok())
+	    return written;
+	}
 
-  if (fputs_failed(fputs("\001U\n", out))) {
-    return 1;
-  }
+      if (fputs_failed(fputs("\001u\n", out)))
+	{
+	  return cssc::make_failure_from_errno(errno);
+	}
 
-  // Beginning of flags...
+      for (const auto& user : users)
+	{
+	  ASSERT(user[0] != '\001');
+	  if (printf_failed(fprintf(out, "%s\n", user.c_str())))
+	    return cssc::make_failure_from_errno(errno);
+	}
 
-  // b branch
-  if (flags.branch && fputs_failed(fputs("\001f b\n", out))) {
-    return 1;
-  }
-
-  // c ceiling
-  if (flags.ceiling.valid())
-    {
-      if (fputs_failed(fputs("\001f c ", out)))
-	return 1;
-
-      if (!flags.ceiling.print(out).ok())
-	return 1;
-
-      if (putc_failed(putc('\n', out)))
-	return 1;
-    }
-
-  // d default SID
-  if (flags.default_sid.valid())
-    {
-      if (fputs_failed(fputs("\001f d ", out))
-          || !flags.default_sid.print(out).ok()
-          || putc_failed(putc('\n', out)))
-        {
-          return 1;
-        }
-    }
-
-  // f floor
-  if (flags.floor.valid())
-    {
-      if (fputs_failed(fputs("\001f f ", out)))
-	return 1;
-
-      if (!flags.floor.print(out).ok())
-	return 1;
-
-      if (putc_failed(putc('\n', out)))
-	return 1;
-    }
-
-  // i no id kw is error
-  if (flags.no_id_keywords_is_fatal) {
-    if (fputs_failed(fputs("\001f i\n", out))) {
-      return 1;
-    }
-  }
-
-  // j joint-edit
-  if (flags.joint_edit)
-    {
-      if (fputs_failed(fputs("\001f j\n", out)))
-        return 1;
-    }
-
-  // l locked-releases
-  if (flags.all_locked)
-    {
-      if (fputs_failed(fputs("\001f l a\n", out)))
-        {
-          return 1;
-        }
-    }
-  else if ( !flags.locked.empty() )
-    {
-      if (fputs_failed(fputs("\001f l ", out)))
-        return 1;               // failed
-
-      if (!flags.locked.print(out).ok())
-        return 1;               // failed
-
-      if (putc_failed(putc('\n', out)))
-        return 1;               // failed
-    }
-
-  // m Module flag
-  if (flags.module)
-    {
-      const char *p = flags.module->c_str();
-      if (printf_failed(fprintf(out, "\001f m %s\n", p)))
-        {
-          return 1;
-        }
-    }
-
-  // n Create empty deltas
-  if (flags.null_deltas)
-    {
-      if (fputs_failed(fputs("\001f n\n", out)))
-        return 1;
-    }
-
-  // q %Q% subst value (user flag)
-  if (flags.user_def)
-    {
-      const char *p = flags.user_def->c_str();
-      if (printf_failed(fprintf(out, "\001f q %s\n", p)))
-        {
-          return 1;
-        }
-    }
-
-  // t %Y% subst value
-  if (flags.type)
-    {
-      if (printf_failed(fprintf(out, "\001f t %s\n",
-                                flags.type->c_str())))
-        {
-          return 1;
-        }
-    }
-
-  // v MR-validation program.
-  if (flags.mr_checker)
-    {
-      if (printf_failed(fprintf(out, "\001f v %s\n",
-                                flags.mr_checker->c_str())))
-        return 1;
-    }
-
-  // Write the correct valuie for the "encoded" flag.
-  // We have to write it even if the flag is unset,
-  // because "admin -i" goes back and updates that byte if the file
-  // turns out to have been binary.
-  if (printf_failed(fprintf(out, "\001f e %c\n",
-                            (flags.encoded ? '1' : '0'))))
-    return 1;
-
-
-  // x - executable flag (a SCO extension)
-  // Setting execute perms on the history file is a more portable way to
-  // achieve what the user probably wants.
-  if (flags.executable)
-    {
-      if (printf_failed(fprintf(out, "\001f x\n")))
-        {
-          return 1;
-        }
-    }
-
-  // y - substituted keywords (a Sun Solaris 8+ extension)
-  if (!flags.substitued_flag_letters.empty())
-    {
-      if (printf_failed(fprintf(out, "\001f y ")))
-	return 1;
-
-      cssc::Failure printed = print_subsituted_flags_list(out, " ");
-      if (!printed.ok())
-	return 1;
-
-      if (printf_failed(fprintf(out, "\n")))
-	return 1;
-    }
-
-  if (flags.reserved)
-    {
-      if (printf_failed(fprintf(out, "\001f z %s\n",
-                                flags.reserved->c_str()))) {
-        return 1;
+      if (fputs_failed(fputs("\001U\n", out))) {
+	return cssc::make_failure_from_errno(errno);
       }
-    }
 
-  // end of flags.
+      // Beginning of flags...
 
-  if (fputs_failed(fputs("\001t\n", out)))
+      // b branch
+      if (flags.branch && fputs_failed(fputs("\001f b\n", out)))
+	{
+	  return cssc::make_failure_from_errno(errno);
+	}
+
+      // c ceiling
+      if (flags.ceiling.valid())
+	{
+	  if (fputs_failed(fputs("\001f c ", out)))
+	    return cssc::make_failure_from_errno(errno);
+
+	  auto written = flags.ceiling.print(out);
+	  if (!written.ok())
+	    return written;
+
+	  if (putc_failed(putc('\n', out)))
+	    return cssc::make_failure_from_errno(errno);
+	}
+
+      // d default SID
+      if (flags.default_sid.valid())
+	{
+	  if (fputs_failed(fputs("\001f d ", out)))
+	    return cssc::make_failure_from_errno(errno);
+	  auto written = flags.default_sid.print(out);
+	  if (!written.ok())
+	    return written;
+	  if (putc_failed(putc('\n', out)))
+	    return cssc::make_failure_from_errno(errno);
+	}
+
+      // f floor
+      if (flags.floor.valid())
+	{
+	  if (fputs_failed(fputs("\001f f ", out)))
+	    return cssc::make_failure_from_errno(errno);
+
+	  auto written = flags.floor.print(out);
+	  if (!written.ok())
+	    return written;
+
+	  if (putc_failed(putc('\n', out)))
+	    return cssc::make_failure_from_errno(errno);
+	}
+
+      // i no id kw is error
+      if (flags.no_id_keywords_is_fatal)
+	{
+	  if (fputs_failed(fputs("\001f i\n", out)))
+	    {
+	      return cssc::make_failure_from_errno(errno);
+	    }
+	}
+
+      // j joint-edit
+      if (flags.joint_edit)
+	{
+	  if (fputs_failed(fputs("\001f j\n", out)))
+	    return cssc::make_failure_from_errno(errno);
+	}
+
+      // l locked-releases
+      if (flags.all_locked)
+	{
+	  if (fputs_failed(fputs("\001f l a\n", out)))
+	    {
+	      return cssc::make_failure_from_errno(errno);
+	    }
+	}
+      else if ( !flags.locked.empty() )
+	{
+	  if (fputs_failed(fputs("\001f l ", out)))
+	    return cssc::make_failure_from_errno(errno);
+
+	  if (!flags.locked.print(out).ok())
+	    return cssc::make_failure_from_errno(errno);
+
+	  if (putc_failed(putc('\n', out)))
+	    return cssc::make_failure_from_errno(errno);
+	}
+
+      // m Module flag
+      if (flags.module)
+	{
+	  const char *p = flags.module->c_str();
+	  if (printf_failed(fprintf(out, "\001f m %s\n", p)))
+	    {
+	      return cssc::make_failure_from_errno(errno);
+	    }
+	}
+
+      // n Create empty deltas
+      if (flags.null_deltas)
+	{
+	  if (fputs_failed(fputs("\001f n\n", out)))
+	    return cssc::make_failure_from_errno(errno);
+	}
+
+      // q %Q% subst value (user flag)
+      if (flags.user_def)
+	{
+	  const char *p = flags.user_def->c_str();
+	  if (printf_failed(fprintf(out, "\001f q %s\n", p)))
+	    {
+	      return cssc::make_failure_from_errno(errno);
+	    }
+	}
+
+      // t %Y% subst value
+      if (flags.type)
+	{
+	  if (printf_failed(fprintf(out, "\001f t %s\n",
+				    flags.type->c_str())))
+	    {
+	      return cssc::make_failure_from_errno(errno);
+	    }
+	}
+
+      // v MR-validation program.
+      if (flags.mr_checker)
+	{
+	  if (printf_failed(fprintf(out, "\001f v %s\n",
+				    flags.mr_checker->c_str())))
+	    return cssc::make_failure_from_errno(errno);
+	}
+
+      // Write the correct value for the "encoded" flag.
+      // We have to write it even if the flag is unset,
+      // because "admin -i" goes back and updates that byte if the file
+      // turns out to have been binary.
+      if (printf_failed(fprintf(out, "\001f e %c\n",
+				(flags.encoded ? '1' : '0'))))
+	{
+	  return cssc::make_failure_from_errno(errno);
+	}
+
+
+      // x - executable flag (a SCO extension)
+      // Setting execute perms on the history file is a more portable way to
+      // achieve what the user probably wants.
+      if (flags.executable)
+	{
+	  if (printf_failed(fprintf(out, "\001f x\n")))
+	    {
+	      return cssc::make_failure_from_errno(errno);
+	    }
+	}
+
+      // y - substituted keywords (a Sun Solaris 8+ extension)
+      if (!flags.substitued_flag_letters.empty())
+	{
+	  if (printf_failed(fprintf(out, "\001f y ")))
+	    return cssc::make_failure_from_errno(errno);
+
+	  cssc::Failure printed = print_subsituted_flags_list(out, " ");
+	  if (!printed.ok())
+	    return printed;
+
+	  if (printf_failed(fprintf(out, "\n")))
+	    return cssc::make_failure_from_errno(errno);
+	}
+
+      if (flags.reserved)
+	{
+	  if (printf_failed(fprintf(out, "\001f z %s\n",
+				    flags.reserved->c_str())))
+	    {
+	      return cssc::make_failure_from_errno(errno);
+	    }
+	}
+
+      // end of flags.
+
+      if (fputs_failed(fputs("\001t\n", out)))
+	{
+	  return cssc::make_failure_from_errno(errno);
+	}
+
+      for (const auto& comment : comments)
+	{
+	  ASSERT(comment[0] != '\001');
+	  if (printf_failed(fprintf(out, "%s\n", comment.c_str())))
+	    {
+	      return cssc::make_failure_from_errno(errno);
+	    }
+	}
+
+      if (fputs_failed(fputs("\001T\n", out)))
+	{
+	  return cssc::make_failure_from_errno(errno);
+	}
+
+      return cssc::Failure::Ok();
+    }();
+  if (!result.ok())
     {
-      return 1;
+      return (cssc::FailureBuilder(result)
+	      .diagnose() << "failed to write file header");
     }
-
-  for (const auto& comment : comments)
-    {
-      ASSERT(comment[0] != '\001');
-      if (printf_failed(fprintf(out, "%s\n", comment.c_str())))
-	return 1;
-    }
-
-  if (fputs_failed(fputs("\001T\n", out)))
-    {
-      return 1;
-    }
-
-  return 0;
+  return cssc::Failure::Ok();
 }
-
-
 
 Failure
 sccs_file::rehack_encoded_flag(FILE *fp, int *sum) const
@@ -636,9 +656,10 @@ sccs_file::update()
     return false;               // don't start writing the x-file.
   FILE *out = *fof;
 
-  if (write(out))
+  if (!write(out).ok())
     {
       xfile_error("Write error.");
+      return false;
     }
 
   // assume that since the earlier seek_to_body() worked,
@@ -648,6 +669,7 @@ sccs_file::update()
   if (!body_scanner_->copy_to(out))
     {
           xfile_error("Write error.");
+	  return false;
     }
   return end_update(&out).ok();	// TODO: change return type
 }

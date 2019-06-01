@@ -182,19 +182,23 @@ sccs_file::add_delta(const std::string& gname,
    * that problem.
    */
   const int xmode = gfile_should_be_executable() ? CREATE_EXECUTABLE : 0;
-  cssc::FailureOr<FILE*> fof = fcreate(dname, CREATE_EXCLUSIVE | xmode);
-  if (!fof.ok())
+  FILE *get_out;
+  if (1)
     {
-      remove(dname.c_str());
-      fof = fcreate(dname, CREATE_EXCLUSIVE | xmode);
+      cssc::FailureOr<FILE*> fof = fcreate(dname, CREATE_EXCLUSIVE | xmode);
+      if (!fof.ok())
+	{
+	  remove(dname.c_str());
+	  fof = fcreate(dname, CREATE_EXCLUSIVE | xmode);
+	}
+      if (!fof.ok())
+	{
+	  cssc::FailureBuilder(fof.fail())
+	    .diagnose() << "cannot create file " << dname;
+	  return false;
+	}
+      get_out = *fof;
     }
-  if (!fof.ok())
-    {
-      cssc::FailureBuilder(fof.fail())
-	.diagnose() << "cannot create file " << dname;
-      return false;
-    }
-  FILE *get_out = *fof;
   FileDeleter another_cleaner(dname, false);
 
   auto w = cssc::optional<std::string>();
@@ -345,9 +349,14 @@ sccs_file::add_delta(const std::string& gname,
   // Begin the update by writing out the new delta.
   // This also writes out the information for all the
   // earlier deltas.
-  FILE *out = start_update(new_delta);
-  if (NULL == out)
-    return false;
+  FILE *out;
+  if (1)
+    {
+      cssc::FailureOr<FILE*> fof = start_update(new_delta);
+      if (!fof.ok())
+	return false;
+      out = *fof;
+    }
 
 #undef DEBUG_FILE
 #ifdef DEBUG_FILE

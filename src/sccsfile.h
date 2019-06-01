@@ -191,7 +191,7 @@ public:
 
   /* sf-add.c */
 
-  FILE *start_update(struct delta const &new_delta);
+  cssc::FailureOr<FILE*> start_update(struct delta const &new_delta);
   cssc::Failure end_update(FILE **out, struct delta const &new_delta);
 
   int mr_required() const
@@ -256,7 +256,7 @@ protected:
   void xfile_error(const char *msg) const;
   cssc::FailureOr<FILE*> start_update();         // this opens the x-file
   cssc::Failure write_delta(FILE *out, struct delta const &delta) const;
-  int write(FILE *out) const;
+  cssc::Failure write(FILE *out) const;
   // TODO: return cssc::Failure instead of bool?
   cssc::Failure end_update(FILE **out);  // NB: this closes the x-file too.
   cssc::Failure rehack_encoded_flag(FILE *out, int *sum) const;

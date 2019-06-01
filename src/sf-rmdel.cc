@@ -83,7 +83,7 @@ sccs_file::rmdel(sid id)
   ASSERT(*fof != NULL);
   FILE *out = *fof;
 
-  if (write(out))
+  if (!write(out).ok())
     {
       xfile_error("Write error.");
       return false;

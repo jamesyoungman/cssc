@@ -397,8 +397,8 @@ sccs_file::create(const sid &id,
 	}
     }
 
-  FILE *out = start_update(new_delta);
-  if (NULL == out)
+  cssc::FailureOr<FILE*> fof = start_update(new_delta);
+  if (!fof.ok())
     {
       if (in != NULL)
 	{
@@ -406,6 +406,7 @@ sccs_file::create(const sid &id,
 	}
       return false;
     }
+  FILE *out = *fof;
 
   if (fprintf_failed(fprintf(out, "\001I 1\n")))
     return false;
