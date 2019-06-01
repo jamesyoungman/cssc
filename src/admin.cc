@@ -88,6 +88,10 @@ main(int argc, char **argv)
   int retval;
 
 
+#ifdef __GLIBC__
+# if __GNUC_PREREQ (2,1)
+  // The bug mentioned below is now fixed.
+# else
   // If we use the "-i" option, we read the initial body from the
   // named file, or stdin if no file is named.  In this case, we use
   // fgetpos() or ftell() so that we can rewind the input in order to
@@ -96,8 +100,8 @@ main(int argc, char **argv)
   // succeeding on stdin even if it is a pipe,fifo,tty or other
   // nonseekable object.  We get around this bug by setting stdin to
   // un-buffered, which avoids this bug.
-#ifdef __GLIBC__
   setvbuf(stdin, (char*)0, _IONBF, 0u);
+# endif
 #endif
 
   if (argc > 0) {
