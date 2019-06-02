@@ -31,6 +31,7 @@
 #include <memory>
 
 #include "cssc.h"
+#include "except.h"
 #include "sccsdate.h"
 #include "ioerr.h"
 #include "failure.h"
@@ -426,7 +427,11 @@ sccs_date
 sccs_date::now()                // static member.
 {
   time_t tt;
-  time(&tt);                    // TODO: throw exception if this fails.
+  if (time(&tt) == (time_t)-1)
+    {
+      errormsg_with_errno("unable to determine current time");
+      throw CsscQuitException(2);
+    }
   struct tm *ptm = localtime(&tt);
 
   return sccs_date(ptm->tm_year+1900, ptm->tm_mon+1, ptm->tm_mday,
