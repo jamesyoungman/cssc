@@ -159,6 +159,12 @@ namespace cssc
     FailureBuilder(const FailureBuilder& other);
     operator Failure() const;
     ~FailureBuilder();
+
+    // TODO: if we propagate all Failure instances without discarding
+    // them, there is no need to issue a diagnostic at the time the
+    // FailureBuilder is deleted.  By eliminating diagnose() we avoid
+    // a situation where a diagnosric message is issued twice
+    // (e.g. when a problem is detected and again at top-level).
     FailureBuilder& diagnose();
 
     template <typename T> FailureBuilder& operator<<(const T& item)
