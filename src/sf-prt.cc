@@ -31,6 +31,7 @@
 
 #include "cssc.h"
 #include "failure.h"
+#include "failure_macros.h"
 #include "ioerr.h"
 #include "sccsfile.h"
 #include "seqstate.h"
@@ -43,34 +44,6 @@ using cssc::make_failure_from_errno;
 using cssc::Failure;
 
 #include <unistd.h>		// SEEK_SET on SunOS.
-
-#define TRY_PRINTF(printf_expression) \
-  do { int result = (printf_expression); \
-  if (fprintf_failed(result)) { \
-    return cssc::make_failure_from_errno(errno); \
-  }						 \
-  } while (0)
-
-#define TRY_PUTS(puts_expression) \
-  do { int result = (puts_expression); \
-  if (fputs_failed(result)) { \
-    return cssc::make_failure_from_errno(errno); \
-  }						 \
-  } while (0)
-
-#define TRY_PUTC(putc_expression) \
-  do { int result = (putc_expression); \
-  if (fputc_failed(result)) { \
-    return cssc::make_failure_from_errno(errno); \
-  }						 \
-  } while (0)
-
-#define TRY_OPERATION(expression)		\
-  do { Failure done = (expression);		\
-    if (!done.ok()) {				\
-    return done;				\
-  }						\
-  } while (0)
 
 template<class Container>
 static cssc::Failure
