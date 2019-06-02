@@ -63,20 +63,21 @@ public:
       if (armed)
         {
           const char *s = name.c_str();
-          bool bOK;
-
           if (as_real_user)
 	    {
-	      // TODO: issue a better error message using the Failure
-	      // object.
-	      bOK = unlink_file_as_real_user(s).ok();
+	      cssc::Failure deleted = unlink_file_as_real_user(s);
+	      if (!deleted.ok())
+		{
+		  errormsg("%s", deleted.to_string().c_str());
+		}
 	    }
           else
 	    {
-	      bOK = (remove(s) == 0);
+	      if (remove(s) != 0)
+		{
+		  errormsg("%s", strerror(errno));
+		}
 	    }
-          if (!bOK)
-            perror(s);
         }
     }
   void disarm() { armed = false; }
