@@ -192,19 +192,22 @@ main(int argc, char **argv)
 
 	  sccs_file file(name, READ);
 
-	  if (!file.prt(stdout,
-			exclude,		  // -y, -c, -r
-			selector,		  // -a
-			print_body,		  // -b
-			print_delta_table,	  // -d
-			print_flags,	  // -f
-			incl_excl_ignore,	  // -i
-			first_line_only,	  // -s
-			print_desc,		  // -t
-			print_users))	  // -u
-	    {
-	      retval = 1;
-	    }
+	  cssc::Failure done =
+	    file.prt(stdout,
+		     exclude,		  // -y, -c, -r
+		     selector,		  // -a
+		     print_body,	  // -b
+		     print_delta_table,	  // -d
+		     print_flags,	  // -f
+		     incl_excl_ignore,	  // -i
+		     first_line_only,	  // -s
+		     print_desc,	  // -t
+		     print_users);	  // -u
+	if (!done.ok())
+	  {
+	    errormsg("%s: %s", name.c_str(), done.to_string().c_str());
+	    retval = 1;
+	  }
 	}
       catch (CsscExitvalException e)
 	{

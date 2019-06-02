@@ -65,7 +65,12 @@ using cssc::Failure;
   }						 \
   } while (0)
 
-
+#define TRY_OPERATION(expression)		\
+  do { Failure done = (expression);		\
+    if (!done.ok()) {				\
+    return done;				\
+  }						\
+  } while (0)
 
 template<class Container>
 static cssc::Failure
@@ -277,19 +282,20 @@ sccs_file::cutoff::cutoff()
 }
 
 
-static void
+static Failure
 print_seq_list(FILE *out, std::vector<seq_no> const &list)
 {
   bool first = true;
   for (const auto& seq : list)
     {
-      fprintf(out, "%s%u", (first ? "" : " "), seq);
+      TRY_PRINTF(fprintf(out, "%s%u", (first ? "" : " "), seq));
       first = false;
     }
+  return Failure::Ok();
 }
 
 
-bool
+Failure
 sccs_file::prt(FILE *out,
 	       cutoff exclude,	      // -y, -c, -r
 	       delta_selector selector,	// -a => delta_selector::all
@@ -334,24 +340,33 @@ sccs_file::prt(FILE *out,
 	    }
 
 	  if (exclude.enabled)	// -y, -c, or -r option.
-	    fprintf(out, "%s:\t", name.c_str());
+	    {
+	      TRY_PRINTF(fprintf(out, "%s:\t", name.c_str()));
+	    }
 	  else
-	    putc('\n', out);
+	    {
+	      TRY_PUTC(putc('\n', out));
+	    }
 
 	  // Print the stuff from the delta...
-	  fprintf(out, "%c ", iter->get_type());
-	  iter->id().print(out);
-	  putc('\t', out);
-	  iter->date().printf(out, 'D');
-	  putc(' ', out);
-	  iter->date().printf(out, 'T');
-	  fprintf(out, " %s\t%hu %hu",
-		  iter->user().c_str(),
-		  (unsigned short)iter->seq(),
-		  (unsigned short)iter->prev_seq());
-	  fprintf(out, "\t%05lu/%05lu/%05lu",
-		  iter->inserted(), iter->deleted(), iter->unchanged());
-
+	  TRY_PRINTF(fprintf(out, "%c ", iter->get_type()));
+	  Failure printed = iter->id().print(out);
+	  if (!printed.ok())
+	    return printed;
+	  TRY_PUTC(putc('\t', out));
+	  printed = iter->date().printf(out, 'D');
+	  if (!printed.ok())
+	    return printed;
+	  TRY_PUTC(putc(' ', out));
+	  printed = iter->date().printf(out, 'T');
+	  if (!printed.ok())
+	    return printed;
+	  TRY_PRINTF(fprintf(out, " %s\t%hu %hu",
+			     iter->user().c_str(),
+			     (unsigned short)iter->seq(),
+			     (unsigned short)iter->prev_seq()));
+	  TRY_PRINTF(fprintf(out, "\t%05lu/%05lu/%05lu",
+			     iter->inserted(), iter->deleted(), iter->unchanged()));
 
 	  if (!first_line_only)
 	    {
@@ -370,49 +385,59 @@ sccs_file::prt(FILE *out,
 		  // kludge.
 		  if (!iter->get_included_seqnos().empty())
 		    {
-		      fputs(nl_sep, out);	// either newline or space.
-		      fprintf(out, "Included:\t");
-		      print_seq_list(out, iter->get_included_seqnos());
+		      TRY_PUTS(fputs(nl_sep, out)); // either newline or space.
+		      TRY_PRINTF(fprintf(out, "Included:\t"));
+		      Failure printed = print_seq_list(out, iter->get_included_seqnos());
+		      if (!printed.ok())
+			return printed;
 		    }
 		  else if (iter->has_includes())
 		    {
-		      fputs(nl_sep, out);	// either newline or space.
-		      fprintf(out, "Included:\t");
+		      TRY_PUTS(fputs(nl_sep, out)); // either newline or space.
+		      TRY_PRINTF(fprintf(out, "Included:\t"));
 		    }
 		  if (!iter->get_excluded_seqnos().empty())
 		    {
-		      fputs(nl_sep, out);	// either newline or space.
-		      fprintf(out, "Excluded:\t");
-		      print_seq_list(out, iter->get_excluded_seqnos());
+		      TRY_PUTS(fputs(nl_sep, out)); // either newline or space.
+		      TRY_PRINTF(fprintf(out, "Excluded:\t"));
+		      Failure printed = print_seq_list(out, iter->get_excluded_seqnos());
+		      if (!printed.ok())
+			return printed;
 		    }
 		  else if (iter->has_excludes())
 		    {
-		      fputs(nl_sep, out);	// either newline or space.
-		      fprintf(out, "Excluded:\t");
+		      TRY_PUTS(fputs(nl_sep, out)); // either newline or space.
+		      TRY_PRINTF(fprintf(out, "Excluded:\t"));
 		    }
 		}
 	      // Print any MRs and then the comments.
 	      if (!iter->mrs().empty())
 		{
-		  fputs(nl_sep, out);	// either newline or space.
-		  print_string_list(out, iter->mrs(), "MRs:\t", nl_sep, "");
+		  TRY_PUTS(fputs(nl_sep, out));	// either newline or space.
+		  Failure printed = print_string_list(out, iter->mrs(), "MRs:\t", nl_sep, "");
+		  if (!printed.ok())
+		    return printed;
 		}
 	      if (!iter->comments().empty())
 		{
-		  fputs(nl_sep, out);	// either newline or space.
-		  print_string_list(out, iter->comments(), "", nl_sep, "");
+		  TRY_PUTS(fputs(nl_sep, out));	// either newline or space.
+		  Failure printed = print_string_list(out, iter->comments(), "", nl_sep, "");
+		  if (!printed.ok())
+		    return printed;
 		}
 	    }
-	  putc('\n', out);
+	  TRY_PUTC(putc('\n', out));
 	}
     }
 
   // global stuff.
   if (print_users)
     {
-      fprintf(out, "\n Users allowed to make deltas -- \n");
-      print_string_list(out, users, "\t", "\n", "everyone");
-      putc('\n', out);
+      TRY_PRINTF(fprintf(out, "\n Users allowed to make deltas -- \n"));
+      Failure printed = print_string_list(out, users, "\t", "\n", "everyone");
+      if (!printed.ok())
+	return printed;
+      TRY_PUTC(putc('\n', out));
     }
 
   if (print_flags)
@@ -429,22 +454,26 @@ sccs_file::prt(FILE *out,
       // But we emulate even that bug :-)
       //
       int flag_count = 0;
-      fprintf(out, "\nFlags --\n");
+      TRY_PRINTF(fprintf(out, "\nFlags --\n"));
       if (flags.branch)
 	{
 	  // "Real" SCCS prints a TAB after "branch", so we do too.
-	  fprintf(out, "\tbranch\t\n");
+	  TRY_PRINTF(fprintf(out, "\tbranch\t\n"));
 	  ++flag_count;
 	}
 
-      print_flag(out, "\tceiling\t", flags.ceiling, flag_count);
-      print_flag(out, "\tdefault SID\t", flags.default_sid, flag_count);
+      Failure printed = print_flag(out, "\tceiling\t", flags.ceiling, flag_count);
+      if (!printed.ok())
+	return printed;
+      printed = print_flag(out, "\tdefault SID\t", flags.default_sid, flag_count);
+      if (!printed.ok())
+	return printed;
 
       // No newline after this one;  odd, but it's what "real"
       // SCCS does.
       if (flags.encoded)
 	{
-	  fprintf(out, "\tencoded");
+	  TRY_PRINTF(fprintf(out, "\tencoded"));
 	  ++flag_count;
 	}
 
@@ -454,37 +483,38 @@ sccs_file::prt(FILE *out,
       // SCO Unixware 8.0.0 does have it.  However, it
       // does not print anything if the x flag is set.
       // Hence for compatibility, we don't do that either.
-      print_flag(out, "\texecutable\t\n", flags.executable, flag_count);
+      TRY_OPERATION(print_flag(out, "\texecutable\t\n",
+			       flags.executable, flag_count));
 #endif
 
-      print_flag(out, "\tfloor\t", flags.floor, flag_count);
+      TRY_OPERATION(print_flag(out, "\tfloor\t", flags.floor, flag_count));
       if (flags.no_id_keywords_is_fatal)
 	{
-	  fprintf(out, "\tid_keywd err/warn\t\n");
+	  TRY_PRINTF(fprintf(out, "\tid_keywd err/warn\t\n"));
 	  ++flag_count;
 	}
       if (flags.joint_edit)
 	{
-	  fprintf(out, "\tjoint edit\t\n");
+	  TRY_PRINTF(fprintf(out, "\tjoint edit\t\n"));
 	  ++flag_count;
 	}
       if (flags.all_locked)
 	{
-	  fprintf(out, "\tlocked releases\ta\n");
+	  TRY_PRINTF(fprintf(out, "\tlocked releases\ta\n"));
 	  ++flag_count;
 	}
       else if (!flags.locked.empty())
 	{
-	  fprintf(out, "\tlocked releases\t");
-	  flags.locked.print(out);
-	  putc('\n', out);
+	  TRY_PRINTF(fprintf(out, "\tlocked releases\t"));
+	  TRY_OPERATION(flags.locked.print(out));
+	  TRY_PUTC(putc('\n', out));
 	  ++flag_count;
 	}
-      print_flag(out, "\tmodule\t%s\n", flags.module, flag_count);
-      print_flag(out, "\tnull delta\t\n", flags.null_deltas, flag_count);
-      print_flag(out, "\tcsect name\t%s\n", flags.user_def, flag_count);
-      print_flag(out, "\ttype\t%s\n", flags.type, flag_count);
-      print_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count);
+      TRY_OPERATION(print_flag(out, "\tmodule\t%s\n", flags.module, flag_count));
+      TRY_OPERATION(print_flag(out, "\tnull delta\t\n", flags.null_deltas, flag_count));
+      TRY_OPERATION(print_flag(out, "\tcsect name\t%s\n", flags.user_def, flag_count));
+      TRY_OPERATION(print_flag(out, "\ttype\t%s\n", flags.type, flag_count));
+      TRY_OPERATION(print_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count));
 
       if (!flags.substitued_flag_letters.empty())
 	{
@@ -492,30 +522,32 @@ sccs_file::prt(FILE *out,
 
 	  // Unusually, Solaris "prt" just launches into the list of
 	  // expanded keyletters, without a leading flag name.
-	  fprintf(out, "\t\t");
-	  (void) print_subsituted_flags_list(out, " ");
-	  fprintf(out, "\n");
+	  TRY_PRINTF(fprintf(out, "\t\t"));
+	  TRY_OPERATION(print_subsituted_flags_list(out, " "));
+	  TRY_PRINTF(fprintf(out, "\n"));
 	}
 
 
       if (0 == flag_count)
-	fprintf(out, "\tnone\n");
+	{
+	  TRY_PRINTF(fprintf(out, "\tnone\n"));
+	}
     }
   if (print_desc)
     {
-      fprintf(out, "\nDescription --\n");
-      print_string_list(out, comments, "\t", "\n", "none");
-      putc('\n', out);
+      TRY_PRINTF(fprintf(out, "\nDescription --\n"));
+      TRY_OPERATION(print_string_list(out, comments, "\t", "\n", "none"));
+      TRY_PUTC(putc('\n', out));
     }
 
   if (print_body)
     {
       // seek_to_body() is a non-const member, so we have this
       // silly workaround.
-      body_scanner_->print_body(out, name.c_str());
+      TRY_OPERATION(body_scanner_->print_body(out, name.c_str()));
     }
 
-  return true;
+  return Failure::Ok();
 }
 
 

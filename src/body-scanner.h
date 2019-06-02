@@ -74,7 +74,7 @@ public:
 
   // Print the body of an SCCS file to |out|, transforming all "^A"s
   // into "*** "s.  The name of the output file is |name|.
-  bool print_body(FILE* out, const std::string& name);
+  cssc::Failure print_body(FILE* out, const std::string& name);
 
 private:
   FILE* f_;

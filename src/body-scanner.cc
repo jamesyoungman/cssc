@@ -41,6 +41,10 @@
 #include "subst-parms.h"
 #include "quit.h"
 
+
+using cssc::Failure;
+using cssc::make_failure_builder_from_errno;
+
 sccs_file_body_scanner::sccs_file_body_scanner(const std::string& filename,
 					       FILE*f, off_t body_pos, long line_number)
   : sccs_file_reader_base(filename, f, sccs_file_location(filename, line_number)),
@@ -528,34 +532,33 @@ sccs_file_body_scanner::emit_raw_body(FILE* out, const char *outname)
   return true;
 }
 
-bool
+cssc::Failure
 sccs_file_body_scanner::print_body(FILE *out, const std::string& outname)
 {
   bool ret = true;
 
   // When pos_saver goes out of scope the file position on "f_" is restored.
   FilePosSaver pos_saver(f_);
-
-  if (!seek_to_body().ok())
+  Failure done =  seek_to_body();
+  if (!done.ok())
     {
-      errormsg_with_errno("%s: fseek() failed!", name().c_str());
-      return false;		// can't read body now, so just fail.
+      return cssc::make_failure_builder(done).diagnose();
     }
 
 
-  auto write_err = [outname]() -> bool
+  auto write_err = [outname](int saved_errno) -> Failure
     {
-      errormsg_with_errno("%s: write failed!", outname.c_str());
-      return false;
+      return make_failure_builder_from_errno(saved_errno)
+      .diagnose() << "write failed on " << outname;
     };
-  auto read_err = [this]() -> bool
+  auto read_err = [this](int saved_errno) -> Failure
     {
-      errormsg_with_errno("%s: read failed!", name().c_str());
-      return false;
+      return make_failure_builder_from_errno(saved_errno)
+      .diagnose() << "read failed on " << name().c_str();
     };
 
   if (putc_failed(putc('\n', out)))
-    return write_err();
+    return write_err(errno);
 
   int ch;
   while ( ret && (ch=getc(f_)) != EOF )
@@ -564,7 +567,7 @@ sccs_file_body_scanner::print_body(FILE *out, const std::string& outname)
 	{
 	  if (fputs_failed(fputs("*** ", out)))
 	    {
-	      return write_err();
+	      return write_err(errno);
 	    }
 	}
       else if ('\n' == ch)
@@ -573,22 +576,30 @@ sccs_file_body_scanner::print_body(FILE *out, const std::string& outname)
 
 	  if ('\001' == peek)
 	    {
-	      ungetc(peek, f_);
+	      if (EOF == ungetc(peek, f_))
+		{
+		  return cssc::make_failure_builder_from_errno(errno)
+		    .diagnose() << "ungetc failed on " << name().c_str();
+		}
 	      if (putc_failed(putc('\n', out)))
-		return write_err();
+		return write_err(errno);
 	    }
 	  else if (EOF == peek)
 	    {
 	      if (putc_failed(putc('\n', out)))
-		return write_err();
+		return write_err(errno);
 	      break;
 	    }
 	  else
 	    {
-	      ungetc(peek, f_);
+	      if (EOF == ungetc(peek, f_))
+		{
+		  return cssc::make_failure_builder_from_errno(errno)
+		    .diagnose() << "ungetc failed on " << name().c_str();
+		}
 	      if (fputs_failed(fputs("\n\t", out)))
 		{
-		  return write_err();
+		  return write_err(errno);
 		}
 	    }
 	}
@@ -596,16 +607,16 @@ sccs_file_body_scanner::print_body(FILE *out, const std::string& outname)
 	{
 	  if (putc_failed(putc(ch, out)))
 	    {
-	      return write_err();
+	      return write_err(errno);
 	    }
 	}
     }
   if (ferror(f_))		// read error is fatal.
     {
-      return read_err();
+      return read_err(errno);
     }
   // When pos_saver goes out of scope the file position is restored.
-  return true;
+  return Failure::Ok();
 }
 
 

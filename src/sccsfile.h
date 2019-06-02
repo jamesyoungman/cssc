@@ -137,11 +137,10 @@ public:
 	   const std::string& format, sid rid, sccs_date cutoff_date,
            enum when when, delta_selector selector, bool *matched);
 
-  // TODO: return cssc::Failure instead of bool?
-  bool prt(FILE *out, struct cutoff exclude, delta_selector selector,
-           int print_body, int print_delta_table, int print_flags,
-           int incl_excl_ignore, int first_line_only, int print_desc,
-           int print_users) const;
+  cssc::Failure prt(FILE *out, struct cutoff exclude, delta_selector selector,
+		    int print_body, int print_delta_table, int print_flags,
+		    int incl_excl_ignore, int first_line_only, int print_desc,
+		    int print_users) const;
 
   // The caller must check edit_mode_permitted() before calling cdc().
   void cdc(delta*, const std::vector<std::string>& mrs, const std::vector<std::string>& comments);
