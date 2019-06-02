@@ -28,6 +28,7 @@
 #include <config.h>
 #include <string>
 #include "cssc.h"
+#include "failure.h"
 #include "fileiter.h"
 #include "sccsfile.h"
 #include "my-getopt.h"
@@ -164,9 +165,11 @@ main(int argc, char **argv)
 	      printf("%s:\n\n", name.c_str());
 	    }
 	  bool matched = false;
-	  if (!file.prs(stdout, "standard output", format, rid, cutoff_date, selected,
-			selector, &matched))
+	  cssc::Failure done = file.prs(stdout, "standard output", format, rid, cutoff_date, selected,
+					selector, &matched);
+	  if (!done.ok())
 	    {
+	      errormsg("%s: %s", name.c_str(), done.to_string().c_str());
 	      retval = 1;
 	    }
 	  if (ferror(stdout))

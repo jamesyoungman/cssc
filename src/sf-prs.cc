@@ -666,7 +666,7 @@ sccs_file::print_delta_key(FILE *out,
 
 
 /* Prints out parts of the SCCS file.  */
-bool
+Failure
 sccs_file::prs(FILE *out, const char *outname,
 	       const std::string& format, sid rid, sccs_date cutoff_date,
                enum when cutoff_type, delta_selector selector, bool *matched)
@@ -682,8 +682,11 @@ sccs_file::prs(FILE *out, const char *outname,
 	  if (!rid.valid() || (rid == iter->id()))
 	    {
 	      *matched = true;
-	      print_delta(out, outname, fmt, *iter.operator->());
-	      putc('\n', out);
+	      Failure printed = print_delta(out, outname, fmt, *iter.operator->());
+	      if (!printed.ok())
+		return printed;
+	      if (fputc_failed(putc('\n', out)))
+		return make_failure_from_errno(errno);
 	      break;
 	    }
 	}
@@ -695,8 +698,11 @@ sccs_file::prs(FILE *out, const char *outname,
 	  if (cutoff_date.valid() && iter->date() < cutoff_date)
 	    break;
 	  *matched = true;
-	  print_delta(out, outname, fmt, *iter.operator->());
-	  putc('\n', out);
+	  Failure printed = print_delta(out, outname, fmt, *iter.operator->());
+	  if (!printed.ok())
+	    return printed;
+	  if (fputc_failed(putc('\n', out)))
+	    return make_failure_from_errno(errno);
 	  if (rid.valid() && (rid == iter->id()))
 	    break;
 	}
@@ -713,11 +719,14 @@ sccs_file::prs(FILE *out, const char *outname,
 	  if (cutoff_date.valid() && (cutoff_date < iter->date()))
 	    continue;
 	  *matched = true;
-	  print_delta(out, outname, fmt, *iter.operator->());
-	  putc('\n', out);
+	  Failure printed = print_delta(out, outname, fmt, *iter.operator->());
+	  if (!printed.ok())
+	    return printed;
+	  if (fputc_failed(putc('\n', out)))
+	    return make_failure_from_errno(errno);
 	}
     }
-  return true;
+  return Failure::Ok();
 }
 
 /* Local variables: */

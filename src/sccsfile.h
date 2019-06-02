@@ -132,10 +132,9 @@ public:
               int suppress_comments,
               bool force_binary);
 
-  // TODO: return cssc::Failure instead of bool?
-  bool prs(FILE *out, const char *outname,
-	   const std::string& format, sid rid, sccs_date cutoff_date,
-           enum when when, delta_selector selector, bool *matched);
+  cssc::Failure prs(FILE *out, const char *outname,
+		    const std::string& format, sid rid, sccs_date cutoff_date,
+		    enum when when, delta_selector selector, bool *matched);
 
   cssc::Failure prt(FILE *out, struct cutoff exclude, delta_selector selector,
 		    int print_body, int print_delta_table, int print_flags,
