@@ -51,7 +51,7 @@ main(int argc, char **argv)
   int c;
   std::string format = ":Dt:\t:DL:\nMRs:\n:MR:COMMENTS:\n:C:";
   sid rid(sid::null_sid());
-  /* enum */ sccs_file::when selected = sccs_file::SIDONLY;
+  sccs_file::when selected = sccs_file::when::SIDONLY;
   delta_selector selector = delta_selector::current; // -a
   sccs_date cutoff_date;
   int default_processing = 1;
@@ -112,12 +112,12 @@ main(int argc, char **argv)
 	  break;
 
 	case 'e':
-	  selected = sccs_file::EARLIER;
+	  selected = sccs_file::when::EARLIER;
 	  default_processing = 0;
 	  break;
 
 	case 'l':
-	  selected = sccs_file::LATER;
+	  selected = sccs_file::when::LATER;
 	  default_processing = 0;
 	  break;
 
@@ -132,7 +132,7 @@ main(int argc, char **argv)
 
     }
 
-  if (selected == sccs_file::SIDONLY && cutoff_date.valid())
+  if (selected == sccs_file::when::SIDONLY && cutoff_date.valid())
     {
       errormsg("Either the -e or -l switch must used with a"
 	       " cutoff date.");
@@ -141,7 +141,7 @@ main(int argc, char **argv)
 
   if (default_processing)
     {
-      selected = sccs_file::EARLIER;
+      selected = sccs_file::when::EARLIER;
     }
 
   sccs_file_iterator iter(opts);

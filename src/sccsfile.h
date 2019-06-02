@@ -70,7 +70,7 @@ public:
 	    ParserOptions = ParserOptions());
   ~sccs_file();
 
-  enum when { EARLIER, SIDONLY, LATER };
+  enum class when { EARLIER, SIDONLY, LATER };
   enum { GET_NO_DECODE = true };
 
   struct cutoff

@@ -674,7 +674,7 @@ sccs_file::prs(FILE *out, const char *outname,
   const_delta_iterator iter(delta_table.get(), selector);
   const char *fmt = format.c_str();
 
-  if (cutoff_type == SIDONLY)
+  if (cutoff_type == when::SIDONLY)
     {
       ASSERT (!cutoff_date.valid());
       while (iter.next())
@@ -691,7 +691,7 @@ sccs_file::prs(FILE *out, const char *outname,
 	    }
 	}
     }
-  else if (cutoff_type == LATER)
+  else if (cutoff_type == when::LATER)
     {
       while (iter.next())
 	{
