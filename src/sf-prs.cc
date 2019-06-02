@@ -383,274 +383,285 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
           putc(':', out);
           continue;
         }
-
-      // TODO: diagnose write errors in this switch statement.
-      switch (key)
-        {
-        default:
-          s = back_to;
-          putc(':', out);
-          continue;
-
-        case KEY2('D','t'):
-          print_delta(out, outname, ":DT: :I: :D: :T: :P: :DS: :DP:", d);
-          break;
-
-        case KEY2('D','L'):
-          print_delta(out, outname, ":Li:/:Ld:/:Lu:", d);
-          break;
-
-        case KEY2('L','i'):
-          fprintf(out, "%05lu", d.inserted());
-          break;
-
-        case KEY2('L','d'):
-          fprintf(out, "%05lu", d.deleted());
-          break;
-
-        case KEY2('L','u'):
-          fprintf(out, "%05lu", d.unchanged());
-          break;
-
-        case KEY2('D','T'):
-          putc(d.get_type(), out);
-          break;
-
-        case KEY1('I'):
-          d.id().print(out);
-          break;
-
-        case KEY1('R'):
-          d.id().printf(out, 'R');
-          break;
-
-        case KEY1('L'):
-          d.id().printf(out, 'L');
-          break;
-
-        case KEY1('B'):
-          d.id().printf(out, 'B');
-          break;
-
-        case KEY1('S'):
-          d.id().printf(out, 'S');
-          break;
-
-        case KEY1('D'):
-          d.date().printf(out, 'D');
-          break;
-
-        case KEY2('D','y'):
-          d.date().printf(out, 'y');
-          break;
-
-        case KEY2('D','m'):
-          d.date().printf(out, 'o');
-          break;
-
-        case KEY2('D','d'):
-          d.date().printf(out, 'd');
-          break;
-
-        case KEY1('T'):
-          d.date().printf(out, 'T');
-          break;
-
-        case KEY2('T','h'):
-          d.date().printf(out, 'h');
-          break;
-
-        case KEY2('T','m'):
-          d.date().printf(out, 'm');
-          break;
-
-        case KEY2('T','s'):
-          d.date().printf(out, 's');
-          break;
-
-        case KEY1('P'):
-          fputs(d.user().c_str(), out);
-          break;
-
-        case KEY2('D','S'):
-          fprintf(out, "%u", d.seq());
-          break;
-
-        case KEY2('D','P'):
-          fprintf(out, "%u", d.prev_seq());
-          break;
-
-        case KEY2('D', 'I'):
-	  /* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:),
-	     but OpenSolaris 2009.06 (SunOS 5.11) shows two. */
-	  if (!d.get_included_seqnos().empty())
-	    print_delta(out, outname, ":Dn:", d);
-	  if (!d.get_excluded_seqnos().empty())
-	    print_delta(out, outname, "/:Dx:", d);
-	  if (!d.get_ignored_seqnos().empty())
-	    print_delta(out, outname, "/:Dg:", d);
-	  break;
-
-        case KEY2('D','n'):
-          print_seq_list(out, d.get_included_seqnos());
-          break;
-
-        case KEY2('D','x'):
-          print_seq_list(out, d.get_excluded_seqnos());
-          break;
-
-        case KEY2('D','g'):
-          print_seq_list(out, d.get_ignored_seqnos());
-	  break;
-
-        case KEY2('M','R'):
-          print_string_list(out, d.mrs().cbegin(), d.mrs().cend());
-          break;
-
-        case KEY1('C'):
-          print_string_list(out, d.comments().cbegin(), d.comments().cend());
-          break;
-
-        case KEY2('U','N'):
-	  if (!users.empty())
-	    print_string_list(out, users.cbegin(), users.cend());
-	  else
-	    fprintf(out, "%s\n", "none");
-          break;
-
-        case KEY2('F', 'L'):
-          print_flags(out);
-          break;
-
-        case KEY1('Y'):
-          print_flag(out, flags.type);
-          break;
-
-        case KEY2('M','F'):
-          print_yesno(out, flags.mr_checker != 0);
-          break;
-
-        case KEY2('M','P'):
-          print_flag(out, flags.mr_checker);
-          break;
-
-        case KEY2('K','F'):
-          print_yesno(out, flags.no_id_keywords_is_fatal);
-          break;
-
-        case KEY2('B','F'):
-          print_yesno(out, flags.branch);
-          break;
-
-        case KEY1('J'):
-          print_yesno(out, flags.joint_edit);
-          break;
-
-        case KEY2('L','K'):
-          if (flags.all_locked)
-            {
-              putc('a', out);
-            }
-          else
-            {
-
-              if (flags.locked.empty())
-                fprintf(out, "none");
-              else
-                print_flag(out, flags.locked);
-            }
-          break;
-
-        case KEY1('Q'):
-          if (flags.user_def)
-            print_flag(out, flags.user_def);
-          break;
-
-        case KEY1('M'):
-          print_flag(out, get_module_name());
-          break;
-
-        case KEY2('F','B'):
-          print_flag(out, flags.floor);
-          break;
-
-        case KEY2('C','B'):
-          print_flag(out, flags.ceiling);
-          break;
-
-        case KEY2('D','s'):
-          print_flag(out, flags.default_sid);
-          break;
-
-        case KEY2('N','D'):
-          print_yesno(out, flags.null_deltas);
-          break;
-
-        case KEY2('F','D'):
-          // The genuine article prints '(none)' if there
-          // is no description.
-          // JY Sun Nov 25 01:33:46 2001; Solaris 2.6
-          // prints "none" rather than "(none)".
-          if (comments.empty())
-            fputs("none\n", out);
-          else
-            print_string_list(out, comments.cbegin(), comments.cend());
-          break;
-
-        case KEY2('B','D'):
-	  if (!body_scanner_->emit_raw_body(out, outname))
-	    {
-	      /* TODO: signal that something failed.  We already
-	         issued an error message, but this function returns
-	         void. */
-	    }
-          break;
-
-        case KEY2('G','B'):
-	  {
-	    std::string gname = "standard output";
-	    struct subst_parms parms(gname, get_module_name(), out,
-				     cssc::optional<std::string>(),
-				     delta_table->delta_at_seq(d.seq()),
-				     0, sccs_date());
-	    class seq_state state(highest_delta_seqno());
-	    prepare_seqstate(state, d.seq(), sid_list(), sid_list(), sccs_date());
-	    do_get(gname, state, parms, true, 0, 0, 0, false, false); // TODO: check return value?
-	  }
-          break;
-
-        case KEY1('W'):
-          print_delta(out, outname, ":Z::M:\t:I:", d);
-          break;
-
-        case KEY1('A'):
-          print_delta(out, outname, ":Z::Y: :M: :I::Z:", d);
-          break;
-
-        case KEY1('Z'):
-          fputc('@', out);
-          fputs("(#)", out);
-          break;
-
-        case KEY1('F'):
-          fputs(base_part(name.sfile()).c_str(), out);
-          break;
-
-        case KEY2('P','N'):
-	  {
-	    cssc::FailureOr<std::string> canon = canonify_filename(name.c_str());
-	    if (canon.ok())
-	      {
-		const std::string path(*canon);
-		fputs(path.c_str(), out);
-	      }
-	  }
-          break;
-        }
+      bool recognised = print_delta_key(out, outname, key, d);
+      if (!recognised)
+	{
+	  s = back_to;
+	  putc(':', out);
+	  continue;
+	}
     }
 }
 
 
+bool sccs_file::print_delta_key(FILE *out,
+				const char *outname,
+				unsigned key,
+				struct delta const &d)
+{
+  // TODO: diagnose write errors in this switch statement.
+  switch (key)
+    {
+    default:
+      return false;
+
+    case KEY2('D','t'):
+      print_delta(out, outname, ":DT: :I: :D: :T: :P: :DS: :DP:", d);
+      break;
+
+    case KEY2('D','L'):
+      print_delta(out, outname, ":Li:/:Ld:/:Lu:", d);
+      break;
+
+    case KEY2('L','i'):
+      fprintf(out, "%05lu", d.inserted());
+      break;
+
+    case KEY2('L','d'):
+      fprintf(out, "%05lu", d.deleted());
+      break;
+
+    case KEY2('L','u'):
+      fprintf(out, "%05lu", d.unchanged());
+      break;
+
+    case KEY2('D','T'):
+      putc(d.get_type(), out);
+      break;
+
+    case KEY1('I'):
+      d.id().print(out);
+      break;
+
+    case KEY1('R'):
+      d.id().printf(out, 'R');
+      break;
+
+    case KEY1('L'):
+      d.id().printf(out, 'L');
+      break;
+
+    case KEY1('B'):
+      d.id().printf(out, 'B');
+      break;
+
+    case KEY1('S'):
+      d.id().printf(out, 'S');
+      break;
+
+    case KEY1('D'):
+      d.date().printf(out, 'D');
+      break;
+
+    case KEY2('D','y'):
+      d.date().printf(out, 'y');
+      break;
+
+    case KEY2('D','m'):
+      d.date().printf(out, 'o');
+      break;
+
+    case KEY2('D','d'):
+      d.date().printf(out, 'd');
+      break;
+
+    case KEY1('T'):
+      d.date().printf(out, 'T');
+      break;
+
+    case KEY2('T','h'):
+      d.date().printf(out, 'h');
+      break;
+
+    case KEY2('T','m'):
+      d.date().printf(out, 'm');
+      break;
+
+    case KEY2('T','s'):
+      d.date().printf(out, 's');
+      break;
+
+    case KEY1('P'):
+      fputs(d.user().c_str(), out);
+      break;
+
+    case KEY2('D','S'):
+      fprintf(out, "%u", d.seq());
+      break;
+
+    case KEY2('D','P'):
+      fprintf(out, "%u", d.prev_seq());
+      break;
+
+    case KEY2('D', 'I'):
+      /* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:),
+	 but OpenSolaris 2009.06 (SunOS 5.11) shows two. */
+      if (!d.get_included_seqnos().empty())
+	print_delta(out, outname, ":Dn:", d);
+      if (!d.get_excluded_seqnos().empty())
+	print_delta(out, outname, "/:Dx:", d);
+      if (!d.get_ignored_seqnos().empty())
+	print_delta(out, outname, "/:Dg:", d);
+      break;
+
+    case KEY2('D','n'):
+      print_seq_list(out, d.get_included_seqnos());
+      break;
+
+    case KEY2('D','x'):
+      print_seq_list(out, d.get_excluded_seqnos());
+      break;
+
+    case KEY2('D','g'):
+      print_seq_list(out, d.get_ignored_seqnos());
+      break;
+
+    case KEY2('M','R'):
+      print_string_list(out, d.mrs().cbegin(), d.mrs().cend());
+      break;
+
+    case KEY1('C'):
+      print_string_list(out, d.comments().cbegin(), d.comments().cend());
+      break;
+
+    case KEY2('U','N'):
+      if (!users.empty())
+	print_string_list(out, users.cbegin(), users.cend());
+      else
+	fprintf(out, "%s\n", "none");
+      break;
+
+    case KEY2('F', 'L'):
+      print_flags(out);
+      break;
+
+    case KEY1('Y'):
+      print_flag(out, flags.type);
+      break;
+
+    case KEY2('M','F'):
+      print_yesno(out, flags.mr_checker != 0);
+      break;
+
+    case KEY2('M','P'):
+      print_flag(out, flags.mr_checker);
+      break;
+
+    case KEY2('K','F'):
+      print_yesno(out, flags.no_id_keywords_is_fatal);
+      break;
+
+    case KEY2('B','F'):
+      print_yesno(out, flags.branch);
+      break;
+
+    case KEY1('J'):
+      print_yesno(out, flags.joint_edit);
+      break;
+
+    case KEY2('L','K'):
+      if (flags.all_locked)
+	{
+	  putc('a', out);
+	}
+      else
+	{
+
+	  if (flags.locked.empty())
+	    fprintf(out, "none");
+	  else
+	    print_flag(out, flags.locked);
+	}
+      break;
+
+    case KEY1('Q'):
+      if (flags.user_def)
+	print_flag(out, flags.user_def);
+      break;
+
+    case KEY1('M'):
+      print_flag(out, get_module_name());
+      break;
+
+    case KEY2('F','B'):
+      print_flag(out, flags.floor);
+      break;
+
+    case KEY2('C','B'):
+      print_flag(out, flags.ceiling);
+      break;
+
+    case KEY2('D','s'):
+      print_flag(out, flags.default_sid);
+      break;
+
+    case KEY2('N','D'):
+      print_yesno(out, flags.null_deltas);
+      break;
+
+    case KEY2('F','D'):
+      // The genuine article prints '(none)' if there
+      // is no description.
+      // JY Sun Nov 25 01:33:46 2001; Solaris 2.6
+      // prints "none" rather than "(none)".
+      if (comments.empty())
+	fputs("none\n", out);
+      else
+	print_string_list(out, comments.cbegin(), comments.cend());
+      break;
+
+    case KEY2('B','D'):
+      if (!body_scanner_->emit_raw_body(out, outname))
+	{
+	  /* TODO: signal that something failed.  We already
+	     issued an error message, but this function returns
+	     void. */
+	}
+      break;
+
+    case KEY2('G','B'):
+      {
+	std::string gname = "standard output";
+	struct subst_parms parms(gname, get_module_name(), out,
+				 cssc::optional<std::string>(),
+				 delta_table->delta_at_seq(d.seq()),
+				 0, sccs_date());
+	class seq_state state(highest_delta_seqno());
+	prepare_seqstate(state, d.seq(), sid_list(), sid_list(), sccs_date());
+	do_get(gname, state, parms, true, 0, 0, 0, false, false); // TODO: check return value?
+      }
+      break;
+
+    case KEY1('W'):
+      print_delta(out, outname, ":Z::M:\t:I:", d);
+      break;
+
+    case KEY1('A'):
+      print_delta(out, outname, ":Z::Y: :M: :I::Z:", d);
+      break;
+
+    case KEY1('Z'):
+      fputc('@', out);
+      fputs("(#)", out);
+      break;
+
+    case KEY1('F'):
+      fputs(base_part(name.sfile()).c_str(), out);
+      break;
+
+    case KEY2('P','N'):
+      {
+	cssc::FailureOr<std::string> canon = canonify_filename(name.c_str());
+	if (canon.ok())
+	  {
+	    const std::string path(*canon);
+	    fputs(path.c_str(), out);
+	  }
+      }
+      break;
+    }
+  return true;
+}
 
 
 /* Prints out parts of the SCCS file.  */
