@@ -84,7 +84,7 @@ public:
 
     cutoff();
     bool excludes_delta(sid, sccs_date, bool& stop_now) const;
-    void print(FILE *out) const;
+    cssc::Failure print(FILE *out) const;
   };
 
   // sccs_file::get performs the get operation for the "get" binary.

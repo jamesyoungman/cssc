@@ -49,7 +49,6 @@ using cssc::Failure;
   if (fprintf_failed(result)) { \
     return cssc::make_failure_from_errno(errno); \
   }						 \
-  return cssc::Failure::Ok(); \
   } while (0)
 
 #define TRY_PUTS(puts_expression) \
@@ -57,7 +56,6 @@ using cssc::Failure;
   if (fputs_failed(result)) { \
     return cssc::make_failure_from_errno(errno); \
   }						 \
-  return cssc::Failure::Ok(); \
   } while (0)
 
 #define TRY_PUTC(putc_expression) \
@@ -65,7 +63,6 @@ using cssc::Failure;
   if (fputc_failed(result)) { \
     return cssc::make_failure_from_errno(errno); \
   }						 \
-  return cssc::Failure::Ok(); \
   } while (0)
 
 
@@ -82,19 +79,16 @@ print_string_list(FILE *out,
 
   if (0 == len)
     {
-      if (fprintf_failed(fprintf(out, "%s%s", pre, dflt)))
-	return cssc::make_failure_from_errno(errno);
+      TRY_PRINTF(fprintf(out, "%s%s", pre, dflt));
     }
   else
     {
       for (std::vector<std::string>::size_type i = 0; i < len; i++)
 	{
-	  if (fprintf_failed(fprintf(out, "%s%s", pre, l[i].c_str())))
-	    return cssc::make_failure_from_errno(errno);
+	  TRY_PRINTF(fprintf(out, "%s%s", pre, l[i].c_str()));
 	  if (i < len-1)
 	    {
-	      if (fprintf_failed(fprintf(out, "%s", post)))
-		return cssc::make_failure_from_errno(errno);
+	      TRY_PRINTF(fprintf(out, "%s", post));
 	    }
 	}
     }
@@ -106,8 +100,7 @@ cssc::Failure print_flag(FILE *out, const char *fmt, std::string flag, int& coun
   if (!flag.empty())
     {
       ++count;
-      if (fprintf_failed(fprintf(out, fmt, flag.c_str())))
-	return cssc::make_failure_from_errno(errno);
+      TRY_PRINTF(fprintf(out, fmt, flag.c_str()));
     }
   return cssc::Failure::Ok();
 }
@@ -120,8 +113,7 @@ cssc::Failure print_flag(FILE *out, const char *fmt, const std::string* pflag, i
   if (pflag)
     {
       ++count;
-      if (fprintf_failed(fprintf(out, fmt, pflag->c_str())))
-	return make_failure_from_errno(errno);
+      TRY_PRINTF(fprintf(out, fmt, pflag->c_str()));
     }
   return cssc::Failure::Ok();
 }
@@ -131,8 +123,7 @@ cssc::Failure print_flag(FILE *out, const char *fmt,  int flag, int& count)
   if (flag)
     {
       ++count;
-      if (fprintf_failed(fprintf(out, fmt, flag ? "yes" : "no")))
-	return make_failure_from_errno(errno);
+      TRY_PRINTF(fprintf(out, fmt, flag ? "yes" : "no"));
     }
   return cssc::Failure::Ok();
 }
@@ -142,13 +133,11 @@ Failure print_flag(FILE *out, const char *fmt,  sid flag, int& count)
   if (flag.valid())
     {
       ++count;
-      if (fprintf_failed(fprintf(out, "%s", fmt)))
-	return make_failure_from_errno(errno);
+      TRY_PRINTF(fprintf(out, "%s", fmt));
       Failure printed = flag.print(out);
       if (!printed.ok())
 	return printed;
-      if (putc_failed(putc('\n', out)))
-	return make_failure_from_errno(errno);
+      TRY_PUTC(putc('\n', out));
     }
   return cssc::Failure::Ok();
 }
@@ -158,13 +147,11 @@ cssc::Failure print_flag(FILE *out, const char *fmt,  release flag, int& count)
   if (flag.valid())
     {
       ++count;
-      if (fprintf_failed(fprintf(out, "%s", fmt)))
-	return make_failure_from_errno(errno);
+      TRY_PRINTF(fprintf(out, "%s", fmt));
       Failure printed = flag.print(out);
       if (!printed.ok())
 	return printed;
-      if (fprintf_failed(fprintf(out, "\n")))
-	return make_failure_from_errno(errno);
+      TRY_PRINTF(fprintf(out, "\n"));
     }
   return cssc::Failure::Ok();
 }
@@ -200,64 +187,85 @@ bool sccs_file::cutoff::excludes_delta(sid /* s */,
   return false;
 }
 
-void
+cssc::Failure
 sccs_file::cutoff::print(FILE *out) const
 {
-  fprintf(out, "cutoff: ");
+  TRY_PRINTF(fprintf(out, "cutoff: "));
   if (enabled)
     {
-      fputs("enabled ", out);
+      TRY_PUTS(fputs("enabled ", out));
       if (most_recent_sid_only)
-	  fputs("most-recent-only ", out);
-      fputs("cutoff_sid='", out);
+	{
+	  TRY_PUTS(fputs("most-recent-only ", out));
+	}
+      TRY_PUTS(fputs("cutoff_sid='", out));
       if (cutoff_sid.valid())
-	cutoff_sid.print(out);
+	{
+	  Failure printed = cutoff_sid.print(out);
+	  if (!printed.ok())
+	    return printed;
+	}
       else
-	fputs("(invalid)", out);
+	{
+	  TRY_PUTS(fputs("(invalid)", out));
+	}
 
-      fputs("' first_accepted='", out);
+      TRY_PUTS(fputs("' first_accepted='", out));
       if (first_accepted.valid())
 	{
-	  first_accepted.printf(out, 'D');
-	  fprintf(out, " ");
-	  first_accepted.printf(out, 'T');
+	  Failure printed = first_accepted.printf(out, 'D');
+	  if (printed.ok())
+	    return printed;
+	  TRY_PRINTF(fprintf(out, " "));
+	  printed = first_accepted.printf(out, 'T');
+	  if (printed.ok())
+	    return printed;
 	}
       else
 	{
-	fputs("(invalid)'", out);
+	  TRY_PUTS(fputs("(invalid)'", out));
 	}
-      fputs("' last_accepted='", out);
+      TRY_PUTS(fputs("' last_accepted='", out));
       if (last_accepted.valid())
 	{
-	  last_accepted.printf(out, 'D');
-	  fprintf(out, " ");
-	  last_accepted.printf(out, 'T');
+	  Failure printed = last_accepted.printf(out, 'D');
+	  if (printed.ok())
+	    return printed;
+	  TRY_PRINTF(fprintf(out, " "));
+	  printed = last_accepted.printf(out, 'T');
+	  if (printed.ok())
+	    return printed;
 	}
       else
 	{
-	fputs("(invalid)'", out);
+	  TRY_PUTS(fputs("(invalid)'", out));
 	}
 
       if (cutoff_delta)
 	{
-	  fputs("' cutoff_delta->date='", out);
+	  TRY_PUTS(fputs("' cutoff_delta->date='", out));
 	  if (cutoff_delta->date().valid())
 	    {
-	      last_accepted.printf(out, 'D');
-	      fprintf(out, " ");
-	      last_accepted.printf(out, 'T');
+	      Failure printed = last_accepted.printf(out, 'D');
+	      if (!printed.ok())
+		return printed;
+	      TRY_PRINTF(fprintf(out, " "));
+	      printed = last_accepted.printf(out, 'T');
+	      if (!printed.ok())
+		return printed;
 	    }
 	  else
 	    {
-	      fputs("(invalid)'", out);
+	      TRY_PUTS(fputs("(invalid)'", out));
 	    }
 	}
-      fputs("'\n", out);
+      TRY_PUTS(fputs("'\n", out));
     }
   else
     {
-      fputs("disabled\n", out);
+      TRY_PUTS(fputs("disabled\n", out));
     }
+  return cssc::Failure::Ok();
 }
 
 sccs_file::cutoff::cutoff()
