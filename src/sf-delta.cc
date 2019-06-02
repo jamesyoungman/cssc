@@ -214,9 +214,11 @@ sccs_file::add_delta(const std::string& gname,
 			     /*for_edit=*/false);
   if (!got.ok())
     {
-      // TODO: surely this should affect the return value.
-      warning("failed to get %s into %s: %s",
-	      name.sfile().c_str(), dname.c_str(), got.to_string());
+      cssc::Failure f = cssc::make_failure_builder(got)
+	.diagnose()
+	<< "failed to get " << name.sfile() << " into " << dname;
+      warning("%s", f.to_string().c_str());
+      return false;
     }
 
   if (fclose_failed(fclose(get_out)))
