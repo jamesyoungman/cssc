@@ -34,6 +34,7 @@
 #include "diff-state.h"
 #include "failure.h"
 #include "failure_macros.h"
+#include "failure_or.h"
 #include "filediff.h"
 #include "filepos.h"
 #include "ioerr.h"
@@ -44,6 +45,7 @@
 
 
 using cssc::Failure;
+using cssc::FailureOr;
 using cssc::make_failure_builder_from_errno;
 
 sccs_file_body_scanner::sccs_file_body_scanner(const std::string& filename,
@@ -75,6 +77,7 @@ cssc::Failure sccs_file_body_scanner::seek_to_body()
   return cssc::Failure::Ok();
 }
 
+
 cssc::Failure
 sccs_file_body_scanner::get(const std::string& gname,
 			    const cssc_delta_table& delta_table,
@@ -97,7 +100,16 @@ sccs_file_body_scanner::get(const std::string& gname,
   /* "@I 1" should start the body of the SCCS file */
 
   char line_type;
-  if (!read_line(&line_type) || line_type != 'I')
+  cssc::FailureOr<char> fol = read_line();
+  if (!fol.ok())
+    {
+      if (isEOF(fol.fail()))
+	corrupt(here(), "Expected '@I'");
+      else
+	return fol.fail();
+    }
+  line_type = *fol;
+  if (line_type != 'I')
     {
       corrupt(here(), "Expected '@I'");
       /*NOTREACHED*/
@@ -115,11 +127,14 @@ sccs_file_body_scanner::get(const std::string& gname,
   FILE *out = parms.out;
 
   while (1) {
-    if (!read_line(&line_type))
+    cssc::FailureOr<char> fol = read_line();
+    if (!fol.ok())
       {
-	break;  /* EOF */
+	if (isEOF(fol.fail()))
+	  break;
+	corrupt(here(), "Unexpected end-of-file");
       }
-
+    line_type = *fol;
     if (line_type == 0) {
       /* A non-control line */
 
@@ -227,19 +242,25 @@ sccs_file_body_scanner::get(const std::string& gname,
   return cssc::Failure::Ok();	// success
 }
 
+// TODO: can we replace copy_to with fread/fwrite?
 bool
 sccs_file_body_scanner::copy_to(FILE* out)
 {
-  char line_type;
-  while (read_line(&line_type))
+  cssc::FailureOr<char> got('x');
+  while ((got=read_line()).ok())
     {
       if (fputs_failed(fputs(plinebuf->c_str(), out))
           || putc_failed(putc('\n', out)))
         {
+	  // TODO: better error diagnosis
 	  return false;
         }
     }
-  return true;
+  if (isEOF(got.fail()))
+    return true;
+
+  // TODO: better error diagnosis
+  return false;
 }
 
 namespace
@@ -279,13 +300,28 @@ sccs_file_body_scanner::delta(const std::string& dname,
     {
       const unsigned long int len_max = max_sfile_line_len();
       // We have to continue while there is data on the input s-file,
-      // or data fro the diff, so we don't just stop when read_line()
+      // or data from the diff, so we don't just stop when read_line()
       // returns -1.
       while (1)
 	{
 	  char c;
 	  // read line from the old body.
-	  const bool got_line = read_line(&c);
+	  FailureOr<char> done = read_line();
+	  bool got_line;
+	  if (!done.ok())
+	    {
+	      if (!isEOF(done.fail()))
+		{
+		  // TODO: better error diagnosis.
+		  return false;
+		}
+	      got_line = false;
+	    }
+	  else
+	    {
+	      c = *done;
+	      got_line = true;
+	    }
 
 #ifdef JAY_DEBUG
 	  fprintf(stderr, "input: %s\n", plinebuf->c_str());
@@ -518,12 +554,19 @@ sccs_file_body_scanner::emit_raw_body(FILE* out, const char *outname)
 {
   TRY_OPERATION(seek_to_body()); // error message already emitted.
   char ch;
-  while (read_line(&ch))
+  for(;;)
     {
+      FailureOr<char> got = read_line();
+      if (!got.ok())
+	{
+	  if (isEOF(got.fail()))
+	    return Failure::Ok();
+	  else
+	    return got.fail();
+	}
       TRY_PUTS(fputs(plinebuf->c_str(), out));
       TRY_PUTC(putc('\n', out));
     }
-  return Failure::Ok();
 }
 
 cssc::Failure
@@ -651,12 +694,18 @@ cssc::Failure
 sccs_file_body_scanner::remove(FILE *out, seq_no seq)
 {
   update_state state = COPY;
-  char c;
-
-  bool retval = true;
-
-  while (read_line(&c))
+  for (;;)
     {
+      FailureOr<char> got = read_line();
+      if (!got.ok())
+	{
+	  if (isEOF(got.fail()))
+	    break;
+	  else
+	    return got.fail();
+	}
+
+      const char c = *got;
       if (0 != c)
 	{
 	  check_arg();

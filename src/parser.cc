@@ -170,8 +170,8 @@ sccs_file_parser::read_delta() {
 		     strict_atoul_idu(here(), args[1]),
 		     strict_atoul_idu(here(), args[2]));
 
-	char line_type;
-        if (!read_line(&line_type) || (line_type != 'd'))
+	cssc::FailureOr<char> fail_or_type = read_line();
+	if (!fail_or_type.ok() || (*fail_or_type != 'd'))
 	  {
 	    corrupt(here(), "Expected '@d'");
 	  }
@@ -209,13 +209,11 @@ sccs_file_parser::read_delta() {
         tmp->set_prev_seq(strict_atous(here(), args[6]));
 
         /* Read in any lists of included, excluded or ignored seq. no's. */
-
-        char c;
-	if (!read_line(&c))
+	if (!(fail_or_type = read_line()).ok())
 	  {
 	    corrupt(here(), "Unexpected end-of-file");
 	  }
-
+        char c = *fail_or_type;
         int i;
         const char *start;
         bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
@@ -245,7 +243,11 @@ sccs_file_parser::read_delta() {
                   if (bufchar(2) != ' ')
                     {
 		      // throw line away.
-                      read_line(&c);  // FIXME: missing EOF check here.
+		      if (!(fail_or_type = read_line()).ok())
+			{
+			  corrupt(here(), "Unexpected end-of-file");
+			}
+		      c = *fail_or_type;
                       continue;
                     }
 
@@ -293,7 +295,11 @@ sccs_file_parser::read_delta() {
                                 start = end;
                         } while (start != NULL);
 
-                        read_line(&c); // FIXME: unchecked EOF.
+			if (!(fail_or_type = read_line()).ok())
+			  {
+			    corrupt(here(), "Unexpected end-of-file");
+			  }
+			c = *fail_or_type;
                 }
         }
 
@@ -348,9 +354,12 @@ sccs_file_parser::read_delta() {
                 tmp->add_comment(plinebuf->c_str() + 3);
               }
 
-            read_line(&c);	// FIXME: check for EOF
+	    if (!(fail_or_type = read_line()).ok())
+	      {
+		corrupt(here(), "Unexpected end-of-file");
+	      }
+	    c = *fail_or_type;
           }
-
 
         if (c != 'e') {
 	  corrupt(here(), "Expected '@e'");
@@ -442,6 +451,28 @@ static bool eat_rest_of_line(FILE* f_local, const std::string& name)
     }
   return true;
 }
+
+
+#define READ_LINE(line_type_var, on_io_error)		\
+  do {							\
+    auto fail_or_type = read_line();			\
+    if (!fail_or_type.ok())				\
+      {							\
+        if (isEOF(fail_or_type.fail()))			\
+          {						\
+	    corrupt(here(), "Unexpected end-of-file");	\
+	  }						\
+	else						\
+	 {						\
+	   on_io_error;					\
+	 }						\
+      }							\
+    else						\
+      {							\
+	(line_type_var) = *fail_or_type;		\
+      }							\
+  } while (0)
+
 
 
 /* Parse the header of an SCCS file. */
@@ -549,7 +580,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
 
 
   char c;
-  read_line(&c);		// FIXME: check for EOF
+  READ_LINE(c, return nullptr);
 
   // open_sccs_file() should have already checked that the first line
   // is ^Ah or ^Ah, so this assertion is really just checking that
@@ -617,7 +648,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
     }
 
   /* Read the delta table. */
-  read_line(&c);		// FIXME: detect eof
+  READ_LINE(c, return nullptr);
   while (c == 's')
     {
       if (!result->delta_table)
@@ -626,7 +657,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
 	}
       std::unique_ptr<delta> d = read_delta();
       result->delta_table->add(*d); // FIXME: memory allocation churn, excess copying
-      read_line(&c);		// FIXME: detect eof
+      READ_LINE(c, return nullptr);
     }
 
   if (c != 'u')
@@ -636,7 +667,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
 
   check_noarg();
 
-  read_line(&c);		// FIXME: detect eof
+  READ_LINE(c, return nullptr);
   while (c != 'U')
     {
       if (c != 0)
@@ -644,7 +675,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
           corrupt(here(), "User name expected.");
         }
       result->users.push_back(plinebuf->c_str());
-      read_line(&c);		// FIXME: detect eof
+      READ_LINE(c, return nullptr);
     }
 
   /* Sun's Code Manager sometimes emits lines of the form "^AU 0" and
@@ -655,7 +686,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
   /* check_noarg(); */
 
 
-  read_line(&c); // FIXME: detect eof
+  READ_LINE(c, return nullptr);
   while (c == 'f')
     {
       check_arg();
@@ -679,7 +710,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
         {
 	  result->flags.push_back(parsed_flag(here(), bufchar(3)));
         }
-      read_line(&c);		// FIXME: eof detection
+      READ_LINE(c, return nullptr);
     }
 
   if (c != 't')
@@ -694,11 +725,11 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
    */
   /*check_noarg();*/
 
-  read_line(&c);		// FIXME: eof detection
+  READ_LINE(c, return nullptr);
   while (c == 0)
     {
       result->comments.push_back(plinebuf->c_str());
-      read_line(&c);		// FIXME: eof detection
+      READ_LINE(c, return nullptr);
     }
   if (c != 'T')
     {

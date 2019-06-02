@@ -92,17 +92,6 @@ class sccs_file_reader_base
  * Output params:
  *   control_char: 0 if this is not a control (^A) line, otherwise the line type.
  */
-  bool read_line(char *line_type)
-  {
-    auto failure_or_type = read_line();
-    if (failure_or_type.ok())
-      {
-	*line_type = *failure_or_type;
-	return true;
-      }
-    return false;
-  }
-
   int read_line_param()
   {
     if (!plinebuf->read_line(f_).ok())
