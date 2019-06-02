@@ -42,6 +42,7 @@
 #include "subst-parms.h"
 
 using cssc::Failure;
+using cssc::FailureOr;
 using cssc::make_failure_from_errno;
 
 /* Prints a list of sequence numbers on the same line. */
@@ -666,13 +667,14 @@ sccs_file::print_delta_key(FILE *out,
 
 
 /* Prints out parts of the SCCS file.  */
-Failure
+cssc::FailureOr<bool>
 sccs_file::prs(FILE *out, const char *outname,
 	       const std::string& format, sid rid, sccs_date cutoff_date,
-               enum when cutoff_type, delta_selector selector, bool *matched)
+               enum when cutoff_type, delta_selector selector)
 {
   const_delta_iterator iter(delta_table.get(), selector);
   const char *fmt = format.c_str();
+  bool matched = false;
 
   if (cutoff_type == when::SIDONLY)
     {
@@ -681,7 +683,7 @@ sccs_file::prs(FILE *out, const char *outname,
 	{
 	  if (!rid.valid() || (rid == iter->id()))
 	    {
-	      *matched = true;
+	      matched = true;
 	      Failure printed = print_delta(out, outname, fmt, *iter.operator->());
 	      if (!printed.ok())
 		return printed;
@@ -697,7 +699,7 @@ sccs_file::prs(FILE *out, const char *outname,
 	{
 	  if (cutoff_date.valid() && iter->date() < cutoff_date)
 	    break;
-	  *matched = true;
+	  matched = true;
 	  Failure printed = print_delta(out, outname, fmt, *iter.operator->());
 	  if (!printed.ok())
 	    return printed;
@@ -711,14 +713,14 @@ sccs_file::prs(FILE *out, const char *outname,
     {
       while (iter.next())
 	{
-	  if (!*matched)
+	  if (!matched)
 	    {
 	      if (rid.valid() && (rid != iter->id()))
 		continue;
 	    }
 	  if (cutoff_date.valid() && (cutoff_date < iter->date()))
 	    continue;
-	  *matched = true;
+	  matched = true;
 	  Failure printed = print_delta(out, outname, fmt, *iter.operator->());
 	  if (!printed.ok())
 	    return printed;
@@ -726,7 +728,7 @@ sccs_file::prs(FILE *out, const char *outname,
 	    return make_failure_from_errno(errno);
 	}
     }
-  return Failure::Ok();
+  return matched;
 }
 
 /* Local variables: */

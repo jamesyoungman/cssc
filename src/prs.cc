@@ -164,25 +164,25 @@ main(int argc, char **argv)
 	    {
 	      printf("%s:\n\n", name.c_str());
 	    }
-	  bool matched = false;
-	  cssc::Failure done = file.prs(stdout, "standard output", format, rid, cutoff_date, selected,
-					selector, &matched);
-	  if (!done.ok())
+	  cssc::FailureOr<bool> matched_or_fail =
+	    file.prs(stdout, "standard output", format, rid, cutoff_date,
+		     selected, selector);
+	  if (!matched_or_fail.ok())
 	    {
-	      errormsg("%s: %s", name.c_str(), done.to_string().c_str());
+	      errormsg("%s: %s", name.c_str(), matched_or_fail.fail().to_string().c_str());
 	      retval = 1;
 	    }
-	  if (ferror(stdout))
+	  else
 	    {
-	      errormsg("%s: Ouput file error.", name.c_str());
-	      retval = 1;
-	    }
-	  if (!matched)
-	    {
-	      if (rid.valid())
+	      ASSERT(!ferror(stdout)); // should have been detected in prs() result.
+	      const bool matched = *matched_or_fail;
+	      if (!matched)
 		{
-		  errormsg("%s: Requested SID doesn't exist.", name.c_str());
-		  retval = 1;
+		  if (rid.valid())
+		    {
+		      errormsg("%s: Requested SID doesn't exist.", name.c_str());
+		      retval = 1;
+		    }
 		}
 	    }
 	} // end of try block.
