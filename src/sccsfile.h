@@ -109,8 +109,9 @@ public:
 		       int show_sid, int show_module, int debug,
 		       bool no_decode, bool for_edit);
 
-  // Command handlers
-  // At a high level, delta is implemented via add_delta
+  // Note: add_delta will succeed even for users not in the authorized
+  // user list.  If you want the authorized user list to be checked,
+  // call authorised().
   // TODO: return cssc::Failure instead of bool?
   bool add_delta(const std::string& gname,
 		 sccs_pfile &pfile,
@@ -235,6 +236,9 @@ public:
   /* Support for BitKeeper files */
   cssc::Failure edit_mode_permitted(bool editing) const;
 
+  // Is the current user in the authorized user list?
+  bool authorised() const;
+
   // Implementation is protected; in the existing [MySC]
   // implementation some of the implementation is private where
   // it might better be protected.
@@ -248,8 +252,6 @@ protected:
   void prepare_seqstate_1(seq_state &state, seq_no seq);
   void prepare_seqstate_2(seq_state &state, sid_list include,
                         sid_list exclude, sccs_date cutoff_date);
-
-  bool authorised() const;
 
   /* sf-write.c */
   void xfile_error(const char *msg) const;
@@ -275,8 +277,7 @@ private:
   /* sf-kw.cc */
   void no_id_keywords(const char name[]) const;
 
-  // TODO: return cssc::Failure instead of bool?
-  bool check_keywords_in_file(const char *name);
+  cssc::Failure check_keywords_in_file(const char *name);
 
   // Because we now have a pointer member, don't use the compiler's
   // default assignment and constructor.

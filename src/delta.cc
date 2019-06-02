@@ -248,9 +248,12 @@ delta_main(int argc, char **argv)
 
 	      std::string gname = name.gfile();
 
-	      if (!file.add_delta(gname, pfile, found.second,
-				  mr_list, comment_list,
-				  display_diff_output))
+	      // The check that authorised() makes cannot fail, since it
+	      // is a lookup on an in-memory data structure.  It
+	      // issues its own error message.
+	      if (!file.authorised() || !file.add_delta(gname, pfile, found.second,
+							mr_list, comment_list,
+							display_diff_output))
 		{
 		  retval = 1;
 		  // if delta failed, don't delete the g-file.

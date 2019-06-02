@@ -99,11 +99,15 @@ sccs_file::add_delta(const std::string& gname,
 {
   ASSERT(mode == UPDATE);
 
-  if (!check_keywords_in_file(gname.c_str()))
-    return false;
-
-  if (!authorised())
-     return false;
+  cssc::Failure checked = check_keywords_in_file(gname.c_str());
+  if (!checked.ok())
+    {
+      // This error message concerns any I/O error on the file.  The
+      // "No id keywords" warning, if it is needed, will already have
+      // been issued.
+      errormsg("%s", checked.to_string().c_str());
+      return false;
+    }
 
   /*
    * At this point, encode the contents of "gname", and pass
