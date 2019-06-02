@@ -27,7 +27,11 @@
 
 #include <config.h>
 
+#include <errno.h>
+
 #include "cssc.h"
+#include "failure.h"
+#include "ioerr.h"
 #include "sccsfile.h"
 #include "seqstate.h"
 #include "filepos.h"
@@ -35,11 +39,39 @@
 #include "delta-iterator.h"
 
 
+using cssc::make_failure_from_errno;
+using cssc::Failure;
+
 #include <unistd.h>		// SEEK_SET on SunOS.
+
+#define TRY_PRINTF(printf_expression) \
+  do { int result = (printf_expression); \
+  if (fprintf_failed(result)) { \
+    return cssc::make_failure_from_errno(errno); \
+  }						 \
+  return cssc::Failure::Ok(); \
+  } while (0)
+
+#define TRY_PUTS(puts_expression) \
+  do { int result = (puts_expression); \
+  if (fputs_failed(result)) { \
+    return cssc::make_failure_from_errno(errno); \
+  }						 \
+  return cssc::Failure::Ok(); \
+  } while (0)
+
+#define TRY_PUTC(putc_expression) \
+  do { int result = (putc_expression); \
+  if (fputc_failed(result)) { \
+    return cssc::make_failure_from_errno(errno); \
+  }						 \
+  return cssc::Failure::Ok(); \
+  } while (0)
+
 
 
 template<class Container>
-static void
+static cssc::Failure
 print_string_list(FILE *out,
 		  const Container& l,
 		  const char* pre,
@@ -50,32 +82,37 @@ print_string_list(FILE *out,
 
   if (0 == len)
     {
-      fprintf(out, "%s%s", pre, dflt);
+      if (fprintf_failed(fprintf(out, "%s%s", pre, dflt)))
+	return cssc::make_failure_from_errno(errno);
     }
   else
     {
       for (std::vector<std::string>::size_type i = 0; i < len; i++)
 	{
-	  fprintf(out, "%s%s", pre, l[i].c_str());
+	  if (fprintf_failed(fprintf(out, "%s%s", pre, l[i].c_str())))
+	    return cssc::make_failure_from_errno(errno);
 	  if (i < len-1)
 	    {
-	      fprintf(out, "%s", post);
+	      if (fprintf_failed(fprintf(out, "%s", post)))
+		return cssc::make_failure_from_errno(errno);
 	    }
-
 	}
     }
+  return cssc::Failure::Ok();
 }
 
-void print_flag(FILE *out, const char *fmt, std::string flag, int& count)
+cssc::Failure print_flag(FILE *out, const char *fmt, std::string flag, int& count)
 {
   if (!flag.empty())
     {
       ++count;
-      fprintf(out, fmt, flag.c_str());
+      if (fprintf_failed(fprintf(out, fmt, flag.c_str())))
+	return cssc::make_failure_from_errno(errno);
     }
+  return cssc::Failure::Ok();
 }
 
-void print_flag(FILE *out, const char *fmt, const std::string* pflag, int& count)
+cssc::Failure print_flag(FILE *out, const char *fmt, const std::string* pflag, int& count)
 {
   // We consider a flag which is set to an empty string still to be set.
   // An example is the v flag; lines of the form "^Af v" should still set
@@ -83,39 +120,53 @@ void print_flag(FILE *out, const char *fmt, const std::string* pflag, int& count
   if (pflag)
     {
       ++count;
-      fprintf(out, fmt, pflag->c_str());
+      if (fprintf_failed(fprintf(out, fmt, pflag->c_str())))
+	return make_failure_from_errno(errno);
     }
+  return cssc::Failure::Ok();
 }
 
-void print_flag(FILE *out, const char *fmt,  int flag, int& count)
+cssc::Failure print_flag(FILE *out, const char *fmt,  int flag, int& count)
 {
   if (flag)
     {
       ++count;
-      fprintf(out, fmt, flag ? "yes" : "no");
+      if (fprintf_failed(fprintf(out, fmt, flag ? "yes" : "no")))
+	return make_failure_from_errno(errno);
     }
+  return cssc::Failure::Ok();
 }
 
-void print_flag(FILE *out, const char *fmt,  sid flag, int& count)
+Failure print_flag(FILE *out, const char *fmt,  sid flag, int& count)
 {
   if (flag.valid())
     {
       ++count;
-      fprintf(out, "%s", fmt);
-      flag.print(out);
-      putc('\n', out);
+      if (fprintf_failed(fprintf(out, "%s", fmt)))
+	return make_failure_from_errno(errno);
+      Failure printed = flag.print(out);
+      if (!printed.ok())
+	return printed;
+      if (putc_failed(putc('\n', out)))
+	return make_failure_from_errno(errno);
     }
+  return cssc::Failure::Ok();
 }
 
-void print_flag(FILE *out, const char *fmt,  release flag, int& count)
+cssc::Failure print_flag(FILE *out, const char *fmt,  release flag, int& count)
 {
   if (flag.valid())
     {
       ++count;
-      fprintf(out, "%s", fmt);
-      flag.print(out);
-      fprintf(out, "\n");
+      if (fprintf_failed(fprintf(out, "%s", fmt)))
+	return make_failure_from_errno(errno);
+      Failure printed = flag.print(out);
+      if (!printed.ok())
+	return printed;
+      if (fprintf_failed(fprintf(out, "\n")))
+	return make_failure_from_errno(errno);
     }
+  return cssc::Failure::Ok();
 }
 
 bool sccs_file::cutoff::excludes_delta(sid /* s */,
