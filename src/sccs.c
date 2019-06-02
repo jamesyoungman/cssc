@@ -30,7 +30,6 @@
  */
 /* See also the file COPYING.bsd. */
 
-#define _BSD_SOURCE
 #define DEBUG (1)
 
 #ifndef lint
