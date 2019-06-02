@@ -30,6 +30,8 @@
 #include <config.h>
 
 #include "cssc.h"
+#include "failure.h"
+#include "failure_macros.h"
 #include "sccsfile.h"
 #include "seqstate.h"
 #include "delta.h"
@@ -39,8 +41,10 @@
 #include "cssc-assert.h"
 #include "subst-parms.h"
 
+using cssc::Failure;
+
 /* Prints a list of sequence numbers on the same line. */
-static void
+static Failure
 print_seq_list(FILE *out, std::vector<seq_no> const &list) {
   const std::vector<seq_no>::size_type len = list.size();
   // TODO: see if we can use a more natural STL-like construct here.
@@ -50,116 +54,148 @@ print_seq_list(FILE *out, std::vector<seq_no> const &list) {
       std::vector<seq_no>::size_type i = len-1;
       do
 	{
-	  fprintf(out, "%u", list[i]);
+	  TRY_PRINTF(fprintf(out, "%u", list[i]));
 	  if (i > 0)
-	    fprintf(out, " ");
+	    {
+	      TRY_PRINTF(fprintf(out, " "));
+	    }
 	} while (i--);
     }
+  return Failure::Ok();
 }
 
 
 /* Prints a list of strings, one per line. */
 template <class InputIterator>
-static void
+static Failure
 print_string_list(FILE *out, InputIterator first, InputIterator last)
 {
   for (InputIterator it = first; it != last; ++it)
     {
-      fprintf(out, "%s\n", it->c_str());
+      TRY_PRINTF(fprintf(out, "%s\n", it->c_str()));
     }
+  return Failure::Ok();
 }
 
 /* Prints a boolean flag with its name.   Simply, if the
  * flag is unset, its name is not printed.
  */
-static void
+static Failure
 print_flag2(FILE *out, const char *s, int it)
 {
   if (it)
-    fprintf(out, "%s\n", s);
+    {
+      TRY_PRINTF(fprintf(out, "%s\n", s));
+    }
+  return Failure::Ok();
 }
 
 
 /* Prints a flag whose type has a print(FILE *) member with its name. */
 
-void
-print_flag2(FILE *out, const char *s, const sid& it) {
-        if (it.valid()) {
-                fprintf(out, "%s\t", s);
-                it.print(out);
-                putc('\n', out);
-        }
+Failure
+print_flag2(FILE *out, const char *s, const sid& it)
+{
+  if (it.valid())
+    {
+      TRY_PRINTF(fprintf(out, "%s\t", s));
+      TRY_OPERATION(it.print(out));
+      TRY_PUTC(putc('\n', out));
+    }
+  return Failure::Ok();
 }
 
-void
-print_flag2(FILE *out, const char *s, const release_list& it) {
-        if (it.valid()) {
-                fprintf(out, "%s\t", s);
-                it.print(out);
-                putc('\n', out);
-        }
+Failure
+print_flag2(FILE *out, const char *s, const release_list& it)
+{
+  if (it.valid())
+    {
+      TRY_PRINTF(fprintf(out, "%s\t", s));
+      TRY_OPERATION(it.print(out));
+      TRY_PUTC(putc('\n', out));
+    }
+  return Failure::Ok();
 }
 
-void
-print_flag2(FILE *out, const char *s, const release& it) {
-        if (it.valid()) {
-                fprintf(out, "%s\t", s);
-                it.print(out);
-                putc('\n', out);
-        }
+Failure
+print_flag2(FILE *out, const char *s, const release& it)
+{
+  if (it.valid())
+    {
+      TRY_PRINTF(fprintf(out, "%s\t", s));
+      TRY_OPERATION(it.print(out));
+      TRY_PUTC(putc('\n', out));
+    }
+  return Failure::Ok();
 }
 
-static inline void
+static inline Failure
 print_flag2(FILE *out, const char *name, const std::string *s)
 {
   if (s)
-    fprintf(out, "%s\t%s\n", name, s->c_str());
+    {
+      TRY_PRINTF(fprintf(out, "%s\t%s\n", name, s->c_str()));
+    }
+  return Failure::Ok();
 }
 
-static inline void
+static inline Failure
 print_flag2(FILE *out, const char *name, const char *s)
 {
   if (s)
-    fprintf(out, "%s\t%s\n", name, s);
+    {
+      TRY_PRINTF(fprintf(out, "%s\t%s\n", name, s));
+    }
+  return Failure::Ok();
 }
 
-static inline void
+static inline Failure
 print_flag2(FILE *out, const char *name, char *s)
 {
   if (s)
-    fprintf(out, "%s\t%s\n", name, s);
+    {
+      TRY_PRINTF(fprintf(out, "%s\t%s\n", name, s));
+    }
+  return Failure::Ok();
 }
 
 /* Prints all the flags of an SCCS file. */
 
 
-void
+Failure
 sccs_file::print_flags(FILE *out) const
 {
-  print_flag2(out, (const char *) "branch", flags.branch);
-  print_flag2(out, (const char *) "ceiling", flags.ceiling);
-  print_flag2(out, (const char *) "default SID", flags.default_sid);
-  if (flags.encoded) fputs("encoded\n", out);
-  print_flag2(out, (const char *) "floor", flags.floor);
-  print_flag2(out, (const char *) "id keywd err/warn",
-              flags.no_id_keywords_is_fatal);
-  print_flag2(out, (const char *) "joint edit", flags.joint_edit);
+  TRY_OPERATION(print_flag2(out, (const char *) "branch", flags.branch));
+  TRY_OPERATION(print_flag2(out, (const char *) "ceiling", flags.ceiling));
+  TRY_OPERATION(print_flag2(out, (const char *) "default SID", flags.default_sid));
+  if (flags.encoded)
+    {
+      TRY_PUTS(fputs("encoded\n", out));
+    }
+  TRY_OPERATION(print_flag2(out, (const char *) "floor", flags.floor));
+  TRY_OPERATION(print_flag2(out, (const char *) "id keywd err/warn",
+			    flags.no_id_keywords_is_fatal));
+  TRY_OPERATION(print_flag2(out, (const char *) "joint edit", flags.joint_edit));
 
   const char *locked = "locked releases";
   if (flags.all_locked)
-    print_flag2(out, locked, "a");
+    {
+      TRY_OPERATION(print_flag2(out, locked, "a"));
+    }
   else
-    print_flag2(out, locked, flags.locked);
+    {
+      TRY_OPERATION(print_flag2(out, locked, flags.locked));
+    }
 
-  print_flag2(out, (const char *) "module",
-              (flags.module ? flags.module->c_str()
-               : (const char*)0) );
-  print_flag2(out, (const char *) "null delta", flags.null_deltas);
-  print_flag2(out, (const char *) "csect name", flags.user_def);
-  print_flag2(out, (const char *) "type", flags.type);
-  print_flag2(out, (const char *) "validate MRs",
-              (flags.mr_checker ? flags.mr_checker->c_str()
-               : (const char*) 0));
+  TRY_OPERATION(print_flag2(out, (const char *) "module",
+			    (flags.module ? flags.module->c_str()
+			     : (const char*)0) ));
+  TRY_OPERATION(print_flag2(out, (const char *) "null delta", flags.null_deltas));
+  TRY_OPERATION(print_flag2(out, (const char *) "csect name", flags.user_def));
+  TRY_OPERATION(print_flag2(out, (const char *) "type", flags.type));
+  TRY_OPERATION(print_flag2(out, (const char *) "validate MRs",
+			    (flags.mr_checker ? flags.mr_checker->c_str()
+			     : (const char*) 0)));
 
 #if 0
   // Testing on Solaris 9 reveals that no output is produced
@@ -167,71 +203,84 @@ sccs_file::print_flags(FILE *out) const
   // say nothing.
   if (flags.substitued_flag_letters.count() > 0)
     {
-      fputs("substituted keywords\t", out);
-      print_subsituted_flags_list(out, " ");
-      fputs("\n", out);
+      TRY_PUTS(fputs("substituted keywords\t", out));
+      TRY_OPERATION(print_subsituted_flags_list(out, " "));
+      TRY_PUTS(fputs("\n", out));
     }
 #endif
+  return Failure::Ok();
 }
 
 
 /* Prints "yes" or "no" according to the value of a boolean flag. */
 
-inline static void
-print_yesno(FILE *out, int flag) {
-        if (flag) {
-                fputs("yes", out);
-        } else {
-                fputs("no", out);
-        }
+inline static Failure
+print_yesno(FILE *out, int flag)
+{
+  const char * representation = flag ? "yes" : "no";
+  TRY_PUTS(fputs(representation, out));
+  return Failure::Ok();
 }
 
 /* Prints the value of a std::string flag. */
-inline static void
+inline static Failure
 print_flag(FILE *out, const std::string *s)
 {
-  if (s)
-    fputs(s->c_str(), out);
-  else
-    fputs("none", out);
+  const char * representation = (s == nullptr) ? "none" : s->c_str();
+  TRY_PUTS(fputs(representation, out));
+  return Failure::Ok();
 }
 
 /* Prints the value of a std::string flag. */
-inline static void
+inline static Failure
 print_flag(FILE *out, const std::string &s)
 {
-  if (s.empty())
-    fputs("none", out);
-  else
-    fputs(s.c_str(), out);
+  const char * representation = s.empty() ? "none" : s.c_str();
+  TRY_PUTS(fputs(representation, out));
+  return Failure::Ok();
 }
 
 
-inline static void
+inline static Failure
 print_flag(FILE *out, const release_list &it)
 {
   if (it.valid())
-    it.print(out);
+    {
+      TRY_OPERATION(it.print(out));
+    }
   else
-    fputs("none", out);
+    {
+      TRY_PUTS(fputs("none", out));
+    }
+  return Failure::Ok();
 }
 
-inline static void
+inline static Failure
 print_flag(FILE *out, const release &it)
 {
   if (it.valid())
-    it.print(out);
+    {
+      TRY_OPERATION(it.print(out));
+    }
   else
-    fputs("none", out);
+    {
+      TRY_PUTS(fputs("none", out));
+    }
+  return Failure::Ok();
 }
 
-inline static void
+inline static Failure
 print_flag(FILE *out, const sid &it)
 {
   if (it.valid())
-    it.print(out);
+    {
+      TRY_OPERATION(it.print(out));
+    }
   else
-    fputs("none", out);
+    {
+      TRY_PUTS(fputs("none", out));
+    }
+  return Failure::Ok();
 }
 
 // /* Prints the value of string flag. */

@@ -261,9 +261,10 @@ protected:
 
 private:
   /* sf-prs.c */
-  void print_flags(FILE *out) const;
+  cssc::Failure print_flags(FILE *out) const;
+  // TODO: make print_delta return Failure.
   void print_delta(FILE *out, const char *outname, const char *format,
-                   struct delta const &delta);
+		   struct delta const &delta);
 
   /* sf-kw.cc */
   void no_id_keywords(const char name[]) const;
@@ -336,9 +337,9 @@ cssc::Failure print_flag(FILE *out, const char *fmt,  int flag, int& count);
 cssc::Failure print_flag(FILE *out, const char *fmt,  sid flag, int& count);
 
 /* sf-prs.cc */
-void print_flag2(FILE *out, const char *s, const sid& it);
-void print_flag2(FILE *out, const char *s, const release_list& it);
-void print_flag2(FILE *out, const char *s, const release& it);
+cssc::Failure print_flag2(FILE *out, const char *s, const sid& it);
+cssc::Failure print_flag2(FILE *out, const char *s, const release_list& it);
+cssc::Failure print_flag2(FILE *out, const char *s, const release& it);
 
 /* l-split.c */
 
