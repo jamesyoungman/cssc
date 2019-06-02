@@ -110,6 +110,8 @@ class sccs_file_reader_base
     return (*plinebuf)[pos];
   }
 
+  cssc::Failure copy_to(FILE* out);
+
  protected:
   void set_line_number(int num)
   {

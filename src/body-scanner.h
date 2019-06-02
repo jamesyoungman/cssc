@@ -68,7 +68,6 @@ public:
 	bool display_diff_output);
 
   cssc::Failure seek_to_body();
-  bool copy_to(FILE*);
   cssc::Failure emit_raw_body(FILE*, const char*);
   cssc::Failure remove(FILE*, seq_no id);
 

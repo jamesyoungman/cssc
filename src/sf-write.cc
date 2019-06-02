@@ -666,10 +666,13 @@ sccs_file::update()
   // this one will too.
   if (!body_scanner_->seek_to_body().ok())
     return false;
-  if (!body_scanner_->copy_to(out))
+  Failure copied = body_scanner_->copy_to(out);
+  if (!copied.ok())
     {
-          xfile_error("Write error.");
-	  return false;
+      std::string msg = "write error on " + name.xfile() + ": "
+	+ copied.to_string();
+      xfile_error(msg.c_str());
+      return false;
     }
   return end_update(&out).ok();	// TODO: change return type
 }

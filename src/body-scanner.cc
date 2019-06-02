@@ -242,27 +242,6 @@ sccs_file_body_scanner::get(const std::string& gname,
   return cssc::Failure::Ok();	// success
 }
 
-// TODO: can we replace copy_to with fread/fwrite?
-bool
-sccs_file_body_scanner::copy_to(FILE* out)
-{
-  cssc::FailureOr<char> got('x');
-  while ((got=read_line()).ok())
-    {
-      if (fputs_failed(fputs(plinebuf->c_str(), out))
-          || putc_failed(putc('\n', out)))
-        {
-	  // TODO: better error diagnosis
-	  return false;
-        }
-    }
-  if (isEOF(got.fail()))
-    return true;
-
-  // TODO: better error diagnosis
-  return false;
-}
-
 namespace
 {
 

@@ -52,3 +52,26 @@ unsigned short strict_atous(const sccs_file_location& loc, const char *s)
     }
   return (unsigned short) n;
 }
+
+cssc::Failure
+sccs_file_reader_base::copy_to(FILE* out)
+{
+  enum { BufSize = 8192 };
+   std::unique_ptr<char[]> buf{new char[BufSize]};
+   size_t nread;
+   while ((nread=fread(buf.get(), 1, BufSize, f_)) != 0)
+     {
+       const size_t nwritten = fwrite(buf.get(), 1, nread, out);
+       if (nwritten < nread)
+	 {
+	   return cssc::make_failure_builder_from_errno(errno)
+	     << "short write";
+	 }
+     }
+   if (ferror(f_))
+     {
+       return cssc::make_failure_builder_from_errno(errno)
+	 << "read failure";
+     }
+   return cssc::Failure::Ok();
+}
