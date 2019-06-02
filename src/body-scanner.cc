@@ -33,6 +33,7 @@
 #include "delta-table.h"
 #include "diff-state.h"
 #include "failure.h"
+#include "failure_macros.h"
 #include "filediff.h"
 #include "filepos.h"
 #include "ioerr.h"
@@ -512,24 +513,17 @@ sccs_file_body_scanner::delta(const std::string& dname,
 }
 
 /* Implements prs :GB:*/
-bool
+Failure
 sccs_file_body_scanner::emit_raw_body(FILE* out, const char *outname)
 {
-  if (!seek_to_body().ok())
-    {
-      return false;		// error message already emitted.
-    }
+  TRY_OPERATION(seek_to_body()); // error message already emitted.
   char ch;
   while (read_line(&ch))
     {
-      if (fputs_failed(fputs(plinebuf->c_str(), out))
-	  || putc_failed(putc('\n', out)))
-	{
-	  errormsg_with_errno("%s: Write error.", outname);
-	  return false;
-	}
+      TRY_PUTS(fputs(plinebuf->c_str(), out));
+      TRY_PUTC(putc('\n', out));
     }
-  return true;
+  return Failure::Ok();
 }
 
 cssc::Failure

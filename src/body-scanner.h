@@ -69,7 +69,7 @@ public:
 
   cssc::Failure seek_to_body();
   bool copy_to(FILE*);
-  bool emit_raw_body(FILE*, const char*);
+  cssc::Failure emit_raw_body(FILE*, const char*);
   cssc::Failure remove(FILE*, seq_no id);
 
   // Print the body of an SCCS file to |out|, transforming all "^A"s

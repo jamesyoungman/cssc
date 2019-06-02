@@ -42,6 +42,7 @@
 #include "subst-parms.h"
 
 using cssc::Failure;
+using cssc::make_failure_from_errno;
 
 /* Prints a list of sequence numbers on the same line. */
 static Failure
@@ -304,7 +305,7 @@ print_flag(FILE *out, const sid &it)
 /* Prints selected parts of an SCCS file and the specified entry in the
    delta table. */
 
-void
+Failure
 sccs_file::print_delta(FILE *out, const char *outname, const char *format,
                        struct delta const &d)
 {
@@ -316,7 +317,8 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
 
       if (c == '\0')
         {
-          break;        // end of format.
+	  // end of format.
+	  return Failure::Ok();
         }
       else if ('\\' == c)
         {
@@ -328,11 +330,7 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
                 {
                 case 'n':
                   /* Turn a \n into a newline unless it is the last
-                   * bit of the format string.  In the latter case we
-                   * ignore it - see prs/format.sh test cases 4a and 4b.
-                   * Those partiicular test cases were checked against
-                   * Sun Solaris 2.6.
-                   */
+                   * bit of the format string. */
                   if (s[1])
                     {
                       c = '\n';
@@ -340,29 +338,40 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
                     }
                   else
                     {
-                      return;
+		      /* The \n is the last bit of the format string.
+		       * In this case we ignore it - see prs/format.sh
+		       * test cases 4a and 4b.  Those partiicular test
+		       * cases were checked against Sun Solaris 2.6.
+		       */
+                      return Failure::Ok();
                     }
                 case 't': c = '\t'; break;
                 case '\\': c = '\\'; break;
                 default:        // not \n or \t -- print the whole thing.
-                  putc('\\', out);
+		  if (fputc_failed(putc('\\', out)))
+		    return make_failure_from_errno(errno);
                   c = *s;
                   break;
                 }
-              putc(c, out);
+	      if (fputc_failed(putc(c, out)))
+		return make_failure_from_errno(errno);
               ++s;
             }
           else
             {
-              putc('\\', out); // trailing backslash at and of format.
+	      // trailing backslash at and of format.
+	      if (fputc_failed(putc('\\', out)))
+		return make_failure_from_errno(errno);
             }
 
           continue;
         }
       else if (c != ':' || s[0] == '\0')
         {
-          putc(c, out);
-          continue;
+	  if (fputc_failed(putc(c, out)))
+	    return make_failure_from_errno(errno);
+	  else
+	    continue;
         }
 
       const char *back_to = s;
@@ -380,11 +389,15 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
         }
       else
         {
-          putc(':', out);
-          continue;
+	  if (fputc_failed(putc(':', out)))
+	    return make_failure_from_errno(errno);
+	  else
+	    continue;
         }
-      bool recognised = print_delta_key(out, outname, key, d);
-      if (!recognised)
+      cssc::FailureOr<bool> fail_or_recognised = print_delta_key(out, outname, key, d);
+      if (!fail_or_recognised.ok())
+	return fail_or_recognised.fail();
+      if (!*fail_or_recognised)
 	{
 	  s = back_to;
 	  putc(':', out);
@@ -394,273 +407,261 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
 }
 
 
-bool sccs_file::print_delta_key(FILE *out,
-				const char *outname,
-				unsigned key,
-				struct delta const &d)
+cssc::FailureOr<bool>
+sccs_file::print_delta_key(FILE *out,
+			   const char *outname,
+			   unsigned key,
+			   struct delta const &d)
 {
-  // TODO: diagnose write errors in this switch statement.
-  switch (key)
+  bool recognised = true;
+  auto do_print_delta_key = [this, &recognised](FILE *out,
+						const char *outname,
+						unsigned key,
+						struct delta const &d) -> Failure
     {
-    default:
-      return false;
-
-    case KEY2('D','t'):
-      print_delta(out, outname, ":DT: :I: :D: :T: :P: :DS: :DP:", d);
-      break;
-
-    case KEY2('D','L'):
-      print_delta(out, outname, ":Li:/:Ld:/:Lu:", d);
-      break;
-
-    case KEY2('L','i'):
-      fprintf(out, "%05lu", d.inserted());
-      break;
-
-    case KEY2('L','d'):
-      fprintf(out, "%05lu", d.deleted());
-      break;
-
-    case KEY2('L','u'):
-      fprintf(out, "%05lu", d.unchanged());
-      break;
-
-    case KEY2('D','T'):
-      putc(d.get_type(), out);
-      break;
-
-    case KEY1('I'):
-      d.id().print(out);
-      break;
-
-    case KEY1('R'):
-      d.id().printf(out, 'R');
-      break;
-
-    case KEY1('L'):
-      d.id().printf(out, 'L');
-      break;
-
-    case KEY1('B'):
-      d.id().printf(out, 'B');
-      break;
-
-    case KEY1('S'):
-      d.id().printf(out, 'S');
-      break;
-
-    case KEY1('D'):
-      d.date().printf(out, 'D');
-      break;
-
-    case KEY2('D','y'):
-      d.date().printf(out, 'y');
-      break;
-
-    case KEY2('D','m'):
-      d.date().printf(out, 'o');
-      break;
-
-    case KEY2('D','d'):
-      d.date().printf(out, 'd');
-      break;
-
-    case KEY1('T'):
-      d.date().printf(out, 'T');
-      break;
-
-    case KEY2('T','h'):
-      d.date().printf(out, 'h');
-      break;
-
-    case KEY2('T','m'):
-      d.date().printf(out, 'm');
-      break;
-
-    case KEY2('T','s'):
-      d.date().printf(out, 's');
-      break;
-
-    case KEY1('P'):
-      fputs(d.user().c_str(), out);
-      break;
-
-    case KEY2('D','S'):
-      fprintf(out, "%u", d.seq());
-      break;
-
-    case KEY2('D','P'):
-      fprintf(out, "%u", d.prev_seq());
-      break;
-
-    case KEY2('D', 'I'):
-      /* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:),
-	 but OpenSolaris 2009.06 (SunOS 5.11) shows two. */
-      if (!d.get_included_seqnos().empty())
-	print_delta(out, outname, ":Dn:", d);
-      if (!d.get_excluded_seqnos().empty())
-	print_delta(out, outname, "/:Dx:", d);
-      if (!d.get_ignored_seqnos().empty())
-	print_delta(out, outname, "/:Dg:", d);
-      break;
-
-    case KEY2('D','n'):
-      print_seq_list(out, d.get_included_seqnos());
-      break;
-
-    case KEY2('D','x'):
-      print_seq_list(out, d.get_excluded_seqnos());
-      break;
-
-    case KEY2('D','g'):
-      print_seq_list(out, d.get_ignored_seqnos());
-      break;
-
-    case KEY2('M','R'):
-      print_string_list(out, d.mrs().cbegin(), d.mrs().cend());
-      break;
-
-    case KEY1('C'):
-      print_string_list(out, d.comments().cbegin(), d.comments().cend());
-      break;
-
-    case KEY2('U','N'):
-      if (!users.empty())
-	print_string_list(out, users.cbegin(), users.cend());
-      else
-	fprintf(out, "%s\n", "none");
-      break;
-
-    case KEY2('F', 'L'):
-      print_flags(out);
-      break;
-
-    case KEY1('Y'):
-      print_flag(out, flags.type);
-      break;
-
-    case KEY2('M','F'):
-      print_yesno(out, flags.mr_checker != 0);
-      break;
-
-    case KEY2('M','P'):
-      print_flag(out, flags.mr_checker);
-      break;
-
-    case KEY2('K','F'):
-      print_yesno(out, flags.no_id_keywords_is_fatal);
-      break;
-
-    case KEY2('B','F'):
-      print_yesno(out, flags.branch);
-      break;
-
-    case KEY1('J'):
-      print_yesno(out, flags.joint_edit);
-      break;
-
-    case KEY2('L','K'):
-      if (flags.all_locked)
+      switch (key)
 	{
-	  putc('a', out);
-	}
-      else
-	{
+	case KEY2('D','t'):
+	return print_delta(out, outname, ":DT: :I: :D: :T: :P: :DS: :DP:", d);
 
-	  if (flags.locked.empty())
-	    fprintf(out, "none");
-	  else
-	    print_flag(out, flags.locked);
-	}
-      break;
+	case KEY2('D','L'):
+	return print_delta(out, outname, ":Li:/:Ld:/:Lu:", d);
 
-    case KEY1('Q'):
-      if (flags.user_def)
-	print_flag(out, flags.user_def);
-      break;
+	case KEY2('L','i'):
+	return fprintf_failure(fprintf(out, "%05lu", d.inserted()));
 
-    case KEY1('M'):
-      print_flag(out, get_module_name());
-      break;
+	case KEY2('L','d'):
+	return fprintf_failure(fprintf(out, "%05lu", d.deleted()));
 
-    case KEY2('F','B'):
-      print_flag(out, flags.floor);
-      break;
+	case KEY2('L','u'):
+	return fprintf_failure(fprintf(out, "%05lu", d.unchanged()));
 
-    case KEY2('C','B'):
-      print_flag(out, flags.ceiling);
-      break;
+	case KEY2('D','T'):
+	return fputc_failure(d.get_type(), out);
 
-    case KEY2('D','s'):
-      print_flag(out, flags.default_sid);
-      break;
+	case KEY1('I'):
+	return d.id().print(out);
 
-    case KEY2('N','D'):
-      print_yesno(out, flags.null_deltas);
-      break;
+	case KEY1('R'):
+	return d.id().printf(out, 'R');
 
-    case KEY2('F','D'):
-      // The genuine article prints '(none)' if there
-      // is no description.
-      // JY Sun Nov 25 01:33:46 2001; Solaris 2.6
-      // prints "none" rather than "(none)".
-      if (comments.empty())
-	fputs("none\n", out);
-      else
-	print_string_list(out, comments.cbegin(), comments.cend());
-      break;
+	case KEY1('L'):
+	return d.id().printf(out, 'L');
 
-    case KEY2('B','D'):
-      if (!body_scanner_->emit_raw_body(out, outname))
-	{
-	  /* TODO: signal that something failed.  We already
-	     issued an error message, but this function returns
-	     void. */
-	}
-      break;
+	case KEY1('B'):
+	return d.id().printf(out, 'B');
 
-    case KEY2('G','B'):
-      {
-	std::string gname = "standard output";
-	struct subst_parms parms(gname, get_module_name(), out,
-				 cssc::optional<std::string>(),
-				 delta_table->delta_at_seq(d.seq()),
-				 0, sccs_date());
-	class seq_state state(highest_delta_seqno());
-	prepare_seqstate(state, d.seq(), sid_list(), sid_list(), sccs_date());
-	do_get(gname, state, parms, true, 0, 0, 0, false, false); // TODO: check return value?
-      }
-      break;
+	case KEY1('S'):
+	return d.id().printf(out, 'S');
 
-    case KEY1('W'):
-      print_delta(out, outname, ":Z::M:\t:I:", d);
-      break;
+	case KEY1('D'):
+	return d.date().printf(out, 'D');
 
-    case KEY1('A'):
-      print_delta(out, outname, ":Z::Y: :M: :I::Z:", d);
-      break;
+	case KEY2('D','y'):
+	return d.date().printf(out, 'y');
 
-    case KEY1('Z'):
-      fputc('@', out);
-      fputs("(#)", out);
-      break;
+	case KEY2('D','m'):
+	return d.date().printf(out, 'o');
 
-    case KEY1('F'):
-      fputs(base_part(name.sfile()).c_str(), out);
-      break;
+	case KEY2('D','d'):
+	return d.date().printf(out, 'd');
 
-    case KEY2('P','N'):
-      {
-	cssc::FailureOr<std::string> canon = canonify_filename(name.c_str());
-	if (canon.ok())
+	case KEY1('T'):
+	return d.date().printf(out, 'T');
+
+	case KEY2('T','h'):
+	return d.date().printf(out, 'h');
+
+	case KEY2('T','m'):
+	return d.date().printf(out, 'm');
+
+	case KEY2('T','s'):
+	return d.date().printf(out, 's');
+
+	case KEY1('P'):
+	if (fputs_failed(fputs(d.user().c_str(), out)))
 	  {
-	    const std::string path(*canon);
-	    fputs(path.c_str(), out);
+	    return make_failure_from_errno(errno);
 	  }
-      }
-      break;
+	return Failure::Ok();
+
+	case KEY2('D','S'):
+	return fprintf_failure(fprintf(out, "%u", d.seq()));
+
+	case KEY2('D','P'):
+	return fprintf_failure(fprintf(out, "%u", d.prev_seq()));
+
+	case KEY2('D', 'I'):
+	/* Testing with the Solaris 2.6 version only shows one slash (meaning :Dn:/:Dx:),
+	   but OpenSolaris 2009.06 (SunOS 5.11) shows two. */
+	{
+	  Failure done = Failure::Ok();
+	  if (!d.get_included_seqnos().empty())
+	    done = print_delta(out, outname, ":Dn:", d);
+	  if (done.ok() && !d.get_excluded_seqnos().empty())
+	    done = print_delta(out, outname, "/:Dx:", d);
+	  if (done.ok() && !d.get_ignored_seqnos().empty())
+	    done = print_delta(out, outname, "/:Dg:", d);
+	  return done;
+	}
+
+	case KEY2('D','n'):
+	return print_seq_list(out, d.get_included_seqnos());
+
+	case KEY2('D','x'):
+	return print_seq_list(out, d.get_excluded_seqnos());
+
+	case KEY2('D','g'):
+	return print_seq_list(out, d.get_ignored_seqnos());
+
+	case KEY2('M','R'):
+	return print_string_list(out, d.mrs().cbegin(), d.mrs().cend());
+
+	case KEY1('C'):
+	return print_string_list(out, d.comments().cbegin(), d.comments().cend());
+
+	case KEY2('U','N'):
+	if (!users.empty())
+	  return print_string_list(out, users.cbegin(), users.cend());
+	else
+	  return fprintf_failure(fprintf(out, "%s\n", "none"));
+
+	case KEY2('F', 'L'):
+	return print_flags(out);
+
+	case KEY1('Y'):
+	return print_flag(out, flags.type);
+
+	case KEY2('M','F'):
+	return print_yesno(out, flags.mr_checker != 0);
+
+	case KEY2('M','P'):
+	return print_flag(out, flags.mr_checker);
+
+	case KEY2('K','F'):
+	return print_yesno(out, flags.no_id_keywords_is_fatal);
+
+	case KEY2('B','F'):
+	return print_yesno(out, flags.branch);
+
+	case KEY1('J'):
+	return print_yesno(out, flags.joint_edit);
+
+	case KEY2('L','K'):
+	if (flags.all_locked)
+	  {
+	    return fputc_failure('a', out);
+	  }
+	else
+	  {
+	    if (flags.locked.empty())
+	      {
+		return fprintf_failure(fprintf(out, "none"));
+	      }
+	    else
+	      {
+		return print_flag(out, flags.locked);
+	      }
+	  }
+
+	case KEY1('Q'):
+	if (flags.user_def)
+	  return print_flag(out, flags.user_def);
+	else
+	  return Failure::Ok();
+
+	case KEY1('M'):
+	return print_flag(out, get_module_name());
+
+	case KEY2('F','B'):
+	return print_flag(out, flags.floor);
+
+	case KEY2('C','B'):
+	return print_flag(out, flags.ceiling);
+
+	case KEY2('D','s'):
+	return print_flag(out, flags.default_sid);
+
+	case KEY2('N','D'):
+	return print_yesno(out, flags.null_deltas);
+
+	case KEY2('F','D'):
+	// The genuine article prints '(none)' if there
+	// is no description.
+	// JY Sun Nov 25 01:33:46 2001; Solaris 2.6
+	// prints "none" rather than "(none)".
+	if (comments.empty())
+	  {
+	    if (fputs_failed(fputs("none\n", out)))
+	      return make_failure_from_errno(errno);
+	    else
+	      return Failure::Ok();
+	  }
+	else
+	  {
+	    return print_string_list(out, comments.cbegin(), comments.cend());
+	  }
+
+	case KEY2('B','D'):
+	return body_scanner_->emit_raw_body(out, outname);
+
+	case KEY2('G','B'):
+	{
+	  std::string gname = "standard output";
+	  struct subst_parms parms(gname, get_module_name(), out,
+				   cssc::optional<std::string>(),
+				   delta_table->delta_at_seq(d.seq()),
+				   0, sccs_date());
+	  class seq_state state(highest_delta_seqno());
+	  prepare_seqstate(state, d.seq(), sid_list(), sid_list(), sccs_date());
+	  return do_get(gname, state, parms, true, 0, 0, 0, false, false);
+	}
+
+	case KEY1('W'):
+	return print_delta(out, outname, ":Z::M:\t:I:", d);
+
+	case KEY1('A'):
+	return print_delta(out, outname, ":Z::Y: :M: :I::Z:", d);
+
+	case KEY1('Z'):
+	if (fputc_failed(fputc('@', out)) || fputs_failed(fputs("(#)", out)))
+	  return make_failure_from_errno(errno);
+	return Failure::Ok();
+	break;
+
+	case KEY1('F'):
+	if (fputs_failed(fputs(base_part(name.sfile()).c_str(), out)))
+	  {
+	    return make_failure_from_errno(errno);
+	  }
+	return Failure::Ok();
+
+	case KEY2('P','N'):
+	{
+	  cssc::FailureOr<std::string> canon = canonify_filename(name.c_str());
+	  if (!canon.ok())
+	    return canon.fail();
+	  const std::string path(*canon);
+	  if (fputs_failed(fputs(path.c_str(), out)))
+	    {
+	      return make_failure_from_errno(errno);
+	    }
+	  return Failure::Ok();
+	}
+	}
+      recognised = false;
+      return Failure::Ok();
+    };
+
+  Failure printed = do_print_delta_key(out, outname, key, d);
+  if (!printed.ok())
+    {
+      return printed;
     }
-  return true;
+  else
+    {
+      return recognised;
+    }
 }
 
 

@@ -262,13 +262,14 @@ protected:
 private:
   /* sf-prs.c */
   cssc::Failure print_flags(FILE *out) const;
-  // TODO: make print_delta return Failure.
-  void print_delta(FILE *out, const char *outname, const char *format,
-		   struct delta const &delta);
-  // TODO: make print_delta_key return FailureOr.
-  // Print a single key (e.g. :W:) from the prs format string.
-  bool print_delta_key(FILE *out, const char *outname,
-		       unsigned key, struct delta const &delta);
+  cssc::Failure print_delta(FILE *out, const char *outname, const char *format,
+			    struct delta const &delta);
+  // Print a single key (e.g. :W:) from the prs format string.  On
+  // success, if the result is true, the key was known.  If false, not
+  // known.
+  cssc::FailureOr<bool> print_delta_key(FILE *out, const char *outname,
+					unsigned key,
+					struct delta const &delta);
 
   /* sf-kw.cc */
   void no_id_keywords(const char name[]) const;
