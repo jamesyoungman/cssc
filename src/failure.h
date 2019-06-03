@@ -77,12 +77,13 @@ namespace cssc
   {
   public:
     explicit Failure(std::error_code ec)
-      : code_(ec) {}
+      : code_(ec), detail_() {}
     explicit Failure(std::error_code ec, const std::string& detail)
       : code_(ec), detail_(detail) {}
 
     // The default constructor signals "OK".
     Failure()
+      : code_(std::error_code()), detail_()
     {
       ASSERT(ok());
     }
@@ -141,13 +142,13 @@ namespace cssc
   inline Failure make_failure_from_errno(int errno_val)
   {
     ASSERT(errno_val != 0);
-    return Failure(std::error_code(static_cast<int>(errno_val), std::generic_category()));
+    return Failure(std::error_code(errno_val, std::generic_category()));
   }
 
   inline Failure make_failure_from_errno(int errno_val, const std::string& detail)
   {
     ASSERT(errno_val != 0);
-    return Failure(std::error_code(static_cast<int>(errno_val), std::generic_category()),
+    return Failure(std::error_code(errno_val, std::generic_category()),
 		   detail);
   }
 
