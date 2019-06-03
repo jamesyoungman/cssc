@@ -323,7 +323,6 @@ body_insert(bool *binary,
 	    .diagnose() << "Could not create temporary file";
 	}
       ResourceCleanup clean([tmp](){ fclose(tmp); });
-      bool ret = true;
       // Recover the data already written to the output
       // file and then rewind it, so that we can overwrite
       // it with the encoded version.
@@ -375,7 +374,7 @@ cssc::Failure
 encode_file(const char *nin, const char *nout)
 {
   FILE *fin = fopen_as_real_user(nin, "rb");	// binary
-  if (0 == fin)
+  if (nullptr == fin)
     {
       return cssc::make_failure_builder_from_errno(errno)
 	.diagnose() << "failed to open \"" << nin << "\" for reading";
