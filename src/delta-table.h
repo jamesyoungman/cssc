@@ -140,6 +140,7 @@ public:
   typedef stl_delta_list::size_type size_type;
 
   cssc_delta_table()
+    : l()
   {
   }
 

@@ -66,7 +66,8 @@ public:
       in_lineno(0), out_lineno(0),
       lines_left(0), change_left(0),
       echo_diff_output(echo),
-      in(f)
+      in(f),
+      linebuf()
     {
     }
 
