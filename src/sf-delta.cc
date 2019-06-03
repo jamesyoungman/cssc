@@ -48,6 +48,8 @@
 #undef JAY_DEBUG
 
 
+using cssc::Failure;
+
 class FileDeleter
 {
   std::string name;
@@ -124,18 +126,10 @@ sccs_file::add_delta(const std::string& gname,
         {
           return false;
         }
+
       file_to_diff = name.ufile();
       bFileIsInWorkingDir = false;
       const char *s = file_to_diff.c_str();
-
-#ifdef CONFIG_UIDS
-      if (!is_readable(file_to_diff.c_str()))
-        {
-          errormsg("File %s is not readable by user %d!",
-                   file_to_diff.c_str(), (int) geteuid());
-          return false;
-        }
-#endif
     }
   else
     {
@@ -143,12 +137,26 @@ sccs_file::add_delta(const std::string& gname,
       bFileIsInWorkingDir = true;
     }
 
+
   /* When this function exits, delete the temporary file.
    */
   FileDeleter the_cleaner(file_to_diff, bFileIsInWorkingDir);
   if (!flags.encoded)
     the_cleaner.disarm();
 
+
+#ifdef CONFIG_UIDS
+  // To reproduce this error you can do something like this:
+  // admin -n -b s.foo && get -e s.foo && cp /bin/sh foo && ( umask 0444; delta s.foo )
+  if (!is_readable(file_to_diff.c_str()))
+    {
+      // This is the file we just wrote.
+      errormsg("File %s (which we just created) is not readable by user %d! "
+	       "Please check your umask.",
+	       file_to_diff.c_str(), (int) geteuid());
+      return false;
+    }
+#endif
 
   const std::string sid_name = it->got.as_string();
   const delta *got_delta = find_delta(it->got);
