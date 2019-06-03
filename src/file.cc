@@ -331,8 +331,8 @@ static FailureOr<int> atomic_nfs_create(const std::string& path, int flags, int 
                 link_errno = errno;
 
               /* ignore other responses */
-	      links = get_nlinks(lockstr);
-              if (links.ok() && (2 == *links))
+	      cssc::FailureOr<long> links_again = get_nlinks(lockstr);
+              if (links_again.ok() && (2 == *links_again))
                 {
                   unlink(lockstr);
                   return fd;    /* success! */

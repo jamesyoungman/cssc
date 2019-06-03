@@ -155,6 +155,15 @@ std::unique_ptr<delta>
 sccs_file_parser::read_delta() {
         /* The current line should be an 's' control line */
 
+        auto rl = [this]() -> char {
+          cssc::FailureOr<char> fail_or_type = read_line();
+          if (!fail_or_type.ok())
+            {
+      	corrupt(here(), "Unexpected end-of-file");
+            }
+          return *fail_or_type;
+        };
+
         ASSERT(bufchar(1) == 's');
         check_arg();
 
@@ -170,8 +179,7 @@ sccs_file_parser::read_delta() {
 		     strict_atoul_idu(here(), args[1]),
 		     strict_atoul_idu(here(), args[2]));
 
-	cssc::FailureOr<char> fail_or_type = read_line();
-	if (!fail_or_type.ok() || (*fail_or_type != 'd'))
+	if (rl() != 'd')
 	  {
 	    corrupt(here(), "Expected '@d'");
 	  }
@@ -209,11 +217,7 @@ sccs_file_parser::read_delta() {
         tmp->set_prev_seq(strict_atous(here(), args[6]));
 
         /* Read in any lists of included, excluded or ignored seq. no's. */
-	if (!(fail_or_type = read_line()).ok())
-	  {
-	    corrupt(here(), "Unexpected end-of-file");
-	  }
-        char c = *fail_or_type;
+        char c = rl();
         int i;
         const char *start;
         bool bDebug = getenv("CSSC_SHOW_SEQSTATE") ? true : false;
@@ -243,11 +247,7 @@ sccs_file_parser::read_delta() {
                   if (bufchar(2) != ' ')
                     {
 		      // throw line away.
-		      if (!(fail_or_type = read_line()).ok())
-			{
-			  corrupt(here(), "Unexpected end-of-file");
-			}
-		      c = *fail_or_type;
+		      c = rl();
                       continue;
                     }
 
@@ -295,11 +295,7 @@ sccs_file_parser::read_delta() {
                                 start = end;
                         } while (start != NULL);
 
-			if (!(fail_or_type = read_line()).ok())
-			  {
-			    corrupt(here(), "Unexpected end-of-file");
-			  }
-			c = *fail_or_type;
+			c = rl();
                 }
         }
 
@@ -354,11 +350,7 @@ sccs_file_parser::read_delta() {
                 tmp->add_comment(plinebuf->c_str() + 3);
               }
 
-	    if (!(fail_or_type = read_line()).ok())
-	      {
-		corrupt(here(), "Unexpected end-of-file");
-	      }
-	    c = *fail_or_type;
+	    c = rl();
           }
 
         if (c != 'e') {

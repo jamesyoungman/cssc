@@ -197,18 +197,26 @@ sccs_file::add_delta(const std::string& gname,
   if (1)
     {
       cssc::FailureOr<FILE*> fof = fcreate(name.dfile(), CREATE_EXCLUSIVE | xmode);
-      if (!fof.ok())
+      if (fof.ok())
+	{
+	  get_out = *fof;
+	}
+      else
 	{
 	  remove(name.dfile().c_str());
-	  fof = fcreate(name.dfile(), CREATE_EXCLUSIVE | xmode);
+	  auto fof2 = fcreate(name.dfile(), CREATE_EXCLUSIVE | xmode);
+	  if (fof2.ok())
+	    {
+	      get_out = *fof2;
+	    }
+	  else
+	    {
+	      const Failure f = cssc::FailureBuilder(fof2.fail())
+		.diagnose() << "cannot create file " << name.dfile();
+	      errormsg("%s", f.to_string().c_str());
+	      return false;
+	    }
 	}
-      if (!fof.ok())
-	{
-	  cssc::FailureBuilder(fof.fail())
-	    .diagnose() << "cannot create file " << name.dfile();
-	  return false;
-	}
-      get_out = *fof;
     }
   FileDeleter another_cleaner(name.dfile(), false);
 

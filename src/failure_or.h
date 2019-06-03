@@ -19,6 +19,7 @@
 #ifndef CSSC__FAILURE_OR_H__
 #define CSSC__FAILURE_OR_H__
 
+#include <memory>
 #include <stdexcept>
 #include <system_error>
 
@@ -72,6 +73,21 @@ class FailureOr
   {
   }
 
+  // We define the copy constructor in case T is actually a pointer
+  // type.  FailureOr does not own *value_ if T is a pointer.
+  FailureOr(const FailureOr& source)
+    : value_(source.value_),
+      fail_(source.fail_)
+  {
+  }
+
+  // Alow copying where T is std::unique_ptr<Q>.
+  FailureOr(FailureOr&& source)
+    : value_(std::move(source.value_)),
+      fail_(source.fail_)
+  {
+  }
+
   constexpr bool ok()  const
   {
     return fail_.ok();
@@ -96,6 +112,8 @@ class FailureOr
     assert_ok();
     return value_;
   }
+
+  FailureOr& operator=(const FailureOr& other) = delete;
 
   constexpr const Failure& fail()  const
   {
@@ -127,6 +145,17 @@ class FailureOr
 };
 
 }  // namespace cssc
+
+namespace std
+{
+  template <class T>
+  void swap(cssc::FailureOr<T>& a, cssc::FailureOr<T>& b)
+  {
+    std::swap(a.value_, b.value_);
+    std::swap(a.fail_, b.fail_);
+  }
+}  // namespace std
+
 
 #endif /* CSSC__FAILURE_OR_H__ */
 
