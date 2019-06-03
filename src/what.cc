@@ -37,15 +37,20 @@
 #include "cssc.h"
 #include "version.h"
 
+// The option processor calls this so we can't put it in the unnamed
+// namespace.  Hence we need an advance declaration for it in order to
+// not get a compiler warning.
+void usage(void);
+
+namespace
+{
+
 #ifdef CONFIG_WHAT_USE_STDIO
 
 /* Inline fuctions for reading files with stdio. */
-
 typedef FILE *XFILE;
 
 const XFILE XOPEN_FAILURE = 0;
-
-void usage(void);
 
 inline XFILE
 xopen(const char *name) {
@@ -136,13 +141,19 @@ xgetc(XFILE f)
 
 static const char *what_prg_name = "what";
 
-void
-usage(void)
+inline bool terminator(int c)
 {
-  fprintf(stderr, "usage: %s [-sV] file ...\n", what_prg_name);
+  switch (c) {
+  case '"':
+  case '>':
+  case '\n':
+  case '\\':
+  case '\0':
+    return true;
+  default:
+    return false;
+  }
 }
-
-
 
 /* Print what's found after a "@(#)" in a file */
 
@@ -150,52 +161,113 @@ inline char *
 print_what(char *s, char *end, XFILE f) {
 	putchar('\t');
 
-	while (s < end) {
-		char c = *s;
-		switch (c) {
-		case '"':
-		case '>':
-		case '\n':
-		case '\\':
-		case '\0':
-			return s;
-		}
-		putchar(c);
-		s++;
-	}
+	while (s < end)
+	  {
+	    if (terminator(*s))
+	      return s;
+	    putchar(*s);
+	    s++;
+	  }
 
 	int c = xgetc(f);
-	while (c != EOF) {
-		switch (c) {
-		case '"':
-		case '>':
-		case '\n':
-		case '\\':
-		case '\0':
-		  /* Note that only one test case currently covers this line
-		   * of the code.   Test w22 of whatbasic.sh exercises this,
-		   * but nothing else does.
-		   */
-		  return end;
-		}
-		putchar(c);
-		c = xgetc(f);
-	}
-
-	return 0;
+	while (c != EOF)
+	  {
+	    if (terminator(c)) {
+	      /* Note that only one test case currently covers this line
+	       * of the code.   Test w22 of whatbasic.sh exercises this,
+	       * but nothing else does.
+	       */
+	      return end;
+	    }
+	    putchar(c);
+	    c = xgetc(f);
+	  }
+	return nullptr;
 }
 
 #ifndef CONFIG_WHAT_BUFFER_SIZE
 #define CONFIG_WHAT_BUFFER_SIZE (16*1024)
 #endif
 
+
+int what(const char *filename, bool one_match)
+{
+  int matchcount = 0;
+
+  XFILE f = xopen(filename);
+  if (f == XOPEN_FAILURE)
+    {
+      fprintf(stderr, "%s: Can't open file (%s)\n",
+	      filename, strerror(errno));
+      fail();
+    }
+
+  printf("%s:\n", filename);
+
+  static char buf[CONFIG_WHAT_BUFFER_SIZE + 3];
+  buf[0] = buf[1] = buf[2] = '\0';
+
+  ssize_t read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
+  while (read_len > 0)
+    {
+      char *at = static_cast<char*>(memchr(buf, '@', static_cast<size_t>(read_len)));
+      int done = 0;
+      char *end = buf + read_len;
+      while (at)
+	{
+	  if (at[1] == '(' && at[2] == '#' && at[3] == ')')
+	    {
+	      at = print_what(at+4, end + 3, f);
+	      ++matchcount;
+
+	      putchar('\n');
+	      if (nullptr == at || one_match)
+		{
+		  done = 1;
+		  break;
+		}
+	    }
+	  at++;
+	  if (at >= end)
+	    {
+	      break;
+	    }
+	  at = static_cast<char*>(memchr(at, '@', end - at));
+	}
+      if (done)
+	{
+	  break;
+	}
+      buf[0] = end[0];
+      buf[1] = end[1];
+      buf[2] = end[2];
+      read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
+    }
+  if (read_len == -1)
+    {
+      fprintf(stderr, "%s: Read error (%s)\n",
+	      filename, strerror(errno));
+      fail();
+    }
+  xclose(f);
+  return matchcount;
+}
+
+}  // unnamed namespace
+
+void
+usage(void)
+{
+  fprintf(stderr, "usage: %s [-sV] file ...\n", what_prg_name);
+}
+
 int
 main(int argc, char **argv)
 {
-  int one_match = 0;
+  bool one_match = false;
   int matchcount = 0;
 
-  if (argc > 0)
+  if (argc > 0 && argv[0])
     what_prg_name = argv[0];
 
   check_env_vars();
@@ -207,7 +279,7 @@ main(int argc, char **argv)
       switch (c)
 	{
 	case 's':
-	  one_match = 1;
+	  one_match = true;
 	  break;
 
 	case 'V':
@@ -215,65 +287,11 @@ main(int argc, char **argv)
 	}
     }
 
-  int arg;
-  for (arg = opts.get_index(); arg < argc; arg++)
+  for (int arg = opts.get_index(); arg < argc; arg++)
     {
-      XFILE f = xopen(argv[arg]);
-      if (f == XOPEN_FAILURE)
-	{
-	  fprintf(stderr, "%s: Can't open file (%s)\n",
-		  argv[arg], strerror(errno));
-	  fail();
-	}
-
-      printf("%s:\n", argv[arg]);
-
-      static char buf[CONFIG_WHAT_BUFFER_SIZE + 3];
-      buf[0] = buf[1] = buf[2] = '\0';
-
-      ssize_t read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
-      while (read_len > 0)
-	{
-	  char *at = (char *) memchr(buf, '@', static_cast<size_t>(read_len));
-	  int done = 0;
-	  char *end = buf + read_len;
-	  while (at)
-	    {
-	    if (at[1] == '(' && at[2] == '#' && at[3] == ')')
-	      {
-		at = print_what(at+4, end + 3, f);
-		++matchcount;
-
-		putchar('\n');
-		if (0 == at || one_match)
-		  {
-		    done = 1;
-		    break;
-		  }
-	      }
-	    at++;
-	    if (at >= end)
-	      {
-		break;
-	      }
-	    at = (char *) memchr(at, '@', end - at);
-	  }
-	  if (done)
-	    {
-	      break;
-	    }
-	  buf[0] = end[0];
-	  buf[1] = end[1];
-	  buf[2] = end[2];
-	  read_len = xread(f, buf + 3, CONFIG_WHAT_BUFFER_SIZE);
-	}
-      if (read_len == -1)
-	{
-	  fprintf(stderr, "%s: Read error (%s)\n",
-		  argv[arg], strerror(errno));
-	  fail();
-	}
-      xclose(f);
+      matchcount += what(argv[arg], one_match);
+      if (one_match && matchcount)
+	break;
     }
   if (matchcount)
     return 0;
