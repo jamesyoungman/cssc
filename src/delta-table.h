@@ -65,7 +65,9 @@ public:
 
   stl_delta_list()
     : high_seqno(0),
-      high_release(sid::null_sid())
+      high_release(sid::null_sid()),
+      items(),
+      seq_table()
   {
   }
 
