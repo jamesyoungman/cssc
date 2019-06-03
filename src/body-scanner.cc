@@ -250,7 +250,11 @@ namespace
     errormsg("Input line is %lu characters long but "
 	     "the maximum allowed SCCS file line length "
 	     "is %ld characters (see output of delta -V)\n",
-	     (unsigned long) actual_len,
+	     // TODO: switch to ostream based formatting
+	     // to void the need for this kind of cast
+	     // (especially since size_t and unsigned long)
+	     // may be of different width.
+	     static_cast<unsigned long>(actual_len),
 	     max_len);
   }
 
@@ -523,7 +527,7 @@ sccs_file_body_scanner::delta(const std::string& dname,
     }();
 
   differ.finish(diff_out); // "give back" the FILE pointer.
-  ASSERT(0 == diff_out);
+  ASSERT(nullptr == diff_out);
   return result;
 }
 
@@ -532,7 +536,6 @@ Failure
 sccs_file_body_scanner::emit_raw_body(FILE* out, const char *outname)
 {
   TRY_OPERATION(seek_to_body()); // error message already emitted.
-  char ch;
   for(;;)
     {
       FailureOr<char> got = read_line();
