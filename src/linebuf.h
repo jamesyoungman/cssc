@@ -43,6 +43,12 @@ class cssc_linebuf
 public:
   cssc_linebuf();
 
+  // This class has a pointer member.  So that we don't have to
+  // override the copy constructor and assignment operator, we just
+  // delete them.
+  cssc_linebuf& operator=(const cssc_linebuf&) = delete;
+  cssc_linebuf(const cssc_linebuf&) = delete;
+
   cssc::Failure read_line(FILE *f);
 
   // TODO: Reduce the use of c_str() in favour of operations that more
@@ -72,7 +78,6 @@ public:
 #endif
 
   ~cssc_linebuf() { delete[] buf; buf = nullptr; }
-  cssc_linebuf& operator=(const cssc_linebuf&) = delete;
 };
 
 #endif /* __LINEBUF_H__ */
