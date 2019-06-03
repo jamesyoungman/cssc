@@ -37,6 +37,11 @@ class FileDiff
   FileDiff(const char *name1, const char *name2);
   ~FileDiff();
 
+  // Prohibit copying to avoid confision when two classes share the
+  // same FILE pointer and hence, seek position.
+  FileDiff(const FileDiff&) = delete;
+  FileDiff& operator=(const FileDiff&) = delete;
+
   FILE * start();
   void finish(FILE * &fp);
 
