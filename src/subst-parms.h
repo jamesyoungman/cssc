@@ -42,12 +42,17 @@ struct subst_parms
   sccs_date now;
   int found_id;
 
-subst_parms(const std::string& name, const std::string modname,
-	    FILE *o, cssc::optional<std::string> w, struct delta const &d,
-	    unsigned int l, sccs_date n)
-: outname(name), module_name(modname), wstring(w), out(o),
-    delta(d), out_lineno(l), now(n),
-    found_id(0) {}
+  subst_parms(const std::string& name, const std::string modname,
+	      FILE *o, cssc::optional<std::string> w, struct delta const &d,
+	      unsigned int l, sccs_date n)
+    : outname(name), module_name(modname), wstring(w), out(o),
+      delta(d), out_lineno(l), now(n),
+      found_id(0) {}
+
+  // Prohibit copying to prevent confusion over who "controls" the
+  // write offset in "out".
+  subst_parms(const subst_parms&) = delete;
+  subst_parms& operator=(const subst_parms&) = delete;
 
   const std::string& get_module_name() const
   {
