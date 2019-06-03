@@ -85,25 +85,39 @@ namespace cssc
 				cssc_category());
   }
 
+
+  inline bool isBodyIsBinaryCode(int code)
+  {
+    switch (code)
+      {
+      case isit(errorcode::ControlCharacterAtStartOfLine):
+      case isit(errorcode::BodyLineTooLong):
+      case isit(errorcode::FileDoesNotEndWithNewline):
+	return true;
+      default:
+	return false;
+      }
+  }
+
+  bool category_impl::equivalent(int code,
+				 const std::error_condition& condition ) const noexcept
+  {
+    // All our equivalences are within this category.
+    if (condition.category() != cssc_category())
+      return false;
+
+    return (static_cast<int>(condition.value()) == static_cast<int>(condition::BodyIsBinary))
+      && isBodyIsBinaryCode(code);
+  }
+
   bool category_impl::equivalent(const std::error_code& code, int condition) const noexcept
   {
-    if (static_cast<int>(condition::BodyIsBinary) == condition)
-      {
-	if (code.category() != cssc_category())
-	  {
-	    return false;
-	  }
+    // All our equivalences are within this category.
+    if (code.category() != cssc_category())
+      return false;
 
-	switch (code.value())
-	  {
-	  case isit(errorcode::ControlCharacterAtStartOfLine):
-	  case isit(errorcode::BodyLineTooLong):
-	  case isit(errorcode::FileDoesNotEndWithNewline):
-	    return true;
-	  default:
-	    return false;
-	  }
-      }
+    return (static_cast<int>(condition::BodyIsBinary) == condition)
+      && isBodyIsBinaryCode(code.value());
   }
 
 

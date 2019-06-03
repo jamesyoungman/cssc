@@ -40,6 +40,8 @@ namespace cssc
     // None of our errors are equivalent to any of the errors in
     // std::errc, so we define no conversions.
 
+    bool equivalent(int code,
+		    const std::error_condition& condition ) const noexcept override;
     bool equivalent(const std::error_code& code,
 		    int condition) const noexcept override;
   };
