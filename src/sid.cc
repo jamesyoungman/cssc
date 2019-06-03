@@ -37,15 +37,10 @@
 
 std::string sid::as_string() const
 {
-  char buf[32];
-  if (branch || sequence)
-    sprintf(buf, "%d.%d.%d.%d", rel, level, branch, sequence);
-  else
-    sprintf(buf, "%d.%d", rel, level);
-
-  return std::string(buf);
+  std::ostringstream oss;
+  oss << (*this);
+  return oss.str();
 }
-
 
 static short int
 get_comp(const char *&s) {
@@ -304,6 +299,26 @@ sid::print(FILE *out) const {
 	  }
 	return cssc::Failure::Ok();
 }
+
+
+std::ostream& sid::ostream_insert(std::ostream& os) const
+{
+  os << rel;
+  if (level)
+    {
+      os << '.' << level;
+      if (branch)
+	{
+	  os << '.' << branch;
+	  if (sequence)
+	    {
+	      os << '.' << sequence;
+	    }
+	}
+    }
+  return os;
+}
+
 
 cssc::Failure
 sid::printf(FILE *out, char c, bool force_zero /*=false*/) const {

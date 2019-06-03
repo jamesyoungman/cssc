@@ -29,6 +29,7 @@
 #ifndef CSSC__SID_H__
 #define CSSC__SID_H__
 
+#include <ostream>
 #include <string>
 
 #include "cssc-assert.h"
@@ -89,16 +90,6 @@ public:
   }
   int components() const;
   bool on_trunk() const;
-
-  // TODO: is this conversion really needed?
-  operator void const *() const {
-    if (rel == 0)  {
-      return NULL;
-    }
-    return (void const *) this;
-  }
-
-  //	operator release() const;	/* Defined below */
 
   friend bool
   operator >(sid const &i1, sid const &i2) {
@@ -211,12 +202,18 @@ public:
     return cssc::Failure::Ok();
   }
 
+  // as_string prints the human-readable version of the sid.
   std::string as_string() const;
+  std::ostream& ostream_insert(std::ostream&) const;
 
   friend release::release(const sid &s);
   friend relvbr::relvbr(const sid &s);
 };
 
+inline std::ostream& operator<<(std::ostream& os, const sid& s)
+{
+  return s.ostream_insert(os);
+}
 
 inline sid::sid(release r): rel(r), level(0), branch(0), sequence(0) {}
 

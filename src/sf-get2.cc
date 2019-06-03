@@ -186,7 +186,7 @@ sccs_file::find_next_sid(sid requested, sid got,
   if (!flags.branch)
     want_branch = false;        // branches not allowed!
 
-  if (flags.default_sid)
+  if (!flags.default_sid.is_null())
     {
       requested = flags.default_sid;
     }

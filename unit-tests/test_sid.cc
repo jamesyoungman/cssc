@@ -20,6 +20,7 @@
  *
  */
 
+#include <sstream>
 #include "sid.h"
 #include "release.h"
 #include <gtest/gtest.h>
@@ -56,7 +57,7 @@ TEST(SidTest, ConstructFromRelease)
   const release rel(4);
   const sid s(rel);
   EXPECT_EQ(1, s.components());
-  EXPECT_EQ("4.0", s.as_string());
+  EXPECT_EQ("4", s.as_string());
 }
 
 TEST(SidTest, PartialSid)
@@ -83,10 +84,19 @@ TEST(SidTest, StringConversion)
   const sid three("1.2.3");
   const sid four("1.2.3.4");
 
-  EXPECT_EQ("1.0", one.as_string());
+  EXPECT_EQ("1", one.as_string());
   EXPECT_EQ("1.2", two.as_string());
-  EXPECT_EQ("1.2.3.0", three.as_string());
+  EXPECT_EQ("1.2.3", three.as_string());
   EXPECT_EQ("1.2.3.4", four.as_string());
+
+  const std::vector<sid> sids = {one, two, three, four};
+  for (const auto id : sids) 
+    {
+      std::ostringstream oss;
+      oss << id;
+      EXPECT_EQ(oss.str(), id.as_string());
+    }
+  // TODO: verify consistency between ostream insertsion and sid::print().
 }
 
 TEST(SidTest, Assignment)
@@ -215,7 +225,7 @@ TEST(SidTest, Increment)
 
   sid c("8");
   ++c;
-  ASSERT_EQ(c.as_string(), "9.0");
+  ASSERT_EQ(c.as_string(), "9");
 }
 
 TEST(SidTest, Decrement)
@@ -230,7 +240,7 @@ TEST(SidTest, Decrement)
 
   sid c("8");
   --c;
-  ASSERT_EQ(c.as_string(), "7.0");
+  ASSERT_EQ(c.as_string(), "7");
 }
 
 TEST(SidTest, TrunkSuccessor)
@@ -339,6 +349,8 @@ TEST(SidTest, ReleaseOnly)
 
   const sid c("1.0");
   ASSERT_TRUE(c.release_only());
+  const sid cc("1");
+  ASSERT_TRUE(c.release_only());
 
   const sid d("0.0");
   ASSERT_FALSE(d.release_only());
@@ -356,14 +368,3 @@ TEST(SidTest, TrunkMatch)
   // Different branches can still be trunk matches.
   ASSERT_TRUE(sid("1.2.7.8").trunk_match("1.2.3.4"));
 }
-
-
-#if 0
-// sid::sid(relvbr) is declared but not implemented.
-TEST(SidTest, ConstructFromRelvbr)
-{
-  const relvbr r("1.2.3");
-  const sid s(r);
-  EXPECT_EQ("1.2.3.0", s.as_string());
-}
-#endif
