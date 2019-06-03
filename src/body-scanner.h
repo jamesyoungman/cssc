@@ -54,6 +54,12 @@ public:
   sccs_file_body_scanner(const std::string& filename, FILE*f, off_t body_pos, long body_pos_line_number);
   ~sccs_file_body_scanner();
 
+  // If we allowed copying, two instances might share the same FILE
+  // object and get surprising results since they would share a common
+  // file seek offset.
+  sccs_file_body_scanner(const sccs_file_body_scanner&) = delete;
+  sccs_file_body_scanner& operator=(const sccs_file_body_scanner&) = delete;
+
   cssc::Failure get(const std::string& gname, const cssc_delta_table&,
 		    std::function<cssc::Failure(const char *start,
 						struct delta const& gotten_delta,
