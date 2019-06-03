@@ -33,7 +33,7 @@ AM_CFLAGS = "-DPREFIX=\"$(csscutildir)/\"" "-DLOCALEDIR=\"$(localedir)\"" $(gene
 AM_LDFLAGS = -L../gl/lib
 LDADD = libcssc.a -lgnulib
 
-AM_CXXFLAGS = $(WARN_CFLAGS)
+AM_CXXFLAGS = $(WARN_CXXFLAGS)
 noinst_LIBRARIES = libcssc.a
 
 bin_PROGRAMS = sccs
