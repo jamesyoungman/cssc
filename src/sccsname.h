@@ -61,6 +61,7 @@ class sccs_name
 
   sccs_name &operator =(sccs_name const &);
   sccs_name(sccs_name const &);
+  std::string sub_file(char insertme) const;
 
 public:
   static cssc::Failure valid_filename(const char *name);
@@ -76,15 +77,35 @@ public:
 
   const char * c_str() const { return sname.c_str(); }
 
-  std::string sub_file(char insertme) const;
+  // The sfile is the name of the history file itself.
   std::string sfile() const { return sname; }
+
+  // The dfile is a temporary file generated during the operation of
+  // "delta" containing the gotten body against which we perform a
+  // diff.
+  // The d-file is created in the SCCS directory (XXX: correct?)
+  std::string dfile() const { return sub_file('d'); }
+
+  // The gfile is the default name of the output of "get".
   std::string gfile() const { return gname; }
   std::string lfile() const;
 
+  // The pfile is the long-lived lock file which contains a list of
+  // deltas which are checked out for editing.
   std::string pfile() const { return sub_file('p'); }
+  // The qfile is a temporary file used during updates to the pfile.
   std::string qfile() const { return sub_file('q'); }
+
+  // The zfile is a temporary file (updates to the history file are
+  // written into the xfile, which will then be renamed).
   std::string xfile() const { return sub_file('x'); }
+
+  // The zfile is a lock file.
   std::string zfile() const { return sub_file('z'); }
+
+  // The ufile is a temporary file, the uuencoded version of the file
+  // that 'delta' will diff.
+  std::string ufile() const { return sub_file('u'); }
 
   cssc::Failure
   lock()

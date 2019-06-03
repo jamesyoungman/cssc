@@ -119,21 +119,20 @@ sccs_file::add_delta(const std::string& gname,
 
   if (flags.encoded)
     {
-      std::string uname(name.sub_file('u'));
-      cssc::Failure encoded = encode_file(gname.c_str(), uname.c_str());
+      cssc::Failure encoded = encode_file(gname.c_str(), name.ufile().c_str());
       if (!encoded.ok())
         {
           return false;
         }
-      file_to_diff = uname;
+      file_to_diff = name.ufile();
       bFileIsInWorkingDir = false;
       const char *s = file_to_diff.c_str();
 
 #ifdef CONFIG_UIDS
-      if (!is_readable(s))
+      if (!is_readable(file_to_diff.c_str()))
         {
           errormsg("File %s is not readable by user %d!",
-                   s, (int) geteuid());
+                   file_to_diff.c_str(), (int) geteuid());
           return false;
         }
 #endif
@@ -151,11 +150,12 @@ sccs_file::add_delta(const std::string& gname,
     the_cleaner.disarm();
 
 
-  seq_state sstate(highest_delta_seqno());
   const std::string sid_name = it->got.as_string();
   const delta *got_delta = find_delta(it->got);
   if (got_delta == NULL)
     {
+        // The delta listed in the p-file as gotten does not exist in
+        // the history file.
         errormsg("Locked delta %s doesn't exist!", sid_name.c_str());
         return false;
     }
@@ -165,12 +165,10 @@ sccs_file::add_delta(const std::string& gname,
   seq_no predecessor_seq = got_delta->seq();
 
 
+  seq_state sstate(highest_delta_seqno());
   prepare_seqstate(sstate, predecessor_seq,
 		   it->include, it->exclude,
 		   sccs_date());
-
-  /* The d-file is created in the SCCS directory (XXX: correct?) */
-  std::string dname(name.sub_file('d'));
 
   /* We used to use fcreate here but as shown by the tests in
    * tests/delta/errorcase.sh, the prior existence of the
@@ -190,37 +188,36 @@ sccs_file::add_delta(const std::string& gname,
   FILE *get_out;
   if (1)
     {
-      cssc::FailureOr<FILE*> fof = fcreate(dname, CREATE_EXCLUSIVE | xmode);
+      cssc::FailureOr<FILE*> fof = fcreate(name.dfile(), CREATE_EXCLUSIVE | xmode);
       if (!fof.ok())
 	{
-	  remove(dname.c_str());
-	  fof = fcreate(dname, CREATE_EXCLUSIVE | xmode);
+	  remove(name.dfile().c_str());
+	  fof = fcreate(name.dfile(), CREATE_EXCLUSIVE | xmode);
 	}
       if (!fof.ok())
 	{
 	  cssc::FailureBuilder(fof.fail())
-	    .diagnose() << "cannot create file " << dname;
+	    .diagnose() << "cannot create file " << name.dfile();
 	  return false;
 	}
       get_out = *fof;
     }
-  FileDeleter another_cleaner(dname, false);
+  FileDeleter another_cleaner(name.dfile(), false);
 
   auto w = cssc::optional<std::string>();
   const struct delta blankdelta;
-  struct subst_parms parms(dname, get_module_name(), get_out,
+  struct subst_parms parms(name.dfile(), get_module_name(), get_out,
 			   w, blankdelta,
                            0, sccs_date());
   seq_state gsstate(sstate);
-
-  cssc::Failure got = do_get(dname, gsstate, parms, /*do_kw_subst=*/0, /*show_sid=*/0,
-			     /*show_module=*/0, /*debug=*/0, GET_NO_DECODE,
-			     /*for_edit=*/false);
+  cssc::Failure got = do_get(name.dfile(), gsstate, parms, /*do_kw_subst=*/0,
+			     /*show_sid=*/0, /*show_module=*/0, /*debug=*/0,
+			     GET_NO_DECODE, /*for_edit=*/false);
   if (!got.ok())
     {
       cssc::Failure f = cssc::make_failure_builder(got)
 	.diagnose()
-	<< "failed to get " << name.sfile() << " into " << dname;
+	<< "failed to get " << name.sfile() << " into " << name.dfile();
       warning("%s", f.to_string().c_str());
       return false;
     }
@@ -365,19 +362,9 @@ sccs_file::add_delta(const std::string& gname,
       out = *fof;
     }
 
-#undef DEBUG_FILE
-#ifdef DEBUG_FILE
-  FILE *df = fopen_as_real_user("delta.dbg", "w");
-#endif
-
-
   delta_result result =
-  body_scanner_->delta(dname, file_to_diff, highest_delta_seqno(), new_delta.seq(),
+  body_scanner_->delta(name.dfile(), file_to_diff, highest_delta_seqno(), new_delta.seq(),
 		       &sstate, out, display_diff_output);
-
-#ifdef DEBUG_FILE
-  fclose(df);
-#endif
 
   // The order of things that we do at this point is quite
   // important; we want only to update the s- and p- files if
