@@ -37,7 +37,7 @@ class file_lock : private cleanup {
         std::string name_;
 
         // TODO: consider a more modern kind of cleanup object.
-	void do_cleanup() { this->~file_lock(); }
+	void do_cleanup() override { this->~file_lock(); }
 
 public:
         file_lock(const std::string& zname);
