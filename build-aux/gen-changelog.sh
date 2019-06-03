@@ -25,8 +25,5 @@ top_srcdir="$1"
     --ignore-matching='IGNORE_THIS' \
     --since='2019-05-06' \
     --strip-cherry-pick \
+    --amend="${top_srcdir}/build-aux/git-log-fix" \
   && cat "${top_srcdir}/ChangeLog.1" "${top_srcdir}/ChangeLog.2" "${top_srcdir}/ChangeLog.3"
-
-# findutils also uses ...
-#     --amend="${top_srcdir}/build-aux/git-log-fix" \
-# ... but we have no fixups yet.
