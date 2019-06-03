@@ -59,7 +59,7 @@
 int
 CSSC_Options::next()
 {
-  if (cindex == 0 || *cindex == '\0')
+  if (cindex == nullptr || *cindex == '\0')
     {
       if (index >= argc)
 	{
@@ -88,7 +88,7 @@ CSSC_Options::next()
   // Look for the argument character in the option list.
   const char *match = strchr(opts, c);
 
-  if (0 == c || 0 == match)
+  if (0 == c || nullptr == match)
     {
       if (opterr)		// set opterr for verbose error returns.
 	{
@@ -118,7 +118,7 @@ CSSC_Options::next()
     }
 #else
   // Check for and warn about colons in the argument spec!
-  if (NULL != strchr(opts, ':'))
+  if (nullptr != strchr(opts, ':'))
     {
       fprintf(stderr,
 	      "Programmer error: option list contains a colon.\n"
@@ -164,11 +164,11 @@ CSSC_Options::next()
 	  // sccs-get's -y option, and there is no actual argument.
 	  arg = cindex;
 	}
-      cindex = 0;
+      cindex = nullptr;
     }
   else
     {
-      arg = 0;			// no argument taken by this option.
+      arg = nullptr;			// no argument taken by this option.
     }
 
   return c;

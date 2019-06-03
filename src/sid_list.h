@@ -317,7 +317,7 @@ range_list<TYPE>::operator =(range_list<TYPE> const &list)
 
 
 template <class TYPE>
-range_list<TYPE>::range_list(): head(0), valid_flag(1)
+range_list<TYPE>::range_list(): head(nullptr), valid_flag(1)
 {
 }
 
