@@ -95,11 +95,22 @@ private:
     edit_lock(const char *g, const char *d, const char *u,
 	      const char *dd, const char *dt, const char *i,
 	      const char *x)
-      : got(g), delta(d), user(u), date(dd, dt),
-	include(i), exclude(x)
+      : got(g),
+	delta(d),
+	user(u),
+	date(dd, dt),
+	include(i),
+	exclude(x)
     {
     }
+
     edit_lock()
+      : got(),
+	delta(),
+	user(),
+	date(),
+	include(),
+	exclude()
     {
     }
   };
