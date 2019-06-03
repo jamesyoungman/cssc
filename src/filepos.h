@@ -40,11 +40,17 @@ class FilePosSaver		// with fsetpos()...
   FILE *f_;
   bool disarmed_;
 
+  // This class has a pointer member.  So that we don't have to
+  // override the copy constructor or assigment operator, we delete
+  // them.
+  FilePosSaver& operator=(const FilePosSaver&) = delete;
+  FilePosSaver(const FilePosSaver&) = delete;
+
 #ifdef HAVE_FSETPOS
   fpos_t pos_;
  public:
   FilePosSaver(FILE *fp)
-    : f_(fp), disarmed_(false)
+    : f_(fp), disarmed_(false), pos_()
     {
       if (0 != fgetpos(f_, &pos_))
 	ctor_fail(errno, "fgetpos() failed!");
@@ -63,7 +69,7 @@ class FilePosSaver		// with fsetpos()...
 
  public:
   FilePosSaver(FILE *fp)
-    : f_(fp), disarmed_(false)
+    : f_(fp), disarmed_(false), offset_()
     {
       if (-1L == (offset_ = ftell(f_)) )
 	ctor_fail(errno, "ftell() failed."); // better, later; throw exception.
