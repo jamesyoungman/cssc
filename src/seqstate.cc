@@ -52,9 +52,11 @@ seq_state::seq_state(seq_no l) :
 }
 
 
-seq_state::seq_state(const seq_state& s) :
-  last_(s.last_),
-  active_(s.active_)
+seq_state::seq_state(const seq_state& s)
+  : states_(),
+    last_(s.last_),
+    active_(s.active_),
+    inserting(false)
 {
   states_ = s.states_;
   decide_disposition();

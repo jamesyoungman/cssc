@@ -39,13 +39,15 @@ sccs_pfile::corrupt(int lineno, const char *msg) const {
 }
 
 sccs_pfile::sccs_pfile(sccs_name &n, pfile_mode m)
-  : name(n), mode(m) {
+  : name(n),
+    pname(name.pfile()),
+    mode(m),
+    edit_locks()
+{
 
         if (!name.valid()) {
                 ctor_fail(-1, "%s: Not a SCCS file.", name.c_str());
         }
-
-        pname = name.pfile();
 
         if (mode != pfile_mode::PFILE_READ)
 	  {
