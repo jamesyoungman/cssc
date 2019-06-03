@@ -41,17 +41,20 @@
 // to send the patches to <jay@gnu.org>.
 #endif
 
+namespace
+{
+  cssc::Failure invalid_name(const std::string& reason)
+  {
+    return cssc::make_failure(cssc::errorcode::NotAnSccsHistoryFileName, reason);
+  }
+}  // unnamed namespace
+
 std::string
 base_part(const std::string& name)
 {
   std::string dirname, basename;
   split_filename(name, dirname, basename);
   return basename;
-}
-
-cssc::Failure invalid_name(const std::string& reason)
-{
-  return cssc::make_failure(cssc::errorcode::NotAnSccsHistoryFileName, reason);
 }
 
 cssc::Failure
@@ -107,6 +110,16 @@ sccs_name::create()
 //   sname = from.sfile();
 //   create();
 // }
+
+sccs_name::sccs_name()
+  : sname(),
+    gname(),
+    name_front(),
+    name_rear(),
+    lock_(),
+    lock_cnt(0)
+{
+}
 
 sccs_name &
 sccs_name::operator =(const std::string& newname)

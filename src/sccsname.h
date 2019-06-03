@@ -67,10 +67,9 @@ public:
   static cssc::Failure valid_filename(const char *name);
   // TODO: probably don't need both valid_filename and valid.
   bool valid() const { return sname.length() > 0; }
-  /* The initialisers on the following line have been re-ordered
-   * to follow the declaration order.
-   */
-  sccs_name(): lock_cnt(0)  {}
+
+  sccs_name();
+
   sccs_name &operator =(const std::string& n); /* undefined */
 
   void make_valid();
