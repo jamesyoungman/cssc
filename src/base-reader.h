@@ -35,11 +35,24 @@
 class sccs_file_reader_base
 {
  public:
-  explicit sccs_file_reader_base(const std::string& n, FILE *f, sccs_file_location pos)
-    : f_(f),
+
+  // No ownership is taken of f.
+  //
+  // TODO: eliminate useless parameter n, since the file name is now
+  // known to sccs_file_location anyway.
+  explicit sccs_file_reader_base(const std::string&, FILE *f, sccs_file_location pos)
+    : plinebuf{std::make_unique<cssc_linebuf>()},
       here_(pos),
-    plinebuf{std::make_unique<cssc_linebuf>()}
+      f_(f)
   {}
+
+  // No ownership is taken on the FILE object, but we still delete the
+  // copy constructor, since two instances of sccs_file_reader_base
+  // sharing the same FILE object would interact adversely via their
+  // expectations of the seek offset into the file.
+  sccs_file_reader_base(const sccs_file_reader_base& other) = delete;
+  // Similarly for the assignment operator.
+  sccs_file_reader_base& operator=(const sccs_file_reader_base&) = delete;
 
   const std::string& name() const
     {
