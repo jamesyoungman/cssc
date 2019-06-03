@@ -1,6 +1,7 @@
 New in CSSC-1.4.2-rc1, 2019-MM-DD
 
-	 * Nothing yet
+	 * This release is more careful to detect I/O failures when
+           writing to stdout in prs and prt.
 
 New in CSSC-1.4.1, 2019-05-07
 
