@@ -452,7 +452,7 @@ main(int argc, char **argv)
               if (!fof.ok())
                 {
 		  out = NULL;
-		  errormsg("%s", fof.to_string());
+		  errormsg("%s", fof.to_string().c_str());
                   retval = 1;
                   continue;     // with next file....
                 }
