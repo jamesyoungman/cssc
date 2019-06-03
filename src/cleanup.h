@@ -55,14 +55,18 @@ class cleanup {
 
         class cleanup *next;
 
+	// This class has pointer members so we should override the
+	// copy constructor and assignment operator if we want
+	// instances to be vopyable.  So that we don't have to do
+	// that, just prevent copying.
+	cleanup(const cleanup&) = delete;
+	cleanup& operator=(const cleanup&) = delete;
+
 protected:
         cleanup();
         virtual void do_cleanup() = 0;
 
-#ifdef __GNUC__
-        virtual /* not needed but it gets rid of an anoying warning */
-#endif
-        ~cleanup();
+        virtual ~cleanup();
 
 public:
 
