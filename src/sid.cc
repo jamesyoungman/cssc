@@ -64,7 +64,8 @@ get_comp(const char *&s) {
 	return static_cast<short int>(n);
 }
 
-relvbr::relvbr(const char *s) {
+relvbr::relvbr(const char *s)
+  : relvbr() {
 	if (s == NULL) {
 		rel = level = branch = 0;
 		return;
@@ -79,8 +80,11 @@ relvbr::relvbr(const char *s) {
 	}
 }
 
-release::release(const char *s) {
+release::release(const char *s)
+  : release() {
 	if (s == NULL) {
+	        // TODO: the default constructor sets rel=-1.
+	        // Is there a meaningful difference here?
 		rel = 0;
 		return;
 	}
@@ -98,12 +102,9 @@ sid::null_sid()
   return sid(0, 0, 0, 0);
 }
 
-sid::sid(const char *s) {
-	if (s == NULL) {
-		sequence = branch = level = rel = 0;
-		return;
-	}
-
+sid::sid(const char *s)
+  : rel(-1), level(0), branch(0), sequence(0) {
+        ASSERT(s != NULL);
 	rel = get_comp(s);
 	level = get_comp(s);
 	branch = get_comp(s);
@@ -360,12 +361,16 @@ sid::printf(FILE *out, char c, bool force_zero /*=false*/) const {
 	return cssc::Failure::Ok();
 }
 
-relvbr::relvbr(const sid &s) :  rel( (short)s.rel ), level( (short)s.level ), branch( (short)s.branch )
+relvbr::relvbr(const sid &s)
+  : rel(s.rel),
+    level(s.level),
+    branch(s.branch)
 {
   // nothing.
 }
 
-release::release(const sid &s) :  rel( (short)s.rel )
+release::release(const sid &s)
+  :  rel(s.rel)
 {
   // nothing.
 }

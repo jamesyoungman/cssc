@@ -54,7 +54,7 @@ public:
 
   delta()
     : delta_type_('D'),
-      id_(0),
+      id_(),
       seq_(0),
       prev_seq_(0),
       have_includes_(false),
