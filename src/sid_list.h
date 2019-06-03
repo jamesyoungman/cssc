@@ -80,10 +80,11 @@ private:
 
 
 template <class TYPE> range_list<TYPE>::range_list(const char *list)
-    : head(NULL), valid_flag(1)
+    : head(nullptr),
+      valid_flag(1)
 {
   const char *s = list;
-  if (s == NULL || *s == '\0')
+  if (s == nullptr || *s == '\0')
     {
       return;
     }
@@ -92,7 +93,7 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
     {
       size_t len;
       const char *comma = strchr(s, ',');
-      if (comma == NULL)
+      if (comma == nullptr)
         {
 	  len = strlen(s);
           comma = s + len;
@@ -121,7 +122,7 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
           char *dash = strchr(buf, '-');
           range<TYPE> *p = new range<TYPE>;
 
-          if (dash == NULL)
+          if (dash == nullptr)
             {
               p->to = p->from = TYPE(buf);
             }
@@ -141,7 +142,7 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
   if (clean())                  // returns invalid flag.
     {
       destroy();
-      head = NULL;
+      head = nullptr;
       invalidate();
     }
   else
@@ -158,28 +159,28 @@ range_list<TYPE>::clean()
     return 1;
 
   range<TYPE> *sp = head;
-  range<TYPE> *new_head = NULL;
-  while (sp != NULL)
+  range<TYPE> *new_head = nullptr;
+  while (sp != nullptr)
     {
       range<TYPE> *next_sp = sp->next;
 
       if (sp->from <= sp->to)
         {
           range<TYPE> *dp = new_head;
-          range<TYPE> *pdp = NULL;
+          range<TYPE> *pdp = nullptr;
 
           TYPE sp_to_1 = sp->to;
           TYPE sp_from_1 = sp->from;
           ++sp_to_1;
           --sp_from_1;
 
-          while (dp != NULL && dp->to < sp_from_1)
+          while (dp != nullptr && dp->to < sp_from_1)
             {
               pdp = dp;
               dp = dp->next;
             }
 
-          while (dp != NULL && dp->from <= sp_to_1)
+          while (dp != nullptr && dp->from <= sp_to_1)
             {
               /* While sp overlaps dp, merge dp into sp. */
               if (dp->to > sp->to)
@@ -195,7 +196,7 @@ range_list<TYPE>::clean()
               range<TYPE> *next_dp = dp->next;
               delete dp;
               dp = next_dp;
-              if (pdp == NULL)
+              if (pdp == nullptr)
                 {
                   new_head = dp;
                 }
@@ -204,7 +205,7 @@ range_list<TYPE>::clean()
                   pdp->next = dp;
                 }
             }
-          if (pdp == NULL)
+          if (pdp == nullptr)
             {
               sp->next = new_head;
               new_head = sp;
@@ -252,22 +253,22 @@ range_list<TYPE>::destroy()
 
   range<TYPE> *p = head;
 
-  while(p != NULL)
+  while(p != nullptr)
     {
       range<TYPE> *np = p->next;
       delete p;
       p = np;
     }
-  head = NULL;
+  head = nullptr;
 }
 
 template <class TYPE>
 range<TYPE> *
 range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
 {
-  if (p == NULL)
+  if (p == nullptr)
     {
-      return NULL;
+      return nullptr;
     }
   range<TYPE> *copy_head = new range<TYPE>;
   range<TYPE> *np = copy_head;
@@ -278,7 +279,7 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
       np->to = p->to;
 
       p = p->next;
-      if (p == NULL)
+      if (p == nullptr)
         {
           break;
         }
@@ -286,7 +287,7 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
       np = np->next = new range<TYPE>;
     }
 
-  np->next = NULL;
+  np->next = nullptr;
   return copy_head;
 }
 
@@ -373,7 +374,7 @@ range_list<TYPE>::print(FILE *out) const
         }
 
       p = p->next;
-      if (p == NULL)
+      if (p == nullptr)
         {
           return 0;
         }
