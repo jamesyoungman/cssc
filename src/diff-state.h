@@ -60,6 +60,11 @@ private:
       return bad;
     }
 
+  // Prohibit copying, to avoid two objects being able to consume data
+  // from the same input.
+  diff_state& operator=(const diff_state&) = delete;
+  diff_state(const diff_state&) = delete;
+
 public:
   diff_state(FILE *f, bool echo)
     : _state(diffstate::START),

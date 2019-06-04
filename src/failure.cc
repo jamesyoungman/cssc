@@ -106,7 +106,7 @@ namespace cssc
     if (condition.category() != cssc_category())
       return false;
 
-    return (static_cast<int>(condition.value()) == static_cast<int>(condition::BodyIsBinary))
+    return (condition.value() == static_cast<int>(condition::BodyIsBinary))
       && isBodyIsBinaryCode(code);
   }
 
@@ -142,7 +142,8 @@ namespace cssc
 
 
   FailureBuilder::FailureBuilder(std::error_code ec)
-    : code_(ec),
+    : os_(),
+      code_(ec),
       diagnose_(false),
       detail_(false)
   {
@@ -160,15 +161,17 @@ namespace cssc
   }
 
   FailureBuilder::FailureBuilder(const FailureBuilder& other)
-      : code_(other.code_),
-	diagnose_(other.diagnose_),
-	detail_(other.detail_)
-    {
-      os_ << other.os_.str();
-    }
+    : os_(),
+      code_(other.code_),
+      diagnose_(other.diagnose_),
+      detail_(other.detail_)
+  {
+    os_ << other.os_.str();
+  }
 
   FailureBuilder::FailureBuilder(const Failure& f)
-    : code_(f.code()),
+    : os_(),
+      code_(f.code()),
       diagnose_(false),
       detail_(f.detail().empty())
     {

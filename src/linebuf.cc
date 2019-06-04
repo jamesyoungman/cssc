@@ -102,7 +102,7 @@ cssc_linebuf::split(int offset, char **args, int len, char c)
   for (i = 0; i < len; i++)
     {
       args[i] = start;
-      if (0 == end)
+      if (nullptr == end)
 	{
 	  if (start[0] != '\0')
 	    i++;

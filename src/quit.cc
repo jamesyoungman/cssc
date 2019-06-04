@@ -312,9 +312,9 @@ int cleanup::all_disabled = 0;
 int cleanup::in_child_flag = 0;
 #endif
 
-cleanup::cleanup() {
-        next = head;
-        head = this;
+cleanup::cleanup()
+  : next(head) {
+  head = this;
 }
 
 cleanup::~cleanup()

@@ -123,6 +123,8 @@ diff_state::next_state()
   int line1, line2, line3, line4;
   char c;
 
+  // TODO: should we just promote line[1234] to long and avoid the
+  // cast?
   line1 = (int) strtol(linebuf.c_str(), &s, 10);
   line2 = line1;
   if (*s == ',')

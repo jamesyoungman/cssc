@@ -35,7 +35,7 @@ unsigned short strict_atous(const sccs_file_location& loc, const char *s)
   char c;
   while ( 0 != (c=*s++) )
     {
-      if (!isdigit((unsigned char)c))
+      if (!isdigit(static_cast<unsigned char>(c)))
 	{
 	  corrupt(loc, "Invalid number");
 	}
@@ -50,7 +50,7 @@ unsigned short strict_atous(const sccs_file_location& loc, const char *s)
     {
       corrupt(loc, "Missing number");
     }
-  return (unsigned short) n;
+  return static_cast<unsigned short>(n);
 }
 
 cssc::Failure
