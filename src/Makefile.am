@@ -62,36 +62,109 @@ BUILT_SOURCES = version.cc copyright_data.inc
 CLEANFILES = sccsdiff copyright_data.inc
 
 libcssc_a_SOURCES = \
-	rl-merge.cc \
-	bodyio.cc sf-get.cc sf-get3.cc \
-	seqstate.cc canonify.cc writesubst.cc \
-	pfile.cc encoding.cc \
-	sf-add.cc sf-kw.cc dtbl-prepend.cc sf-chkid.cc \
-	l-split.cc prompt.cc run.cc filediff.cc \
-	cap.cc sf-write.cc \
-	sccsfile.cc parser.cc rel_list.cc \
-	sccs-delta.cc delta-table.cc delta-iterator.cc \
-	fileiter.cc file.cc linebuf.cc \
-	sccsname.cc sid.cc sccsdate.cc fnsplit.cc \
-	quit.cc fatalsig.cc \
-	my-getopt.cc version.cc fdclosed.cc \
-	showconfig.cc  environment.cc \
-	body-scanner.cc location.cc base-reader.cc diff-state.cc \
-	cssc.h defaults.h file.h fileiter.h filelock.h \
-	filepos.h my-getopt.h linebuf.h pfile.h parser.h \
-	quit.h rel_list.h release.h run.h sccsdate.h sccsfile.h sccsname.h \
-	seqstate.h sid.h sid_list.h sl-merge.h sysdep.h \
-	version.h ioerr.h delta-table.h delta.h \
-	delta-iterator.h bodyio.h filediff.h except.h valcodes.h \
-	relvbr.h cssc-assert.h cleanup.h mode.h optional.h l-split.h \
-	location.h body-scanner.h base-reader.h subst-parms.h diff-state.h \
-	body-scanner.cc location.cc base-reader.cc diff-state.cc \
-	failure.cc failure.h failure_or.h privs.cc privs.h failure_macros.h \
+	base-reader.cc \
+	base-reader.h \
+	body-scanner.cc \
+	body-scanner.h \
+	bodyio.cc \
+	bodyio.h \
+	canonify.cc \
+	cap.cc \
+	cleanup.h \
 	copyright.cc \
-	pf-del.cc sf-prt.cc sf-prs.cc sf-chkid.cc \
-	pf-add.cc sf-chkid.cc sf-kw.cc sf-get2.cc pf-del.cc \
-	sf-rmdel.cc sf-cdc.cc sf-admin.cc sf-val.cc sf-delta.cc pf-del.cc \
-	sf-val.cc
+	cssc-assert.h \
+	cssc.h \
+	defaults.h \
+	delta-iterator.cc \
+	delta-iterator.h \
+	delta-table.cc \
+	delta-table.h \
+	delta.h \
+	diff-state.cc \
+	diff-state.h \
+	dtbl-prepend.cc \
+	encoding.cc \
+	environment.cc \
+	except.h \
+	failure.cc \
+	failure.h \
+	failure_macros.h \
+	failure_or.h \
+	fatalsig.cc \
+	fdclosed.cc \
+	file.cc \
+	file.h \
+	filediff.cc \
+	filediff.h \
+	fileiter.cc \
+	fileiter.h \
+	filelock.h \
+	filepos.h \
+	fnsplit.cc \
+	ioerr.h \
+	l-split.cc \
+	l-split.h \
+	linebuf.cc \
+	linebuf.h \
+	location.cc \
+	location.h \
+	mode.h \
+	my-getopt.cc \
+	my-getopt.h \
+	optional.h \
+	parser.cc \
+	parser.h \
+	pf-add.cc \
+	pf-del.cc \
+	pfile.cc \
+	pfile.h \
+	privs.cc \
+	privs.h \
+	prompt.cc \
+	quit.cc \
+	quit.h \
+	rel_list.cc \
+	rel_list.h \
+	release.h \
+	relvbr.h \
+	rl-merge.cc \
+	run.cc \
+	run.h \
+	sccs-delta.cc \
+	sccsdate.cc \
+	sccsdate.h \
+	sccsfile.cc \
+	sccsfile.h \
+	sccsname.cc \
+	sccsname.h \
+	seqstate.cc \
+	seqstate.h \
+	sf-add.cc \
+	sf-admin.cc \
+	sf-cdc.cc \
+	sf-chkid.cc \
+	sf-delta.cc \
+	sf-get.cc \
+	sf-get2.cc \
+	sf-get3.cc \
+	sf-kw.cc \
+	sf-prs.cc \
+	sf-prt.cc \
+	sf-rmdel.cc \
+	sf-val.cc \
+	sf-write.cc \
+	showconfig.cc \
+	sid.cc \
+	sid.h \
+	sid_list.h \
+	sl-merge.h \
+	subst-parms.h \
+	sysdep.h \
+	valcodes.h \
+	version.cc \
+	version.h \
+	writesubst.cc
+
 nodist_libcssc_a_SOURCES = copyright_data.inc
 EXTRA_DIST = copyright_data.txt copyright_data.inc.tmpl copyright.awk
 
