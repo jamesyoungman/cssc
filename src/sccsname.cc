@@ -60,7 +60,7 @@ base_part(const std::string& name)
 cssc::Failure
 sccs_name::valid_filename(const char *thename)
 {
-  ASSERT(0 != thename);
+  ASSERT(nullptr != thename);
   if (!thename[0])
     {
       return invalid_name("SCCS history file names may not be empty");

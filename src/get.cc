@@ -401,7 +401,7 @@ main(int argc, char **argv)
                           name.c_str());
                 }
 
-              if ( (NULL==pfile) || !file.test_locks(retrieve, *pfile))
+              if ( (nullptr==pfile) || !file.test_locks(retrieve, *pfile))
                 {
                   retval = 1;
                   continue; // continue with next file...
@@ -606,13 +606,13 @@ sccs_file::get(FILE *out, const std::string& gname,
                bool show_sid, bool show_module, bool debug,
 	       bool for_edit)
 {
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
 
   seq_state state(highest_delta_seqno());
   const delta *d = find_delta(id);
   ASSERT(d != NULL);
 
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
 
   cssc::Failure edit_allowed = edit_mode_permitted(for_edit);
   if (!edit_allowed.ok())	// "get -e" on BK files is not allowed

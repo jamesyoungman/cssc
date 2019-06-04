@@ -56,7 +56,7 @@ using cssc::FailureOr;
 cssc::Failure
 stdout_to_null()
 {
-  if (NULL == freopen(CONFIG_NULL_FILENAME, "w", stdout))
+  if (nullptr == freopen(CONFIG_NULL_FILENAME, "w", stdout))
     {
       return cssc::make_failure_builder_from_errno(errno)
 	.diagnose()
@@ -83,7 +83,7 @@ cssc::FailureOr<FILE *>
 open_null()
 {
   FILE *f = fopen(CONFIG_NULL_FILENAME, "w");
-  if (NULL == f)
+  if (nullptr == f)
     {
       return cssc::make_failure_builder_from_errno(errno)
 	<< "failed to optn " << CONFIG_NULL_FILENAME;
@@ -172,7 +172,7 @@ const char *
 get_user_name()
 {
   struct passwd *p = getpwuid(getuid());
-  if (0 == p)
+  if (nullptr == p)
     {
       fatal_quit(-1, "UID %d not found in password file.", getuid());
     }

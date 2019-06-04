@@ -34,7 +34,7 @@
 // is a quadratic algorithm...but N is usually very small.
 release_list::release_list(const char *s)
 {
-  ASSERT(NULL != s);
+  ASSERT(nullptr != s);
 
   char *p;
   while (*s)

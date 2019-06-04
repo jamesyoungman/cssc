@@ -95,7 +95,7 @@ void reset_sig_handlers( void )
       struct sigaction action;
       memset(&action, 0, sizeof(action));
       action.sa_handler = mapping.second;
-      if (0 != sigaction(mapping.first, &action, NULL))
+      if (0 != sigaction(mapping.first, &action, nullptr))
 	{
           /* This is a nonfatal error. */
           errormsg_with_errno("Failed to reset signal handler for signal %d",

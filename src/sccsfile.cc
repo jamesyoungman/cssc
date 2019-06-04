@@ -128,11 +128,11 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
   flags.all_locked = 0;
   flags.encoded = 0;
   flags.executable = 0;
-  flags.mr_checker = 0;
-  flags.module = 0;
-  flags.type = 0;
-  flags.reserved = 0;
-  flags.user_def = 0;
+  flags.mr_checker = nullptr;
+  flags.module = nullptr;
+  flags.type = nullptr;
+  flags.reserved = nullptr;
+  flags.user_def = nullptr;
 
   ASSERT(!flags.default_sid.valid());
 
@@ -318,7 +318,7 @@ sccs_file::find_most_recent_sid(sid id) const {
         sccs_date newest;
         sid found;
 
-        ASSERT(0 != delta_table);
+        ASSERT(nullptr != delta_table);
         const_delta_iterator iter(delta_table.get(), delta_selector::current);
 
         while (iter.next()) {
@@ -339,7 +339,7 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
   d = sccs_date();
   bool found = false;
 
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
 
   const_delta_iterator iter(delta_table.get(), delta_selector::current);
   while (iter.next())
@@ -411,43 +411,43 @@ bool
 sccs_file::is_delta_creator(const char *user, sid id) const
 {
   const delta *d = find_delta(id);
-  return (d != 0) && (strcmp(d->user().c_str(), user) == 0);
+  return (d != nullptr) && (strcmp(d->user().c_str(), user) == 0);
 }
 
 
 const delta * sccs_file::find_delta(sid id) const
 {
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
   return delta_table->find(id);
 }
 
 const delta * sccs_file::find_any_delta(sid id) const
 {
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
   return delta_table->find_any(id);
 }
 
 delta * sccs_file::find_delta(sid id)
 {
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
   return delta_table->find(id);
 }
 
 seq_no sccs_file::highest_delta_seqno() const
 {
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
   return delta_table->highest_seqno();
 }
 
 sid sccs_file::highest_delta_release() const
 {
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
   return delta_table->highest_release();
 }
 
 sid sccs_file::seq_to_sid(seq_no seq) const
 {
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
   return delta_table->delta_at_seq(seq).id();
 }
 

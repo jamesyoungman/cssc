@@ -50,7 +50,7 @@ cssc::Failure
 sccs_file::check_keywords_in_file(const char *filename)
 {
   FILE *fp = fopen_as_real_user(filename, "r");
-  if (NULL == fp)
+  if (nullptr == fp)
     {
       return cssc::make_failure_builder_from_errno(errno)
 	<< "failed to open " << filename << " for reading";

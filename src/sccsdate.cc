@@ -186,7 +186,7 @@ count_digits(const char *s)
 // Construct a date as specified on the command line.
 sccs_date::sccs_date(const char *s)
 {
-  ASSERT(s != 0);
+  ASSERT(s != nullptr);
   /* if (s == 0) return; */
 
   // A fully-qualified YYmmDDhhMMss specification contains

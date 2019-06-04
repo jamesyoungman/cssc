@@ -43,7 +43,7 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
 			      sid_list exclude, sccs_date cutoff_date)
 {
 
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
   const_delta_iterator iter(delta_table.get(), delta_selector::current);
 
   while (iter.next())
@@ -69,9 +69,9 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
           state.set_excluded(iter->seq(), (seq_no) seq_state::BY_COMMAND_LINE);
         }
 
-      ASSERT(0 != delta_table);
+      ASSERT(nullptr != delta_table);
     }
-  ASSERT(0 != delta_table);
+  ASSERT(nullptr != delta_table);
 }
 
 

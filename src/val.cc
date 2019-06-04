@@ -159,7 +159,7 @@ main(int argc, char **argv)
 
 	  if (had_r_option)
 	    {
-	      if (rid.valid() && NULL == file.find_delta(rid))
+	      if (rid.valid() && nullptr == file.find_delta(rid))
 		{
 		  if (!silent)
 		    {

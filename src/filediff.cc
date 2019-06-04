@@ -34,7 +34,7 @@
 
 
 FileDiff::FileDiff(const char *n1, const char *n2)
-  : fp_(0), name1(n1), name2(n2)
+  : fp_(nullptr), name1(n1), name2(n2)
 {
 }
 
@@ -50,8 +50,8 @@ FileDiff::finish(FILE * &fp)
 
     if (fp_)
         pclose(fp_);
-    fp_ = 0;
-    fp = 0;
+    fp_ = nullptr;
+    fp = nullptr;
 }
 
 FILE*

@@ -45,7 +45,7 @@ well_formed_sccsname(const sccs_name& n)
 {
   const char *s;
 
-  if ( NULL != (s = strrchr(n.c_str(), '/')) )
+  if ( nullptr != (s = strrchr(n.c_str(), '/')) )
     {
       s++;
     }

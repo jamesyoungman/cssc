@@ -52,7 +52,7 @@ split_mrs(const std::string& mrs)
       while (p)
 	{
 	  mr_list.push_back(std::string(p));
-	  p = strtok(NULL, delims);
+	  p = strtok(nullptr, delims);
 	}
       delete[] s;
     }

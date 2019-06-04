@@ -284,7 +284,7 @@ sccs_file::admin(const char *file_comment,
 
 	case 'm':
 	  delete flags.module;
-	  flags.module = 0;
+	  flags.module = nullptr;
 	  break;
 
 	case 'n':
@@ -294,7 +294,7 @@ sccs_file::admin(const char *file_comment,
 
 	case 'q':
 	  delete flags.user_def;
-	  flags.user_def = 0;
+	  flags.user_def = nullptr;
 	  break;
 
 	case 'e':
@@ -303,12 +303,12 @@ sccs_file::admin(const char *file_comment,
 
 	case 't':
 	  delete flags.type;
-	  flags.type = 0;
+	  flags.type = nullptr;
 	  break;
 
 	case 'v':
 	  delete flags.mr_checker;
-	  flags.mr_checker = 0;
+	  flags.mr_checker = nullptr;
 	  break;
 
 	case 'x':
@@ -382,7 +382,7 @@ sccs_file::create(const sid &id,
       else
 	{
 	  in = fopen(iname, "r");
-	  if (NULL == in)
+	  if (nullptr == in)
 	    {
 	      errormsg_with_errno("%s: Can't open file for reading", iname);
 	      return false;
@@ -411,7 +411,7 @@ sccs_file::create(const sid &id,
     return false;
 
 
-  if (NULL != in)
+  if (nullptr != in)
     {
       bool found_id = false;
       unsigned long int lines = 0uL;

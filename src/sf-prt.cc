@@ -249,7 +249,7 @@ sccs_file::cutoff::print(FILE *out) const
 sccs_file::cutoff::cutoff()
   : enabled(false), most_recent_sid_only(false),
     cutoff_sid(sid()),
-    cutoff_delta(NULL)
+    cutoff_delta(nullptr)
 {
   // all done above.
 }

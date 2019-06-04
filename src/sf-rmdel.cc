@@ -51,7 +51,7 @@ sccs_file::rmdel(sid id)
     return can_edit;
 
   delta *d = find_delta(id);
-  if (0 == d)
+  if (nullptr == d)
     {
       return cssc::make_failure_builder(cssc::errorcode::UsagePreconditionFailureSidNotFound)
 	.diagnose()

@@ -190,14 +190,12 @@ sccs_file::print_flags(FILE *out) const
     }
 
   TRY_OPERATION(print_flag2(out, (const char *) "module",
-			    (flags.module ? flags.module->c_str()
-			     : (const char*)0) ));
+			    (flags.module ? flags.module->c_str() : nullptr) ));
   TRY_OPERATION(print_flag2(out, (const char *) "null delta", flags.null_deltas));
   TRY_OPERATION(print_flag2(out, (const char *) "csect name", flags.user_def));
   TRY_OPERATION(print_flag2(out, (const char *) "type", flags.type));
   TRY_OPERATION(print_flag2(out, (const char *) "validate MRs",
-			    (flags.mr_checker ? flags.mr_checker->c_str()
-			     : (const char*) 0)));
+			    (flags.mr_checker ? flags.mr_checker->c_str() : nullptr)));
 
 #if 0
   // Testing on Solaris 9 reveals that no output is produced
@@ -534,7 +532,7 @@ sccs_file::print_delta_key(FILE *out,
 	return print_flag(out, flags.type);
 
 	case KEY2('M','F'):
-	return print_yesno(out, flags.mr_checker != 0);
+	return print_yesno(out, flags.mr_checker != nullptr);
 
 	case KEY2('M','P'):
 	return print_flag(out, flags.mr_checker);

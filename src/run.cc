@@ -189,7 +189,7 @@ run(const char *prg, std::vector<const char *> const &args) {
 bool
 sccs_file::check_mrs(const std::vector<std::string>& mrs)
 {
-  ASSERT(0 != flags.mr_checker);
+  ASSERT(nullptr != flags.mr_checker);
   return 0 != run_mr_checker(flags.mr_checker->c_str(),
 			     name.gfile().c_str(), mrs);
 }

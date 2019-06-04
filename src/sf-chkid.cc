@@ -66,7 +66,7 @@ check_id_keywords(const char *s, size_t len)
     return false;		// anything shorter cannot contain an ID.
 
   const void *pv = memchr(s, '%', len);
-  if (0 == pv)
+  if (nullptr == pv)
     {
       return false;		// no %, hence no keywords.
     }
