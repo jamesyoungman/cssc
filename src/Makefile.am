@@ -39,6 +39,8 @@ noinst_LIBRARIES = libcssc.a
 bin_PROGRAMS = sccs
 csscutil_PROGRAMS = get delta admin prs what unget sact cdc rmdel prt val
 csscutil_SCRIPTS = sccsdiff
+noinst_SCRIPTS = copyright.awk
+
 # ../configure.ac specifies gnits rules, but we don't actually implement the
 # --version and --help options.
 AM_INSTALLCHECK_STD_OPTIONS_EXEMPT = \
@@ -56,8 +58,8 @@ AM_INSTALLCHECK_STD_OPTIONS_EXEMPT = \
 	val$(EXE)    \
 	what$(EXE)
 
-BUILT_SOURCES = version.cc
-CLEANFILES = sccsdiff
+BUILT_SOURCES = version.cc copyright_data.inc
+CLEANFILES = sccsdiff copyright_data.inc
 
 libcssc_a_SOURCES = \
 	rl-merge.cc \
@@ -86,6 +88,8 @@ libcssc_a_SOURCES = \
 	body-scanner.cc location.cc base-reader.cc diff-state.cc \
 	failure.cc failure.h failure_or.h privs.cc privs.h failure_macros.h \
 	copyright.cc
+nodist_libcssc_a_SOURCES = copyright_data.inc
+EXTRA_DIST = copyright_data.txt copyright_data.inc.tmpl copyright.awk
 
 # The source lists for the actual executables....
 what_SOURCES = what.cc
@@ -99,6 +103,13 @@ cdc_SOURCES = cdc.cc sf-cdc.cc
 admin_SOURCES = admin.cc sf-admin.cc sf-val.cc
 delta_SOURCES = delta.cc sf-delta.cc pf-del.cc
 val_SOURCES = val.cc sf-val.cc
+
+# We explicitly list the dependency on copyright_data.inc, so that
+# targets get rebuilt when we re-generate copyright_data.inc.
+copyright.$(OBJEXT): copyright_data.inc
+
+copyright_data.inc: $(srcdir)/copyright_data.txt $(srcdir)/copyright_data.inc.tmpl Makefile
+	$(AWK) -vtext=$(srcdir)/copyright_data.txt -v outputfile="$@" -f $(srcdir)/copyright.awk  < $(srcdir)/copyright_data.inc.tmpl > $@
 
 sccsdiff: sccsdiff.sh
 	sed -e 's:__csscutildir__:$(csscutildir):g' < sccsdiff.sh > $@ && chmod a+x $@ || { rm -f $@; false; }

@@ -1,5 +1,6 @@
 /*
- * copyright.cc: Part of GNU CSSC.
+ * copyright.cc.tmpl: Part of GNU CSSC.
+ *
  *
  *  Copyright (C) 2019 Free Software Foundation, Inc.
  *
@@ -16,13 +17,5 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <config.h>
-#include "version.h"
-
-#include <cstdio>
-#include "copyright_data.inc"
-
-void show_copyright(void)
-{
-  fprintf(stderr, "%s\n\n", copyright_explanation);
-}
+static const char * copyright_explanation =
+___COPYRIGHT_TEXT___;
