@@ -206,25 +206,25 @@ void CSSC_Options::reorder(void)
 	    {
 	      // -- signals end of options; stuff the remaining options
 	      // into the files list.
-	      files[i] = 0;
-	      options[i] = 0;
+	      files[i] = nullptr;
+	      options[i] = nullptr;
 	      for(++i; i<argc; ++i)
 		{
 		  files[i] = argv[i];
-		  options[i] = 0;
+		  options[i] = nullptr;
 		}
 	    }
 	  else
 	    {
 	      // normal option.
 	      options[i] = argv[i];
-	      files[i] = 0;
+	      files[i] = nullptr;
 	    }
 	}
       else
 	{
 	  files[i] = argv[i];
-	  options[i] = 0;
+	  options[i] = nullptr;
 	}
     }
 
@@ -243,7 +243,7 @@ void CSSC_Options::reorder(void)
     }
   for (i=n; i<argc; ++i)
     {
-      argv[i] = 0;
+      argv[i] = nullptr;
     }
 
   argc = n;			// we might have removed some...
@@ -257,9 +257,10 @@ CSSC_Options::CSSC_Options(int ac, char **av, const char *s, int err)
   : argc(ac),
     argv(av),
     index(1),
-    cindex(0),
+    cindex(nullptr),
     opts(s),
-    opterr(err)
+    opterr(err),
+    arg(nullptr)
 {
   reorder();
 }
