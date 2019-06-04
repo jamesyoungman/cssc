@@ -30,9 +30,11 @@
 #undef DEBUG_COMMANDS
 
 
-seq_state::seq_state(seq_no l) :
-  last_(l),
-  active_(0u)
+seq_state::seq_state(seq_no l)
+  : states_(),
+    last_(l),
+    active_(0u),
+    inserting(false)
 {
   states_.reserve(last_+1);
   one_state initial_condition;
@@ -53,12 +55,11 @@ seq_state::seq_state(seq_no l) :
 
 
 seq_state::seq_state(const seq_state& s)
-  : states_(),
+  : states_(s.states_),
     last_(s.last_),
     active_(s.active_),
     inserting(false)
 {
-  states_ = s.states_;
   decide_disposition();
 }
 
