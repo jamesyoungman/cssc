@@ -40,6 +40,11 @@ struct range
   TYPE from;
   TYPE to;
   range<TYPE> *next;
+
+  range()
+    : from(), to(), next(nullptr)
+  {
+  }
 };
 
 template <class TYPE>
@@ -54,9 +59,9 @@ public:
   range_list &operator =(range_list const &list);
 
   // query functions.
-  int valid() const;
-  int empty() const;
-  int member(TYPE id) const;
+  bool valid() const;
+  bool empty() const;
+  bool member(TYPE id) const;
 
   // manipulation.
   void invalidate();
@@ -69,7 +74,7 @@ public:
 private:
   // Data members.
   range<TYPE> *head;
-  int valid_flag;
+  bool valid_flag;
 
   // Implementation.
   void destroy();
@@ -228,7 +233,7 @@ range_list<TYPE>::clean()
 }
 
 template <class TYPE>
-int
+bool
 range_list<TYPE>::member(TYPE id) const
 {
   const range<TYPE> *p = head;
@@ -237,11 +242,11 @@ range_list<TYPE>::member(TYPE id) const
     {
       if (p->from <= id && id <= p->to)
         {
-          return 1;             // yes
+          return true;
         }
       p = p->next;
     }
-  return 0;                     // no
+  return false;
 }
 
 template <class TYPE>
@@ -293,8 +298,9 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
 
 template <class TYPE>
 range_list<TYPE>::range_list(range_list const &list)
+  : head(nullptr),
+    valid_flag(1)
 {
-  valid_flag = 1;
   ASSERT(list.valid());
   head = do_copy_list(list.head);
   ASSERT(valid());
@@ -317,19 +323,21 @@ range_list<TYPE>::operator =(range_list<TYPE> const &list)
 
 
 template <class TYPE>
-range_list<TYPE>::range_list(): head(nullptr), valid_flag(1)
+range_list<TYPE>::range_list()
+  : head(nullptr),
+    valid_flag(1)
 {
 }
 
 template <class TYPE>
-int
+bool
 range_list<TYPE>::valid() const
 {
   return valid_flag;
 }
 
 template <class TYPE>
-int
+bool
 range_list<TYPE>::empty() const
 {
   return head ? 0 : 1;
