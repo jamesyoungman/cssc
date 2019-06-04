@@ -42,9 +42,10 @@
 
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
-	: argv(opts.get_argv() + opts.get_index()),
-	  argc(opts.get_argc() - opts.get_index()),
-	  is_unique(false)
+  : source_(source::NONE),
+    argv(opts.get_argv() + opts.get_index()),
+    argc(opts.get_argc() - opts.get_index()),
+    is_unique(false)
 {
 
 	if (argc < 1) {

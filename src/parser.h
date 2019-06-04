@@ -45,7 +45,7 @@ struct parsed_flag
   parsed_flag(const sccs_file_location& loc, char f, const std::string& v)
     : where(loc), letter(f), value{cssc::optional<std::string>(v)} {}
   parsed_flag(const sccs_file_location& loc, char f)
-    : where(loc), letter(f) {}
+    : where(loc), letter(f), value() {}
 
   sccs_file_location where;
   char letter;

@@ -33,6 +33,7 @@
 // Because we use member() all the time, this
 // is a quadratic algorithm...but N is usually very small.
 release_list::release_list(const char *s)
+  : l()
 {
   ASSERT(nullptr != s);
 
@@ -65,12 +66,13 @@ bool release_list::member(release r) const
 
 
 release_list::release_list()
+  :l()
 {
 }
 
 release_list::release_list(const release_list &r)
+  :l(r.l)
 {
-  l = r.l;
 }
 
 release_list::~release_list()

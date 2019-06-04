@@ -185,6 +185,9 @@ count_digits(const char *s)
 
 // Construct a date as specified on the command line.
 sccs_date::sccs_date(const char *s)
+  : year(-1), month(-1), month_day(-1),
+    hour(-1), minute(-1), second(-1),
+    yearday(-1)
 {
   ASSERT(s != nullptr);
   /* if (s == 0) return; */
@@ -247,6 +250,9 @@ sccs_date::sccs_date(const char *s)
 
 // Construct a date as specified in an SCCS file.
 sccs_date::sccs_date(const char *date_arg, const char *time)
+  : year(-1), month(-1), month_day(-1),
+    hour(-1), minute(-1), second(-1),
+    yearday(-1)
 {
   std::string date(date_arg);
   int century;
@@ -412,7 +418,8 @@ sccs_date::as_string() const
 sccs_date::sccs_date(int yr, int mth, int day,
                      int hr, int min, int sec)
   : year(yr), month(mth), month_day(day),
-    hour(hr), minute(min), second(sec)
+    hour(hr), minute(min), second(sec),
+    yearday(-1)
 {
   update_yearday();
 }
