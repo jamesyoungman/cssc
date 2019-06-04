@@ -73,7 +73,7 @@ sccs_file::admin(const char *file_comment,
 	    read_file_lines(file_comment);
 	  if (!comment_lines.ok())
 	    {
-	      errormsg("%s: %s", comment_lines.fail().to_string());
+	      errormsg("%s: %s", comment_lines.fail().to_string().c_str());
 	      return false;
 	    }
 	  else
