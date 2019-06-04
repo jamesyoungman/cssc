@@ -31,6 +31,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <limits.h>
+#include <limits>
 
 #include "cssc.h"
 #include "version.h"
@@ -120,9 +121,15 @@ void show_config_info(void)
 	  "Binary file support (as overridden by $CSSC_BINARY_SUPPORT): %s\n",
 	  binary_ok ? enabled : disabled );
 
+  // If CONFIG_MAX_BODY_LINE_LENGTH is too large to fit into the cast to long int
+  // below, prompt the programmer to use a different type.
+  static_assert(CONFIG_MAX_BODY_LINE_LENGTH
+		<= std::numeric_limits<long int>::max(),
+		"Please change the format specifier and cast below to suit your "
+		"choice of CONFIG_MAX_BODY_LINE_LENGTH.");
   fprintf(stderr,
 	  "Maximum body line length (compiled-in default): %ld\n",
-	  (long int) CONFIG_MAX_BODY_LINE_LENGTH);
+	  static_cast<long int>(CONFIG_MAX_BODY_LINE_LENGTH));
   fprintf(stderr,
 	  "Maximum body line length (as overridden by "
 	  "$CSSC_MAX_LINE_LENGTH): %ld\n",
