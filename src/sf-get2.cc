@@ -83,7 +83,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
       requested = flags.default_sid;
       if (requested.is_null())  // no default?
         {                       // get the latest.
-          requested = (release)delta_table->highest_release();
+          requested = release(delta_table->highest_release());
 
           if (!get_top_delta && requested.is_null())
           {

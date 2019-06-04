@@ -66,7 +66,7 @@ bool sccs_file::check_loop_free(cssc_delta_table* t,
 	else if (seen[s])
 	  {
 	    errormsg("%s: loop in predecessors at sequence number %u\n",
-		     name.c_str(), (unsigned)s);
+		     name.c_str(), static_cast<unsigned>(s));
 	    ok = false;
 	    break;
 	  }
@@ -113,7 +113,7 @@ namespace {
 	if (s > limit)
 	{
 	  errormsg ("%s: SID %s: %s seqno %u does not exist\n",
-		    name.c_str(), sz_sid, seq_type, (unsigned)s);
+		    name.c_str(), sz_sid, seq_type, static_cast<unsigned>(s));
 	  return false;
 	}
       }
@@ -221,22 +221,23 @@ sccs_file::validate() const
       // check seqno is valid - loops, dangling references.
       if (s > highest_seq)
 	{
-	  errormsg("%s: SID %s: invalid seqno %d",
-		   name.c_str(), sz_sid, (int)s);
+	  errormsg("%s: SID %s: invalid seqno %u",
+		   name.c_str(), sz_sid, static_cast<unsigned>(s));
 	  retval = false;
 	}
 
       if (iter->prev_seq() > highest_seq)
 	{
-	  errormsg("%s: SID %s: invalid predecessor seqno %d",
-		   name.c_str(), sz_sid, (int)iter->prev_seq());
+	  errormsg("%s: SID %s: invalid predecessor seqno %u",
+		   name.c_str(), sz_sid,
+		   static_cast<unsigned>(iter->prev_seq()));
 	  retval = false;
 	}
 
       if (seen_ever[s - 1] > 1)
 	{
-	  errormsg("%s: seqno %d appears more than once (%d times)",
-		   name.c_str(), (int)s, seen_ever[s - 1]);
+	  errormsg("%s: seqno %u appears more than once (%d times)",
+		   name.c_str(), static_cast<unsigned>(s), seen_ever[s - 1]);
 	  retval = false;		// seqno appears more than once.
 	}
 
@@ -310,7 +311,7 @@ sccs_file::validate() const
     {
       warning("%s has a release floor of %d but the highest actual release "
 	      "in the file is %d",
-	      name.c_str(), (short)flags.floor,
+	      name.c_str(), static_cast<int>(flags.floor),
 	      delta_table->highest_release().as_string().c_str());
     }
 

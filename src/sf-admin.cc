@@ -197,7 +197,7 @@ sccs_file::admin(const char *file_comment,
 	    {
 	      if (',' != c)
 		{
-		  if (isalpha((unsigned char)c))
+		  if (isalpha(static_cast<unsigned char>(c)))
 		    {
 		      if (!is_known_keyword_char(c))
 			{

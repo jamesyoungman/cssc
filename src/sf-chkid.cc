@@ -72,7 +72,7 @@ check_id_keywords(const char *s, size_t len)
     }
   else			// skip forward to first percent sign.
     {
-      const char *pc = (const char *)pv;
+      const char *pc = static_cast<const char *>(pv);
       len -= (pc - s);
       s = pc;
 

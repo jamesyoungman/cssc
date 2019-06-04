@@ -265,7 +265,7 @@ main(int argc, char **argv)
                 errormsg("Invalid sequence number: '%s'", opts.getarg());
                 return 2;
               }
-            seq = (unsigned short) i;
+            seq = static_cast<seq_no>(i);
           }
           break;
 
@@ -368,8 +368,8 @@ main(int argc, char **argv)
 
               if (!file.find_requested_seqno(seq, retrieve))
                 {
-                  errormsg("%s: Requested sequence number %d not found.",
-                           name.c_str(), (int) seq);
+                  errormsg("%s: Requested sequence number %u not found.",
+                           name.c_str(), static_cast<unsigned>(seq));
                   retval = 1;
                   continue; // with next file....
                 }

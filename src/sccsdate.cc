@@ -125,13 +125,13 @@ days_in_month(int mon, int year)
 static inline int
 is_digit(char ch)
 {
-  return isdigit( (unsigned char) ch );
+  return isdigit(static_cast<unsigned char>(ch));
 }
 
 static inline int
 get_digit(char ch)
 {
-  ASSERT(isdigit( (unsigned char) ch ));
+  ASSERT(isdigit(static_cast<unsigned char>(ch)));
   return ch - '0';
 }
 
@@ -222,8 +222,8 @@ sccs_date::sccs_date(const char *s)
       // If we actually have a 4-digit year, the next two
       // characters must be digits (we have already consumed the
       // first two).
-      if (isdigit((unsigned char)s[0]) &&
-          isdigit((unsigned char)s[1]))
+      if (isdigit(static_cast<unsigned char>(s[0])) &&
+          isdigit((static_cast<unsigned char>(s[1]))))
         {
           const int century_field_val = year;
           year =  (century_field_val * 100) + get_two_digits(&s[0]);
@@ -427,7 +427,8 @@ sccs_date
 sccs_date::now()                // static member.
 {
   time_t tt;
-  if (time(&tt) == (time_t)-1)
+  constexpr time_t invalid_time = static_cast<time_t>(-1);
+  if (time(&tt) == invalid_time)
     {
       errormsg_with_errno("unable to determine current time");
       throw CsscQuitException(2);

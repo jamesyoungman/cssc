@@ -167,17 +167,17 @@ print_flag2(FILE *out, const char *name, char *s)
 Failure
 sccs_file::print_flags(FILE *out) const
 {
-  TRY_OPERATION(print_flag2(out, (const char *) "branch", flags.branch));
-  TRY_OPERATION(print_flag2(out, (const char *) "ceiling", flags.ceiling));
-  TRY_OPERATION(print_flag2(out, (const char *) "default SID", flags.default_sid));
+  TRY_OPERATION(print_flag2(out, "branch", flags.branch));
+  TRY_OPERATION(print_flag2(out, "ceiling", flags.ceiling));
+  TRY_OPERATION(print_flag2(out, "default SID", flags.default_sid));
   if (flags.encoded)
     {
       TRY_PUTS(fputs("encoded\n", out));
     }
-  TRY_OPERATION(print_flag2(out, (const char *) "floor", flags.floor));
-  TRY_OPERATION(print_flag2(out, (const char *) "id keywd err/warn",
+  TRY_OPERATION(print_flag2(out, "floor", flags.floor));
+  TRY_OPERATION(print_flag2(out, "id keywd err/warn",
 			    flags.no_id_keywords_is_fatal));
-  TRY_OPERATION(print_flag2(out, (const char *) "joint edit", flags.joint_edit));
+  TRY_OPERATION(print_flag2(out, "joint edit", flags.joint_edit));
 
   const char *locked = "locked releases";
   if (flags.all_locked)
@@ -189,12 +189,12 @@ sccs_file::print_flags(FILE *out) const
       TRY_OPERATION(print_flag2(out, locked, flags.locked));
     }
 
-  TRY_OPERATION(print_flag2(out, (const char *) "module",
+  TRY_OPERATION(print_flag2(out, "module",
 			    (flags.module ? flags.module->c_str() : nullptr) ));
-  TRY_OPERATION(print_flag2(out, (const char *) "null delta", flags.null_deltas));
-  TRY_OPERATION(print_flag2(out, (const char *) "csect name", flags.user_def));
-  TRY_OPERATION(print_flag2(out, (const char *) "type", flags.type));
-  TRY_OPERATION(print_flag2(out, (const char *) "validate MRs",
+  TRY_OPERATION(print_flag2(out, "null delta", flags.null_deltas));
+  TRY_OPERATION(print_flag2(out, "csect name", flags.user_def));
+  TRY_OPERATION(print_flag2(out, "type", flags.type));
+  TRY_OPERATION(print_flag2(out, "validate MRs",
 			    (flags.mr_checker ? flags.mr_checker->c_str() : nullptr)));
 
 #if 0
@@ -298,8 +298,8 @@ print_flag(FILE *out, const sid &it)
    data keyword in an unsigned value used in the switch statement
    in the function below. */
 
-#define KEY1(c)         ((unsigned char)(c))
-#define KEY2(c1, c2)    (((unsigned char)(c1)) * 256 + (unsigned char)(c2))
+#define KEY1(c)         (static_cast<unsigned char>(c))
+#define KEY2(c1, c2)    ((static_cast<unsigned char>(c1)) * 256 + static_cast<unsigned char>(c2))
 
 /* Prints selected parts of an SCCS file and the specified entry in the
    delta table. */

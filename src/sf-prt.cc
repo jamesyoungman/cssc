@@ -336,8 +336,8 @@ sccs_file::prt(FILE *out,
 	    return printed;
 	  TRY_PRINTF(fprintf(out, " %s\t%hu %hu",
 			     iter->user().c_str(),
-			     (unsigned short)iter->seq(),
-			     (unsigned short)iter->prev_seq()));
+			     static_cast<unsigned short>(iter->seq()),
+			     static_cast<unsigned short>(iter->prev_seq())));
 	  TRY_PRINTF(fprintf(out, "\t%05lu/%05lu/%05lu",
 			     iter->inserted(), iter->deleted(), iter->unchanged()));
 

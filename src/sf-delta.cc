@@ -153,7 +153,10 @@ sccs_file::add_delta(const std::string& gname,
       // This is the file we just wrote.
       errormsg("File %s (which we just created) is not readable by user %d! "
 	       "Please check your umask.",
-	       file_to_diff.c_str(), (int) geteuid());
+	       file_to_diff.c_str(),
+	       // TODO: do something better here; uid_t may not be
+	       // signed.
+	       static_cast<int>(geteuid()));
       return false;
     }
 #endif

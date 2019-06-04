@@ -272,8 +272,8 @@ sccs_file_parser::read_delta() {
                                 case 'i':
                                   if (bDebug)
                                     {
-                                      fprintf(stderr, "Including seq %lu\n",
-                                              (unsigned long)seq);
+                                      fprintf(stderr, "Including seq %u\n",
+                                              static_cast<unsigned>(seq));
                                     }
 
                                         tmp->add_include(seq);
@@ -283,7 +283,7 @@ sccs_file_parser::read_delta() {
                                   if (bDebug)
                                     {
                                       fprintf(stderr, "Excluding seq %lu\n",
-                                              (unsigned long)seq);
+                                              static_cast<unsigned>(seq));
                                     }
                                         tmp->add_exclude(seq);
                                         break;
@@ -526,7 +526,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
   {
     int c;
     while ((c=getc(f_local)) != EOF)
-      sum += (char) c;    // Yes, I mean plain char, not signed, not unsigned.
+      sum += static_cast<char>(c);    // Yes, I mean plain char, not signed, not unsigned.
 
     if (ferror(f_local))
       {
