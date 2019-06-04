@@ -360,7 +360,7 @@ sccs_file::prt(FILE *out,
 		    {
 		      TRY_PUTS(fputs(nl_sep, out)); // either newline or space.
 		      TRY_PRINTF(fprintf(out, "Included:\t"));
-		      Failure printed = print_seq_list(out, iter->get_included_seqnos());
+		      printed = print_seq_list(out, iter->get_included_seqnos());
 		      if (!printed.ok())
 			return printed;
 		    }
@@ -373,7 +373,7 @@ sccs_file::prt(FILE *out,
 		    {
 		      TRY_PUTS(fputs(nl_sep, out)); // either newline or space.
 		      TRY_PRINTF(fprintf(out, "Excluded:\t"));
-		      Failure printed = print_seq_list(out, iter->get_excluded_seqnos());
+		      printed = print_seq_list(out, iter->get_excluded_seqnos());
 		      if (!printed.ok())
 			return printed;
 		    }
@@ -387,14 +387,14 @@ sccs_file::prt(FILE *out,
 	      if (!iter->mrs().empty())
 		{
 		  TRY_PUTS(fputs(nl_sep, out));	// either newline or space.
-		  Failure printed = print_string_list(out, iter->mrs(), "MRs:\t", nl_sep, "");
+		  printed = print_string_list(out, iter->mrs(), "MRs:\t", nl_sep, "");
 		  if (!printed.ok())
 		    return printed;
 		}
 	      if (!iter->comments().empty())
 		{
 		  TRY_PUTS(fputs(nl_sep, out));	// either newline or space.
-		  Failure printed = print_string_list(out, iter->comments(), "", nl_sep, "");
+		  printed = print_string_list(out, iter->comments(), "", nl_sep, "");
 		  if (!printed.ok())
 		    return printed;
 		}

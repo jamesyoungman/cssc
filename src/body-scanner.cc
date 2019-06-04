@@ -127,7 +127,7 @@ sccs_file_body_scanner::get(const std::string& gname,
   FILE *out = parms.out;
 
   while (1) {
-    cssc::FailureOr<char> fol = read_line();
+    fol = read_line();
     if (!fol.ok())
       {
 	if (isEOF(fol.fail()))

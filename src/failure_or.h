@@ -113,7 +113,19 @@ class FailureOr
     return value_;
   }
 
-  FailureOr& operator=(const FailureOr& other) = delete;
+  FailureOr& operator=(const FailureOr& other)
+  {
+    value_ = other.value_;
+    fail_ = other.fail_;
+    return *this;
+  }
+
+  FailureOr& operator=(const FailureOr&& other) noexcept
+  {
+    value_ = std::move(other.value_);
+    fail_ = other.fail_;
+    return *this;
+  }
 
   constexpr const Failure& fail()  const
   {
