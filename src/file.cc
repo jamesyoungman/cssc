@@ -228,13 +228,13 @@ user_is_group_member(int)
  * second time we perform the fstat().  Therefore we use stat(2)
  * rather than fstat(2).
  */
-static FailureOr<long> get_nlinks(const char *name)
+static FailureOr<nlink_t> get_nlinks(const char *name)
 {
   struct stat st;
 
   if (0 == stat(name, &st))
     {
-      return (long)st.st_nlink;
+      return st.st_nlink;
     }
   else
     {
@@ -273,12 +273,16 @@ maybe_wait_a_bit(long attempt, const char *lockfile)
 
     if (waitfor)
     {
+      // TODO: the cast below is likely wrong if pid_t is unsigned;
+      // switch errormsg (or a parallel feature) to using ostream
+      // inserters so that we no longer have to match a format string
+      // with the types of the arguments.
         errormsg("Sleeping for %d second%s "
                  "while waiting for lock on %s; my PID is %ld",
                  waitfor,
                  ( (waitfor == 1) ? "" : "s"),
                  lockfile,
-                 (long int) getpid() );
+		 static_cast<long int>(getpid()));
         sleep (waitfor);
     }
 }
@@ -316,7 +320,7 @@ static FailureOr<int> atomic_nfs_create(const std::string& path, int flags, int 
       int fd = open(lockstr, flags, perms);
       if (fd >= 0)
         {
-	  cssc::FailureOr<long> links = get_nlinks(lockstr);
+	  cssc::FailureOr<nlink_t> links = get_nlinks(lockstr);
 	  if (!links.ok())
 	    {
 	      // stat not supported on this file system or the file
@@ -331,7 +335,7 @@ static FailureOr<int> atomic_nfs_create(const std::string& path, int flags, int 
                 link_errno = errno;
 
               /* ignore other responses */
-	      cssc::FailureOr<long> links_again = get_nlinks(lockstr);
+	      cssc::FailureOr<nlink_t> links_again = get_nlinks(lockstr);
               if (links_again.ok() && (2 == *links_again))
                 {
                   unlink(lockstr);
