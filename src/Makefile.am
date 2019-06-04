@@ -87,22 +87,27 @@ libcssc_a_SOURCES = \
 	location.h body-scanner.h base-reader.h subst-parms.h diff-state.h \
 	body-scanner.cc location.cc base-reader.cc diff-state.cc \
 	failure.cc failure.h failure_or.h privs.cc privs.h failure_macros.h \
-	copyright.cc
+	copyright.cc \
+	pf-del.cc sf-prt.cc sf-prs.cc sf-chkid.cc \
+	pf-add.cc sf-chkid.cc sf-kw.cc sf-get2.cc pf-del.cc \
+	sf-rmdel.cc sf-cdc.cc sf-admin.cc sf-val.cc sf-delta.cc pf-del.cc \
+	sf-val.cc
 nodist_libcssc_a_SOURCES = copyright_data.inc
 EXTRA_DIST = copyright_data.txt copyright_data.inc.tmpl copyright.awk
 
-# The source lists for the actual executables....
+# The source lists for the actual executables.  We list these explicitly because
+# otherwise Automake will assume that prt$(EXE) is built from prt.c.
 what_SOURCES = what.cc
 sact_SOURCES = sact.cc
-unget_SOURCES = unget.cc pf-del.cc
-prt_SOURCES = prt.cc sf-prt.cc
-prs_SOURCES = prs.cc sf-prs.cc sf-chkid.cc
-get_SOURCES = get.cc pf-add.cc sf-chkid.cc sf-kw.cc sf-get2.cc pf-del.cc
-rmdel_SOURCES = rmdel.cc sf-rmdel.cc
-cdc_SOURCES = cdc.cc sf-cdc.cc
-admin_SOURCES = admin.cc sf-admin.cc sf-val.cc
-delta_SOURCES = delta.cc sf-delta.cc pf-del.cc
-val_SOURCES = val.cc sf-val.cc
+unget_SOURCES = unget.cc
+prt_SOURCES = prt.cc
+prs_SOURCES = prs.cc
+get_SOURCES = get.cc
+rmdel_SOURCES = rmdel.cc
+cdc_SOURCES = cdc.cc
+admin_SOURCES = admin.cc
+delta_SOURCES = delta.cc
+val_SOURCES = val.cc
 
 # We explicitly list the dependency on copyright_data.inc, so that
 # targets get rebuilt when we re-generate copyright_data.inc.
