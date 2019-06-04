@@ -42,34 +42,26 @@ class sccs_file_iterator
 {
 public:
   enum class source { NONE = 0, ARGS, STDIN, DIRECTORY };
-
-private:
-  source source_;
-
-  char **argv;
-  int argc;
-  int is_unique;
-
-  std::vector<std::string> files;
-  std::vector<std::string>::size_type pos; // current iteration position
-  sccs_name name;
-
-public:
-  // sccs_file_iterator(int ac, char **av, int ind = 1);
   sccs_file_iterator(const CSSC_Options&);
 
-  int next();
+  bool next();
 
   sccs_name &get_name() { return name; }
-
   source using_source() { return source_; }
   bool empty() const { return source_ == source::NONE; }
   bool using_stdin() { return source::STDIN == source_; }
 
   // unique() returns nonzero if exactly one file was specified on the
   // command line; zero if more than one was specified or the names
-  // are gotten from a directory or pipe.
+  // are taken from a directory or pipe.
   bool unique() const;
+
+private:
+  source source_;
+  bool is_unique;
+  std::vector<std::string> files;
+  std::vector<std::string>::size_type pos; // current iteration position
+  sccs_name name;
 };
 
 #endif /* __FILEITER_H__ */

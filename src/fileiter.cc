@@ -40,106 +40,145 @@
 #include "quit.h"
 #include "dirent-safer.h"
 
+namespace
+{
+
+  std::vector<std::string> from_directory(const std::string& passed_dir_name, DIR * dir)
+  {
+    std::vector<std::string> result;
+    const std::string slash((passed_dir_name.back() != '/') ? "/" : "");
+    const std::string dirname = passed_dir_name + slash;
+
+    unsigned long entry_error_count = 0;
+    int sample_entry_errno = 0;
+    for (;;)
+      {
+	errno = 0;
+	struct dirent *dent = readdir(dir);
+	if (dent == nullptr)
+	  {
+	    if (errno == 0)
+	      {
+		break; // end of directory entries
+	      }
+	    else
+	      {
+		// Otherwise it's a directory
+		// read error which might be
+		// followed by some valid
+		// files.
+		if (entry_error_count++ == 0)
+		  sample_entry_errno = errno;
+	      }
+	  }
+	std::string directory_entry = std::string(dirname) + std::string(dent->d_name);
+
+	if (sccs_name::valid_filename(directory_entry.c_str()).ok()
+	    && is_readable(directory_entry.c_str()))
+	  {
+	    cssc::FailureOr<bool> dircheck = is_directory(directory_entry.c_str());
+	    if (dircheck.ok())
+	      {
+		if (*dircheck)
+		  warning("Ignoring subdirectory %s",
+			  directory_entry.c_str());
+		else
+		  result.push_back(directory_entry);
+	      }
+	    else
+	      {
+		warning("Don't know if %s is a subdirectory (%s), ignoring it",
+			directory_entry.c_str(),
+			dircheck.to_string().c_str());
+	      }
+	  }
+      }
+    if (entry_error_count)
+      {
+	warning("%lu errors occurred reading from directory '%s' (example: \"%s\"), "
+		"so some directory entries may have been ignored.",
+		entry_error_count, passed_dir_name.c_str(), strerror(sample_entry_errno));
+      }
+    return result;
+  }
+
+  std::vector<std::string> from_stdin()
+  {
+    std::vector<std::string> result;
+
+    cssc_linebuf linebuf;
+
+    while (linebuf.read_line(stdin).ok())
+      {
+	std::string s (linebuf.c_str());
+	auto name = s.substr(0, s.length()-1u); // chop off the newline.
+	result.push_back(name);
+      }
+    return result;
+  }
+
+
+}  // unnamed namespace
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
   : source_(source::NONE),
-    argv(opts.get_argv() + opts.get_index()),
-    argc(opts.get_argc() - opts.get_index()),
-    is_unique(false)
+    is_unique(false),
+    files(),
+    pos(0),
+    name()
 {
+  auto argv = opts.get_argv() + opts.get_index();
+  auto argc = opts.get_argc() - opts.get_index();
 
-	if (argc < 1) {
-	        source_ = source::NONE;
-		return;
+  if (argc < 1)
+    {
+      source_ = source::NONE;
+      return;
+    }
+
+  char *first = argv[0];
+
+  if (strcmp(first, "-") == 0)
+    {
+      source_ = source::STDIN;
+      files = from_stdin();
+      return;
+    }
+
+  if (first[0] != '\0')
+    {
+      DIR *dir = opendir(first);
+      if (dir != NULL)
+	{
+	  source_ = source::DIRECTORY;
+	  ResourceCleanup dir_closer([&dir](){
+	      closedir(dir);
+	    });
+	  files = from_directory(first, dir);
+	  pos = 0;
+	  return;
 	}
+    }
 
-	char *first = argv[0];
-
-	if (strcmp(first, "-") == 0) {
-		source_ = source::STDIN;
-		return;
+  source_ = source::ARGS;
+  is_unique = (1 == argc);
+  files.reserve(argc);
+  while (argc-- > 0)
+    {
+      std::string n(*argv++);
+      sccs_name sname;
+      sname = n;
+      if (sname.valid())
+	{
+	  files.push_back(n);
 	}
-
-	if (first[0] != '\0') {
-		DIR *dir = opendir(first);
-		if (dir != NULL) {
-		        ResourceCleanup dir_closer([&dir](){
-		            closedir(dir);
-		        });
-			const char *slash = NULL;
-			const size_t len = strlen(first);
-
-			if (first[len - 1] != '/') {
-			  slash = "/";
-			} else {
-			  /* Ensure that we don't try to create a
-			     string from NULL (SourceForge bug
-			     121605).
-			  */
-			     slash = "";
-			}
-
-			std::string dirname(std::string(first) + std::string(slash));
-
-			unsigned long entry_error_count = 0;
-			int sample_entry_errno = 0;
-			for (;;) {
-                                errno = 0;
-			        struct dirent *dent = readdir(dir);
-				if (dent == nullptr)
-				  {
-				    if (errno == 0)
-				      {
-					break; // end of directory entries
-				      }
-				    else
-				      {
-					// Otherwise it's a directory
-					// read error which might be
-					// followed by some valid
-					// files.
-					if (entry_error_count++ == 0)
-					  sample_entry_errno = errno;
-				      }
-				  }
-				std::string directory_entry = std::string(dirname) + std::string(dent->d_name);
-
-				if (sccs_name::valid_filename(directory_entry.c_str()).ok()
-				    && is_readable(directory_entry.c_str()))
-				  {
-				    cssc::FailureOr<bool> dircheck = is_directory(directory_entry.c_str());
-				    if (dircheck.ok())
-				      {
-					if (*dircheck)
-					  warning("Ignoring subdirectory %s",
-						  directory_entry.c_str());
-					else
-					  files.push_back(directory_entry);
-				      }
-				    else
-				      {
-					warning("Don't know if %s is a subdirectory (%s), ignoring it",
-						directory_entry.c_str(),
-						dircheck.to_string().c_str());
-				      }
-				  }
-			}
-			if (entry_error_count)
-			  {
-			    warning("%lu errors occurred reading from directory '%s' (example: \"%s\"), "
-				    "so some directory entries may have been ignored.",
-				    entry_error_count, first, strerror(sample_entry_errno));
-			  }
-			source_ = source::DIRECTORY;
-			pos = 0;
-			return;
-		}
+      else
+	{
+	  sname.make_valid();
+	  files.push_back(sname.sfile());
 	}
-
-	source_ = source::ARGS;
-	is_unique = (1 == argc);
+    }
 }
-
 
 bool
 sccs_file_iterator::unique() const
@@ -148,48 +187,12 @@ sccs_file_iterator::unique() const
 }
 
 
-// TODO: return Failure instead of int.
-int
-sccs_file_iterator::next() {
-	switch (source_) {
-	case source::STDIN:
-	  {
-	    cssc_linebuf linebuf;
-
-	    if (!linebuf.read_line(stdin).ok()) {
-	      return 0;
-	    }
-	    std::string s (linebuf.c_str());
-	    name = s.substr(0, s.length()-1u); // chop off the newline.
-	    return 1;
-	  }
-
-	case source::DIRECTORY:
-		if (pos < files.size()) {
-			name = files[pos++];
-			return 1;
-		}
-		return 0;
-
-	case source::ARGS:
-		if (argc-- <= 0) {
-			return 0;
-		}
-		name = *argv++;
-
-#ifdef CONFIG_FILE_NAME_GUESSING
-		if (!name.valid())
-		  {
-		    name.make_valid();
-		  }
-#endif
-		return 1;
-
-	default:
-		abort();
-	}
-
-	return 0;
+bool sccs_file_iterator::next()
+{
+  if (pos == files.size())
+    return false;		// end
+  name = files[pos++];
+  return true;
 }
 
 
