@@ -407,10 +407,10 @@ sccs_file::print_delta(FILE *out, const char *outname, const char *format,
 
 
 cssc::FailureOr<bool>
-sccs_file::print_delta_key(FILE *out,
-			   const char *outname,
-			   unsigned key,
-			   struct delta const &d)
+sccs_file::print_delta_key(FILE *out_file,
+			   const char *out_file_name,
+			   unsigned combined_key,
+			   struct delta const &dd)
 {
   bool recognised = true;
   auto do_print_delta_key = [this, &recognised](FILE *out,
@@ -652,7 +652,7 @@ sccs_file::print_delta_key(FILE *out,
       return Failure::Ok();
     };
 
-  Failure printed = do_print_delta_key(out, outname, key, d);
+  Failure printed = do_print_delta_key(out_file, out_file_name, combined_key, dd);
   if (!printed.ok())
     {
       return printed;

@@ -630,13 +630,12 @@ sccs_file::get(FILE *out, const std::string& gname,
       if (delta_table->delta_at_seq_exists(s))
 	{
 	    const struct delta & del = delta_table->delta_at_seq(s);
-	    const sid & id(del.id());
 
-	  if (!state.is_excluded(s) && !set)
-	    {
-	      dparm = find_delta(id);
-	      set = true;
-	    }
+	    if (!state.is_excluded(s) && !set)
+	      {
+		dparm = find_delta(del.id());
+		set = true;
+	      }
 	}
     }
   if ( !set ) dparm = d;
@@ -652,11 +651,8 @@ sccs_file::get(FILE *out, const std::string& gname,
               continue;
             }
 
-          const struct delta & d = delta_table->delta_at_seq(s);
-          const sid & id(d.id());
-
           fprintf(stderr, "%4d (", s);
-          id.dprint(stderr);
+          delta_table->delta_at_seq(s).id().dprint(stderr);
           fprintf(stderr, ") ");
 
           if (state.is_explicitly_tagged(s))
@@ -752,12 +748,12 @@ sccs_file::get(FILE *out, const std::string& gname,
     {
       if (state.is_explicitly_tagged(seq))
         {
-          const sid id = seq_to_sid(seq);
+          const sid id_of_this_seq = seq_to_sid(seq);
 
           if (state.is_included(seq))
-            goodstatus.included.push_back(id);
+            goodstatus.included.push_back(id_of_this_seq);
           else if (state.is_excluded(seq))
-            goodstatus.excluded.push_back(id);
+            goodstatus.excluded.push_back(id_of_this_seq);
         }
     }
   return goodstatus;
