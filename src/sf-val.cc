@@ -143,7 +143,7 @@ sccs_file::validate_isomorphism() const
 }
 
 static bool
-validate_substituted_flags_list(const std::vector<char>)
+validate_substituted_flags_list(const std::set<char>&)
 {
   // TODO: write this later.
   return true;
@@ -276,6 +276,10 @@ sccs_file::validate() const
     return retval;
 
   if (!validate_isomorphism())	// check that SIDs follow seqno structure.
+    {
+      return false;
+    }
+  if (!validate_substituted_flags_list(flags.substitued_flag_letters))
     {
       return false;
     }
