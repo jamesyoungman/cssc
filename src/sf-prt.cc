@@ -249,7 +249,8 @@ sccs_file::cutoff::print(FILE *out) const
 sccs_file::cutoff::cutoff()
   : enabled(false), most_recent_sid_only(false),
     cutoff_sid(sid()),
-    cutoff_delta(nullptr)
+    cutoff_delta(nullptr),
+    first_accepted(), last_accepted()
 {
   // all done above.
 }
@@ -336,8 +337,7 @@ sccs_file::prt(FILE *out,
 	    return printed;
 	  TRY_PRINTF(fprintf(out, " %s\t%hu %hu",
 			     iter->user().c_str(),
-			     static_cast<unsigned short>(iter->seq()),
-			     static_cast<unsigned short>(iter->prev_seq())));
+			     iter->seq(), iter->prev_seq()));
 	  TRY_PRINTF(fprintf(out, "\t%05lu/%05lu/%05lu",
 			     iter->inserted(), iter->deleted(), iter->unchanged()));
 
