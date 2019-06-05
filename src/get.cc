@@ -66,8 +66,8 @@ print_id_list(FILE *fp, const char *s, std::vector<sid> const &list)
           if (fputc_failed(fputc('\n', fp)))
 	    status = cssc::Update(status, cssc::make_failure_from_errno(errno));
         }
-      return status;
     }
+  return status;
 }
 
 void

@@ -107,6 +107,21 @@ public:
     std::vector<parsed_flag> flags;
     std::vector<std::string> comments;
     std::unique_ptr<sccs_file_body_scanner> body_scanner;
+
+    open_result()
+      : parser(),
+	computed_sum(),
+	stored_sum(),
+	checksum_valid_(false),
+	is_bk(false),
+	is_executable(false),
+	delta_table(),
+	users(),
+	flags(),
+	comments(),
+	body_scanner()
+    {
+    }
   };
 
   // Open an SCCS file.  Result is null on failure.

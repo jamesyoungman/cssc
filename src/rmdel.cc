@@ -110,7 +110,6 @@ main(int argc, char **argv)
       return 1;
     }
 
-  int tossed_privileges = 0;
   int retval = 0;
 
   while (iter.next())

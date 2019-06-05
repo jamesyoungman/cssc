@@ -55,6 +55,11 @@ struct get_status
 {
   unsigned lines;
   std::vector<sid> included, excluded;
+
+  get_status()
+    : lines(0), included(), excluded()
+  {
+  }
 };
 
 class sccs_file
