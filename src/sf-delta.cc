@@ -129,7 +129,6 @@ sccs_file::add_delta(const std::string& gname,
 
       file_to_diff = name.ufile();
       bFileIsInWorkingDir = false;
-      const char *s = file_to_diff.c_str();
     }
   else
     {
@@ -302,7 +301,7 @@ sccs_file::add_delta(const std::string& gname,
           seq_no new_seq = delta_table->next_seqno();
 
           // Set up for adding the next release.
-          id = release(null_rel);
+          id = null_rel;
           id.next_level();
 
           delta null_delta('D', id, sccs_date::now(),
