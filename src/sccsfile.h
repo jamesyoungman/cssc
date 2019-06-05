@@ -347,6 +347,7 @@ private:
 /* sf-prt.cc */
 cssc::Failure print_flag(FILE *out, const char *fmt,  release flag, int& count);
 cssc::Failure print_flag(FILE *out, const char *fmt, std::string flag, int& count);
+cssc::Failure print_flag(FILE *out, const char *fmt, const std::string* pflag, int& count);
 cssc::Failure print_flag(FILE *out, const char *fmt,  int flag, int& count);
 cssc::Failure print_flag(FILE *out, const char *fmt,  sid flag, int& count);
 
