@@ -281,6 +281,12 @@ bool sid::matches(const sid &m, int nfields) const
   return true;
 }
 
+release sid::get_release() const
+{
+  return rel;
+}
+
+
 
 cssc::Failure
 sid::print(FILE *out) const {

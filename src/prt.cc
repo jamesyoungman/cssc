@@ -148,7 +148,7 @@ main(int argc, char **argv)
 	      return 2;
 	    }
 
-	  last_cutoff_type = (int)c;
+	  last_cutoff_type = c;
 
 	  sccs_date date = sccs_date(opts.getarg());
 	  if (!date.valid())

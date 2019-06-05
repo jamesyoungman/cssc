@@ -68,6 +68,8 @@ public:
   bool is_null() const { return rel <= 0; }
   bool gte(sid const &id) const; // used by sccs_file::find_requested_sid().
 
+  release get_release() const;
+
 #if 1
   sid(sid const &id): rel(id.rel), level(id.level),
 		      branch(id.branch), sequence(id.sequence) {}

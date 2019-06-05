@@ -39,16 +39,6 @@ using cssc::Failure;
 
 /* Adds new MRs and comments to the specified delta. */
 
-static bool
-inlist(std::vector<std::string> l, const std::string& find)
-{
-  for (const auto& mr : l)
-    {
-      if (mr == find)
-	return true;
-    }
-  return false;
-}
 
 // Do the MR addition and deletion; if any have been deleted,
 // set deleted to true.   Return the updated set of MRs.

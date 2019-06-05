@@ -58,7 +58,7 @@ bool sccs_file::sid_matches(const sid& requested,
 
   if (1 == ncomponents)
     {
-      if ( (release)found > (release)requested )
+      if (found.get_release() > requested.get_release())
 	return false;
       else if (!get_top_delta && !found.on_trunk())
 	return false;
