@@ -282,7 +282,7 @@ sccs_file_parser::read_delta() {
                                 case 'x':
                                   if (bDebug)
                                     {
-                                      fprintf(stderr, "Excluding seq %lu\n",
+                                      fprintf(stderr, "Excluding seq %u\n",
                                               static_cast<unsigned>(seq));
                                     }
                                         tmp->add_exclude(seq);
