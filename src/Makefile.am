@@ -129,7 +129,6 @@ libcssc_a_SOURCES = \
 	relvbr.h \
 	rl-merge.cc \
 	run.cc \
-	run.h \
 	sccs-delta.cc \
 	sccsdate.cc \
 	sccsdate.h \

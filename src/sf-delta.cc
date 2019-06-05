@@ -36,7 +36,6 @@
 #include "sccsfile.h"
 #include "pfile.h"
 #include "seqstate.h"
-#include "run.h"
 #include "linebuf.h"
 #include "delta.h"
 #include "delta-table.h"

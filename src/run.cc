@@ -22,18 +22,18 @@
  * placed in the Public Domain.
  *
  *
- * Routines for running programmes.
+ * Routines for running programs.
  *
  */
 #include "config.h"
 
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <cstdio>
 #include <errno.h>
 
 #include "cssc.h"
-#include "run.h"
 #include "sccsfile.h"
 #include "sysdep.h"
 #include "quit.h"
@@ -44,181 +44,155 @@
 #undef NEED_CALL_SYSTEM
 #endif
 
-// According to the ANSI standard, id the argument to system()
-// is not NULL, the return value is implementation-defined.
-//
-// PROBLEM: system() returns an implementation-defined value
-// unless its argument is NULL.  This means that we cannot use it where
-// we care about the meaning of the return value.  This in turn means that
-// MR validation will never fail (that is, it won't fail when it is
-// supposed to, it will instead succeed all the time).
-//
-// Under Unix, system() returns a value which should be examined with
-// the use of the WEXITSTATUS macro.  The diagnosed return value is -1
-// or 127 for two kinds of failure not involving the called program,
-// and otherwise the return value of the program.  Success is
-// indicated by a zero return value.   However, Unix also has fork() and
-// so we wouldn't be using this function on Unix.  Nevertheless it's a
-// valid choice to manually undefine HAVE_FORK, and so we support this
-// by the use of WEXITSTATUS.
-//
-// XXX: this code probably won't work on many systems because we don't
-// know how to interpret the result of system().
-
-#ifdef NEED_CALL_SYSTEM
+namespace
+{
+// We compile call_system even on systems where it will not be needed
+// in order to prevent bit-rot.
 static bool call_system(const char *s)
 {
-  int failed;
-  int ret;
-
   errno = 0;
-  ret = system(s);
+  // According to the ANSI standard, if the argument to system() is
+  // not NULL, the return value is implementation-defined.
+  //
+  // PROBLEM: system() returns an implementation-defined value unless
+  // its argument is NULL.  This means that we cannot use it where we
+  // care about the meaning of the return value.  This in turn means
+  // that MR validation will never fail (that is, it won't fail when
+  // it is supposed to, it will instead succeed all the time).
+  int ret = system(s);
 
+  bool ok;
 #ifdef WEXITSTATUS
-  failed = (WEXITSTATUS(ret) != 0);
+  // Under Unix, system() returns a value which should be examined with
+  // the use of the WEXITSTATUS macro.  The diagnosed return value is -1
+  // or 127 for two kinds of failure not involving the called program,
+  // and otherwise the return value of the program.  Success is
+  // indicated by a zero return value.   However, Unix also has fork() and
+  // so we wouldn't be using this function on Unix.  Nevertheless it's a
+  // valid choice to manually undefine HAVE_FORK, and so we support this
+  // by the use of WEXITSTATUS.
+  ok = (WEXITSTATUS(ret) == 0);
 #else
-#ifdef SYSTEM_FAILS_RETURNING_MINUS_ONE
-  failed = (-1 == ret);
-#else
-  failed = (ret != 0);
-#endif
+# ifdef SYSTEM_FAILS_RETURNING_MINUS_ONE
+  ok = (-1 != ret);
+# else
+  // XXX: this code probably won't work on many systems because we don't
+  // know how to interpret the result of system().
+  ok = (ret == 0);
+# endif
 #endif
 
-  if (errno)
+  if (!ok && errno != 0)
     {
       errormsg_with_errno("call_system(\"%s\") failed (returned %d).", s, ret);
       return false;
     }
-
-  if (failed)
-      return false;
-  else
-      return true;
+  return ok;
 }
-#endif
 
 
-/* Runs a programme and returns its exit status. */
-
+/* Runs a program and returns its exit status. */
 int
-run(const char *prg, std::vector<const char *> const &args) {
-        const size_t len = args.size();
-
+run(const std::string& prg, std::vector<std::string>& args)
+{
 #ifdef NEED_CALL_SYSTEM
+  auto cmdlen = prg.size();
+  for (const auto& arg : args)
+    cmdlen += arg.size() + 1;
 
-        int cmdlen = strlen(prg) + 1;
+  std::string (prg);
+  s.reserve(cmdlen);
 
-        for (size_t i = 0; i < len; i++) {
-                cmdlen += strlen(args[i]) + 1;
-        }
+  for (const auto& arg : args)
+    {
+      s.push_back(' ');
+      s.append(arg);
+    }
 
-        char *s = new char[cmdlen+1];
-
-        strcpy(s, prg);
-
-        for (size_t i = 0; i < len; i++) {
-                strcat(s, " ");
-                strcat(s, args[i]);
-        }
-
-        bool sysfail = !call_system(s);
-        delete [] s;
-        if (sysfail)
-          return -1;
-        else
-          return 0;
+  bool sysfail = !call_system(s.c_str());
+  if (sysfail)
+    return -1;
+  else
+    return 0;
 
 #else /* !(HAVE_FORK) && !(HAVE_SPAWN) */
+  std::vector<const char*> argv;
+  argv.reserve(args.size()+2);
+  argv.push_back(prg.c_str());
 
-        const char *  *argv = new const char*[len+2];
-
-        argv[0] = prg;
-
-        for (size_t i = 0; i < len; i++) {
-                argv[i + 1] = args[i];
-        }
-        argv[len+1] = NULL;
+  for (const auto& arg : args)
+    argv.push_back(arg.c_str());
+  argv.push_back(nullptr);
 
 #ifndef HAVE_FORK
-        // Use spawn() instead then
-        int ret = spawnvp(P_WAIT, (char *) prg, (char **) argv);
-        if (ret == -1)
-          {
-            errormsg_with_errno("spawnvp(\"%s\") failed.", prg);
-          }
+  // Use spawn() instead then
+  int ret = spawnvp(P_WAIT, const_cast<char *>(prg.c_str()),
+		    const_cast<char **>(argv.data()));
+  if (ret == -1)
+    {
+      errormsg_with_errno("spawnvp(\"%s\") failed.", prg.c_str());
+    }
 
 #else /* HAVE_FORK */
-        // We _do_ have fork().
+  // We _do_ have fork().
 
-        // SunOS 4.1.3 appears not to like fflush(NULL).
+  // SunOS 4.1.3 appears not to like fflush(NULL).
 #if 0
-        fflush(NULL);
+  fflush(NULL);
 #else
-        fflush(stdout);
-        fflush(stderr);
+  fflush(stdout);
+  fflush(stderr);
 #endif
-        pid_t pid = fork();
-        if (pid < 0) {
-                fatal_quit(errno, "fork() failed.");
-        }
+  pid_t pid = fork();
+  if (pid < 0)
+    {
+      fatal_quit(errno, "fork() failed.");
+    }
 
-        if (pid == 0) {
-                cleanup::set_in_child();
-                execvp(prg, (char **) argv);
-                fatal_quit(errno, "execvp(\"%s\") failed.", prg);
-        }
+  if (pid == 0)
+    {
+      cleanup::set_in_child();
+      errno = 0;
+      execvp(prg.c_str(), const_cast<char **>(argv.data()));
+      fatal_quit(errno, "execvp(\"%s\") failed.", prg.c_str());
+    }
 
-        int ret;
-        pid_t r = wait(&ret);
-        while (r != pid) {
-                if (r == -1 && errno != EINTR) {
-                  perror("wait()"); // probably ECHILD.
-                  break;
-                }
-                r = wait(&ret);
-        }
+  int ret;
+  pid_t r = wait(&ret);
+  while (r != pid)
+    {
+      if (r == -1 && errno != EINTR)
+	{
+	  perror("wait()"); // probably ECHILD.
+	  break;
+	}
+      r = wait(&ret);
+    }
 
 #endif /* CONFIG_NO_FORK */
-
-        delete [] argv;
-        return ret;
-
+  return ret;
 #endif /* !(HAVE_FORK) && !(HAVE_SPAWN) */
 }
+
+}  // unnamed namespace
+
 
 bool
 sccs_file::check_mrs(const std::vector<std::string>& mrs)
 {
   ASSERT(nullptr != flags.mr_checker);
-  return 0 != run_mr_checker(flags.mr_checker->c_str(),
-			     name.gfile().c_str(), mrs);
-}
-
-/* Runs a program to check MRs. */
-int
-run_mr_checker(const char *prg, const char *arg1, const std::vector<std::string>& mrs)
-{
   // If the validation flag is set but has no value, PRG will be an
   // empty string and the validation should succeed silently.  This is
   // for compatibility with "real" SCCS.
-  if (prg[0])
-    {
-      std::vector<const char *> args;
+  if (flags.mr_checker->empty())
+    return 0;
 
-      args.push_back(arg1);
-
-      for (const auto& mr : mrs)
-	{
-	  args.push_back(mr.c_str());
-	}
-
-      return run(prg, args);
-    }
-  else
-    {
-      return 0;
-    }
+  std::vector<std::string> args{name.gfile()};
+  args.reserve(mrs.size() + 1);
+  std::copy(mrs.cbegin(), mrs.cend(), std::back_inserter(args));
+  return run(*flags.mr_checker, args);
 }
+
 
 /* Local variables: */
 /* mode: c++ */
