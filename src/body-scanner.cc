@@ -535,6 +535,13 @@ sccs_file_body_scanner::delta(const std::string& dname,
 Failure
 sccs_file_body_scanner::emit_raw_body(FILE* out, const char *outname)
 {
+  auto emitline = [out](const char* s) -> Failure
+    {
+      TRY_PUTS(fputs(s, out));
+      TRY_PUTC(putc('\n', out));
+      return Failure::Ok();
+    };
+
   TRY_OPERATION(seek_to_body()); // error message already emitted.
   for(;;)
     {
@@ -546,9 +553,14 @@ sccs_file_body_scanner::emit_raw_body(FILE* out, const char *outname)
 	  else
 	    return got.fail();
 	}
-      TRY_PUTS(fputs(plinebuf->c_str(), out));
-      TRY_PUTC(putc('\n', out));
+      Failure f = emitline(plinebuf->c_str());
+      if (!f.ok())
+	{
+	  return cssc::make_failure_builder(f)
+	    << "failed to write to " << outname;
+	}
     }
+  return Failure::Ok();
 }
 
 cssc::Failure
