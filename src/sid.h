@@ -43,12 +43,8 @@
 
 class sccs_file;
 
-class sid {
-  short rel, level, branch, sequence;
-
-  int comparable(sid const &id) const;
-  int gt(sid const &id) const;
-
+class sid
+{
 public:
   sid(short r, short l, short b, short s)
     : rel(r), level(l), branch(b), sequence(s)
@@ -70,56 +66,66 @@ public:
 
   release get_release() const;
 
-#if 1
-  sid(sid const &id): rel(id.rel), level(id.level),
-		      branch(id.branch), sequence(id.sequence) {}
+  sid(sid const &id)
+    : rel(id.rel), level(id.level),
+      branch(id.branch), sequence(id.sequence)
+  {
+  }
 
   sid &
-  operator =(sid const &id) {
+  operator =(sid const &id)
+  {
     rel = id.rel;
     level = id.level;
     branch = id.branch;
     sequence = id.sequence;
     return *this;
   }
-#endif
 
   bool valid() const { return rel > 0; }
 
   bool
-  partial_sid() const {
+  partial_sid() const
+  {
     return level == 0 || (branch != 0 && sequence == 0);
   }
+
   int components() const;
   bool on_trunk() const;
 
   friend bool
-  operator >(sid const &i1, sid const &i2) {
+  operator >(sid const &i1, sid const &i2)
+  {
     return i1.comparable(i2) && i1.gt(i2);
   }
 
   friend bool
-  operator >=(sid const &i1, sid const &i2) {
+  operator >=(sid const &i1, sid const &i2)
+  {
     return i1.comparable(i2) && i1.gte(i2);
   }
 
   friend bool
-  operator <(sid const &i1, sid const &i2) {
+  operator <(sid const &i1, sid const &i2)
+  {
     return i1.comparable(i2) && !i1.gte(i2);
   }
 
   friend bool
-  operator <=(sid const &i1, sid const &i2) {
+  operator <=(sid const &i1, sid const &i2)
+  {
     return i1.comparable(i2) && !i1.gt(i2);
   }
 
   friend bool
-  operator ==(sid const &i1, sid const &i2) {
+  operator ==(sid const &i1, sid const &i2)
+  {
     return memcmp(&i1, &i2, sizeof(sid)) == 0;
   }
 
   friend bool
-  operator !=(sid const &i1, sid const &i2) {
+  operator !=(sid const &i1, sid const &i2)
+  {
     // TODO: choose a safer way to do the comparison
     // The issue is struct padding, etc.
     return memcmp(&i1, &i2, sizeof(sid)) != 0;
@@ -128,50 +134,65 @@ public:
   sid successor() const;
 
   sid &
-  next_branch() {
+  next_branch()
+  {
     branch++;
     sequence = 1;
     return *this;
   }
 
   const sid &
-  next_level() {
+  next_level()
+  {
     ++level;
     branch = sequence = 0;
     return *this;
   }
 
   sid &
-  operator++() {
-    if (branch != 0) {
-      sequence++;
-    } else if (level != 0) {
-      level++;
-    } else {
-      rel++;
-    }
+  operator++()
+  {
+    if (branch != 0)
+      {
+	sequence++;
+      }
+    else if (level != 0)
+      {
+	level++;
+      }
+    else
+      {
+	rel++;
+      }
     return *this;
   }
 
   sid &
-  operator--() {
+  operator--()
+  {
     if (branch != 0) {
       sequence--;
-    } else if (level != 0) {
-      level--;
-    } else {
-      rel--;
     }
+    else if (level != 0)
+      {
+	level--;
+      }
+    else
+      {
+      rel--;
+      }
     return *this;
   }
 
   bool
-  is_trunk_successor(sid const &id) const {
+  is_trunk_successor(sid const &id) const
+  {
     return branch == 0 && *this < id;
   }
 
   bool
-  branch_greater_than(sid const &id) const {
+  branch_greater_than(sid const &id) const
+  {
     return rel == id.rel && level == id.level
       && branch > id.branch;
   }
@@ -180,12 +201,14 @@ public:
   bool matches(const sid &m, int nfields) const;
 
   bool
-  release_only() const {
+  release_only() const
+  {
     return rel != 0 && level == 0;
   }
 
   bool
-  trunk_match(sid const &id) const {
+  trunk_match(sid const &id) const
+  {
     return rel == 0
       || (rel == id.rel && (level == 0
 			    || level == id.level));
@@ -207,6 +230,12 @@ public:
   // as_string prints the human-readable version of the sid.
   std::string as_string() const;
   std::ostream& ostream_insert(std::ostream&) const;
+
+private:
+  short rel, level, branch, sequence;
+
+  int comparable(sid const &id) const;
+  int gt(sid const &id) const;
 
   friend release::release(const sid &s);
   friend relvbr::relvbr(const sid &s);
