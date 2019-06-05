@@ -116,6 +116,9 @@ run(const std::string& prg, std::vector<std::string>& args)
     return 0;
 
 #else /* !(HAVE_FORK) && !(HAVE_SPAWN) */
+  // Prevent an unused-function warning by referring to call_system
+  // but not calling it.
+  (void) &call_system;
   std::vector<const char*> argv;
   argv.reserve(args.size()+2);
   argv.push_back(prg.c_str());
