@@ -47,6 +47,7 @@
 #include "defaults.h"
 #include "dirent-safer.h"
 #include "privs.h"
+#include "stringify.h"
 
 using cssc::Failure;
 using cssc::FailureOr;
@@ -174,7 +175,8 @@ get_user_name()
   struct passwd *p = getpwuid(getuid());
   if (nullptr == p)
     {
-      fatal_quit(-1, "UID %d not found in password file.", getuid());
+      fatal_quit(-1, "UID %s not found in password file.",
+		 cssc::stringify(getuid()).c_str());
     }
   return p->pw_name;
 }

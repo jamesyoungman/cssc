@@ -157,6 +157,7 @@ libcssc_a_SOURCES = \
 	sid.h \
 	sid_list.h \
 	sl-merge.h \
+	stringify.h \
 	subst-parms.h \
 	sysdep.h \
 	valcodes.h \

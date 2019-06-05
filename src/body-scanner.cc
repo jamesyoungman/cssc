@@ -244,6 +244,15 @@ sccs_file_body_scanner::get(const std::string& gname,
 
 namespace
 {
+  template <class T, class U> U convert(T val)
+  {
+    return static_cast<U>(val);
+  }
+
+  template <class T> T convert(T val)
+  {
+    return val;
+  }
 
   void line_too_long(long int max_len, size_t actual_len)
   {
@@ -254,7 +263,7 @@ namespace
 	     // to void the need for this kind of cast
 	     // (especially since size_t and unsigned long)
 	     // may be of different width.
-	     static_cast<unsigned long>(actual_len),
+	     convert<unsigned long>(actual_len),
 	     max_len);
   }
 
