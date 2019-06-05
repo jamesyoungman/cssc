@@ -28,7 +28,8 @@
 
 #include <memory>
 
-class cssc_delta_table;
+#include "delta-table.h"
+
 class delta;
 
 enum class delta_selector
@@ -40,22 +41,30 @@ enum class delta_selector
 class delta_iterator
 {
   cssc_delta_table *dtbl;
-  int pos;
+  cssc_delta_table::size_type pos;
+  bool first_;
 
 public:
   delta_iterator(cssc_delta_table*, delta_selector);
 
   bool next();			// returns false when exhausted.
-  int index() const;
+  cssc_delta_table::size_type index() const;
 
   delta * operator->();
   delta& operator*();
   const delta * operator ->() const;
   const delta& operator*() const;
 
-  void rewind();
-
 private:
+  inline cssc_delta_table::size_type advance()
+  {
+    if (first_)
+      first_ = false;
+    else
+      ++pos;
+    return pos;
+  }
+
   inline bool all()  const
   {
     return selector_ == delta_selector::all;
@@ -67,20 +76,28 @@ private:
 class const_delta_iterator
 {
   const cssc_delta_table *dtbl;
-  int pos;
+  cssc_delta_table::size_type pos;
+  bool first_;
 
 public:
   const_delta_iterator(const cssc_delta_table*, delta_selector);
 
   bool next();
-  int index() const;
+  cssc_delta_table::size_type index() const;
 
   delta const * operator ->() const;
   const delta& operator*() const;
 
-  void rewind();
-
 private:
+  inline cssc_delta_table::size_type advance()
+  {
+    if (first_)
+      first_ = false;
+    else
+      ++pos;
+    return pos;
+  }
+
   inline bool all()  const
   {
     return selector_ == delta_selector::all;

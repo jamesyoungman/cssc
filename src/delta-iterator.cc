@@ -34,7 +34,7 @@
 #include "cssc-assert.h"
 
 delta_iterator::delta_iterator(cssc_delta_table *d, delta_selector selector)
-  : dtbl(d), pos(-1), selector_(selector)
+  : dtbl(d), pos(0), first_(true), selector_(selector)
 {
 }
 
@@ -43,7 +43,7 @@ delta_iterator::next()
 {
   ASSERT(nullptr != dtbl);
 
-  while (++pos < dtbl->size())
+  while ((pos=advance()) < dtbl->size())
     {
       if (all() || !dtbl->at(pos).removed())
 	{
@@ -53,7 +53,7 @@ delta_iterator::next()
   return 0;
 }
 
-int delta_iterator::index() const
+cssc_delta_table::size_type delta_iterator::index() const
 {
   return pos;
 }
@@ -77,7 +77,7 @@ delta_iterator::operator ->()
 
 
 const_delta_iterator::const_delta_iterator(cssc_delta_table const *d, delta_selector selector)
-  : dtbl(d), pos(-1), selector_(selector)
+  : dtbl(d), pos(0), first_(true), selector_(selector)
 {
 }
 
@@ -85,7 +85,7 @@ bool
 const_delta_iterator::next()
 {
   ASSERT(nullptr != dtbl);
-  while (++pos < dtbl->size())
+  while ((pos=advance()) < dtbl->size())
     {
       if (all() || !dtbl->at(pos).removed())
 	{
@@ -95,7 +95,7 @@ const_delta_iterator::next()
   return false;
 }
 
-int const_delta_iterator::index() const
+cssc_delta_table::size_type const_delta_iterator::index() const
 {
   return pos;
 }
