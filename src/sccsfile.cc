@@ -107,9 +107,11 @@ sccs_file::get_module_name() const
 
 sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
 		     ParserOptions opts)
-  : name(n), checksum_valid_(false), mode(m), xfile_created(false), edit_mode_ok_(true),
+  : flags(),
+    name(n), checksum_valid_(false), mode(m), xfile_created(false), edit_mode_ok_(true),
     sfile_executable(false),
-    delta_table(std::make_unique<cssc_delta_table>())
+    delta_table(std::make_unique<cssc_delta_table>()),
+    body_scanner_(), users(), comments()
 {
   if (!name.valid())
     {
@@ -157,7 +159,10 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
   // the s-file read-only.
   if (mode == FIX_CHECKSUM)
     {
-      opts = ParserOptions(opts).set_silent_checksum_error(true);
+      ParserOptions new_opts;
+      new_opts = opts;
+      new_opts.set_silent_checksum_error(true);
+      opts = new_opts;
     }
   auto failure_or_opened = sccs_file_parser::open_sccs_file(name.sfile(), READ, opts);
   if (!failure_or_opened.ok())
@@ -519,7 +524,14 @@ sccs_file::sfile_should_be_executable() const
   return sfile_executable;
 }
 
-
+sccs_file::sccs_file_flags::sccs_file_flags()
+  : type(nullptr), mr_checker(nullptr), no_id_keywords_is_fatal(false),
+    branch(0), module(nullptr), floor(), ceiling(), default_sid(),
+    null_deltas(), joint_edit(), locked(), all_locked(),
+    user_def(nullptr), reserved(nullptr),
+    encoded(0), executable(0), substitued_flag_letters()
+{
+}
 
 /* Local variables: */
 /* mode: c++ */

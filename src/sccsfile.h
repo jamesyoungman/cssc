@@ -323,6 +323,13 @@ private:
     int encoded;
     int executable;
     std::set<char> substitued_flag_letters; // "y" flag (Solaris 8 only)
+
+    // Avoid problems of who owns things pointed-to by prohibiting
+    // copying.  TODO: use optional<string> instead of string*.
+    sccs_file_flags(const sccs_file_flags&) = delete;
+    sccs_file_flags& operator=(const sccs_file_flags&) = delete;
+
+    sccs_file_flags();
   } flags;
 
   sccs_name& name;
