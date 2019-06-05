@@ -68,7 +68,7 @@ private:
 public:
   diff_state(FILE *f, bool echo)
     : _state(diffstate::START),
-      in_lineno(0), out_lineno(0),
+      in_lineno(0L), out_lineno(0L),
       lines_left(0), change_left(0),
       echo_diff_output(echo),
       in(f),
@@ -86,8 +86,8 @@ public:
       return linebuf.c_str() + 2;
     }
 
-  int in_line() { return in_lineno; }
-  int out_line() { return out_lineno; }
+  long in_line() { return in_lineno; }
+  long out_line() { return out_lineno; }
 };
 
 #endif /* CSSC__DIFF_STATE_H */

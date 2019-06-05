@@ -73,4 +73,22 @@ struct CsscUnrecognisedFeatureException : public CsscExitvalException
   CsscUnrecognisedFeatureException() : CsscExitvalException(1) { }
 };
 
+struct CsscInternalRangeException : public CsscExitvalException
+{
+ public:
+ CsscInternalRangeException(const char *field)
+   : CsscExitvalException(1), input_(field)
+    {
+    }
+
+ public:
+  std::string what() const
+    {
+      return input_;
+    }
+
+ private:
+  std::string input_;
+};
+
 #endif

@@ -22,8 +22,13 @@
  * placed in the Public Domain.
  */
 #include "config.h"
+
+#include <limits>
+#include <errno.h>
+
 #include "cssc.h"
 #include "diff-state.h"
+#include "except.h"
 #include "failure.h"
 
 
@@ -45,6 +50,21 @@ NORETURN
 diff_state::diff_output_corrupt(const char *msg)
 {
   fatal_quit(-1, "Diff output corrupt. (%s)", msg);
+}
+
+
+inline long get_num(const char *p,  char **endp)
+{
+  errno = 0;
+  long val = strtol(p, endp, 10);
+  if ((val == std::numeric_limits<long>::max()
+       || val == std::numeric_limits<long>::min())
+      && (errno != 0))
+    {
+      // We have a range error.
+      throw CsscInternalRangeException(p);
+    }
+  return val;
 }
 
 
@@ -119,17 +139,15 @@ diff_state::next_state()
 
     }
 
-  char *s = NULL;
-  int line1, line2, line3, line4;
+  char *s = nullptr;
+  long line1, line2, line3, line4;
   char c;
 
-  // TODO: should we just promote line[1234] to long and avoid the
-  // cast?
-  line1 = (int) strtol(linebuf.c_str(), &s, 10);
+  line1 = get_num(linebuf.c_str(), &s);
   line2 = line1;
   if (*s == ',')
     {
-      line2 = (int) strtol(s + 1, &s, 10);
+      line2 = get_num(s + 1, &s);
       if (line2 <= line1)
         {
           diff_output_corrupt("left end line");
@@ -173,7 +191,7 @@ diff_state::next_state()
         }
     }
 
-  line3 = (int) strtol(s + 1, &s, 10);
+  line3 = get_num(s + 1, &s);
   if (c == 'd')
     {
       if (line3 != out_lineno)
@@ -192,7 +210,7 @@ diff_state::next_state()
   line4 = line3;
   if (*s == ',')
     {
-      line4 = (int) strtol(s + 1, &s, 10);
+      line4 = get_num(s + 1, &s);
       if (line4 <= line3)
         {
           diff_output_corrupt("right end line");
