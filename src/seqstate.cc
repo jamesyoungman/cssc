@@ -42,7 +42,6 @@ seq_state::seq_state(seq_no l)
   initial_condition.ignored = false;
   initial_condition.excluded = false;
   initial_condition.is_explicit = false;
-  initial_condition.done_by = 0u;
   initial_condition.non_recursive = false;
   initial_condition.active = false;
   initial_condition.command = '\0';
@@ -80,29 +79,26 @@ bool seq_state::is_ignored(seq_no n) const
   return states_[n].ignored;
 }
 
-void seq_state::set_explicitly_included(seq_no n, seq_no who)
+void seq_state::set_explicitly_included(seq_no n)
 {
   if (!states_[n].included)	// if not already included...
     {
-      set_included(n, who);
+      set_included(n);
       one_state& s = states_[n];
       s.is_explicit = true;
       s.non_recursive = true;
-      s.done_by = who;
     }
 }
 
-void seq_state::set_explicitly_excluded(seq_no n, seq_no who)
+void seq_state::set_explicitly_excluded(seq_no n)
 {
-  set_excluded(n, who);
+  set_excluded(n);
   one_state& s = states_[n];
   s.is_explicit = true;
   s.non_recursive = true;
-  s.done_by = who;
 }
 
 void seq_state::set_included(seq_no n,
-			     seq_no who,
 			     bool bNonRecursive /*=false*/)
 {
   one_state& s = states_[n];
@@ -110,26 +106,23 @@ void seq_state::set_included(seq_no n,
   s.ignored = false;
   s.excluded = false;
   s.non_recursive = bNonRecursive;
-  s.done_by = who;
 }
 
-void seq_state::set_ignored(seq_no n, seq_no who)
+void seq_state::set_ignored(seq_no n)
 {
   one_state& s = states_[n];
   s.ignored = true;
   s.included = false;
   s.excluded = false;
   s.non_recursive = true;
-  s.done_by = who;
 }
 
-void seq_state::set_excluded(seq_no n, seq_no who)
+void seq_state::set_excluded(seq_no n)
 {
   one_state& s = states_[n];
   s.excluded = true;
   s.included = false;
   s.ignored = false;
-  s.done_by = who;
 }
 
 bool seq_state::is_explicitly_tagged(seq_no n) const
@@ -146,12 +139,6 @@ bool seq_state::is_recursive(seq_no n) const
 {
   return !states_[n].non_recursive;
 }
-
-seq_no seq_state::whodunit(seq_no n) const
-{
-  return states_[n].done_by;
-}
-
 
 seq_state::~seq_state()
 {

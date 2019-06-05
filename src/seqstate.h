@@ -50,7 +50,6 @@ class seq_state
     bool ignored;
     bool non_recursive;
     bool is_explicit;
-    seq_no done_by;
     bool active;
     char command;
   };
@@ -72,8 +71,6 @@ class seq_state
   void decide_disposition();
 
 public:
-  enum { BY_DEFAULT = -1, BY_COMMAND_LINE = -2 };
-
   seq_state(seq_no l);
   seq_state(const seq_state& s);
   ~seq_state();
@@ -86,13 +83,11 @@ public:
   bool is_nonrecursive(seq_no n) const;
   bool is_recursive(seq_no n) const;
 
-  void set_explicitly_included(seq_no which, seq_no whodunit);
-  void set_explicitly_excluded(seq_no which, seq_no whodunit);
-  void set_included(seq_no n, seq_no whodunit, bool bNonRecursive=false);
-  void set_excluded(seq_no n, seq_no whodunit);
-  void set_ignored (seq_no n, seq_no whodunit);
-
-  seq_no whodunit(seq_no n) const;
+  void set_explicitly_included(seq_no which);
+  void set_explicitly_excluded(seq_no which);
+  void set_included(seq_no n, bool bNonRecursive=false);
+  void set_excluded(seq_no n);
+  void set_ignored (seq_no n);
 
   // stuff for use when reading the body of the s-file.
 

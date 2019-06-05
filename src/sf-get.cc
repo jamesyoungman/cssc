@@ -69,10 +69,10 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	  corrupt_file("sequene number %u has invalid (subsequent) predecessor %u",
 		       unsigned(y), unsigned(d.prev_seq()));
       }
-      state.set_included(d.prev_seq(), y, false);
+      state.set_included(d.prev_seq(), false);
       y = d.prev_seq();
     } while (y > 0);
-  state.set_included(seq, (seq_no) seq_state::BY_DEFAULT, false);
+  state.set_included(seq, false);
 
   // Apply any inclusions
   for (y=seq; y>0; --y)
@@ -97,7 +97,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	      // A particular delta cannot have a LATER delta in
 	      // its include list.
 	      ASSERT(s <= y);
-	      state.set_included(s, y, true);
+	      state.set_included(s, true);
 	      ASSERT(state.is_included(s));
 	    }
 	}
@@ -126,7 +126,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 	    // A particular delta cannot have a LATER delta in
 	    // its exclude list.
 	    ASSERT(s <= y);
-	    state.set_excluded(s, y);
+	    state.set_excluded(s);
 	    ASSERT(state.is_excluded(s));
 	  }
       }
@@ -156,7 +156,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
 		continue;
 
 	      ASSERT(s <= y);
-	      state.set_ignored(s, y);
+	      state.set_ignored(s);
 
 	      ASSERT(state.is_ignored(s));
 	      ASSERT(!state.is_included(s));

@@ -662,18 +662,15 @@ sccs_file::get(FILE *out, const std::string& gname,
 
           if (state.is_ignored(s))
             {
-              fprintf(stderr, "ignored  by %4d\n",
-                      state.whodunit(s));
+              fprintf(stderr, "ignored\n");
             }
           else if (state.is_included(s))
             {
-              fprintf(stderr, "included by %4d\n",
-                      state.whodunit(s));
+              fprintf(stderr, "included\n");
             }
           else if (state.is_excluded(s))
             {
-              fprintf(stderr, "excluded by %d\n",
-                      state.whodunit(s));
+              fprintf(stderr, "excluded");
             }
           else
             {
