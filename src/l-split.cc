@@ -106,6 +106,11 @@ public:
     f_ = nullptr;
   }
 
+  // We don't want the file doubly closed,
+  // so prohibit copying.
+  FileCloser(const FileCloser&) = delete;
+  FileCloser& operator=(const FileCloser&) = delete;
+
 private:
   FILE* f_;
 };
