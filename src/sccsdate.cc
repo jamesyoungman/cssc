@@ -185,9 +185,9 @@ count_digits(const char *s)
 
 // Construct a date as specified on the command line.
 sccs_date::sccs_date(const char *s)
-  : year(-1), month(-1), month_day(-1),
-    hour(-1), minute(-1), second(-1),
-    yearday(-1)
+  : year_(-1), month_(-1), month_day_(-1),
+    hour_(-1), minute_(-1), second_(-1),
+    yearday_(-1)
 {
   ASSERT(s != nullptr);
   /* if (s == 0) return; */
@@ -200,7 +200,7 @@ sccs_date::sccs_date(const char *s)
   const int n_digits = count_digits(s);
 
   // Get and check the year part.
-  if ( (year = get_part(s, -1)) == -1)
+  if ( (year_ = get_part(s, -1)) == -1)
     return;
 
 #if 1
@@ -228,31 +228,31 @@ sccs_date::sccs_date(const char *s)
       if (isdigit(static_cast<unsigned char>(s[0])) &&
           isdigit((static_cast<unsigned char>(s[1]))))
         {
-          const int century_field_val = year;
-          year =  (century_field_val * 100) + get_two_digits(&s[0]);
+          const int century_field_val = year_;
+          year_ =  (century_field_val * 100) + get_two_digits(&s[0]);
           s += 2;               // this consumes exactly two characters.
         }
     }
   else
     {
-      year = y2k_window(year);
+      year_ = y2k_window(year_);
     }
 #endif
 
-  month     = get_part(s, 12);
-  month_day = get_part(s, days_in_month(month, year));
-  hour      = get_part(s, 23);
-  minute    = get_part(s, 59);
-  second    = get_part(s, 59);
+  month_     = get_part(s, 12);
+  month_day_ = get_part(s, days_in_month(month_, year_));
+  hour_      = get_part(s, 23);
+  minute_    = get_part(s, 59);
+  second_    = get_part(s, 59);
 
   update_yearday();
 }
 
 // Construct a date as specified in an SCCS file.
 sccs_date::sccs_date(const char *date_arg, const char *time)
-  : year(-1), month(-1), month_day(-1),
-    hour(-1), minute(-1), second(-1),
-    yearday(-1)
+  : year_(-1), month_(-1), month_day_(-1),
+    hour_(-1), minute_(-1), second_(-1),
+    yearday_(-1)
 {
   std::string date(date_arg);
   int century;
@@ -310,27 +310,27 @@ sccs_date::sccs_date(const char *date_arg, const char *time)
       && is_digit(time[3]) && is_digit(time[4]) && time[5] == ':'
       && is_digit(time[6]) && is_digit(time[7]) && time[8] == '\0')
     {
-      year      = get_two_digits(date, 0);
-      month     = get_two_digits(date, 3);
-      month_day = get_two_digits(date, 6);
+      year_      = get_two_digits(date, 0);
+      month_     = get_two_digits(date, 3);
+      month_day_ = get_two_digits(date, 6);
 
-      hour      = get_two_digits(&time[0]);
-      minute    = get_two_digits(&time[3]);
-      second    = get_two_digits(&time[6]);
+      hour_      = get_two_digits(&time[0]);
+      minute_    = get_two_digits(&time[3]);
+      second_    = get_two_digits(&time[6]);
 
       if (century)
       {
           // SourceForge bug ID 513800 - Data General Unix uses 4-digit year
           // in the p-file.
-          year = century * 100 + year;
-	  ASSERT(year >= 1969);
-	  ASSERT(year <  2069);
+          year_ = century * 100 + year_;
+	  ASSERT(year_ >= 1969);
+	  ASSERT(year_ <  2069);
       }
       else
       {
 	// Year 2000 fix (mandated by X/Open white paper, see above
 	// for more details).
-	year = y2k_window(year);
+	year_ = y2k_window(year_);
       }
       update_yearday();
     }
@@ -339,20 +339,20 @@ sccs_date::sccs_date(const char *date_arg, const char *time)
 cssc::Failure
 sccs_date::printf(FILE *f, char fmt) const
 {
-  const int yy = year % 100;
+  const int yy = year_ % 100;
 
   switch(fmt)
     {
     case 'D':
       return fprintf_failure(fprintf(f, "%02d/%02d/%02d",
-				     yy, month, month_day));
+				     yy, month_, month_day_));
     case 'H':
       return fprintf_failure(fprintf(f, "%02d/%02d/%02d",
-				     month, month_day, yy));
+				     month_, month_day_, yy));
 
     case 'T':
       return fprintf_failure(fprintf(f, "%02d:%02d:%02d",
-				     hour, minute, second));
+				     hour_, minute_, second_));
     }
 
   int value = 0;
@@ -363,23 +363,23 @@ sccs_date::printf(FILE *f, char fmt) const
       break;
 
     case 'o':
-      value = month;
+      value = month_;
       break;
 
     case 'd':
-      value = month_day;
+      value = month_day_;
       break;
 
     case 'h':
-      value = hour;
+      value = hour_;
       break;
 
     case 'm':
-      value = minute;
+      value = minute_;
       break;
 
     case 's':
-      value = second;
+      value = second_;
       break;
 
     default:
@@ -406,27 +406,27 @@ std::string
 sccs_date::as_string() const
 {
   char buf[18];
-  const int yy = year % 100;
+  const int yy = year_ % 100;
 
   sprintf(buf, "%02d/%02d/%02d %02d:%02d:%02d",
-          yy, month, month_day,
-          hour, minute, second);
+          yy, month_, month_day_,
+          hour_, minute_, second_);
 
   return std::string(buf);
 }
 
 sccs_date::sccs_date(int yr, int mth, int day,
                      int hr, int min, int sec)
-  : year(yr), month(mth), month_day(day),
-    hour(hr), minute(min), second(sec),
-    yearday(-1)
+  : year_(yr), month_(mth), month_day_(day),
+    hour_(hr), minute_(min), second_(sec),
+    yearday_(-1)
 {
   update_yearday();
 }
 
 sccs_date::sccs_date()
-  : year(-1), month(-1), month_day(-1),
-    hour(-1), minute(-1), second(-1), yearday(-1)
+  : year_(-1), month_(-1), month_day_(-1),
+    hour_(-1), minute_(-1), second_(-1), yearday_(-1)
 {
 }
 
@@ -441,6 +441,11 @@ sccs_date::now()                // static member.
       throw CsscQuitException(2);
     }
   struct tm *ptm = localtime(&tt);
+  if (ptm == nullptr)
+    {
+      errormsg_with_errno("unable to determine local time");
+      throw CsscQuitException(2);
+    }
 
   return sccs_date(ptm->tm_year+1900, ptm->tm_mon+1, ptm->tm_mday,
                    ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
@@ -451,13 +456,13 @@ sccs_date::update_yearday()
 {
   int m=1, d=1;
 
-  yearday = 1;
+  yearday_ = 1;
 
-  while (m < month)
-    yearday += days_in_month(m++, year);
+  while (m < month_)
+    yearday_ += days_in_month(m++, year_);
 
-  while (d++ < month_day)
-    yearday++;
+  while (d++ < month_day_)
+    yearday_++;
 }
 
 
@@ -468,9 +473,9 @@ int sccs_date::compare(const sccs_date& d) const
 
   int diff;
 
-  if ( (diff = year - d.year) != 0 )
+  if ( (diff = year_ - d.year_) != 0 )
     return diff;
-  else if ( (diff = yearday - d.yearday) != 0)
+  else if ( (diff = yearday_ - d.yearday_) != 0)
     return diff;
 
   /* The implementation below can compute an incorrect result when
@@ -478,7 +483,7 @@ int sccs_date::compare(const sccs_date& d) const
      example, suppose the clock is put pack an hour the first time it
      reaches 02:00 on this day.  Let t1 be a time 3602 seconds into
      this day, and t2 be a time 7201 seconds into this day.  For both,
-     hour=1 and minute=0 but t1 has second=2 and t2 has second=1.
+     hour_=1 and minute_=0 but t1 has second_=2 and t2 has second_=1.
      This function will decide that t1 > t2 while in reality t2 > t1.
 
      So in theory this implementation is incorrect.  However, since
@@ -487,12 +492,12 @@ int sccs_date::compare(const sccs_date& d) const
      as the time 01:00::01 and would be understood to represent a time
      3601 seconds into the day).
    */
-  if ((diff = hour - d.hour) != 0)
+  if ((diff = hour_ - d.hour_) != 0)
     return diff;
-  else if ((diff = minute - d.minute) != 0)
+  else if ((diff = minute_ - d.minute_) != 0)
     return diff;
   else
-    return second - d.second;
+    return second_ - d.second_;
 }
 
 bool sccs_date::operator >(sccs_date const & d) const
@@ -516,12 +521,12 @@ sccs_date::valid() const
   // Allow the seconds field to get as high as 61, since that is what
   // the ANSI C spec for struct tm says, and we have to use a struct
   // tm with localtime().
-  return year >= 0
-    && month > 0 && month < 13
-    && month_day > 0 && month_day <= days_in_month(month, year)
-    && hour >= 0 && hour < 24
-    && minute >= 0 && minute < 60
-    && second >= 0 && second <= 61;
+  return year_ >= 0
+    && month_ > 0 && month_ < 13
+    && month_day_ > 0 && month_day_ <= days_in_month(month_, year_)
+    && hour_ >= 0 && hour_ < 24
+    && minute_ >= 0 && minute_ < 60
+    && second_ >= 0 && second_ <= 61;
 }
 
 

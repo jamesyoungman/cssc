@@ -67,7 +67,7 @@ TEST(SccsdateDeathTest, BuckRogers)
   // interoperation with other versions of SCCS would become harder.
   EXPECT_EXIT(sccs_date("2429/05/19", "01:42:08"),
 	      ::testing::KilledBySignal(SIGABRT),
-	      "year < 2069");
+	      "year_ < 2069");
 }
 
 TEST(SccsdateTest, ColonYear)

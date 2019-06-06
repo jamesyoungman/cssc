@@ -36,16 +36,16 @@
 
 class sccs_date
 {
-  int year;
-  int month;
-  int month_day;
+  int year_;
+  int month_;
+  int month_day_;
 
-  int hour;
-  int minute;
-  int second;
+  int hour_;
+  int minute_;
+  int second_;
 
   // derived data
-  int yearday;			// days since start of year.
+  int yearday_;			// days since start of year.
 
 public:
   sccs_date();
