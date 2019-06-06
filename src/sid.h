@@ -74,7 +74,7 @@ public:
   }
 
   sid &
-  operator =(sid const &id)
+  operator=(sid const &id)
   {
     rel_ = id.rel_;
     level_ = id.level_;
@@ -94,42 +94,40 @@ public:
   int components() const;
   bool on_trunk() const;
 
-  friend bool
-  operator >(sid const &i1, sid const &i2)
+  bool operator>(sid const &i2) const
   {
-    return i1.comparable(i2) && i1.gt(i2);
+    return comparable(i2) && gt(i2);
   }
 
-  friend bool
-  operator >=(sid const &i1, sid const &i2)
+  bool operator>=(sid const &i2) const
   {
-    return i1.comparable(i2) && i1.gte(i2);
+    return comparable(i2) && gte(i2);
   }
 
-  friend bool
-  operator <(sid const &i1, sid const &i2)
+  bool operator<(sid const &i2) const
   {
-    return i1.comparable(i2) && !i1.gte(i2);
+    return comparable(i2) && !gte(i2);
   }
 
-  friend bool
-  operator <=(sid const &i1, sid const &i2)
+  bool operator<=(sid const &i2) const
   {
-    return i1.comparable(i2) && !i1.gt(i2);
+    return comparable(i2) && !gt(i2);
   }
 
-  friend bool
-  operator ==(sid const &i1, sid const &i2)
+  bool operator==(sid const &i2) const
   {
-    return memcmp(&i1, &i2, sizeof(sid)) == 0;
+    return rel_ == i2.rel_
+      && level_ == i2.level_
+      && branch_ == i2.branch_
+      && sequence_ == i2.sequence_;
   }
 
-  friend bool
-  operator !=(sid const &i1, sid const &i2)
+  bool operator!=(sid const &i2) const
   {
-    // TODO: choose a safer way to do the comparison
-    // The issue is struct padding, etc.
-    return memcmp(&i1, &i2, sizeof(sid)) != 0;
+    return rel_ != i2.rel_
+      || level_ != i2.level_
+      || branch_ != i2.branch_
+      || sequence_ != i2.sequence_;
   }
 
   sid successor() const;
@@ -247,17 +245,17 @@ inline std::ostream& operator<<(std::ostream& os, const sid& s)
 
 inline sid::sid(release r): rel_(r), level_(0), branch_(0), sequence_(0) {}
 
-inline bool operator >(release i1, sid const &i2) { return i1 > i2.get_release(); }
-inline bool operator <(release i1, sid const &i2) { return i1 < i2.get_release(); }
-inline bool operator >=(release i1, sid const &i2) { return i1 >= i2.get_release(); }
-inline bool operator <=(release i1, sid const &i2) { return i1 <= i2.get_release(); }
-inline bool operator ==(release i1, sid const &i2) { return i1 == i2.get_release(); }
+inline bool operator>(release i1, sid const &i2) { return i1 > i2.get_release(); }
+inline bool operator<(release i1, sid const &i2) { return i1 < i2.get_release(); }
+inline bool operator>=(release i1, sid const &i2) { return i1 >= i2.get_release(); }
+inline bool operator<=(release i1, sid const &i2) { return i1 <= i2.get_release(); }
+inline bool operator==(release i1, sid const &i2) { return i1 == i2.get_release(); }
 inline bool operator !=(release i1, sid const &i2) { return i1 != i2.get_release(); }
 
-inline bool operator >(sid const &i1, release i2) { return i1.get_release() > i2; }
-inline bool operator <(sid const &i1, release i2) { return i1.get_release() < i2; }
-inline bool operator >=(sid const &i1, release i2) { return i1.get_release() >= i2; }
-inline bool operator <=(sid const &i1, release i2) { return i1.get_release() <= i2; }
+inline bool operator>(sid const &i1, release i2) { return i1.get_release() > i2; }
+inline bool operator<(sid const &i1, release i2) { return i1.get_release() < i2; }
+inline bool operator>=(sid const &i1, release i2) { return i1.get_release() >= i2; }
+inline bool operator<=(sid const &i1, release i2) { return i1.get_release() <= i2; }
 inline bool operator ==(sid const &i1, release i2) { return i1.get_release() == i2; }
 inline bool operator !=(sid const &i1, release i2) { return i1.get_release() != i2; }
 
