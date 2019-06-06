@@ -35,35 +35,35 @@
 NORETURN
 sccs_pfile::corrupt(int lineno, const char *msg) const {
         p_corrupt_quit("%s: line %d: p-file is corrupt.  (%s)",
-                       pname.c_str(), lineno, msg);
+                       pname_.c_str(), lineno, msg);
 }
 
 sccs_pfile::sccs_pfile(sccs_name &n, pfile_mode m)
-  : name(n),
-    pname(name.pfile()),
-    mode(m),
+  : name_(n),
+    pname_(n.pfile()),
+    pmode_(m),
     edit_locks()
 {
 
-        if (!name.valid()) {
-                ctor_fail(-1, "%s: Not a SCCS file.", name.c_str());
+        if (!name_.valid()) {
+                ctor_fail(-1, "%s: Not a SCCS file.", name_.c_str());
         }
 
-        if (mode != pfile_mode::PFILE_READ)
+        if (pmode_ != pfile_mode::PFILE_READ)
 	  {
-	    if (!name.lock().ok())
+	    if (!name_.lock().ok())
 	      {
 		ctor_fail(-1,
 			  "%s: SCCS file is locked.  Try again later.",
-			  name.c_str());
+			  name_.c_str());
 	      }
 	  }
 
-        FILE *pf = fopen(pname.c_str(), "r");
+        FILE *pf = fopen(pname_.c_str(), "r");
         if (pf == NULL) {
                 if (errno != ENOENT) {
                         ctor_fail(-1, "%s: Can't open p-file for reading.",
-                             pname.c_str());
+                             pname_.c_str());
                 }
         } else {
                 cssc_linebuf linebuf;
@@ -125,7 +125,7 @@ sccs_pfile::sccs_pfile(sccs_name &n, pfile_mode m)
 
                 if (ferror(pf))
                   {
-                    errormsg_with_errno("%s: Read error.", pname.c_str());
+                    errormsg_with_errno("%s: Read error.", pname_.c_str());
                     ctor_fail_nomsg(-1);
                   }
 
@@ -163,8 +163,8 @@ sccs_pfile::print_lock_sid(FILE *fp, const_iterator pos) const
 
 
 sccs_pfile::~sccs_pfile() {
-  if (mode != pfile_mode::PFILE_READ) {
-                name.unlock();
+  if (pmode_ != pfile_mode::PFILE_READ) {
+                name_.unlock();
         }
 }
 

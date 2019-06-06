@@ -115,9 +115,9 @@ private:
     }
   };
 
-  sccs_name &name;
-  std::string pname;
-  pfile_mode mode;
+  sccs_name &name_;
+  std::string pname_;
+  pfile_mode pmode_;
 
   std::list<edit_lock> edit_locks;
   typedef std::list<edit_lock>::size_type lock_count_type;
@@ -128,7 +128,7 @@ private:
   write_edit_locks(FILE *out, const std::string& file_name) const;
 
 public:
-  sccs_pfile(sccs_name &name, pfile_mode mode);
+  sccs_pfile(sccs_name &name, pfile_mode pmode_);
 
   typedef std::list<edit_lock>::size_type size_type;
   typedef std::list<edit_lock>::iterator iterator;

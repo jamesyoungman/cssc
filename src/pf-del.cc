@@ -132,7 +132,7 @@ sccs_pfile::write_edit_locks(FILE *out, const std::string& file_name) const
 cssc::Failure
 sccs_pfile::update(bool pfile_already_exists) const
 {
-  const std::string q_name(name.qfile());
+  const std::string q_name(name_.qfile());
 
   cssc::FailureOr<FILE*> fof = fcreate(q_name.c_str(), CREATE_EXCLUSIVE);
   if (!fof.ok())
@@ -175,20 +175,20 @@ sccs_pfile::update(bool pfile_already_exists) const
 
       if (pfile_already_exists)
 	{
-	  if (remove(pname.c_str()) != 0)
+	  if (remove(pname_.c_str()) != 0)
 	    {
 	      return cssc::make_failure_builder_from_errno(errno)
-	      .diagnose() << pname << ": can't remove old p-file";
+		.diagnose() << pname_ << ": can't remove old p-file";
 	    }
 	}
 
       if (locks_remaining)	// pfile is still required
 	{
-	  if (rename(q_name.c_str(), pname.c_str()) != 0)
+	  if (rename(q_name.c_str(), pname_.c_str()) != 0)
 	    {
 	      // this is really bad; we have already deleted the old p-file!
 	      return cssc::make_failure_builder_from_errno(errno)
-	      .diagnose() << "failed to rename " << q_name << " to " << pname;
+	      .diagnose() << "failed to rename " << q_name << " to " << pname_;
 	    }
 	  qfile_deleter.disarm();
 	}
