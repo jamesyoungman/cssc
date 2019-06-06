@@ -46,7 +46,7 @@ public:
 
   bool next();
 
-  sccs_name &get_name() { return name; }
+  sccs_name &get_name() { return name_; }
   source using_source() { return source_; }
   bool empty() const { return source_ == source::NONE; }
   bool using_stdin() { return source::STDIN == source_; }
@@ -58,10 +58,10 @@ public:
 
 private:
   source source_;
-  bool is_unique;
-  std::vector<std::string> files;
+  bool is_unique_;
+  std::vector<std::string> files_;
   std::vector<std::string>::size_type pos; // current iteration position
-  sccs_name name;
+  sccs_name name_;
 };
 
 #endif /* __FILEITER_H__ */

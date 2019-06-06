@@ -122,10 +122,10 @@ namespace
 
 sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
   : source_(source::NONE),
-    is_unique(false),
-    files(),
+    is_unique_(false),
+    files_(),
     pos(0),
-    name()
+    name_()
 {
   auto argv = opts.get_argv() + opts.get_index();
   auto argc = opts.get_argc() - opts.get_index();
@@ -141,7 +141,7 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
   if (strcmp(first, "-") == 0)
     {
       source_ = source::STDIN;
-      files = from_stdin();
+      files_ = from_stdin();
       return;
     }
 
@@ -154,15 +154,15 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 	  ResourceCleanup dir_closer([&dir](){
 	      closedir(dir);
 	    });
-	  files = from_directory(first, dir);
+	  files_ = from_directory(first, dir);
 	  pos = 0;
 	  return;
 	}
     }
 
   source_ = source::ARGS;
-  is_unique = (1 == argc);
-  files.reserve(argc);
+  is_unique_ = (1 == argc);
+  files_.reserve(argc);
   while (argc-- > 0)
     {
       std::string n(*argv++);
@@ -170,12 +170,12 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
       sname = n;
       if (sname.valid())
 	{
-	  files.push_back(n);
+	  files_.push_back(n);
 	}
       else
 	{
 	  sname.make_valid();
-	  files.push_back(sname.sfile());
+	  files_.push_back(sname.sfile());
 	}
     }
 }
@@ -183,15 +183,15 @@ sccs_file_iterator::sccs_file_iterator(const CSSC_Options &opts)
 bool
 sccs_file_iterator::unique() const
 {
-  return is_unique;
+  return is_unique_;
 }
 
 
 bool sccs_file_iterator::next()
 {
-  if (pos == files.size())
+  if (pos == files_.size())
     return false;		// end
-  name = files[pos++];
+  name_ = files_[pos++];
   return true;
 }
 
