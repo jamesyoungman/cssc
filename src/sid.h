@@ -47,7 +47,7 @@ class sid
 {
 public:
   sid(short r, short l, short b, short s)
-    : rel(r), level(l), branch(b), sequence(s)
+    : rel_(r), level_(l), branch_(b), sequence_(s)
   {
     ASSERT((!r && !l && !b && !s)
 	   || (r && !l && !b && !s)
@@ -56,38 +56,39 @@ public:
   }
 
   static sid null_sid();
-  sid(): rel(-1), level(0), branch(0), sequence(0) {}
+  sid(): rel_(-1), level_(0), branch_(0), sequence_(0) {}
   sid(const char *s);
   sid(release);		/* Defined below */
   sid(relvbr);		/* Defined below */
 
-  bool is_null() const { return rel <= 0; }
+  bool is_null() const { return rel_ <= 0; }
   bool gte(sid const &id) const; // used by sccs_file::find_requested_sid().
 
   release get_release() const;
+  relvbr get_relvbr() const;
 
   sid(sid const &id)
-    : rel(id.rel), level(id.level),
-      branch(id.branch), sequence(id.sequence)
+    : rel_(id.rel_), level_(id.level_),
+      branch_(id.branch_), sequence_(id.sequence_)
   {
   }
 
   sid &
   operator =(sid const &id)
   {
-    rel = id.rel;
-    level = id.level;
-    branch = id.branch;
-    sequence = id.sequence;
+    rel_ = id.rel_;
+    level_ = id.level_;
+    branch_ = id.branch_;
+    sequence_ = id.sequence_;
     return *this;
   }
 
-  bool valid() const { return rel > 0; }
+  bool valid() const { return rel_ > 0; }
 
   bool
   partial_sid() const
   {
-    return level == 0 || (branch != 0 && sequence == 0);
+    return level_ == 0 || (branch_ != 0 && sequence_ == 0);
   }
 
   int components() const;
@@ -136,33 +137,33 @@ public:
   sid &
   next_branch()
   {
-    branch++;
-    sequence = 1;
+    branch_++;
+    sequence_ = 1;
     return *this;
   }
 
   const sid &
   next_level()
   {
-    ++level;
-    branch = sequence = 0;
+    ++level_;
+    branch_ = sequence_ = 0;
     return *this;
   }
 
   sid &
   operator++()
   {
-    if (branch != 0)
+    if (branch_ != 0)
       {
-	sequence++;
+	sequence_++;
       }
-    else if (level != 0)
+    else if (level_ != 0)
       {
-	level++;
+	level_++;
       }
     else
       {
-	rel++;
+	rel_++;
       }
     return *this;
   }
@@ -170,16 +171,17 @@ public:
   sid &
   operator--()
   {
-    if (branch != 0) {
-      sequence--;
-    }
-    else if (level != 0)
+    if (branch_ != 0)
       {
-	level--;
+	sequence_--;
+      }
+    else if (level_ != 0)
+      {
+	level_--;
       }
     else
       {
-      rel--;
+	rel_--;
       }
     return *this;
   }
@@ -187,14 +189,14 @@ public:
   bool
   is_trunk_successor(sid const &id) const
   {
-    return branch == 0 && *this < id;
+    return branch_ == 0 && *this < id;
   }
 
   bool
   branch_greater_than(sid const &id) const
   {
-    return rel == id.rel && level == id.level
-      && branch > id.branch;
+    return rel_ == id.rel_ && level_ == id.level_
+      && branch_ > id.branch_;
   }
 
   bool partial_match(sid const &id) const;
@@ -203,15 +205,15 @@ public:
   bool
   release_only() const
   {
-    return rel != 0 && level == 0;
+    return rel_ != 0 && level_ == 0;
   }
 
   bool
   trunk_match(sid const &id) const
   {
-    return rel == 0
-      || (rel == id.rel && (level == 0
-			    || level == id.level));
+    return rel_ == 0
+      || (rel_ == id.rel_ && (level_ == 0
+			    || level_ == id.level_));
   }
 
   cssc::Failure print(FILE *f) const;
@@ -220,7 +222,7 @@ public:
   cssc::Failure
   dprint(FILE *f) const
   {
-    if (fprintf(f, "%d.%d.%d.%d", rel, level, branch, sequence) < 0)
+    if (fprintf(f, "%d.%d.%d.%d", rel_, level_, branch_, sequence_) < 0)
       {
 	return cssc::make_failure_from_errno(errno);
       }
@@ -232,13 +234,10 @@ public:
   std::ostream& ostream_insert(std::ostream&) const;
 
 private:
-  short rel, level, branch, sequence;
+  short rel_, level_, branch_, sequence_;
 
   int comparable(sid const &id) const;
   int gt(sid const &id) const;
-
-  friend release::release(const sid &s);
-  friend relvbr::relvbr(const sid &s);
 };
 
 inline std::ostream& operator<<(std::ostream& os, const sid& s)
@@ -246,21 +245,21 @@ inline std::ostream& operator<<(std::ostream& os, const sid& s)
   return s.ostream_insert(os);
 }
 
-inline sid::sid(release r): rel(r), level(0), branch(0), sequence(0) {}
+inline sid::sid(release r): rel_(r), level_(0), branch_(0), sequence_(0) {}
 
-inline bool operator >(release i1, sid const &i2) { return i1 > release(i2); }
-inline bool operator <(release i1, sid const &i2) { return i1 < release(i2); }
-inline bool operator >=(release i1, sid const &i2) { return i1 >= release(i2); }
-inline bool operator <=(release i1, sid const &i2) { return i1 <= release(i2); }
-inline bool operator ==(release i1, sid const &i2) { return i1 == release(i2); }
-inline bool operator !=(release i1, sid const &i2) { return i1 != release(i2); }
+inline bool operator >(release i1, sid const &i2) { return i1 > i2.get_release(); }
+inline bool operator <(release i1, sid const &i2) { return i1 < i2.get_release(); }
+inline bool operator >=(release i1, sid const &i2) { return i1 >= i2.get_release(); }
+inline bool operator <=(release i1, sid const &i2) { return i1 <= i2.get_release(); }
+inline bool operator ==(release i1, sid const &i2) { return i1 == i2.get_release(); }
+inline bool operator !=(release i1, sid const &i2) { return i1 != i2.get_release(); }
 
-inline bool operator >(sid const &i1, release i2) { return release(i1) > i2; }
-inline bool operator <(sid const &i1, release i2) { return release(i1) < i2; }
-inline bool operator >=(sid const &i1, release i2) { return release(i1) >= i2; }
-inline bool operator <=(sid const &i1, release i2) { return release(i1) <= i2; }
-inline bool operator ==(sid const &i1, release i2) { return release(i1) == i2; }
-inline bool operator !=(sid const &i1, release i2) { return release(i1) != i2; }
+inline bool operator >(sid const &i1, release i2) { return i1.get_release() > i2; }
+inline bool operator <(sid const &i1, release i2) { return i1.get_release() < i2; }
+inline bool operator >=(sid const &i1, release i2) { return i1.get_release() >= i2; }
+inline bool operator <=(sid const &i1, release i2) { return i1.get_release() <= i2; }
+inline bool operator ==(sid const &i1, release i2) { return i1.get_release() == i2; }
+inline bool operator !=(sid const &i1, release i2) { return i1.get_release() != i2; }
 
 typedef range_list<sid> sid_list;
 

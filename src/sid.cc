@@ -80,6 +80,12 @@ relvbr::relvbr(const char *s)
 	}
 }
 
+relvbr::relvbr(const sid &s)
+  :relvbr(s.get_relvbr())
+{
+  // nothing.
+}
+
 release::release(const char *s)
   : release() {
 	if (s == NULL) {
@@ -103,131 +109,164 @@ sid::null_sid()
 }
 
 sid::sid(const char *s)
-  : rel(-1), level(0), branch(0), sequence(0) {
+  : rel_(-1), level_(0), branch_(0), sequence_(0) {
         ASSERT(s != NULL);
-	rel = get_comp(s);
-	level = get_comp(s);
-	branch = get_comp(s);
-	sequence = get_comp(s);
+	rel_ = get_comp(s);
+	level_ = get_comp(s);
+	branch_ = get_comp(s);
+	sequence_ = get_comp(s);
 
-	if (*s != '\0' || rel == 0 || sequence == -1) {
-		rel = -1;
-	}
+	if (*s != '\0' || rel_ == 0 || sequence_ == -1)
+	  {
+	    rel_ = -1;
+	  }
 }
 
 int
-sid::comparable(sid const &id) const {
-	if (!valid() || !id.valid()) {
-		return 0;
-	}
-	if (branch != id.branch) {
-		return 0;
-	}
-	if (branch != 0 && rel != id.rel && level != id.level) {
-		return 0;
-	}
-	return 1;
+sid::comparable(sid const &id) const
+{
+  if (!valid() || !id.valid())
+    {
+      return 0;
+    }
+  if (branch_ != id.branch_)
+    {
+      return 0;
+    }
+  if (branch_ != 0 && rel_ != id.rel_ && level_ != id.level_)
+    {
+      return 0;
+    }
+  return 1;
 }
 
 int
 sid::gt(sid const &id) const {
-	if (rel > id.rel) {
-		return 1;
-	}
-	if (rel != id.rel) {
-		return 0;
-	}
-	if (level > id.level) {
-		return 1;
-	}
-	if (level != id.level) {
-		return 0;
-	}
+	if (rel_ > id.rel_)
+	  {
+	    return 1;
+	  }
+	if (rel_ != id.rel_)
+	  {
+	    return 0;
+	  }
+	if (level_ > id.level_)
+	  {
+	    return 1;
+	  }
+	if (level_ != id.level_)
+	  {
+	    return 0;
+	  }
 #if 0
-	if (branch > id.branch) {
+	if (branch_ > id.branch_)
+	  {
 		return 1;
 	}
-	if (branch != id.branch) {
+	if (branch_ != id.branch_)
+	  {
 		return 0;
 	}
 #endif
-	return sequence > id.sequence;
+	return sequence_ > id.sequence_;
 }
 
 bool
-sid::gte(sid const &id) const {
-	if (rel > id.rel) {
-		return true;
-	}
-	if (rel != id.rel) {
-		return false;
-	}
-	if (level > id.level) {
-		return true;
-	}
-	if (level != id.level) {
-		return false;
-	}
+sid::gte(sid const &id) const
+{
+  if (rel_ > id.rel_)
+    {
+      return true;
+    }
+  if (rel_ != id.rel_)
+    {
+      return false;
+    }
+  if (level_ > id.level_)
+    {
+      return true;
+    }
+  if (level_ != id.level_)
+    {
+      return false;
+    }
 #if 0
-	// XXX: why is this code commented out?
-	if (branch > id.branch) {
-		return true;
-	}
-	if (branch != id.branch) {
-		return false;
-	}
+  // XXX: why is this code commented out?
+  if (branch_ > id.branch_)
+    {
+      return true;
+    }
+  if (branch_ != id.branch_)
+    {
+      return false;
+    }
 #endif
-	return sequence >= id.sequence;
+  return sequence_ >= id.sequence_;
 }
 
 bool
-sid::partial_match(sid const &id) const {
-	if (!comparable(id)) {
-		return false;
-	}
+sid::partial_match(sid const &id) const
+{
+  if (!comparable(id))
+    {
+      return false;
+    }
 
-	if (rel == 0) {
-		return true;
-	}
-	if (rel != id.rel) {
-		return false;
-	}
-	if (level == 0) {
-		return true;
-	}
-	if (level != id.level) {
-		return false;
-	}
-	if (branch == 0) {
-		return true;
-	}
-	if (branch != id.branch) {
-		return false;
-	}
-	return sequence == 0 || sequence == id.rel;
+  if (rel_ == 0)
+    {
+      return true;
+    }
+  if (rel_ != id.rel_)
+    {
+      return false;
+    }
+  if (level_ == 0)
+    {
+      return true;
+    }
+  if (level_ != id.level_)
+    {
+      return false;
+    }
+  if (branch_ == 0)
+    {
+      return true;
+    }
+  if (branch_ != id.branch_)
+    {
+      return false;
+    }
+  // TODO: shouldn't this be sequence_ == id.rel_?
+  return sequence_ == 0 || sequence_ == id.rel_;
 }
 
 sid
-sid::successor() const {
-	if (is_null()) {
-		return sid(1, 1, 0, 0);
-	} else if (branch != 0) {
-	        short next_seq = sequence;
-		++next_seq;
-		return sid(rel, level, branch, next_seq);
-	} else {
-	        short next_lev = level;
-		++next_lev;
-		return sid(rel, next_lev, 0, 0);
-	}
+sid::successor() const
+{
+  if (is_null())
+    {
+      return sid(1, 1, 0, 0);
+    }
+  else if (branch_ != 0)
+    {
+      short next_seq = sequence_;
+      ++next_seq;
+      return sid(rel_, level_, branch_, next_seq);
+    }
+  else
+    {
+      short next_lev = level_;
+      ++next_lev;
+      return sid(rel_, next_lev, 0, 0);
+    }
 }
 
 int sid::components() const
 {
-  if (valid() && rel)
-    if (level)
-      if (branch)
-	if (sequence)
+  if (valid() && rel_)
+    if (level_)
+      if (branch_)
+	if (sequence_)
 	  return   4;
 	else
 	  return 3;
@@ -251,7 +290,7 @@ bool sid::matches(const sid &m, int nfields) const
   else
     --nfields;
 
-  if (rel != m.rel)
+  if (rel_ != m.rel_)
     return false;
 
   if (0 == nfields)
@@ -259,7 +298,7 @@ bool sid::matches(const sid &m, int nfields) const
   else
     --nfields;
 
-  if (level != m.level)
+  if (level_ != m.level_)
     return false;
 
   if (0 == nfields)
@@ -267,7 +306,7 @@ bool sid::matches(const sid &m, int nfields) const
   else
     --nfields;
 
-  if (branch != m.branch)
+  if (branch_ != m.branch_)
     return false;
 
   if (0 == nfields)
@@ -275,7 +314,7 @@ bool sid::matches(const sid &m, int nfields) const
   else
     --nfields;
 
-  if (sequence != m.sequence)
+  if (sequence_ != m.sequence_)
     return false;
 
   return true;
@@ -283,43 +322,48 @@ bool sid::matches(const sid &m, int nfields) const
 
 release sid::get_release() const
 {
-  return rel;
+  return rel_;
+}
+
+relvbr sid::get_relvbr() const
+{
+  return relvbr(rel_, level_, branch_);
 }
 
 
-
 cssc::Failure
-sid::print(FILE *out) const {
-	ASSERT(valid());
-	ASSERT(rel != 0);
+sid::print(FILE *out) const
+{
+  ASSERT(valid());
+  ASSERT(rel_ != 0);
 
-	if (printf_failed(fprintf(out, "%d", rel))
-	    || (level != 0
-		&& (printf_failed(fprintf(out, ".%d", level))
-	            || (branch != 0
-			&& (printf_failed(fprintf(out, ".%d", branch))
-			    || (sequence != 0
-				&& printf_failed(fprintf(out, ".%d",
-							 sequence))))))))
-	  {
-	    return cssc::make_failure_from_errno(errno);
-	  }
-	return cssc::Failure::Ok();
+  if (printf_failed(fprintf(out, "%d", rel_))
+      || (level_ != 0
+	  && (printf_failed(fprintf(out, ".%d", level_))
+	      || (branch_ != 0
+		  && (printf_failed(fprintf(out, ".%d", branch_))
+		      || (sequence_ != 0
+			  && printf_failed(fprintf(out, ".%d",
+						   sequence_))))))))
+    {
+      return cssc::make_failure_from_errno(errno);
+    }
+  return cssc::Failure::Ok();
 }
 
 
 std::ostream& sid::ostream_insert(std::ostream& os) const
 {
-  os << rel;
-  if (level)
+  os << rel_;
+  if (level_)
     {
-      os << '.' << level;
-      if (branch)
+      os << '.' << level_;
+      if (branch_)
 	{
-	  os << '.' << branch;
-	  if (sequence)
+	  os << '.' << branch_;
+	  if (sequence_)
 	    {
-	      os << '.' << sequence;
+	      os << '.' << sequence_;
 	    }
 	}
     }
@@ -336,25 +380,25 @@ sid::printf(FILE *out, char c, bool force_zero /*=false*/) const {
 
 	switch (c) {
 	case 'R':
-		n = rel;
+		n = rel_;
 		break;
 
 	case 'L':
-		n = level;
+		n = level_;
 		break;
 
 	case 'B':
 	        // this field is completely blank for trunk revisions.
-                if (!force_zero && 0 == branch && 0 == sequence)
+                if (!force_zero && 0 == branch_ && 0 == sequence_)
 		  return cssc::Failure::Ok();
-		n = branch;
+		n = branch_;
 		break;
 
 	case 'S':
 	        // this field is completely blank for trunk revisions.
-                if (!force_zero && 0 == branch && 0 == sequence)
+                if (!force_zero && 0 == branch_ && 0 == sequence_)
 		  return cssc::Failure::Ok();
-		n = sequence;
+		n = sequence_;
 		break;
 
 	default:
@@ -367,16 +411,8 @@ sid::printf(FILE *out, char c, bool force_zero /*=false*/) const {
 	return cssc::Failure::Ok();
 }
 
-relvbr::relvbr(const sid &s)
-  : rel(s.rel),
-    level(s.level),
-    branch(s.branch)
-{
-  // nothing.
-}
-
 release::release(const sid &s)
-  :  rel(s.rel)
+  :  rel(s.get_release())
 {
   // nothing.
 }
