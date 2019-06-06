@@ -59,10 +59,10 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
   do
     {
       ASSERT(y <= seq);
-      if (!delta_table->delta_at_seq_exists(y)) {
+      if (!delta_table_->delta_at_seq_exists(y)) {
 	  corrupt_file("missing sequence number %u", unsigned(y));
       }
-      const delta &d = delta_table->delta_at_seq(y);
+      const delta &d = delta_table_->delta_at_seq(y);
       if (d.prev_seq() == y) {
 	  corrupt_file("sequence number %u cannot be its own predecessor", unsigned(y));
       } else if (d.prev_seq() > y) {
@@ -79,7 +79,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
     {
       if (state.is_included(y))
 	{
-	  const delta &d = delta_table->delta_at_seq(y);
+	  const delta &d = delta_table_->delta_at_seq(y);
 
 	  if (bDebug)
 	    {
@@ -108,7 +108,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
     {
       if (state.is_included(y))
       {
-	const delta &d = delta_table->delta_at_seq(y);
+	const delta &d = delta_table_->delta_at_seq(y);
 
 	if (bDebug)
 	  {
@@ -141,7 +141,7 @@ sccs_file::prepare_seqstate_1(seq_state &state, seq_no seq)
     {
       if (state.is_included(y))
 	{
-	  const delta &d = delta_table->delta_at_seq(y);
+	  const delta &d = delta_table_->delta_at_seq(y);
 	  if (bDebug)
 	    {
 	      const std::vector<seq_no>::size_type len = d.get_ignored_seqnos().size();
@@ -195,8 +195,8 @@ sccs_file::do_get(const string& gname,
 		  bool no_decode,
 		  bool for_edit)
 {
-  ASSERT(mode != CREATE);
-  ASSERT(mode != FIX_CHECKSUM);
+  ASSERT(mode_ != CREATE);
+  ASSERT(mode_ != FIX_CHECKSUM);
 
   cssc::Failure edit_allowed  = edit_mode_permitted(for_edit);
   if (!edit_allowed.ok())	// "get -e" on BK files is not allowed
@@ -213,7 +213,7 @@ sccs_file::do_get(const string& gname,
     {
       return this->write_subst(start, &parms, gotten_delta, force_expansion);
     };
-  return body_scanner_->get(gname, *delta_table, subst,
+  return body_scanner_->get(gname, *delta_table_, subst,
 			    outputfn, flags.encoded, state, parms,
 			    do_kw_subst, debug, show_module, show_sid);
 }

@@ -66,7 +66,7 @@ bool sccs_file::check_loop_free(cssc_delta_table* t,
 	else if (seen[s])
 	  {
 	    errormsg("%s: loop in predecessors at sequence number %u\n",
-		     name.c_str(), static_cast<unsigned>(s));
+		     name_.c_str(), static_cast<unsigned>(s));
 	    ok = false;
 	    break;
 	  }
@@ -125,8 +125,8 @@ bool
 sccs_file::validate_seq_lists(const delta_iterator& d) const
 {
   const char *sz_sid = d->id().as_string().c_str();
-  const seq_no highest_seq = delta_table->highest_seqno();
-  const std::string& sname = name.sfile();
+  const seq_no highest_seq = delta_table_->highest_seqno();
+  const std::string& sname = name_.sfile();
   return (validate_seq_numbers(sname, d->get_included_seqnos(),
 			       sz_sid, highest_seq, "included") &&
 	  validate_seq_numbers(sname, d->get_excluded_seqnos(),
@@ -161,8 +161,8 @@ sccs_file::validate() const
     }
 
   // for each delta:-
-  delta_iterator iter(delta_table.get(), delta_selector::current);
-  const seq_no highest_seq = delta_table->highest_seqno();
+  delta_iterator iter(delta_table_.get(), delta_selector::current);
+  const seq_no highest_seq = delta_table_->highest_seqno();
   int *seen_ever = new int[highest_seq];
   std::vector<bool> seen(highest_seq+1, false);
   std::vector<bool> loopfree(highest_seq+1, false);
@@ -183,38 +183,38 @@ sccs_file::validate() const
       if (iter->inserted() > 99999uL)
 	{
 	  errormsg("%s: SID %s: out-of-range inserted line count %lu",
-		   name.c_str(), sz_sid, iter->inserted());
+		   name_.c_str(), sz_sid, iter->inserted());
 	  retval = false;
 	}
       if (iter->deleted() > 99999uL)
 	{
 	  errormsg("%s: SID %s: out-of-range deleted line count %lu",
-		   name.c_str(), sz_sid, iter->deleted());
+		   name_.c_str(), sz_sid, iter->deleted());
 	  retval = false;
 	}
       if (iter->unchanged() > 99999uL)
 	{
 	  errormsg("%s: SID %s: out-of-range unchanged line count %lu",
-		   name.c_str(), sz_sid, iter->unchanged());
+		   name_.c_str(), sz_sid, iter->unchanged());
 	  retval = false;
 	}
 
       if (!iter->date().valid())
 	{
-	  errormsg("%s: SID %s: invalid date", name.c_str(), sz_sid);
+	  errormsg("%s: SID %s: invalid date", name_.c_str(), sz_sid);
 	  retval = false;
 	}
 
       // check that username contains no colon.
       if (iter->user().empty())
 	{
-	  errormsg("%s: SID %s: empty username", name.c_str(), sz_sid);
+	  errormsg("%s: SID %s: empty username", name_.c_str(), sz_sid);
 	  retval = false;
 	}
       else if (iter->user().find_last_of(':') != std::string::npos)
 	{
 	  errormsg("%s: SID %s: invalid username '%s'",
-		   name.c_str(), sz_sid, iter->user().c_str());
+		   name_.c_str(), sz_sid, iter->user().c_str());
 	  retval = false;
 	}
 
@@ -222,14 +222,14 @@ sccs_file::validate() const
       if (s > highest_seq)
 	{
 	  errormsg("%s: SID %s: invalid seqno %u",
-		   name.c_str(), sz_sid, static_cast<unsigned>(s));
+		   name_.c_str(), sz_sid, static_cast<unsigned>(s));
 	  retval = false;
 	}
 
       if (iter->prev_seq() > highest_seq)
 	{
 	  errormsg("%s: SID %s: invalid predecessor seqno %u",
-		   name.c_str(), sz_sid,
+		   name_.c_str(), sz_sid,
 		   static_cast<unsigned>(iter->prev_seq()));
 	  retval = false;
 	}
@@ -237,13 +237,13 @@ sccs_file::validate() const
       if (seen_ever[s - 1] > 1)
 	{
 	  errormsg("%s: seqno %u appears more than once (%d times)",
-		   name.c_str(), static_cast<unsigned>(s), seen_ever[s - 1]);
+		   name_.c_str(), static_cast<unsigned>(s), seen_ever[s - 1]);
 	  retval = false;		// seqno appears more than once.
 	}
 
       ++seen_ever[s - 1];
 
-      if (!check_loop_free(delta_table.get(), delta_table->delta_at_seq(s).seq(),
+      if (!check_loop_free(delta_table_.get(), delta_table_->delta_at_seq(s).seq(),
 			   loopfree, seen))
 	{
 	  // We already issued an error message.
@@ -255,13 +255,13 @@ sccs_file::validate() const
       // collaborating on the same file).
       if (0 != iter->prev_seq())
 	{
-	  const delta& ancestor(delta_table->delta_at_seq(iter->prev_seq()));
+	  const delta& ancestor(delta_table_->delta_at_seq(iter->prev_seq()));
 	  if (ancestor.date() > iter->date())
 	    {
 	      // Time has apparently gone backward...
 	      warning("%s: date for version %s"
 		       " is later than the date for version %s",
-		       name.c_str(),
+		       name_.c_str(),
 		      ancestor.id().as_string().c_str(),
 		      iter->id().as_string().c_str());
 	    }
@@ -285,14 +285,14 @@ sccs_file::validate() const
     }
 
   // Check username list for invalid entries.
-  for (const auto& username : users)
+  for (const auto& username : users_)
     {
       if (   (username.find_last_of(':')  != std::string::npos)
 	  || (username.find_last_of(' ')  != std::string::npos)
 	  || (username.find_last_of('\t') != std::string::npos))
 	{
 	  errormsg("%s: invalid username '%s'",
-		   name.c_str(), username.c_str());
+		   name_.c_str(), username.c_str());
 	  retval = false;
 	}
     }
@@ -311,30 +311,30 @@ sccs_file::validate() const
 	}
     }
 
-  if (flags.floor > delta_table->highest_release())
+  if (flags.floor > delta_table_->highest_release())
     {
       warning("%s has a release floor of %d but the highest actual release "
 	      "in the file is %d",
-	      name.c_str(), static_cast<int>(flags.floor),
-	      delta_table->highest_release().as_string().c_str());
+	      name_.c_str(), static_cast<int>(flags.floor),
+	      delta_table_->highest_release().as_string().c_str());
     }
 
   if (!flags.default_sid.is_null())
     {
-      const delta* pd = delta_table->find_any(flags.default_sid);
+      const delta* pd = delta_table_->find_any(flags.default_sid);
       if (pd)
 	{
 	  if (pd->removed())
 	    {
 	      warning("%s has a default SID of %s, but that SID has "
 		      "been removed",
-		      name.c_str(), flags.default_sid.as_string().c_str());
+		      name_.c_str(), flags.default_sid.as_string().c_str());
 	    }
 	}
       else
 	{
 	  warning("%s has a default SID of %s, but that SID is not present",
-		  name.c_str(), flags.default_sid.as_string().c_str());
+		  name_.c_str(), flags.default_sid.as_string().c_str());
 	}
     }
 

@@ -66,7 +66,7 @@ sccs_file::admin(const char *file_comment,
 
   if (file_comment != NULL)
     {
-      comments.clear();
+      comments_.clear();
       if (file_comment[0])
 	{
 	  cssc::FailureOr<std::vector<std::string>> comment_lines =
@@ -78,7 +78,7 @@ sccs_file::admin(const char *file_comment,
 	    }
 	  else
 	    {
-	      std::swap(*comment_lines, comments);
+	      std::swap(*comment_lines, comments_);
 	    }
 	}
     }
@@ -271,7 +271,7 @@ sccs_file::admin(const char *file_comment,
 		  errormsg("Unlocking just release %s of %s is not possible, "
 			   "since all releases are locked.  "
 			   "Use admin -dla to unlock all releases.",
-			   flag_value.c_str(), name.c_str());
+			   flag_value.c_str(), name_.c_str());
 		  return false;
 		}
 	      else
@@ -331,14 +331,14 @@ sccs_file::admin(const char *file_comment,
 
   // Erase any required users from the list.
   std::vector<std::string> newusers = add_users;
-  for (const auto& user : users)
+  for (const auto& user : users_)
     {
       if (erase_users.find(user) == erase_users.end())
 	{
 	  newusers.push_back(user);
 	}
     }
-  std::swap(users, newusers);
+  std::swap(users_, newusers);
 
   return true;
 }
@@ -419,7 +419,7 @@ sccs_file::create(const sid &id,
       // Insert the body...
       if (body_insert(&force_binary,
 		      iname,		// input file name
-		      name.xfile().c_str(), // output file name
+		      name_.xfile().c_str(), // output file name
 		      in, out,
 		      &lines, &found_id).ok())
 	{
@@ -440,7 +440,7 @@ sccs_file::create(const sid &id,
       // If so, do we continue with the next?
       if (!found_id)
 	{
-	  no_id_keywords(name.c_str()); // this function normally returns.
+	  no_id_keywords(name_.c_str()); // this function normally returns.
 	}
     }
 

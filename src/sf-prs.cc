@@ -520,8 +520,8 @@ sccs_file::print_delta_key(FILE *out_file,
 	return print_string_list(out, d.comments().cbegin(), d.comments().cend());
 
 	case KEY2('U','N'):
-	if (!users.empty())
-	  return print_string_list(out, users.cbegin(), users.cend());
+	if (!users_.empty())
+	  return print_string_list(out, users_.cbegin(), users_.cend());
 	else
 	  return fprintf_failure(fprintf(out, "%s\n", "none"));
 
@@ -589,7 +589,7 @@ sccs_file::print_delta_key(FILE *out_file,
 	// is no description.
 	// JY Sun Nov 25 01:33:46 2001; Solaris 2.6
 	// prints "none" rather than "(none)".
-	if (comments.empty())
+	if (comments_.empty())
 	  {
 	    if (fputs_failed(fputs("none\n", out)))
 	      return make_failure_from_errno(errno);
@@ -598,7 +598,7 @@ sccs_file::print_delta_key(FILE *out_file,
 	  }
 	else
 	  {
-	    return print_string_list(out, comments.cbegin(), comments.cend());
+	    return print_string_list(out, comments_.cbegin(), comments_.cend());
 	  }
 
 	case KEY2('B','D'):
@@ -609,7 +609,7 @@ sccs_file::print_delta_key(FILE *out_file,
 	  std::string gname = "standard output";
 	  struct subst_parms parms(gname, get_module_name(), out,
 				   cssc::optional<std::string>(),
-				   delta_table->delta_at_seq(d.seq()),
+				   delta_table_->delta_at_seq(d.seq()),
 				   0, sccs_date());
 	  class seq_state state(highest_delta_seqno());
 	  prepare_seqstate(state, d.seq(), sid_list(), sid_list(), sccs_date());
@@ -629,7 +629,7 @@ sccs_file::print_delta_key(FILE *out_file,
 	break;
 
 	case KEY1('F'):
-	if (fputs_failed(fputs(base_part(name.sfile()).c_str(), out)))
+	if (fputs_failed(fputs(base_part(name_.sfile()).c_str(), out)))
 	  {
 	    return make_failure_from_errno(errno);
 	  }
@@ -637,7 +637,7 @@ sccs_file::print_delta_key(FILE *out_file,
 
 	case KEY2('P','N'):
 	{
-	  cssc::FailureOr<std::string> canon = canonify_filename(name.c_str());
+	  cssc::FailureOr<std::string> canon = canonify_filename(name_.c_str());
 	  if (!canon.ok())
 	    return canon.fail();
 	  const std::string path(*canon);
@@ -670,7 +670,7 @@ sccs_file::prs(FILE *out, const char *outname,
 	       const std::string& format, sid rid, sccs_date cutoff_date,
                enum when cutoff_type, delta_selector selector)
 {
-  const_delta_iterator iter(delta_table.get(), selector);
+  const_delta_iterator iter(delta_table_.get(), selector);
   const char *fmt = format.c_str();
   bool matched = false;
 

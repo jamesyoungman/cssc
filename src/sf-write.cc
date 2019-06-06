@@ -48,7 +48,7 @@ using cssc::Failure;
 void
 sccs_file::xfile_error(const char *msg) const
 {
-  errormsg_with_errno("%s: %s", name.xfile().c_str(), msg);
+  errormsg_with_errno("%s: %s", name_.xfile().c_str(), msg);
 }
 
 
@@ -57,15 +57,15 @@ sccs_file::xfile_error(const char *msg) const
 
 cssc::FailureOr<FILE*>
 sccs_file::start_update() {
-        ASSERT(mode != READ);
+        ASSERT(mode_ != READ);
 
-        if (mode == CREATE && file_exists(name.c_str()))
+        if (mode_ == CREATE && file_exists(name_.c_str()))
           {
 	    return cssc::make_failure_builder(cssc::errorcode::DeclineToCreateHistoryFileThatAlreadyExists)
-	      .diagnose() << name.sfile() << ": SCCS file already exists";
+	      .diagnose() << name_.sfile() << ": SCCS file already exists";
           }
 
-        std::string xname = name.xfile();
+        std::string xname = name_.xfile();
 
         // real SCCS silently destroys any existing file named
         // x.[whatever].  Dave Bodenstab <imdave@mcs.net> pointed out
@@ -101,7 +101,7 @@ sccs_file::start_update() {
         else
           {
 	    FILE *out = *fof;
-            xfile_created = true;
+            xfile_created_ = true;
 
             if (fputs_failed(fputs("\001h-----\n", out)))
               {
@@ -196,7 +196,7 @@ sccs_file::write(FILE *out) const
 {
   cssc::Failure result = [this, out]()
     {
-      const_delta_iterator iter(delta_table.get(), delta_selector::all);
+      const_delta_iterator iter(delta_table_.get(), delta_selector::all);
       while (iter.next())
 	{
 	  cssc::Failure written = write_delta(out, *iter.operator->());
@@ -209,7 +209,7 @@ sccs_file::write(FILE *out) const
 	  return cssc::make_failure_from_errno(errno);
 	}
 
-      for (const auto& user : users)
+      for (const auto& user : users_)
 	{
 	  ASSERT(user[0] != '\001');
 	  if (printf_failed(fprintf(out, "%s\n", user.c_str())))
@@ -401,7 +401,7 @@ sccs_file::write(FILE *out) const
 	  return cssc::make_failure_from_errno(errno);
 	}
 
-      for (const auto& comment : comments)
+      for (const auto& comment : comments_)
 	{
 	  ASSERT(comment[0] != '\001');
 	  if (printf_failed(fprintf(out, "%s\n", comment.c_str())))
@@ -513,7 +513,7 @@ sccs_file::end_update(FILE **pout)
 	}
     });
 
-  const std::string xname = name.xfile();
+  const std::string xname = name_.xfile();
   auto diagnose = [xname](Failure f) -> cssc::FailureBuilder
     {
       return cssc::FailureBuilder(f).diagnose()
@@ -559,7 +559,7 @@ sccs_file::end_update(FILE **pout)
 	  Failure hacked = rehack_encoded_flag(*pout, &sum);
 	  if (!hacked.ok())
 	    return diagnose(hacked) << "failed to update encoded flag in "
-				    << name.xfile();
+				    << name_.xfile();
 	}
 
 
@@ -594,34 +594,34 @@ sccs_file::end_update(FILE **pout)
 
       cssc::Failure retval = cssc::Failure::Ok();
 
-      if (mode != CREATE && remove(name.c_str()) == -1)
+      if (mode_ != CREATE && remove(name_.c_str()) == -1)
 	{
 	  return cssc::make_failure_builder_from_errno(errno)
-	    .diagnose() << "failed to remove " << name.c_str();
+	    .diagnose() << "failed to remove " << name_.c_str();
 	}
-      else if (rename(xname.c_str(), name.c_str()) == -1)
+      else if (rename(xname.c_str(), name_.c_str()) == -1)
 	{
 	  return cssc::make_failure_builder_from_errno(errno)
 	    .diagnose() << "failed to rename " << xname.c_str()
-			<< " to " << name.c_str();
+			<< " to " << name_.c_str();
 	}
       else
 	{
-	  xfile_created = false;    // What was the x-file is now the new s-file.
+	  xfile_created_ = false;    // What was the x-file is now the new s-file.
 	  retval = cssc::Failure::Ok();
 	}
 
 #if defined __CYGWIN__
       int dummy_sum;
 
-      std::string sfile_name = name.sfile();
+      std::string sfile_name = name_.sfile();
       // We will get a compilation error on this next line now,
       // because the type of open_sccs_file has changed.  But
       // I don't have access to a Cygwin system for testing.
       f = open_sccs_file(sfile_name.c_str(), READ, &dummy_sum);
       if (0 == f)
 	{
-	  s_missing_quit("Cannot re-open SCCS file %s for reading", name.c_str());
+	  s_missing_quit("Cannot re-open SCCS file %s for reading", name_.c_str());
 	  retval = cssc::make_failure_from_errno(errno);
 	}
 #endif
@@ -643,7 +643,7 @@ sccs_file::update_checksum()
 bool
 sccs_file::update()
 {
-  ASSERT(mode != CREATE);
+  ASSERT(mode_ != CREATE);
   ASSERT(body_scanner_);
 
   if (!body_scanner_->seek_to_body().ok())
@@ -669,7 +669,7 @@ sccs_file::update()
   Failure copied = body_scanner_->copy_to(out);
   if (!copied.ok())
     {
-      std::string msg = "write error on " + name.xfile() + ": "
+      std::string msg = "write error on " + name_.xfile() + ": "
 	+ copied.to_string();
       xfile_error(msg.c_str());
       return false;

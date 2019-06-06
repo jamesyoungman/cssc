@@ -73,7 +73,7 @@ sccs_file::end_update(FILE **pout, const delta &d)
       fclose(*pout);
       *pout = NULL;
       return cssc::make_failure_builder_from_errno(saved_errno)
-	.diagnose() << "failed to flush " << name.xfile();
+	.diagnose() << "failed to flush " << name_.xfile();
     }
 
   rewind(*pout);
@@ -86,11 +86,11 @@ sccs_file::end_update(FILE **pout, const delta &d)
       fclose(*pout);
       *pout = NULL;
       return cssc::make_failure_builder_from_errno(errno)
-	.diagnose() << "failed to write to " << name.xfile();
+	.diagnose() << "failed to write to " << name_.xfile();
     }
 
   cssc::Failure updated = end_update(pout);
-  delta_table->prepend(d);
+  delta_table_->prepend(d);
   return updated;
 }
 

@@ -83,7 +83,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
       requested = flags.default_sid;
       if (requested.is_null())  // no default?
         {                       // get the latest.
-          requested = release(delta_table->highest_release());
+          requested = release(delta_table_->highest_release());
 
           if (!get_top_delta && requested.is_null())
           {
@@ -118,7 +118,7 @@ sccs_file::find_requested_sid(sid requested, sid &found, bool get_top_delta) con
   // possible to determine which SID this is by
   // looking at the tree of SIDs alone.
 
-  const_delta_iterator iter(delta_table.get(), delta_selector::current);
+  const_delta_iterator iter(delta_table_.get(), delta_selector::current);
   while (iter.next())
     {
       if (sid_matches(requested, iter->id(), get_top_delta))
@@ -149,10 +149,10 @@ bool
 sccs_file::find_requested_seqno(seq_no requested, sid &found) const
 {
   if (requested > 0
-      && requested <= delta_table->highest_seqno()
-      && delta_table->delta_at_seq_exists(requested))
+      && requested <= delta_table_->highest_seqno()
+      && delta_table_->delta_at_seq_exists(requested))
     {
-      found = delta_table->delta_at_seq(requested).id();
+      found = delta_table_->delta_at_seq(requested).id();
       return true;
     }
   else
@@ -245,7 +245,7 @@ sccs_file::find_next_sid(sid requested, sid got,
 		{
                   warning("%s: creating a branch "
                           "due to concurrent edit",
-                          name.c_str());
+                          name_.c_str());
 		  branch_again = true;
 		}
 	      else
@@ -265,7 +265,7 @@ sccs_file::find_next_sid(sid requested, sid got,
                 {
                   warning("%s: creating a branch "
                           "due to concurrent edit",
-                          name.c_str());
+                          name_.c_str());
                   branch_again = true;
                 }
               else
@@ -277,7 +277,7 @@ sccs_file::find_next_sid(sid requested, sid got,
                    */
                   warning("%s: requested SID is "
                           "already being edited; this should not happen",
-                          name.c_str());
+                          name_.c_str());
                   *pfailed = 1;
                   return next; // FAILURE
                 }
@@ -349,7 +349,7 @@ sccs_file::test_locks(sid got, const sccs_pfile& pf) const
       || flags.locked.member(got))
     {
       errormsg("%s: Requested release is locked.",
-	       name.c_str());
+	       name_.c_str());
       return false;
     }
 
@@ -360,7 +360,7 @@ sccs_file::test_locks(sid got, const sccs_pfile& pf) const
 	{
 	  std::string datestring(it->date.as_string());
 	  errormsg("%s: Requested SID locked by '%s' at %s.\n",
-		   name.c_str(),
+		   name_.c_str(),
 		   it->user.c_str(),
 		   datestring.c_str());
 	  return false;

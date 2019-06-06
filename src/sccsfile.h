@@ -337,17 +337,16 @@ private:
     sccs_file_flags();
   } flags;
 
-  // TODO: rename member variables to consistently have a trailing "_".
-  sccs_name& name;
+  sccs_name& name_;
   bool checksum_valid_;
-  enum sccs_file_open_mode mode;
-  bool xfile_created;
+  enum sccs_file_open_mode mode_;
+  bool xfile_created_;
   bool edit_mode_ok_;
-  bool sfile_executable;
-  std::unique_ptr<cssc_delta_table> delta_table;
+  bool sfile_executable_;
+  std::unique_ptr<cssc_delta_table> delta_table_;
   std::unique_ptr<sccs_file_body_scanner> body_scanner_;
-  std::vector<std::string> users;	// FIXME: consider something more efficient.
-  std::vector<std::string> comments;
+  std::vector<std::string> users_;	// FIXME: consider something more efficient.
+  std::vector<std::string> comments_;
 };
 
 /* sf-prt.cc */

@@ -55,7 +55,7 @@ sccs_file::corrupt_file(const char *fmt, ...) const {
     {
       warning("%s: error message too long for buffer, so the "
               "next message will lack some relevant detail",
-              name.c_str());
+              name_.c_str());
       p = fmt;                  // best effort
     }
   else
@@ -63,7 +63,7 @@ sccs_file::corrupt_file(const char *fmt, ...) const {
       p = buf;
     }
   s_corrupt_quit("%s: Corrupted SCCS file. (%s)",
-                 name.c_str(), p);
+                 name_.c_str(), p);
 }
 
 
@@ -75,7 +75,7 @@ sccs_file::edit_mode_permitted(bool editing) const
   if (editing && !edit_mode_ok_)
     {
       return cssc::make_failure_builder(cssc::errorcode::CannotEditBitkeeperFile)
-	<< name.c_str() << " is a BitKeeper file.  Checking BitKeeper files out "
+	<< name_.c_str() << " is a BitKeeper file.  Checking BitKeeper files out "
 	<< "for editing (or otherwise modifying them) is not supported "
 	<< "at the moment, sorry.";
     }
@@ -98,7 +98,7 @@ sccs_file::get_module_name() const
   if (flags.module)
     return *flags.module;
   else
-    return name.gfile();
+    return name_.gfile();
 }
 
 /* Constructor for the class sccs_file.  Unless the SCCS file is being
@@ -108,16 +108,16 @@ sccs_file::get_module_name() const
 sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
 		     ParserOptions opts)
   : flags(),
-    name(n), checksum_valid_(false), mode(m), xfile_created(false), edit_mode_ok_(true),
-    sfile_executable(false),
-    delta_table(std::make_unique<cssc_delta_table>()),
-    body_scanner_(), users(), comments()
+    name_(n), checksum_valid_(false), mode_(m), xfile_created_(false), edit_mode_ok_(true),
+    sfile_executable_(false),
+    delta_table_(std::make_unique<cssc_delta_table>()),
+    body_scanner_(), users_(), comments_()
 {
-  if (!name.valid())
+  if (!name_.valid())
     {
       ctor_fail(-1,
                 "%s: Not an SCCS file.  Did you specify the right file?",
-                name.c_str());
+                name_.c_str());
     }
 
   flags.no_id_keywords_is_fatal = 0;
@@ -138,17 +138,17 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
 
   ASSERT(!flags.default_sid.valid());
 
-  if (mode != READ)
+  if (mode_ != READ)
     {
-      auto locked = name.lock();
+      auto locked = name_.lock();
       if (!locked.ok())
         {
           ctor_fail(-1, "%s: SCCS file is locked (%s).  Try again later.",
-		    name.c_str(), locked.to_string().c_str());
+		    name_.c_str(), locked.to_string().c_str());
         }
     }
 
-  if (mode == CREATE)
+  if (mode_ == CREATE)
     {
       /* f is NULL in this case. */
       return;
@@ -157,26 +157,26 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
   // Even if we are going to change the s-file, we do it by writing
   // a new x-file and then renaming it.   This means that we open
   // the s-file read-only.
-  if (mode == FIX_CHECKSUM)
+  if (mode_ == FIX_CHECKSUM)
     {
       ParserOptions new_opts;
       new_opts = opts;
       new_opts.set_silent_checksum_error(true);
       opts = new_opts;
     }
-  auto failure_or_opened = sccs_file_parser::open_sccs_file(name.sfile(), READ, opts);
+  auto failure_or_opened = sccs_file_parser::open_sccs_file(name_.sfile(), READ, opts);
   if (!failure_or_opened.ok())
     {
-      ctor_fail(-1, "%s: Cannot open SCCS file.\n", name.c_str());
+      ctor_fail(-1, "%s: Cannot open SCCS file.\n", name_.c_str());
     }
   auto opened = std::move(*failure_or_opened);
   // We do not support edit operations on Bitkeeper files.
   edit_mode_ok_ = !opened->is_bk;
-  set_sfile_executable (opened->is_executable);
+  set_sfile_executable(opened->is_executable);
 
   body_scanner_ = std::move(opened->body_scanner);
 
-  if (mode != READ)
+  if (mode_ != READ)
     {
       cssc::Failure edit_permitted = edit_mode_permitted(true);
       if (!edit_permitted.ok())
@@ -184,7 +184,7 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
           ctor_fail(-1, "%s", edit_permitted.to_string().c_str());
         }
     }
-  if (FIX_CHECKSUM == mode)
+  if (FIX_CHECKSUM == mode_)
     {
       // This supports the -z option of admin.
       checksum_valid_ = true;
@@ -193,8 +193,8 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
     {
       checksum_valid_ = opened->checksum_valid_;
     }
-  delta_table = std::move(opened->delta_table);
-  std::swap(opened->users, users);
+  delta_table_ = std::move(opened->delta_table);
+  std::swap(opened->users, users_);
 
   for (const auto& setting : opened->flags)
     {
@@ -311,7 +311,7 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
 	break;
       }
     }
-  std::swap(comments, opened->comments);
+  std::swap(comments_, opened->comments);
 }
 
 
@@ -323,8 +323,8 @@ sccs_file::find_most_recent_sid(sid id) const {
         sccs_date newest;
         sid found;
 
-        ASSERT(nullptr != delta_table);
-        const_delta_iterator iter(delta_table.get(), delta_selector::current);
+        ASSERT(nullptr != delta_table_);
+        const_delta_iterator iter(delta_table_.get(), delta_selector::current);
 
         while (iter.next()) {
           if (id.trunk_match(iter->id())) {
@@ -344,9 +344,9 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
   d = sccs_date();
   bool found = false;
 
-  ASSERT(nullptr != delta_table);
+  ASSERT(nullptr != delta_table_);
 
-  const_delta_iterator iter(delta_table.get(), delta_selector::current);
+  const_delta_iterator iter(delta_table_.get(), delta_selector::current);
   while (iter.next())
     {
       if (!found || iter->date() > d)
@@ -422,38 +422,38 @@ sccs_file::is_delta_creator(const char *user, sid id) const
 
 const delta * sccs_file::find_delta(sid id) const
 {
-  ASSERT(nullptr != delta_table);
-  return delta_table->find(id);
+  ASSERT(nullptr != delta_table_);
+  return delta_table_->find(id);
 }
 
 const delta * sccs_file::find_any_delta(sid id) const
 {
-  ASSERT(nullptr != delta_table);
-  return delta_table->find_any(id);
+  ASSERT(nullptr != delta_table_);
+  return delta_table_->find_any(id);
 }
 
 delta * sccs_file::find_delta(sid id)
 {
-  ASSERT(nullptr != delta_table);
-  return delta_table->find(id);
+  ASSERT(nullptr != delta_table_);
+  return delta_table_->find(id);
 }
 
 seq_no sccs_file::highest_delta_seqno() const
 {
-  ASSERT(nullptr != delta_table);
-  return delta_table->highest_seqno();
+  ASSERT(nullptr != delta_table_);
+  return delta_table_->highest_seqno();
 }
 
 sid sccs_file::highest_delta_release() const
 {
-  ASSERT(nullptr != delta_table);
-  return delta_table->highest_release();
+  ASSERT(nullptr != delta_table_);
+  return delta_table_->highest_release();
 }
 
 sid sccs_file::seq_to_sid(seq_no seq) const
 {
-  ASSERT(nullptr != delta_table);
-  return delta_table->delta_at_seq(seq).id();
+  ASSERT(nullptr != delta_table_);
+  return delta_table_->delta_at_seq(seq).id();
 }
 
 
@@ -461,14 +461,14 @@ sid sccs_file::seq_to_sid(seq_no seq) const
 
 sccs_file::~sccs_file()
 {
-  if (mode != READ)
+  if (mode_ != READ)
     {
-      name.unlock();
+      name_.unlock();
     }
 
-  if (xfile_created)
+  if (xfile_created_)
     {
-      remove(name.xfile().c_str());
+      remove(name_.xfile().c_str());
     }
 }
 
@@ -508,20 +508,20 @@ sccs_file::is_known_keyword_char(char c)
 void
 sccs_file::set_sfile_executable(bool state)
 {
-  sfile_executable = state;
+  sfile_executable_ = state;
 }
 
 bool
 sccs_file::gfile_should_be_executable() const
 {
-  return sfile_executable || flags.executable;
+  return sfile_executable_ || flags.executable;
 }
 
 
 bool
 sccs_file::sfile_should_be_executable() const
 {
-  return sfile_executable;
+  return sfile_executable_;
 }
 
 sccs_file::sccs_file_flags::sccs_file_flags()

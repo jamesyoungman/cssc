@@ -299,7 +299,7 @@ sccs_file::prt(FILE *out,
 	}
 
       bool stop_now = false;
-      const_delta_iterator iter(delta_table.get(), selector);
+      const_delta_iterator iter(delta_table_.get(), selector);
 
       while (!stop_now && iter.next())
 	{
@@ -315,7 +315,7 @@ sccs_file::prt(FILE *out,
 
 	  if (exclude.enabled)	// -y, -c, or -r option.
 	    {
-	      TRY_PRINTF(fprintf(out, "%s:\t", name.c_str()));
+	      TRY_PRINTF(fprintf(out, "%s:\t", name_.c_str()));
 	    }
 	  else
 	    {
@@ -407,7 +407,7 @@ sccs_file::prt(FILE *out,
   if (print_users)
     {
       TRY_PRINTF(fprintf(out, "\n Users allowed to make deltas -- \n"));
-      Failure printed = print_string_list(out, users, "\t", "\n", "everyone");
+      Failure printed = print_string_list(out, users_, "\t", "\n", "everyone");
       if (!printed.ok())
 	return printed;
       TRY_PUTC(putc('\n', out));
@@ -509,7 +509,7 @@ sccs_file::prt(FILE *out,
   if (print_desc)
     {
       TRY_PRINTF(fprintf(out, "\nDescription --\n"));
-      TRY_OPERATION(print_string_list(out, comments, "\t", "\n", "none"));
+      TRY_OPERATION(print_string_list(out, comments_, "\t", "\n", "none"));
       TRY_PUTC(putc('\n', out));
     }
 
@@ -517,7 +517,7 @@ sccs_file::prt(FILE *out,
     {
       // seek_to_body() is a non-const member, so we have this
       // silly workaround.
-      TRY_OPERATION(body_scanner_->print_body(out, name.c_str()));
+      TRY_OPERATION(body_scanner_->print_body(out, name_.c_str()));
     }
 
   return Failure::Ok();

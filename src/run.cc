@@ -190,7 +190,7 @@ sccs_file::check_mrs(const std::vector<std::string>& mrs)
   if (flags.mr_checker->empty())
     return 0;
 
-  std::vector<std::string> args{name.gfile()};
+  std::vector<std::string> args{name_.gfile()};
   args.reserve(mrs.size() + 1);
   std::copy(mrs.cbegin(), mrs.cend(), std::back_inserter(args));
   return run(*flags.mr_checker, args);

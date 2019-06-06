@@ -606,13 +606,13 @@ sccs_file::get(FILE *out, const std::string& gname,
                bool show_sid, bool show_module, bool debug,
 	       bool for_edit)
 {
-  ASSERT(nullptr != delta_table);
+  ASSERT(nullptr != delta_table_);
 
   seq_state state(highest_delta_seqno());
   const delta *d = find_delta(id);
   ASSERT(d != NULL);
 
-  ASSERT(nullptr != delta_table);
+  ASSERT(nullptr != delta_table_);
 
   cssc::Failure edit_allowed = edit_mode_permitted(for_edit);
   if (!edit_allowed.ok())	// "get -e" on BK files is not allowed
@@ -627,9 +627,9 @@ sccs_file::get(FILE *out, const std::string& gname,
 
   for (seq_no s = d->seq(); s>0; s--)
     {
-      if (delta_table->delta_at_seq_exists(s))
+      if (delta_table_->delta_at_seq_exists(s))
 	{
-	    const struct delta & del = delta_table->delta_at_seq(s);
+	    const struct delta & del = delta_table_->delta_at_seq(s);
 
 	    if (!state.is_excluded(s) && !set)
 	      {
@@ -645,14 +645,14 @@ sccs_file::get(FILE *out, const std::string& gname,
     {
       for (seq_no s = d->seq(); s>0; s--)
         {
-          if (!delta_table->delta_at_seq_exists(s))
+          if (!delta_table_->delta_at_seq_exists(s))
             {
               /* skip non-existent seq number */
               continue;
             }
 
           fprintf(stderr, "%4d (", s);
-          delta_table->delta_at_seq(s).id().dprint(stderr);
+          delta_table_->delta_at_seq(s).id().dprint(stderr);
           fprintf(stderr, ") ");
 
           if (state.is_explicitly_tagged(s))
@@ -685,10 +685,10 @@ sccs_file::get(FILE *out, const std::string& gname,
 
       for (seq_no s = d->seq(); s>0; s--)
         {
-          if (delta_table->delta_at_seq_exists(s)
+          if (delta_table_->delta_at_seq_exists(s)
 	      && state.is_included(s))
 	    {
-	      const struct delta & it = delta_table->delta_at_seq(s);
+	      const struct delta & it = delta_table_->delta_at_seq(s);
 
 	      fprintf (summary_file, "%s    ",
 		       first ? "" : "\n");
@@ -732,7 +732,7 @@ sccs_file::get(FILE *out, const std::string& gname,
   // substituted, IF keyword substitution was being done.
   if (keywords && !parms.found_id)
     {
-      no_id_keywords(name.c_str());
+      no_id_keywords(name_.c_str());
       // this function normally returns.
     }
 

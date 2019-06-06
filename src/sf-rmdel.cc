@@ -55,11 +55,11 @@ sccs_file::rmdel(sid id)
     {
       return cssc::make_failure_builder(cssc::errorcode::UsagePreconditionFailureSidNotFound)
 	.diagnose()
-	<< "Revision " << id << " is not present in " << name.sfile();
+	<< "Revision " << id << " is not present in " << name_.sfile();
     }
   const seq_no seq = d->seq();
 
-  const_delta_iterator iter(delta_table.get(), delta_selector::current);
+  const_delta_iterator iter(delta_table_.get(), delta_selector::current);
   while (iter.next())
     {
       if (iter->prev_seq() == seq)
@@ -68,7 +68,7 @@ sccs_file::rmdel(sid id)
 	  return cssc::make_failure_builder(cssc::errorcode::UsagePreconditionFailureDeltaHasSuccessor)
 	    .diagnose()
 	    << "Revision " << id << " has a successor " << prev_sid
-	    << " in " << name.sfile();
+	    << " in " << name_.sfile();
 	}
       if (is_seqlist_member(seq, iter->get_included_seqnos())
 	  || is_seqlist_member(seq, iter->get_excluded_seqnos())
@@ -76,7 +76,7 @@ sccs_file::rmdel(sid id)
 	{
 	  return cssc::make_failure_builder(cssc::errorcode::UsagePreconditionFailureDeltaInUse)
 	    .diagnose()
-	    << "Revision " << id << " is used by " << iter->id() << " in " << name.sfile();
+	    << "Revision " << id << " is used by " << iter->id() << " in " << name_.sfile();
 	}
     }
 

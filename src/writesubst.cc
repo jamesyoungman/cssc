@@ -127,14 +127,14 @@ sccs_file::emit_keyletter_expansion(FILE *out, struct subst_parms *parms, const 
       return false;
 
     case 'F':
-      ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(base_part(name.sfile()).c_str(),
+      ERRNO_ERROR_IF_NONZERO(fputs_failed(fputs(base_part(name_.sfile()).c_str(),
 						out)));
       return false;
 
     case 'P':
       if (1) // introduce new scope...
 	{
-	  cssc::FailureOr<string> canon = canonify_filename(name.c_str());
+	  cssc::FailureOr<string> canon = canonify_filename(name_.c_str());
 	  if (!canon.ok())
 	    return canon.fail();
 	  string path(*canon);

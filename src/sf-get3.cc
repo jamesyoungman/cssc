@@ -43,8 +43,8 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
 			      sid_list exclude, sccs_date cutoff_date)
 {
 
-  ASSERT(nullptr != delta_table);
-  const_delta_iterator iter(delta_table.get(), delta_selector::current);
+  ASSERT(nullptr != delta_table_);
+  const_delta_iterator iter(delta_table_.get(), delta_selector::current);
 
   while (iter.next())
     {
@@ -67,9 +67,9 @@ sccs_file::prepare_seqstate_2(seq_state &state, sid_list include,
           state.set_excluded(iter->seq());
         }
 
-      ASSERT(nullptr != delta_table);
+      ASSERT(nullptr != delta_table_);
     }
-  ASSERT(nullptr != delta_table);
+  ASSERT(nullptr != delta_table_);
 }
 
 
@@ -87,14 +87,14 @@ void sccs_file::prepare_seqstate(seq_state &state, seq_no seq,
 bool
 sccs_file::authorised() const
 {
-  if (users.empty())
+  if (users_.empty())
     {
       // If there is no list of authorized users, all users are authorised.
       return true;
     }
 
   const char *myself = get_user_name();
-  for (const auto& authorized_user : users)
+  for (const auto& authorized_user : users_)
     {
       if (isdigit(authorized_user[0]))
 	{
@@ -109,7 +109,7 @@ sccs_file::authorised() const
 	  return true;
 	}
     }
-  errormsg("%s: You are not authorized to make deltas.", name.c_str());
+  errormsg("%s: You are not authorized to make deltas.", name_.c_str());
   return false;
 }
 

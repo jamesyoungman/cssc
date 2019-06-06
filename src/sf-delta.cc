@@ -98,7 +98,7 @@ sccs_file::add_delta(const std::string& gname,
 		     const std::vector<std::string>& new_comments,
                      bool display_diff_output)
 {
-  ASSERT(mode == UPDATE);
+  ASSERT(mode_ == UPDATE);
 
   cssc::Failure checked = check_keywords_in_file(gname.c_str());
   if (!checked.ok())
@@ -120,13 +120,13 @@ sccs_file::add_delta(const std::string& gname,
 
   if (flags.encoded)
     {
-      cssc::Failure encoded = encode_file(gname.c_str(), name.ufile().c_str());
+      cssc::Failure encoded = encode_file(gname.c_str(), name_.ufile().c_str());
       if (!encoded.ok())
         {
           return false;
         }
 
-      file_to_diff = name.ufile();
+      file_to_diff = name_.ufile();
       bFileIsInWorkingDir = false;
     }
   else
@@ -197,15 +197,15 @@ sccs_file::add_delta(const std::string& gname,
   FILE *get_out;
   if (1)
     {
-      cssc::FailureOr<FILE*> fof = fcreate(name.dfile(), CREATE_EXCLUSIVE | xmode);
+      cssc::FailureOr<FILE*> fof = fcreate(name_.dfile(), CREATE_EXCLUSIVE | xmode);
       if (fof.ok())
 	{
 	  get_out = *fof;
 	}
       else
 	{
-	  remove(name.dfile().c_str());
-	  auto fof2 = fcreate(name.dfile(), CREATE_EXCLUSIVE | xmode);
+	  remove(name_.dfile().c_str());
+	  auto fof2 = fcreate(name_.dfile(), CREATE_EXCLUSIVE | xmode);
 	  if (fof2.ok())
 	    {
 	      get_out = *fof2;
@@ -213,28 +213,28 @@ sccs_file::add_delta(const std::string& gname,
 	  else
 	    {
 	      const Failure f = cssc::FailureBuilder(fof2.fail())
-		.diagnose() << "cannot create file " << name.dfile();
+		.diagnose() << "cannot create file " << name_.dfile();
 	      errormsg("%s", f.to_string().c_str());
 	      return false;
 	    }
 	}
     }
-  FileDeleter another_cleaner(name.dfile(), false);
+  FileDeleter another_cleaner(name_.dfile(), false);
 
   auto w = cssc::optional<std::string>();
   const struct delta blankdelta;
-  struct subst_parms parms(name.dfile(), get_module_name(), get_out,
+  struct subst_parms parms(name_.dfile(), get_module_name(), get_out,
 			   w, blankdelta,
                            0, sccs_date());
   seq_state gsstate(sstate);
-  cssc::Failure got = do_get(name.dfile(), gsstate, parms, /*do_kw_subst=*/0,
+  cssc::Failure got = do_get(name_.dfile(), gsstate, parms, /*do_kw_subst=*/0,
 			     /*show_sid=*/0, /*show_module=*/0, /*debug=*/0,
 			     GET_NO_DECODE, /*for_edit=*/false);
   if (!got.ok())
     {
       cssc::Failure f = cssc::make_failure_builder(got)
 	.diagnose()
-	<< "failed to get " << name.sfile() << " into " << name.dfile();
+	<< "failed to get " << name_.sfile() << " into " << name_.dfile();
       warning("%s", f.to_string().c_str());
       return false;
     }
@@ -297,7 +297,7 @@ sccs_file::add_delta(const std::string& gname,
           ASSERT(id.valid());
           // add a new automatic "null" release.  Use the same
           // MRs as for the actual delta (is that right?) but
-          seq_no new_seq = delta_table->next_seqno();
+          seq_no new_seq = delta_table_->next_seqno();
 
           // Set up for adding the next release.
           id = null_rel;
@@ -310,7 +310,7 @@ sccs_file::add_delta(const std::string& gname,
 	  ASSERT (null_delta.deleted() == 0);
 	  ASSERT (null_delta.unchanged() == 0);
 
-          delta_table->prepend(null_delta);
+          delta_table_->prepend(null_delta);
 
           predecessor_seq = new_seq;
 
@@ -321,7 +321,7 @@ sccs_file::add_delta(const std::string& gname,
         }
     }
   // assign a sequence number.
-  seq_no new_seq = delta_table->next_seqno();
+  seq_no new_seq = delta_table_->next_seqno();
 
 #if 1
   /* 2002-03-21: James Youngman: we already did this, above */
@@ -331,7 +331,7 @@ sccs_file::add_delta(const std::string& gname,
   // but what we actually want to create is a list of seq_no.
   if (!it->include.empty())
     {
-      const_delta_iterator iter(delta_table.get(), delta_selector::current);
+      const_delta_iterator iter(delta_table_.get(), delta_selector::current);
       while (iter.next())
         {
           if (it->include.member(iter->id()))
@@ -342,7 +342,7 @@ sccs_file::add_delta(const std::string& gname,
     }
   if (!it->exclude.empty())
     {
-      const_delta_iterator iter(delta_table.get(), delta_selector::current);
+      const_delta_iterator iter(delta_table_.get(), delta_selector::current);
       while (iter.next())
         {
           if (it->exclude.member(iter->id()))
@@ -380,7 +380,7 @@ sccs_file::add_delta(const std::string& gname,
     }
 
   delta_result result =
-  body_scanner_->delta(name.dfile(), file_to_diff, highest_delta_seqno(), new_delta.seq(),
+  body_scanner_->delta(name_.dfile(), file_to_diff, highest_delta_seqno(), new_delta.seq(),
 		       &sstate, out, display_diff_output);
 
   // The order of things that we do at this point is quite
