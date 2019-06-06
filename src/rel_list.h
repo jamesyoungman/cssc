@@ -34,7 +34,7 @@
 
 class release_list
 {
-  std::vector<release> l;
+  std::vector<release> releases_;
 
 public:
   typedef typename std::vector<release>::size_type size_type;
@@ -54,12 +54,12 @@ public:
   cssc::Failure print(FILE *) const;
 
   // Accessors
-  bool empty() const { return l.empty(); }
+  bool empty() const { return releases_.empty(); }
   bool valid() const { return !empty(); }
   bool member(release r) const;
 
-  const_iterator begin() const { return l.begin(); }
-  const_iterator end() const { return l.end(); }
+  const_iterator begin() const { return releases_.begin(); }
+  const_iterator end() const { return releases_.end(); }
 };
 
 /* Local variables: */

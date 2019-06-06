@@ -33,7 +33,7 @@
 // Because we use member() all the time, this
 // is a quadratic algorithm...but N is usually very small.
 release_list::release_list(const char *s)
-  : l()
+  : releases_()
 {
   ASSERT(nullptr != s);
 
@@ -50,7 +50,7 @@ release_list::release_list(const char *s)
       // add the entry if not already a member.
       const release r(n);
       if (!member(r))
-	l.push_back(r);
+	releases_.push_back(r);
 
       s = p;
       if (',' == *s)
@@ -61,17 +61,17 @@ release_list::release_list(const char *s)
 // linear search for possible member.
 bool release_list::member(release r) const
 {
-  return std::find(l.begin(), l.end(), r) != l.end();
+  return std::find(releases_.begin(), releases_.end(), r) != releases_.end();
 }
 
 
 release_list::release_list()
-  :l()
+  : releases_()
 {
 }
 
-release_list::release_list(const release_list &r)
-  :l(r.l)
+release_list::release_list(const release_list &from)
+  :releases_(from.releases_)
 {
 }
 
@@ -82,7 +82,7 @@ release_list::~release_list()
 cssc::Failure release_list::print(FILE * out) const
 {
   bool first = true;
-  for (const auto& release : l)
+  for (const auto& release : releases_)
     {
       if (!first)
 	{

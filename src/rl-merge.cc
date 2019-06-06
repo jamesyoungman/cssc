@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <utility>
 #include <vector>
 #include "cssc.h"
 #include "rel_list.h"
@@ -34,7 +35,7 @@ void release_list::merge(const release_list& m)
   for (const auto& r : m)
     {
       if (!member(r))
-	l.push_back(r);
+	releases_.push_back(r);
     }
 }
 
@@ -43,12 +44,12 @@ void release_list::remove(const release_list& rm)
 {
   std::vector<release> newlist;
 
-  for (const auto& r : l)
+  for (const auto& r : releases_)
     {
       if (!rm.member(r))
 	newlist.push_back(r);
     }
-  l = newlist;
+  std::swap(releases_, newlist);
 }
 
 
