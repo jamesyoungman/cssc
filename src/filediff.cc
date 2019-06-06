@@ -34,7 +34,7 @@
 
 
 FileDiff::FileDiff(const char *n1, const char *n2)
-  : fp_(nullptr), name1(n1), name2(n2)
+  : fp_(nullptr), name1_(n1), name2_(n2)
 {
 }
 
@@ -60,9 +60,8 @@ FileDiff::start()
   const std::string space(" ");
   const std::string quote("'");
   std::string cmd(std::string(CONFIG_DIFF_COMMAND) +
-               space + quote + name1 + quote +
-               space + quote + name2 + quote);
-
+               space + quote + name1_ + quote +
+               space + quote + name2_ + quote);
   TempPrivDrop guard();
   fp_ = popen(cmd.c_str(), "r");
   return fp_;

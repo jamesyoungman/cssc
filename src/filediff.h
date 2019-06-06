@@ -47,8 +47,8 @@ class FileDiff
 
  private:
   FILE *fp_;
-  std::string name1;
-  std::string name2;
+  std::string name1_;
+  std::string name2_;
 };
 
 
