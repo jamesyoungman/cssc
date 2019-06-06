@@ -40,8 +40,8 @@ enum class delta_selector
 
 class delta_iterator
 {
-  cssc_delta_table *dtbl;
-  cssc_delta_table::size_type pos;
+  cssc_delta_table *dtbl_;
+  cssc_delta_table::size_type pos_;
   bool first_;
 
 public:
@@ -61,8 +61,8 @@ private:
     if (first_)
       first_ = false;
     else
-      ++pos;
-    return pos;
+      ++pos_;
+    return pos_;
   }
 
   inline bool all()  const
@@ -75,8 +75,8 @@ private:
 
 class const_delta_iterator
 {
-  const cssc_delta_table *dtbl;
-  cssc_delta_table::size_type pos;
+  const cssc_delta_table *dtbl_;
+  cssc_delta_table::size_type pos_;
   bool first_;
 
 public:
@@ -94,8 +94,8 @@ private:
     if (first_)
       first_ = false;
     else
-      ++pos;
-    return pos;
+      ++pos_;
+    return pos_;
   }
 
   inline bool all()  const
