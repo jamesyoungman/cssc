@@ -41,9 +41,8 @@ cssc::FailureOr<std::string> canonify_filename(const char* fname);
 
 class sccs_name
 {
-  // TODO: rename member variables to consistently have a trailing "_".
-  std::string sname;		// name of the s. file.
-  std::string gname;
+  std::string sname_;		// name of the s. file.
+  std::string gname_;
 
   // We hold separate strings for the part before
   // and the part after the character that changes:
@@ -53,10 +52,11 @@ class sccs_name
   //  dir/l.foo.c
   // In these cases, name_front is "dir/" and name_rear is ".foo.c".
 
-  std::string name_front, name_rear;
+  std::string name_front_;
+  std::string name_rear_;
 
   std::unique_ptr<file_lock> lock_;
-  int lock_cnt;
+  int lock_cnt_;
 
   void create();
 
@@ -67,7 +67,7 @@ class sccs_name
 public:
   static cssc::Failure valid_filename(const char *name);
   // TODO: probably don't need both valid_filename and valid.
-  bool valid() const { return sname.length() > 0; }
+  bool valid() const { return sname_.length() > 0; }
 
   sccs_name();
 
@@ -75,10 +75,10 @@ public:
 
   void make_valid();
 
-  const char * c_str() const { return sname.c_str(); }
+  const char * c_str() const { return sname_.c_str(); }
 
   // The sfile is the name of the history file itself.
-  std::string sfile() const { return sname; }
+  std::string sfile() const { return sname_; }
 
   // The dfile is a temporary file generated during the operation of
   // "delta" containing the gotten body against which we perform a
@@ -87,7 +87,7 @@ public:
   std::string dfile() const { return sub_file('d'); }
 
   // The gfile is the default name of the output of "get".
-  std::string gfile() const { return gname; }
+  std::string gfile() const { return gname_; }
   std::string lfile() const;
 
   // The pfile is the long-lived lock file which contains a list of
@@ -110,7 +110,7 @@ public:
   cssc::Failure
   lock()
   {
-    if (lock_cnt++ == 0)
+    if (lock_cnt_++ == 0)
       {
 	std::string zf = zfile();
 	lock_ = std::make_unique<file_lock>(zf);
@@ -123,7 +123,7 @@ public:
   unlock()
   {
     // TODO: assert that it's locked?
-    if (--lock_cnt == 0)
+    if (--lock_cnt_ == 0)
       {
 	// Releasing the unique_ptr deletes the lock object which
 	// releases the lock.
@@ -133,10 +133,10 @@ public:
 
   ~sccs_name()
   {
-    if (lock_cnt > 1)
+    if (lock_cnt_ > 1)
       {
 	warning("deleting sccs_name instance whle lock_cnt is %d "
-		"(expected <= 1)", lock_cnt);
+		"(expected <= 1)", lock_cnt_);
       }
   }
 };
