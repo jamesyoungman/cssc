@@ -30,7 +30,7 @@
 #include "sid.h"
 
 release::release(const sid &s)
-  :  rel(s.get_release())
+  :  rel_(s.get_release())
 {
   // nothing.
 }
@@ -40,17 +40,17 @@ release::release(const char *s)
 {
   if (s == nullptr)
     {
-      // TODO: the default constructor sets rel=-1.
+      // TODO: the default constructor sets rel_=-1.
       // Is there a meaningful difference here?
-      rel = 0;
+      rel_ = 0;
       return;
     }
 
-  rel = get_id_comp(s);
+  rel_ = get_id_comp(s);
 
-  if (*s != '\0' || rel == 0)
+  if (*s != '\0' || rel_ == 0)
     {
-      rel = -1;
+      rel_ = -1;
     }
 }
 

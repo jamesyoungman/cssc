@@ -38,65 +38,66 @@ class sid;
 
 class release
 {
-  short rel;
+  short rel_;
 
   //  release(short r, sid const *): rel(r) {}
 
 public:
-  release(): rel(-1) {}
-  release(short int r): rel(r) {}
+  release(): rel_(-1) {}
+  release(short int r): rel_(r) {}
   release(const char *s);
   release(const sid& s);
 
-  bool valid() const { return rel > 0; }
+  bool valid() const { return rel_ > 0; }
 
   enum { LARGEST = 9999 };	// largest valid release number.
 
-  release &operator++() { rel++; return *this; }
-  release &operator--() { rel--; return *this; }
+  release &operator++() { rel_++; return *this; }
+  release &operator--() { rel_--; return *this; }
   operator unsigned long() const
   {
     ASSERT(valid());
-    return static_cast<unsigned long>(rel);
+    return static_cast<unsigned long>(rel_);
   }
 
   operator short() const
   {
-    return rel;
+    return rel_;
   }
 
+  // TODO: these can be members instead of friends.
   friend bool operator <(release r1, release r2)
     {
-      return r1.rel < r2.rel;
+      return r1.rel_ < r2.rel_;
     }
 
   friend bool operator >(release r1, release r2)
     {
-      return r1.rel > r2.rel;
+      return r1.rel_ > r2.rel_;
     }
 
   friend bool operator <=(release r1, release r2)
     {
-      return r1.rel <= r2.rel;
+      return r1.rel_ <= r2.rel_;
     }
 
   friend bool operator >=(release r1, release r2)
     {
-      return r1.rel >= r2.rel;
+      return r1.rel_ >= r2.rel_;
     }
 
   friend bool operator ==(release r1, release r2)
     {
-      return r1.rel == r2.rel;
+      return r1.rel_ == r2.rel_;
     }
 
   friend bool operator !=(release r1, release r2)
     {
-      return r1.rel != r2.rel;
+      return r1.rel_ != r2.rel_;
     }
 
   cssc::Failure print(FILE *out) const {
-    if (fprintf(out, "%d", rel) < 0)
+    if (fprintf(out, "%d", rel_) < 0)
       {
 	return cssc::make_failure_from_errno(errno);
       }
