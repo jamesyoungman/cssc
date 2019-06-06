@@ -35,14 +35,15 @@ enum class diffstate { START, NOCHANGE, DELETE, INSERT, END };
 class diff_state
 {
 private:
-  diffstate _state;
-  int in_lineno, out_lineno;
-  int lines_left;
-  int change_left;
-  bool echo_diff_output;
+  diffstate state_;
+  int in_lineno_;
+  int out_lineno_;
+  int lines_left_;
+  int change_left_;
+  bool echo_diff_output_;
 
-  FILE *in;
-  cssc_linebuf linebuf;
+  FILE *in_;
+  cssc_linebuf linebuf_;
 
   NORETURN diff_output_corrupt() POSTDECL_NORETURN;
   NORETURN diff_output_corrupt(const char *msg) POSTDECL_NORETURN;
@@ -50,12 +51,12 @@ private:
   void next_state();
   cssc::Failure read_line()
     {
-      cssc::Failure bad = linebuf.read_line(in);
+      cssc::Failure bad = linebuf_.read_line(in_);
 
       // If and only if we read in a new line, echo it.
-      if (echo_diff_output && bad.ok())
+      if (echo_diff_output_ && bad.ok())
         {
-	  printf("%s", linebuf.c_str());
+	  printf("%s", linebuf_.c_str());
         }
       return bad;
     }
@@ -67,12 +68,12 @@ private:
 
 public:
   diff_state(FILE *f, bool echo)
-    : _state(diffstate::START),
-      in_lineno(0L), out_lineno(0L),
-      lines_left(0), change_left(0),
-      echo_diff_output(echo),
-      in(f),
-      linebuf()
+    : state_(diffstate::START),
+      in_lineno_(0L), out_lineno_(0L),
+      lines_left_(0), change_left_(0),
+      echo_diff_output_(echo),
+      in_(f),
+      linebuf_()
     {
     }
 
@@ -81,13 +82,13 @@ public:
   const char *
   get_insert_line()
     {
-      ASSERT(_state == diffstate::INSERT);
-      ASSERT(linebuf[0] == '>' && linebuf[1] == ' ');
-      return linebuf.c_str() + 2;
+      ASSERT(state_ == diffstate::INSERT);
+      ASSERT(linebuf_[0] == '>' && linebuf_[1] == ' ');
+      return linebuf_.c_str() + 2;
     }
 
-  long in_line() { return in_lineno; }
-  long out_line() { return out_lineno; }
+  long in_line() { return in_lineno_; }
+  long out_line() { return out_lineno_; }
 };
 
 #endif /* CSSC__DIFF_STATE_H */
