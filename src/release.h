@@ -65,35 +65,34 @@ public:
     return rel_;
   }
 
-  // TODO: these can be members instead of friends.
-  friend bool operator <(release r1, release r2)
+  bool operator <(const release& r2) const
     {
-      return r1.rel_ < r2.rel_;
+      return rel_ < r2.rel_;
     }
 
-  friend bool operator >(release r1, release r2)
+  bool operator >(const release& r2) const
     {
-      return r1.rel_ > r2.rel_;
+      return rel_ > r2.rel_;
     }
 
-  friend bool operator <=(release r1, release r2)
+  bool operator <=(const release& r2) const
     {
-      return r1.rel_ <= r2.rel_;
+      return rel_ <= r2.rel_;
     }
 
-  friend bool operator >=(release r1, release r2)
+  bool operator >=(const release& r2) const
     {
-      return r1.rel_ >= r2.rel_;
+      return rel_ >= r2.rel_;
     }
 
-  friend bool operator ==(release r1, release r2)
+  bool operator ==(const release& r2) const
     {
-      return r1.rel_ == r2.rel_;
+      return rel_ == r2.rel_;
     }
 
-  friend bool operator !=(release r1, release r2)
+  bool operator !=(const release& r2) const
     {
-      return r1.rel_ != r2.rel_;
+      return rel_ != r2.rel_;
     }
 
   cssc::Failure print(FILE *out) const {
