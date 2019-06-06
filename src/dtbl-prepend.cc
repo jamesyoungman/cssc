@@ -27,6 +27,8 @@
 
 #include <config.h>
 
+#include <utility>		// std::swap
+
 #include "cssc.h"
 #include "delta-table.h"
 
@@ -39,9 +41,9 @@ cssc_delta_table::prepend(const delta &it)
   delta_list newlist;
 
   newlist.add(it);
-  newlist += l;
+  newlist += l_;
 
-  l = newlist;
+  std::swap(l_, newlist);
 }
 
 /* Local variables: */

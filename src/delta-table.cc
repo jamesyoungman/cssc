@@ -32,19 +32,19 @@
 bool
 cssc_delta_table::delta_at_seq_exists(seq_no seq) const
 {
-  const seq_no limit = l.get_high_seqno();
+  const seq_no limit = l_.get_high_seqno();
   ASSERT (0 < seq);
   ASSERT (seq <= limit);
-  return l.delta_at_seq_exists(seq);
+  return l_.delta_at_seq_exists(seq);
 }
 
 const delta &
 cssc_delta_table::delta_at_seq(seq_no seq) const
 {
-  const seq_no limit = l.get_high_seqno();
+  const seq_no limit = l_.get_high_seqno();
   ASSERT (0 < seq);
   ASSERT (seq <= limit);
-  return l.delta_at_seq(seq);
+  return l_.delta_at_seq(seq);
 }
 
 
@@ -72,7 +72,7 @@ cssc_delta_table::add(const delta &it)
 {
   ASSERT(nullptr != this);
 
-  l.add(it);
+  l_.add(it);
 }
 
 /* for the prepend() operation, see dtbl-prepend.cc. */
