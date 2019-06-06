@@ -31,17 +31,18 @@
 
 relvbr::relvbr(const char *s)
   : relvbr() {
-	if (s == NULL) {
-		rel = level = branch = 0;
-		return;
-	}
+	if (s == nullptr)
+	  {
+	    rel_ = level_ = branch_ = 0;
+	    return;
+	  }
 
-	rel = get_id_comp(s);
-	level = get_id_comp(s);
-	branch = get_id_comp(s);
+	rel_ = get_id_comp(s);
+	level_ = get_id_comp(s);
+	branch_ = get_id_comp(s);
 
-	if (*s != '\0' || rel == 0) {
-		rel = level = branch = -1;
+	if (*s != '\0' || rel_ == 0) {
+		rel_ = level_ = branch_ = -1;
 	}
 }
 

@@ -32,75 +32,77 @@ class sid;
 
 class relvbr
 {
-  short rel;
-  short level;
-  short branch;
-
-  //  relvbr(short r, short l, short b, sid const *): rel(r,l,b) {}
+  short rel_;
+  short level_;
+  short branch_;
 
 public:
   relvbr()
-  : rel(-1), level(-1), branch(-1)
+  : rel_(-1),
+    level_(-1),
+    branch_(-1)
   {
   }
   relvbr(short int r, short int l, short int b)
-  : rel(r), level(l), branch(b)
+  : rel_(r),
+    level_(l),
+    branch_(b)
   {
   }
   relvbr(const char *s);
   relvbr(const sid& s);
 
-  int valid() const { return ((rel > 0) && (level > 0) && (branch > 0)); }
+  int valid() const { return ((rel_ > 0) && (level_ > 0) && (branch_ > 0)); }
 
   enum { LARGEST = 9999 };	// largest valid relvbr number.
 
-  friend int operator <(relvbr r1, relvbr r2)
+  bool operator<(const relvbr& r2) const
     {
-	return ((r1.rel < r2.rel) ||
-		((r1.rel == r2.rel) &&
-		 ((r1.level < r2.level) ||
-		  ((r1.level == r2.level) && (r1.branch < r2.branch)))));
+	return ((rel_ < r2.rel_) ||
+		((rel_ == r2.rel_) &&
+		 ((level_ < r2.level_) ||
+		  ((level_ == r2.level_) && (branch_ < r2.branch_)))));
     }
 
-  friend int operator >(relvbr r1, relvbr r2)
+  bool operator>(const relvbr& r2) const
     {
-	return ((r1.rel > r2.rel) ||
-		((r1.rel == r2.rel) &&
-		 ((r1.level > r2.level) ||
-		  ((r1.level == r2.level) && (r1.branch > r2.branch)))));
+	return ((rel_ > r2.rel_) ||
+		((rel_ == r2.rel_) &&
+		 ((level_ > r2.level_) ||
+		  ((level_ == r2.level_) && (branch_ > r2.branch_)))));
     }
 
-  friend int operator <=(relvbr r1, relvbr r2)
+  bool operator<=(const relvbr& r2) const
     {
-      return ((r1.rel < r2.rel) ||
-		((r1.rel == r2.rel) &&
-		 ((r1.level < r2.level) ||
-		  ((r1.level == r2.level) && (r1.branch <= r2.branch)))));
+      return ((rel_ < r2.rel_) ||
+		((rel_ == r2.rel_) &&
+		 ((level_ < r2.level_) ||
+		  ((level_ == r2.level_) && (branch_ <= r2.branch_)))));
     }
 
-  friend int operator >=(relvbr r1, relvbr r2)
+  bool operator>=(const relvbr& r2) const
     {
-      return ((r1.rel > r2.rel) ||
-		((r1.rel == r2.rel) &&
-		 ((r1.level > r2.level) ||
-		  ((r1.level == r2.level) && (r1.branch >= r2.branch)))));
+      return ((rel_ > r2.rel_) ||
+		((rel_ == r2.rel_) &&
+		 ((level_ > r2.level_) ||
+		  ((level_ == r2.level_) && (branch_ >= r2.branch_)))));
     }
 
-  friend int operator ==(relvbr r1, relvbr r2)
+  bool operator==(const relvbr& r2) const
     {
-      return ((r1.rel    == r2.rel   ) &&
-	      (r1.level  == r2.level ) &&
-	      (r1.branch == r2.branch));
+      return ((rel_    == r2.rel_   ) &&
+	      (level_  == r2.level_ ) &&
+	      (branch_ == r2.branch_));
     }
 
-  friend int operator !=(relvbr r1, relvbr r2)
+  bool operator!=(const relvbr& r2) const
     {
-      return ((r1.rel    != r2.rel   ) ||
-	      (r1.level  != r2.level ) ||
-	      (r1.branch != r2.branch));
+      return ((rel_    != r2.rel_   ) ||
+	      (level_  != r2.level_ ) ||
+	      (branch_ != r2.branch_));
     }
 
-  int print(FILE *out) const { return (fprintf(out, "%d.%d.%d", rel, level, branch) < 0); }
+  int print(FILE *out) const { return (fprintf(out, "%d.%d.%d", rel_, level_, branch_) < 0); }
 };
 
 
