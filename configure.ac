@@ -435,7 +435,7 @@ WARNINGS_NOT_CXX="-Waggregate-return -Winline -Wnested-externs -Wtraditional -Wt
 # Warnings which give too many false positives from system headers.
 WARNINGS_SYS_HEADER_FALSE_POSITIVE="-Wsystem-headers -Wunreachable-code"
 # Warnings for things that are actually normal
-WARNINGS_NORMAL="-Wundef -Wpadded -Wredundant-decls -Wabi-tag"
+WARNINGS_NORMAL="-Wundef -Wpadded -Wabi-tag"
 # Warnings that are just hints we don't want to take advantage of now.
 WARNINGS_HINTS_NOTYET="-Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-attribute=format -Wformat-nonliteral"
 # All unwanted warnings
