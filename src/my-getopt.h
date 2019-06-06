@@ -39,14 +39,15 @@ public:
     MISSING_ARGUMENT = -2
   };
 
-  int argc;
-  char **argv;
+  // TODO: rename member variables to have a trailing "_".
+  int argc_;
+  char **argv_;
 
-  int index;
-  char *cindex;
-  const char *opts;
-  int opterr;
-  char *arg;
+  int index_;
+  char *cindex_;
+  const char *opts_;
+  int opterr_;
+  char *arg_;
 
 private:
   void reorder();		// reorder argv so that options come first.

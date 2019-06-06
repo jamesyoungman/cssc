@@ -29,7 +29,7 @@
  * immediately following the keyletter.  Most Unix programs allow the
  * argument to appear as the following element in argv[], but SCCS is
  * different.  We aim for total compatibility with SCCS (except the
- * error messages and any size limitations wwe might find).  So we
+ * error messages and any size limitations we might find).  So we
  * expect the same.  This means that the usual character used in
  * getopt() to indicate that the keyletter takes an argument (":") is
  * not supported.  We use "!" instead, to indicate that this is not
@@ -59,44 +59,44 @@
 int
 CSSC_Options::next()
 {
-  if (cindex == nullptr || *cindex == '\0')
+  if (cindex_ == nullptr || *cindex_ == '\0')
     {
-      if (index >= argc)
+      if (index_ >= argc_)
 	{
 	  return END_OF_ARGUMENTS;
 	}
-      cindex = argv[index];
+      cindex_ = argv_[index_];
 
       // A dash on its own is not a valid option so we have
       // reached the end of the arguments.
-      if (cindex[0] != '-' || cindex[1] == '\0')
+      if (cindex_[0] != '-' || cindex_[1] == '\0')
 	{
 	  return END_OF_ARGUMENTS;
 	}
-      index++;
+      index_++;
 
       // The argument "--" is the POSIX signal for end-of-args.
-      if (cindex[1] == '-' && cindex[2] == '\0')
+      if (cindex_[1] == '-' && cindex_[2] == '\0')
 	{
 	  return END_OF_ARGUMENTS;
 	}
-      cindex++;
+      cindex_++;
     }
   // Collect the argument character.
-  char c = *cindex++;
+  char c = *cindex_++;
 
   // Look for the argument character in the option list.
-  const char *match = strchr(opts, c);
+  const char *match = strchr(opts_, c);
 
   if (0 == c || nullptr == match)
     {
-      if (opterr)		// set opterr for verbose error returns.
+      if (opterr_)		// set opterr for verbose error returns.
 	{
 	  fprintf(stderr, "Unrecognized option '%c'.\n", c);
 	  usage();
-	  exit(opterr);
+	  exit(opterr_);
 	}
-      arg = cindex - 1;
+      arg_ = cindex_ - 1;
       return UNRECOGNIZED_OPTION;
     }
 
@@ -118,7 +118,7 @@ CSSC_Options::next()
     }
 #else
   // Check for and warn about colons in the argument spec!
-  if (nullptr != strchr(opts, ':'))
+  if (nullptr != strchr(opts_, ':'))
     {
       fprintf(stderr,
 	      "Programmer error: option list contains a colon.\n"
@@ -139,36 +139,36 @@ CSSC_Options::next()
 
   if (takes_arg)
     {
-      if (*cindex == '\0' && (!arg_catenated) )
+      if (*cindex_ == '\0' && (!arg_catenated) )
 	{
 	  // Option is of the form "-X", the argument is next
 	  // in the list.
-	  if (index >= argc)
+	  if (index_ >= argc_)
 	    {
-	      if (opterr)
+	      if (opterr_)
 		{
 		  fprintf(stderr, "Option '%c' requires an argument.\n", c);
 		  usage();
-		  exit(opterr);
+		  exit(opterr_);
 		}
-	      arg = cindex - 1;
+	      arg_ = cindex_ - 1;
 	      return MISSING_ARGUMENT;
 	    }
-	  arg = argv[index++];
+	  arg_ = argv_[index_++];
 	}
       else
 	{
 	  // Option is of the form "-Xmumble", the argument
-	  // is "mumble".  Here, *cindex could be '\0', meaning
+	  // is "mumble".  Here, *cindex_ could be '\0', meaning
 	  // that the option is a "catenated arg" option like
 	  // sccs-get's -y option, and there is no actual argument.
-	  arg = cindex;
+	  arg_ = cindex_;
 	}
-      cindex = nullptr;
+      cindex_ = nullptr;
     }
   else
     {
-      arg = nullptr;			// no argument taken by this option.
+      arg_ = nullptr;			// no argument taken by this option.
     }
 
   return c;
@@ -176,16 +176,16 @@ CSSC_Options::next()
 
 int CSSC_Options::get_index(void) const
 {
-  return index;
+  return index_;
 }
 
 char *CSSC_Options::getarg(void) const
 {
-  return arg;
+  return arg_;
 }
 
 /*
- * reorder: rearrange the argv[] array so that the options
+ * reorder: rearrange the argv_[] array so that the options
  *        come before the filenames.  The internal ordering
  *        of the options and of the filenames is unchanged.
  */
@@ -193,60 +193,60 @@ void CSSC_Options::reorder(void)
 {
   int i;
   char **files, **options;
-  files   = new char*[argc];
-  options = new char*[argc];
+  files   = new char*[argc_];
+  options = new char*[argc_];
 
   // separate the options from the files.
-  // we lease argv[0] alone...
-  for (i=1; i<argc; ++i)
+  // we leave argv_[0] alone...
+  for (i=1; i<argc_; ++i)
     {
-      if ('-' == argv[i][0])
+      if ('-' == argv_[i][0])
 	{
-	  if ('-' == argv[i][1])
+	  if ('-' == argv_[i][1])
 	    {
 	      // -- signals end of options; stuff the remaining options
 	      // into the files list.
 	      files[i] = nullptr;
 	      options[i] = nullptr;
-	      for(++i; i<argc; ++i)
+	      for(++i; i<argc_; ++i)
 		{
-		  files[i] = argv[i];
+		  files[i] = argv_[i];
 		  options[i] = nullptr;
 		}
 	    }
 	  else
 	    {
 	      // normal option.
-	      options[i] = argv[i];
+	      options[i] = argv_[i];
 	      files[i] = nullptr;
 	    }
 	}
       else
 	{
-	  files[i] = argv[i];
+	  files[i] = argv_[i];
 	  options[i] = nullptr;
 	}
     }
 
   // now merge them, options first then files.
-  // we leave argv[0] alone.
+  // we leave argv_[0] alone.
   int n = 1;
-  for (i=1; i<argc; ++i)
+  for (i=1; i<argc_; ++i)
     {
       if (options[i])
-	argv[n++] = options[i];
+	argv_[n++] = options[i];
     }
-  for (i=1; i<argc; ++i)
+  for (i=1; i<argc_; ++i)
     {
       if (files[i])
-	argv[n++] = files[i];
+	argv_[n++] = files[i];
     }
-  for (i=n; i<argc; ++i)
+  for (i=n; i<argc_; ++i)
     {
-      argv[i] = nullptr;
+      argv_[i] = nullptr;
     }
 
-  argc = n;			// we might have removed some...
+  argc_ = n;			// we might have removed some...
 
   delete[] files;
   delete[] options;
@@ -254,25 +254,25 @@ void CSSC_Options::reorder(void)
 }
 
 CSSC_Options::CSSC_Options(int ac, char **av, const char *s, int err)
-  : argc(ac),
-    argv(av),
-    index(1),
-    cindex(nullptr),
-    opts(s),
-    opterr(err),
-    arg(nullptr)
+  : argc_(ac),
+    argv_(av),
+    index_(1),
+    cindex_(nullptr),
+    opts_(s),
+    opterr_(err),
+    arg_(nullptr)
 {
   reorder();
 }
 
 int CSSC_Options::get_argc(void) const
 {
-  return argc;
+  return argc_;
 }
 
 char **CSSC_Options::get_argv(void) const
 {
-  return argv;
+  return argv_;
 }
 
 
