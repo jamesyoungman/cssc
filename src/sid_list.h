@@ -73,6 +73,7 @@ public:
 
 private:
   // Data members.
+  // TODO: rename member variables to consistently have a trailing "_".
   range<TYPE> *head;
   bool valid_flag;
 

@@ -337,6 +337,7 @@ private:
     sccs_file_flags();
   } flags;
 
+  // TODO: rename member variables to consistently have a trailing "_".
   sccs_name& name;
   bool checksum_valid_;
   enum sccs_file_open_mode mode;

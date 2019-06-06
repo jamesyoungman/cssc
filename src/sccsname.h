@@ -41,6 +41,7 @@ cssc::FailureOr<std::string> canonify_filename(const char* fname);
 
 class sccs_name
 {
+  // TODO: rename member variables to consistently have a trailing "_".
   std::string sname;		// name of the s. file.
   std::string gname;
 

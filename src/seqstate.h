@@ -64,6 +64,7 @@ class seq_state
   // then pCommand[i] contains an 'I' or 'D' indicating that a
   // ^AI or ^AD had been encountered.
 
+  // TODO: rename member variables to consistently have a trailing "_".
   bool            inserting;	// current state.
 
 
