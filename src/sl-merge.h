@@ -38,7 +38,7 @@ range_list<TYPE>::merge(range_list<TYPE> const &list) {
 		return *this;
 	}
 
-	range<TYPE> *sp = list.head;
+	range<TYPE> *sp = list.head_;
 	if (sp == NULL) {
 		return *this;
 	}
@@ -46,10 +46,10 @@ range_list<TYPE>::merge(range_list<TYPE> const &list) {
 	ASSERT(valid());
 	sp = do_copy_list(sp);
 
-	if (head == NULL) {
-		head = sp;
+	if (head_ == NULL) {
+		head_ = sp;
 	} else {
-		range<TYPE> *dp = head;
+		range<TYPE> *dp = head_;
 
 		while(dp->next != NULL) {
 			dp = dp->next;
@@ -68,17 +68,17 @@ range_list<TYPE>::remove(range_list<TYPE> const &list) {
 		return *this;
 	}
 
-	range<TYPE> *sp = list.head;
+	range<TYPE> *sp = list.head_;
 	if (sp == NULL) {
 		return *this;
 	}
 
-	if (head == NULL) {
+	if (head_ == NULL) {
 		return *this;
 	}
 
 	while(sp != NULL) {
-		range<TYPE> *dp = head;
+		range<TYPE> *dp = head_;
 		while(dp != NULL) {
 			if (sp->from <= dp->from
 			    && sp->to >= dp->from) {
@@ -99,8 +99,8 @@ range_list<TYPE>::remove(range_list<TYPE> const &list) {
 				sp->from = dp->to;
 				++sp->from;
 
-				p->next = head->next;
-				head = p;
+				p->next = head_->next;
+				head_ = p;
 			}
 			dp = dp->next;
 		}

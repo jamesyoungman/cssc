@@ -74,8 +74,8 @@ public:
 private:
   // Data members.
   // TODO: rename member variables to consistently have a trailing "_".
-  range<TYPE> *head;
-  bool valid_flag;
+  range<TYPE> *head_;
+  bool valid_flag_;
 
   // Implementation.
   void destroy();
@@ -86,8 +86,8 @@ private:
 
 
 template <class TYPE> range_list<TYPE>::range_list(const char *list)
-    : head(nullptr),
-      valid_flag(1)
+    : head_(nullptr),
+      valid_flag_(1)
 {
   const char *s = list;
   if (s == nullptr || *s == '\0')
@@ -139,8 +139,8 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
               p->to = TYPE(dash);
             }
 
-          p->next = head;
-          head = p;
+          p->next = head_;
+          head_ = p;
         }
       s = comma;
     } while(*s++ != '\0');
@@ -148,7 +148,7 @@ template <class TYPE> range_list<TYPE>::range_list(const char *list)
   if (clean())                  // returns invalid flag.
     {
       destroy();
-      head = nullptr;
+      head_ = nullptr;
       invalidate();
     }
   else
@@ -164,7 +164,7 @@ range_list<TYPE>::clean()
   if (!valid())
     return 1;
 
-  range<TYPE> *sp = head;
+  range<TYPE> *sp = head_;
   range<TYPE> *new_head = nullptr;
   while (sp != nullptr)
     {
@@ -229,15 +229,15 @@ range_list<TYPE>::clean()
         }
       sp = next_sp;
     }
-  head = new_head;
-  return !valid_flag;
+  head_ = new_head;
+  return !valid_flag_;
 }
 
 template <class TYPE>
 bool
 range_list<TYPE>::member(TYPE id) const
 {
-  const range<TYPE> *p = head;
+  const range<TYPE> *p = head_;
 
   while (p)
     {
@@ -257,7 +257,7 @@ range_list<TYPE>::destroy()
   if (!valid())
       return;
 
-  range<TYPE> *p = head;
+  range<TYPE> *p = head_;
 
   while(p != nullptr)
     {
@@ -265,7 +265,7 @@ range_list<TYPE>::destroy()
       delete p;
       p = np;
     }
-  head = nullptr;
+  head_ = nullptr;
 }
 
 template <class TYPE>
@@ -299,11 +299,11 @@ range_list<TYPE>::do_copy_list(range<TYPE> *p) // static member.
 
 template <class TYPE>
 range_list<TYPE>::range_list(range_list const &list)
-  : head(nullptr),
-    valid_flag(1)
+  : head_(nullptr),
+    valid_flag_(1)
 {
   ASSERT(list.valid());
-  head = do_copy_list(list.head);
+  head_ = do_copy_list(list.head_);
   ASSERT(valid());
 }
 
@@ -314,9 +314,9 @@ range_list<TYPE>::operator =(range_list<TYPE> const &list)
   ASSERT(valid());
   ASSERT(list.valid());
 
-  range<TYPE> *p = do_copy_list(list.head);
+  range<TYPE> *p = do_copy_list(list.head_);
   destroy();
-  head = p;
+  head_ = p;
 
   ASSERT(valid());
   return *this;
@@ -325,8 +325,8 @@ range_list<TYPE>::operator =(range_list<TYPE> const &list)
 
 template <class TYPE>
 range_list<TYPE>::range_list()
-  : head(nullptr),
-    valid_flag(1)
+  : head_(nullptr),
+    valid_flag_(1)
 {
 }
 
@@ -334,21 +334,21 @@ template <class TYPE>
 bool
 range_list<TYPE>::valid() const
 {
-  return valid_flag;
+  return valid_flag_;
 }
 
 template <class TYPE>
 bool
 range_list<TYPE>::empty() const
 {
-  return head ? 0 : 1;
+  return head_ ? false : true;
 }
 
 template <class TYPE>
 void
 range_list<TYPE>::invalidate()
 {
-  valid_flag = 0;
+  valid_flag_ = 0;
 }
 
 template <class TYPE>
@@ -368,7 +368,7 @@ range_list<TYPE>::print(FILE *out) const
     }
 
 
-  range<TYPE> *p = head;
+  range<TYPE> *p = head_;
   while (1)
     {
       if (!p->from.print(out).ok())
