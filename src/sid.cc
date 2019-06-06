@@ -22,7 +22,7 @@
  * placed in the Public Domain.
  *
  *
- * Members of the classes sid and release.
+ * Members of the class sid.
  *
  */
 
@@ -42,8 +42,8 @@ std::string sid::as_string() const
   return oss.str();
 }
 
-static short int
-get_comp(const char *&s) {
+short int
+get_id_comp(const char *&s) {
 	int n = 0;
 	char c = *s;
 	while (c != '\0') {
@@ -64,44 +64,6 @@ get_comp(const char *&s) {
 	return static_cast<short int>(n);
 }
 
-relvbr::relvbr(const char *s)
-  : relvbr() {
-	if (s == NULL) {
-		rel = level = branch = 0;
-		return;
-	}
-
-	rel = get_comp(s);
-	level = get_comp(s);
-	branch = get_comp(s);
-
-	if (*s != '\0' || rel == 0) {
-		rel = level = branch = -1;
-	}
-}
-
-relvbr::relvbr(const sid &s)
-  :relvbr(s.get_relvbr())
-{
-  // nothing.
-}
-
-release::release(const char *s)
-  : release() {
-	if (s == NULL) {
-	        // TODO: the default constructor sets rel=-1.
-	        // Is there a meaningful difference here?
-		rel = 0;
-		return;
-	}
-
-	rel = get_comp(s);
-
-	if (*s != '\0' || rel == 0) {
-		rel = -1;
-	}
-}
-
 sid
 sid::null_sid()
 {
@@ -111,10 +73,10 @@ sid::null_sid()
 sid::sid(const char *s)
   : rel_(-1), level_(0), branch_(0), sequence_(0) {
         ASSERT(s != NULL);
-	rel_ = get_comp(s);
-	level_ = get_comp(s);
-	branch_ = get_comp(s);
-	sequence_ = get_comp(s);
+	rel_ = get_id_comp(s);
+	level_ = get_id_comp(s);
+	branch_ = get_id_comp(s);
+	sequence_ = get_id_comp(s);
 
 	if (*s != '\0' || rel_ == 0 || sequence_ == -1)
 	  {
@@ -410,13 +372,6 @@ sid::printf(FILE *out, char c, bool force_zero /*=false*/) const {
 	  }
 	return cssc::Failure::Ok();
 }
-
-release::release(const sid &s)
-  :  rel(s.get_release())
-{
-  // nothing.
-}
-
 
 /* Local variables: */
 /* mode: c++ */

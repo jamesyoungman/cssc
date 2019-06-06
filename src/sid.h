@@ -243,6 +243,9 @@ inline std::ostream& operator<<(std::ostream& os, const sid& s)
   return s.ostream_insert(os);
 }
 
+// TODO: find a better API than "char*&".
+short int get_id_comp(const char *&s);
+
 inline sid::sid(release r): rel_(r), level_(0), branch_(0), sequence_(0) {}
 
 inline bool operator>(release i1, sid const &i2) { return i1 > i2.get_release(); }

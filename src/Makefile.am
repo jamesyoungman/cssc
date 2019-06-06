@@ -126,7 +126,9 @@ libcssc_a_SOURCES = \
 	rel_list.cc \
 	rel_list.h \
 	release.h \
+	release.cc \
 	relvbr.h \
+	relvbr.cc \
 	rl-merge.cc \
 	run.cc \
 	sccs-delta.cc \
