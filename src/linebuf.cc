@@ -43,8 +43,8 @@
 #define CONFIG_LINEBUF_CHUNK_SIZE (1024u)
 
 cssc_linebuf::cssc_linebuf()
-  : buf(new char[CONFIG_LINEBUF_CHUNK_SIZE]),
-    buflen(CONFIG_LINEBUF_CHUNK_SIZE)
+  : buf_(new char[CONFIG_LINEBUF_CHUNK_SIZE]),
+    buflen_(CONFIG_LINEBUF_CHUNK_SIZE)
 {
 }
 
@@ -53,13 +53,13 @@ cssc::Failure
 cssc_linebuf::read_line(FILE *f)
 {
   ASSERT(CONFIG_LINEBUF_CHUNK_SIZE > 2u);
-  buf[buflen - 2u] = '\0';
+  buf_[buflen_ - 2u] = '\0';
 
-  ASSERT(buflen < INT_MAX);
-  char *s = fgets(buf, static_cast<int>(buflen), f);
+  ASSERT(buflen_ < INT_MAX);
+  char *s = fgets(buf_, static_cast<int>(buflen_), f);
   while (s != NULL)
     {
-      char c = buf[buflen - 2u];
+      char c = buf_[buflen_ - 2u];
       if (c == '\0' || c == '\n')
 	return cssc::Failure::Ok();
 
@@ -67,14 +67,14 @@ cssc_linebuf::read_line(FILE *f)
 // Add another chunk
 //
 
-      char *temp_buf = new char[CONFIG_LINEBUF_CHUNK_SIZE + buflen];
-      memcpy( temp_buf, buf, buflen);
-      delete [] buf;
-      buf = temp_buf;
+      char *temp_buf = new char[CONFIG_LINEBUF_CHUNK_SIZE + buflen_];
+      memcpy( temp_buf, buf_, buflen_);
+      delete [] buf_;
+      buf_ = temp_buf;
 
-      s = buf + buflen - 1u;
-      buflen += CONFIG_LINEBUF_CHUNK_SIZE;
-      buf[buflen - 2u] = '\0';
+      s = buf_ + buflen_ - 1u;
+      buflen_ += CONFIG_LINEBUF_CHUNK_SIZE;
+      buf_[buflen_ - 2u] = '\0';
 
       s = fgets(s, CONFIG_LINEBUF_CHUNK_SIZE + 1u, f); // fill the new chunk
     }
@@ -88,14 +88,14 @@ cssc_linebuf::read_line(FILE *f)
 
 cssc::Failure cssc_linebuf::write(FILE *f) const
 {
-  size_t len = strlen(buf);
-  return fwrite_failed(fwrite(buf, sizeof(char), len, f), len);
+  size_t len = strlen(buf_);
+  return fwrite_failed(fwrite(buf_, sizeof(char), len, f), len);
 }
 
 int
 cssc_linebuf::split(int offset, char **args, int len, char c)
 {
-  char *start = buf + offset;
+  char *start = buf_ + offset;
   char *end = strchr(start, c);
   int i;
 
@@ -119,13 +119,13 @@ cssc_linebuf::split(int offset, char **args, int len, char c)
 void cssc_linebuf::
 set_char(unsigned offset, char value)
 {
-  ASSERT(offset < buflen);
-  buf[offset] = value;
+  ASSERT(offset < buflen_);
+  buf_[offset] = value;
 }
 
 bool cssc_linebuf::check_id_keywords() const
 {
-  return ::check_id_keywords(buf, strlen(buf));	// TODO: make NUL-safe!
+  return ::check_id_keywords(buf_, strlen(buf_));	// TODO: make NUL-safe!
 }
 
 /* Local variables: */

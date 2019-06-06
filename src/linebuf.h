@@ -37,8 +37,8 @@
 class cssc_linebuf
 {
   // TODO: use some STL data structure, or a Cord, to hold the data.
-  char *buf;
-  size_t buflen;
+  char *buf_;
+  size_t buflen_;
 
 public:
   cssc_linebuf();
@@ -54,8 +54,8 @@ public:
   // TODO: Reduce the use of c_str() in favour of operations that more
   // directly reflect what the program actually needs (perhaps for
   // example a string_view).
-  const char *c_str() const { return buf; }
-  const char *c_str() { return buf; }
+  const char *c_str() const { return buf_; }
+  const char *c_str() { return buf_; }
 
   // TODO: set_char is only used in sccs_file_parser::read_delta, to
   // nul-terminate the string.  If we move to string_view, we can
@@ -71,13 +71,13 @@ public:
 
   cssc::Failure write(FILE*) const;
 
-  char &operator [](int index) const { return buf[index]; }
+  char &operator [](int index) const { return buf_[index]; }
 
 #ifdef __GNUC__
-  char *operator +(int index) const { return buf + index; }
+  char *operator +(int index) const { return buf_ + index; }
 #endif
 
-  ~cssc_linebuf() { delete[] buf; buf = nullptr; }
+  ~cssc_linebuf() { delete[] buf_; buf_ = nullptr; }
 };
 
 #endif /* __LINEBUF_H__ */
