@@ -45,9 +45,9 @@ release::release(const char *s)
       rel = 0;
       return;
     }
-  
+
   rel = get_id_comp(s);
-  
+
   if (*s != '\0' || rel == 0)
     {
       rel = -1;
