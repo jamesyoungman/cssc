@@ -25,13 +25,12 @@ unset PROJECTDIR
 echo "Using the driver program ${sccs}"
 
 files="a b c"
-sfiles=" SCCS/s.a SCCS/s.b SCCS/s.c"
 
 
 cleanup () {
     if [ -d SCCS ] 
     then
-	( cd SCCS && for i in $files; do rm -f [spzd].$i; done )
+	( cd SCCS && for i in $files; do rm -f [spzd]."$i"; done )
 	rm -f $files
 	rmdir SCCS
     fi
@@ -45,9 +44,9 @@ mkdir SCCS
 echo "Creating the input files..."
 for i in $files
 do
-    echo "This is file $i" > $i
-    ${sccs} enter $i
-    rm ,$i
+    echo "This is file $i" >| "$i"
+    ${sccs} enter "$i"
+    rm -f ,"$i"
 done
 
 

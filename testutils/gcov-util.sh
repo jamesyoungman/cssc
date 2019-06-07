@@ -5,7 +5,7 @@ formatter=fmt_text
 do_coverage () {
     if [ $# -eq 0 ]
     then
-	set x *.o
+	set x ./*.o
 	shift
 	if [ $# -eq 0 ]
 	then
@@ -61,7 +61,7 @@ END {
 do_summary () {
     if [ $# -eq 0 ]
     then
-	set x *.gcov
+	set x ./*.gcov
 	shift
 	if [ $# -eq 0 ]
 	then
@@ -76,7 +76,7 @@ do_summary () {
 
 
 do_detail () {
-    less -j9 "+/######" *.gcov
+    less -j9 "+/######" ./*.gcov
 }
 
 
@@ -112,7 +112,7 @@ EOF
     while read m h f
     do
       printf "<tr><td>%d</td><td>%d</td><td>%s</td></tr>\n" \
-	  $m $h "$f"
+	  "$m" "$h" "$f"
     done
 
 cat <<EOF

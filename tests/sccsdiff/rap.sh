@@ -15,7 +15,7 @@ export get
 # diff file1 and file2 and fail the test if they
 # are different.
 invariant () {
-if diff -u $2 $3
+if diff -u "$2" "$3"
 then 
     echo passed
 else 
@@ -73,7 +73,7 @@ ${sccsdiff} -p -r1.1 -r1.2 $s 2>errs >diff.out
 
 remove diff.test1
 pr_header="s.foo: 1.1 vs. 1.2"
-cat D1.diff.expected | sed -e '1,2 d' | pr -h "${pr_header}" > D2.diff.expected
+sed <D1.diff.expected -e '1,2 d' | pr -h "${pr_header}" > D2.diff.expected
 
 # Expect success
 invariant D2 diff.out D2.diff.expected

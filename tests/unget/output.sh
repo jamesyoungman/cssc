@@ -8,35 +8,34 @@
 
 g1=new1.txt
 g2=new2.txt
-s1=s.$g1
-s2=s.$g2
-p1=p.$g1
-p2=p.$g2
-all="$s1 $g1 $p1 $s2 $g2 $p2 xxx1 xxx2 old.$g1 old.$g2"
-remove $all
+s1=s."$g1"
+s2=s."$g2"
+p1=p."$g1"
+p2=p."$g2"
+remove "$s1" "$g1" "$p1" "$s2" "$g2" "$p2" xxx1 xxx2 "old.$g1" "old.$g2"
 
 
 setup_an_edit () {
 # $1 is the label.
-echo_nonl $1"1-6:"
+echo_nonl "${1}"1-6:
 m=mfile
-remove $all $m
+remove "$m" "$s1" "$g1" "$p1" "$s2" "$g2" "$p2" xxx1 xxx2 old."$g1" old."$g2"
 echo "%M%" >$m || miscarry could not create $m.
-docommand --silent ${1}1 "${admin}   -i $s1" 0 "" "" <mfile
-docommand --silent ${1}2 "${admin} -i $s2" 0 "" ""   <mfile
+docommand --silent "${1}"1 "${admin}   -i $s1" 0 "" "" <mfile
+docommand --silent "${1}"2 "${admin} -i $s2" 0 "" ""   <mfile
 remove $m
-docommand --silent ${1}3 "${admin} -fb -fj $s1 $s2" 0 "" ""
-docommand --silent ${1}4 "${get} -e -b -r1.1 $s1 $s2" 0 \
+docommand --silent "${1}"3 "${admin} -fb -fj $s1 $s2" 0 "" ""
+docommand --silent "${1}"4 "${get} -e -b -r1.1 $s1 $s2" 0 \
  "\ns.new1.txt:\n1.1\nnew delta 1.1.1.1\n1 lines\
 \n\ns.new2.txt:\n1.1\nnew delta 1.1.1.1\n1 lines\n" \
 	IGNORE
-docommand              --silent ${1}5 "${get} -Gxxx1 -e -r1.1 $s1" 0 \
+docommand              --silent "${1}"5 "${get} -Gxxx1 -e -r1.1 $s1" 0 \
 "1.1\nnew delta 1.2\n1 lines\n" \
 	IGNORE
-docommand              --silent ${1}6 "${get} -Gxxx2 -e -r1.1 $s2" 0 \
+docommand              --silent "${1}"6 "${get} -Gxxx2 -e -r1.1 $s2" 0 \
 "1.1\nnew delta 1.2\n1 lines\n" \
 	IGNORE
-remove old.$g1 old.$g2
+remove old."$g1" old."$g2"
 echo "passed "
 }
 
@@ -96,5 +95,5 @@ docommand g8 "${vg_unget} -s $s1 $s2" 0 "" ""
 ###
 ### Cleanup and exit.
 ###
-remove $all
+remove "$s1" "$g1" "$p1" "$s2" "$g2" "$p2" xxx1 xxx2 "old.$g1" "old.$g2"
 success

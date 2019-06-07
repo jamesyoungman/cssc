@@ -6,8 +6,7 @@
 
 g=foo
 s=s.$g
-files="$s $g p.$g z.$g"
-remove $files
+remove "$s" "$g" "p.$"g "z.$g"
 
 # Create an SCCS file.
 docommand p1 "${admin} -n $s"    0 "" IGNORE
@@ -64,5 +63,5 @@ docommand p10 "${delta} -p -y $s" 0 \
 0 unchanged
 " IGNORE
 
-remove $files
+remove "$s" "$g" "p.$"g "z.$g"
 success

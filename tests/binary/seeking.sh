@@ -39,8 +39,8 @@ bad() {
 # create a flie containing the specified argument and check
 # that it is encoded as a binary file.  
 test_bin() {
-label=$1
-echo_nonl ${label}...
+label="$1"
+echo_nonl "${label}"...
 shift
 
 infile=$1
@@ -54,17 +54,17 @@ else
     cmd="${vg_admin} -i${infile} ${adminflags} $s"
 fi
 
-rm -f $s
+rm -f "$s"
 remove errmsg
 if ( eval "${cmd}" ) >/dev/null 2>errmsg
 then
-    if ( ${prs} -d:FL: $s 2>/dev/null; echo foo ) | grep encoded >/dev/null 2>&1
+    if ( ${prs} -d:FL: "$s" 2>/dev/null; echo foo ) | grep encoded >/dev/null 2>&1
     then
-	remove $g errmsg
-	if ${get} -p ${s} 2>errmsg >${g}
+	remove "$g" errmsg
+	if "${get}" -p "${s}" 2>errmsg >|"${g}"
 	then
 	    remove errmsg
-	    if diff ${infile} ${g} >diffs
+	    if diff "${infile}" "${g}" >|diffs
 	    then
 		remove diffs
 		good
@@ -74,16 +74,16 @@ then
 		bad "$label data lost (see file 'diffs') in ${cmd}".
 	    fi
 	else
-	    bad $label "${get} -p $s failed: `cat errmsg`"
+	    bad "$label" "${get} -p $s failed: `cat errmsg`"
 	fi
     else
-	bad $label input did not produce an encoded s-file.
+	bad "$label" input did not produce an encoded s-file.
     fi
 else
     cat errmsg ; remove errmsg
-    bad $label ${admin} returned exit status $?.
+    bad "$label" "${admin}" returned exit status $?.
 fi
-rm -f $s
+rm -f "$s"
 }
 
 g=testfile
@@ -94,7 +94,7 @@ p=p.$g
 files="$s $z $x $p"
 
 remove $files long-text-file infile ctrl-A-file no-newline ctrl-A-end
-remove command.log log  base [sxzp].$g errmsg $g
+remove command.log log  base [sxzp]."$g" errmsg "$g"
 
 expect_fail=false
 adminflags=""
@@ -148,7 +148,7 @@ use_stdin=true
 
 
 
-if ( ${admin} -V 2>&1 ; echo umsp )  | grep CSSC >/dev/null
+if ( "${admin}" -V 2>&1 ; echo umsp )  | grep CSSC >/dev/null
 then
     # Do the tests that SCCS does not pass.
     use_stdin=false
@@ -172,5 +172,5 @@ else
 fi
 
 remove $files long-text-file infile ctrl-A-file no-newline ctrl-A-end
-remove command.log log  base errmsg $g
+remove command.log log  base errmsg "$g"
 success

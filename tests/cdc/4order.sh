@@ -9,7 +9,6 @@ s=s.$g
 z=z.$g
 x=z.$g
 p=p.$g
-files="$s $z $x $p"
 
 remove command.log log log.stdout log.stderr base [sxzp].$g
 

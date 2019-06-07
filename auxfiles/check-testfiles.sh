@@ -35,9 +35,9 @@ diagnose () {
 
 
 check_shipfiles () {
-        distcount=`ls ${distdir}/*/*${suffix} | wc -l`
-        srccount=`ls ${srcdir}/*/*${suffix} | wc -l`
-        if test $distcount -eq $srccount ; then
+        distcount=`ls "${distdir}"/*/*"${suffix}" | wc -l`
+        srccount=`ls "${srcdir}"/*/*"${suffix}" | wc -l`
+        if test "$distcount" -eq "$srccount" ; then
             echo "All $srccount of the $suffix files are accounted for"
         else
             echo "ERROR: Missing $suffix files: source $srccount distributed $distcount" >&2
