@@ -40,4 +40,3 @@ namespace cssc
 /* Local variables: */
 /* mode: c++ */
 /* End: */
-

@@ -51,4 +51,3 @@ relvbr::relvbr(const sid &s)
 {
   // nothing.
 }
-
