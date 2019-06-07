@@ -159,7 +159,7 @@ sccs_file_parser::read_delta() {
           cssc::FailureOr<char> fail_or_type = read_line();
           if (!fail_or_type.ok())
             {
-      	corrupt(here(), "Unexpected end-of-file");
+        corrupt(here(), "Unexpected end-of-file");
             }
           return *fail_or_type;
         };
