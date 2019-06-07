@@ -9,3 +9,6 @@ old_NEWS_hash = d41d8cd98f00b204e9800998ecf8427e
 # detects unexpanded at-foo-at keywords, in order not to have to
 # maintain local diffs.
 _makefile_at_at_check_exceptions = ' && !/PTHREAD_CFLAGS/ && !/PTHREAD_LIBS/'
+
+sc_shellcheck:
+	@$(VC_LIST) | $(GREP) '[.]sh$$' | xargs readlink -f | $(srcdir)/$(_build-aux)/shell_check.sh
