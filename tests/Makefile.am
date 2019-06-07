@@ -7,133 +7,67 @@ MKDIR = mkdir
 remove_trash:
 	trash="`find . -name 'z.*' -print`"; echo "$${trash}" >&2 ; test -z "$${trash}" || exit 1
 
-links: $(TESTDIRS) remove_trash
+intro:
+	@echo "Valgrind is: $(VALGRIND)"
+
+links: $(TESTDIRS) remove_trash intro
 	../testutils/lndir $(srcdir) 
 
 common: 
 	ln -s $(srcdir)/common .
 
-test-initial: links
-	@echo "Valgrind is: $(VALGRIND)"
-	$(SHELL) -ec 'cd initial && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+prepare: links intro
 
+test-initial: prepare
+	@$(PYTHON) run_tests.py initial
 
-test-admin: links
-	$(SHELL) -ec 'cd admin && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-admin: prepare
+	@$(PYTHON) run_tests.py admin
 
+test-delta: prepare
+	@$(PYTHON) run_tests.py delta
 
-test-delta: links
-	$(SHELL) -ec 'cd delta && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-get: prepare
+	@$(PYTHON) run_tests.py get
 
-test-get: links
-	$(SHELL) -ec 'cd get && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) ./$$i || exit 1; \
-	done'
+test-prs: prepare
+	@$(PYTHON) run_tests.py prs
 
-test-prs: links
-	$(SHELL) -ec 'cd prs && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-prt: prepare
+	@$(PYTHON) run_tests.py prt
 
-test-prt: links
-	$(SHELL) -ec 'cd prt && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-unget: prepare
+	@$(PYTHON) run_tests.py unget
 
-test-unget: links
-	$(SHELL) -ec 'cd unget && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-sact: prepare
+	@$(PYTHON) run_tests.py sact
 
-test-sact: links
-	$(SHELL) -ec 'cd sact && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-large: prepare
+	@$(PYTHON) run_tests.py large
 
-test-large: links
-	$(SHELL) -ec 'cd large && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-sccsdiff: prepare
+	@$(PYTHON) run_tests.py sccsdiff
 
-test-sccsdiff: links
-	$(SHELL) -ec 'cd sccsdiff && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-cdc: prepare
+	@$(PYTHON) run_tests.py cdc
 
-test-cdc: links
-	$(SHELL) -ec 'cd cdc && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-binary: prepare
+	@$(PYTHON) run_tests.py binary
 
-test-binary: links
-	$(SHELL) -ec 'cd binary && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-rmdel: prepare
+	@$(PYTHON) run_tests.py rmdel
 
-test-rmdel: links
-	$(SHELL) -ec 'cd rmdel && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-what: prepare
+	@$(PYTHON) run_tests.py what
 
-test-what: links
-	$(SHELL) -ec 'cd what && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-val: prepare
+	@$(PYTHON) run_tests.py val
 
-test-val: links
-	$(SHELL) -ec 'cd val && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
-
-test-year-2000: links
-	$(SHELL) -ec 'cd year-2000 && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+test-year-2000: prepare
+	@$(PYTHON) run_tests.py year-2000
 
 test-bsd-sccs: links
-	$(SHELL) -ec 'cd bsd-sccs && for i in *.sh ; \
-	do \
-		echo Running test `pwd`/$$i; \
-		$(SHELL) $$i || exit 1; \
-	done'
+	@$(PYTHON) run_tests.py bsd-sccs
 
 # Always do test-initial FIRST.
 all-tests:      test-initial \
