@@ -7,13 +7,14 @@
 # Import common functions & definitions.
 . ../common/test-common
 
-g=foo
-s=s.$g
+s=s.foo
 s2=s.bar
-files="$s $g $s2"
 
-remove $files
+cleanup() {
+    remove $s foo $s2 bar
+}
 
+cleanup
 docommand L1 "${admin} -n ${s}" 0 "" IGNORE
 docommand L2 "test -r ${s}" 0 "" IGNORE
 
@@ -40,5 +41,5 @@ fi
 
 
 
-remove s.bar 
+cleanup
 success
