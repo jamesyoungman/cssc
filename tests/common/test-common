@@ -219,8 +219,14 @@ echo $1 >> command.log
 eval "$1" >got.stdout 2>got.stderr
 rv=$?
 echo '# $? was' "$rv;  $(env LC_ALL=C wc -c < got.stdout) bytes on stdout; $(env LC_ALL=C wc -c < got.stderr) bytes on stderr" >> command.log
-sed -e 's/^/# stdout: /' >> command.log < got.stdout
-sed -e 's/^/# stderr: /' >> command.log < got.stderr
+
+# Some sed implementations cannot handle an input which is non-empty
+# but lacks a final newline, so work around that.
+( cat got.stdout ; echo ) >| got.stdout.nl
+( cat got.stderr ; echo ) >| got.stderr.nl
+sed -e '$ d' -e 's/^/# stdout: /' >> command.log < got.stdout.nl
+sed -e '$ d' -e 's/^/# stderr: /' >> command.log < got.stderr.nl
+rm -f got.stdout.nl got.stderr.nl
 
 if test "$2" != "IGNORE"
 then
