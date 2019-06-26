@@ -27,7 +27,10 @@
 
 #ifndef CSSC__FILELOCK_H__
 #define CSSC__FILELOCK_H__
+
+#include <memory>
 #include <string>
+
 #include "cleanup.h"
 #include "failure.h"
 #include "optional.h"
@@ -50,6 +53,8 @@ public:
 	}
 	~file_lock();
 };
+
+std::unique_ptr<file_lock> make_unique_file_lock(const std::string&);
 
 #endif /* __FILELOCK_H__ */
 

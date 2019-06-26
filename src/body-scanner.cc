@@ -755,3 +755,16 @@ sccs_file_body_scanner::remove(FILE *out, seq_no seq)
     }
   return cssc::Failure::Ok();
 }
+
+std::unique_ptr<sccs_file_body_scanner>
+make_unique_sccs_file_body_scanner(const std::string& filename,
+				   FILE*f,
+				   off_t body_pos,
+				   long body_pos_line_number)
+{
+#if __cplusplus >= 201402L
+  return std::make_unique<sccs_file_body_scanner>(filename, f, body_pos, body_pos_line_number);
+#else
+  return std::unique_ptr<sccs_file_body_scanner>(new sccs_file_body_scanner(filename, f, body_pos, body_pos_line_number));
+#endif
+}

@@ -166,6 +166,8 @@ public:
   ~cssc_delta_table();
 };
 
+std::unique_ptr<cssc_delta_table> make_unique_cssc_delta_table();
+
 
 #endif /* CSSC_DELTA_TABLE_H */
 

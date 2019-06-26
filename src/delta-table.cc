@@ -1,3 +1,4 @@
+
 /*
  * delta-table.cc: Part of GNU CSSC.
  *
@@ -131,4 +132,14 @@ find(sid id)
 	}
     }
   return NULL;
+}
+
+
+std::unique_ptr<cssc_delta_table> make_unique_cssc_delta_table()
+{
+#if __cplusplus >= 201402L
+  return std::make_unique<cssc_delta_table>();
+#else
+  return std::unique_ptr<cssc_delta_table>(new cssc_delta_table());
+#endif
 }

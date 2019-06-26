@@ -26,6 +26,7 @@
 #ifndef CSSC_DELTA_H
 #define CSSC_DELTA_H 1
 
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -303,6 +304,8 @@ public:
       }
   }
 };
+
+std::unique_ptr<delta> make_unique_delta();
 
 #endif /* CSSC_DELTA_H */
 

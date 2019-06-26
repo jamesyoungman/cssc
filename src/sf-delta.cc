@@ -413,6 +413,16 @@ sccs_file::add_delta(const std::string& gname,
     return false;
 }
 
+
+std::unique_ptr<delta> make_unique_delta()
+{
+#if __cplusplus >= 201402L
+  return std::make_unique<delta>();
+#else
+  return std::unique_ptr<delta>(new delta());
+#endif
+}
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */

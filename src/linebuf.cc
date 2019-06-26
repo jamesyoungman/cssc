@@ -128,6 +128,16 @@ bool cssc_linebuf::check_id_keywords() const
   return ::check_id_keywords(buf_, strlen(buf_));	// TODO: make NUL-safe!
 }
 
+std::unique_ptr<cssc_linebuf> make_unique_linebuf()
+{
+#if __cplusplus >= 201402L
+  return std::make_unique<cssc_linebuf>();
+#else
+  return std::unique_ptr<cssc_linebuf>(new cssc_linebuf());
+#endif
+}
+
+
 /* Local variables: */
 /* mode: c++ */
 /* End: */

@@ -633,6 +633,16 @@ do_lock(FILE *f)                // process-aware version
 }
 
 
+std::unique_ptr<file_lock> make_unique_file_lock(const std::string& s)
+{
+#if __cplusplus >= 201402L
+  return std::make_unique<file_lock>();
+#else
+  return std::unique_ptr<file_lock>(new file_lock(s));
+#endif
+}
+
+
 file_lock::file_lock(const std::string& zname)
   : lock_state_(),		// empty optional.
     name_(zname)

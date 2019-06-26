@@ -41,7 +41,7 @@ class sccs_file_reader_base
   // TODO: eliminate useless parameter n, since the file name is now
   // known to sccs_file_location anyway.
   explicit sccs_file_reader_base(const std::string&, FILE *f, sccs_file_location pos)
-    : plinebuf{std::make_unique<cssc_linebuf>()},
+    : plinebuf(make_unique_linebuf()),
       here_(pos),
       f_(f)
   {}

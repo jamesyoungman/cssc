@@ -124,6 +124,11 @@ public:
     }
   };
 
+  static std::unique_ptr<open_result> make_unique_open_result();
+  static std::unique_ptr<sccs_file_parser>
+  make_unique_sccs_file_parser(const std::string& name, sccs_file_open_mode, FILE *f);
+
+
   // Open an SCCS file.  Result is null on failure.
   static cssc::FailureOr<std::unique_ptr<open_result> >
   open_sccs_file(const string& name, sccs_file_open_mode, ParserOptions);
@@ -151,7 +156,6 @@ private:
   sccs_file_open_mode mode_;
   bool is_bk_file_;
 };
-
 
 #endif /* CSSC__PARSER_H__ */
 

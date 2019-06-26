@@ -113,7 +113,7 @@ public:
     if (lock_cnt_++ == 0)
       {
 	std::string zf = zfile();
-	lock_ = std::make_unique<file_lock>(zf);
+	lock_ = make_unique_file_lock(zf);
 	return lock_->is_locked();
       }
     return cssc::Failure::Ok();

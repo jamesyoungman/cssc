@@ -128,7 +128,7 @@ sccs_file_parser::open_sccs_file(const std::string& name,
   FILE * f = *failure_or_file;
   ASSERT(f != NULL);
 
-  auto p = std::make_unique<sccs_file_parser>(name, mode, f, constructor_cookie{});
+  auto p = make_unique_sccs_file_parser(name, mode, f);
   // TODO: having an f_ member in a base class and passing in the same
   // FILE* as a function parameter is a bit of a code smell.
   auto open_result = p->parse_header(f, opts);
@@ -174,7 +174,7 @@ sccs_file_parser::read_delta() {
             corrupt(here(), "Two /'s expected");
           }
 
-	std::unique_ptr<delta> tmp = std::make_unique<delta>();
+	std::unique_ptr<delta> tmp = make_unique_delta();
         tmp->set_idu(strict_atoul_idu(here(), args[0]),
 		     strict_atoul_idu(here(), args[1]),
 		     strict_atoul_idu(here(), args[2]));
@@ -559,7 +559,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
     }
 #endif
 
-  std::unique_ptr<open_result> result = std::make_unique<open_result>();
+  std::unique_ptr<open_result> result = make_unique_open_result();
   result->computed_sum = sum & 0xFFFFu;
   result->is_bk = is_bk;
 
@@ -645,7 +645,7 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
     {
       if (!result->delta_table)
 	{
-	  result->delta_table = std::make_unique<cssc_delta_table>();
+	  result->delta_table = make_unique_cssc_delta_table();
 	}
       std::unique_ptr<delta> d = read_delta();
       result->delta_table->add(*d); // FIXME: memory allocation churn, excess copying
@@ -742,8 +742,8 @@ sccs_file_parser::parse_header(FILE *f_local, ParserOptions opts)
     }
   // The body scanner takes ownership of f_local.
   result->body_scanner =
-    std::make_unique<sccs_file_body_scanner>(this->name(), f_local,
-					     body_offset, here().line_number());
+    make_unique_sccs_file_body_scanner(this->name(), f_local,
+				       body_offset, here().line_number());
   return result;
 }
 
@@ -811,3 +811,25 @@ void sccs_file_parser::saw_unknown_feature(const char *fmt, ...) const
       break;
     }
 }
+
+std::unique_ptr<sccs_file_parser::open_result>
+sccs_file_parser::make_unique_open_result()
+{
+#if __cplusplus >= 201402L
+  return std::make_unique<open_result>();
+#else
+  return std::unique_ptr<open_result>(new open_result());
+#endif
+}
+
+std::unique_ptr<sccs_file_parser> sccs_file_parser::
+make_unique_sccs_file_parser(const std::string& name, sccs_file_open_mode m, FILE *f)
+{
+  sccs_file_parser::constructor_cookie c;
+#if __cplusplus >= 201402L
+  return std::make_unique<sccs_file_parser>(name, m, f, c);
+#else
+  return std::unique_ptr<sccs_file_parser>(new sccs_file_parser(name, m, f, c));
+#endif
+}
+

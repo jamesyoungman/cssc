@@ -29,6 +29,8 @@
 #ifndef CSSC__LINEBUF_H__
 #define CSSC__LINEBUF_H__
 
+#include <memory>
+
 #include "failure.h"
 #include "location.h"
 
@@ -79,6 +81,8 @@ public:
 
   ~cssc_linebuf() { delete[] buf_; buf_ = nullptr; }
 };
+
+std::unique_ptr<cssc_linebuf> make_unique_linebuf();
 
 #endif /* __LINEBUF_H__ */
 

@@ -110,7 +110,7 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
   : flags(),
     name_(n), checksum_valid_(false), mode_(m), xfile_created_(false), edit_mode_ok_(true),
     sfile_executable_(false),
-    delta_table_(std::make_unique<cssc_delta_table>()),
+    delta_table_(make_unique_cssc_delta_table()),
     body_scanner_(), users_(), comments_()
 {
   if (!name_.valid())

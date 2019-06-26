@@ -88,6 +88,10 @@ private:
   sccs_file_location start_;
 };
 
+std::unique_ptr<sccs_file_body_scanner>
+make_unique_sccs_file_body_scanner(const std::string& filename,
+				   FILE*f, off_t body_pos,
+				   long body_pos_line_number);
 
 #endif /* CSSC__BODY_SCANNER_H__ */
 
