@@ -273,6 +273,14 @@ else
    AC_SUBST(VALGRIND)
 fi
 
+AC_ARG_WITH([googletest],
+	AS_HELP_STRING([--with-googletest],
+		[Enable unit tests which use the googletest unit testing framework [default is yes]]),
+	[with_googletest=$withval],
+	[with_googletest=yes])
+AM_CONDITIONAL([COND_GOOGLETEST], [test "$want_googletest" = yes])
+
+
 dnl Checks for header files.
 
 dnl Standard C header files:-
