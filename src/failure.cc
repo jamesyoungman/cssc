@@ -79,7 +79,7 @@ namespace cssc
 			   cssc_category());
   }
 
-  std::error_condition make_error_condition(condition e)
+  std::error_condition make_error_condition(cssc::condition e)
   {
     return std::error_condition(static_cast<int>(e),
 				cssc_category());
@@ -100,23 +100,23 @@ namespace cssc
   }
 
   bool category_impl::equivalent(int code,
-				 const std::error_condition& condition ) const noexcept
+				 const std::error_condition& cond) const noexcept
   {
     // All our equivalences are within this category.
-    if (condition.category() != cssc_category())
+    if (cond.category() != cssc_category())
       return false;
 
-    return (condition.value() == static_cast<int>(condition::BodyIsBinary))
+    return (cond.value() == static_cast<int>(cssc::condition::BodyIsBinary))
       && isBodyIsBinaryCode(code);
   }
 
-  bool category_impl::equivalent(const std::error_code& code, int condition) const noexcept
+  bool category_impl::equivalent(const std::error_code& code, int cond) const noexcept
   {
     // All our equivalences are within this category.
     if (code.category() != cssc_category())
       return false;
 
-    return (static_cast<int>(condition::BodyIsBinary) == condition)
+    return (static_cast<int>(cssc::condition::BodyIsBinary) == cond)
       && isBodyIsBinaryCode(code.value());
   }
 
