@@ -38,6 +38,10 @@ which are extracted from other source packages:
 
         $ ./bootstrap
 
+If /bin/sh on your system is not POSIX-compatible, then you may need
+to run "bootsrap" with a POSIX shell (for example /usr/xpg4/bin/sh on
+Solaris).
+
 And there you are!  Just
 
         $ ./configure --quiet #[--enable-gcc-warnings] [*]
