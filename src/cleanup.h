@@ -57,7 +57,7 @@ class cleanup {
 
 	// This class has pointer members so we should override the
 	// copy constructor and assignment operator if we want
-	// instances to be vopyable.  So that we don't have to do
+	// instances to be copyable.  So that we don't have to do
 	// that, just prevent copying.
 	cleanup(const cleanup&) = delete;
 	cleanup& operator=(const cleanup&) = delete;
