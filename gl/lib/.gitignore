@@ -38,7 +38,6 @@ stdarg.in.h
 stddef.h
 stddef.in.h
 stdint.h
-stdint.in.h
 stdio-impl.h
 stdio-write.c
 stdio.h
