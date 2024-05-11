@@ -112,8 +112,7 @@ check_pfile  --nostderr_regex S17 '1.3 1.4 james 16/02/28 11:55:42 -x1.1-1.2\n' 
 # Included and excluded deltas, but in the other order
 check_pfile  --nostderr_regex S18 '1.3 1.4 james 16/02/28 11:55:42 -x1.1-1.2 -i1.3\n' 0 IGNORE ""
 
-
-exit 0
-
 # Cleanup
 remove $s $p $g
+
+exit 0

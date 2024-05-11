@@ -2,7 +2,8 @@ TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel \
                 bsd-sccs year-2000 initial what val
 TESTFILE_SUFFIXES = .sh
 MKDIR = mkdir
-
+RUN_CSSC_TEST = $(PYTHON) $(srcdir)/run_tests.py
+CLEANFILES = */command.log
 
 remove_trash:
 	trash="`find . -name 'z.*' -print`"; echo "$${trash}" >&2 ; test -z "$${trash}" || exit 1
@@ -11,63 +12,63 @@ intro:
 	@echo "Valgrind is: $(VALGRIND)"
 
 links: $(TESTDIRS) remove_trash intro
-	../testutils/lndir $(srcdir) 
+	../testutils/lndir $(srcdir)
 
-common: 
+common:
 	ln -s $(srcdir)/common .
 
 prepare: links intro
 
 test-initial: prepare
-	@$(PYTHON) run_tests.py initial
+	@$(RUN_CSSC_TEST) initial
 
 test-admin: prepare
-	@$(PYTHON) run_tests.py admin
+	@$(RUN_CSSC_TEST) admin
 
 test-delta: prepare
-	@$(PYTHON) run_tests.py delta
+	@$(RUN_CSSC_TEST) delta
 
 test-get: prepare
-	@$(PYTHON) run_tests.py get
+	@$(RUN_CSSC_TEST) get
 
 test-prs: prepare
-	@$(PYTHON) run_tests.py prs
+	@$(RUN_CSSC_TEST) prs
 
 test-prt: prepare
-	@$(PYTHON) run_tests.py prt
+	@$(RUN_CSSC_TEST) prt
 
 test-unget: prepare
-	@$(PYTHON) run_tests.py unget
+	@$(RUN_CSSC_TEST) unget
 
 test-sact: prepare
-	@$(PYTHON) run_tests.py sact
+	@$(RUN_CSSC_TEST) sact
 
 test-large: prepare
-	@$(PYTHON) run_tests.py large
+	@$(RUN_CSSC_TEST) large
 
 test-sccsdiff: prepare
-	@$(PYTHON) run_tests.py sccsdiff
+	@$(RUN_CSSC_TEST) sccsdiff
 
 test-cdc: prepare
-	@$(PYTHON) run_tests.py cdc
+	@$(RUN_CSSC_TEST) cdc
 
 test-binary: prepare
-	@$(PYTHON) run_tests.py binary
+	@$(RUN_CSSC_TEST) binary
 
 test-rmdel: prepare
-	@$(PYTHON) run_tests.py rmdel
+	@$(RUN_CSSC_TEST) rmdel
 
 test-what: prepare
-	@$(PYTHON) run_tests.py what
+	@$(RUN_CSSC_TEST) what
 
 test-val: prepare
-	@$(PYTHON) run_tests.py val
+	@$(RUN_CSSC_TEST) val
 
 test-year-2000: prepare
-	@$(PYTHON) run_tests.py year-2000
+	@$(RUN_CSSC_TEST) year-2000
 
 test-bsd-sccs: links
-	@$(PYTHON) run_tests.py bsd-sccs
+	@$(RUN_CSSC_TEST) bsd-sccs
 
 # Always do test-initial FIRST.
 all-tests:      test-initial \
@@ -84,16 +85,16 @@ check: all-tests
 # knows about have been copied into $(distdir), dist-hook is called.
 
 # This old code copied the CVS directories too, which is awkward
-# for anybody wanting to import the distribution into a local CVS 
+# for anybody wanting to import the distribution into a local CVS
 # repository.
 #
-# dist-hook: 
+# dist-hook:
 #         ( cd $(srcdir) && find common $(TESTDIRS) -type l -print | \
 #               xargs $(RM) )
 #         ( cd $(srcdir)  && tar cf - common $(TESTDIRS) ) | \
 #         ( cd $(distdir) && tar xf - )
-# 
-dist-hook: 
+#
+dist-hook:
 	( cd $(srcdir) && find common $(TESTDIRS) -type l -print | \
 		xargs $(RM) )
 	( cd $(srcdir) && tar cf - \

@@ -27,15 +27,14 @@ dnl ...at least according to the "Gnits" rules outlined
 dnl in the Automake manual.
 dnl   usually use -git to indicate that the person who compiled
 dnl   the code got it from git.
-AC_INIT([GNU CSSC], [1.4.2-rc1], [bug-CSSC@gnu.org], [CSSC])
+AC_INIT([GNU CSSC],[1.4.2-rc1],[bug-CSSC@gnu.org],[CSSC])
 AC_CONFIG_SRCDIR([src/sccsfile.h])
 AC_CONFIG_AUX_DIR([build-aux])
 
-# Changes to AC_CONFIG_MACRO_DIR shoulld be reflected in ACLOCAL_AMFLAGS in Makefile.am.
-AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_MACRO_DIR([unit-tests/googletest/m4])
+# Changes to AC_CONFIG_MACRO_DIRS shoulld be reflected in ACLOCAL_AMFLAGS in Makefile.am.
+AC_CONFIG_MACRO_DIRS([m4])
 AC_SUBST(AUXDIR,$ac_aux_dir)
-AM_INIT_AUTOMAKE([gnits readme-alpha check-news tar-ustar 1.11.6])
+AM_INIT_AUTOMAKE([gnits readme-alpha check-news tar-ustar subdir-objects 1.11.6])
 AC_CONFIG_HEADERS(config.h)
 AC_SUBST([LIBINTL])
 AC_SUBST([LTLIBINTL])
@@ -132,17 +131,16 @@ dnl We have to call this macro after the [AC_PROG_CC] macro and
 dnl before any other macro that calls the compiler.   We also do
 dnl something similar for MINIX (though CSSC has never been tested
 dnl on Minix as far as I know).
-AC_ISC_POSIX
-AC_MINIX
+AC_SEARCH_LIBS([strerror],[cposix])
+AC_USE_SYSTEM_EXTENSIONS
 
-AC_PROG_LIBTOOL
+LT_INIT
 
 AC_PROG_CXX
 AC_SUBST(GXX)dnl
 AC_PROG_CPP
 AC_PROG_CXXCPP
 dnl AC_PROG_INSTALL([])
-
 
 dnl The next test must be done in C++.
 
@@ -156,7 +154,7 @@ dnl script does not pass the correct -O option to the compiler (well,
 dnl the preprocessor)
 dnl
 AC_MSG_CHECKING([if you are using a broken version of glibc with a version of GCC (>=2.97) that doesn't like it])
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
 int x = 0;
 class foo {
@@ -165,10 +163,7 @@ foo() { }
 void some_member_function(void) { };
 int printf(const char *fmt, ...);
 };
-],
-[/* no function body*/],
-AC_MSG_RESULT(no),
-AC_MSG_RESULT(yes)
+]], [[/* no function body*/]])],[AC_MSG_RESULT(no)],[AC_MSG_RESULT(yes)
 
 oldCFLAGS="$CFLAGS"
 oldCXXFLAGS="$CXXFLAGS"
@@ -176,7 +171,7 @@ if echo "$CFLAGS" | grep -e "-O" >/dev/null
 then
 	CFLAGS="-g"
 	CXXFLAGS="-g"
-[
+
 echo
 echo WARNING It seems that you are using a version of GNU lilbc
 echo WARNING that has a broken printf macro in /usr/include/bits/stdio.h.
@@ -190,9 +185,9 @@ echo WARNING
 echo WARNING CFLAGS   has been changed from "$oldCFLAGS"   to "$CFLAGS"
 echo WARNING CXXFLAGS has been changed from "$oldCXXFLAGS" to "$CXXFLAGS"
 echo
-]
+
 fi
-)
+])
 
 AC_LANG([C])
 gl_INIT
@@ -273,13 +268,7 @@ else
    AC_SUBST(VALGRIND)
 fi
 
-AC_ARG_WITH([googletest],
-	AS_HELP_STRING([--with-googletest],
-		[Enable unit tests which use the googletest unit testing framework [default is yes]]),
-	[with_googletest=$withval],
-	[with_googletest=yes])
-AM_CONDITIONAL([COND_GOOGLETEST], [test "$want_googletest" = yes])
-
+AM_PATH_PYTHON
 
 dnl Checks for header files.
 
@@ -288,7 +277,11 @@ dnl We check these with language set to C only, otherwise autoconf-2.13 will
 dnl attempt to make the check with the C++ compiler.  It will then moan about
 dnl an undeclared "exit" library function.
 AC_LANG([C])
-AC_HEADER_STDC
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 
 AC_LANG([C++])
 echo "Start checking accessibility of C headers while compiling as C++"
@@ -361,10 +354,28 @@ fi
 dnl Look for declarations in headers.
 
 dnl src/sccs.c uses sys_siglist[], if available.
-AC_DECL_SYS_SIGLIST
+AC_CHECK_DECLS([sys_siglist],[],[],[#include <signal.h>
+/* NetBSD declares sys_siglist in unistd.h.  */
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+])
+
 
 dnl fatalsig.cc uses signal handlers
-AC_TYPE_SIGNAL
+m4_warn([obsolete],
+[your code may safely assume C89 semantics that RETSIGTYPE is void.
+Remove this warning and the `AC_CACHE_CHECK' when you adjust the code.])dnl
+AC_CACHE_CHECK([return type of signal handlers],[ac_cv_type_signal],[AC_COMPILE_IFELSE(
+[AC_LANG_PROGRAM([#include <sys/types.h>
+#include <signal.h>
+],
+		 [return *(signal (0, 0)) (0) == 1;])],
+		   [ac_cv_type_signal=int],
+		   [ac_cv_type_signal=void])])
+AC_DEFINE_UNQUOTED([RETSIGTYPE],[$ac_cv_type_signal],[Define as the return type of signal handlers
+		    (`int' or `void').])
+
 
 dnl Checks for library functions.
 dnl AC_FUNC_MEMCMP
@@ -414,12 +425,9 @@ do
    AC_MSG_CHECKING([for global variable ${ac_global}])
    AC_CACHE_VAL(ac_cv_global_$ac_global,
    [
-    AC_TRY_LINK(dnl
-    [/* no includes */],
-    [ extern long int $ac_global;  exit((int)$ac_global)],
-    eval "ac_cv_global_${ac_global}=yes",
-    eval "ac_cv_global_${ac_global}=no"
-    )
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[dnl
+    /* no includes */]], [[ extern long int $ac_global;  exit((int)$ac_global)]])],[eval "ac_cv_global_${ac_global}=yes"],[eval "ac_cv_global_${ac_global}=no"
+    ])
    ]
    )
   if eval "test \"`echo '$ac_cv_global_'$ac_global`\" = yes"; then
@@ -457,49 +465,11 @@ do
 done
 ],[])
 
-
-## ==============================================================================
-## Googletest tests begin
-## ==============================================================================
-# TODO(chandlerc@google.com): Currently we aren't running the Python tests
-# against the interpreter detected by AM_PATH_PYTHON, and so we condition
-# HAVE_PYTHON by requiring "python" to be in the PATH, and that interpreter's
-# version to be >= 2.3. This will allow the scripts to use a "/usr/bin/env"
-# hashbang.
-PYTHON=  # We *do not* allow the user to specify a python interpreter
-AC_PATH_PROG([PYTHON],[python],[:])
-AS_IF([test "$PYTHON" != ":"],
-      [AM_PYTHON_CHECK_VERSION([$PYTHON],[2.3],[:],[PYTHON=":"])])
-AM_CONDITIONAL([HAVE_PYTHON],[test "$PYTHON" != ":"])
-
-# Configure pthreads.
-AC_ARG_WITH([pthreads],
-            [AS_HELP_STRING([--with-pthreads],
-               [use pthreads (default is yes)])],
-            [with_pthreads=$withval],
-            [with_pthreads=check])
-
-have_pthreads=no
-AS_IF([test "x$with_pthreads" != "xno"],
-      [ACX_PTHREAD(
-        [],
-        [AS_IF([test "x$with_pthreads" != "xcheck"],
-               [AC_MSG_FAILURE(
-                 [--with-pthreads was specified, but unable to be used])])])
-       have_pthreads="$acx_pthread_ok"])
-AM_CONDITIONAL([HAVE_PTHREADS],[test "x$have_pthreads" = "xyes"])
-AC_SUBST(PTHREAD_CFLAGS)
-AC_SUBST(PTHREAD_LIBS)
-## ==============================================================================
-## Googletest tests end
-## ==============================================================================
-
-
 dnl *** NOTE:
 dnl There can be only ONE call to AC_OUTPUT in each configure.ac,
 dnl otherwise you get an error when you run configure.  AC_OUTPUT
 dnl deletes confdefs.h and so the second invocation can't find it
 dnl and so things go wrong.
 
-AC_CONFIG_FILES([src/version.cc Makefile gl/Makefile gl/lib/Makefile gl/doc/Makefile gl/tests/Makefile testutils/Makefile src/Makefile src/sccsdiff.sh unit-tests/Makefile tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
+AC_CONFIG_FILES([src/version.cc Makefile gl/Makefile gl/lib/Makefile gl/doc/Makefile gl/tests/Makefile testutils/Makefile src/Makefile src/sccsdiff.sh tests/Makefile docs/Makefile testutils/decompress_stdin.sh auxfiles/Makefile auxfiles/CSSC.spec sccs-cgi/Makefile docs/config-info.texi unit-tests/testwrapper.sh])
 AC_OUTPUT

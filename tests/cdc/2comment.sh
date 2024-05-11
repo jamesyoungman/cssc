@@ -25,10 +25,10 @@ remove $g
 
 # Now change the (initial) comment.
 docommand C2 "${vg_cdc} -r1.1 '-yNewComment
-NewComment2' $s" 0 "" "" 
+NewComment2' $s" 0 "" ""
 
 # Extract only the comment.
-remove comment 
+remove comment
 ${prs} -d:C: -r1.1 $s > comment
 
 
@@ -45,11 +45,11 @@ docommand C5 "sed -n 3p <comment|egrep \
 
 
 # Now change the (already changed) comment.
-docommand C6 "${vg_cdc} -r1.1 '-yAnother Comment' $s" 0 "" "" 
+docommand C6 "${vg_cdc} -r1.1 '-yAnother Comment' $s" 0 "" ""
 
 
 # Again, extract only the comment.
-remove comment 
+remove comment
 ${prs} -d:C: -r1.1 $s > comment || fail prs failed unexpectedly
 
 
@@ -68,5 +68,5 @@ docommand C10 "sed -n 5p <comment|egrep \
 '^\*\*\* CHANGED \*\*\* [0-9][0-9]/[01][0-9]/[0-3][0-9] [012][0-9]:[0-6][0-9]:[0-6][0-9] [^ ][^ ]*$'" 0 "IGNORE" ""
 
 
-remove command.log passwd $s $p $g $z $x
+remove command.log passwd $s $p $g $z $x comment
 success

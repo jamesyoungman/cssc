@@ -34,16 +34,11 @@
 # it more obvious where the bug is when there is a test failure.
 
 # ACLOCAL_AMFLAGS should mirror AC_CONFIG_MACRO_DIR in configure.ac
-ACLOCAL_AMFLAGS = -I m4 -I unit-tests/googletest/m4
+ACLOCAL_AMFLAGS = -I m4
 
-# If configure --with-googletest, we can build the tests in unit-tests
-# and run those tests.
-if COND_GOOGLETEST
-        # Automake will keep unit-tests in DIST_SUBDIRS
-        # so that "make dist" still includes the tests.
-	MAYBE_UNIT_TESTS = unit-tests
-endif
-
+# We temporarily exclude unit-tests because googletest isn't
+# intended for use with Autotools any more.
+# MAYBE_UNIT_TESTS = unit-tests
 SUBDIRS = gl docs testutils auxfiles src sccs-cgi $(MAYBE_UNIT_TESTS) tests
 
 EXTRA_DIST = ChangeLog ChangeLog.1 ChangeLog.2 ChangeLog.3
@@ -64,6 +59,3 @@ gen-ChangeLog:
 		echo "WARNING: $@: cannot generate ChangeLog since" >&2 && \
 		echo "$(top_srcdir) has no .git subdirectory" >&2 ;      \
 	fi
-
-distcheck-hook:
-	"$(srcdir)/build-aux/check-googletest-files.sh" "$(srcdir)" "$(DIST_ARCHIVES)"

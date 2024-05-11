@@ -12,10 +12,10 @@ cat > base <<EOF
 This is a test file containing nothing interesting.
 EOF
 for i in 1 2 3 4 5 6
-do 
+do
     cat base                       > test/passwd.$i
     echo "This is file number" $i >> test/passwd.$i
-done 
+done
 
 s=test/s.passwd
 
@@ -60,11 +60,11 @@ remove passwd command.log $s
 
 ###
 ### Other stuff
-### 
+###
 g=foo; for n in p z x s q; do eval $n=$n.${g}; done
-files="$s $p $z $x $s $q"
+files="$s $p $z $x $s $q $g ${g}.old"
 
-remove $files 
+remove $files
 cat > $g <<EOF
 first line
 second line
@@ -81,7 +81,7 @@ docommand C1  "${admin} -i${g} $s" 0 IGNORE IGNORE
 remove $g
 docommand C2  "${get} -e $s" 0 IGNORE IGNORE
 
-rename ${g} ${g}.old 
+rename ${g} ${g}.old
 sed -e '2,4 d' < ${g}.old > $g || miscarry "sed failed"
 
 docommand C3  "${vg_delta} -y $s" 0 IGNORE IGNORE
@@ -94,7 +94,7 @@ ninth line
 " IGNORE
 
 docommand C5  "${get} -e $s" 0 IGNORE IGNORE
-rename ${g} ${g}.old 
+rename ${g} ${g}.old
 sed -e '2,4 d' < ${g}.old > $g || miscarry "sed failed"
 docommand C6  "${vg_delta} -y $s" 0 IGNORE IGNORE
 docommand C7  "${get} -p $s" 0 "first line
@@ -102,7 +102,7 @@ eighth line
 ninth line
 " IGNORE
 
-# If we try to do a delta again, it should fail because we have no 
+# If we try to do a delta again, it should fail because we have no
 # outstanding edits - that is, there is no p-file.
 docommand C8  "${vg_delta} -y $s" 1 IGNORE IGNORE
 
@@ -115,7 +115,7 @@ remove $p $g
 
 # ... and checking in a SID which is in the p-file but not the s-file...
 docommand C11   "${get} -e -r1.3 $s" 0 IGNORE IGNORE
-rename ${p} ${p}.old 
+rename ${p} ${p}.old
 ( sed -e 's/1\.3/3.1/' < ${p}.old | sed -e 's/1\.4/3.2/' > $p ) || miscarry "sed failed"
 remove ${p}.old
 docommand C12  "${vg_delta} -y -r1.1 $s" 1 IGNORE IGNORE
@@ -129,8 +129,8 @@ docommand C14  "${vg_delta} -y $s" 1 IGNORE IGNORE
 # It is also an error to specify a SID which is not being edited.
 docommand C15  "${vg_delta} -y -r1.3 $s" 1 IGNORE IGNORE
 
-# It is an error to check in a file containing no SCCS keywords when the 
-# "i" flag is set. 
+# It is an error to check in a file containing no SCCS keywords when the
+# "i" flag is set.
 docommand C16  "${admin} -fi $s" 0 "" IGNORE
 docommand C17  "${vg_delta} -y -r1.2 $s" 1 "" IGNORE
 

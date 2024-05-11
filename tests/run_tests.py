@@ -29,7 +29,7 @@ class colour:
 def spawn(col, label, argv):
     print("%-25s... " % (label,), end="")
     p = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, errs = p.communicate()
+    out, error_messages = p.communicate()
     result = p.returncode
     if result == 0:
         col.in_green("PASS")
@@ -37,26 +37,28 @@ def spawn(col, label, argv):
         col.in_red("FAIL")
         print(out, file=sys.stdout)
         print(errs, file=sys.stderr)
-    return result, errs
+    return result, error_messages
 
 def run_one_test(col, dirname, name):
     label = "%s/%s" % (dirname, name)
     if name.endswith(".sh"):
         result, _ = spawn(col, label, ["sh", name])
         return result
+    else:
+        raise ValueError(f"{name} is not a shell script")
 
 def run_tests(col, dirname):
     os.chdir(dirname)
     result = 0
     names = os.listdir(".")
     for name in names:
-        if os.path.isfile(name):
+        if os.path.isfile(name) and name.endswith(".sh"):
             rv = run_one_test(col, dirname, name)
             if rv > result:
                 result = rv
     return result
 
-        
+
 def main(args):
     subdir = args[1]
     if len(args) != 2:
