@@ -34,17 +34,17 @@
 # it more obvious where the bug is when there is a test failure.
 
 # ACLOCAL_AMFLAGS should mirror AC_CONFIG_MACRO_DIR in configure.ac
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 -I unit-tests/googletest/googletest/m4
 
-# We temporarily exclude unit-tests because googletest isn't
-# intended for use with Autotools any more.
-# MAYBE_UNIT_TESTS = unit-tests
-SUBDIRS = gl docs testutils auxfiles src sccs-cgi $(MAYBE_UNIT_TESTS) tests
+SUBDIRS = gl docs testutils auxfiles src sccs-cgi unit-tests tests
 
 EXTRA_DIST = ChangeLog ChangeLog.1 ChangeLog.2 ChangeLog.3
 
 
 dist-hook: gen-ChangeLog
+
+distcheck-hook:
+	sh "$(srcdir)/build-aux/check-googletest-files.sh" "$(srcdir)" "$(DIST_ARCHIVES)"
 
 # gen-Changelog must still work when $(top_srcdir)/.git does not exist
 # because "make distcheck" verifies that you can "make dist" from the
