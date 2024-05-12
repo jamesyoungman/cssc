@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 1998, 1999, 2001, 2019 Free Software Foundation, Inc.  All rights reserved.
+ * Copyright (C) 1998, 1999, 2001, 2019, 2024 Free Software Foundation,
+ * Inc.  All rights reserved.
  *
  * Copyright (c) 1980, 1993
  *      The Regents of the University of California.  All rights reserved.

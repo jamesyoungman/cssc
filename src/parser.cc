@@ -3,7 +3,7 @@
  *
  *
  *  Copyright (C) 1997, 1998, 1999, 2001, 2003, 2004, 2007, 2008, 2009,
- *  2010, 2011, 2014, 2019 Free Software Foundation, Inc.
+ *  2010, 2011, 2014, 2019, 2024 Free Software Foundation, Inc.
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

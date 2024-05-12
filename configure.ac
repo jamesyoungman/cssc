@@ -3,7 +3,7 @@ dnl
 dnl configure.ac: Part of GNU CSSC.
 dnl
 dnl Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2007,
-dnl 2008, 2010, 2011, 2014, 2019 Free Software Foundation, Inc.
+dnl 2008, 2010, 2011, 2014, 2019, 2024 Free Software Foundation, Inc.
 dnl
 dnl This program is free software: you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
