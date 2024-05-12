@@ -1,5 +1,5 @@
 The Time-stamp: line indicates when this file was last modified.
-Time-stamp: <2011-04-25 21:58:24 james>
+Time-stamp: <2024-05-12 10:44:26 james>
 
 The MySC package is CSSC's ancestor.  MySC compiled under GCC 2.4.5
 (but not GCC 2.7.x), and was written by Ross Ridge.
@@ -113,6 +113,8 @@ Thomas Duffy has taken on the role of building RPM and SRPM packages
 for CSSC.
 
 Yann Dirson maintains the Debian package for CSSC.
+
+Ryan Carsten Schmidt contirubuted build fixes for Mac OS.
 
 
 Local Variables:

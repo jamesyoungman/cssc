@@ -28,6 +28,7 @@
 
 #include <config.h>
 
+#include <cstdlib>
 #include <string>
 #include <ctype.h>
 

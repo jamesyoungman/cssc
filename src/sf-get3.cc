@@ -28,6 +28,8 @@
 
 #include <config.h>
 
+#include <cstdlib>
+
 #include "cssc.h"
 #include "sccsfile.h"
 #include "seqstate.h"
