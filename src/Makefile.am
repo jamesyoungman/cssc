@@ -15,12 +15,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#
-## Process this file with automake to generate "Makefile.in"
+
+## Process this file with automake (by running ./bootstrap) to
+## generate "Makefile.in".
 ##
 ## Since it doesn't start with "##", the following line will be copied
-## into Makefile.in, and become the first line.
+## into Makefile.in.
 # Running ./configure will generate a Makefile from this file.
 
 csscutildir = $(libexecdir)/cssc
