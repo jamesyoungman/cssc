@@ -62,7 +62,7 @@ FileDiff::start()
   std::string cmd(std::string(CONFIG_DIFF_COMMAND) +
                space + quote + name1_ + quote +
                space + quote + name2_ + quote);
-  TempPrivDrop guard();
+  TempPrivDrop guard;
   fp_ = popen(cmd.c_str(), "r");
   return fp_;
 }
