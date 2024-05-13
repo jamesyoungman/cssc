@@ -28,11 +28,6 @@ You can get a copy of the source repository like this:
         $ git clone git://git.savannah.gnu.org/cssc.git
         $ cd cssc
 
-You also need to get a copy of gnulib:
-
-        $ git submodule init
-        $ git submodule update
-
 The next step is to get and check other files needed to build,
 which are extracted from other source packages:
 
@@ -44,16 +39,9 @@ Solaris).
 
 And there you are!  Just
 
-        $ ./configure --quiet #[--enable-gcc-warnings] [*]
+        $ ./configure --quiet --enable-binary
         $ make
         $ make check
-
-At this point, there should be no difference between your local copy,
-and the GIT master copy:
-
-        $ git diff
-
-should output no difference.
 
 Enjoy!
 
@@ -63,13 +51,18 @@ We used to check the googletest subdirectory out from svn, but this
 has now moved to git.  Therefore you may need to delete any existing
 googletest directory before running "bootstrap".
 
+* Compiler Warnings
 
-[*] The --enable-gcc-warnings option is useful only with glibc
-and with a very recent version of gcc.  You'll probably also have
-to use recent system headers.  If you configure with this option,
-and spot a problem, please be sure to send the report to the bug
-reporting address of this package, and not to that of gnulib, even
-if the problem seems to originate in a gnulib-provided file.
+You can also enable additional compiler warnings if you prefer, like
+this:
+        $ ./configure --quiet --enable-binary --enable-gcc-warnings
+
+The --enable-gcc-warnings option is probably useful only with glibc.
+If you configure with this option, and spot a problem, please be sure
+to send the report to the bug reporting address of this package, and
+not to that of gnulib, even if the problem seems to originate in a
+gnulib-provided file.
+
 -----
 
 Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
