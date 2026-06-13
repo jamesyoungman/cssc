@@ -61,11 +61,12 @@ docommand setup2 "${vg_get} -e ${s}" 0 IGNORE IGNORE
 # predict.
 docommand S1 "${vg_sact} $s" 0 IGNORE ""
 
-# This is the basic success case (without using check_pfile)
 if ! makep '1.1 1.2 james 16/02/28 10:59:47\n'
 then
-    fail "S2: failed to create p-file ${p}"
+    miscarry "failed to create ${p}"
 fi
+
+# This is the basic success case (without using check_pfile)
 docommand S3 "${vg_sact} $s" 0 '1.1 1.2 james 16/02/28 10:59:47\n' IGNORE
 
 # At this point we know that sact doesn't barf on a valid p-file and
