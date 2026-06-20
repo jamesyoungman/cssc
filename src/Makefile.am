@@ -111,7 +111,6 @@ libcssc_a_SOURCES = \
 	mode.h \
 	my-getopt.cc \
 	my-getopt.h \
-	optional.h \
 	parser.cc \
 	parser.h \
 	pf-add.cc \

@@ -28,6 +28,7 @@
 #ifndef CSSC__SCCSFILE_H__
 #define CSSC__SCCSFILE_H__
 
+#include <optional>
 #include <set>
 #include <string>
 #include <unordered_set>
@@ -41,7 +42,6 @@
 #include "delta-iterator.h"
 #include "pfile.h"
 #include "mode.h"
-#include "optional.h"
 #include "parser.h"
 
 class seq_state;        /* seqstate.h */
@@ -102,7 +102,7 @@ public:
 				  sid_list include,
 				  sid_list exclude,
 				  bool keywords,
-				  cssc::optional<std::string> wstring,
+				  std::optional<std::string> wstring,
 				  bool show_sid, bool show_module,
 				  bool debug, bool for_edit);
 

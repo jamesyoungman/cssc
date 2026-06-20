@@ -26,6 +26,7 @@
 
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -33,7 +34,6 @@
 #include "body-scanner.h"
 #include "failure.h"
 #include "failure_or.h"
-#include "optional.h"
 #include "location.h"
 #include "mode.h"
 
@@ -44,13 +44,13 @@ class delta;
 struct parsed_flag
 {
   parsed_flag(const sccs_file_location& loc, char f, const std::string& v)
-    : where(loc), letter(f), value{cssc::optional<std::string>(v)} {}
+    : where(loc), letter(f), value{std::optional(v)} {}
   parsed_flag(const sccs_file_location& loc, char f)
-    : where(loc), letter(f), value() {}
+    : where(loc), letter(f), value(std::nullopt) {}
 
   sccs_file_location where;
   char letter;
-  cssc::optional<std::string> value;
+  std::optional<std::string> value;
 };
 
 class ParserOptions
@@ -93,7 +93,6 @@ public:
 
   struct open_result
   {
-    template <class T> using optional = cssc::optional<T>;
     std::unique_ptr<sccs_file_parser> parser;
 
     int computed_sum;		// computed from reading the (whole) file.

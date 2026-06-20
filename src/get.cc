@@ -28,6 +28,7 @@
 
 #include <functional>
 #include <initializer_list>
+#include <optional>
 #include <string>
 #include <errno.h>
 
@@ -105,7 +106,7 @@ main(int argc, char **argv)
   int send_body_to_stdout = 0;		/* -p */
   int silent = 0;                       /* -s */
   int no_output = 0;                    /* -g */
-  cssc::optional<std::string> wstring;	/* -w */
+  std::optional<std::string> wstring;	/* -w */
   sid_list include, exclude;            /* -i, -x */
   sccs_date cutoff_date;                /* -c */
   int show_sid = 0;                     /* -m */
@@ -602,7 +603,7 @@ sccs_file::get(FILE *out, const std::string& gname,
 	       FILE *summary_file,
 	       sid id, sccs_date cutoff_date,
                sid_list include, sid_list exclude,
-               bool keywords, cssc::optional<std::string> wstring,
+               bool keywords, std::optional<std::string> wstring,
                bool show_sid, bool show_module, bool debug,
 	       bool for_edit)
 {

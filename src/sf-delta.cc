@@ -221,7 +221,7 @@ sccs_file::add_delta(const std::string& gname,
     }
   FileDeleter another_cleaner(name_.dfile(), false);
 
-  auto w = cssc::optional<std::string>();
+  auto w = std::optional<std::string>();
   const struct delta blankdelta;
   struct subst_parms substitution_parameters(name_.dfile(), get_module_name(), get_out,
 					     w, blankdelta,
