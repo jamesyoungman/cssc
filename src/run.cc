@@ -183,17 +183,17 @@ run(const std::string& prg, std::vector<std::string>& args)
 bool
 sccs_file::check_mrs(const std::vector<std::string>& mrs)
 {
-  ASSERT(nullptr != flags.mr_checker);
+  ASSERT(flags.mr_checker.has_value());
   // If the validation flag is set but has no value, PRG will be an
   // empty string and the validation should succeed silently.  This is
   // for compatibility with "real" SCCS.
-  if (flags.mr_checker->empty())
+  if (flags.mr_checker.value().empty())
     return 0;
 
   std::vector<std::string> args{name_.gfile()};
   args.reserve(mrs.size() + 1);
   std::copy(mrs.cbegin(), mrs.cend(), std::back_inserter(args));
-  return run(*flags.mr_checker, args);
+  return run(flags.mr_checker.value(), args);
 }
 
 

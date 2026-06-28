@@ -342,10 +342,10 @@ sccs_file::write(FILE *out) const
 	}
 
       // v MR-validation program.
-      if (flags.mr_checker)
+      if (flags.mr_checker.has_value())
 	{
 	  if (printf_failed(fprintf(out, "\001f v %s\n",
-				    flags.mr_checker->c_str())))
+				    flags.mr_checker.value().c_str())))
 	    return cssc::make_failure_from_errno(errno);
 	}
 

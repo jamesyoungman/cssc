@@ -83,6 +83,16 @@ cssc::Failure print_flag(FILE *out, const char *fmt, std::string flag, int& coun
   return cssc::Failure::Ok();
 }
 
+cssc::Failure print_printtf_format_optional_string_flag(FILE *out, const char *fmt, const cssc::optional<std::string>& flag, int& count)
+{
+  if (flag.has_value())
+    {
+      ++count;
+      TRY_PRINTF(fprintf(out, fmt, flag.value().c_str()));
+    }
+  return cssc::Failure::Ok();
+}
+
 cssc::Failure print_flag(FILE *out, const char *fmt, const std::string* pflag, int& count)
 {
   // We consider a flag which is set to an empty string still to be set.
@@ -487,7 +497,7 @@ sccs_file::prt(FILE *out,
       TRY_OPERATION(print_flag(out, "\tnull delta\t\n", flags.null_deltas, flag_count));
       TRY_OPERATION(print_flag(out, "\tcsect name\t%s\n", flags.user_def, flag_count));
       TRY_OPERATION(print_flag(out, "\ttype\t%s\n", flags.type, flag_count));
-      TRY_OPERATION(print_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count));
+      TRY_OPERATION(print_printtf_format_optional_string_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count));
 
       if (!flags.substitued_flag_letters.empty())
 	{

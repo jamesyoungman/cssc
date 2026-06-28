@@ -45,6 +45,7 @@
 using cssc::Failure;
 using cssc::FailureOr;
 using cssc::make_failure_from_errno;
+using cssc::optional;
 
 /* Prints a list of sequence numbers on the same line. */
 static Failure
@@ -196,7 +197,7 @@ sccs_file::print_flags(FILE *out) const
   TRY_OPERATION(print_flag2(out, "csect name", flags.user_def));
   TRY_OPERATION(print_flag2(out, "type", flags.type));
   TRY_OPERATION(print_flag2(out, "validate MRs",
-			    (flags.mr_checker ? flags.mr_checker->c_str() : nullptr)));
+			    (flags.mr_checker.has_value() ? flags.mr_checker.value().c_str() : nullptr)));
 
 #if 0
   // Testing on Solaris 9 reveals that no output is produced
@@ -228,6 +229,15 @@ inline static Failure
 print_flag(FILE *out, const std::string *s)
 {
   const char * representation = (s == nullptr) ? "none" : s->c_str();
+  TRY_PUTS(fputs(representation, out));
+  return Failure::Ok();
+}
+
+/* Prints the value of a std::string flag. */
+inline static Failure
+print_optional_string_flag(FILE *out, const optional<std::string>& s)
+{
+  const char * representation = s.has_value() ? s.value().c_str() : "none";
   TRY_PUTS(fputs(representation, out));
   return Failure::Ok();
 }
@@ -533,10 +543,10 @@ sccs_file::print_delta_key(FILE *out_file,
 	return print_flag(out, flags.type);
 
 	case KEY2('M','F'):
-	return print_yesno(out, flags.mr_checker != nullptr);
+	return print_yesno(out, flags.mr_checker.has_value());
 
 	case KEY2('M','P'):
-	return print_flag(out, flags.mr_checker);
+	return print_optional_string_flag(out, flags.mr_checker);
 
 	case KEY2('K','F'):
 	return print_yesno(out, flags.no_id_keywords_is_fatal);

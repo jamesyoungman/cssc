@@ -130,7 +130,7 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
   flags.all_locked = 0;
   flags.encoded = 0;
   flags.executable = 0;
-  flags.mr_checker = nullptr;
+  flags.mr_checker.reset();
   flags.module = nullptr;
   flags.type = nullptr;
   flags.reserved = nullptr;
@@ -210,7 +210,14 @@ sccs_file::sccs_file(sccs_name &n, sccs_file_open_mode m,
 	break;
 
       case 'v':
-	set_mr_checker_flag(arg);
+	if (arg)
+	  {
+	    flags.mr_checker = std::string(arg);
+	  }
+        else
+	  {
+	    flags.mr_checker.reset();
+            }
 	break;
 
       case 'i':
@@ -357,15 +364,6 @@ sccs_file::find_most_recent_sid(sid& s, sccs_date& d) const
         }
     }
   return found;
-}
-
-void
-sccs_file::set_mr_checker_flag(const char *s)
-{
-  if (flags.mr_checker)
-    delete flags.mr_checker;
-
-  flags.mr_checker = new std::string(s);
 }
 
 void
@@ -525,7 +523,7 @@ sccs_file::sfile_should_be_executable() const
 }
 
 sccs_file::sccs_file_flags::sccs_file_flags()
-  : type(nullptr), mr_checker(nullptr), no_id_keywords_is_fatal(false),
+  : type(nullptr), mr_checker(), no_id_keywords_is_fatal(false),
     branch(0), module(nullptr), floor(), ceiling(), default_sid(),
     null_deltas(), joint_edit(), locked(), all_locked(),
     user_def(nullptr), reserved(nullptr),

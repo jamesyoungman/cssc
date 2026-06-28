@@ -40,6 +40,7 @@
 #include "bodyio.h"
 #include "file.h"
 
+using cssc::optional;
 
 /* #define ADMIN_MERGE_LOCKED_RELEASES if you want
  * admin -fl1 s.foo ;  admin -fl2 s.foo
@@ -181,7 +182,7 @@ sccs_file::admin(const char *file_comment,
 	  break;
 
 	case 'v':
-	  set_mr_checker_flag(flag_value);
+	  flags.mr_checker = std::string(flag_value);
 	  break;
 
 	case 'x':
@@ -307,8 +308,7 @@ sccs_file::admin(const char *file_comment,
 	  break;
 
 	case 'v':
-	  delete flags.mr_checker;
-	  flags.mr_checker = nullptr;
+	  flags.mr_checker.reset();
 	  break;
 
 	case 'x':

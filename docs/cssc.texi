@@ -2408,6 +2408,17 @@ introduced by Sun Solaris 8.  See @ref{Interoperability} for a
 discussion of the interoperability of @sc{cssc} with other @sc{sccs}
 implementations.
 
+Some flags can exist but not be set to a value.  For example, here we
+see the @samp{v} flag is set but has no value:
+
+@example
+^Af f v
+@end example
+
+These lines may have a trailing blank (which is ordinarily the
+separator between the flag letter and the flag value) or not.  In the
+case of the @samp{v} flag at least, these two situations are
+equivalent.
 
 @node File Description, Example Header, Global Flags Section, The Header
 @subsection File Description

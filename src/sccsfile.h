@@ -202,7 +202,7 @@ public:
 
   int mr_required() const
   {
-    if (flags.mr_checker)
+    if (flags.mr_checker.has_value())
       return 1;
     else
       return 0;
@@ -212,7 +212,6 @@ public:
   bool check_mrs(const std::vector<std::string>& mrs);
 
   /* sccsfile.cc */
-  void set_mr_checker_flag(const char *s);
   void set_module_flag(const char *s);
   void set_user_flag(const char *s);
   void set_reserved_flag(const char *s);
@@ -310,9 +309,9 @@ private:
 
   struct sccs_file_flags
   {
-    // TODO: consider std::unique_ptr<std::string> instead of std::string*.
+    // TODO: consider std::optional<std::string> instead of std::string*.
     std::string *type;
-    std::string *mr_checker;
+    cssc::optional<std::string> mr_checker;
     int no_id_keywords_is_fatal;
     int branch;
     std::string *module;

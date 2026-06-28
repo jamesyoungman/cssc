@@ -1,3 +1,9 @@
+* Noteworthy changes in release 1.5.0-rc4
+
+        * Tolerate SCCS files in which file flags lack the space
+          separator which would normally come between the flag letter
+          and the associated value.
+
 * Noteworthy changes in release 1.5.0-rc3 (2026-06-14)
 
         * Some typos in error message have been fixed.

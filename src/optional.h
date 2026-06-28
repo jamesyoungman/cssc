@@ -59,6 +59,15 @@ namespace cssc
 	return *this;
       }
 
+      // We do not implement `constexpr const T* operator->() const
+      // noexcept` since <optional> didn't include that in C++11 (and
+      // for the moment we want the code to compile on g++ 5.5.5).
+
+      constexpr T* operator->() noexcept
+      {
+	ASSERT(hasvalue_);
+	return &value_;
+      }
 
     private:
       bool hasvalue_;
