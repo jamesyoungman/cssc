@@ -609,7 +609,7 @@ sccs_file::print_delta_key(FILE *out_file,
 	{
 	  std::string gname = "standard output";
 	  struct subst_parms substitution_parameters(gname, get_module_name(), out,
-				   std::optional<std::string>(),
+				   cssc::optional<std::string>(),
 				   delta_table_->delta_at_seq(d.seq()),
 				   0, sccs_date());
 	  class seq_state state(highest_delta_seqno());

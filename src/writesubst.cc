@@ -168,7 +168,7 @@ sccs_file::emit_keyletter_expansion(FILE *out, struct subst_parms *substitution_
 
     case 'W':
       {
-	std::optional<std::string> saved_wstring = substitution_parameters->wstring;
+	cssc::optional<std::string> saved_wstring = substitution_parameters->wstring;
 	if (!saved_wstring.has_value())
 	  {
 	    /* At some point I had been told that SunOS 4.1.4
@@ -204,7 +204,7 @@ sccs_file::emit_keyletter_expansion(FILE *out, struct subst_parms *substitution_
 	else
 	  {
 	    /* protect against recursion */
-	    substitution_parameters->wstring = std::optional<std::string>();
+	    substitution_parameters->wstring = cssc::optional<std::string>();
 	  }
 	ASSERT(saved_wstring.has_value());
 	cssc::Failure recursed = write_subst(saved_wstring.value().c_str(),

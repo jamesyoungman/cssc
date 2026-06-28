@@ -29,14 +29,14 @@
 #define CSSC__FILELOCK_H__
 
 #include <memory>
-#include <optional>
 #include <string>
 
 #include "cleanup.h"
 #include "failure.h"
+#include "optional.h"
 
 class file_lock : private cleanup {
-        std::optional<cssc::Failure> lock_state_;
+        cssc::optional<cssc::Failure> lock_state_;
         std::string name_;
 
         // TODO: consider a more modern kind of cleanup object.

@@ -25,10 +25,10 @@
 #define CSSC__SUBST_PARMS_H__
 
 #include <cstdio>
-#include <optional>
 #include <string>
 
 #include "delta.h"
+#include "optional.h"
 #include "sccsdate.h"
 
 
@@ -36,7 +36,7 @@ struct subst_parms
 {
   std::string outname;
   std::string module_name;
-  std::optional<std::string> wstring;
+  cssc::optional<std::string> wstring;
   FILE *out;
   struct delta const &delta;
   unsigned out_lineno;
@@ -44,7 +44,7 @@ struct subst_parms
   int found_id;
 
   subst_parms(const std::string& name, const std::string modname,
-	      FILE *o, std::optional<std::string> w, struct delta const &d,
+	      FILE *o, cssc::optional<std::string> w, struct delta const &d,
 	      unsigned int l, sccs_date n)
     : outname(name), module_name(modname), wstring(w), out(o),
       delta(d), out_lineno(l), now(n),
