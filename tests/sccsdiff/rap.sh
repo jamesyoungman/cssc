@@ -49,7 +49,7 @@ header="
 "
 
 
-echo_nonl "D1..."
+set_and_maybe_print_step_label_with_dots "D1"
 remove  $g
 ${sccsdiff} -r1.1 -r1.2 $s 2>errs >diff.out
 
@@ -65,7 +65,7 @@ remove errs
 #
 # sccsdiff output to pipe through pr
 #
-echo_nonl "D2..."
+set_and_maybe_print_step_label_with_dots "D2"
 remove diff.out
 
 ${sccsdiff} -p -r1.1 -r1.2 $s 2>errs >diff.out
@@ -85,7 +85,7 @@ remove  diff.out D1.diff.expected D2.diff.expected errs
 #
 # second sid
 #
-echo_nonl "D3..."
+set_and_maybe_print_step_label_with_dots "D3"
 remove diff.out
 ${sccsdiff} -r1.1 -r1.3 $s 2>errs >/dev/null 
 rv=$?
@@ -102,7 +102,7 @@ remove diff.out errs
 # first sid
 #
 remove out
-echo_nonl "D4..."
+set_and_maybe_print_step_label_with_dots "D4"
 ${sccsdiff} -r1.3 -r1.1 $s 2>errs >/dev/null
 rv=$?
 sed '/No id keywords/d' > diff.out < errs

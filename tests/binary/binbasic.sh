@@ -52,7 +52,7 @@ do_delta() {
 
 cleanup
 
-echo_nonl prepare1...
+set_and_maybe_print_step_label_with_dots prepare1
 mkdir test 2>/dev/null
 
 # Create the input files.
@@ -72,7 +72,7 @@ echo passed
 BINARY_FILE=../prt/all.expected.Z
 
 # Make sure we have some real binary input!
-echo_nonl prepare2...
+set_and_maybe_print_step_label_with_dots prepare2
 if test -r ${DIFF}; then cat ${DIFF} >> test/$g.4; fi
 if test -r ${BINARY_FILE}; then cat ${BINARY_FILE} >> test/$g.5; fi
 for f in /bin/sh*

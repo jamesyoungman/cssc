@@ -40,7 +40,7 @@ bad() {
 # that it is encoded as a binary file.
 test_bin() {
 label="$1"
-echo_nonl "${label}"...
+set_and_maybe_print_step_label_with_dots "${1}"
 shift
 
 infile=$1

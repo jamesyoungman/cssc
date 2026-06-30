@@ -31,7 +31,7 @@ remove $g
 docommand O2 "${vg_get} -G${gotten} ${s}" 0 IGNORE IGNORE
 
 # Make sure the gotten file was given the right name
-echo_nonl O3...
+set_and_maybe_print_step_label_with_dots O3
 if test -f ${gotten}
 then
     echo passed
@@ -44,7 +44,7 @@ remove $gotten
 docommand O4 "${vg_get} ${s} -G${gotten}" 0 IGNORE IGNORE
 
 # Make sure the gotten file was given the right name
-echo_nonl O5...
+set_and_maybe_print_step_label_with_dots O5
 if test -f ${gotten}
 then
     echo passed

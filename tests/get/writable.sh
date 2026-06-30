@@ -40,7 +40,7 @@ remove $gfile $f
 docommand W4 "${vg_get} s.$f" 0 "1.1\n0 lines\n" IGNORE
 
 # Make sure the file is read only.
-echo_nonl "W5..."
+set_and_maybe_print_step_label_with_dots "W5"
 if test -w $f 
 then
     fail W5: "get s.$f created writable $f"
@@ -54,7 +54,7 @@ remove $gfile $f
 docommand W6 "${vg_get} -k s.$f" 0 "1.1\n0 lines\n" IGNORE
 
 # Make sure the file is read only.
-echo_nonl "W7..."
+set_and_maybe_print_step_label_with_dots "W7"
 if test -w $f 
 then
     true

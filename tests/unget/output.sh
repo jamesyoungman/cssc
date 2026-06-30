@@ -17,7 +17,7 @@ remove "$s1" "$g1" "$p1" "$s2" "$g2" "$p2" xxx1 xxx2 "old.$g1" "old.$g2"
 
 setup_an_edit () {
 # $1 is the label.
-echo_nonl "${1}"1-6:
+set_and_maybe_print_step_label_with_dots "${1}"1-6:
 m=mfile
 remove "$m" "$s1" "$g1" "$p1" "$s2" "$g2" "$p2" xxx1 xxx2 old."$g1" old."$g2"
 echo "%M%" >$m || miscarry could not create $m.

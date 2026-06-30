@@ -13,7 +13,7 @@
 # fail.
 true
 
-echo_nonl "r1..."
+set_and_maybe_print_step_label_with_dots "r1"
 . ../common/not-root
 echo "passed "
 

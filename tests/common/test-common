@@ -209,6 +209,20 @@ copy() {
 
 test_script=
 
+set_and_maybe_print_step_label_with_dots() {
+    label="${1}"
+    if test -z "${test_script}"; then
+	script_dir=`dirname $0`
+	case "${script_dir}" in
+	    .) script_dir=`pwd`;;
+	esac
+	script_base=`basename ${script_dir}`
+	test_script="${script_base}"/`basename $0`
+    fi
+    label="${test_script}:$1"
+    "${silent:-false}" || echo_nonl "${label}"...
+}
+
 ##############
 docommand () {
 # $1 is the label.
@@ -240,17 +254,7 @@ esac
 do
     shift
 done
-if test -z "${test_script}"; then
-    script_dir=`dirname $0`
-    case "${script_dir}" in
-	.) script_dir=`pwd`;;
-    esac
-    script_base=`basename ${script_dir}`
-    test_script="${script_base}"/`basename $0`
-fi
-label="${test_script}:$1"
-eval "$silent" || echo_nonl "${label}"...
-
+set_and_maybe_print_step_label_with_dots "${1}"
 shift
 
 if ${stderr_is_file}
@@ -374,8 +378,7 @@ do_output () {
 # $4 is a file containing what to expect on stdout.
 # $5 is what to expect on stderr.
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
-label="$1"
-echo_nonl "$label..."
+set_and_maybe_print_step_label_with_dots "$1"
 shift
 
 echo_nonl $4 > expected.stderr

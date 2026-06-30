@@ -164,7 +164,7 @@ then
     docommand E30 "${vg_delta} -yNoComment $s" 0 IGNORE IGNORE
     docommand E31 "${get} -k $s"                0 IGNORE IGNORE
     
-    echo_nonl "${labelprefix}E32..."
+    set_and_maybe_print_step_label_with_dots "${labelprefix}E32"
     if diff $g.saved $g 
     then
         echo passed

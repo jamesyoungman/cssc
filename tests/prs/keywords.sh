@@ -55,7 +55,7 @@ expands_to X17 'x\\ny'   'x\ny\n'
 expands_to X18 ':FD:'   'Descriptive Text\n\n'
 
 remove got.stdout expected.stdout
-echo_nonl Z1...
+set_and_maybe_print_step_label_with_dots Z1
 ${vg_prs}  -d'\\' s.1 > got.stdout 2>got.stderr || fail prs failed.
 echo \\            > expected.stdout || miscarry redirection to expected.stdout
 diff expected.stdout got.stdout >/dev/null || fail stdout format error.

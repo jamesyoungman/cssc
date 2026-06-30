@@ -31,8 +31,7 @@ bad() {
 # create a file containing the specified argument and check
 # that it is encoded as a binary file.
 test_bin() {
-label=$1
-echo_nonl ${label}...
+set_and_maybe_print_step_label_with_dots "${1}"
 shift
 
 rm -f infile $s
@@ -56,8 +55,7 @@ rm -f infile $s
 # As for test_bin, but the resulting SCCS file must NOT be encoded.
 #
 test_ascii() {
-label=$1
-echo_nonl ${label}...
+set_and_maybe_print_step_label_with_dots "${1}"
 shift
 
 rm -f infile $s

@@ -136,7 +136,7 @@ selfcheck 0071  go
         miscarry "Cannot create an executable file"
     fi
 
-    echo_nonl "${test_script}:x02..."
+    set_and_maybe_print_step_label_with_dots "x02"
     if test "`execute_perms ${s}`" = u; then
         echo passed
     else
@@ -146,7 +146,7 @@ selfcheck 0071  go
 
 (
     setup x03 0007 0770
-    echo_nonl "${test_script}:x04..."
+    set_and_maybe_print_step_label_with_dots "x04"
     if test "`execute_perms ${s}`" = ug; then
         echo passed
     else
@@ -156,7 +156,7 @@ selfcheck 0071  go
 
 (
     setup x05 0000 0777
-    echo_nonl "${test_script}:x06..."
+    set_and_maybe_print_step_label_with_dots "x06"
     if test "`execute_perms ${s}`" = ugo; then
         echo passed
     else
@@ -183,7 +183,7 @@ selfcheck 0071  go
 (
     setup x07 0000 0700
 
-    echo_nonl "${test_script}:x08..."
+    set_and_maybe_print_step_label_with_dots "x08"
     perms="`execute_perms ${s}`"
     case "${perms}" in
 	ugo) echo passed;;

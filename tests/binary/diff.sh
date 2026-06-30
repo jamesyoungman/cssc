@@ -15,7 +15,7 @@ else
 fi 
 
 
-echo_nonl t1...
+set_and_maybe_print_step_label_with_dots t1
 remove test/d1 test/d2 test
 mkdir test
 echo hello > test/d1
@@ -31,7 +31,7 @@ echo passed
 
 
 
-echo_nonl t2...
+set_and_maybe_print_step_label_with_dots t2
 remove test/d2 
 echo world > test/d2
 ${DIFF} test/d1 test/d2 >got.stdout 2>got.stderr 

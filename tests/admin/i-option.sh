@@ -37,13 +37,13 @@ x=x.$g
 remove $g $s $x
 docommand I5 "${vg_admin} -i$g $s" 1 "" IGNORE
 
-echo_nonl "I6..."
+set_and_maybe_print_step_label_with_dots "I6"
 if test -f $s; then
     fail I6: The file $s should not have been created.
 fi
 echo 'passed'
 
-echo_nonl "I7..."
+set_and_maybe_print_step_label_with_dots "I7"
 if test -f $x; then
     fail I7: The temporary file $x should have been deleted.
 fi
