@@ -2,7 +2,7 @@ TESTDIRS =  cdc admin delta get prs prt unget large sccsdiff binary rmdel \
                 bsd-sccs year-2000 initial what val
 TESTFILE_SUFFIXES = .sh
 MKDIR = mkdir
-RUN_CSSC_TEST = $(PYTHON) $(srcdir)/run_tests.py
+RUN_CSSC_TEST = ../testutils/runtests
 CLEANFILES = */command.log
 
 remove_trash:
