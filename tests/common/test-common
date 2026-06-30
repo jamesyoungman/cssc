@@ -196,7 +196,7 @@ copy() {
 	# when the source tree is read-only (e.g. during 'make
 	# distcheck').  Our tests assume that the copied file is
 	# writable so we need to ensure that's the case.
-	if chmod u+w -- "${copy_to}"
+	if chmod u+w "${copy_to}"
 	then
 	    return 0
 	fi
