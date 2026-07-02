@@ -32,6 +32,7 @@
 
 #include "progname.h"
 #include "gettext.h"
+#include "echo_unescape.h"
 
 
 /* echo [-neE] [arg ...]
@@ -70,10 +71,12 @@ on System V systems with the -E option.
 #define VALID_ECHO_OPTIONS "n"
 #endif /* !V9_ECHO */
 
+static void echo_literally (int argc, char **argv);
+static void v9_echo(int argc, char **argv, int *display_return);
+
 /* Print the words in LIST to standard output.  If the first word is
    `-n', then don't print a trailing newline.  We also support the
    echo syntax from Version 9 unix systems. */
-
 int main(int argc, char **argv)
 {
   int display_return = 1, do_v9 = 0;
@@ -149,84 +152,96 @@ just_echo:
 #if defined (V9_ECHO)
       if (do_v9)
 	{
-	  while (argc > 0)
-	    {
-	      register char *s = argv[0];
-	      register int c;
-
-	      while ((c = *s++))
-		{
-		  if (c == '\\' && *s)
-		    {
-		      switch (c = *s++)
-			{
-			case 'a':
-			  c = '\007';
-			  break;
-			case 'b':
-			  c = '\b';
-			  break;
-			case 'c':
-			  display_return = 0;
-			  continue;
-			case 'f':
-			  c = '\f';
-			  break;
-			case 'n':
-			  c = '\n';
-			  break;
-			case 'r':
-			  c = '\r';
-			  break;
-			case 't':
-			  c = '\t';
-			  break;
-			case 'v':
-			  c = (int) 0x0B;
-			  break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			  c -= '0';
-			  if (*s >= '0' && *s <= '7')
-			    c = c * 8 + (*s++ - '0');
-			  if (*s >= '0' && *s <= '7')
-			    c = c * 8 + (*s++ - '0');
-			  break;
-			case '\\':
-			  break;
-			default:
-			  putchar('\\');
-			  break;
-			}
-		    }
-		  putchar(c);
-		}
-	      argc--;
-	      argv++;
-	      if (argc > 0)
-		putchar(' ');
-	    }
+	  v9_echo (argc, argv, &display_return);
 	}
       else
 #endif /* V9_ECHO */
 	{
-	  while (argc > 0)
-	    {
-	      fputs(argv[0], stdout);
-	      argc--;
-	      argv++;
-	      if (argc > 0)
-		putchar(' ');
-	    }
+	  echo_literally (argc, argv);
 	}
     }
   if (display_return)
     putchar('\n');
   exit(0);
+}
+
+static void
+v9_echo(int argc, char **argv, int *display_return)
+{
+  while (argc > 0)
+    {
+      register char *s = argv[0];
+      register int c;
+
+      while ((c = *s++))
+	{
+	  if (c == '\\' && *s)
+	    {
+	      switch (c = *s++)
+		{
+		case 'a':
+		  c = '\007';
+		  break;
+		case 'b':
+		  c = '\b';
+		  break;
+		case 'c':
+		  *display_return = 0;
+		  continue;
+		case 'f':
+		  c = '\f';
+		  break;
+		case 'n':
+		  c = '\n';
+		  break;
+		case 'r':
+		  c = '\r';
+		  break;
+		case 't':
+		  c = '\t';
+		  break;
+		case 'v':
+		  c = (int) 0x0B;
+		  break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		  c -= '0';
+		  if (*s >= '0' && *s <= '7')
+		    c = c * 8 + (*s++ - '0');
+		  if (*s >= '0' && *s <= '7')
+		    c = c * 8 + (*s++ - '0');
+		  break;
+		case '\\':
+		  break;
+		default:
+		  putchar('\\');
+		  break;
+		}
+	    }
+	  putchar(c);
+	}
+      argc--;
+      argv++;
+      if (argc > 0)
+	putchar(' ');
+    }
+}
+
+static void
+echo_literally (int argc, char **argv)
+{
+  while (argc > 0)
+    {
+      fputs(argv[0], stdout);
+      argc--;
+      argv++;
+      if (argc > 0)
+	putchar(' ');
+    }
 }
