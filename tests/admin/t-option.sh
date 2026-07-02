@@ -9,7 +9,7 @@ expands_to () {
     # $1 -- label
     # $2 -- format
     # $3 -- expansion
-docommand $1 "${prs} \"-d$2\" s.bar" 0 "$3"
+    docommand "${1}" "${prs} \"-d$2\" s.bar" 0 "$3" IGNORE
 }
 
 remove [sxzp].bar x.bar.bak

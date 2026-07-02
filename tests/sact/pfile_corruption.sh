@@ -9,7 +9,10 @@
 # Local functions
 # Manually create a valid p-file
 makep() {
-    printf "$1" >| "${p}"
+    if ! printf "$1" >| "${p}"
+    then
+	fail "unable to create p-file $1"
+    fi
 }
 
 check_pfile() {
@@ -32,6 +35,7 @@ done
 	# Other implementations have different error messages.
 	expected_stderr_egrep_pattern=IGNORE
     fi
+    echo "p-file check ${label}"...
     makep "$pbody"
     docommand --stderr_regex --stdout_regex $options "$label" "${vg_sact} $s" $sact_retcode "$expected_stdout_egrep_pattern" "$expected_stderr_egrep_pattern"
 }
@@ -58,7 +62,10 @@ docommand setup2 "${vg_get} -e ${s}" 0 IGNORE IGNORE
 docommand S1 "${vg_sact} $s" 0 IGNORE ""
 
 # This is the basic success case (without using check_pfile)
-docommand S2 "makep '1.1 1.2 james 16/02/28 10:59:47\n'" 0 IGNORE IGNORE
+if ! makep '1.1 1.2 james 16/02/28 10:59:47\n'
+then
+    fail "S2: failed to create p-file ${p}"
+fi
 docommand S3 "${vg_sact} $s" 0 '1.1 1.2 james 16/02/28 10:59:47\n' IGNORE
 
 # At this point we know that sact doesn't barf on a valid p-file and
