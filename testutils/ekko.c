@@ -170,62 +170,13 @@ v9_echo(int argc, char **argv, int *display_return)
 {
   while (argc > 0)
     {
-      register char *s = argv[0];
-      register int c;
-
-      while ((c = *s++))
-	{
-	  if (c == '\\' && *s)
-	    {
-	      switch (c = *s++)
-		{
-		case 'a':
-		  c = '\007';
-		  break;
-		case 'b':
-		  c = '\b';
-		  break;
-		case 'c':
-		  *display_return = 0;
-		  continue;
-		case 'f':
-		  c = '\f';
-		  break;
-		case 'n':
-		  c = '\n';
-		  break;
-		case 'r':
-		  c = '\r';
-		  break;
-		case 't':
-		  c = '\t';
-		  break;
-		case 'v':
-		  c = (int) 0x0B;
-		  break;
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		  c -= '0';
-		  if (*s >= '0' && *s <= '7')
-		    c = c * 8 + (*s++ - '0');
-		  if (*s >= '0' && *s <= '7')
-		    c = c * 8 + (*s++ - '0');
-		  break;
-		case '\\':
-		  break;
-		default:
-		  putchar('\\');
-		  break;
-		}
-	    }
-	  putchar(c);
-	}
+      char *s = argv[0];
+      bool inhibit_newline = false;
+      size_t output_size = echo_unescape (s, s, &inhibit_newline);
+      if (inhibit_newline)
+	*display_return = 0;
+      for (size_t i = 0; i < output_size; ++i)
+	putchar (s[i]);
       argc--;
       argv++;
       if (argc > 0)

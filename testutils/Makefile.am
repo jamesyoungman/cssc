@@ -5,7 +5,12 @@ AM_LDFLAGS = -L../gl/lib
 LDADD = -lgnulib
 
 noinst_PROGRAMS = lndir realpwd user yes ekko seeker yammer runtests
+
+ekko_SOURCES = ekko.c echo_unescape.c echo_unescape.h
+
 realpwd_SOURCES = realpwd.cc
+
 runtests_SOURCES = runtests.cc execute.cc execute.h
+
 EXTRA_DIST = last-time.c compare_gets.sh gcov-util.sh lndir.man mogrify.awk decompress_stdin.sh.in
 DISTCLEANFILES = decompress_stdin.sh
