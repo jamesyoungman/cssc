@@ -209,8 +209,8 @@ copy() {
 
 test_script=
 
-set_and_maybe_print_step_label_with_dots() {
-    label="${1}"
+
+set_test_script() {
     if test -z "${test_script}"; then
 	script_dir=`dirname $0`
 	case "${script_dir}" in
@@ -219,12 +219,16 @@ set_and_maybe_print_step_label_with_dots() {
 	script_base=`basename ${script_dir}`
 	test_script="${script_base}"/`basename $0`
     fi
+}
+
+set_and_maybe_print_step_label_with_dots() {
+    set_test_script
     label="${test_script}:$1"
     "${silent:-false}" || echo_nonl "${label}"...
 }
 
 ##############
-docommand () {
+docommand_sh () {
 # $1 is the label.
 # $2 is the command to execute.
 # $3 is the return value to expect
@@ -371,7 +375,7 @@ eval "$silent" || echo "passed "
 }
 
 #######################
-do_output () {
+do_output_sh () {
 # $1 is the label.
 # $2 is the command to execute.
 # $3 is the return value to expect
@@ -415,4 +419,52 @@ fi
 remove last.command expected.stdout expected.stderr got.stdout got.stderr
 echo "passed "
 ( exit ${rv}; )
+}
+
+do_output_bin () {
+    set_test_script
+    ../../testutils/do_cmd --test_name="${test_script}:${1}" --stdout_is_file "$@"
+}
+
+docommand_bin () {
+    set_test_script
+    label="${1}"
+    shift
+
+    if ${expect_fail:-false}
+    then
+	fail_opt="--expect_failure"
+    else
+	fail_opt="--noexpect_failure"
+    fi
+
+    #echo "debug: Running do_cmd with args" --test_name "${test_script}" "${fail_opt}" "$@"
+
+    if ../../testutils/do_cmd  --test_name "${test_script}" "${fail_opt}" "${label}" "$@"
+    then
+	true
+    else
+	fail "${test_script}:$label: test step failed"
+	if ${expect_fail:-false}
+	then
+	    false
+	else
+	    exit 2
+	fi
+    fi
+}
+
+docommand () {
+    # $1 is the label.
+    # $2 is the command to execute.
+    # $3 is the return value to expect
+    # $4 is what to expect on stdout
+    # $5 is what to expect on stderr.
+    #
+    # If --silent is specified before the label, no output is normally made.
+    docommand_bin "$@"
+}
+
+do_output () {
+    do_output_sh "$@"
 }
