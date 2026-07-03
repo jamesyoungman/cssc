@@ -19,8 +19,6 @@
 
 #include "config.h"
 
-#include "execute.h"
-
 // standard library and POSIX includes
 #include <errno.h>
 #include <string.h>
@@ -31,6 +29,10 @@
 // gnulib includes
 #include <error.h>
 
+// local includes
+#include "execute.h"
+#include "filebody.h"
+
 using std::string;
 using std::vector;
 
@@ -38,6 +40,11 @@ using std::vector;
 extern "C"
 {
   extern char **environ;
+}
+
+program_result::program_result(int exit_value, std::string output, std::string errors)
+  : retval(exit_value), stdout_output(output), stderr_output(errors)
+{
 }
 
 static bool
@@ -55,41 +62,20 @@ wait_for_child(pid_t child, int *status)
   return true;
 }
 
-static bool
-child_was_successful(int status)
+static int
+child_exitstatus (int status)
 {
-  return WIFEXITED(status) && 0 == WEXITSTATUS(status);
-}
-
-static string
-capture_body (int fd, const string& filename)
-{
-  string result;
-  static char buf[8192];
-  if (0 != lseek (fd, SEEK_SET, 0))
+  if (WIFEXITED(status))
     {
-      error (1, errno, "lseek failed on %s", filename.c_str());
+      return WEXITSTATUS(status);
     }
-
-  for (;;)
+  if (WIFSIGNALED(status))
     {
-      ssize_t nread = read (fd, buf, sizeof(buf));
-      if (nread < 0)
-	{
-	  error (1, errno, "failed to read from %s", filename.c_str());
-	}
-      else if (0 == nread)
-	{
-	  break;
-	}
-      else
-	{
-	  string::size_type n = nread;
-	  result.append(buf, n);
-	}
+      int sig = WTERMSIG(status);
+      return 128 + sig;
     }
-
-  return result;
+  error (1, 0, "child does not seem to have exited");
+  /*NOTREACHED*/
 }
 
 static void
@@ -108,7 +94,6 @@ execute_program(const string& program,
 		const vector<string>& args,
 		bool capture_output)
 {
-  const char *path = program.c_str();
   vector<const char*> argv;
   for (auto arg : args)
     {
@@ -138,13 +123,8 @@ execute_program(const string& program,
     {
       error(1, errno, "failed to open temporary file for standard error");
     }
-  int fd_devnull = open("/dev/null", O_RDONLY);
-  if (fd_devnull < 0)
-    {
-      error(1, errno, "failed to open /dev/null");
-    }
-  posix_spawn_file_actions_adddup2(&file_actions, fd_devnull, 0);
-  posix_spawn_file_actions_addclose (&file_actions, fd_devnull);
+
+  // We should retain the existing stdin connection.
   if (capture_output)
     {
       posix_spawn_file_actions_adddup2(&file_actions, tmp_err_fd, 2);
@@ -172,15 +152,13 @@ execute_program(const string& program,
     {
       error (1, errno, "waiting for %s", program.c_str());
     }
-  program_result result;
-  result.success = child_was_successful (childstatus);
-  result.stdout_output = capture_body (tmp_out_fd, out_tmpfile);
-  result.stderr_output = capture_body (tmp_err_fd, err_tmpfile);
+  program_result result (child_exitstatus (childstatus),
+			 read_file_body (tmp_out_fd, out_tmpfile),
+			 read_file_body (tmp_err_fd, err_tmpfile));
 
   free_stringvec_items (argv);
   free_stringvec_items (env);
 
-  close (fd_devnull);
   close (tmp_out_fd);
   close (tmp_err_fd);
   free (out_tmpfile);

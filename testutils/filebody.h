@@ -1,5 +1,5 @@
 /*
- * execute.h: Part of GNU CSSC.
+ * filebody.h: Part of GNU CSSC.
  *
  *  Copyright (C) 2026 Free Software Foundation, Inc.
  *
@@ -16,24 +16,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef INC_CSSC_TESTUTILS_EXECUTE_H
-#define INC_CSSC_TESTUTILS_EXECUTE_H 1
+#ifndef INC_CSSC_TESTUTILS_FILEBODY_H
+#define INC_CSSC_TESTUTILS_FILEBODY_H 1
 
 #include <string>
-#include <vector>
 
-class program_result
-{
-public:
-  program_result(int retval, std::string output, std::string errors);
-
-  int retval;
-  std::string stdout_output;
-  std::string stderr_output;
-};
-
-program_result execute_program(const std::string& program,
-			       const std::vector<std::string>& args,
-			       bool capture_output);
+std::string read_file_body (int fd, const char* filename);
 
 #endif

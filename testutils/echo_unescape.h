@@ -27,6 +27,9 @@
    least as large as INPUT (and may be the same buffer).  If we find a
    \c escape, set *INHIBIT_NEWLINE.
 */
+#ifdef __cplusplus
+extern "C"
+#endif
 size_t echo_unescape(const char *input,
 		     char *output,
 		     bool *inhibit_newline);

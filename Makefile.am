@@ -36,7 +36,7 @@
 # ACLOCAL_AMFLAGS should mirror AC_CONFIG_MACRO_DIR in configure.ac
 ACLOCAL_AMFLAGS = -I m4 -I unit-tests/googletest/googletest/m4
 
-SUBDIRS = gl docs testutils auxfiles src sccs-cgi unit-tests tests
+SUBDIRS = gl docs auxfiles src testutils sccs-cgi unit-tests tests
 
 EXTRA_DIST = ChangeLog ChangeLog.1 ChangeLog.2 ChangeLog.3
 

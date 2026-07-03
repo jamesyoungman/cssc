@@ -157,7 +157,7 @@ filenames(const string& dir_name, std::vector<string>* output)
 typedef program_result (*test_runner)(const string&, const string&, bool);
 
 static program_result
-execute_shell_test(const string& dir_name, const string& test_name, bool capture_output)
+execute_shell_test(const string& /* dir_name */, const string& test_name, bool capture_output)
 {
   const string shell = "sh";
   return execute_program(shell, {shell, test_name}, capture_output);
@@ -185,7 +185,7 @@ run_one_test(const string& dir_name, const string& test_name, bool capture_outpu
       cout << '\n';
     }
   auto result = runner(dir_name, test_name, capture_output);
-  if (result.success)
+  if (0 == result.retval)
     {
       if (!capture_output)
 	{
@@ -216,7 +216,7 @@ run_one_test(const string& dir_name, const string& test_name, bool capture_outpu
 	}
     }
   cout << '\n';
-  return result.success;
+  return 0 == result.retval;
 }
 
 
@@ -253,7 +253,6 @@ run_tests(const string& subdir, bool capture_output, const char **argv_tail)
       perror(subdir.c_str());
       return false;
     }
-  bool result = true;
   for (auto test_file : todo)
     {
       if (string_ends_with(test_file, ".sh"))
@@ -312,7 +311,6 @@ int main(int argc, char *argv[])
       },
     };
   bool bad_options = false;
-  int option;
   int option_index = 0;
   for (;;)
     {
