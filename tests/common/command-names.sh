@@ -1,3 +1,5 @@
+#! /bin/sh
+
 if test -n "${sourced_command_names}"; then
    echo "Error: sourced common/command-names script twice" >&2
    exit 1
@@ -6,16 +8,16 @@ else
 fi
 dir=${dir:-../../src}
 # Get the canonical directory name
-case "$dir" in 
-	/*)   
-		;; 
-	*)	
+case "$dir" in
+	/*)
+		;;
+	*)
 		dir=`cd "$dir" && pwd || echo "$dir"`
 		;;
 esac
 echo "Directory under test is $dir"
 
-# Make a variable for each CSSC command.  These are the commands we run 
+# Make a variable for each CSSC command.  These are the commands we run
 # in order to set up each test.  Because they are variables, we can set
 # them (and $dir) to test any set of binaries we want.
 get=${get:-${dir}/get}
@@ -35,10 +37,10 @@ rmdel=${rmdel:-${dir}/rmdel}
 
 DIFF=${DIFF:-diff}
 
-for f in ${get} ${admin} ${csc} ${prs} ${prt} \
-	${delta} ${sact} ${sccsdiff} ${unget} ${what} ${rmdel}
+for f in "${get}" "${admin}" "${cdc}" "${prs}" "${prt}" \
+	"${delta}" "${sact}" "${sccsdiff}" "${unget}" "${what}" "${rmdel}"
 do
-	case $f in 
+	case $f in
 		/*)
 			test -x "$f" || echo "WARNING: cannot execute $f" >&2
 			;;
@@ -50,7 +52,7 @@ done
 # Find the sccs driver program.   Note that we use ${sccsprog} here;
 # ${sccsprog} was set, above.
 
-# We need to run the candidate 
+# We need to run the candidate
 # to find out if it accepts the --prefix option.
 
 if test x"${sccs}" = x
@@ -77,26 +79,32 @@ then
     sccs="${sccsprog} ${sccsargs}"
 fi
 
-# Allow the user to disable Valgrind via the 
+# Allow the user to disable Valgrind via the
 # environment, so that we can still execute
 # "make dist" quickly when that's useful.
 if test -n "$CSSC_DISABLE_VALGRIND"; then
    unset VALGRIND
 fi
 
-# Set up some valgrind-enabled commands so that we can use these
-# in a targeted way.   If we use valgrind for every invocation,
-# the regression tests will run very slowly.
-vg_get="${VALGRIND} ${get}"
-vg_admin="${VALGRIND} ${admin}"
-vg_cdc="${VALGRIND} ${cdc}"
-vg_prs="${VALGRIND} ${prs}"
-vg_prt="${VALGRIND} ${prt}"
-vg_delta="${VALGRIND} ${delta}"
-vg_sact="${VALGRIND} ${sact}"
-vg_sccsdiff="${VALGRIND} ${sccsdiff}"
-vg_unget="${VALGRIND} ${unget}"
-vg_what="${VALGRIND} ${what}"
-vg_val="${VALGRIND} ${val}"
-vg_rmdel="${VALGRIND} ${rmdel}"
-vg_sccs="${VALGRIND} ${sccs}"
+# s\hellcheck doesn't know this script is intended to be sourced, not
+# run so we have to disable SC2034 (unused variable) warnings here.
+
+# shellcheck disable=SC2034
+{
+    # Set up some valgrind-enabled commands so that we can use these
+    # in a targeted way.   If we use valgrind for every invocation,
+    # the regression tests will run very slowly.
+    vg_get="${VALGRIND} ${get}"
+    vg_admin="${VALGRIND} ${admin}"
+    vg_cdc="${VALGRIND} ${cdc}"
+    vg_prs="${VALGRIND} ${prs}"
+    vg_prt="${VALGRIND} ${prt}"
+    vg_delta="${VALGRIND} ${delta}"
+    vg_sact="${VALGRIND} ${sact}"
+    vg_sccsdiff="${VALGRIND} ${sccsdiff}"
+    vg_unget="${VALGRIND} ${unget}"
+    vg_what="${VALGRIND} ${what}"
+    vg_val="${VALGRIND} ${val}"
+    vg_rmdel="${VALGRIND} ${rmdel}"
+    vg_sccs="${VALGRIND} ${sccs}"
+}
