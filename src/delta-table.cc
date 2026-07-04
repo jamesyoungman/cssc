@@ -58,7 +58,6 @@ cssc_delta_table::~cssc_delta_table()
 
 seq_no cssc_delta_table::next_seqno() const
 {
-  ASSERT(nullptr != this);
   seq_no next = highest_seqno();
   ++next;
   return next;
@@ -71,8 +70,6 @@ seq_no cssc_delta_table::next_seqno() const
 void
 cssc_delta_table::add(const delta &it)
 {
-  ASSERT(nullptr != this);
-
   l_.add(it);
 }
 
@@ -84,7 +81,6 @@ cssc_delta_table::add(const delta &it)
 delta const * cssc_delta_table::
 find(sid id) const
 {
-  ASSERT(nullptr != this);
   const_delta_iterator iter(this, delta_selector::current);
 
   while (iter.next())
@@ -104,7 +100,6 @@ find(sid id) const
 delta const * cssc_delta_table::
 find_any(sid id) const
 {
-  ASSERT(nullptr != this);
   const_delta_iterator iter(this, delta_selector::all);
 
   while (iter.next())
@@ -121,7 +116,6 @@ find_any(sid id) const
 delta * cssc_delta_table::
 find(sid id)
 {
-  ASSERT(nullptr != this);
   delta_iterator iter(this, delta_selector::current);
 
   while (iter.next())
