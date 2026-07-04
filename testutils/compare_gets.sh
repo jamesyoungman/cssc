@@ -41,7 +41,7 @@ compare_sid_getting () {
     do
 	echo "Comparing $sfile at SID $sid..."
 
-	"$get1" -s -p -r$sid "$sfile" > "$tfile1" 2>/dev/null
+	"${get1}" -s -p -r"${sid}" "${sfile}" > "${tfile1}" 2>/dev/null
 	s1=$?
 	if test $s1 -gt 1
 	then
@@ -51,7 +51,7 @@ compare_sid_getting () {
 	fi
 
 
-	"$get2" -s -p -r$sid "$sfile" > "$tfile2" 2>/dev/null
+	"$get2" -s -p -r"${sid}" "${sfile}" > "${tfile2}" 2>/dev/null
 	s2=$?
 	if test $s2 -gt 1
 	then
@@ -108,7 +108,7 @@ rv=0
 
 for filename
 do
-    echo SIDs in file $filename...
+    echo SIDs in file "${filename}"...
     compare_sid_getting "$filename" || break
 done
 exit $rv
