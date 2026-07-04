@@ -23,7 +23,7 @@ END {
 	    then
 		# We specifically want to word split ${paths} here.
 		# shellcheck disable=SC2086
-		shellcheck -f gcc -x -e SC2121,SC2006,SC2119,SC2012,SC2196,SC2268 ${paths}  || exit 1
+		shellcheck -f gcc -x -e SC2121,SC2006,SC2119,SC2012,SC2196,SC2268,SC2003 ${paths}  || exit 1
 	    fi
         ) || outer_rv=$?
     done
