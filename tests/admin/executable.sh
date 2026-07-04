@@ -1,3 +1,5 @@
+#! /bin/sh
+
 . ../common/test-common.sh
 . ../common/real-thing.sh
 
@@ -40,6 +42,7 @@ setup() {
 
 
 should_support_execute_bits() {
+    # shellcheck disable=SC2120
     expect_args should_support_execute_bits 0 $#
     if "${TESTING_CSSC}"; then
 	true
