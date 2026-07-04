@@ -19,17 +19,17 @@ m=mfile
 remove $all $m
 
 
-echo "%M%" >$m || miscarry could not create $m.
+echo "%M%" >$m || abandon_test_script could not create $m.
 
-rm -f $p1 || miscarry could not remove $p1
-ln -s / $p1 || miscarry could not ln -s / $p1
-docommand e1 "${vg_unget} -r1.2 $s1" 1 "IGNORE" "IGNORE" 
+rm -f $p1 || abandon_test_script could not remove $p1
+ln -s / $p1 || abandon_test_script could not ln -s / $p1
+docommand e1 "${vg_unget} -r1.2 $s1" 1 "IGNORE" "IGNORE"
 rm -f $p1
 
 
 docommand e2 "${admin} -i $s1" 0 "" "" <$m
 docommand e3 "${get} -e $s1" 0 IGNORE IGNORE
-docommand e4 "${vg_unget} -r1.2 $s1" 0 "IGNORE" "IGNORE" 
+docommand e4 "${vg_unget} -r1.2 $s1" 0 "IGNORE" "IGNORE"
 
 ###
 ### Cleanup and exit.

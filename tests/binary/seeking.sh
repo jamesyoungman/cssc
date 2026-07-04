@@ -110,7 +110,7 @@ if test -s long-text-file
 then
     true
 else
-    miscarry could not create long-text-file.
+    abandon_test_script could not create long-text-file.
 fi
 
 remove no-newline

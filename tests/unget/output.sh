@@ -20,7 +20,7 @@ setup_an_edit () {
 set_and_maybe_print_step_label_with_dots "${1}"1-6:
 m=mfile
 remove "$m" "$s1" "$g1" "$p1" "$s2" "$g2" "$p2" xxx1 xxx2 old."$g1" old."$g2"
-echo "%M%" >$m || miscarry could not create $m.
+echo "%M%" >$m || abandon_test_script could not create $m.
 docommand --silent "${1}"1 "${admin}   -i $s1" 0 "" "" <mfile
 docommand --silent "${1}"2 "${admin} -i $s2" 0 "" ""   <mfile
 remove $m

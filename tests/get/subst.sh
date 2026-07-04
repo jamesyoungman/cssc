@@ -14,7 +14,7 @@ output=get.output
 
 
 remove $s $f
-cp keywords_s.txt s.keywords.txt || miscarry 'could not stage test file s.keywords.txt'
+cp keywords_s.txt s.keywords.txt || abandon_test_script 'could not stage test file s.keywords.txt'
 
 # Expand all the keywords from the s.file and save the format in
 # a temporary file.   We then examine this file later.
@@ -80,7 +80,7 @@ remove $s $output
 # and so forth when working with the -c date cutoff.
 s=s.keys.txt
 remove $s
-cp keys.txt_s s.keys.txt  || miscarry 'could not stage test file s.keys.txt'
+cp keys.txt_s s.keys.txt  || abandon_test_script 'could not stage test file s.keys.txt'
 
 docommand K1 "${vg_get} -p -c971025230458 $s" 0 "1.2 1.2\n" "1.2\n1 lines\n"
 docommand K2 "${vg_get} -p -c971025230457 $s" 0 "1.1 1.1\n" \

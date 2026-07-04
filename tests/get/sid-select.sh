@@ -8,7 +8,7 @@
 # Get a test file...
 s=s.testfile
 remove $s
-cp testfile_s s.testfile || miscarry 'could not stage test file s.testfile'
+cp testfile_s s.testfile || abandon_test_script 'could not stage test file s.testfile'
 
 get_expect () {
 label=$1         ; shift

@@ -63,7 +63,7 @@ docommand S1 "${vg_sact} $s" 0 IGNORE ""
 
 if ! makep '1.1 1.2 james 16/02/28 10:59:47\n'
 then
-    miscarry "failed to create ${p}"
+    abandon_test_script "failed to create ${p}"
 fi
 
 # This is the basic success case (without using check_pfile)

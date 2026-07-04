@@ -14,10 +14,10 @@ lines=100002
 
 remove command.log log log.stdout log.stderr $g $s $z $x $p
 
-( ../../testutils/yes '%C%' | head -${lines} > $g )  || miscarry Cannot create large input file.
+( ../../testutils/yes '%C%' | head -${lines} > $g )  || abandon_test_script Cannot create large input file.
 
 docommand A1 "${vg_admin} -i${g} ${s}" 0 "" ""
-mv ${g} old.${g} || miscarry "Rename failed"
+mv ${g} old.${g} || abandon_test_script "Rename failed"
 
 # Make sure we can retrieve the file.
 docommand A2 "${vg_get} -k $s" 0 "1.1\n100002 lines\n" ""

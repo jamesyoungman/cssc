@@ -11,7 +11,7 @@ remove $s foo $g
 
 remove $g
 echo '%M%' > foo
-test x`cat foo` = x'%M%' || miscarry cannot create file foo.
+test x`cat foo` = x'%M%' || abandon_test_script cannot create file foo.
 
 docommand I1 "${vg_admin} -ifoo $s" 0 "" IGNORE
 docommand I2 "${get} -r1.1 -p $s"      0 "$g\n" IGNORE
@@ -27,7 +27,7 @@ docommand I4 "${get} -r1.1 -p $s"      0 "baz\n" IGNORE
 remove $s $g foo
 
 # If the file specified by -i does not exist, make sure that not
-# only is there a fatal exit, but neither the s-file or the x-file is 
+# only is there a fatal exit, but neither the s-file or the x-file is
 # left behind.
 
 g=foo
@@ -81,5 +81,5 @@ docommand I17 "${prs}  -d:Li: $s" 0 "00002\n" IGNORE
 
 
 
-remove $x s.bar s.foo foo bar command.log 
+remove $x s.bar s.foo foo bar command.log
 success

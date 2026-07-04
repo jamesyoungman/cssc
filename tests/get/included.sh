@@ -7,7 +7,7 @@
 
 g=gfile
 s=s.$g
-x=x.$g 
+x=x.$g
 z=z.$g
 p=p.$g
 
@@ -57,13 +57,13 @@ docommand B1 "${vg_get} -s -e -r1.2 $s" 0 IGNORE IGNORE
 # SourceForge bug number 441423: on NetBSD-1.5W, the sed "a" command
 # appears to eat the newline.  Hence we replace the old single-step
 # sed command above with the three-step approach below.
-( 
+(
 mv $g $g.old                            &&
 sed -n -e '1p'        < $g.old  > $g    &&
 echo "seq=8 1.2.1.1"           >> $g    &&
 sed -n -e '2,$ p'     < $g.old >> $g    &&
 remove                  $g.old
-) || miscarry "Failed to prepare new version of $g"
+) || abandon_test_script "Failed to prepare new version of $g"
 
 docommand I14 "$delta  -y $s" 0 IGNORE IGNORE
 

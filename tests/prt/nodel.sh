@@ -9,7 +9,7 @@
 s=s.testfile
 
 remove $s
-cp testfile_s s.testfile || miscarry 'could not stage test input s.testfile'
+cp testfile_s s.testfile || abandon_test_script 'could not stage test input s.testfile'
 
 # XXX: the IGNORE in the following lines is because of the warning message we
 #      get about the excluded deltas feature not being fully tested.

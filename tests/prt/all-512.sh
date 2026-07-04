@@ -3,17 +3,17 @@
 . ../common/need-prt
 export prt
 
-cp testfile2_s s.testfile2 || miscarry 'could not prepare test input s.testfile2'
+cp testfile2_s s.testfile2 || abandon_test_script 'could not prepare test input s.testfile2'
 
-sh all-variations.txt 2>&1 >got.stdout | 
+sh all-variations.txt 2>&1 >got.stdout |
     grep -v "feature not fully tested: excluded delta"
 
 remove all.expected
 
 /bin/sh ../../testutils/decompress_stdin.sh <all.expected.Z >all.expected \
-    || miscarry could not decompress expected output 
+    || abandon_test_script could not decompress expected output
 
-if diff all.expected got.stdout >/dev/null 
+if diff all.expected got.stdout >/dev/null
 then
     remove all.expected s.testfile2
     success

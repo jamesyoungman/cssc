@@ -45,7 +45,7 @@ cp example.latin1.txt $g
 docommand a1 "${vg_admin} -i$g $s" 0 IGNORE IGNORE
 docommand --stdout_is_file a2 "${vg_get} -p $s" 0 example.latin1.txt IGNORE
 
-cp umsp_s s.umsp.txt || miscarry 'failed to stage s.umsp.txt'
+cp umsp_s s.umsp.txt || abandon_test_script 'failed to stage s.umsp.txt'
 
 docommand --stdout_is_file a4 "${vg_get} -p s.umsp.txt" 0 example.latin1.txt IGNORE
 

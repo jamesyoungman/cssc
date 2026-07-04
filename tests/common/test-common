@@ -149,8 +149,8 @@ else
 fi ;
 }
 
-# Call miscarry when a test could not be completed.
-miscarry () {
+# Call abandon_test_script when a test could not be completed.
+abandon_test_script () {
     echo `basename $0`: "(${test_script}:${label})" "Test could not be completed: " "$@" >&2
     echo "Arguments were: ${all_args}" >&2
     exit 1 ;
@@ -163,7 +163,7 @@ remove () {
         # no files listed, nothing to do.
         true
     else
-        rm -rf "$@" || miscarry "Could not remove $@"
+        rm -rf "$@" || abandon_test_script "Could not remove $@"
     fi
 }
 
@@ -172,7 +172,7 @@ rename () {
     then
 	return 0
     fi
-    miscarry "Could not rename $1 to $2"
+    abandon_test_script "Could not rename $1 to $2"
 }
 
 copy() {
@@ -199,10 +199,10 @@ copy() {
 	then
 	    return 0
 	fi
-	miscarry "${copy_label}: failed to make ${copy_to} writable"
+	abandon_test_script "${copy_label}: failed to make ${copy_to} writable"
 	return 1
     fi
-    miscarry "${copy_label}: failed to copy ${copy_from} to ${copy_to}"
+    abandon_test_script "${copy_label}: failed to copy ${copy_from} to ${copy_to}"
     return 1
 }
 
@@ -215,7 +215,7 @@ set_test_script_and_label() {
 
     if [ $# -eq 0 ]
     then
-	miscarry "you should pass the docommand command-line to set_test_script_and_label"
+	abandon_test_script "you should pass the docommand command-line to set_test_script_and_label"
     fi
 
     if test -z "${test_script}"; then
@@ -242,7 +242,7 @@ set_test_script_and_label() {
 
     if [ -z "${label}" ]
     then
-	miscarry "did not find a label in command line" "$@"
+	abandon_test_script "did not find a label in command line" "$@"
     fi
 }
 
@@ -454,11 +454,11 @@ docommand_bin () {
     set_test_script_and_label "$@"
     if [ -z "${test_script}" ]
     then
-	miscarry "The test_script variable is not set"
+	abandon_test_script "The test_script variable is not set"
     fi
     if [ -z "${label}" ]
     then
-	miscarry "The label variable is not set; the command-line was" "$@"
+	abandon_test_script "The label variable is not set; the command-line was" "$@"
     fi
 
     expect_fail="false"

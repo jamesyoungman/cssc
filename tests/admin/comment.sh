@@ -11,7 +11,7 @@ remove foo new.txt [xzs].new.txt [xzs].1 [xzs].2 command.log
 
 remove foo
 echo '%M%' > foo
-test `cat foo` = '%M%' || miscarry cannot create file foo.
+test `cat foo` = '%M%' || abandon_test_script cannot create file foo.
 
 # Create an empty SCCS file to work on.
 docommand C1 "${admin} -ifoo $s" 0 "" ""
@@ -26,7 +26,7 @@ tail -1 prs.$s | egrep \
  '^date and time created [0-9][0-9]/[0-1][0-9]/[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9] by ' >/dev/null\
     || fail "default message format error."
 echo passed
-remove $s prs.$s 
+remove $s prs.$s
 
 # Force a blank comment and check it was blank.
 docommand C3 "${admin} -ifoo -y $s" 0 "" ""

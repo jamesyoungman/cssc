@@ -14,7 +14,7 @@ p=p.$g
 remove $g $s $x $z $p
 
 cp sf111140_testcase_s s.sf111140_testcase.txt ||
-    miscarry 'could not stage test input s.sf111140_testcase.txt'
+    abandon_test_script 'could not stage test input s.sf111140_testcase.txt'
 
 # If we check out version 1.16 of the provided file (in which
 # a trunk delta includes a delta that was on a trunk) we
@@ -37,7 +37,7 @@ do_pair() {
     then
 	do_output "${label_prefix}:f${seq}" "${vg_get} -r${sid} -p $s" 0 wanted.tmp IGNORE
     else
-	miscarry "awk failed"
+	abandon_test_script "awk failed"
     fi
 }
 

@@ -9,12 +9,12 @@ g=bar
 s=s.${g}
 z=z.${g}
 
-remove $s $g $z foo command.log last.command core 
+remove $s $g $z foo command.log last.command core
 remove expected.stderr got.stderr expected.stdout got.stdout
 
 remove foo
 echo '%M%' > foo
-test `cat foo` = '%M%' || miscarry cannot create file foo.
+test `cat foo` = '%M%' || abandon_test_script cannot create file foo.
 
 docommand A1 "${vg_admin} -ifoo ${s}" 0 "" IGNORE
 remove foo
@@ -51,7 +51,7 @@ docommand A13 "${vg_admin} -asleepy -esleepy ${s}" 0 "" ""
 docommand A14 "${prs} -d:UN: $s" 0 "sleepy\n\n" ""
 
 
-remove $s $g $z foo command.log last.command core 
+remove $s $g $z foo command.log last.command core
 remove expected.stderr got.stderr expected.stdout got.stdout
 
 

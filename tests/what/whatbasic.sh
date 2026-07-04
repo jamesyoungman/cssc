@@ -16,7 +16,7 @@ echo  > f
 
 
 handle_ekko_failure() {
-    miscarry "the ekko command has failed, and while this is a problem with the test suite rather than with CSSC itself, it means that the test suite cannot be successfully completed"
+    abandon_test_script "the ekko command has failed, and while this is a problem with the test suite rather than with CSSC itself, it means that the test suite cannot be successfully completed"
 }
 
 

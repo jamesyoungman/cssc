@@ -9,7 +9,7 @@ l=l.$g
 p=p.$g
 remove $s $g $l $p
 
-cp keys.txt_s s.keys.txt || miscarry 'could not stage test file s.keys.txt'
+cp keys.txt_s s.keys.txt || abandon_test_script 'could not stage test file s.keys.txt'
 
 summary="\
     1.2	97/10/25 23:04:58 james
@@ -25,7 +25,7 @@ docommand L1 "${vg_get} -L s.keys.txt" 0 "$summary\n" "1.2\n1 lines\n"
 remove $g
 
 # Check that -lp does the same thing.
-docommand L1p "${vg_get} -lp s.keys.txt" 0 "$summary\n" "1.2\n1 lines\n" 
+docommand L1p "${vg_get} -lp s.keys.txt" 0 "$summary\n" "1.2\n1 lines\n"
 remove $g
 
 docommand L2 "${vg_get} -L s.keys.txt s.keys.txt" 0 "$summary\n$summary\n" "
@@ -47,7 +47,7 @@ new delta 1.3
 # Reverse the effect of the edit.
 remove $g $p
 
-# Check that the delta summary is sent to stderr if -p is given (and that 
+# Check that the delta summary is sent to stderr if -p is given (and that
 # the body goes to stdout)..
 docommand L3 "${vg_get} -p -k -L s.keys.txt" 0 "$summary\n1.2 %I%\n" "1.2\n1 lines\n"
 remove $g

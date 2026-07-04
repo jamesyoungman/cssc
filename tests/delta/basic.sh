@@ -82,7 +82,7 @@ remove $g
 docommand C2  "${get} -e $s" 0 IGNORE IGNORE
 
 rename ${g} ${g}.old
-sed -e '2,4 d' < ${g}.old > $g || miscarry "sed failed"
+sed -e '2,4 d' < ${g}.old > $g || abandon_test_script "sed failed"
 
 docommand C3  "${vg_delta} -y $s" 0 IGNORE IGNORE
 docommand C4  "${get} -p $s" 0 "first line
@@ -95,7 +95,7 @@ ninth line
 
 docommand C5  "${get} -e $s" 0 IGNORE IGNORE
 rename ${g} ${g}.old
-sed -e '2,4 d' < ${g}.old > $g || miscarry "sed failed"
+sed -e '2,4 d' < ${g}.old > $g || abandon_test_script "sed failed"
 docommand C6  "${vg_delta} -y $s" 0 IGNORE IGNORE
 docommand C7  "${get} -p $s" 0 "first line
 eighth line
@@ -116,7 +116,7 @@ remove $p $g
 # ... and checking in a SID which is in the p-file but not the s-file...
 docommand C11   "${get} -e -r1.3 $s" 0 IGNORE IGNORE
 rename ${p} ${p}.old
-( sed -e 's/1\.3/3.1/' < ${p}.old | sed -e 's/1\.4/3.2/' > $p ) || miscarry "sed failed"
+( sed -e 's/1\.3/3.1/' < ${p}.old | sed -e 's/1\.4/3.2/' > $p ) || abandon_test_script "sed failed"
 remove ${p}.old
 docommand C12  "${vg_delta} -y -r1.1 $s" 1 IGNORE IGNORE
 remove $g

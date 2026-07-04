@@ -12,11 +12,11 @@ cat > base <<EOF
 This is a test file containing nothing interesting.
 EOF
 for i in 1 2 3 4 5 6
-do 
-    cat base > test/passwd.$i || miscarry "could not create test/passwd.$i"
+do
+    cat base > test/passwd.$i || abandon_test_script "could not create test/passwd.$i"
     echo "This is file number" $i >> test/passwd.$i  \
-	|| miscarry "could not append data to test/passwd.$i"
-done 
+	|| abandon_test_script "could not append data to test/passwd.$i"
+done
 remove base test/[xz].*
 remove test/[spx].passwd
 

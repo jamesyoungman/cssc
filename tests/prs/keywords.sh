@@ -57,10 +57,10 @@ expands_to X18 ':FD:'   'Descriptive Text\n\n'
 remove got.stdout expected.stdout
 set_and_maybe_print_step_label_with_dots Z1
 ${vg_prs}  -d'\\' s.1 > got.stdout 2>got.stderr || fail prs failed.
-echo \\            > expected.stdout || miscarry redirection to expected.stdout
+echo \\            > expected.stdout || abandon_test_script redirection to expected.stdout
 diff expected.stdout got.stdout >/dev/null || fail stdout format error.
 test -s got.stderr && fail expected empty stderr output
-remove got.stderr got.stdout expected.stdout 
+remove got.stderr got.stdout expected.stdout
 echo passed
 
 
@@ -82,12 +82,12 @@ expands_to K7 ':Ts:'   '36\n'
 
 
 docommand _1 "${get} -e -x1.1,1.2 -r1.4 s.1" 0 IGNORE IGNORE
-echo hello >> 1 || miscarry "could not write to file '1'"
+echo hello >> 1 || abandon_test_script "could not write to file '1'"
 #docommand _2 "${delta} -g1.1 s.1" 0 IGNORE IGNORE
 docommand _2 "${delta} -y'You only Live Twice'  s.1" 0 IGNORE IGNORE
 
 docommand _3 "${get} -e -i1.3 -x1.2,1.1 -r1.5 s.1" 0 IGNORE IGNORE
-echo foobar >> 1 || miscarry "could not write to file '1'"
+echo foobar >> 1 || abandon_test_script "could not write to file '1'"
 #docommand _4 "${delta} -g1.1 s.1" 0 IGNORE IGNORE
 docommand _4 "${delta} -y' Roundabout'  s.1" 0 IGNORE IGNORE
 
@@ -124,7 +124,7 @@ sid=1.6
 
 expands_to K16 ':DI:'   '3/2 1\n'
 
-## 
-## 
+##
+##
 remove s.1 p.1 z.1 1 command.log
 success

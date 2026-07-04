@@ -9,7 +9,7 @@
 s=s.testfile
 
 remove $s
-cp testfile_s s.testfile || miscarry 'could not stage test input s.testfile'
+cp testfile_s s.testfile || abandon_test_script 'could not stage test input s.testfile'
 
 do_output d1 "${vg_prt} $s" 0 expected/default.1 IGNORE
 

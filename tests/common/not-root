@@ -6,8 +6,15 @@
 #
 # The test suite depends on being able to accurately detect a readonly file.
 
-# Execute in a subshell so that we can use "trap ... 0" and 
-# ensure that the temporary file is removed before we reach 
+# Check that abandon_test_script actually works.
+if ( abandon_test_script 2>/dev/null; true )
+then
+    echo 'Please source test-common before not-root.' >&2
+    exit 1
+fi
+
+# Execute in a subshell so that we can use "trap ... 0" and
+# ensure that the temporary file is removed before we reach
 # the end of this file.
 
 (
@@ -24,10 +31,10 @@ if test -f $f
 then
 	if test -w $f
 	then
-		miscarry "Please do not run the suite as root" 
+		abandon_test_script "Please do not run the suite as root"
 	fi
 else
-	miscarry "Could not create $f (or buggy test(1))"
+	abandon_test_script "Could not create $f (or buggy test(1))"
 fi
 unset f
 ) || exit $?

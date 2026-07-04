@@ -18,11 +18,11 @@ remove $files
 append() {
    f="$1"
    shift
-   echo  "$@" >> "$f" || miscarry "Could not append a line to $1" 
+   echo  "$@" >> "$f" || abandon_test_script "Could not append a line to $1"
 }
 
 
-test -d test || mkdir test || miscarry "Could not create subdirectory 'test'" >&2
+test -d test || mkdir test || abandon_test_script "Could not create subdirectory 'test'" >&2
 
 exec </dev/null
 
@@ -53,7 +53,7 @@ append ${g}_2 "this is appended to file 2"
 
 
 
-mv ${g}_1 ${g} || miscarry "Could not rename ${g}_1 to ${g}"
+mv ${g}_1 ${g} || abandon_test_script "Could not rename ${g}_1 to ${g}"
 
 # Failure to specify an SCCS file name is an error.
 docommand o9 "${vg_delta} -r1.2.1.1 -yBranch1" 1 IGNORE IGNORE
@@ -73,12 +73,12 @@ docommand o14 "${vg_delta} -r1.1.1.1 -yBranch1 $s" 0 IGNORE IGNORE
 # the p-file should still exist
 docommand o15 "test -r $p" 0 "" ""
 
-mv ${g}_2 ${g} || miscarry "Could not rename ${g}_2 to ${g}"
+mv ${g}_2 ${g} || abandon_test_script "Could not rename ${g}_2 to ${g}"
 docommand o16 "${vg_delta} -r1.2.1.1 -p -yBranch2 $s" 0 \
 "1.2.1.1\n1a2\n> this is appended to file 2\n1 inserted\n0 deleted\n1 unchanged\n" IGNORE
 
 # the p-file should now be gone
 docommand o17 "test -r $p" 1 "" ""
 
-remove $files 
+remove $files
 success

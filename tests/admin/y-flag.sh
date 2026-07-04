@@ -20,7 +20,7 @@ remove expected.stderr got.stderr expected.stdout got.stdout
 # Figure out if we should expect the thing to work.
 if ${admin} -n -i/dev/null -fyM "${s}" >/dev/null 2>&1 || ${TESTING_CSSC}
 then
-    test -e "${s}" || miscarry "admin program '${admin}' silently did nothing"
+    test -e "${s}" || abandon_test_script "admin program '${admin}' silently did nothing"
     echo "We are testing an SCCS implementation that supports the y flag.  Good."
     remove "${s}"
 else
@@ -33,8 +33,8 @@ fi
 
 remove foo
 copy y-flag-foo-initial inputs/foo.initial.txt foo
-test -r foo || miscarry cannot create file foo.
-test -e "${s}" && miscarry initial conditions were incorrectly set up
+test -r foo || abandon_test_script cannot create file foo.
+test -e "${s}" && abandon_test_script initial conditions were incorrectly set up
 
 docommand Y1 "${admin} -ifoo ${s}" 0 "" IGNORE
 remove foo

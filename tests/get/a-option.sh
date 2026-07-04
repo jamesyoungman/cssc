@@ -1,5 +1,5 @@
 #! /bin/sh
-# a-option.sh:  Testing for the -a option.   
+# a-option.sh:  Testing for the -a option.
 
 # Import common functions & definitions.
 . ../common/test-common
@@ -81,7 +81,7 @@ do
   for gotsid in $sidlist
   do
     gotseq=`seq_for_sid $gotsid $s` || \
-      miscarry "Cannot find sequence number for SID $gotsid"
+      abandon_test_script "Cannot find sequence number for SID $gotsid"
     for t_option in "  " "-t"
     do
       get_expect "ar${gotseq}-${sid}${t_option}" -r${sid} -a${gotseq} "${gotsid}"
@@ -92,7 +92,7 @@ done
 for gotsid in $sidlist
 do
   gotseq=`seq_for_sid $gotsid $s` || \
-    miscarry "Cannot find sequence number for SID $gotsid"
+    abandon_test_script "Cannot find sequence number for SID $gotsid"
   for t_option in "  " "-t"
   do
     get_expect  "a${gotseq}${t_option}" "" -a${gotseq} "${gotsid}"

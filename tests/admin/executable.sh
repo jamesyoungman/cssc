@@ -20,9 +20,9 @@ expect_args() {
 
     detail="expected ${expected} arguments, but got ${got}"
     if test "${got}" -lt "${expected}"; then
-	miscarry "Too few arguments to ${function_name}: ${detail}"
+	abandon_test_script "Too few arguments to ${function_name}: ${detail}"
     elif test "${got}" -gt "${expected}"; then
-	miscarry "Too many arguments to ${function_name}: ${detail}"
+	abandon_test_script "Too many arguments to ${function_name}: ${detail}"
     fi
 }
 
@@ -33,7 +33,7 @@ setup() {
     #mode="$3"
     cleanup
     umask "${2}"
-    docommand --silent "${1}-setup0" "touch ${g}" IGNORE IGNORE IGNORE || miscarry "failed to create ${g}" &&
+    docommand --silent "${1}-setup0" "touch ${g}" IGNORE IGNORE IGNORE || abandon_test_script "failed to create ${g}" &&
     docommand --silent  "${1}-setup1" "chmod ${3} ${g}" 0 "" ""
     docommand "${1}"        "${admin} -i${g} -n ${s}" 0 IGNORE IGNORE
 }
@@ -108,8 +108,8 @@ selfcheck() {
     chmod_mode="$1"
     execute_perms_expected="$2"
     shift 2
-    touch "${g}" || miscarry "self-check: cannot create ${g}"
-    chmod "${chmod_mode}" "${g}" || miscarry "self-check: cannot chmod ${chmod_mode} ${g}"
+    touch "${g}" || abandon_test_script "self-check: cannot create ${g}"
+    chmod "${chmod_mode}" "${g}" || abandon_test_script "self-check: cannot chmod ${chmod_mode} ${g}"
     perms="`execute_perms ${g}`"
     if test "${perms}" != "${execute_perms_expected}"; then
 	fail "self-check: ${g} should be have execute permissions for ${execute_perms_expected} but actually has them for ${perms:-nobody}"
@@ -128,12 +128,12 @@ selfcheck 0071  go
 
 (
     setup x01 0077 0700
-    test -f "${g}" || miscarry "where is ${g}?"
+    test -f "${g}" || abandon_test_script "where is ${g}?"
     if is_owner_executable "$g"; then
         # Not using ! is a workaround for the fact that Solaris /bin/sh doesn't support it.
 	true
     else
-        miscarry "Cannot create an executable file"
+        abandon_test_script "Cannot create an executable file"
     fi
 
     set_and_maybe_print_step_label_with_dots "x02"
@@ -189,7 +189,7 @@ selfcheck 0071  go
 	ugo) echo passed;;
 	u|ug|ugo) fail "x08: ${s} should be mode 0777 when umask is 0 and the -i file is executable.";;
 	"") fail "x08: execute permissions not copied to history file at all";;
-	*) miscarry "unexpected execute perms ${perms} for file ${s}";;
+	*) abandon_test_script "unexpected execute perms ${perms} for file ${s}";;
     esac || exit 1
 ) || rv=1
 
@@ -226,7 +226,7 @@ fi
 # initial body from stdin).
 cleanup
 umask 077
-docommand x22 "touch ${g}" IGNORE IGNORE IGNORE || miscarry "failed to create ${g}" &&
+docommand x22 "touch ${g}" IGNORE IGNORE IGNORE || abandon_test_script "failed to create ${g}" &&
 docommand x23 "chmod 0500 ${g}" 0 "" ""
 # We present the initial body via stdin.   It's executable.
 docommand x24 "${admin} -i -n ${s} < ${g}" 0 IGNORE IGNORE

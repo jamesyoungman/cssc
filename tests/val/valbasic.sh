@@ -44,10 +44,10 @@ docommand v12 "${vg_val} -r1.2 s.f" 4 IGNORE IGNORE
 # SID not valid
 docommand v13 "${vg_val} -r1.2xyzzy s.f" 8 IGNORE IGNORE
 
-chmod 0 s.f || miscarry "Cannot change permissions for file s.f"
+chmod 0 s.f || abandon_test_script "Cannot change permissions for file s.f"
 # Cannot read file
 docommand v14 "${vg_val} s.f" 16 IGNORE IGNORE
-chmod +r s.f || miscarry "Cannot reset permissions for file s.f"
+chmod +r s.f || abandon_test_script "Cannot reset permissions for file s.f"
 
 # Missing file
 docommand v15 "${vg_val} -r1.1" 128 IGNORE IGNORE
@@ -58,7 +58,7 @@ docommand v16 "${vg_val} -r1.1 -r1.2 s.f" 64 IGNORE IGNORE
 
 # A corrupt file
 remove s.corrupt
-cat valbasic.sh s.f > s.corrupt || miscarry "cannot create file s.corrupt"
+cat valbasic.sh s.f > s.corrupt || abandon_test_script "cannot create file s.corrupt"
 docommand v17 "${vg_val} -r1.1 s.corrupt" 32 IGNORE IGNORE
 remove s.corrupt
 
