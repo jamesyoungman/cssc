@@ -21,7 +21,6 @@
 # ac_e          Leading argument for enabling escape codes.
 # ac_n          Leading argument for echo to suppress newline.
 # ac_c          Arg for suppressing newline (may need -e, we test for that.)
-# ac_t          (don't know -- I stole this code from Autoconf...)
 #
 # FreeBSD echo (or at least some version of it) does not support both the
 # -n and the -e option AT THE SAME TIME.  This information from
@@ -36,82 +35,79 @@
 #
 for echocmd in echo /bin/echo /usr/bin/echo /usr/5bin/echo ../../testutils/ekko
 do
-# Unless we're using the builtin, check that the command exists as a file.
-if test -f $echocmd || test "$echocmd" = "echo"
-then
-  # The second echo here ensures that the parenthesised command
-  # succeeds and the output ends with a newline.
-  if ($echocmd "testing\c"; echo 1,2,3) | grep c >/dev/null
+    # Unless we're using the builtin, check that the command exists as a file.
+    if test -f $echocmd || test "$echocmd" = "echo"
     then
-    # Trailing \c option does not work without -e (it produces a literal c).
-    if ($echocmd -e "testing\c"; echo 1,2,3) | grep c >/dev/null
-    then
-      # \c does not work even with -e.
-      if ($echocmd -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null
-      then
-          # -n option not known (and \c not known)
-          # I don't know what purpose setting ac_c to this value
-          # has, but Autoconf does it...
-          ac_n= ac_c='
-' ac_t='        '
-      else
-          # -n option works even though -e does not.
-          # This is unfortunate since the test scripts assume
-          # in places the ability to expand escape codes.
-          # Send message to STDERR because I want to investigate.
-          #
-          # According to Marty Leisner <leisner@sdsp.mc.xerox.com>,
-          # SunOS 4.1.4 is one such "unusual" system.
+	# The second echo here ensures that the parenthesised command
+	# succeeds and the output ends with a newline.
+	if ($echocmd "testing\c"; echo 1,2,3) | grep c >/dev/null
+	then
+	    # Trailing \c option does not work without -e (it produces a literal c).
+	    if ($echocmd -e "testing\c"; echo 1,2,3) | grep c >/dev/null
+	    then
+		# \c does not work even with -e.
+		if ($echocmd -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null
+		then
+		    # -n option not known (and \c not known)
+		    ac_n='' ac_c=''
+		else
+		    # -n option works even though -e does not.
+		    # This is unfortunate since the test scripts assume
+		    # in places the ability to expand escape codes.
+		    # Send message to STDERR because I want to investigate.
+		    #
+		    # According to Marty Leisner <leisner@sdsp.mc.xerox.com>,
+		    # SunOS 4.1.4 is one such "unusual" system.
 
-          # echo Unusual system\; PLEASE inform '<jay@gnu.org>'. >&2
-          ac_n=-n ac_c= ac_t=
-      fi
-    else
-      # \c does work with -e.
-      # Hence we do not need to use -n.
-      ac_n= ac_c='\c' ec_t=
-      # Break out of the loop, we have a workable solution.
-      break
+		    # echo Unusual system\; PLEASE inform '<jay@gnu.org>'. >&2
+		    ac_n='-n' ac_c=''
+		fi
+	    else
+		# \c does work with -e.
+		# Hence we do not need to use -n.
+		ac_n='' ac_c='\c'
+		# Break out of the loop, we have a workable solution.
+		break
+	    fi
+	else
+	    ac_n='' ac_c='\c'
+	    # Break out of the loop, we have a workable solution.
+	    break
+	fi
     fi
-  else
-    ac_n= ac_c='\c' ac_t=
-    # Break out of the loop, we have a workable solution.
-    break
-  fi
-fi
 done
 
 # If "echo -e" generates an error, don't do that.  Hey, at least
 # /dev/null works!
 if ($echocmd -e) >/dev/null 2>&1
 then
-  if ($echocmd -e) | sed s/-e/xe/ | grep xe >/dev/null
-  then
-    # Fallback position: use our own replacement which supports -e.
-    echocmd="../../testutils/ekko"
-    ac_e='-e'
-  else
-    ac_e='-e'
-  fi
+    if ($echocmd -e) | sed s/-e/xe/ | grep xe >/dev/null
+    then
+	# Fallback position: use our own replacement which supports -e.
+	echocmd="../../testutils/ekko"
+	ac_e='-e'
+    else
+	ac_e='-e'
+    fi
 fi
 
 # echo "ac_n="$ac_n
 # echo "ac_e="$ac_e
-# echo "ac_t="$ac_t
 # echo "ac_c="$ac_c
 # echo "echocmd=" $echocmd
 
 
 # Function for echoing without a newline, with escape chars enabled.
 echo_nonl () {
-if test -z "$*"
-then
-    # this works around an apparent bug in Bash where
-    # "$@$x" expands to something starting with char 0177 (DEL).
-    true
-else
-    ${echocmd} ${ac_n} ${ac_e} "$@$ac_c" ;
-fi
+    if test -z "$*"
+    then
+        # this works around an apparent bug in Bash where
+        # "$@$x" expands to something starting with char 0177 (DEL).
+        true
+    else
+        # shellcheck disable=SC2086,SC2145
+        ${echocmd} ${ac_n} ${ac_e} "$@"${ac_c}
+    fi
 }
 
 
@@ -132,26 +128,24 @@ fail () {
 
 # Call success when a test succeeded.
 success () {
-name=`basename $0`
+    name="$( basename "$0" )"
 
-remove got.stdout           got.stderr
-remove expected.stdout expected.stderr
-remove command.log last.command
+    remove got.stdout got.stderr expected.stdout expected.stderr command.log last.command
 
-echo
-echo "All Tests in `/bin/pwd`/$name are now completed on tools in '$dir'"
+    echo
+    echo "All Tests in `/bin/pwd`/$name are now completed on tools in '$dir'"
 
-if ${expect_fail:-false}
-then
-        echo XPASS $name: $* ; exit 0;
-else
-        echo PASS $name:  $* ; exit 0;
-fi ;
+    if ${expect_fail:-false}
+    then
+        echo "XPASS ${name}: $*" ; exit 0;
+    else
+        echo "PASS ${name}:  $*" ; exit 0;
+    fi ;
 }
 
 # Call abandon_test_script when a test could not be completed.
 abandon_test_script () {
-    echo `basename $0`: "(${test_script}:${label})" "Test could not be completed: " "$@" >&2
+    echo "$( basename "$0" ):" "(${test_script}:${label})" "Test could not be completed: " "$@" >&2
     echo "Arguments were: ${all_args}" >&2
     exit 1 ;
 }
@@ -163,7 +157,7 @@ remove () {
         # no files listed, nothing to do.
         true
     else
-        rm -rf "$@" || abandon_test_script "Could not remove $@"
+        rm -rf -- "$@" || abandon_test_script "Could not remove" "$@"
     fi
 }
 
@@ -200,10 +194,8 @@ copy() {
 	    return 0
 	fi
 	abandon_test_script "${copy_label}: failed to make ${copy_to} writable"
-	return 1
     fi
     abandon_test_script "${copy_label}: failed to copy ${copy_from} to ${copy_to}"
-    return 1
 }
 
 test_script=
@@ -219,12 +211,12 @@ set_test_script_and_label() {
     fi
 
     if test -z "${test_script}"; then
-	script_dir=`dirname $0`
+	script_dir="$( dirname "$0" )"
 	case "${script_dir}" in
 	    .) script_dir=`pwd`;;
 	esac
-	script_base=`basename ${script_dir}`
-	test_script="${script_base}"/`basename $0`
+	script_base="$( basename "${script_dir}" )"
+	test_script="${script_base}/$( basename "$0" )"
     fi
 
     for arg
@@ -253,196 +245,202 @@ set_and_maybe_print_step_label_with_dots() {
 
 ##############
 docommand_sh () {
-# $1 is the label.
-# $2 is the command to execute.
-# $3 is the return value to expect
-# $4 is what to expect on stdout
-# $5 is what to expect on stderr.
-#
-# If --silent is specified before the label, no output is normally made.
+    # $1 is the label.
+    # $2 is the command to execute.
+    # $3 is the return value to expect
+    # $4 is what to expect on stdout
+    # $5 is what to expect on stderr.
     #
-all_args="$@"
-remove last.command expected.stdout expected.stderr got.stdout got.stderr
-silent=false
-stdout_regex=false
-stderr_regex=false
-stdout_is_file=false
-stderr_is_file=false
-while case "$1" in
---silent) silent=true ; true ;;
---nosilent) silent=false ; true ;;
---stderr_regex) stderr_regex=true ; true ;;
---stderr_is_file) stderr_is_file=true ; true ;;
---nostderr_regex) stderr_regex=false ; true ;;
---stdout_regex) stdout_regex=true ; true ;;
---stdout_is_file) stdout_is_file=true ; true ;;
---nostdout_regex) stdout_regex=false ; true ;;
-*) false ;;
-esac
-do
+    # If --silent is specified before the label, no output is normally made.
+    #
+    all_args="$*"
+    remove last.command expected.stdout expected.stderr got.stdout got.stderr
+    silent=false
+    stdout_regex=false
+    stderr_regex=false
+    stdout_is_file=false
+    stderr_is_file=false
+    while case "$1" in
+	      --silent) silent=true ; true ;;
+	      --nosilent) silent=false ; true ;;
+	      --stderr_regex) stderr_regex=true ; true ;;
+	      --stderr_is_file) stderr_is_file=true ; true ;;
+	      --nostderr_regex) stderr_regex=false ; true ;;
+	      --stdout_regex) stdout_regex=true ; true ;;
+	      --stdout_is_file) stdout_is_file=true ; true ;;
+	      --nostdout_regex) stdout_regex=false ; true ;;
+	      *) false ;;
+	  esac
+    do
+        shift
+    done
+    set_and_maybe_print_step_label_with_dots "${1}"
     shift
-done
-set_and_maybe_print_step_label_with_dots "${1}"
-shift
 
-if ${stderr_is_file}
-then
-    copy stderr_early "${4}" expected.stderr
-else
-    echo_nonl "$4" > expected.stderr
-fi
-echo "${1}" > last.command
-
-echo  >> command.log
-echo "# ${label}"  >> command.log
-echo "${1}" >> command.log
-eval "$1" >got.stdout 2>got.stderr
-rv=$?
-echo '# $? was' "$rv;  $(env LC_ALL=C wc -c < got.stdout) bytes on stdout; $(env LC_ALL=C wc -c < got.stderr) bytes on stderr" >> command.log
-
-# Some sed implementations cannot handle an input which is non-empty
-# but lacks a final newline, so work around that.
-( cat got.stdout ; echo ) >| got.stdout.nl
-( cat got.stderr ; echo ) >| got.stderr.nl
-sed -e '$ d' -e 's/^/# stdout: /' >> command.log < got.stdout.nl
-sed -e '$ d' -e 's/^/# stderr: /' >> command.log < got.stderr.nl
-rm -f got.stdout.nl got.stderr.nl
-
-if test "$2" != "IGNORE"
-then
-    if test $rv -eq "${2}"
-    then
-	true
-    else
-	# If the expected return value (which we didn't get) was zero,
-        # stderr may contain an error message.
-	errmsg="`cat got.stderr`"
-	if test -z "$errmsg"
-	then
-	    tail="No error message was printed on stderr"
-	else
-	    tail="error message: $errmsg"
-	fi
-	fail "$label: $1: Expected return value $2, got return value $rv
-$tail"
-    fi
-fi
-
-if test "$3" != "IGNORE"
-then
-    if ${stdout_is_file}
-    then
-	stdout_contents="$( cat "${3}" )"
-	copy stdout_file "${3}" expected.stdout
-    else
-	stdout_contents="${3}"
-	echo_nonl "$3" > expected.stdout
-    fi
-
-    if $stdout_regex; then
-	# We use egrep regexes to that we can run these tests on old
-	# versions of Solaris.  Older versions of Solaris do not
-	# support grep -E.
-	if egrep -e "${stdout_contents}" < got.stderr >/dev/null
-	then
-	    echo "# stdout output matches ${stdout_contents}"  >> command.log
-	else
-	    echo "# stdout output does not match ${stdout_contents}"  >> command.log
-	    fail "$label: stdout output did not match ${stdout_contents}"
-	fi
-    else
-	# diff can fail if the file does not end in newline.
-	echo        >>expected.stdout
-	echo        >>     got.stdout
-	# Prefer cmp in case the data is binary.
-	if ! cmp expected.stdout got.stdout
-	then
-	    diff expected.stdout got.stdout
-	    fail "$label: stdout format error with $1"
-	fi
-    fi
-fi
-
-if test "$4" != "IGNORE"
-then
     if ${stderr_is_file}
     then
-	stderr_contents="$( "cat ${4}" )"
-	copy stderr_file "${4}" expected.stderr
+        copy stderr_early "${4}" expected.stderr
     else
-	stderr_contents="${4}"
-	echo_nonl "$4" > expected.stderr
+        echo_nonl "$4" > expected.stderr
+    fi
+    echo "${1}" > last.command
+
+    eval "$1" >got.stdout 2>got.stderr
+    rv=$?
+
+    {
+        echo
+        echo "# ${label}"
+        echo "${1}"
+        echo '# $? was' "$rv;  $(env LC_ALL=C wc -c < got.stdout) bytes on stdout; $(env LC_ALL=C wc -c < got.stderr) bytes on stderr"
+    } >> command.log
+
+    # Some sed implementations cannot handle an input which is non-empty
+    # but lacks a final newline, so work around that.
+    ( cat got.stdout ; echo ) >| got.stdout.nl
+    ( cat got.stderr ; echo ) >| got.stderr.nl
+    sed -e '$ d' -e 's/^/# stdout: /' >> command.log < got.stdout.nl
+    sed -e '$ d' -e 's/^/# stderr: /' >> command.log < got.stderr.nl
+    rm -f got.stdout.nl got.stderr.nl
+
+    if test "$2" != "IGNORE"
+    then
+        if test $rv -eq "${2}"
+        then
+    	    true
+        else
+    	    # If the expected return value (which we didn't get) was zero,
+            # stderr may contain an error message.
+    	    errmsg="`cat got.stderr`"
+    	    if test -z "$errmsg"
+    	    then
+    		tail="No error message was printed on stderr"
+    	    else
+    		tail="error message: $errmsg"
+    	    fi
+    	    fail "$label: $1: Expected return value $2, got return value $rv
+    $tail"
+        fi
     fi
 
-    if $stderr_regex; then
-	# We use egrep regexes to that we can run these tests on old
-	# versions of Solaris.  Older versions of Solaris do not
-	# support grep -E.
-	if egrep -e "${stderr_contents}" < got.stderr >/dev/null
-	then
-	    echo "# stderr output matches ${stderr_contents}"  >> command.log
-	else
-	    echo "# stderr output does not match ${stderr_contents}"  >> command.log
-	    fail "$label: stderr output did not match ${stderr_contents}"
-	fi
-    else
-	# diff can fail if the file does not end in newline.
-	echo        >>expected.stderr
-	echo        >>     got.stderr
-	diff expected.stderr got.stderr || fail "$label: stderr format error with $1"
-    fi
-fi
+    if test "$3" != "IGNORE"
+    then
+        if ${stdout_is_file}
+        then
+    	    stdout_contents="$( cat "${3}" )"
+    	    copy stdout_file "${3}" expected.stdout
+        else
+    	    stdout_contents="${3}"
+    	    echo_nonl "$3" > expected.stdout
+        fi
 
-remove last.command expected.stdout expected.stderr got.stdout got.stderr
-eval "$silent" || echo "passed "
-( exit $rv; )
+        if $stdout_regex; then
+    	    # We use egrep regexes to that we can run these tests on old
+    	    # versions of Solaris.  Older versions of Solaris do not
+    	    # support grep -E.
+    	    if egrep -e "${stdout_contents}" < got.stderr >/dev/null
+    	    then
+    		echo "# stdout output matches ${stdout_contents}"  >> command.log
+    	    else
+    		echo "# stdout output does not match ${stdout_contents}"  >> command.log
+    		fail "$label: stdout output did not match ${stdout_contents}"
+    	    fi
+        else
+    	    # diff can fail if the file does not end in newline.
+    	    echo        >>expected.stdout
+    	    echo        >>     got.stdout
+    	    # Prefer cmp in case the data is binary.
+    	    if ! cmp expected.stdout got.stdout
+    	    then
+    		diff expected.stdout got.stdout
+    		fail "$label: stdout format error with $1"
+    	    fi
+        fi
+    fi
+
+    if test "$4" != "IGNORE"
+    then
+        if ${stderr_is_file}
+        then
+    	    stderr_contents="$( "cat ${4}" )"
+    	    copy stderr_file "${4}" expected.stderr
+        else
+    	    stderr_contents="${4}"
+    	    echo_nonl "$4" > expected.stderr
+        fi
+
+        if $stderr_regex; then
+    	    # We use egrep regexes to that we can run these tests on old
+    	    # versions of Solaris.  Older versions of Solaris do not
+    	    # support grep -E.
+    	    if egrep -e "${stderr_contents}" < got.stderr >/dev/null
+    	    then
+    		echo "# stderr output matches ${stderr_contents}"  >> command.log
+    	    else
+    		echo "# stderr output does not match ${stderr_contents}"  >> command.log
+    		fail "$label: stderr output did not match ${stderr_contents}"
+    	    fi
+        else
+    	    # diff can fail if the file does not end in newline.
+    	    echo        >>expected.stderr
+    	    echo        >>     got.stderr
+    	    diff expected.stderr got.stderr || fail "$label: stderr format error with $1"
+        fi
+    fi
+
+    remove last.command expected.stdout expected.stderr got.stdout got.stderr
+    eval "$silent" || echo "passed "
+    ( exit $rv; )
 }
 
 #######################
 do_output_sh () {
-# $1 is the label.
-# $2 is the command to execute.
-# $3 is the return value to expect
-# $4 is a file containing what to expect on stdout.
-# $5 is what to expect on stderr.
-remove last.command expected.stdout expected.stderr got.stdout got.stderr
-set_and_maybe_print_step_label_with_dots "$1"
-shift
+    # $1 is the label.
+    # $2 is the command to execute.
+    # $3 is the return value to expect
+    # $4 is a file containing what to expect on stdout.
+    # $5 is what to expect on stderr.
+    remove last.command expected.stdout expected.stderr got.stdout got.stderr
+    set_and_maybe_print_step_label_with_dots "$1"
+    shift
 
-echo_nonl $4 > expected.stderr
-echo $1 > last.command
+    echo_nonl "$4" > expected.stderr
+    echo "$1" > last.command
 
-echo  >> command.log
-echo "# ${label}"  >> command.log
-echo $1 >> command.log
-$1 >got.stdout 2>got.stderr
-rv=$?
-echo '# $? was' "$rv;  $(env LC_ALL=C wc -c < got.stdout) bytes on stdout; $(env LC_ALL=C wc -c < got.stderr) bytes on stderr" >> command.log
-sed -e 's/^/# stdout: /' >> command.log < got.stdout
-sed -e 's/^/# stderr: /' >> command.log < got.stderr
+    $1 >got.stdout 2>got.stderr
 
-if test "$2" != "IGNORE"
-then
-    test $rv -eq $2 || fail "$label: $1: Expected return value $2, got return value $rv"
-fi
+    rv=$?
+    {
+        echo
+        echo "# ${label}"
+        echo "$1"
+        echo '# $? was' "$rv;  $(env LC_ALL=C wc -c < got.stdout) bytes on stdout; $(env LC_ALL=C wc -c < got.stderr) bytes on stderr"
+        sed -e 's/^/# stdout: /' < got.stdout
+        sed -e 's/^/# stderr: /' < got.stderr
+    } >> command.log
 
-if test "$3" != "IGNORE"
-then
-    diff $3 got.stdout || fail "$label: stdout format error with $1"
-fi
+    if test "$2" != "IGNORE"
+    then
+        test "$rv" -eq "$2" || fail "$label: $1: Expected return value $2, got return value $rv"
+    fi
 
-if test "$4" != "IGNORE"
-then
-    echo_nonl $4 > expected.stderr
-    # diff can fail if the file does not end in newline.
-    echo        >>expected.stderr
-    echo        >>     got.stderr
-    diff expected.stderr got.stderr || fail "$label: stderr format error with $1"
-fi
+    if test "$3" != "IGNORE"
+    then
+        diff "$3" got.stdout || fail "$label: stdout format error with $1"
+    fi
 
-remove last.command expected.stdout expected.stderr got.stdout got.stderr
-echo "passed "
-( exit ${rv}; )
+    if test "$4" != "IGNORE"
+    then
+        echo_nonl "$4" > expected.stderr
+        # diff can fail if the file does not end in newline.
+        echo        >>expected.stderr
+        echo        >>     got.stderr
+        diff expected.stderr got.stderr || fail "$label: stderr format error with $1"
+    fi
+
+    remove last.command expected.stdout expected.stderr got.stdout got.stderr
+    echo "passed "
+    ( exit ${rv}; )
 }
 
 do_output_bin () {
