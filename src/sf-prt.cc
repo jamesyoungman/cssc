@@ -74,17 +74,6 @@ print_string_list(FILE *out,
 }
 
 static cssc::Failure
-print_flag(FILE *out, const char *fmt, std::string flag, int& count)
-{
-  if (!flag.empty())
-    {
-      ++count;
-      TRY_PRINTF(fprintf(out, fmt, flag.c_str()));
-    }
-  return cssc::Failure::Ok();
-}
-
-static cssc::Failure
 print_printf_format_optional_string_flag(FILE *out, const char *fmt, const cssc::optional<std::string>& flag, int& count)
 {
   if (flag.has_value())
