@@ -7,11 +7,11 @@
 
 # Get a test file...
 g=testfile
-s=s.$g
-x=x.$g
-p=p.$g
-z=z.$g
-remove $s $g $p $z
+s="s.$g"
+x="x.$g"
+p="p.$g"
+z="z.$g"
+remove "$s" "$g" "$p" "$z" "$x"
 
 
 get_expect () {
@@ -102,6 +102,6 @@ done
 # None of the above commands should have left a g-file lying around.
 docommand g1 "test -f $g" 1 "" IGNORE
 
-remove $s $g
+remove "$s" "$g" "$p" "$z" "$x"
 
 success
