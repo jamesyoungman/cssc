@@ -1,4 +1,4 @@
-# Hey, Emacs!  This is a -*- sh -*- script.
+#! /bin/sh
 
 # This script retrieves the config information from CSSC in order to
 # figure out if binary file support is available.  This will allow us
@@ -8,32 +8,35 @@
 # Common function definitions.
 . ../common/real-thing.sh
 
-if test -z "${admin}"; then
-    echo '${admin} is not set, please source common/test-common before common/config-data' >&2
-    exit 1
-fi
+# shellcheck disable=SC2034
+{
+    if test -z "${admin}"; then
+	echo '${admin} is not set, please source common/test-common before common/config-data' >&2
+	exit 1
+    fi
 
-if $TESTING_CSSC
-then
-    # Turn on binary file support in CSSC (if it is disabled)
-    CSSC_BINARY_SUPPORT=enabled
-    export CSSC_BINARY_SUPPORT
-    binary_support=true
+    if $TESTING_CSSC
+    then
+	# Turn on binary file support in CSSC (if it is disabled)
+	CSSC_BINARY_SUPPORT=enabled
+	export CSSC_BINARY_SUPPORT
+	binary_support=true
 
-    max_line_len=`${admin} -V 2>&1         |
+	max_line_len=`${admin} -V 2>&1         |
 	grep "^Maximum body line length.*overridden: " |
 	sed -e 's/^.*://' `
 
-else
-    # Not CSSC.
-    # For the moment, just guess --- and be conservative.
-    case `uname` in
-	SunOS) binary_support=true   ;;
-	*)     binary_support=false  ;;
-    esac
+    else
+	# Not CSSC.
+	# For the moment, just guess --- and be conservative.
+	case `uname` in
+	    SunOS) binary_support=true   ;;
+	    *)     binary_support=false  ;;
+	esac
 
-    max_line_len=400
-fi
+	max_line_len=400
+    fi
 
-# echo Max line len $max_line_len
-# echo Binary support $binary_support
+    # echo Max line len $max_line_len
+    # echo Binary support $binary_support
+}
