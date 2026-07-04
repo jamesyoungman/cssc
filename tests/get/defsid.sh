@@ -7,11 +7,12 @@
 remove command.log
 
 g=brtest
-s=s.$g
-z=z.$g
-x=x.$g
-p=p.$g
-remove [zxsp].$g $g
+s="s.$g"
+z="z.$g"
+x="x.$g"
+p="p.$g"
+
+remove  "${g}" "${s}" "${z}" "${x}" "${p}"
 
 # Create the s. file and make sure it exists.
 remove $g
@@ -70,6 +71,5 @@ docommand e8 "${delta} -y"NoComment" $s" 0 IGNORE IGNORE
 # prs $s
 
 
-remove [zxsp].$g $g
-remove command.log
+remove  "${g}" "${s}" "${z}" "${x}" "${p}" command.log
 success

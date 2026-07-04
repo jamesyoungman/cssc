@@ -7,11 +7,12 @@
 remove command.log
 
 g=brtest
-s=s.$g
-z=z.$g
-x=x.$g
-p=p.$g
-remove [zxsp].$g $g
+s="s.$g"
+z="z.$g"
+x="x.$g"
+p="p.$g"
+
+remove $g "${g}" "${s}" "${z}" "${x}" "${p}"
 
 # Create the s. file and make sure it exists.
 remove $g
@@ -60,6 +61,5 @@ docommand B12 "$delta -yNoComment $s" 0 "1.1.3.1\n0 inserted\n0 deleted\n1 uncha
 docommand B13 "${vg_get} -e -b $s" 0 "1.1\nnew delta 1.1.4.1\n1 lines\n" ""
 
 
-remove [zxsp].$g $g
-remove command.log
+remove $g "${g}" "${s}" "${z}" "${x}" "${p}" command.log
 success
