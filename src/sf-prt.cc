@@ -73,7 +73,8 @@ print_string_list(FILE *out,
   return cssc::Failure::Ok();
 }
 
-cssc::Failure print_flag(FILE *out, const char *fmt, std::string flag, int& count)
+static cssc::Failure
+print_flag(FILE *out, const char *fmt, std::string flag, int& count)
 {
   if (!flag.empty())
     {
@@ -83,7 +84,8 @@ cssc::Failure print_flag(FILE *out, const char *fmt, std::string flag, int& coun
   return cssc::Failure::Ok();
 }
 
-cssc::Failure print_printtf_format_optional_string_flag(FILE *out, const char *fmt, const cssc::optional<std::string>& flag, int& count)
+static cssc::Failure
+print_printf_format_optional_string_flag(FILE *out, const char *fmt, const cssc::optional<std::string>& flag, int& count)
 {
   if (flag.has_value())
     {
@@ -93,7 +95,8 @@ cssc::Failure print_printtf_format_optional_string_flag(FILE *out, const char *f
   return cssc::Failure::Ok();
 }
 
-cssc::Failure print_flag(FILE *out, const char *fmt, const std::string* pflag, int& count)
+static cssc::Failure
+print_flag(FILE *out, const char *fmt, const std::string* pflag, int& count)
 {
   // We consider a flag which is set to an empty string still to be set.
   // An example is the v flag; lines of the form "^Af v" should still set
@@ -106,7 +109,8 @@ cssc::Failure print_flag(FILE *out, const char *fmt, const std::string* pflag, i
   return cssc::Failure::Ok();
 }
 
-cssc::Failure print_flag(FILE *out, const char *fmt,  int flag, int& count)
+static cssc::Failure
+print_flag(FILE *out, const char *fmt,  int flag, int& count)
 {
   if (flag)
     {
@@ -116,7 +120,8 @@ cssc::Failure print_flag(FILE *out, const char *fmt,  int flag, int& count)
   return cssc::Failure::Ok();
 }
 
-Failure print_flag(FILE *out, const char *fmt,  sid flag, int& count)
+static cssc::Failure
+print_flag(FILE *out, const char *fmt,  sid flag, int& count)
 {
   if (flag.valid())
     {
@@ -130,7 +135,8 @@ Failure print_flag(FILE *out, const char *fmt,  sid flag, int& count)
   return cssc::Failure::Ok();
 }
 
-cssc::Failure print_flag(FILE *out, const char *fmt,  release flag, int& count)
+static cssc::Failure
+print_flag(FILE *out, const char *fmt,  release flag, int& count)
 {
   if (flag.valid())
     {
@@ -497,7 +503,7 @@ sccs_file::prt(FILE *out,
       TRY_OPERATION(print_flag(out, "\tnull delta\t\n", flags.null_deltas, flag_count));
       TRY_OPERATION(print_flag(out, "\tcsect name\t%s\n", flags.user_def, flag_count));
       TRY_OPERATION(print_flag(out, "\ttype\t%s\n", flags.type, flag_count));
-      TRY_OPERATION(print_printtf_format_optional_string_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count));
+      TRY_OPERATION(print_printf_format_optional_string_flag(out, "\tvalidate MRs\t%s\n", flags.mr_checker, flag_count));
 
       if (!flags.substitued_flag_letters.empty())
 	{
