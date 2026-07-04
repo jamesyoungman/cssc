@@ -14,7 +14,7 @@ remove expected.stderr got.stderr expected.stdout got.stdout
 
 remove foo
 echo '%M%' > foo
-test `cat foo` = '%M%' || abandon_test_script cannot create file foo.
+test "$( cat foo )" = '%M%' || abandon_test_script cannot create file foo.
 
 docommand A1 "${vg_admin} -ifoo ${s}" 0 "" IGNORE
 remove foo

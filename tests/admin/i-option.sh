@@ -11,7 +11,7 @@ remove $s foo $g
 
 remove $g
 echo '%M%' > foo
-test x`cat foo` = x'%M%' || abandon_test_script cannot create file foo.
+test "$(cat foo)" = '%M%' || abandon_test_script 'cannot create file foo.'
 
 docommand I1 "${vg_admin} -ifoo $s" 0 "" IGNORE
 docommand I2 "${get} -r1.1 -p $s"      0 "$g\n" IGNORE
