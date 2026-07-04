@@ -3,13 +3,15 @@ AM_CPPFLAGS = $(generic_CPPFLAGS)
 AM_CFLAGS = "-DPREFIX=\"$(csscutildir)/\"" "-DLOCALEDIR=\"$(localedir)\"" $(generic_CPPFLAGS)
 AM_LDFLAGS = -L../src -L../gl/lib
 AM_CXXFLAGS = $(WARN_CXXFLAGS)
+LINK = $(CXXLINK)
 LDADD = libtesting.a -lcssc  -lgnulib
 
-noinst_PROGRAMS = lndir realpwd user yes ekko seeker yammer runtests
+noinst_PROGRAMS = do_cmd lndir realpwd user yes ekko seeker yammer runtests
 noinst_LIBRARIES = libtesting.a
 
 libtesting_a_SOURCES = execute.cc execute.h filebody.cc filebody.h echo_unescape.c echo_unescape.h
 
+do_cmd_SOURCES = do_cmd.cc
 ekko_SOURCES = ekko.c
 realpwd_SOURCES = realpwd.cc
 runtests_SOURCES = runtests.cc
