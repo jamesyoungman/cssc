@@ -11,7 +11,7 @@ remove foo new.txt [xzs].new.txt [xzs].1 [xzs].2 command.log
 
 remove foo
 echo '%M%' > foo
-test `cat foo` = '%M%' || abandon_test_script cannot create file foo.
+test "$(cat foo)" = '%M%' || abandon_test_script cannot create file foo.
 
 # Create an empty SCCS file to work on.
 docommand C1 "${admin} -ifoo $s" 0 "" ""
@@ -20,8 +20,8 @@ docommand C1 "${admin} -ifoo $s" 0 "" ""
 set_and_maybe_print_step_label_with_dots C2
 remove prs.$s
 ${vg_prs} $s | sed -ne '/^COMMENTS:$/,/$/ p' > prs.$s || fail prs failed.
-test `wc -l < prs.$s` -eq 2 || fail wrong comment format.
-test `head -1 prs.$s` = "COMMENTS:" || fail Comment doesn\'t start COMMENTS:
+test "$(wc -l < prs.$s)" -eq 2 || fail wrong comment format.
+test "$(head -1 prs.$s)" = "COMMENTS:" || fail "Comment doesn't start COMMENTS:"
 tail -1 prs.$s | egrep \
  '^date and time created [0-9][0-9]/[0-1][0-9]/[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9] by ' >/dev/null\
     || fail "default message format error."
