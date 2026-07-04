@@ -11,6 +11,7 @@
 # Import common functions & definitions.
 . ../common/test-common.sh
 . ../common/real-thing.sh
+. ../common/command-names.sh
 
 
 s=s.y2k.txt
@@ -56,7 +57,7 @@ then
 
 
 else
-    echo No testing done for century specifier.
+    echo 'No testing done for century specifier.'
 fi
 
 
