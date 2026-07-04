@@ -2,7 +2,7 @@
 # 4order.sh:  Testing for ordering of the components of the comment.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 g=testfile
 s=s.$g
@@ -28,11 +28,11 @@ docommand O2 "${admin} -fvtrue $s" 0 "" ""
 
 
 # Add another MR.   Check the order is correct.
-docommand O3 "${vg_cdc} -r1.1 -yahoo '-mMR2 MR3 MR1' $s" 0 "" "" 
-docommand O4 "${prs} -r1.1 -d:MR: $s" 0 "MR2\nMR3\nMR1\n\n" "" 
+docommand O3 "${vg_cdc} -r1.1 -yahoo '-mMR2 MR3 MR1' $s" 0 "" ""
+docommand O4 "${prs} -r1.1 -d:MR: $s" 0 "MR2\nMR3\nMR1\n\n" ""
 
-# Make sure that when we add another comment AND delete 
-# an MT, the two parts of the comment end up in the 
+# Make sure that when we add another comment AND delete
+# an MT, the two parts of the comment end up in the
 # correct order.
 docommand O5 "${vg_cdc} -r1.1 -yMyExtraComment '-m!MR3' $s" 0 "" ""
 

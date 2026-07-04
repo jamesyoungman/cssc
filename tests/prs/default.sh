@@ -3,7 +3,7 @@
 # default.sh: test the default behaviour.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 cleanup () {
     for prefix in s p z l

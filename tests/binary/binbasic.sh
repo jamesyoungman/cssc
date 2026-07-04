@@ -2,9 +2,9 @@
 # binbasic.sh:  Testing for the basic operation of "delta", for binary files.
 
 # Import common functions & definitions.
-. ../common/test-common
-. ../common/real-thing
-. ../common/config-data
+. ../common/test-common.sh
+. ../common/real-thing.sh
+. ../common/config-data.sh
 
 if $binary_support
 then
@@ -12,7 +12,7 @@ then
 else
     echo "Skipping these tests -- no binary file support."
     exit 0
-fi 
+fi
 
 g=passwd
 p=test/p.$g
@@ -39,12 +39,12 @@ do_delta() {
    docommand d${n}a "${vg_get} -e $s" 0 IGNORE IGNORE
    cp test/passwd.${n} passwd
    docommand d${n}b "${vg_delta} -y\"\" $s" 0 IGNORE IGNORE
-   
+
    remove gotten
    rev=-r1.`expr $n + 1`
    docommand d${n}c "${get} ${rev} -Ggotten $s" 0 IGNORE IGNORE
-   
-   # Find any differences between the file we used as the 
+
+   # Find any differences between the file we used as the
    # source for that delta, and the version we just extracted.
    docommand d${n}d "${DIFF} gotten test/passwd.$n" 0 "" IGNORE
    remove gotten
@@ -60,15 +60,15 @@ cat > base <<EOF
 This is a test file containing nothing interesting.
 EOF
 for i in 1 2 3 4 5 6
-do 
+do
     cat base                       > test/$g.$i
     echo "This is file number" $i >> test/$g.$i
-done 
+done
 remove base $g test/[xzps].passwd
 echo passed
 
 
-## Find a binary file 
+## Find a binary file
 BINARY_FILE=../prt/all.expected.Z
 
 # Make sure we have some real binary input!

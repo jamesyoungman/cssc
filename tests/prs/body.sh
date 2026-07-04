@@ -3,9 +3,9 @@
 # body.sh:  Testing for :GB: keyword of prs.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
-remove s.1 p.1 z.1 1 command.log DESC s.foo p.foo z.foo 
+remove s.1 p.1 z.1 1 command.log DESC s.foo p.foo z.foo
 
 # Create file
 echo "hello" > DESC
@@ -22,7 +22,7 @@ docommand b3 "${vg_prs} -d:GB: s.1" 0 "hello
 " IGNORE
 
 
-# Also, keyword expansion should occur too. 
+# Also, keyword expansion should occur too.
 remove s.1 p.1 z.1 1 command.log DESC
 
 # Create file again
@@ -54,5 +54,5 @@ do_output b8 "${vg_prs} -d:BD: s.foo" 0 s_foo_bd_output.txt IGNORE
 
 
 
-remove s.1 p.1 z.1 1 command.log s.foo p.foo z.foo 
+remove s.1 p.1 z.1 1 command.log s.foo p.foo z.foo
 success

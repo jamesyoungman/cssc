@@ -1,13 +1,13 @@
 #! /bin/sh
 
-## sep_subst.sh: 
+## sep_subst.sh:
 #     Make sure that the delta information substituted for
 #     each line is the information for the delta that we are
 #     actually getting, not the delta information for the delta
 #     which last touched that line.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 f=1test
@@ -21,9 +21,9 @@ echo "line2" >> $f
 docommand prep1 "$admin -n -i$f $s" 0 "" IGNORE
 test -r $s         || fail admin could not create $s
 
-remove $f 
+remove $f
 
-# Make a new delta 
+# Make a new delta
 docommand prep2 "$get -e $s" 0 "1.1\nnew delta 1.2\n2 lines\n" ""
 
 echo "line3 %I%" >> $f

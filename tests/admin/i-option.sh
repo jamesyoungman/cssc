@@ -3,7 +3,7 @@
 # i-option.sh:  Testing for correct operation of admin -i.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 g=bar
 s=s.$g

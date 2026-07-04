@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 g=keys.txt
 s=s.$g

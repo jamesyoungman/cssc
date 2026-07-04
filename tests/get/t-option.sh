@@ -1,9 +1,9 @@
 #! /bin/sh
-# t-option.sh:  Testing for the -t option.   Make sure we get the 
+# t-option.sh:  Testing for the -t option.   Make sure we get the
 #               correct SIDs with and without the "-t" option.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 # Get a test file...
@@ -112,7 +112,7 @@ get_expect tc1 ""    2.1.1.2			# This is surely wrong!
 remove $s
 
 ##
-## Various tests for the case where the only SID in the s-file is 
+## Various tests for the case where the only SID in the s-file is
 ## not 1.1 (this is possible if you use the -r option to admin
 ## when creating the s-file
 ##
@@ -122,7 +122,7 @@ docommand oddstart-0 "cat $g" 0 "hello\n" ""
 docommand oddstart-1 "${admin} -i$g -r1.1.1.1 $s" 0 "" IGNORE
 remove $g
 
-# It should be possible to get 1.1.1.1 explicitly, but the default 
+# It should be possible to get 1.1.1.1 explicitly, but the default
 # should fail with an error.
 docommand oddstart-2 "${vg_get} $s" 1 "" IGNORE
 docommand oddstart-3 "${vg_get} -r1.1.1.1 $s" 0 IGNORE IGNORE

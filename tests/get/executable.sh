@@ -1,5 +1,5 @@
-. ../common/test-common
-. ../common/real-thing
+. ../common/test-common.sh
+. ../common/real-thing.sh
 
 g=foo
 s=s.$g

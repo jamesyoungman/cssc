@@ -1,16 +1,16 @@
 #! /bin/sh
 
-# abspath.sh:  Testing for running admin when the s-file 
+# abspath.sh:  Testing for running admin when the s-file
 #              is specified by an absolute path name.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
-remove s.bar 
+remove s.bar
 d=`../../testutils/realpwd`
 s=${d}/s.bar
 
 docommand P1 "${vg_admin} -n ${s}" 0 "" IGNORE
 
-remove s.bar 
+remove s.bar
 success

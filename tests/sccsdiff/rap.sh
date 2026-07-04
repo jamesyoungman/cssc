@@ -7,18 +7,18 @@
 # Create an SCCS file with two deltas. sccsdiff the two deltas.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 export get
 
-# invariant label file1 file2 
+# invariant label file1 file2
 #
 # diff file1 and file2 and fail the test if they
 # are different.
 invariant () {
 if diff -u "$2" "$3"
-then 
+then
     echo passed
-else 
+else
     fail "$1: $2 and $3 are not the same"
 fi ;
 }
@@ -28,17 +28,17 @@ s=s.$g
 
 remove $s $g command.log
 echo one > $g
-docommand prep1 "${admin} -i$g $s" 0 IGNORE IGNORE 
+docommand prep1 "${admin} -i$g $s" 0 IGNORE IGNORE
 remove $g
-docommand prep2 "${get} -e $s " 0 IGNORE  IGNORE 
+docommand prep2 "${get} -e $s " 0 IGNORE  IGNORE
 echo two >> $g
-docommand prep3 "${delta} -ycomment $s" 0 IGNORE  IGNORE 
+docommand prep3 "${delta} -ycomment $s" 0 IGNORE  IGNORE
 
 
 ## Avoid any current locale setting - because we delete lines
 ## including the word "Page" below, so we must use the C or POSIX
-## locale, or some implementation-defined English locale, in order 
-## to see that string. 
+## locale, or some implementation-defined English locale, in order
+## to see that string.
 
 unset  LANGUAGE LC_ALL LC_CTYPE LC_COLLATE LANG
 # counterexample for Debian GNU/Linux: LANG=de_DE.ISO-8859-1
@@ -87,7 +87,7 @@ remove  diff.out D1.diff.expected D2.diff.expected errs
 #
 set_and_maybe_print_step_label_with_dots "D3"
 remove diff.out
-${sccsdiff} -r1.1 -r1.3 $s 2>errs >/dev/null 
+${sccsdiff} -r1.1 -r1.3 $s 2>errs >/dev/null
 rv=$?
 sed '/No id keywords/d' > diff.out < errs
 if [ $rv -ne 1 ]; then
@@ -119,7 +119,7 @@ remove diff.out errs
 #1c1,3
 #< ERROR [s.foo]: nonexistent sid (ge5)
 #---
-#> 
+#>
 #> get: s.foo: Requested SID not found.
 #> Failed to get second specified version from s.foo
 

@@ -3,7 +3,7 @@
 #
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 ret_invalid_option=1

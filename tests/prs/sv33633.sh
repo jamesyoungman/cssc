@@ -4,7 +4,7 @@
 
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 p=sv33633.txt
 s=s.${p}

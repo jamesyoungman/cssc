@@ -3,17 +3,17 @@
 
 #
 # This bug occurred if you did rmdel on a delta and then get -e to use, it
-# and then (with the joint edit flag turned on) did get-e again.  The 
-# code prior to the first fix didn;t notice that the p-file indicated that 
+# and then (with the joint edit flag turned on) did get-e again.  The
+# code prior to the first fix didn;t notice that the p-file indicated that
 # the relevant delta was already in use.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 g=foo.txt
 s=s.$g
-x=x.$g 
+x=x.$g
 z=z.$g
 p=p.$g
 

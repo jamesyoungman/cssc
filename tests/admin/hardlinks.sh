@@ -5,7 +5,7 @@
 
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 s=s.foo
 s2=s.bar

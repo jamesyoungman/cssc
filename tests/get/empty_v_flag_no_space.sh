@@ -2,7 +2,7 @@
 
 # Test for empty v (MR validation) flag.
 
-. ../common/test-common
+. ../common/test-common.sh
 
 g=empty_mr_validator
 s="s.${g}"

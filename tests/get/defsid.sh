@@ -2,9 +2,9 @@
 # defsid.sh:  Tests for the "d" (default sid) flag.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
-remove command.log 
+remove command.log
 
 g=brtest
 s=s.$g
@@ -51,8 +51,8 @@ docommand d11 "$get -g $s" 0 "1.2\n" ""
 
 
 ##
-## And now a second battery of tests.   If we use "get -e", 
-## on a file with a default SID, that SID should be 
+## And now a second battery of tests.   If we use "get -e",
+## on a file with a default SID, that SID should be
 ## selected for the new revision.
 
 remove [zxsp].$g $g

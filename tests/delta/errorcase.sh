@@ -2,8 +2,8 @@
 # errorcase.sh:  Testing for the various error cases for "delta".
 
 # Import common functions & definitions.
-. ../common/test-common
-. ../common/real-thing
+. ../common/test-common.sh
+. ../common/real-thing.sh
 
 remove command.log log log.stdout log.stderr
 mkdir test 2>/dev/null

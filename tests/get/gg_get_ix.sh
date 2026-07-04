@@ -5,10 +5,10 @@
 
 # Import common functions & definitions.
 
-. ../common/test-common
-. ../common/real-thing
+. ../common/test-common.sh
+. ../common/real-thing.sh
 
-remove command.log 
+remove command.log
 
 g=incl_excl
 s=s.$g
@@ -22,7 +22,7 @@ remove [zxsp].$g $g
 
 remove $g
 
-## These tests currently work fine on Digital Unix but 
+## These tests currently work fine on Digital Unix but
 ## Excl_1 fails on Solaris.  Hence it's commented out.
 ## TODO: make sense of this situation.
 

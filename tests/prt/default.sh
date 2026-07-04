@@ -3,8 +3,8 @@
 # default.sh:  Test the default behaviour of prt.
 
 # Import common functions & definitions.
-. ../common/test-common
-. ../common/need-prt
+. ../common/test-common.sh
+. ../common/need-prt.sh
 
 s=s.testfile
 

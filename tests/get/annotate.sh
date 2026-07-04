@@ -3,7 +3,7 @@
 # Tests for the -n and -m options of get.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 f=1test
@@ -17,7 +17,7 @@ echo "line2" >> $f
 docommand A1 "$admin -n -i$f $s" 0 "" IGNORE
 test -r $s         || fail admin could not create $s
 
-remove $f 
+remove $f
 
 # Test the -n (annotate module name) option
 docommand N1 "${vg_get} -p -n $s" 0 "$f\tline1\n$f\tline2\n" IGNORE

@@ -2,7 +2,7 @@
 # admin.sh:  The creation of very large (>99999 lines) SCCS files.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 g=bigfile.txt
 s=s.$g

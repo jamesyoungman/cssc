@@ -2,7 +2,7 @@
 # removed-delta.sh:  Tests for behaviours when a delta has been removed.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 g=X

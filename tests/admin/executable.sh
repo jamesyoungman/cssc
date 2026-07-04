@@ -1,5 +1,5 @@
-. ../common/test-common
-. ../common/real-thing
+. ../common/test-common.sh
+. ../common/real-thing.sh
 
 # This test creates an empty executable file, checks it in with admin, and then
 # verifies that the resulting s-file is also executable.

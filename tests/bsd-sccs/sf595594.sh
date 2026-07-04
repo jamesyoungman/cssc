@@ -5,8 +5,8 @@
 # SCCS difrectory stops processing at b, because a writable version of
 # b exists.  In fact it should carry on a check out a copy of c.
 
-. ../common/test-common
-. ../common/not-root
+. ../common/test-common.sh
+. ../common/not-root.sh
 
 
 # If LANG is defined but the system is misconfigured, we will produce

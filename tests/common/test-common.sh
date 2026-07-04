@@ -8,7 +8,7 @@
 ######################################################################
 
 # Common function definitions.
-. ../common/command-names
+. ../common/command-names.sh
 
 # Try to find an echo command that allows us to suppress the newline
 # at the end of the line, and also to use C-style escape codes.  We

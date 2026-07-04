@@ -1,10 +1,10 @@
 #! /bin/sh
-# root.sh:          You can't run the test suite as root.  Make sure the 
+# root.sh:          You can't run the test suite as root.  Make sure the
 #                   suite aborts early if you do.
-#                   
+#
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 # The test suite fails if you run it as root, particularly because
 # "test -w foo" returns 0 if you are root, even if foo is a readonly
@@ -14,7 +14,7 @@
 true
 
 set_and_maybe_print_step_label_with_dots "r1"
-. ../common/not-root
+. ../common/not-root.sh
 echo "passed "
 
 success

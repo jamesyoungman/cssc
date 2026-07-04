@@ -2,9 +2,9 @@
 # eightbit.sh:  Testing for 8-bit clean operation
 
 # Import common functions & definitions.
-. ../common/test-common
-. ../common/real-thing
-. ../common/config-data
+. ../common/test-common.sh
+. ../common/real-thing.sh
+. ../common/config-data.sh
 
 
 if $binary_support

@@ -4,7 +4,7 @@
 
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 # Get a test file...

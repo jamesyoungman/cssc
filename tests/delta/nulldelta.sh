@@ -3,7 +3,7 @@
 # flags.sh:  Testing for null deltas.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 g=new.txt
 s=s.$g

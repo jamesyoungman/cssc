@@ -3,8 +3,8 @@
 # pfile_corruption.sh: Tests relating to p-file corruption
 
 # Import common functions & definitions.
-. ../common/test-common
-. ../common/real-thing
+. ../common/test-common.sh
+. ../common/real-thing.sh
 
 # Local functions
 # Manually create a valid p-file

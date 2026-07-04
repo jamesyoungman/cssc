@@ -4,14 +4,14 @@
 
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 s=s.sv33153
 cleanup () {
     remove command.log
 }
 cleanup
-# Deltas 2.1, 3.1, 4.1, 5.1 are "AUTO NULL DELTA"s and all 
+# Deltas 2.1, 3.1, 4.1, 5.1 are "AUTO NULL DELTA"s and all
 # have the same timestamp.  Nevertheless, "prs -l -r4.1" and
 # "prs -e -r4.1" should start/stop based on the SID itself, not
 # on the timestamp of the delta.

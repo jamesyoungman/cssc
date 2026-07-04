@@ -3,7 +3,7 @@
 # delta_ixg.sh:  Testing for reporting included, excluded, ignored deltas.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 cleanup () {
     remove command.log
@@ -15,14 +15,14 @@ cleanup () {
 # fact a warning message is issued by CSSC (but not SCCS).
 NO_STDERR=IGNORE
 
-# This table summarises our example s-file.   
-# The first column is three characters.   
+# This table summarises our example s-file.
+# The first column is three characters.
 # An i appears if the indicated SID includes a delta.
 # An x appears if the indicated SID excludes a delta.
 # A  g appears if the indicated SID ignores  a delta.
 # In each of these cases, just one delta is being included/excluded/ignored.
-# 
-# ---    1.1 
+#
+# ---    1.1
 # --g    1.5
 # -x-    1.2.1.1
 # -xg    1.1.1.2

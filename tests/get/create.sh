@@ -2,7 +2,7 @@
 # create.sh:  Testing for "get -e" -- the making of new deltas.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 remove command.log log log.stdout log.stderr passwd
 mkdir test 2>/dev/null

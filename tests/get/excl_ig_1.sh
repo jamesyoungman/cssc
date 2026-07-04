@@ -2,12 +2,12 @@
 # excl_ig_1.sh:  Tests for exclusions and ignores.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 g=incl_excl_1
 s=s.$g
-x=x.$g 
+x=x.$g
 z=z.$g
 p=p.$g
 remove $g $s $x $z $p

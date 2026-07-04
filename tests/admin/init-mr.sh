@@ -3,7 +3,7 @@
 # init-mr.sh:  Testing for MR numbers at initialisation time.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 s=s.new.txt
 
@@ -42,9 +42,9 @@ docommand I7 "${vg_admin} -ifoo $s" 1 "" IGNORE
 remove $s
 
 
-# The old test I8 has been disabled because for example under 
-# Solaris 2.6, "admin -r 2" is equivalent to "admin -r2".  
-# 
+# The old test I8 has been disabled because for example under
+# Solaris 2.6, "admin -r 2" is equivalent to "admin -r2".
+#
 ##
 ## OK, we know the -i and -r options work.
 ## Make sure -r doesn't work without an argument.
@@ -54,16 +54,16 @@ remove $s
 ## Create and specify MR numbers...
 
 # No MR
-# NB: -m on its own will not specify a lack of MR number 
+# NB: -m on its own will not specify a lack of MR number
 # any more (e.g. with Solaris 2.6).
 # Currently CSSC will distinguish between -m"" and -m "".
-# 
+#
 # Hence a test for an entirely empty MR cannot work with both CSSC and
 # Solaris SCCS unless CSSC migrates to a (later) traditional getopt
 # option parsing scheme instead of one where this distinction is made.
 #
-# As a workaround, since the argument to -m is a space-separated list, we 
-# just use a single space as the argument.  Solaris interprets this as 
+# As a workaround, since the argument to -m is a space-separated list, we
+# just use a single space as the argument.  Solaris interprets this as
 # satisfying the criteria for MRs being specified.
 docommand I9 "${vg_admin} -fv -m' ' -r2 -ifoo $s" 0 "" ""
 # Check for absence of MRs
@@ -85,7 +85,7 @@ docommand I15 "${prs} $s | sed -ne '/^MRs:$/,/^COMMENTS:$/ p'" \
 # Check that the MR validation flag is ON.
 docommand I16 "${prs} -d:MF: $s" 0 "yes\n" ""
 
-# Install MR validating program (setting & getting the 
+# Install MR validating program (setting & getting the
 # name of the MR validator)
 docommand I17 "${admin} -fvtrue $s" 0 "" IGNORE
 
@@ -98,13 +98,13 @@ docommand I18 "${prs} -d:MP: $s" 0 "true\n" ""
 remove $s
 docommand I19 "${vg_admin} -fvtrue -m19 -ifoo $s" 0 "" ""
 
-# Check compatible behaviour with regard to MR validation 
+# Check compatible behaviour with regard to MR validation
 # failure at initialisation.
 remove $s
 docommand I20 "${vg_admin} -fv/bin/false -m20 -ifoo $s" 1 "" IGNORE
 test  -f $s && fail I21 stage I20 should not have created $s.
 
-rm -rf test 
+rm -rf test
 remove foo $s new.txt command.log
 
 success

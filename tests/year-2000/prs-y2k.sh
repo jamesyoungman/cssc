@@ -5,8 +5,8 @@
 #               with regard to date issues.
 
 # Import common functions & definitions.
-. ../common/test-common
-. ../common/real-thing
+. ../common/test-common.sh
+. ../common/real-thing.sh
 
 
 s=s.y2k.txt

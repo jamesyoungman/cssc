@@ -1,6 +1,6 @@
 #! /bin/sh
-. ../common/test-common
-. ../common/need-prt
+. ../common/test-common.sh
+. ../common/need-prt.sh
 export prt
 
 cp testfile2_s s.testfile2 || abandon_test_script 'could not prepare test input s.testfile2'

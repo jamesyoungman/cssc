@@ -3,7 +3,7 @@
 # keywords.sh:  Testing for correct expansion of formats for prs -d.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 sid=1.1

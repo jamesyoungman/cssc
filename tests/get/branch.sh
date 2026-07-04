@@ -2,7 +2,7 @@
 # branch.sh:  Tests for making branches.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 remove command.log
 

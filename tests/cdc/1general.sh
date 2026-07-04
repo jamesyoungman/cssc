@@ -2,7 +2,7 @@
 # general.sh:  Testing for general aspects of cdc.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 g=testfile
 s=s.$g
@@ -25,7 +25,7 @@ remove $g
 
 # Test general behaviour works.
 docommand G2 "${vg_cdc} -r1.1 '-yNewComment
-NewComment2' $s" 0 "" "" 
+NewComment2' $s" 0 "" ""
 
 # Make sure a SID is required
 docommand G3 "${vg_cdc} -yNewComment2 $s" 1 "" IGNORE
@@ -35,7 +35,7 @@ docommand G3 "${vg_cdc} -yNewComment2 $s" 1 "" IGNORE
 docommand G4 "${vg_cdc} -yNewComment2" 1 "" IGNORE
 
 # Make sure a complete lack or args is diagnosed.
-docommand G5 "${vg_cdc}" 1 "" IGNORE 
+docommand G5 "${vg_cdc}" 1 "" IGNORE
 
 
 

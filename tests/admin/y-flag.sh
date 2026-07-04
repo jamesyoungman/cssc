@@ -5,10 +5,10 @@
 # The y flag determines which keywords get expanded.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 # Determine if we are testing CSSC or the real thing.
-. ../common/real-thing
+. ../common/real-thing.sh
 
 g=bar
 s="s.${g}"

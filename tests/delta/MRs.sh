@@ -2,11 +2,11 @@
 # MRs.sh:  Testing for MR numbers.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 rm -rf test
 remove command.log log log.stdout log.stderr base
-remove passwd 
+remove passwd
 mkdir test 2>/dev/null
 
 # Create the input files.
@@ -14,10 +14,10 @@ cat > base <<EOF
 %M%: This is a test file containing nothing interesting.
 EOF
 for i in 1 2 3 4 5 6
-do 
+do
     cat base                       > test/passwd.$i
     echo "This is file number" $i >> test/passwd.$i
-done 
+done
 remove base test/[xz].* passwd test/[spx].passwd
 
 
@@ -95,6 +95,6 @@ docommand M23 "${delta} -ycomment.M23 test/s.passwd </dev/null" 1 IGNORE  IGNORE
 docommand M24 "test -f test/p.passwd" 0 "" ""
 
 rm -rf test
-remove command.log passwd 
+remove command.log passwd
 
 success

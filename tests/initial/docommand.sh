@@ -2,7 +2,7 @@
 # docommand.sh:  Self-tests for the test infrastructure
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 docommand t1 "true" 0 "" ""
@@ -34,7 +34,7 @@ else
     echo "passed"
 fi
 
-echo this-is-the-stdin-input | docommand p1 "cat" 0 "this-is-the-stdin-input\n" "" 
+echo this-is-the-stdin-input | docommand p1 "cat" 0 "this-is-the-stdin-input\n" ""
 set_and_maybe_print_step_label_with_dots "p2"
 if echo this-is-not-the-stdin-input | ( docommand p2 "cat" 0 "this-is-the-stdin-input\n" "" ) >/dev/null 2>&1; then
     echo "docommand failed to detect a mismatched stdout when stdin was a pipe " >&2
@@ -42,6 +42,6 @@ if echo this-is-not-the-stdin-input | ( docommand p2 "cat" 0 "this-is-the-stdin-
 else
     echo passed
 fi
-    
+
 
 success

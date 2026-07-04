@@ -2,10 +2,10 @@
 # writable.sh:  Will get over-write a writable file?
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 # You cannot run the test suite as root.
-. ../common/not-root
+. ../common/not-root.sh
 
 remove command.log log log.stdout log.stderr
 

@@ -2,7 +2,7 @@
 # included.sh:  Extra tests using the test file from bug number 111140.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 
 g=sf111140_testcase.txt

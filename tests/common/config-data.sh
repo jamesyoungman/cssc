@@ -1,12 +1,12 @@
 # Hey, Emacs!  This is a -*- sh -*- script.
 
-# This script retrieves the config information from CSSC in order to 
+# This script retrieves the config information from CSSC in order to
 # figure out if binary file support is available.  This will allow us
 # to avoid the situation where we try to test binary files support when
 # it's not configured.
 
 # Common function definitions.
-. ../common/real-thing
+. ../common/real-thing.sh
 
 if test -z "${admin}"; then
     echo '${admin} is not set, please source common/test-common before common/config-data' >&2
@@ -27,7 +27,7 @@ then
 else
     # Not CSSC.
     # For the moment, just guess --- and be conservative.
-    case `uname` in 
+    case `uname` in
 	SunOS) binary_support=true   ;;
 	*)     binary_support=false  ;;
     esac

@@ -2,11 +2,11 @@
 # reportmr.sh:  Testing for MR the reporting of numbers.
 
 # Import common functions & definitions.
-. ../common/test-common
-. ../common/need-prt
+. ../common/test-common.sh
+. ../common/need-prt.sh
 
 
-g=reportmr.1 
+g=reportmr.1
 s=inputs/s.$g
 remove $g
 
@@ -18,6 +18,6 @@ docommand R2 "${vg_prt} -y $s $s" 0 "\ninputs/s.reportmr.1:\tD 1.1\t98/05/10 20:
 
 
 remove $g
-remove command.log passwd 
+remove command.log passwd
 
 success

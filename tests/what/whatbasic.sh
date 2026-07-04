@@ -3,7 +3,7 @@
 # whatbasic.sh:  Basic tests for the "what" command.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 files="f"
 

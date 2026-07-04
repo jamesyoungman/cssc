@@ -3,10 +3,10 @@
 # r-option:  Testing for the -r option of admin.
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 # Import function which tells us if we're testing CSSC, or something else.
-. ../common/real-thing
+. ../common/real-thing.sh
 
 g=new.txt
 s=s.$g

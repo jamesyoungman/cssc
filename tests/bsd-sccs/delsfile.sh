@@ -1,11 +1,11 @@
 #! /bin/sh
 #
-# This is a test for a bug in sccs.c where the command 
+# This is a test for a bug in sccs.c where the command
 #   sccs unedit /tmp/SCCS/s.foo
 # causes the deletion of s.foo (instead, the file ./foo should be deleted).
 
-. ../common/test-common
-. ../common/not-root
+. ../common/test-common.sh
+. ../common/not-root.sh
 
 
 # If LANG is defined but the system is misconfigured, we will produce
@@ -29,7 +29,7 @@ sfiles="s.foo"
 
 
 cleanup () {
-    if [ -d /tmp/SCCS ] 
+    if [ -d /tmp/SCCS ]
     then
 	for i in $files; do /bin/rm -f /tmp/SCCS/[spzd].$i $i; done
 	rmdir /tmp/SCCS
@@ -38,7 +38,7 @@ cleanup () {
 }
 
 cleanup
-remove command.log log log.stdout log.stderr 
+remove command.log log log.stdout log.stderr
 mkdir /tmp/SCCS
 
 echo "Creating the input files..."
@@ -50,7 +50,7 @@ docommand d2 "${vg_sccs} edit /tmp/SCCS/s.foo" 0 IGNORE IGNORE
 docommand d3 "test -f foo" 0 "" IGNORE
 
 # When we have the bug, this step will probably fail, because the delete
-# removes the wrong file, so the subsequent get finds that ./foo exists and 
+# removes the wrong file, so the subsequent get finds that ./foo exists and
 # is writable, so it fails.
 docommand d4 "${vg_sccs} unedit /tmp/SCCS/s.foo" 0 IGNORE IGNORE
 
@@ -64,6 +64,3 @@ docommand d6 "test -f s.foo" 0 "" IGNORE
 
 cleanup
 success
-
-
-    

@@ -3,7 +3,7 @@
 # sf513800.sh:  Tests relating to SOurceForge bug 513800
 
 # Import common functions & definitions.
-. ../common/test-common
+. ../common/test-common.sh
 
 g=foo
 s=s.$g
