@@ -73,7 +73,6 @@ seq_for_sid() {
 
 
 # Do various forms of get on the file and make sure we get the right SID.
-seqlist=`all_seqs $s`
 sidlist=`all_sids $s`
 
 for sid in $sidlist
