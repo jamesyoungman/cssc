@@ -36,6 +36,7 @@
 #include "delta-table.h"
 #include "delta-iterator.h"
 #include "linebuf.h"
+#include "rel_list.h"
 #include "quit.h"
 #include "ioerr.h"
 #include "file.h"

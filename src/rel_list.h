@@ -46,6 +46,8 @@ public:
   release_list(const char *str);
   ~release_list();
 
+  release_list& operator=(const release_list&);
+
   // Adding and removing members specified in other lists.
   void merge(const release_list& m);
   void remove(const release_list& r);

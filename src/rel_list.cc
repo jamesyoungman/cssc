@@ -79,6 +79,12 @@ release_list::~release_list()
 {
 }
 
+release_list& release_list::operator=(const release_list& assign_from)
+{
+  releases_ = assign_from.releases_;
+  return *this;
+}
+
 cssc::Failure release_list::print(FILE * out) const
 {
   bool first = true;
