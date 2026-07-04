@@ -109,6 +109,8 @@ libcssc_a_SOURCES = \
 	location.cc \
 	location.h \
 	mode.h \
+	mr-list.cc \
+	mr-list.h \
 	my-getopt.cc \
 	my-getopt.h \
 	optional.h \

@@ -35,6 +35,7 @@
 #include "except.h"
 #include "failure.h"
 #include "file.h"
+#include "mr-list.h"
 #include "privs.h"
 
 

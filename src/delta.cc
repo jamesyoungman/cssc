@@ -40,6 +40,7 @@
 #include "ioerr.h"
 #include "file.h"
 #include "fileiter.h"
+#include "mr-list.h"
 #include "cssc.h"
 
 

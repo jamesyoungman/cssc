@@ -32,7 +32,6 @@
 
 #include "failure_or.h"
 
-std::vector<std::string> split_mrs(const std::string& mrs);
 std::vector<std::string> split_comments(const std::string& comments);
 
 std::string::const_iterator

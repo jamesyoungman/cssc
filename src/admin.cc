@@ -38,6 +38,7 @@
 #include "version.h"
 #include "delta.h"
 #include "except.h"
+#include "mr-list.h"
 
 
 static bool

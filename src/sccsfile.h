@@ -351,7 +351,6 @@ private:
 
 /* l-split.c */
 
-std::vector<std::string> split_mrs(const std::string& mrs);
 std::vector<std::string> split_comments(const std::string& comments);
 
 #endif /* CSSC__SCCSFILE_H__ */

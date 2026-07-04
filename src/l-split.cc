@@ -37,29 +37,6 @@
 #include <string>
 
 
-std::vector<std::string>
-split_mrs(const std::string& mrs)
-{
-  std::vector<std::string> mr_list;
-  const char *delims = " \t\n";
-
-  if (!mrs.empty())
-    {
-      char *s = new char[strlen(mrs.c_str()) + 1];
-      memcpy( s, mrs.c_str(), strlen(mrs.c_str()) + 1);
-      char *p = strtok(s, delims);
-
-      while (p)
-	{
-	  mr_list.push_back(std::string(p));
-	  p = strtok(nullptr, delims);
-	}
-      delete[] s;
-    }
-
-  return mr_list;
-}
-
 // TODO: write a unit test for this, then update it to use something
 // more appropriate than new char[].  Perhaps also use std::find or
 // similar rather than strchr().
