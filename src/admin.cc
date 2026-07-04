@@ -30,6 +30,7 @@
 #include <errno.h>
 
 #include "cssc.h"
+#include "comments.h"
 #include "sccsfile.h"
 #include "fileiter.h"
 #include "sid_list.h"

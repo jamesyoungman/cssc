@@ -31,6 +31,7 @@
 #include "fileiter.h"
 #include "sccsfile.h"
 #include "version.h"
+#include "comments.h"
 #include "delta.h"
 #include "except.h"
 #include "failure.h"

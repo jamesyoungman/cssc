@@ -32,6 +32,7 @@
 #include "cssc.h"
 #include "delta.h"
 #include "cleanup.h"
+#include "comments.h"
 #include "my-getopt.h"
 #include "pfile.h"
 #include "sccsfile.h"

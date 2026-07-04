@@ -1,7 +1,7 @@
 /*
- * l-split.h: Part of GNU CSSC.
+ * comments.h: Part of GNU CSSC.
  *
- *  Copyright (C) 2016, 2019, 2024, 2026 Free Software Foundation, Inc.
+ *  Copyright (C) 2026 Free Software Foundation, Inc.
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,22 +22,12 @@
  * Functions for splitting strings.
  *
  */
-#ifndef CSSC_L_SPLIT_H
-#define CSSC_L_SPLIT_H
+#ifndef CSSC_COMMENTS_H
+#define CSSC_COMMENTS_H 1
 
-#include <limits>
 #include <vector>
 #include <string>
-#include <utility>
 
-#include "failure_or.h"
-
-std::string::const_iterator
-split_string(std::string::const_iterator first, std::string::const_iterator last,
-	     char delimiter, std::vector<std::string>* output,
-	     std::string::size_type field_limit = std::numeric_limits<std::string::size_type>::max());
-
-// Read a file, split it into lines and return them.
-cssc::FailureOr<std::vector<std::string>> read_file_lines(const char* file_name);
+std::vector<std::string> split_comments(const std::string& comments);
 
 #endif

@@ -37,40 +37,6 @@
 #include <string>
 
 
-// TODO: write a unit test for this, then update it to use something
-// more appropriate than new char[].  Perhaps also use std::find or
-// similar rather than strchr().
-std::vector<std::string>
-split_comments(const std::string& comments)
-{
-  std::vector<std::string> comment_list;
-
-  if (!comments.empty())
-    {
-      char *s = new char[strlen(comments.c_str()) + 1];
-      memcpy( s, comments.c_str(), strlen(comments.c_str()) + 1);
-
-      char* start = s;
-      char* end = strchr(s, '\n');
-      while (end != NULL)
-	{
-	  *end++ = '\0';
-	  comment_list.push_back(start);
-	  start = end;
-	  end = strchr(start, '\n');
-	}
-
-      if (*start != '\0')
-	{
-	  comment_list.push_back(start);
-	}
-
-      delete[] s;
-    }
-
-  return comment_list;
-}
-
 class FileCloser
 {
 public:

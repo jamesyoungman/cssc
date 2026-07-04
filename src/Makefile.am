@@ -71,6 +71,8 @@ libcssc_a_SOURCES = \
 	canonify.cc \
 	cap.cc \
 	cleanup.h \
+	comments.h \
+	comments.cc \
 	copyright.cc \
 	cssc-assert.h \
 	cssc.h \
