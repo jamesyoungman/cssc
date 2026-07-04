@@ -33,6 +33,8 @@ public:
     : name_(n), lineno_(0) {}
   sccs_file_location(const std::string& n, int line_number)
     : name_(n), lineno_(line_number) {}
+  sccs_file_location(const sccs_file_location& copyfrom)
+    : name_(copyfrom.name_), lineno_(copyfrom.lineno_) {}
 
   const std::string& name() const
   {
