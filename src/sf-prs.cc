@@ -85,7 +85,7 @@ print_string_list(FILE *out, InputIterator first, InputIterator last)
  * flag is unset, its name is not printed.
  */
 static Failure
-print_flag2(FILE *out, const char *s, int it)
+print_flag_for_prs(FILE *out, const char *s, int it)
 {
   if (it)
     {
@@ -97,8 +97,8 @@ print_flag2(FILE *out, const char *s, int it)
 
 /* Prints a flag whose type has a print(FILE *) member with its name. */
 
-Failure
-print_flag2(FILE *out, const char *s, const sid& it)
+static Failure
+print_flag_for_prs(FILE *out, const char *s, const sid& it)
 {
   if (it.valid())
     {
@@ -109,8 +109,8 @@ print_flag2(FILE *out, const char *s, const sid& it)
   return Failure::Ok();
 }
 
-Failure
-print_flag2(FILE *out, const char *s, const release_list& it)
+static Failure
+print_flag_for_prs(FILE *out, const char *s, const release_list& it)
 {
   if (it.valid())
     {
@@ -121,8 +121,8 @@ print_flag2(FILE *out, const char *s, const release_list& it)
   return Failure::Ok();
 }
 
-Failure
-print_flag2(FILE *out, const char *s, const release& it)
+static Failure
+print_flag_for_prs(FILE *out, const char *s, const release& it)
 {
   if (it.valid())
     {
@@ -134,7 +134,7 @@ print_flag2(FILE *out, const char *s, const release& it)
 }
 
 static inline Failure
-print_flag2(FILE *out, const char *name, const std::string *s)
+print_flag_for_prs(FILE *out, const char *name, const std::string *s)
 {
   if (s)
     {
@@ -144,7 +144,7 @@ print_flag2(FILE *out, const char *name, const std::string *s)
 }
 
 static inline Failure
-print_flag2(FILE *out, const char *name, const char *s)
+print_flag_for_prs(FILE *out, const char *name, const char *s)
 {
   if (s)
     {
@@ -154,7 +154,7 @@ print_flag2(FILE *out, const char *name, const char *s)
 }
 
 static inline Failure
-print_flag2(FILE *out, const char *name, char *s)
+print_flag_for_prs(FILE *out, const char *name, char *s)
 {
   if (s)
     {
@@ -169,35 +169,35 @@ print_flag2(FILE *out, const char *name, char *s)
 Failure
 sccs_file::print_flags(FILE *out) const
 {
-  TRY_OPERATION(print_flag2(out, "branch", flags.branch));
-  TRY_OPERATION(print_flag2(out, "ceiling", flags.ceiling));
-  TRY_OPERATION(print_flag2(out, "default SID", flags.default_sid));
+  TRY_OPERATION(print_flag_for_prs(out, "branch", flags.branch));
+  TRY_OPERATION(print_flag_for_prs(out, "ceiling", flags.ceiling));
+  TRY_OPERATION(print_flag_for_prs(out, "default SID", flags.default_sid));
   if (flags.encoded)
     {
       TRY_PUTS(fputs("encoded\n", out));
     }
-  TRY_OPERATION(print_flag2(out, "floor", flags.floor));
-  TRY_OPERATION(print_flag2(out, "id keywd err/warn",
-			    flags.no_id_keywords_is_fatal));
-  TRY_OPERATION(print_flag2(out, "joint edit", flags.joint_edit));
+  TRY_OPERATION(print_flag_for_prs(out, "floor", flags.floor));
+  TRY_OPERATION(print_flag_for_prs(out, "id keywd err/warn",
+				   flags.no_id_keywords_is_fatal));
+  TRY_OPERATION(print_flag_for_prs(out, "joint edit", flags.joint_edit));
 
   const char *locked = "locked releases";
   if (flags.all_locked)
     {
-      TRY_OPERATION(print_flag2(out, locked, "a"));
+      TRY_OPERATION(print_flag_for_prs(out, locked, "a"));
     }
   else
     {
-      TRY_OPERATION(print_flag2(out, locked, flags.locked));
+      TRY_OPERATION(print_flag_for_prs(out, locked, flags.locked));
     }
 
-  TRY_OPERATION(print_flag2(out, "module",
-			    (flags.module ? flags.module->c_str() : nullptr) ));
-  TRY_OPERATION(print_flag2(out, "null delta", flags.null_deltas));
-  TRY_OPERATION(print_flag2(out, "csect name", flags.user_def));
-  TRY_OPERATION(print_flag2(out, "type", flags.type));
-  TRY_OPERATION(print_flag2(out, "validate MRs",
-			    (flags.mr_checker.has_value() ? flags.mr_checker.value().c_str() : nullptr)));
+  TRY_OPERATION(print_flag_for_prs(out, "module",
+				   (flags.module ? flags.module->c_str() : nullptr) ));
+  TRY_OPERATION(print_flag_for_prs(out, "null delta", flags.null_deltas));
+  TRY_OPERATION(print_flag_for_prs(out, "csect name", flags.user_def));
+  TRY_OPERATION(print_flag_for_prs(out, "type", flags.type));
+  TRY_OPERATION(print_flag_for_prs(out, "validate MRs",
+				   (flags.mr_checker.has_value() ? flags.mr_checker.value().c_str() : nullptr)));
 
 #if 0
   // Testing on Solaris 9 reveals that no output is produced

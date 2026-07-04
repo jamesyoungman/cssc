@@ -349,11 +349,6 @@ private:
   std::vector<std::string> comments_;
 };
 
-/* sf-prs.cc */
-cssc::Failure print_flag2(FILE *out, const char *s, const sid& it);
-cssc::Failure print_flag2(FILE *out, const char *s, const release_list& it);
-cssc::Failure print_flag2(FILE *out, const char *s, const release& it);
-
 /* l-split.c */
 
 std::vector<std::string> split_mrs(const std::string& mrs);
