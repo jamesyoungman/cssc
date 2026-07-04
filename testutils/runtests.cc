@@ -41,12 +41,28 @@ using std::vector;
 
 string program_name = "runtests";
 
+using std::vector;
+using std::string;
+
+// What to do when a test fails.
+enum class FailResponse
+  {
+    // Stop immediately. Run no other tests.  Exit with a non-zero
+    // exit status.
+    StopImmediately,
+    // Run the remaining tests in this directory, and then
+    // exit  with a non-zero exit status.
+    KeepGoing
+  };
+
 struct test_dir_result
 {
-  int passes;
-  int failures;
+  vector<string> passes;
+  vector<string> failures;
+  vector<string> skipped;
 
-  test_dir_result() : passes(0), failures(0)
+  test_dir_result()
+    : passes(), failures(), skipped()
   {
   }
 };
@@ -103,6 +119,35 @@ string_ends_with(const string& input, const string& suffix)
     }
   return suffix_it == suffix.rend();
 }
+
+static string
+join_strings(vector<string>& items, const string& separator)
+{
+  string::size_type capacity = 0;
+  bool first = true;
+  for (auto item : items)
+    {
+      if (first)
+	first = false;
+      else
+	capacity += separator.length();
+      capacity += item.length();
+    }
+
+  string result;
+  result.reserve(capacity);
+  first = true;
+  for (auto item : items)
+    {
+      if (first)
+	first = false;
+      else
+	result.append(separator);
+      result.append(item);
+    }
+  return result;
+}
+
 
 static bool
 is_hidden_file_or_directory (const string& name)
@@ -193,7 +238,7 @@ run_one_test(const string& dir_name, const string& test_name, bool capture_outpu
 	  print_test_label (cout, dir_name, test_name);
 	}
       GreenText t(cout);
-      cout << "PASS";
+      cout << "PASS\n";
     }
   else
     {
@@ -203,19 +248,23 @@ run_one_test(const string& dir_name, const string& test_name, bool capture_outpu
 	  print_test_label (cerr, dir_name, test_name);
 	}
       RedText t(cout);
-      cout << "FAIL";
-      cout.flush();
+      cout << "FAIL\n";
+
       if (capture_output)
 	{
+	  cerr << "... failed test " << test_name << " generated "
+	       << result.stdout_output.size()
+	       << " bytes of standard output and "
+	       << result.stderr_output.size()
+	       << " bytes of error output.\n";
 	  cerr << result.stderr_output;
 	  cerr.flush();
 	}
       else
 	{
-	  cerr << "see above for error output";
+	  cerr << "... see above for error output from the failed test " << test_name << "\n";
 	}
     }
-  cout << '\n';
   return 0 == result.retval;
 }
 
@@ -241,9 +290,12 @@ tests_to_run(const string& subdir,
 
 
 static bool
-run_tests(const string& subdir, bool capture_output, const char **argv_tail)
+run_tests(const string& subdir,
+	  bool capture_output,
+	  FailResponse on_failure,
+	  const char **argv_tail)
 {
-  test_dir_result counts;
+  test_dir_result result;
   std::vector<string> todo;
   if (!tests_to_run(subdir, argv_tail, &todo))
     return false;
@@ -253,32 +305,49 @@ run_tests(const string& subdir, bool capture_output, const char **argv_tail)
       perror(subdir.c_str());
       return false;
     }
+  bool skip_remaining_tests = false;
   for (auto test_file : todo)
     {
       if (string_ends_with(test_file, ".sh"))
 	{
-	  if (run_one_test(subdir, test_file, capture_output, execute_shell_test))
+	  if (skip_remaining_tests)
 	    {
-	      ++counts.passes;
+	      result.skipped.push_back(test_file);
+	    }
+	  else if (run_one_test(subdir, test_file, capture_output, execute_shell_test))
+	    {
+	      result.passes.push_back(test_file);
 	    }
 	  else
 	    {
-	      ++counts.failures;
+	      result.failures.push_back(test_file);
+	      if (on_failure == FailResponse::StopImmediately)
+		{
+		  cout << subdir << ": a test has failed; the remaining tests in this directory will be skipped.\n";
+		  skip_remaining_tests = true;
+		}
 	    }
 	}
     }
-  if (counts.failures > 0)
+  if (!result.skipped.empty())
+    {
+      cout << subdir << ": " << result.skipped.size() << " tests have been skipped.\n";
+    }
+  if (!result.failures.empty())
     {
       cerr << subdir << ": ";
       RedText t(cerr);
-      cerr << counts.failures << " tests failed\n";
+      cerr << result.failures.size()
+	   << " tests failed: "
+	   << join_strings(result.failures, ", ")
+	   << "\n";
       return false;
     }
-  else if (counts.passes > 0)
+  else if (!result.passes.empty())
     {
       cout << subdir << ": ";
       GreenText t(cerr);
-      cout << "all " << counts.passes << " tests passed\n";
+      cout << "all " << result.passes.size() << " tests passed\n";
       return true;
     }
   else
@@ -297,6 +366,7 @@ int main(int argc, char *argv[])
       program_name = argv[0];
     }
   int capture_output = 1;
+  int keep_going = 0;
   if (getenv("CSSC_RUNTESTS_NO_CAPTURE"))
     {
       capture_output = 0;
@@ -308,6 +378,12 @@ int main(int argc, char *argv[])
       },
       {
 	"nocapture", false, &capture_output, 0,
+      },
+      {
+	"keep-going", false, &keep_going, 1,
+      },
+      {
+	"nokeep-going", false, &keep_going, 0,
       },
     };
   bool bad_options = false;
@@ -343,13 +419,17 @@ int main(int argc, char *argv[])
     {
       return 1;
     }
-  if (argc < 2)
+  if (optind == argc)
     {
       cerr << "usage: " << program_name << " " << "[--capture|--nocapture] DIRECTORY [TEST...]\n";
+      cerr << "You must specify the name of the directory in which to run tests.\n";
       return 1;
     }
   const char ** tail = const_cast<const char**>(&argv[optind+1]);
-  if (run_tests(argv[optind], capture_output ? true : false, tail))
+  if (run_tests(argv[optind],
+		capture_output ? true : false,
+		keep_going ? FailResponse::KeepGoing : FailResponse::StopImmediately,
+		tail))
     {
       return 0;
     }

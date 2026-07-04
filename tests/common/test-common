@@ -115,19 +115,18 @@ fi
 }
 
 
-expect_fail=false
 
 # Call fail when a test failed.
 fail () {
-name=`basename $0`
-if ${expect_fail:-false}
-then
-        echo XFAIL $name "$@"
+    if [ "${expect_fail}" = true ]
+    then
+        echo XFAIL "${test_script}:${label}:" "$@" >&2
         # Return a failure status but don't exit...
 	false
-else
-        echo FAIL $name "$@" ; exit 2;
-fi ;
+    else
+        echo FAIL "${test_script}:{$label}:" "$@" >&2
+	exit 2
+    fi ;
 }
 
 
@@ -150,11 +149,11 @@ else
 fi ;
 }
 
-# Call miscarry wen a test could not be completed.
+# Call miscarry when a test could not be completed.
 miscarry () {
-echo `basename $0`: "Test could not be completed: " "$@"
-echo "Arguments were: ${all_args}"
-exit 1 ;
+    echo `basename $0`: "(${test_script}:${label})" "Test could not be completed: " "$@" >&2
+    echo "Arguments were: ${all_args}" >&2
+    exit 1 ;
 }
 
 
@@ -210,7 +209,15 @@ copy() {
 test_script=
 
 
-set_test_script() {
+set_test_script_and_label() {
+    unset label
+    unset test_script
+
+    if [ $# -eq 0 ]
+    then
+	miscarry "you should pass the docommand command-line to set_test_script_and_label"
+    fi
+
     if test -z "${test_script}"; then
 	script_dir=`dirname $0`
 	case "${script_dir}" in
@@ -219,12 +226,29 @@ set_test_script() {
 	script_base=`basename ${script_dir}`
 	test_script="${script_base}"/`basename $0`
     fi
+
+    for arg
+    do
+	case "${arg}" in
+	    -*) # an option, ignore it.
+	    ;;
+	    *)
+		# a positional argument
+		label="${arg}"
+		return 0
+		;;
+	esac
+    done
+
+    if [ -z "${label}" ]
+    then
+	miscarry "did not find a label in command line" "$@"
+    fi
 }
 
 set_and_maybe_print_step_label_with_dots() {
-    set_test_script
-    label="${test_script}:$1"
-    "${silent:-false}" || echo_nonl "${label}"...
+    set_test_script_and_label "$@"
+    "${silent:-false}" || echo_nonl "${test_script}:${label}"...
 }
 
 ##############
@@ -422,37 +446,50 @@ echo "passed "
 }
 
 do_output_bin () {
-    set_test_script
-    ../../testutils/do_cmd --test_name="${test_script}:${1}" --stdout_is_file "$@"
+    set_test_script_and_label "$@"
+    ../../testutils/do_cmd --test_name="${test_script}" --stdout_is_file "$@"
 }
 
 docommand_bin () {
-    set_test_script
-    label="${1}"
-    shift
-
-    if ${expect_fail:-false}
+    set_test_script_and_label "$@"
+    if [ -z "${test_script}" ]
     then
-	fail_opt="--expect_failure"
-    else
-	fail_opt="--noexpect_failure"
+	miscarry "The test_script variable is not set"
+    fi
+    if [ -z "${label}" ]
+    then
+	miscarry "The label variable is not set; the command-line was" "$@"
     fi
 
-    #echo "debug: Running do_cmd with args" --test_name "${test_script}" "${fail_opt}" "$@"
-
-    if ../../testutils/do_cmd  --test_name "${test_script}" "${fail_opt}" "${label}" "$@"
+    expect_fail="false"
+    for arg in "$@"
+    do
+	case "${arg}" in
+	    --expect_failure)
+		expect_fail=true
+		;;
+	    *)
+		;;
+	esac
+    done
+    if ../../testutils/do_cmd  --test_name "${test_script}" "$@"
     then
 	true
     else
-	fail "${test_script}:$label: test step failed"
-	if ${expect_fail:-false}
+	if [ "${expect_fail}" = true ]
 	then
-	    false
+	    echo "${test_script}:${label}: this test step failed, but this is expected.  Continuing anyway." >&2
+	    # Allow any surrounding conditional to know that
+	    # this step failed, by returning a non-zero
+	    # status.
+	    return 1
 	else
+	    fail "${test_script}:${label}: this test step failed"
 	    exit 2
 	fi
     fi
 }
+
 
 docommand () {
     # $1 is the label.

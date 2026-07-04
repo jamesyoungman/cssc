@@ -6,7 +6,7 @@
 
 g=foo
 s=s.$g
-x=x.$g 
+x=x.$g
 z=z.$g
 p=p.$g
 files="$g $s $x $z $p"
@@ -61,37 +61,33 @@ docommand ei6 "${vg_get} -s -p $s" 0 '1.3 inserted in 1.1
 This line inserted in 1.3 and deleted in 1.4
 ' IGNORE
 
-do_change ei7 '2d' 
+do_change ei7 '2d'
 docommand ei8 "${vg_get} -s -p $s" 0 '1.4 inserted in 1.1
 ' IGNORE
 
-docommand ei9 "${vg_get} -g $s" 0 "1.4\n" "IGNORE" 
+docommand ei9 "${vg_get} -g $s" 0 "1.4\n" "IGNORE"
 
 docommand ei10 "${vg_get} -e -i1.1.1.1 -x1.3 $s" 0 IGNORE IGNORE
 echo "inserted in 1.5" >> $g
 docommand ei11 "${delta} -yNone $s" 0 IGNORE IGNORE
 
-expect_fail=true
-docommand ei12 "${vg_get} -s -p $s" 0 '1.5 inserted in 1.1
+docommand --expect_failure ei12 "${vg_get} -s -p $s" 0 '1.5 inserted in 1.1
 inserted on branch 1.1.1.1
 This line inserted in 1.2 and deleted in 1.3
 inserted in 1.5
 ' IGNORE
-expect_fail=false
 
 
 docommand ei13 "${vg_get} -e -x1.4 $s" 0 IGNORE IGNORE
 echo "inserted in 1.6" >> $g
 docommand ei14 "${delta} -yNone $s" 0 IGNORE IGNORE
 
-expect_fail=true
-docommand ei15 "${vg_get} -s -p $s" 0 '1.6 inserted in 1.1
+docommand  --expect_failure ei15 "${vg_get} -s -p $s" 0 '1.6 inserted in 1.1
 inserted on branch 1.1.1.1
 This line inserted in 1.2 and deleted in 1.3
 inserted in 1.5
 inserted in 1.6
 ' IGNORE
-expect_fail=false
 
 docommand ei16 "${vg_get} -e -x1.1.1.1 $s" 0 IGNORE IGNORE
 docommand ei17 "${delta} -yNone $s" 0 IGNORE IGNORE
@@ -112,29 +108,23 @@ inserted in 1.6
 docommand ei22 "${vg_get} -i1.1.1.1 -e $s" 0 IGNORE IGNORE
 docommand ei23 "${delta} -yNone $s" 0 IGNORE IGNORE
 
-expect_fail=true
-docommand ei24 "${vg_get} -s -p $s" 0 '1.9 inserted in 1.1
+docommand  --expect_failure ei24 "${vg_get} -s -p $s" 0 '1.9 inserted in 1.1
 inserted on branch 1.1.1.1
 This line inserted in 1.2 and deleted in 1.3
 inserted in 1.5
 inserted in 1.6
 ' IGNORE
-expect_fail=false
 
 docommand ei25 "${vg_get}  -e $s" 0 IGNORE IGNORE
 
 # ei26 fails because the -g option is not supported.
-expect_fail=true
-docommand ei26 "${delta} -g1.5 -yNone $s" 0 IGNORE IGNORE
-expect_fail=false
+docommand  --expect_failure ei26 "${delta} -g1.5 -yNone $s" 0 IGNORE IGNORE
 
-expect_fail=true
-docommand ei27 "${vg_get} -s -p $s" 0 '1.10 inserted in 1.1
+docommand  --expect_failure ei27 "${vg_get} -s -p $s" 0 '1.10 inserted in 1.1
 inserted on branch 1.1.1.1
 inserted in 1.6
 This line inserted in 1.3 and deleted in 1.4
 ' IGNORE
-expect_fail=false
 
 
 # cat $s
