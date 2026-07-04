@@ -1,4 +1,4 @@
-# Hey, Emacs!  This is a -*- sh -*- script.
+#! /bin/sh
 #
 # The test suite fails if run by root, because when you are root,
 # "test -w foo" returns 0 even for read-only files because root can
@@ -20,10 +20,10 @@ fi
 (
 f=/tmp/foo.$$.tmp
 # Use rm and echo rather than risking a missing "touch".
-rm -f $f ; echo > $f
+rm -f -- "${f}" ; echo > "${f}"
 
 # Remove temporary file on exit.
-trap "rm -f $f" 0
+trap 'rm -f -- "${f}"' 0
 
 
 chmod 400 $f
