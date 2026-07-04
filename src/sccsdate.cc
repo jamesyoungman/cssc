@@ -27,8 +27,10 @@
  */
 #include <config.h>
 #include <cstring>
+#include <iomanip>
 #include <string>
 #include <memory>
+#include <sstream>
 
 #include "cssc.h"
 #include "except.h"
@@ -405,14 +407,17 @@ sccs_date::print(FILE *f) const
 std::string
 sccs_date::as_string() const
 {
-  char buf[18];
   const int yy = year_ % 100;
+  std::stringstream out;
 
-  sprintf(buf, "%02d/%02d/%02d %02d:%02d:%02d",
-          yy, month_, month_day_,
-          hour_, minute_, second_);
-
-  return std::string(buf);
+  out << std::setfill('0')
+      << std::setw(2) << yy << '/'
+      << std::setw(2) << month_ << '/'
+      << std::setw(2) << month_day_ << ' '
+      << std::setw(2) << hour_ << ':'
+      << std::setw(2) << minute_ << ':'
+      << std::setw(2) << second_;
+  return out.str();
 }
 
 sccs_date::sccs_date(int yr, int mth, int day,
