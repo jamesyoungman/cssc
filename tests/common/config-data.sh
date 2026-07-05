@@ -11,7 +11,7 @@
 # shellcheck disable=SC2034
 {
     if test -z "${admin}"; then
-	echo '${admin} is not set, please source common/test-common before common/config-data' >&2
+	echo 'The admin environment variable is not set, please source common/test-common before common/config-data' >&2
 	exit 1
     fi
 
