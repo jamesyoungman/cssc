@@ -7,6 +7,7 @@
 # verifies that the resulting s-file is also executable.
 g=foo
 s=s.$g
+rv=0
 
 cleanup() {
     cmd="rm -f ${g} ${s}"
@@ -41,8 +42,8 @@ setup() {
 }
 
 
+# shellcheck disable=SC2120
 should_support_execute_bits() {
-    # shellcheck disable=SC2120
     expect_args should_support_execute_bits 0 $#
     if "${TESTING_CSSC}"; then
 	true
@@ -190,7 +191,7 @@ selfcheck 0071  go
     perms="`execute_perms ${s}`"
     case "${perms}" in
 	ugo) echo passed;;
-	u|ug|ugo) fail "x08: ${s} should be mode 0777 when umask is 0 and the -i file is executable.";;
+	u|ug) fail "x08: ${s} should be mode 0777 when umask is 0 and the -i file is executable.";;
 	"") fail "x08: execute permissions not copied to history file at all";;
 	*) abandon_test_script "unexpected execute perms ${perms} for file ${s}";;
     esac || exit 1
@@ -237,4 +238,4 @@ docommand x25 "test -x ${s}" 0 "" ""
 
 
 cleanup
-exit $rv
+exit "${rv}"
