@@ -153,11 +153,85 @@ append_string_to_file (const string& data,
   write_string_to_file (data, filename, true, true);
 }
 
-static bool
-check_regex_match (const string& pattern,
-		   const string& actual,
-		   std::stringstream& problems)
+static string
+join_string_vec(const vector<string>& v, const string& separator)
 {
+  string result;
+  for (auto item : v)
+    {
+      if (!result.empty())
+	{
+	  result.append(separator);
+	}
+      result.append(item);
+    }
+  return result;
+}
+
+class MatchResult
+{
+public:
+  MatchResult()
+    : problems_()
+  {
+  }
+
+  void add_problem(const std::string& message)
+  {
+    ASSERT(!message.empty());
+    problems_.push_back(message);
+  }
+
+  bool ok() const
+  {
+    return problems_.empty();
+  }
+
+  string str() const
+  {
+    return join_string_vec(problems_, "\n");
+  }
+
+private:
+  vector<string> problems_;
+};
+
+
+class MatchResults
+{
+public:
+  MatchResults()
+    : problems_()
+  {
+  }
+
+  void add_match_result(const MatchResult match_result)
+  {
+    if (!match_result.ok())
+      {
+	problems_.push_back(match_result.str());
+      }
+  }
+
+  bool ok() const
+  {
+    return problems_.empty();
+  }
+
+  string str() const
+  {
+    return join_string_vec(problems_, "\n");
+  }
+
+private:
+  vector<string> problems_;
+};
+
+static MatchResult
+check_regex_match (const string& pattern,
+		   const string& actual)
+{
+  MatchResult result;
   char tmp_file_name[] = "/tmp/do_cmd_rx.XXXXXX";
   if (mkstemp (tmp_file_name)  < 0)
     {
@@ -170,32 +244,36 @@ check_regex_match (const string& pattern,
     };
   // Capture stdout so that we don't see output from successful tests.
   const auto grep_result = execute_program ("grep", grep_args, true);
-  bool happy = (0 == grep_result.retval);
-  if (!happy)
+  if (0 != grep_result.retval)
     {
-      problems << "actual output did not match the specified regular expression";
+      std::stringstream ss;
+      ss << "actual output did not match the specified regular expression; regular expression pattern was "
+	 << pattern
+	 << " but the actual output was "
+	 << actual;
+      result.add_problem (ss.str());
     }
   if (0 != unlink (tmp_file_name))
     {
-      happy = false;
-      problems << "failed to remove temporary file " << tmp_file_name;
+      error (1, errno, "failed to remove temporary file %s", tmp_file_name);
     }
-  return happy;
+  return result;
 }
 
-static bool
+static MatchResult
 check_literal_match (const string& pattern,
-		     const string& actual,
-		     std::stringstream& problems)
+		     const string& actual)
 {
-  if (actual == pattern)
+  MatchResult result;
+  if (actual != pattern)
     {
-      return true;
+      std::stringstream ss;
+      ss << "actual output did not match expected output\n"
+	 << "expected output was:\n" << pattern << "\n"
+	 << "actual   output was:\n" << actual;
+      result.add_problem(ss.str());
     }
-  problems << "actual output did not match expected output\n";
-  problems << "expected output was:\n" << pattern << "\n";
-  problems << "actual   output was:\n" << actual << "\n";
-  return false;
+  return result;
 }
 
 
@@ -225,21 +303,21 @@ public:
     return expected_;
   }
 
-  bool check (const string& actual, std::stringstream& problems) const
+  MatchResult check (const string& actual) const
   {
     switch (match_type_)
       {
       case MatchType::Ignore:
 	{
-	  return true;
+	  return MatchResult();
 	}
       case MatchType::Literal:
 	{
-	  return check_literal_match (expected_, actual, problems);
+	  return check_literal_match (expected_, actual);
 	}
       case MatchType::Regex:
 	{
-	  return check_regex_match (expected_, actual, problems);
+	  return check_regex_match (expected_, actual);
 	}
       default:
 	{
@@ -257,10 +335,14 @@ private:
 class TestOutcome
 {
 public:
-  TestOutcome(bool expect_failure, bool success, string message, string child_error_output)
-    : success_(success),
+  TestOutcome(bool expect_failure,
+	      vector<string> command,
+	      const MatchResults match_results,
+	      string child_error_output)
+    : success_(match_results.ok()),
+      command_(command),
       expect_failure_(expect_failure),
-      message_(message),
+      message_(match_results.str()),
       child_error_output_(child_error_output)
   {
   }
@@ -273,6 +355,11 @@ public:
   bool success() const
   {
     return success_;
+  }
+
+  const vector<string>& command() const
+  {
+    return command_;
   }
 
   const char* indicator() const
@@ -301,6 +388,22 @@ public:
       {
 	stream << "\n";
       }
+    if (!outcome.success())
+      {
+	stream << "command line was: "
+	       << join_string_vec(outcome.command(), " ")
+	       << '\n';
+	auto errors = outcome.child_error_output();
+	if (errors.empty())
+	  {
+	    stream << "child process's standard error output was empty\n";
+	  }
+	else
+	  {
+	    stream << "child process's standard error output was:\n"
+		   << errors;
+	  }
+      }
     return stream;
   }
 
@@ -311,25 +414,12 @@ public:
 
 private:
   bool success_;
+  vector<string> command_;
   bool expect_failure_;
   string message_;
   string child_error_output_;
 };
 
-static string
-join_string_vec(const vector<string>& v, const string& separator)
-{
-  string result;
-  for (auto item : v)
-    {
-      if (!result.empty())
-	{
-	  result.append(separator);
-	}
-      result.append(item);
-    }
-  return result;
-}
 
 static int
 configured_label_width()
@@ -352,23 +442,24 @@ configured_label_width()
   return DEFAULT_WIDTH;
 }
 
-static bool
-retval_matches (int got, const optional<int>& maybe_expected, std::stringstream& problems)
+static MatchResult
+check_retval_match (int got, const optional<int>& maybe_expected)
 {
-  if (!maybe_expected.has_value())
+  MatchResult result;
+  if (maybe_expected.has_value())
     {
-      return true;
+      const int expected = maybe_expected.value();
+      if (got != expected)
+	{
+	  std::stringstream ss;
+	  ss << "expected child process exit value "
+	     << expected
+	     << " but got "
+	     << got << '\n';
+	  result.add_problem(ss.str());
+	}
     }
-  const int expected = maybe_expected.value();
-  if (got == expected)
-    {
-      return true;
-    }
-  problems << "expected child process exit value "
-	   << expected
-	   << " but got "
-	   << got << '\n';
-  return false;
+  return result;
 }
 
 static unique_ptr<TestOutcome>
@@ -378,38 +469,22 @@ perform_test(bool expect_failure,
 	     OutputMatcher stdout_matcher,
 	     OutputMatcher stderr_matcher)
 {
+  MatchResults match_results;
   append_string_to_file (command + "\n", "last.command");
 
-  auto result = execute_program ("sh", vector<string>({"sh", "-c", command }), true);
+  vector<string> args = vector<string>({"sh", "-c", command });
+  auto result = execute_program ("sh", args, true);
 
   rewrite_file_body (result.stdout_output, "got.stdout", true);
   rewrite_file_body (result.stderr_output, "got.stderr", true);
 
-  std::stringstream problems;
-  if (!retval_matches (result.retval, expected_retval, problems))
-    {
-      if (result.stderr_output.empty())
-	{
-	  problems << "standard error output was empty\n";
-	}
-      else
-	{
-	  problems << "standard error output was:\n"  << result.stderr_output;
-	}
-      return unique_ptr<TestOutcome>(new TestOutcome (expect_failure, false, problems.str(),
-						      result.stderr_output));
-    }
-  if (!stdout_matcher.check (result.stdout_output, problems))
-    {
-      return unique_ptr<TestOutcome>(new TestOutcome (expect_failure, false, problems.str(),
-					 result.stderr_output));
-    }
-  if (!stderr_matcher.check (result.stderr_output, problems))
-    {
-      return unique_ptr<TestOutcome>(new TestOutcome (expect_failure, false, problems.str(),
-						      result.stderr_output));
-    }
-  return unique_ptr<TestOutcome>(new TestOutcome (expect_failure, true, "", result.stderr_output));
+  match_results.add_match_result (check_retval_match (result.retval, expected_retval));
+  match_results.add_match_result (stdout_matcher.check (result.stdout_output));
+  match_results.add_match_result (stderr_matcher.check (result.stderr_output));
+  return unique_ptr<TestOutcome>(new TestOutcome (expect_failure,
+						  args,
+						  match_results,
+						  result.stderr_output));
 }
 
 static bool
