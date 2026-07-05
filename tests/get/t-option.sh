@@ -19,7 +19,7 @@ get_expect () {
 label=$1         ; shift
 r_option=$1      ; shift
 sid_expected=$1  ; shift
-docommand $label "${vg_get} ${toption} -g ${r_option} $s" \
+docommand "${label}" "${vg_get} ${toption} -g ${r_option} ${s}" \
     0 "$sid_expected\n" IGNORE
 }
 

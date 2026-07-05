@@ -63,7 +63,7 @@ expands_to Z "_Z_ @(#)\n"
 # Test the -k flag, which disables keyword substitution.
 if percents=`${vg_get} -p -k $s 2>/dev/null | tr -dc % | wc -c`
 then
-    if [ $percents -eq 68 ]
+    if [ "${percents}" -eq 68 ]
     then
 	echo D1...passed
     else

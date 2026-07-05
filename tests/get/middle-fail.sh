@@ -15,11 +15,11 @@ files="a b c"
 cleanup () {
     if [ -d SCCS ]
     then
-	( cd SCCS && for i in $files; do rm -f [spzd].$i; done )
-	rm -f $files
+	( cd SCCS && for i in a b c; do rm -f [spzd]."${i}"; done )
+	rm -f a b c
 	rmdir SCCS
     fi
-    rm -f $files
+    rm -f a b c
 }
 
 cleanup
@@ -29,9 +29,9 @@ mkdir SCCS
 echo "Creating the input files..."
 for i in $files
 do
-    echo "This is file $i" > $i
-    ${admin} -i$i SCCS/s.$i
-    rm $i
+    echo "This is file $i" > "${i}"
+    ${admin} -i"${i}" SCCS/s."${i}"
+    rm -f  "${i}"
 done
 
 
