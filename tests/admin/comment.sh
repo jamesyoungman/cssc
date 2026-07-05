@@ -23,7 +23,7 @@ ${vg_prs} $s | sed -ne '/^COMMENTS:$/,/$/ p' > prs.$s || fail prs failed.
 test "$(wc -l < prs.$s)" -eq 2 || fail wrong comment format.
 test "$(head -1 prs.$s)" = "COMMENTS:" || fail "Comment doesn't start COMMENTS:"
 tail -1 prs.$s | egrep \
- '^date and time created [0-9][0-9]/[0-1][0-9]/[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9] by ' >/dev/null\
+		     '^date and time created [0-9][0-9]/[0-1][0-9]/[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9] by ' >/dev/null\
     || fail "default message format error."
 echo passed
 remove $s prs.$s
@@ -32,7 +32,7 @@ remove $s prs.$s
 docommand C3 "${admin} -ifoo -y $s" 0 "" ""
 docommand C4 "${vg_prs} $s | \
 	    sed -ne '/^COMMENTS:$/,/$/ p'"   0  \
-	    "COMMENTS:\n\n" ""
+	  "COMMENTS:\n\n" ""
 remove $s
 
 
@@ -40,7 +40,7 @@ remove $s
 docommand C5 "${admin} -ifoo -yMyComment $s" 0 "" ""
 docommand C6 "${vg_prs} $s | \
 	    sed -ne '/^COMMENTS:$/,/$/ p'"   0  \
-	    "COMMENTS:\nMyComment\n" ""
+	  "COMMENTS:\nMyComment\n" ""
 
 # Detach the comment arg and check it no longer works.
 remove MyComment $s
@@ -57,12 +57,12 @@ docommand C9 "${vg_admin} -n s.1 s.2" 0 "" ""
 # Check both generated files.
 for n in 1 2
 do
-    stage=C`expr 9 + $n`
-    docommand $stage "${prs} \
+    stage="C$(expr 9 + ${n})"
+    docommand "${stage}" "${prs} \
   -d':B:\n:BF:\n:DI:\n:DL:\n:DT:\n:I:\n:J:\n:LK:\n:MF:\n:MP:\n:MR:\n:Z:' s.1" \
-  0                                                                           \
-  "\nno\n\n00000/00000/00000\nD\n1.1\nno\nnone\nno\nnone\n\n@(#)\n"       \
-  ""
+	      0                                                                           \
+	      "\nno\n\n00000/00000/00000\nD\n1.1\nno\nnone\nno\nnone\n\n@(#)\n"       \
+	      ""
 done
 
 docommand C12 "${vg_prs} -d':M:\n' s.1 s.2" 0 "1
