@@ -120,7 +120,7 @@ fail () {
         # Return a failure status but don't exit...
 	false
     else
-        echo FAIL "${test_script}:{$label}:" "$@" >&2
+        echo FAIL "${test_script}:${label}:" "$@" >&2
 	exit 2
     fi ;
 }
