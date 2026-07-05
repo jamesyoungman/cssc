@@ -66,7 +66,7 @@ const static vector<string> breadcrumb_files =
   };
 
 static string get_expected_val (const string& expectation, bool is_file);
-
+static void remove_breadcrumbs ();
 
 class QualifiedLabel
 {
@@ -475,16 +475,23 @@ perform_test(bool expect_failure,
   vector<string> args = vector<string>({"sh", "-c", command });
   auto result = execute_program ("sh", args, true);
 
-  rewrite_file_body (result.stdout_output, "got.stdout", true);
-  rewrite_file_body (result.stderr_output, "got.stderr", true);
-
   match_results.add_match_result (check_retval_match (result.retval, expected_retval));
   match_results.add_match_result (stdout_matcher.check (result.stdout_output));
   match_results.add_match_result (stderr_matcher.check (result.stderr_output));
-  return unique_ptr<TestOutcome>(new TestOutcome (expect_failure,
-						  args,
-						  match_results,
-						  result.stderr_output));
+  unique_ptr<TestOutcome> outcome (new TestOutcome (expect_failure,
+						    args,
+						    match_results,
+						    result.stderr_output));
+  if (outcome->success())
+    {
+      remove_breadcrumbs ();
+    }
+  else
+    {
+      rewrite_file_body (result.stdout_output, "got.stdout", true);
+      rewrite_file_body (result.stderr_output, "got.stderr", true);
+    }
+  return outcome;
 }
 
 static bool
@@ -741,14 +748,17 @@ int main(int argc, char *argv[])
 
   OutputMatcher stdout_matcher = OutputMatcher (stdout_match, positional_args[3], stdout_expectation_is_file);
   OutputMatcher stderr_matcher = OutputMatcher (stderr_match, positional_args[4], stderr_expectation_is_file);
-  rewrite_file_body (stdout_matcher.expected(), "expected.stdout", true);
-  rewrite_file_body (stdout_matcher.expected(), "expected.stderr", true);
 
   status_update ();
   outcome = perform_test (expect_failure, command, expected_retval,
 			  stdout_matcher, stderr_matcher);
-
+  if (!outcome->success())
+    {
+      // We only write these when a test step fails, for a small
+      // performance improvement.
+      rewrite_file_body (stdout_matcher.expected(), "expected.stdout", true);
+      rewrite_file_body (stdout_matcher.expected(), "expected.stderr", true);
+    }
   status_update ();
-  remove_breadcrumbs ();
   return outcome->success() ? 0 : 1;
 }
