@@ -13,7 +13,11 @@
 true
 . ../common/not-root.sh
 
-
+cleanup() {
+    remove got.stdout expected.stdout got.stderr expected.stderr last.command "${s}" "${p}" "${g}" "${x}" "${z}"
+    remove command.log log log.stdout log.stderr
+    remove SCCS
+}
 
 # If LANG is defined but the system is misconfigured, we will produce
 # the error message "Error setting locale: No such file or directory".
@@ -29,15 +33,14 @@ unset LANG
 unset PROJECTDIR
 
 
-remove command.log log log.stdout log.stderr SCCS
-mkdir SCCS 2>/dev/null
-
 g=tfile
 s="SCCS/s.${g}"
 p="SCCS/p.${g}"
 x="SCCS/x.${g}"
 z="SCCS/z.${g}"
-remove "${s}" "${p}" "${g}" "${x}" "${z}"
+
+cleanup
+mkdir SCCS 2>/dev/null
 
 echo "Using the driver program ${sccs}"
 
@@ -51,17 +54,17 @@ EOF
 # Creating the s-file.
 #
 # Create the s-file the traditional way...
-docommand a1 "${vg_sccs} admin -i$g $s" 0 \
+docommand a1 "${vg_sccs} admin -i${g} ${s}" 0 \
     ""                                              IGNORE
-docommand a2 "test -f $s" 0 "" ""
+docommand a2 "test -f ${s}" 0 "" ""
 remove $s
 
-docommand a3 "${vg_sccs} enter $g" 0 \
-    "\n$g:\n"                                        IGNORE
-docommand a4 "test -f $s"  0 "" ""
+docommand a3 "${vg_sccs} enter ${g}" 0 \
+    "\n${g}:\n"                                        IGNORE
+docommand a4 "test -f ${s}"  0 "" ""
 
 # Check the backup file still exists.
-docommand a5 "test -f ,$g" 0 "" ""
+docommand a5 "test -f ,${g}" 0 "" ""
 remove ",${g}"
 
 #
@@ -69,47 +72,47 @@ remove ",${g}"
 #
 
 # First the traditional way.
-docommand b1 "${vg_sccs} get -e $s" 0 \
+docommand b1 "${vg_sccs} get -e ${s}" 0 \
     "1.1\nnew delta 1.2\n1 lines\n"                 IGNORE
 
 echo "hello" >>"${g}"
-docommand b2 "${vg_sccs} delta -y\"\" $s" 0 \
+docommand b2 "${vg_sccs} delta -y\"\" ${s}" 0 \
     "1.2\n1 inserted\n0 deleted\n1 unchanged\n"     IGNORE
 
 
 # Now with edit and delget.
-docommand b3 "${vg_sccs} edit $s"  0 \
+docommand b3 "${vg_sccs} edit ${s}"  0 \
     "1.2\nnew delta 1.3\n2 lines\n"                 IGNORE
 
 
 echo "there" >>"${g}"
-docommand b4 "${vg_sccs} deledit -y'' $s" IGNORE \
+docommand b4 "${vg_sccs} deledit -y'' ${s}" IGNORE \
  "1.3\n1 inserted\n0 deleted\n2 unchanged\n1.3\nnew delta 1.4\n" \
  IGNORE
 # g-file should now exist and be writable.
-docommand b5 "test -w $g" 0 "" ""
+docommand b5 "test -w ${g}" 0 "" ""
 
 
 echo '%A%' >>"${g}"
-docommand b6 "${vg_sccs} delget -y'' $s" 0 \
+docommand b6 "${vg_sccs} delget -y'' ${s}" 0 \
  "1.4\n1 inserted\n0 deleted\n3 unchanged\n1.4\n4 lines\n" \
  IGNORE
 # g-file should now exist but not be writable.
-docommand b7 "test -w $g" 1 "" ""
-docommand b8 "test -f $g" 0 "" ""
+docommand b7 "test -w ${g}" 1 "" ""
+docommand b8 "test -f ${g}" 0 "" ""
 
 
 
 #
 # fix
 #
-docommand c1 "${vg_sccs} fix -r1.4 $s" 0 \
+docommand c1 "${vg_sccs} fix -r1.4 ${s}" 0 \
  "1.4\n4 lines\n1.3\nnew delta 1.4\n" \
  IGNORE
 
 docommand c2 "${vg_sccs} tell" 0 "tfile\n" ""
 
-docommand c3 "${vg_sccs} delget -y'' $s" 0 \
+docommand c3 "${vg_sccs} delget -y'' ${s}" 0 \
  "1.4\n1 inserted\n0 deleted\n3 unchanged\n1.4\n4 lines\n" \
  IGNORE
 
@@ -118,19 +121,19 @@ docommand c3 "${vg_sccs} delget -y'' $s" 0 \
 # rmdel
 #
 # Make sure rmdel on its own works OK.
-docommand d1 "${vg_sccs} rmdel -r1.4 $s" 0 "" ""
+docommand d1 "${vg_sccs} rmdel -r1.4 ${s}" 0 "" ""
 
 # Make sure that revision is not still present.
-docommand d2 "${vg_sccs} get -p -r1.4 $s" 1 "" IGNORE
+docommand d2 "${vg_sccs} get -p -r1.4 ${s}" 1 "" IGNORE
 
 # Make sure that previous revision is still present.
-docommand d3 "${vg_sccs} get -p -r1.3 $s" 0 IGNORE "1.3\n3 lines\n"
+docommand d3 "${vg_sccs} get -p -r1.3 ${s}" 0 IGNORE "1.3\n3 lines\n"
 
 
 #
 # what
 #
-docommand e1 "${vg_sccs} what $g" 0 "${g}:\n\t ${g} 1.4@(#)\n" ""
+docommand e1 "${vg_sccs} what ${g}" 0 "${g}:\n\t ${g} 1.4@(#)\n" ""
 
 
 #
@@ -196,10 +199,9 @@ remove SCCS/s.foo foo
 # check
 #
 docommand j1 "${vg_sccs} check" 0 "" ""
-docommand j2 "${vg_sccs} edit $s" 0 IGNORE IGNORE
+docommand j2 "${vg_sccs} edit ${s}" 0 IGNORE IGNORE
 docommand j3 "${vg_sccs} check" 1 IGNORE ""
-docommand j4 "${vg_sccs} unedit $g" 0 IGNORE IGNORE
+docommand j4 "${vg_sccs} unedit ${g}" 0 IGNORE IGNORE
 
-remove {expected,got}.std{out,err} last.command
-remove "${s}" "${p}" "${g}" "${x}" "${z}" SCCS
+cleanup
 success
