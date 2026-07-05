@@ -32,7 +32,7 @@ docommand e2c "${vg_prs} -d':M:
 " ""
 
 docommand e3 "${get} -e s.1" 0 "1.1\nnew delta 1.2\n0 lines\n" IGNORE
-echo "hello from %M%" >> 1
+echo "hello from %M%" >> ./1
 docommand e4 "${delta} -y s.1" 0 "1.2\n1 inserted\n0 deleted\n0 unchanged\n" ""
 
 

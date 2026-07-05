@@ -26,10 +26,10 @@ docommand P2 "${vg_prs} -d':M:\n' s.1" 0 "1
 " ""
 
 docommand P3 "${get} -e s.1" 0 "1.1\nnew delta 1.2\n0 lines\n" IGNORE
-echo "hello from %M%" >> 1
+echo "hello from %M%" >> ./1
 docommand P4 "${delta} -y s.1" 0 "1.2\n1 inserted\n0 deleted\n0 unchanged\n" ""
 
-expands_to z1 :PN:      `../../testutils/realpwd`"/s.1\n"
+expands_to z1 :PN:      "$(../../testutils/realpwd)/s.1\n"
 
 
 expands_to X1  :I:      "1.1\n"
@@ -82,12 +82,12 @@ expands_to K7 ':Ts:'   '36\n'
 
 
 docommand _1 "${get} -e -x1.1,1.2 -r1.4 s.1" 0 IGNORE IGNORE
-echo hello >> 1 || abandon_test_script "could not write to file '1'"
+echo hello >> ./1 || abandon_test_script "could not write to file '1'"
 #docommand _2 "${delta} -g1.1 s.1" 0 IGNORE IGNORE
 docommand _2 "${delta} -y'You only Live Twice'  s.1" 0 IGNORE IGNORE
 
 docommand _3 "${get} -e -i1.3 -x1.2,1.1 -r1.5 s.1" 0 IGNORE IGNORE
-echo foobar >> 1 || abandon_test_script "could not write to file '1'"
+echo foobar >> ./1 || abandon_test_script "could not write to file '1'"
 #docommand _4 "${delta} -g1.1 s.1" 0 IGNORE IGNORE
 docommand _4 "${delta} -y' Roundabout'  s.1" 0 IGNORE IGNORE
 
