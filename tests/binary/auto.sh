@@ -41,6 +41,11 @@ test_ascii() {
 
     rm -f infile "${s}"
     echo_nonl "$@" > infile
+
+    # adminflags may be empty and for that case we want no option to
+    # be passed, so we don't want quoting.
+
+    # shellcheck disable=SC2086
     if ${vg_admin} -iinfile ${adminflags} "${s}" >/dev/null 2>&1
     then
 	if ( ${prt} -f $s 2>/dev/null ; echo foo ) | grep encoded >/dev/null 2>&1
