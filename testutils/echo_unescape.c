@@ -31,8 +31,7 @@ struct unescape_result
 
 const struct unescape_result inhibit_newline = { 0, true, {0, 0} };
 
-static int
-decode_octal_escape (const char **p, int c)
+static int decode_octal_escape(const char **p, int c)
 {
   c -= '0';
   if (**p >= '0' && **p <= '7')
@@ -43,12 +42,11 @@ decode_octal_escape (const char **p, int c)
 }
 
 
-static struct unescape_result
-handle_backslash(const char **p)
+static struct unescape_result handle_backslash(const char **p)
 {
   /* fprintf (stderr, "handle_backslash: **p=%c\n", **p); */
 
-  struct unescape_result result = { 0, false, {0, 0 } };
+  struct unescape_result result = { 0, false, {0, 0} };
   int c = *(*p)++;
   switch (c)
     {
@@ -85,7 +83,7 @@ handle_backslash(const char **p)
     case '5':
     case '6':
     case '7':
-      c = decode_octal_escape (p, c);
+      c = decode_octal_escape(p, c);
       break;
     case '\\':
       break;
@@ -98,21 +96,18 @@ handle_backslash(const char **p)
     }
   result.chars_to_emit[result.output_len++] = c;
   /*
-  fprintf (stderr,
-	   "handle_backslash: result = { output_len=%zd, inhibit_newline=%s, chars_to_emit={%3d,%3d} }\n",
-	   result.output_len,
-	   (result.inhibit_newline ? "true" : "false"),
-	   result.chars_to_emit[0],
-	   result.chars_to_emit[1]);
-  */
+     fprintf (stderr,
+     "handle_backslash: result = { output_len=%zd, inhibit_newline=%s, chars_to_emit={%3d,%3d} }\n",
+     result.output_len,
+     (result.inhibit_newline ? "true" : "false"),
+     result.chars_to_emit[0],
+     result.chars_to_emit[1]);
+   */
   return result;
 }
 
 
-size_t
-echo_unescape(const char *input,
-	      char *output,
-	      bool *inhibit_newline)
+size_t echo_unescape(const char *input, char *output, bool *inhibit_newline)
 {
   size_t output_count = 0;
   for (;;)
@@ -125,7 +120,7 @@ echo_unescape(const char *input,
       if (c == '\\' && *input)
 	{
 	  /* fprintf (stderr, "echo_unescape: c=%c, *s=%c\n", c, *input); */
-	  struct unescape_result result = handle_backslash (&input);
+	  struct unescape_result result = handle_backslash(&input);
 	  if (result.inhibit_newline)
 	    *inhibit_newline = true;
 	  if (result.output_len > 0)

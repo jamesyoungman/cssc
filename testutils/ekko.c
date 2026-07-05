@@ -71,7 +71,7 @@ on System V systems with the -E option.
 #define VALID_ECHO_OPTIONS "n"
 #endif /* !V9_ECHO */
 
-static void echo_literally (int argc, char **argv);
+static void echo_literally(int argc, char **argv);
 static void v9_echo(int argc, char **argv, int *display_return);
 
 /* Print the words in LIST to standard output.  If the first word is
@@ -152,12 +152,12 @@ just_echo:
 #if defined (V9_ECHO)
       if (do_v9)
 	{
-	  v9_echo (argc, argv, &display_return);
+	  v9_echo(argc, argv, &display_return);
 	}
       else
 #endif /* V9_ECHO */
 	{
-	  echo_literally (argc, argv);
+	  echo_literally(argc, argv);
 	}
     }
   if (display_return)
@@ -165,18 +165,17 @@ just_echo:
   exit(0);
 }
 
-static void
-v9_echo(int argc, char **argv, int *display_return)
+static void v9_echo(int argc, char **argv, int *display_return)
 {
   while (argc > 0)
     {
       char *s = argv[0];
       bool inhibit_newline = false;
-      size_t output_size = echo_unescape (s, s, &inhibit_newline);
+      size_t output_size = echo_unescape(s, s, &inhibit_newline);
       if (inhibit_newline)
 	*display_return = 0;
       for (size_t i = 0; i < output_size; ++i)
-	putchar (s[i]);
+	putchar(s[i]);
       argc--;
       argv++;
       if (argc > 0)
@@ -184,8 +183,7 @@ v9_echo(int argc, char **argv, int *display_return)
     }
 }
 
-static void
-echo_literally (int argc, char **argv)
+static void echo_literally(int argc, char **argv)
 {
   while (argc > 0)
     {
