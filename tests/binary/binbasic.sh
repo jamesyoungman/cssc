@@ -36,17 +36,17 @@ cleanup() {
 do_delta() {
    n=$1
    shift
-   docommand d${n}a "${vg_get} -e $s" 0 IGNORE IGNORE
-   cp test/passwd.${n} passwd
-   docommand d${n}b "${vg_delta} -y\"\" $s" 0 IGNORE IGNORE
+   docommand "d${n}a" "${vg_get} -e ${s}" 0 IGNORE IGNORE
+   cp "test/passwd.${n}" passwd
+   docommand "d${n}b" "${vg_delta} -y\"\" ${s}" 0 IGNORE IGNORE
 
    remove gotten
-   rev=-r1.`expr $n + 1`
-   docommand d${n}c "${get} ${rev} -Ggotten $s" 0 IGNORE IGNORE
+   rev=-"r1.$(expr "${n}" + 1)"
+   docommand "d${n}c" "${get} ${rev} -Ggotten ${s}" 0 IGNORE IGNORE
 
    # Find any differences between the file we used as the
    # source for that delta, and the version we just extracted.
-   docommand d${n}d "${DIFF} gotten test/passwd.$n" 0 "" IGNORE
+   docommand "d${n}d" "${DIFF} gotten test/passwd.${n}" 0 "" IGNORE
    remove gotten
 }
 
@@ -61,10 +61,10 @@ This is a test file containing nothing interesting.
 EOF
 for i in 1 2 3 4 5 6
 do
-    cat base                       > test/$g.$i
-    echo "This is file number" $i >> test/$g.$i
+    cat base                       > "test/${g}.${i}"
+    echo "This is file number" $i >> "test/${g}.${i}"
 done
-remove base $g test/[xzps].passwd
+remove base "${g}" test/[xzps].passwd
 echo passed
 
 
@@ -73,11 +73,23 @@ BINARY_FILE=../prt/all.expected.Z
 
 # Make sure we have some real binary input!
 set_and_maybe_print_step_label_with_dots prepare2
-if test -r ${DIFF}; then cat ${DIFF} >> test/$g.4; fi
-if test -r ${BINARY_FILE}; then cat ${BINARY_FILE} >> test/$g.5; fi
+if test -r "${DIFF}"
+then
+    cat "${DIFF}" >> "test/${g}.4"
+fi
+if test -r "${BINARY_FILE}"
+then
+    cat "${BINARY_FILE}" >> "test/${g}.5"
+fi
+
+# We use /bin/sh* as 1 or more binary files, we don't care about the
+# contents beyond the fact that they are binary.
 for f in /bin/sh*
 do
-    if test -r $f; then cat $f >> test/$g.6; fi
+    if test -r "${f}"
+    then
+	cat "${f}" >> "test/${g}.6"
+    fi
 done
 echo passed
 
@@ -86,17 +98,17 @@ echo passed
 # We generally ignore stderr output since we produce "Warning: no id keywords"
 # more often than "real" SCCS.
 #
-docommand B1 "${admin} ${adminflags} -itest/passwd.1 $s" 0 "" IGNORE
+docommand B1 "${admin} ${adminflags} -itest/passwd.1 ${s}" 0 "" IGNORE
 
 for n in 1 2 3
 do
-    do_delta $n
+    do_delta "${n}"
 done
 
 # Binary support not fully working yet.
 for n in 4 5 6
 do
-    do_delta $n
+    do_delta "${n}"
 done
 
 cleanup
