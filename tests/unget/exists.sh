@@ -17,7 +17,7 @@ m=mfile
 
 cleanup() {
     remove "${s1}" "${g1}" "${p1}" "${s2}" "${g2}" "${p2}"
-    rmove "old.${g1}" "old.${g2}" "${x1}" "${x2}"
+    remove "old.${g1}" "old.${g2}" "${x1}" "${x2}"
     remove "${m}"
     remove xxx1 xxx2
 }
