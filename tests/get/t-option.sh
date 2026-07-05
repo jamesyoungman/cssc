@@ -8,11 +8,11 @@
 
 # Get a test file...
 g=testfile
-s=s.$g
-x=x.$g
-p=p.$g
-z=z.$g
-remove $s $g $p $z
+s="s.${g}"
+x="x.${g}"
+p="p.${g}"
+z="z.${g}"
+remove "${s}" "${g}" "${p}" "${z}" "${x}"
 
 
 get_expect () {
@@ -130,7 +130,7 @@ docommand oddstart-3 "${vg_get} -r1.1.1.1 $s" 0 IGNORE IGNORE
 # get -t should select the topmost delta (1.1.1.1) and so should work OK.
 docommand oddstart-4 "${vg_get} -t $s" 0 IGNORE IGNORE
 
-remove $s $g $p $z
+remove "${s}" "${g}" "${p}" "${z}" "${x}"
 
 
 success

@@ -11,12 +11,14 @@
 remove command.log
 
 g=incl_excl
-s=s.$g
-z=z.$g
-x=x.$g
-p=p.$g
+s="s.${g}"
+z="z.${g}"
+x="x.${g}"
+p="p.${g}"
 
-remove [zxsp].$g $g
+remove "${g}" "${s}" "${z}" "${x}" "${p}"
+
+
 
 # Create the s. file and make sure it exists.
 
@@ -71,7 +73,6 @@ docommand Get_1 "${vg_get} -p $s" 0 "Inserted in V1.2\nV1.3 excluded V1.1\n" IGN
 
 docommand Get_2 "${vg_get} -p -i1.1 $s" 0 "$g\nInserted in V1.2\nV1.3 excluded V1.1\n" IGNORE
 
-remove [zxsp].$g $g
-remove command.log
+remove "${g}" "${s}" "${z}" "${x}" "${p}" command.log
 
 success

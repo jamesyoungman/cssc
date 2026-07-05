@@ -1,16 +1,20 @@
+#! /bin/sh
+
 . ../common/test-common.sh
 . ../common/real-thing.sh
 
 g=foo
-s=s.$g
-p=p.$g
-z=z.$g
+s="s.${g}"
+p="p.${g}"
+z="z.${g}"
+x="x.${g}"
+
+remove command.log log.stdout log.stderr got.stderr expected.stderr "${g}" "${s}" "${z}" "${x}" "${p}"
 
 cleanup() {
-    cmd="rm -f ${g} ${s} ${p} ${z}"
-    echo "${cmd}" >> command.log
-    $cmd
+    remove got.stderr expected.stderr got.stdout expected.stout "${g}" "${s}" "${z}" "${x}" "${p}"
 }
+
 cleanup
 
 # We use -i/dev/null below in order not to spuriously make the test
