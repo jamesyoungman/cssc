@@ -1,5 +1,11 @@
 * Noteworthy changes in release 1.5.0-rc4
 
+        * The test suite no longer depends on Python, so it should
+          work on older systems that have no Python 3 interpreter.
+          While you can build and test CSSC without Python, you do
+          need a Python interpreter to do some maintenance tasks (such
+          as importing the "gnulib" code into a git checkout).
+
         * Tolerate SCCS files in which file flags lack the space
           separator which would normally come between the flag letter
           and the associated value.
