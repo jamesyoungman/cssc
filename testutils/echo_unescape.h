@@ -22,7 +22,7 @@
 #include <stdbool.h>		// bool
 #include <stdlib.h>		// size_t
 
-/* Deocde backslash escape sequences in INPUT, writing the result to
+/* Decode backslash escape sequences in INPUT, writing the result to
    OUTPUT (without terminating null character).  OUTPUT must be at
    least as large as INPUT (and may be the same buffer).  If we find a
    \c escape, set *INHIBIT_NEWLINE.
