@@ -42,6 +42,7 @@
 
 // gnulib header file includes
 #include <error.h>
+#include <regex.h>
 
 // libcssc includes
 #include "optional.h"
@@ -224,20 +225,24 @@ static MatchResult
 check_regex_match (const string& pattern,
 		   const string& actual)
 {
-  MatchResult result;
-  char tmp_file_name[] = "/tmp/do_cmd_rx.XXXXXX";
-  if (mkstemp (tmp_file_name)  < 0)
+  regex_t* re = static_cast<regex_t*> (malloc (sizeof(regex_t)));
+  const int compile_result = regcomp (re, pattern.c_str(), REG_EXTENDED|REG_NOSUB);
+  if (0 != compile_result)
     {
-      error (1, errno, "failed to create temporary file from template %s", tmp_file_name);
+      char error_buf [512];
+      regerror (compile_result, re, error_buf, sizeof(error_buf));
+      error (1, 0, "regular expression %s is not valid: %s", pattern.c_str(), error_buf);
     }
-  rewrite_file_body (actual, tmp_file_name, false);
-  const vector<string> grep_args =
-    {
-      "-e", pattern, tmp_file_name
-    };
-  // Capture stdout so that we don't see output from successful tests.
-  const auto grep_result = execute_program ("grep", grep_args, true);
-  if (0 != grep_result.retval)
+
+  const int capture_limit = 1;
+  regmatch_t matches[capture_limit];
+  int match_result = regexec (re, actual.c_str(), capture_limit, matches, 0);
+
+  regfree (re);
+  free (re);
+
+  MatchResult result;
+  if (REG_NOMATCH == match_result)
     {
       std::stringstream ss;
       ss << "actual output did not match the specified regular expression; regular expression pattern was "
@@ -245,10 +250,6 @@ check_regex_match (const string& pattern,
 	 << " but the actual output was "
 	 << actual;
       result.add_problem (ss.str());
-    }
-  if (0 != unlink (tmp_file_name))
-    {
-      error (1, errno, "failed to remove temporary file %s", tmp_file_name);
     }
   return result;
 }
