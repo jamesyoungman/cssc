@@ -14,7 +14,7 @@ expands_to () {
     # $1 -- label
     # $2 -- format
     # $3 -- expansion
-docommand $1 "${vg_prs} \"-d$2\" -r1.1 s.1 s.foobar" 1 "$3" "IGNORE"
+    docommand "${1}" "${vg_prs} \"-d$2\" -r1.1 s.1 s.foobar" 1 "$3" "IGNORE"
 }
 
 remove s.1 p.1 1 z.1 s.foobar
