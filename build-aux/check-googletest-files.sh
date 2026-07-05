@@ -10,7 +10,7 @@ findproblems() {
        shift 2
 
        set -Ceu
-       tar ztf ${tarfile} | cut -d/ -f2-  | deleteprefix |sort >| "${released}"
+       tar ztf "${tarfile}" | cut -d/ -f2-  | deleteprefix |sort >| "${released}"
 
        ( cd "${sourcedir}" &&
 	     find unit-tests/googletest  \

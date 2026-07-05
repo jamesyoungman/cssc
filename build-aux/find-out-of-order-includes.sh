@@ -3,7 +3,7 @@
 find . \
      \( -path ./gl -o -path ./gnulib -o -path ./unit-tests \) -prune -o \
      \( -type f \( -name '*.c' -o -name '*.cc' \) -print \) |
-    while read file
+    while read -r file
     do
         # Extract the first include directive and complain if it is not
         # config.h.
