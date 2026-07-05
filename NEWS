@@ -1,4 +1,4 @@
-* Noteworthy changes in release 1.5.0-rc4
+* Noteworthy changes in release ?.? (????-??-??) [?]
 
         * The test suite no longer depends on Python, so it should
           work on older systems that have no Python 3 interpreter.
