@@ -24,17 +24,13 @@ unset PROJECTDIR
 
 echo "Using the driver program ${sccs}"
 
-files="foo"
-sfiles="s.foo"
-
-
 cleanup () {
     if [ -d /tmp/SCCS ]
     then
-	for i in $files; do /bin/rm -f /tmp/SCCS/[spzd].$i $i; done
+	remove foo /tmp/SCCS/[spzd].foo
 	rmdir /tmp/SCCS
     fi
-    rm -f $files $sfiles
+    remove s.foo
 }
 
 cleanup
