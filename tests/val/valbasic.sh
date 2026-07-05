@@ -5,75 +5,80 @@
 # Import common functions & definitions.
 . ../common/test-common.sh
 
-files="f s.f"
+g=f
+s="s.${g}"
 
-remove $files
+cleanup() {
+    remove "${g}" "${s}"
+}
 
-docommand v1 "${admin} -n s.f" 0 IGNORE IGNORE
-docommand v2 "${vg_val} s.f" 0 IGNORE IGNORE
 
-docommand v3 "${vg_val} -r1.1 s.f" 0 IGNORE IGNORE
-docommand v4 "${vg_val} -s s.f" 0 IGNORE IGNORE
+
+docommand v1 "${admin} -n ${s}" 0 IGNORE IGNORE
+docommand v2 "${vg_val} ${s}" 0 IGNORE IGNORE
+
+docommand v3 "${vg_val} -r1.1 ${s}" 0 IGNORE IGNORE
+docommand v4 "${vg_val} -s ${s}" 0 IGNORE IGNORE
 
 # Having no args is an error.
 docommand v5 "${vg_val}" 128 IGNORE IGNORE
 
 
 # Module flag mismatch
-docommand v6 "${vg_val} -mZ s.f" 1 IGNORE IGNORE
+docommand v6 "${vg_val} -mZ ${s}" 1 IGNORE IGNORE
 
 # Change the module flag
-docommand v7 "${admin} -fmZ s.f" 0 IGNORE IGNORE
+docommand v7 "${admin} -fmZ ${s}" 0 IGNORE IGNORE
 
 # Module flag match
-docommand v8 "${vg_val} -mZ s.f" 0 IGNORE IGNORE
+docommand v8 "${vg_val} -mZ ${s}" 0 IGNORE IGNORE
 
 
 # Type flag mismatch
-docommand v9 "${vg_val} -yA s.f" 2 IGNORE IGNORE
+docommand v9 "${vg_val} -yA ${s}" 2 IGNORE IGNORE
 
 # Change the type flag
-docommand v10 "${admin} -ftA s.f" 0 IGNORE IGNORE
+docommand v10 "${admin} -ftA ${s}" 0 IGNORE IGNORE
 
 # Module flag match
-docommand v11 "${vg_val} -yA s.f" 0 IGNORE IGNORE
+docommand v11 "${vg_val} -yA ${s}" 0 IGNORE IGNORE
 
 # SID not found
-docommand v12 "${vg_val} -r1.2 s.f" 4 IGNORE IGNORE
+docommand v12 "${vg_val} -r1.2 ${s}" 4 IGNORE IGNORE
 
 # SID not valid
-docommand v13 "${vg_val} -r1.2xyzzy s.f" 8 IGNORE IGNORE
+docommand v13 "${vg_val} -r1.2xyzzy ${s}" 8 IGNORE IGNORE
 
-chmod 0 s.f || abandon_test_script "Cannot change permissions for file s.f"
+chmod 0 "${s}" || abandon_test_script "Cannot change permissions for file ${s}"
 # Cannot read file
-docommand v14 "${vg_val} s.f" 16 IGNORE IGNORE
-chmod +r s.f || abandon_test_script "Cannot reset permissions for file s.f"
+docommand v14 "${vg_val} ${s}" 16 IGNORE IGNORE
+chmod +r "${s}" || abandon_test_script "Cannot reset permissions for file ${s}"
 
 # Missing file
 docommand v15 "${vg_val} -r1.1" 128 IGNORE IGNORE
 
 # Too many -r options
-docommand v16 "${vg_val} -r1.1 -r1.2 s.f" 64 IGNORE IGNORE
+docommand v16 "${vg_val} -r1.1 -r1.2 ${s}" 64 IGNORE IGNORE
 
 
 # A corrupt file
 remove s.corrupt
-cat valbasic.sh s.f > s.corrupt || abandon_test_script "cannot create file s.corrupt"
+cat valbasic.sh "${s}" > s.corrupt || abandon_test_script "cannot create file s.corrupt"
 docommand v17 "${vg_val} -r1.1 s.corrupt" 32 IGNORE IGNORE
 remove s.corrupt
 
 
 # Too many -r options (a different way)
-docommand v18 "${vg_val} -r1.1 -s -r1.1 s.f" 64 IGNORE IGNORE
+docommand v18 "${vg_val} -r1.1 -s -r1.1 ${s}" 64 IGNORE IGNORE
 
 # Too many -m options
-docommand v19 "${vg_val} -mX -mX s.f" 64 IGNORE IGNORE
+docommand v19 "${vg_val} -mX -mX ${s}" 64 IGNORE IGNORE
 
 # Too many -y options
-docommand v20 "${vg_val} -yX -yX s.f" 64 IGNORE IGNORE
+docommand v20 "${vg_val} -yX -yX ${s}" 64 IGNORE IGNORE
 
 # Unknown option
-docommand v21 "${vg_val} -X s.f" 64 IGNORE IGNORE
+docommand v21 "${vg_val} -X ${s}" 64 IGNORE IGNORE
 
 
 
@@ -88,5 +93,5 @@ docommand v21 "${vg_val} -X s.f" 64 IGNORE IGNORE
 # done rc  64 (Val_InvalidOption)
 # done rc 128 (Val_MissingFile)
 
-remove $files
+cleanup
 success
