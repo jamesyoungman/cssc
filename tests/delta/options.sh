@@ -8,12 +8,16 @@ remove command.log log log.stdout log.stderr
 mkdir test 2>/dev/null
 
 g=foo
-s=s.$g
-p=p.$g
-z=z.$g
-files="$g $s $p $z ${g}_1 ${g}_2"
+s="s.${g}"
+p="p.${g}"
+z="z.${g}"
+x="x.${g}"
 
-remove $files
+cleanup() {
+    remove command.log log log.stdout log.stderr base "${g}" "${s}" "${z}" "${x}" "${p}"
+    remove "${g}_1" "${g}_2"
+}
+
 
 append() {
    f="$1"
@@ -80,5 +84,5 @@ docommand o16 "${vg_delta} -r1.2.1.1 -p -yBranch2 $s" 0 \
 # the p-file should now be gone
 docommand o17 "test -r $p" 1 "" ""
 
-remove $files
+cleanup
 success
