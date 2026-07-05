@@ -55,9 +55,17 @@ expands_to X17 'x\\ny'   'x\ny\n'
 expands_to X18 ':FD:'   'Descriptive Text\n\n'
 
 remove got.stdout expected.stdout
+
+
+backslash_newline() {
+    printf '\\\n'
+}
+# shellcheck disable=SC1003
+one_backslash_only='\\'
+
 set_and_maybe_print_step_label_with_dots Z1
-${vg_prs}  -d'\\' s.1 > got.stdout 2>got.stderr || fail prs failed.
-echo \\            > expected.stdout || abandon_test_script redirection to expected.stdout
+${vg_prs}  -d"${one_backslash_only}" s.1 > got.stdout 2>got.stderr || fail prs failed.
+backslash_newline > expected.stdout || abandon_test_script "failred to generate expected.stdout"
 diff expected.stdout got.stdout >/dev/null || fail stdout format error.
 test -s got.stderr && fail expected empty stderr output
 remove got.stderr got.stdout expected.stdout
