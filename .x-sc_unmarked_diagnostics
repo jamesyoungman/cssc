@@ -1,3 +1,6 @@
 sccs-cgi/sccs\.cgi
 what\.cc
 testutils/runtests\.cc
+testutils/do_cmd\.cc
+testutils/execute\.cc
+testutils/filebody\.cc
