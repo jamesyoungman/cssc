@@ -2,7 +2,7 @@
 # differences in the format of the file, but
 # d41d8cd98f00b204e9800998ecf8427e is the md5sum of an empty input.
 # We use that initially to silence the error we would otherwise get.
-old_NEWS_hash = d41d8cd98f00b204e9800998ecf8427e
+old_NEWS_hash = c09c856305b563e79c1bbc913d7fbb67
 
 
 # Exempt the Google C++ Testing Framework from the syntax-check which
