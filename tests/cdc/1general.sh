@@ -5,17 +5,16 @@
 . ../common/test-common.sh
 
 g=testfile
-s=s.$g
-z=z.$g
-x=z.$g
-p=p.$g
-files="$s $z $x $p"
+s="s.${g}"
+z="z.${g}"
+x="z.${g}"
+p="p.${g}"
 
-remove command.log log log.stdout log.stderr base [sxzp].$g
+remove command.log log log.stdout log.stderr base "${s}" "${z}" "${x}" "${p}"
 
 
 # Create the input file.
-cat > $g <<EOF
+cat > "${g}" <<EOF
 %M%: This is a test file containing nothing interesting.
 EOF
 
@@ -39,5 +38,5 @@ docommand G5 "${vg_cdc}" 1 "" IGNORE
 
 
 
-remove command.log passwd $s $p $g $z $x
+remove command.log log log.stdout log.stderr base "${s}" "${z}" "${x}" "${p}" passwd
 success

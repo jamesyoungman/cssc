@@ -5,23 +5,22 @@
 . ../common/test-common.sh
 
 g=testfile
-s=s.$g
-z=z.$g
-x=z.$g
-p=p.$g
-files="$s $z $x $p"
+s="s.${g}"
+z="z.${g}"
+x="z.${g}"
+p="p.${g}"
 
-remove command.log log log.stdout log.stderr base [sxzp].$g
+remove command.log log log.stdout log.stderr base "${g}" "${s}" "${z}" "${x}" "${p}"
 
 
 # Create the input file.
-cat > $g <<EOF
+cat > "${g}" <<EOF
 %M%: This is a test file containing nothing interesting.
 EOF
 
 # Create an SCCS file to work on.
 docommand M1 "${admin} -i$g $s" 0 "" ""
-remove $g
+remove "${g}"
 
 # Try to offer an MR, check this is rejected.
 docommand M2 "${vg_cdc} -r1.1 -mAnMR -yThisShouldFail $s" 1 "" "IGNORE"
@@ -66,7 +65,7 @@ docommand M14 "${prs} -r1.1 -d:MR: $s" 0 "MR2\nMR3\n\n" ""
 # Make sure that the comments field now indicates that
 # that MR has been removed.
 remove comment
-${prs} -d:C: -r1.1 $s > comment || fail prs failed unexpectedly
+${prs} -d:C: -r1.1 "${s}" > comment || fail "prs failed unexpectedly"
 
 
 docommand M15 "sed -n 1p <comment" 0 "*** LIST OF DELETED MRS ***\n" ""
@@ -80,7 +79,8 @@ remove comment
 
 # Delete a non-existent MR.  Make sure that no error message is produced.
 # Also make sure that the file is not changed.
-cp $s s.saved || fail cp failed.
+remove s.saved
+copy M18prep "${s}" s.saved
 docommand M18 "${vg_cdc} -r1.1 -y '-m!MR7' $s" 0 "" ""
 docommand M19 "diff $s s.saved" 0 "" ""
 remove s.saved
@@ -101,5 +101,5 @@ docommand M23 "${vg_cdc} -r1.1 -y '-mMR5 !MR5' $s" 0 "" IGNORE
 docommand M24 "${prs} -r1.1 -d:MR: $s" 0 "MR5\nMR2\nMR3\n\n" ""
 
 
-remove command.log passwd $s $p $g $z $x
+remove command.log passwd  "${g}" "${s}" "${z}" "${x}" "${p}"
 success

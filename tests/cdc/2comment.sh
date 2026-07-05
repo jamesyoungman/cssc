@@ -5,23 +5,22 @@
 . ../common/test-common.sh
 
 g=testfile
-s=s.$g
-z=z.$g
-x=z.$g
-p=p.$g
-files="$s $z $x $p"
+s="s.${g}"
+z="z.${g}"
+x="z.${g}"
+p="p.${g}"
 
-remove command.log log log.stdout log.stderr base [sxzp].$g
+remove command.log log log.stdout log.stderr base "${g}" "${s}" "${z}" "${x}" "${p}"
 
 
 # Create the input file.
-cat > $g <<EOF
+cat > "${g}" <<EOF
 %M%: This is a test file containing nothing interesting.
 EOF
 
 # Create an SCCS file to work on.
 docommand C1 "${admin} -i$g $s" 0 "" ""
-remove $g
+remove "${g}"
 
 # Now change the (initial) comment.
 docommand C2 "${vg_cdc} -r1.1 '-yNewComment
@@ -29,7 +28,7 @@ NewComment2' $s" 0 "" ""
 
 # Extract only the comment.
 remove comment
-${prs} -d:C: -r1.1 $s > comment
+${prs} -d:C: -r1.1 "${s}" > comment
 
 
 # Test the first line
@@ -50,7 +49,7 @@ docommand C6 "${vg_cdc} -r1.1 '-yAnother Comment' $s" 0 "" ""
 
 # Again, extract only the comment.
 remove comment
-${prs} -d:C: -r1.1 $s > comment || fail prs failed unexpectedly
+${prs} -d:C: -r1.1 "${s}" > comment || fail "prs failed unexpectedly"
 
 
 # Test the first line
@@ -68,5 +67,5 @@ docommand C10 "sed -n 5p <comment|grep -E \
 '^\*\*\* CHANGED \*\*\* [0-9][0-9]/[01][0-9]/[0-3][0-9] [012][0-9]:[0-6][0-9]:[0-6][0-9] [^ ][^ ]*$'" 0 "IGNORE" ""
 
 
-remove command.log passwd $s $p $g $z $x comment
+remove command.log log log.stdout log.stderr base "${g}" "${s}" "${z}" "${x}" "${p}" comment
 success
