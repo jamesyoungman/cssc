@@ -21,13 +21,20 @@
 #include <config.h>
 
 // C++ standard library header file includes
-#include <cstdint>
-#include <cstring>
 #include <iomanip>
 #include <iostream>
+#include <memory>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <vector>
+
+// C++ standard library headers corresponding to C standard library headers
+#include <cerrno>
+#include <climits>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
 
 // POSIX header file includes
 #include <unistd.h>
@@ -48,6 +55,7 @@ using std::string;
 using std::vector;
 using std::cout;
 using std::cerr;
+using std::unique_ptr;
 using cssc::optional;
 
 static string program_name = "do_cmd";
@@ -58,6 +66,36 @@ const static vector<string> breadcrumb_files =
   };
 
 static string get_expected_val (const string& expectation, bool is_file);
+
+
+class QualifiedLabel
+{
+public:
+  QualifiedLabel(const string& test_name, const string& step_label)
+    : qualified_label_(test_name + ":" + step_label)
+  {
+  }
+
+  const string& str() const
+  {
+    return qualified_label_;
+  }
+
+  const char* c_str() const
+  {
+    return qualified_label_.c_str();
+  }
+
+private:
+  string qualified_label_;
+};
+
+namespace {
+  std::ostream& operator<< (std::ostream& stream, const QualifiedLabel& ql) {
+    return stream << ql.str();
+  }
+}
+
 
 // Open the file FILEMAME, write BODY to it, and close it.
 //
@@ -219,10 +257,8 @@ private:
 class TestOutcome
 {
 public:
-  TestOutcome(const string& test_script, const string& label,
-	      bool expect_failure, bool success, string message, string child_error_output)
-    : qualified_label_(test_script + "/" + label),
-      success_(success),
+  TestOutcome(bool expect_failure, bool success, string message, string child_error_output)
+    : success_(success),
       expect_failure_(expect_failure),
       message_(message),
       child_error_output_(child_error_output)
@@ -243,14 +279,9 @@ public:
   {
     if (expect_failure_)
       {
-	return success_ ? "XPASS_" : "XFAIL_";
+	return success_ ? "XPASS" : "XFAIL";
       }
-    return success_ ? "PASS_" : "FAIL_";
-  }
-
-  const string& qualified_label() const
-  {
-    return qualified_label_;
+    return success_ ? "PASS" : "FAIL";
   }
 
   friend std::ostream& operator<< (std::ostream& stream, const TestOutcome& outcome) {
@@ -261,7 +292,7 @@ public:
       {
 	need_newline = (*it) != '\n';
       }
-    stream << outcome.indicator() << "(" << outcome.qualified_label() << ")";
+    stream << outcome.indicator();
     if (!message.empty())
       {
 	stream << ": " << message;
@@ -279,7 +310,6 @@ public:
   }
 
 private:
-  string qualified_label_;
   bool success_;
   bool expect_failure_;
   string message_;
@@ -301,6 +331,26 @@ join_string_vec(const vector<string>& v, const string& separator)
   return result;
 }
 
+static int
+configured_label_width()
+{
+  const int DEFAULT_WIDTH = 20;
+  const char *env_val = getenv("CSSC_TEST_STEP_LABEL_MAX_WIDTH");
+  if (env_val)
+    {
+      errno = 0;
+      char *end = NULL;
+      long val = strtol(env_val, &end, 10);
+      if ((end && *end))
+	return DEFAULT_WIDTH;	// not a number, or trailng text after the number
+      if ((LONG_MAX == val || LONG_MIN == val) && errno)
+	return DEFAULT_WIDTH;	// out of range for long
+      if (val < 0 || val > INT_MAX)
+	return DEFAULT_WIDTH;	// out of range for a field width
+      return val;
+    }
+  return DEFAULT_WIDTH;
+}
 
 static bool
 retval_matches (int got, const optional<int>& maybe_expected, std::stringstream& problems)
@@ -321,10 +371,8 @@ retval_matches (int got, const optional<int>& maybe_expected, std::stringstream&
   return false;
 }
 
-static TestOutcome
-perform_test(const string& test_name,
-	     const string& label,
-	     bool expect_failure,
+static unique_ptr<TestOutcome>
+perform_test(bool expect_failure,
 	     const string& command,
 	     const optional<int>& expected_retval,
 	     OutputMatcher stdout_matcher,
@@ -337,11 +385,6 @@ perform_test(const string& test_name,
   rewrite_file_body (result.stdout_output, "got.stdout", true);
   rewrite_file_body (result.stderr_output, "got.stderr", true);
 
-  //cerr << "(debug): "
-  //     << test_name << ":" << label
-  //     << " return value of " << command
-  //     << " was " << result.retval << "\n";
-
   std::stringstream problems;
   if (!retval_matches (result.retval, expected_retval, problems))
     {
@@ -353,23 +396,20 @@ perform_test(const string& test_name,
 	{
 	  problems << "standard error output was:\n"  << result.stderr_output;
 	}
-      return TestOutcome (test_name, label,
-			  expect_failure, false, problems.str(),
-			  result.stderr_output);
+      return unique_ptr<TestOutcome>(new TestOutcome (expect_failure, false, problems.str(),
+						      result.stderr_output));
     }
   if (!stdout_matcher.check (result.stdout_output, problems))
     {
-      return TestOutcome (test_name, label,
-			  expect_failure, false, problems.str(),
-			  result.stderr_output);
+      return unique_ptr<TestOutcome>(new TestOutcome (expect_failure, false, problems.str(),
+					 result.stderr_output));
     }
   if (!stderr_matcher.check (result.stderr_output, problems))
     {
-      return TestOutcome (test_name, label,
-			  expect_failure, false, problems.str(),
-			  result.stderr_output);
+      return unique_ptr<TestOutcome>(new TestOutcome (expect_failure, false, problems.str(),
+						      result.stderr_output));
     }
-  return TestOutcome (test_name, label, expect_failure, true, "", result.stderr_output);
+  return unique_ptr<TestOutcome>(new TestOutcome (expect_failure, true, "", result.stderr_output));
 }
 
 static bool
@@ -481,13 +521,13 @@ int main(int argc, char *argv[])
     }
   remove_breadcrumbs ();
 
-  bool silent = true;
+  bool silent = false;
   MatchType stdout_match = MatchType::Literal;
   MatchType stderr_match = MatchType::Literal;
   bool stderr_expectation_is_file = false;
   bool stdout_expectation_is_file = false;
   bool expect_failure = false;
-  string test_name;
+  optional<string> test_name;
 
   vector<string> positional_args;
   bool option = true;
@@ -576,7 +616,7 @@ int main(int argc, char *argv[])
       positional_args.push_back(argv[i]);
     }
 
-  if (test_name.empty())
+  if (!test_name.has_value())
     {
       error (1, 0, "Please specify --test_name");
     }
@@ -588,17 +628,40 @@ int main(int argc, char *argv[])
 	     "expected return value, expected stdout output, "
 	     "expected stderr output), but got %d: %s\n"
 	     "command-line was:\n%s",
-	     test_name.c_str(),
+	     test_name.value().c_str(),
 	     static_cast<int>(positional_args.size()),
 	     join_string_vec(positional_args, " ").c_str(),
 	     cmdline_for_error_reporting.c_str());
     }
-  const string label = positional_args[0];
+  const QualifiedLabel qualified_label(test_name.value(), positional_args[0]);
+  unique_ptr<TestOutcome> outcome; // initially there is none
+  const int label_width = configured_label_width ();
+  auto status_update = [&silent, qualified_label, &outcome, label_width]()
+  {
+    std::ostream* output_dest = &std::cout;
+    bool suppress_output = silent;
+    if (outcome && !outcome->success())
+      {
+	suppress_output = false;
+	output_dest = &std::cerr;
+      }
+    if (!suppress_output)
+      {
+	(*output_dest) << '\r' << std::setw(label_width) << std::left << qualified_label << "...";
+	if (outcome)
+	  {
+	    (*output_dest) << *outcome;
+	  }
+      }
+  };
+
   const string command = positional_args[1];
   optional<int> expected_retval;
   if (!parse_expected_retval (positional_args[2], &expected_retval))
     {
-      error (1, 0, "%s is not a valid expected return value expectation", positional_args[2].c_str());
+      error (1, 0, "%s: %s is not a valid expected return value expectation",
+	     qualified_label.c_str(),
+	     positional_args[2].c_str());
     }
 
   OutputMatcher stdout_matcher = OutputMatcher (stdout_match, positional_args[3], stdout_expectation_is_file);
@@ -606,24 +669,11 @@ int main(int argc, char *argv[])
   rewrite_file_body (stdout_matcher.expected(), "expected.stdout", true);
   rewrite_file_body (stdout_matcher.expected(), "expected.stderr", true);
 
-  if (!silent)
-    {
-      cout << std::setw(6) << std::left << label << "...";
-    }
+  status_update ();
+  outcome = perform_test (expect_failure, command, expected_retval,
+			  stdout_matcher, stderr_matcher);
 
-  auto result = perform_test (test_name, label, expect_failure, command, expected_retval,
-			      stdout_matcher, stderr_matcher);
-
-  if (!result.success())
-    {
-      cout << std::setw(6) << std::left << label << "..." << result;
-      return 1;
-    }
-
-  if (!silent)
-    {
-      cout << std::setw(6) << std::left << label << "..." << result;
-    }
+  status_update ();
   remove_breadcrumbs ();
-  return 0;
+  return outcome->success() ? 0 : 1;
 }
