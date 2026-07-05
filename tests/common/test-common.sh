@@ -38,42 +38,42 @@ do
     # Unless we're using the builtin, check that the command exists as a file.
     if test -f $echocmd || test "$echocmd" = "echo"
     then
-	# The second echo here ensures that the parenthesised command
-	# succeeds and the output ends with a newline.
-	if ($echocmd "testing\c"; echo 1,2,3) | grep c >/dev/null
-	then
-	    # Trailing \c option does not work without -e (it produces a literal c).
-	    if ($echocmd -e "testing\c"; echo 1,2,3) | grep c >/dev/null
-	    then
-		# \c does not work even with -e.
-		if ($echocmd -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null
-		then
-		    # -n option not known (and \c not known)
-		    ac_n='' ac_c=''
-		else
-		    # -n option works even though -e does not.
-		    # This is unfortunate since the test scripts assume
-		    # in places the ability to expand escape codes.
-		    # Send message to STDERR because I want to investigate.
-		    #
-		    # According to Marty Leisner <leisner@sdsp.mc.xerox.com>,
-		    # SunOS 4.1.4 is one such "unusual" system.
+        # The second echo here ensures that the parenthesised command
+        # succeeds and the output ends with a newline.
+        if ($echocmd "testing\c"; echo 1,2,3) | grep c >/dev/null
+        then
+            # Trailing \c option does not work without -e (it produces a literal c).
+            if ($echocmd -e "testing\c"; echo 1,2,3) | grep c >/dev/null
+            then
+                # \c does not work even with -e.
+                if ($echocmd -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null
+                then
+                    # -n option not known (and \c not known)
+                    ac_n='' ac_c=''
+                else
+                    # -n option works even though -e does not.
+                    # This is unfortunate since the test scripts assume
+                    # in places the ability to expand escape codes.
+                    # Send message to STDERR because I want to investigate.
+                    #
+                    # According to Marty Leisner <leisner@sdsp.mc.xerox.com>,
+                    # SunOS 4.1.4 is one such "unusual" system.
 
-		    # echo Unusual system\; PLEASE inform '<jay@gnu.org>'. >&2
-		    ac_n='-n' ac_c=''
-		fi
-	    else
-		# \c does work with -e.
-		# Hence we do not need to use -n.
-		ac_n='' ac_c='\c'
-		# Break out of the loop, we have a workable solution.
-		break
-	    fi
-	else
-	    ac_n='' ac_c='\c'
-	    # Break out of the loop, we have a workable solution.
-	    break
-	fi
+                    # echo Unusual system\; PLEASE inform '<jay@gnu.org>'. >&2
+                    ac_n='-n' ac_c=''
+                fi
+            else
+                # \c does work with -e.
+                # Hence we do not need to use -n.
+                ac_n='' ac_c='\c'
+                # Break out of the loop, we have a workable solution.
+                break
+            fi
+        else
+            ac_n='' ac_c='\c'
+            # Break out of the loop, we have a workable solution.
+            break
+        fi
     fi
 done
 
@@ -83,11 +83,11 @@ if ($echocmd -e) >/dev/null 2>&1
 then
     if ($echocmd -e) | sed s/-e/xe/ | grep xe >/dev/null
     then
-	# Fallback position: use our own replacement which supports -e.
-	echocmd="../../testutils/ekko"
-	ac_e='-e'
+        # Fallback position: use our own replacement which supports -e.
+        echocmd="../../testutils/ekko"
+        ac_e='-e'
     else
-	ac_e='-e'
+        ac_e='-e'
     fi
 fi
 
@@ -118,10 +118,10 @@ fail () {
     then
         echo XFAIL "${test_script}:${label}:" "$@" >&2
         # Return a failure status but don't exit...
-	false
+        false
     else
         echo FAIL "${test_script}:${label}:" "$@" >&2
-	exit 2
+        exit 2
     fi ;
 }
 
@@ -164,7 +164,7 @@ remove () {
 rename () {
     if mv -f -- "$1" "$2"
     then
-	return 0
+        return 0
     fi
     abandon_test_script "Could not rename $1 to $2"
 }
@@ -172,8 +172,8 @@ rename () {
 copy() {
     if [ $# -ne 3 ]
     then
-	echo "${label}: copy(): wrong number of arguments (expected 3, got $#)" >&2
-	return 1
+        echo "${label}: copy(): wrong number of arguments (expected 3, got $#)" >&2
+        return 1
     fi
     copy_label="${1}"
     copy_from="${2}"
@@ -184,16 +184,16 @@ copy() {
     rm -f -- "${copy_to}"
     if cp  -- "${copy_from}" "${copy_to}"
     then
-	# By default cp will use the mode of ${from} when creating
-	# ${to}.  This can mean ${to} is created as a read-only file
-	# when the source tree is read-only (e.g. during 'make
-	# distcheck').  Our tests assume that the copied file is
-	# writable so we need to ensure that's the case.
-	if chmod u+w "${copy_to}"
-	then
-	    return 0
-	fi
-	abandon_test_script "${copy_label}: failed to make ${copy_to} writable"
+        # By default cp will use the mode of ${from} when creating
+        # ${to}.  This can mean ${to} is created as a read-only file
+        # when the source tree is read-only (e.g. during 'make
+        # distcheck').  Our tests assume that the copied file is
+        # writable so we need to ensure that's the case.
+        if chmod u+w "${copy_to}"
+        then
+            return 0
+        fi
+        abandon_test_script "${copy_label}: failed to make ${copy_to} writable"
     fi
     abandon_test_script "${copy_label}: failed to copy ${copy_from} to ${copy_to}"
 }
@@ -207,34 +207,34 @@ set_test_script_and_label() {
 
     if [ $# -eq 0 ]
     then
-	abandon_test_script "you should pass the docommand command-line to set_test_script_and_label"
+        abandon_test_script "you should pass the docommand command-line to set_test_script_and_label"
     fi
 
     if test -z "${test_script}"; then
-	script_dir="$( dirname "$0" )"
-	case "${script_dir}" in
-	    .) script_dir=`pwd`;;
-	esac
-	script_base="$( basename "${script_dir}" )"
-	test_script="${script_base}/$( basename "$0" )"
+        script_dir="$( dirname "$0" )"
+        case "${script_dir}" in
+            .) script_dir=`pwd`;;
+        esac
+        script_base="$( basename "${script_dir}" )"
+        test_script="${script_base}/$( basename "$0" )"
     fi
 
     for arg
     do
-	case "${arg}" in
-	    -*) # an option, ignore it.
-	    ;;
-	    *)
-		# a positional argument
-		label="${arg}"
-		return 0
-		;;
-	esac
+        case "${arg}" in
+            -*) # an option, ignore it.
+            ;;
+            *)
+                # a positional argument
+                label="${arg}"
+                return 0
+                ;;
+        esac
     done
 
     if [ -z "${label}" ]
     then
-	abandon_test_script "did not find a label in command line" "$@"
+        abandon_test_script "did not find a label in command line" "$@"
     fi
 }
 
@@ -261,16 +261,16 @@ docommand_sh () {
     stdout_is_file=false
     stderr_is_file=false
     while case "$1" in
-	      --silent) silent=true ; true ;;
-	      --nosilent) silent=false ; true ;;
-	      --stderr_regex) stderr_regex=true ; true ;;
-	      --stderr_is_file) stderr_is_file=true ; true ;;
-	      --nostderr_regex) stderr_regex=false ; true ;;
-	      --stdout_regex) stdout_regex=true ; true ;;
-	      --stdout_is_file) stdout_is_file=true ; true ;;
-	      --nostdout_regex) stdout_regex=false ; true ;;
-	      *) false ;;
-	  esac
+              --silent) silent=true ; true ;;
+              --nosilent) silent=false ; true ;;
+              --stderr_regex) stderr_regex=true ; true ;;
+              --stderr_is_file) stderr_is_file=true ; true ;;
+              --nostderr_regex) stderr_regex=false ; true ;;
+              --stdout_regex) stdout_regex=true ; true ;;
+              --stdout_is_file) stdout_is_file=true ; true ;;
+              --nostdout_regex) stdout_regex=false ; true ;;
+              *) false ;;
+          esac
     do
         shift
     done
@@ -307,18 +307,18 @@ docommand_sh () {
     then
         if test $rv -eq "${2}"
         then
-    	    true
+            true
         else
-    	    # If the expected return value (which we didn't get) was zero,
+            # If the expected return value (which we didn't get) was zero,
             # stderr may contain an error message.
-    	    errmsg="`cat got.stderr`"
-    	    if test -z "$errmsg"
-    	    then
-    		tail="No error message was printed on stderr"
-    	    else
-    		tail="error message: $errmsg"
-    	    fi
-    	    fail "$label: $1: Expected return value $2, got return value $rv
+            errmsg="`cat got.stderr`"
+            if test -z "$errmsg"
+            then
+                tail="No error message was printed on stderr"
+            else
+                tail="error message: $errmsg"
+            fi
+            fail "$label: $1: Expected return value $2, got return value $rv
     $tail"
         fi
     fi
@@ -327,34 +327,34 @@ docommand_sh () {
     then
         if ${stdout_is_file}
         then
-    	    stdout_contents="$( cat "${3}" )"
-    	    copy stdout_file "${3}" expected.stdout
+            stdout_contents="$( cat "${3}" )"
+            copy stdout_file "${3}" expected.stdout
         else
-    	    stdout_contents="${3}"
-    	    echo_nonl "$3" > expected.stdout
+            stdout_contents="${3}"
+            echo_nonl "$3" > expected.stdout
         fi
 
         if $stdout_regex; then
-    	    # We use egrep regexes to that we can run these tests on old
-    	    # versions of Solaris.  Older versions of Solaris do not
-    	    # support grep -E.
-    	    if egrep -e "${stdout_contents}" < got.stderr >/dev/null
-    	    then
-    		echo "# stdout output matches ${stdout_contents}"  >> command.log
-    	    else
-    		echo "# stdout output does not match ${stdout_contents}"  >> command.log
-    		fail "$label: stdout output did not match ${stdout_contents}"
-    	    fi
+            # We use egrep regexes to that we can run these tests on old
+            # versions of Solaris.  Older versions of Solaris do not
+            # support grep -E.
+            if egrep -e "${stdout_contents}" < got.stderr >/dev/null
+            then
+                echo "# stdout output matches ${stdout_contents}"  >> command.log
+            else
+                echo "# stdout output does not match ${stdout_contents}"  >> command.log
+                fail "$label: stdout output did not match ${stdout_contents}"
+            fi
         else
-    	    # diff can fail if the file does not end in newline.
-    	    echo        >>expected.stdout
-    	    echo        >>     got.stdout
-    	    # Prefer cmp in case the data is binary.
-    	    if ! cmp expected.stdout got.stdout
-    	    then
-    		diff expected.stdout got.stdout
-    		fail "$label: stdout format error with $1"
-    	    fi
+            # diff can fail if the file does not end in newline.
+            echo        >>expected.stdout
+            echo        >>     got.stdout
+            # Prefer cmp in case the data is binary.
+            if ! cmp expected.stdout got.stdout
+            then
+                diff expected.stdout got.stdout
+                fail "$label: stdout format error with $1"
+            fi
         fi
     fi
 
@@ -362,29 +362,29 @@ docommand_sh () {
     then
         if ${stderr_is_file}
         then
-    	    stderr_contents="$( "cat ${4}" )"
-    	    copy stderr_file "${4}" expected.stderr
+            stderr_contents="$( "cat ${4}" )"
+            copy stderr_file "${4}" expected.stderr
         else
-    	    stderr_contents="${4}"
-    	    echo_nonl "$4" > expected.stderr
+            stderr_contents="${4}"
+            echo_nonl "$4" > expected.stderr
         fi
 
         if $stderr_regex; then
-    	    # We use egrep regexes to that we can run these tests on old
-    	    # versions of Solaris.  Older versions of Solaris do not
-    	    # support grep -E.
-    	    if egrep -e "${stderr_contents}" < got.stderr >/dev/null
-    	    then
-    		echo "# stderr output matches ${stderr_contents}"  >> command.log
-    	    else
-    		echo "# stderr output does not match ${stderr_contents}"  >> command.log
-    		fail "$label: stderr output did not match ${stderr_contents}"
-    	    fi
+            # We use egrep regexes to that we can run these tests on old
+            # versions of Solaris.  Older versions of Solaris do not
+            # support grep -E.
+            if egrep -e "${stderr_contents}" < got.stderr >/dev/null
+            then
+                echo "# stderr output matches ${stderr_contents}"  >> command.log
+            else
+                echo "# stderr output does not match ${stderr_contents}"  >> command.log
+                fail "$label: stderr output did not match ${stderr_contents}"
+            fi
         else
-    	    # diff can fail if the file does not end in newline.
-    	    echo        >>expected.stderr
-    	    echo        >>     got.stderr
-    	    diff expected.stderr got.stderr || fail "$label: stderr format error with $1"
+            # diff can fail if the file does not end in newline.
+            echo        >>expected.stderr
+            echo        >>     got.stderr
+            diff expected.stderr got.stderr || fail "$label: stderr format error with $1"
         fi
     fi
 
@@ -452,39 +452,39 @@ docommand_bin () {
     set_test_script_and_label "$@"
     if [ -z "${test_script}" ]
     then
-	abandon_test_script "The test_script variable is not set"
+        abandon_test_script "The test_script variable is not set"
     fi
     if [ -z "${label}" ]
     then
-	abandon_test_script "The label variable is not set; the command-line was" "$@"
+        abandon_test_script "The label variable is not set; the command-line was" "$@"
     fi
 
     expect_fail="false"
     for arg in "$@"
     do
-	case "${arg}" in
-	    --expect_failure)
-		expect_fail=true
-		;;
-	    *)
-		;;
-	esac
+        case "${arg}" in
+            --expect_failure)
+                expect_fail=true
+                ;;
+            *)
+                ;;
+        esac
     done
     if ../../testutils/do_cmd  --test_name "${test_script}" "$@"
     then
-	true
+        true
     else
-	if [ "${expect_fail}" = true ]
-	then
-	    echo "${test_script}:${label}: this test step failed, but this is expected.  Continuing anyway." >&2
-	    # Allow any surrounding conditional to know that
-	    # this step failed, by returning a non-zero
-	    # status.
-	    return 1
-	else
-	    fail "${test_script}:${label}: this test step failed"
-	    exit 2
-	fi
+        if [ "${expect_fail}" = true ]
+        then
+            echo "${test_script}:${label}: this test step failed, but this is expected.  Continuing anyway." >&2
+            # Allow any surrounding conditional to know that
+            # this step failed, by returning a non-zero
+            # status.
+            return 1
+        else
+            fail "${test_script}:${label}: this test step failed"
+            exit 2
+        fi
     fi
 }
 
