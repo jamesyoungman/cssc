@@ -146,13 +146,6 @@ rewrite_file_body (const string& body,
   write_string_to_file (body, filename, create_file, false);
 }
 
-static void
-append_string_to_file (const string& data,
-		       const char *filename)
-{
-  write_string_to_file (data, filename, true, true);
-}
-
 static string
 join_string_vec(const vector<string>& v, const string& separator)
 {
@@ -470,7 +463,6 @@ perform_test(bool expect_failure,
 	     OutputMatcher stderr_matcher)
 {
   MatchResults match_results;
-  append_string_to_file (command + "\n", "last.command");
 
   vector<string> args = vector<string>({"sh", "-c", command });
   auto result = execute_program ("sh", args, true);
@@ -488,6 +480,7 @@ perform_test(bool expect_failure,
     }
   else
     {
+      rewrite_file_body (command, "last.command", true);
       rewrite_file_body (result.stdout_output, "got.stdout", true);
       rewrite_file_body (result.stderr_output, "got.stderr", true);
     }
